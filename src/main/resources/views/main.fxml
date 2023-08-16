@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyfx.controls.FlexPane?>
+<FlexPane styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyssh.controller.MainController" realHeight="700" realWidth="1300">
+    <fx:include fx:id="header" source="header.fxml"/>
+    <fx:include fx:id="sshMain" layoutY="30" source="sshMain.fxml"/>
+</FlexPane>

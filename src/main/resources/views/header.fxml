@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyfx.controls.FlexFlowPane?>
+<?import cn.oyzh.easyfx.svg.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.FlowPane?>
+<FlexFlowPane styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+              fx:controller="cn.oyzh.easyssh.controller.HeaderController" flexWidth="100%" realHeight="30">
+    <SVGLabel text="设置" onMousePrimaryClicked="#setting" tipText="程序设置" url="/font/setting.svg" size="14">
+        <FlowPane.margin>
+            <Insets left="10" top="5" bottom="5"/>
+        </FlowPane.margin>
+    </SVGLabel>
+    <SVGLabel text="关于" onMousePrimaryClicked="#about" tipText="关于程序" url="/font/info-circle.svg" size="14">
+        <FlowPane.margin>
+            <Insets left="10" top="5" bottom="5"/>
+        </FlowPane.margin>
+    </SVGLabel>
+    <SVGLabel text="退出" onMousePrimaryClicked="#quit" tipText="退出程序" url="/font/poweroff.svg" size="13">
+        <FlowPane.margin>
+            <Insets left="10" top="5" bottom="5"/>
+        </FlowPane.margin>
+    </SVGLabel>
+    <SVGLabel text="收缩" fx:id="collapseTree" onMousePrimaryClicked="#collapseTree" tipText="收缩ssh树"
+              url="/font/left-arrow-to-left.svg" size="12">
+        <FlowPane.margin>
+            <Insets left="10" top="5" bottom="5"/>
+        </FlowPane.margin>
+    </SVGLabel>
+    <SVGLabel visible="false" managed="false" fx:id="expandTree" text="展开" onMousePrimaryClicked="#expandTree"
+              url="/font/arrow-to-right.svg" size="12"
+              tipText="展开ssh树">
+        <FlowPane.margin>
+            <Insets left="10" top="5" bottom="5"/>
+        </FlowPane.margin>
+    </SVGLabel>
+</FlexFlowPane>

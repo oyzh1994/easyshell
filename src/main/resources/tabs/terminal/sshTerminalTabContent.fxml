@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyssh.shell.SSHShellTerminalTextArea?>
+<SSHShellTerminalTextArea flexHeight="100%" fx:id="terminal" fontSize="12" editable="false" flexWidth="100%"
+                            xmlns="http://javafx.com/javafx"
+                            xmlns:fx="http://javafx.com/fxml"
+                            fx:controller="cn.oyzh.easyssh.tabs.terminal.SSHTerminalTabContentController">
+</SSHShellTerminalTextArea>
