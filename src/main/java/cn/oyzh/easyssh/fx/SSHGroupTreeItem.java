@@ -210,7 +210,6 @@ public class SSHGroupTreeItem extends BaseTreeItem implements ConnectManager {
     public void addConnectItems(@NonNull List<SSHConnectTreeItem> items) {
         if (CollUtil.isNotEmpty(items)) {
             this.getChildren().addAll(items);
-            this.sort(this.treeView().sortOrder());
         }
     }
 

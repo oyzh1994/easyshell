@@ -208,6 +208,18 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
     }
 
     /**
+     * 关闭连接
+     */
+    @EventReceiver(value = SSHEvents.SSH_CLOSE_CONNECT, verbose = true, async = true)
+    private void closeConnect(SSHInfo info) {
+        for (SSHConnectTreeItem connectTreeItem : this.getConnectItems()) {
+            if (connectTreeItem.value() == info) {
+                connectTreeItem._disConnect();
+            }
+        }
+    }
+
+    /**
      * 添加分组
      */
     @EventReceiver(SSHEvents.SSH_ADD_GROUP)
@@ -251,7 +263,6 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
                 list.add(groupTreeItem);
             }
             this.getChildren().addAll(list);
-            this.sort(this.treeView().sortOrder());
         }
     }
 
@@ -285,20 +296,9 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
     }
 
     @Override
-    public void sort(Boolean sortOrder) {
-        if (sortOrder != null) {
-            super.sort(sortOrder);
-            for (SSHGroupTreeItem groupItem : this.getGroupItems()) {
-                groupItem.sort(sortOrder);
-            }
-        }
-    }
-
-    @Override
     public boolean flushGraphic() {
         if (this.itemValue().graphic() == null) {
             this.itemValue().graphic(new FlexImageView(IconUtil.getIcon(SSHConst.ICON_PATH), 16));
-            // this.treeView().fireGraphicChanged(this);
             return true;
         }
         return false;
@@ -369,7 +369,6 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
     public void addConnectItems(@NonNull List<SSHConnectTreeItem> items) {
         if (CollUtil.isNotEmpty(items)) {
             this.getChildren().addAll(items);
-            this.sort(this.treeView().sortOrder());
         }
     }
 

@@ -22,6 +22,9 @@ public class SSHShellResult {
     @Getter
     private String clipResult;
 
+    public SSHShellResult(String result) {
+        this.setFirstResult(result);
+    }
 
     public SSHShellResult(String command, String result) {
         this.command = command;
@@ -31,9 +34,7 @@ public class SSHShellResult {
     public void setResult(String result) {
         this.result = result;
         if (result != null) {
-            System.out.println(result);
             String[] lines = result.split("\n");
-
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < lines.length; i++) {
                 String str = lines[i];
@@ -41,6 +42,24 @@ public class SSHShellResult {
                     continue;
                 }
                 if (i == lines.length - 2) {
+                    this.prompt = str;
+                    break;
+                }
+                builder.append(str).append("\n");
+            }
+            this.clipResult = builder.toString();
+        }
+    }
+
+    public void setFirstResult(String result) {
+        this.result = result;
+        System.out.println(result);
+        if (result != null) {
+            String[] lines = result.split("\n");
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < lines.length; i++) {
+                String str = lines[i];
+                if (i == lines.length - 1) {
                     this.prompt = str;
                     break;
                 }

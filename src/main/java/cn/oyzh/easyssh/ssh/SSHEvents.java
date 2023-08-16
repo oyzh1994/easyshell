@@ -82,9 +82,14 @@ public class SSHEvents {
     public static final String SSH_SERVER_INFO = "SSH_SERVER_INFO";
 
     /**
-     * ssh客户端关闭事件
+     * 连接已关闭事件
      */
-    public static final String SSH_CLINE_CLOSED = "SSH_CLINE_CLOSED";
+    public static final String SSH_CONNECT_CLOSED = "SSH_CONNECT_CLOSED";
+
+    /**
+     * 关闭连接事件
+     */
+    public static final String SSH_CLOSE_CONNECT = "SSH_CLOSE_CONNECT";
 
     /**
      * 添加连接事件

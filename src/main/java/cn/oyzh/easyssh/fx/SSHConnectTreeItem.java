@@ -112,8 +112,6 @@ public class SSHConnectTreeItem extends BaseTreeItem {
             items.add(deleteConnect);
         }
 
-        MenuItem terminal = FXMenuItem.newItem("打开终端", new SVGGlyph("/font/code library.svg", "11"), "打开ssh终端", this::openTerminal);
-        items.add(terminal);
         return items;
     }
 
@@ -123,14 +121,6 @@ public class SSHConnectTreeItem extends BaseTreeItem {
     @FXML
     private void serverInfo() {
         EventUtil.fire(SSHEvents.SSH_SERVER_INFO, this.client);
-    }
-
-    /**
-     * 打开终端
-     */
-    @FXML
-    private void openTerminal() {
-        EventUtil.fire(SSHEvents.SSH_OPEN_TERMINAL, this.value);
     }
 
     /**
@@ -197,11 +187,12 @@ public class SSHConnectTreeItem extends BaseTreeItem {
     /**
      * 断开连接实际业务
      */
-    private void _disConnect() {
+    protected void _disConnect() {
         this.itemValue().clearRole();
         this.client.close();
         this.clearChildren();
         this.flushGraphic();
+        EventUtil.fire(SSHEvents.SSH_CONNECT_CLOSED, this.value);
         SystemUtil.gcLater();
     }
 
@@ -308,7 +299,6 @@ public class SSHConnectTreeItem extends BaseTreeItem {
             ex.printStackTrace();
         }
     }
-
 
     @Override
     public boolean flushGraphic() {

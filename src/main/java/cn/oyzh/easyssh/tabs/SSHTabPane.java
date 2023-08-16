@@ -3,10 +3,8 @@ package cn.oyzh.easyssh.tabs;
 import cn.oyzh.common.thread.TimerUtil;
 import cn.oyzh.easyfx.controls.FlexTabPane;
 import cn.oyzh.easyfx.event.EventReceiver;
-import cn.oyzh.easyfx.information.FXAlertUtil;
 import cn.oyzh.easyfx.util.FXUtil;
 import cn.oyzh.easyssh.domain.SSHInfo;
-import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHEvents;
 import cn.oyzh.easyssh.tabs.home.SSHHomeTab;
 import cn.oyzh.easyssh.tabs.terminal.SSHTerminalTab;
@@ -110,17 +108,16 @@ public class SSHTabPane extends FlexTabPane {
         }
     }
 
-
     /**
      * ssh客户端关闭事件
      *
-     * @param client ssh客户端
+     * @param info ssh连接
      */
-    @EventReceiver(value = SSHEvents.SSH_CLINE_CLOSED, verbose = true, async = true)
-    private void onClientClosed(SSHClient client) {
+    @EventReceiver(value = SSHEvents.SSH_CONNECT_CLOSED, verbose = true, async = true)
+    private void onClientClosed(SSHInfo info) {
         List<Tab> closeTabs = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof SSHTerminalTab terminalTab && terminalTab.client() == client) {
+            if (tab instanceof SSHTerminalTab terminalTab && terminalTab.info() == info) {
                 closeTabs.add(tab);
             }
         }

@@ -39,7 +39,15 @@ public class SSHClient {
     @Accessors(chain = true, fluent = true)
     private final SSHInfo sshInfo;
 
+    /**
+     * ssh会话
+     */
     private Session session;
+
+    /**
+     * ssh交互式终端
+     */
+    private SSHShell shell;
 
     /**
      * 连接状态
@@ -126,10 +134,14 @@ public class SSHClient {
      */
     public void close() {
         try {
-            if (this.session != null && this.session.isConnected()) {
+            if (this.isConnected()) {
+                if (this.shell != null) {
+                    this.shell.close();
+                }
                 this.session.disconnect();
                 this.connState().set(SSHConnState.CLOSED);
             }
+            this.shell = null;
             this.session = null;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -220,37 +232,6 @@ public class SSHClient {
     public String infoName() {
         return this.sshInfo.getName();
     }
-
-    // /**
-    //  * 执行命令
-    //  *
-    //  * @param command 命令
-    //  * @return 命令执行结果
-    //  */
-    // public SSHExecResult exec(@NonNull String command) throws Exception {
-    //     if (!this.isConnected()) {
-    //         return null;
-    //     }
-    //     ChannelExec exec = null;
-    //     try {
-    //         // 执行连接
-    //         exec = (ChannelExec) this.session.openChannel("exec");
-    //         exec.setCommand(command);
-    //         exec.setInputStream(null);
-    //         exec.connect(this.sshInfo.connectTimeOutMs());
-    //         // 获取命令执行结果
-    //         return SSHConnectUtil.readExecInput(exec);
-    //     } catch (Exception ex) {
-    //         ex.printStackTrace();
-    //         throw ex;
-    //     } finally {
-    //         if (exec != null) {
-    //             exec.disconnect();
-    //         }
-    //     }
-    // }
-
-    private SSHShell shell;
 
     /**
      * 获取交互式终端

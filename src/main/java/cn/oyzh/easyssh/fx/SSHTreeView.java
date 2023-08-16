@@ -34,24 +34,6 @@ import java.util.function.Consumer;
 public class SSHTreeView extends FlexTreeView {
 
     /**
-     * 排序方式
-     */
-    @Getter
-    @Setter
-    private Boolean sortOrder;
-
-    /**
-     * 导入中标志位
-     */
-    private volatile boolean importing;
-
-    /**
-     * 搜索中标志位
-     */
-    @Getter
-    private volatile boolean searching;
-
-    /**
      * 子节点变化处理
      */
     @Setter
@@ -202,62 +184,6 @@ public class SSHTreeView extends FlexTreeView {
                 treeItem.disConnect();
             }
         });
-    }
-
-    /**
-     * 对键排序
-     *
-     * @param sortOrder 排序方式
-     */
-    public void sortItem(Boolean sortOrder) {
-        this.sortOrder = sortOrder;
-        if (sortOrder != null) {
-            // 获取选中键
-            TreeItem<?> item = this.getSelectedItem();
-            // 执行排序
-            if (item instanceof BaseTreeItem treeItem) {
-                treeItem.sort(sortOrder);
-            }
-            // 重新选中此键
-            this.select(item);
-        }
-    }
-
-    /**
-     * 过滤键
-     */
-    public void filterItem() {
-        // 获取选中键
-        TreeItem<?> item = this.getSelectedItem();
-        // 清除选中键
-        this.clearSelection();
-        // 选中并滚动键
-        this.selectAndScroll(item);
-    }
-
-    /**
-     * 搜索开始事件
-     */
-    @EventReceiver(value = SSHEvents.SSH_SEARCH_START, verbose = true)
-    private void searchStart() {
-        this.searching = true;
-    }
-
-    /**
-     * 搜索结束事件
-     */
-    @EventReceiver(value = SSHEvents.SSH_SEARCH_FINISH, async = true, verbose = true)
-    private void searchEnd() {
-        this.searching = false;
-    }
-
-    /**
-     * 导入开始事件
-     */
-    @EventReceiver(SSHEvents.SSH_IMPORT_START)
-    private void onImportStart() {
-        this.importing = true;
-        log.info("SSH_IMPORT_START.");
     }
 
     public void reload() {

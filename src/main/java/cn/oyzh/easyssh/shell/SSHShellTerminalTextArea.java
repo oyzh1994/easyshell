@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.execute.ShellExecuteResult;
 import cn.oyzh.easyshell.terminal.ShellTerminal;
 import cn.oyzh.easyshell.terminal.ShellTerminalTextArea;
 import cn.oyzh.easyssh.dto.SSHConnect;
+import cn.oyzh.easyssh.parser.SSHExceptionParser;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHConnState;
 import cn.oyzh.easyssh.ssh.SSHShell;
@@ -193,6 +194,7 @@ public class SSHShellTerminalTextArea extends ShellTerminalTextArea {
                 if (t1 == SSHConnState.CONNECTED) {
                     this.outputByAppend(host + " 连接成功.");
                     this.outputByAppend("输入help可查看支持的命令列表.");
+                    this.initShell();
                     this.appendPrompt();
                     this.flushCaret();
                     super.enableInput();
@@ -217,28 +219,40 @@ public class SSHShellTerminalTextArea extends ShellTerminalTextArea {
         }
     }
 
+    /**
+     * 初始化交互式终端
+     */
+    protected void initShell() {
+        try {
+            this.shell = this.client.shell();
+            this.shell.setOnResponse(shellResult -> {
+                ShellExecuteResult result = new ShellExecuteResult();
+                result.setResult(shellResult.getClipResult());
+                if (shellResult.getPrompt() != null) {
+                    this.promptContent(shellResult.getPrompt());
+                }
+                if (result.isSuccess()) {
+                    this.outputByPrompt((String) result.getResult());
+                } else {
+                    this.outputByPrompt(result.getErrMsg());
+                }
+            });
+            this.shell.init();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.outputByPrompt(SSHExceptionParser.INSTANCE.parse(ex));
+        }
+    }
+
     @Override
     public void onCommand(String input) throws RuntimeException {
-        try {
-            if (this.shell == null) {
-                this.shell = this.client.shell();
-                this.shell.setOnResponse(shellResult -> {
-                    ShellExecuteResult result = new ShellExecuteResult();
-                    result.setResult(shellResult.getClipResult());
-                    if (shellResult.getPrompt() != null) {
-                        this.promptContent(shellResult.getPrompt());
-                    }
-                    if (result.isSuccess()) {
-                        this.outputByPrompt((String) result.getResult());
-                    } else {
-                        this.outputByPrompt(result.getErrMsg());
-                    }
-                });
+        if (this.shell != null) {
+            try {
+                this.shell.send(input);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                this.outputByPrompt(SSHExceptionParser.INSTANCE.parse(ex));
             }
-            this.shell.send(input);
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.outputByPrompt("初始化交互终端失败");
         }
     }
 }

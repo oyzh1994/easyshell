@@ -1,11 +1,12 @@
 package cn.oyzh.easyssh.tabs.terminal;
 
+import cn.oyzh.easyfx.event.EventUtil;
 import cn.oyzh.easyfx.svg.SVGGlyph;
 import cn.oyzh.easyfx.view.FXMLLoaderExt;
 import cn.oyzh.easyssh.domain.SSHInfo;
 import cn.oyzh.easyssh.ssh.SSHClient;
+import cn.oyzh.easyssh.ssh.SSHEvents;
 import cn.oyzh.easyssh.tabs.SSHBaseTab;
-import cn.oyzh.easyssh.util.SSHConnectUtil;
 import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -20,11 +21,7 @@ public class SSHTerminalTab extends SSHBaseTab {
 
     {
         this.setClosable(true);
-        this.setOnCloseRequest(event -> {
-            // 关闭ssh连接
-            SSHClient client = this.contentController.client();
-            SSHConnectUtil.close(client, true);
-        });
+        this.setOnCloseRequest(event -> EventUtil.fire(SSHEvents.SSH_CLOSE_CONNECT, this.info()));
         this.loadContent();
     }
 
@@ -84,6 +81,11 @@ public class SSHTerminalTab extends SSHBaseTab {
         return this.contentController.info();
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public SSHClient client() {
         return this.contentController.client();
     }

@@ -3,7 +3,6 @@ package cn.oyzh.easyssh.fx;
 import cn.hutool.core.collection.CollUtil;
 import cn.oyzh.easyfx.svg.SVGGlyph;
 import cn.oyzh.easyfx.util.FXUtil;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -146,7 +145,6 @@ public abstract class BaseTreeItem extends TreeItem {
      */
     public void addChild(@NonNull TreeItem<?> item) {
         this.getChildren().add(item);
-        this.sort(this.treeView().sortOrder());
     }
 
     /**
@@ -156,7 +154,6 @@ public abstract class BaseTreeItem extends TreeItem {
      */
     public void addChildes(@NonNull List<? extends TreeItem> items) {
         this.getChildren().addAll(items);
-        this.sort(this.treeView().sortOrder());
     }
 
     /**
@@ -166,7 +163,6 @@ public abstract class BaseTreeItem extends TreeItem {
      */
     public void replaceChildes(@NonNull List<? extends TreeItem> items) {
         this.getChildren().setAll(items);
-        this.sort(this.treeView().sortOrder());
     }
 
     /**
@@ -212,23 +208,6 @@ public abstract class BaseTreeItem extends TreeItem {
      */
     public boolean isChildEmpty() {
         return CollUtil.isEmpty(this.getChildren());
-    }
-
-    /**
-     * 排序
-     *
-     * @param sortOrder 排序方式
-     */
-    public void sort(Boolean sortOrder) {
-        if (sortOrder != null && !this.isChildEmpty()) {
-            // 执行排序
-            ObservableList<BaseTreeItem> subs = this.getChildren();
-            if (sortOrder) {
-                subs.sort((a, b) -> CharSequence.compare(a.itemValue().nodeName(), b.itemValue().nodeName()));
-            } else {
-                subs.sort((a, b) -> CharSequence.compare(b.itemValue().nodeName(), a.itemValue().nodeName()));
-            }
-        }
     }
 
     /**

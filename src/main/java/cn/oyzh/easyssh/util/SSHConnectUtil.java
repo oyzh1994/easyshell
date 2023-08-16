@@ -133,58 +133,36 @@ public class SSHConnectUtil {
      * @return 结果
      */
     public static String readShellInput(InputStream in) throws IOException {
+        return readShellInput(in, 20, 1000);
+    }
+
+    /**
+     * 读取shell结果
+     *
+     * @param in        流
+     * @param firstWait 首次等待时间
+     * @param maxWait   最大等待时间
+     * @return 结果
+     */
+    public static String readShellInput(InputStream in, int firstWait, int maxWait) throws IOException {
+        if (firstWait > 0) {
+            ThreadUtil.sleep(firstWait);
+        }
         // 获取命令执行结果
         StringBuilder builder = new StringBuilder();
-        int maxCount = 0;
-        byte[] tmp = new byte[1024];
+        long start = System.currentTimeMillis();
         while (true) {
-            while (in.available() > 0) {
-                int i = in.read(tmp, 0, 1024);
-                if (i < 0) {
-                    break;
-                }
-                builder.append(new String(tmp, 0, i));
-            }
-            if (maxCount++ > 20) {
+            if (in.available() > 0) {
+                byte[] bytes = in.readNBytes(in.available());
+                builder.append(new String(bytes));
                 break;
             }
-            ThreadUtil.sleep(5);
+            long current = System.currentTimeMillis();
+            if (current - start > maxWait) {
+                break;
+            }
+            ThreadUtil.sleep(10);
         }
         return builder.toString();
     }
-
-    //
-    // /**
-    //  * 读取exec结果
-    //  *
-    //  * @param exec exec通道
-    //  * @return 连接
-    //  */
-    // public static SSHExecResult readExecInput(ChannelExec exec) throws IOException {
-    //     // 获取命令执行结果
-    //     InputStream in = exec.getInputStream();
-    //     StringBuilder builder = new StringBuilder();
-    //     byte[] tmp = new byte[1024];
-    //     int exitStatus;
-    //     while (true) {
-    //         // 读取数据
-    //         while (in.available() > 0) {
-    //             int i = in.read(tmp, 0, 1024);
-    //             if (i < 0) {
-    //                 break;
-    //             }
-    //             builder.append(new String(tmp, 0, i));
-    //         }
-    //         // 从channel获取全部信息之后，channel会自动关闭
-    //         if (exec.isClosed()) {
-    //             if (in.available() > 0) {
-    //                 continue;
-    //             }
-    //             exitStatus = exec.getExitStatus();
-    //             break;
-    //         }
-    //         ThreadUtil.sleep(5);
-    //     }
-    //     return new SSHExecResult(builder.toString(), exitStatus);
-    // }
 }
