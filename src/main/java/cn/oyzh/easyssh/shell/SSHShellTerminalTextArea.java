@@ -2,7 +2,6 @@ package cn.oyzh.easyssh.shell;
 
 import cn.oyzh.common.thread.TimerUtil;
 import cn.oyzh.easyfx.util.FXUtil;
-import cn.oyzh.easyshell.execute.ShellExecuteResult;
 import cn.oyzh.easyshell.terminal.ShellTerminal;
 import cn.oyzh.easyshell.terminal.ShellTerminalTextArea;
 import cn.oyzh.easyssh.dto.SSHConnect;
@@ -10,6 +9,7 @@ import cn.oyzh.easyssh.parser.SSHExceptionParser;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHConnState;
 import cn.oyzh.easyssh.ssh.SSHShell;
+import cn.oyzh.easyssh.ssh.SSHShellResult;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
 import javafx.beans.value.ChangeListener;
 import lombok.Getter;
@@ -225,23 +225,55 @@ public class SSHShellTerminalTextArea extends ShellTerminalTextArea {
     protected void initShell() {
         try {
             this.shell = this.client.shell();
-            this.shell.setOnResponse(shellResult -> {
-                ShellExecuteResult result = new ShellExecuteResult();
-                result.setResult(shellResult.getClipResult());
-                if (shellResult.getPrompt() != null) {
-                    this.promptContent(shellResult.getPrompt());
-                }
-                if (result.isSuccess()) {
-                    this.outputByPrompt((String) result.getResult());
-                } else {
-                    this.outputByPrompt(result.getErrMsg());
-                }
-            });
+            this.shell.setOnResponse(this::shellResponse);
             this.shell.init();
         } catch (Exception ex) {
             ex.printStackTrace();
             this.outputByPrompt(SSHExceptionParser.INSTANCE.parse(ex));
         }
+    }
+
+    protected void shellResponse(SSHShellResult shellResult) {
+        if (shellResult.hasPrompt()) {
+            this.promptContent(shellResult.getPrompt());
+            this.outputByPrompt(shellResult.getClipResult());
+        } else {
+            this.disableInput();
+            if (!"\n".equals(shellResult.getClipResult())) {
+                this.outputByRealtime(shellResult.getClipResult());
+            }
+        }
+    }
+
+    private int realtimeStart = -1;
+
+    public void outputByRealtime(String output) {
+        if (this.realtimeStart == -1) {
+            this.realtimeStart = this.getLength();
+        }
+        System.out.println("outputByRealtime------------------------------------------");
+        System.out.println(output);
+        this.replaceText(this.realtimeStart, this.getLength(), output);
+    }
+
+    @Override
+    public boolean onCtrlCKeyPressed(ShellTerminal terminal) {
+        try {
+            this.shell.sendCtrlCSignal();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        TimerUtil.start(() -> {
+            this.realtimeStart = -1;
+            this.appendPrompt();
+            this.enableInput();
+            // this.initShell();
+            System.out.println(this.getNopIndex());
+            System.out.println(this.getLength());
+            System.out.println(this.isEditable());
+            System.out.println("sendCtrlCSignal===========================");
+        }, 200);
+        return true;
     }
 
     @Override

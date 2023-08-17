@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.ssh;
 
 import cn.hutool.core.util.StrUtil;
+import cn.oyzh.easyssh.util.SSHShellUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class SSHShellResult {
     @Getter
     private String prompt;
 
+    @Getter
     @Setter
     private String command;
 
@@ -36,16 +38,18 @@ public class SSHShellResult {
         if (result != null) {
             String[] lines = result.split("\n");
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lines.length; i++) {
-                String str = lines[i];
-                if (i == 0 && StrUtil.containsIgnoreCase(str, this.command)) {
+            for (String str : lines) {
+                if (StrUtil.equals(str.replace("\r", ""), this.command)) {
                     continue;
                 }
-                if (i == lines.length - 2) {
+                if (SSHShellUtil.isPrompt(str)) {
                     this.prompt = str;
                     break;
                 }
-                builder.append(str).append("\n");
+                builder.append(str);
+                if (!str.endsWith("\n")) {
+                    builder.append("\n");
+                }
             }
             this.clipResult = builder.toString();
         }
@@ -53,19 +57,24 @@ public class SSHShellResult {
 
     public void setFirstResult(String result) {
         this.result = result;
-        System.out.println(result);
         if (result != null) {
             String[] lines = result.split("\n");
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lines.length; i++) {
-                String str = lines[i];
-                if (i == lines.length - 1) {
+            for (String str : lines) {
+                if (SSHShellUtil.isPrompt(str)) {
                     this.prompt = str;
                     break;
                 }
-                builder.append(str).append("\n");
+                builder.append(str);
+                if (!str.endsWith("\n")) {
+                    builder.append("\n");
+                }
             }
             this.clipResult = builder.toString();
         }
+    }
+
+    public boolean hasPrompt() {
+        return this.prompt != null;
     }
 }

@@ -125,44 +125,4 @@ public class SSHConnectUtil {
         }
         return null;
     }
-
-    /**
-     * 读取shell结果
-     *
-     * @param in 流
-     * @return 结果
-     */
-    public static String readShellInput(InputStream in) throws IOException {
-        return readShellInput(in, 20, 1000);
-    }
-
-    /**
-     * 读取shell结果
-     *
-     * @param in        流
-     * @param firstWait 首次等待时间
-     * @param maxWait   最大等待时间
-     * @return 结果
-     */
-    public static String readShellInput(InputStream in, int firstWait, int maxWait) throws IOException {
-        if (firstWait > 0) {
-            ThreadUtil.sleep(firstWait);
-        }
-        // 获取命令执行结果
-        StringBuilder builder = new StringBuilder();
-        long start = System.currentTimeMillis();
-        while (true) {
-            if (in.available() > 0) {
-                byte[] bytes = in.readNBytes(in.available());
-                builder.append(new String(bytes));
-                break;
-            }
-            long current = System.currentTimeMillis();
-            if (current - start > maxWait) {
-                break;
-            }
-            ThreadUtil.sleep(10);
-        }
-        return builder.toString();
-    }
 }
