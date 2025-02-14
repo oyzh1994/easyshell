@@ -4,40 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>cn.oyzh</groupId>
-        <artifactId>base</artifactId>
-        <version>1.0</version>
+        <artifactId>fx-base</artifactId>
+        <version>1.3.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyssh</artifactId>
     <version>1.0</version>
     <description>ssh连接，增强能力</description>
 
-    <properties>
-        <jsch.version>0.1.55</jsch.version>
-    </properties>
-
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+
+        <!-- ssh模块 -->
         <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>${jsch.version}</version>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>ssh</artifactId>
         </dependency>
 
-        <!-- Spring boot -->
+        <!-- ssh模块 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.annotation</groupId>
-                    <artifactId>jakarta.annotation-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>event</artifactId>
         </dependency>
 
         <!-- java 辅助工具包 -->
@@ -53,30 +39,17 @@
             <artifactId>common</artifactId>
         </dependency>
 
-        <!-- 自定义类库，fx相关 -->
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>easyfx</artifactId>
-        </dependency>
-
         <!-- 自定义类库，shell相关 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
-            <artifactId>easyshell</artifactId>
+            <artifactId>fx-terminal</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
-        </dependency>
-
-        <!-- 通用工具类库 -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
+            <version>2.1.4</version>
         </dependency>
     </dependencies>
 
