@@ -1,9 +1,8 @@
 package cn.oyzh.easyssh.util;
 
-import cn.hutool.core.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrUtil;
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.ArrayUtil;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,6 +95,6 @@ public class SSHShellUtil {
         if (str == null || str.isEmpty()) {
             return false;
         }
-        return isPrompt(ArrUtil.last(str.split("\n")));
+        return isPrompt(ArrayUtil.last(str.split("\n")));
     }
 }

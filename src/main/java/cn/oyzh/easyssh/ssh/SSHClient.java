@@ -2,7 +2,7 @@ package cn.oyzh.easyssh.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class SSHClient {
      */
     @Getter
     @Accessors(chain = true, fluent = true)
-    private final SSHInfo sshInfo;
+    private final SSHConnect sshInfo;
 
     /**
      * ssh会话
@@ -59,7 +58,7 @@ public class SSHClient {
      */
     private final List<ChangeListener<SSHConnState>> connStateListeners = new ArrayList<>();
 
-    public SSHClient(@NonNull SSHInfo sshInfo) {
+    public SSHClient(@NonNull SSHConnect sshInfo) {
         this.sshInfo = sshInfo;
     }
 

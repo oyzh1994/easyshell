@@ -1,24 +1,16 @@
 package cn.oyzh.easyssh.store;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.oyzh.common.util.FileStore;
-import cn.oyzh.easyssh.SSHConst;
 import cn.oyzh.easyssh.domain.SSHSetting;
-import com.alibaba.fastjson.JSON;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
+import cn.oyzh.store.jdbc.JdbcKeyValueStore;
 
 
 /**
- * ssh设置储存
+ * zk设置存储
  *
  * @author oyzh
- * @since 2026/06/26
+ * @since 2024/09/23
  */
-public class SSHSettingStore extends FileStore<SSHSetting> {
+public class SSHSettingStore extends JdbcKeyValueStore<SSHSetting> {
 
     /**
      * 当前实例
@@ -28,42 +20,41 @@ public class SSHSettingStore extends FileStore<SSHSetting> {
     /**
      * 当前设置
      */
-    public static final SSHSetting SETTING = INSTANCE.loadOne();
+    public static final SSHSetting SETTING = INSTANCE.load();
 
-    {
-        this.filePath(SSHConst.STORE_PATH + "ssh_setting.json");
-        JulLog.info("SSHSettingStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
-    }
-
-    @Override
-    public synchronized List<SSHSetting> load() {
+    /**
+     * 加载
+     *
+     * @return zk设置
+     */
+    public SSHSetting load() {
         SSHSetting setting = null;
-        String text = FileUtil.readString(this.storeFile(), this.charset());
-        if (StringUtil.isNotBlank(text)) {
-            try {
-                setting = JSON.parseObject(text, SSHSetting.class);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            setting = super.select();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         if (setting == null) {
             setting = new SSHSetting();
         }
-        return List.of(setting);
+        return setting;
+    }
+
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
+    public boolean replace(SSHSetting model) {
+        if (model != null) {
+            return this.update(model);
+        }
+        return false;
     }
 
     @Override
-    public boolean add(@NonNull SSHSetting setting) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean update(@NonNull SSHSetting setting) {
-        return this.save(setting);
-    }
-
-    @Override
-    public boolean delete(@NonNull SSHSetting setting) {
-        throw new UnsupportedOperationException();
+    protected Class<SSHSetting> modelClass() {
+        return SSHSetting.class;
     }
 }

@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.tabs.terminal;
 
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHEvents;
 import cn.oyzh.fx.gui.tabs.DynamicTab;
@@ -54,10 +54,10 @@ public class SSHTerminalTab extends DynamicTab {
      *
      * @param info ssh信息
      */
-    public void init(SSHInfo info) {
+    public void init(SSHConnect info) {
         try {
             if (info == null) {
-                info = new SSHInfo();
+                info = new SSHConnect();
                 info.setName("未命名连接");
             }
             // 设置文本
@@ -76,7 +76,7 @@ public class SSHTerminalTab extends DynamicTab {
      *
      * @return 当前ssh信息
      */
-    public SSHInfo info() {
+    public SSHConnect info() {
         return this.contentController.info();
     }
 

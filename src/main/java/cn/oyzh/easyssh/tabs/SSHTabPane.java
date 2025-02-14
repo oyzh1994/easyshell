@@ -1,7 +1,7 @@
 package cn.oyzh.easyssh.tabs;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.ssh.SSHEvents;
 import cn.oyzh.easyssh.tabs.home.SSHHomeTab;
 import cn.oyzh.easyssh.tabs.terminal.SSHTerminalTab;
@@ -43,7 +43,7 @@ public class SSHTabPane extends DynamicTabPane {
      * @param info ssh信息
      */
     @EventReceiver(value = SSHEvents.SSH_OPEN_TERMINAL, verbose = true, async = true, fxThread = true)
-    public void initTerminalTab(SSHInfo info) {
+    public void initTerminalTab(SSHConnect info) {
         SSHTerminalTab terminalTab = this.getTerminalTab(info);
         if (terminalTab == null) {
             terminalTab = new SSHTerminalTab();
@@ -63,7 +63,7 @@ public class SSHTabPane extends DynamicTabPane {
      * @param info ssh信息
      * @return 终端tab
      */
-    private SSHTerminalTab getTerminalTab(SSHInfo info) {
+    private SSHTerminalTab getTerminalTab(SSHConnect info) {
         if (info != null) {
             for (Tab tab : this.getTabs()) {
                 if (tab instanceof SSHTerminalTab cmdTab && cmdTab.info() == info) {
@@ -113,7 +113,7 @@ public class SSHTabPane extends DynamicTabPane {
      * @param info ssh连接
      */
     @EventReceiver(value = SSHEvents.SSH_CONNECT_CLOSED, verbose = true, async = true)
-    private void onClientClosed(SSHInfo info) {
+    private void onClientClosed(SSHConnect info) {
         List<Tab> closeTabs = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
             if (tab instanceof SSHTerminalTab terminalTab && terminalTab.info() == info) {

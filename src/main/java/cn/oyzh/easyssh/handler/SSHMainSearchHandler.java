@@ -1,6 +1,6 @@
 //package cn.oyzh.easyssh.handler;
 //
-//import cn.hutool.core.collection.CollUtil;
+//import cn.hutool.core.collection.CollectionUtil;
 //import cn.oyzh.common.thread.RunnableWrapper;
 //import cn.oyzh.common.thread.TimerUtil;
 //import cn.oyzh.common.util.TextUtil;
@@ -321,7 +321,7 @@
 //    private List<TreeItemExt> getMatchItems() {
 //        // 全部节点
 //        List<TreeItem<?>> allItem = TreeViewUtil.getAllItem(this.treeNode);
-//        if (CollUtil.isEmpty(allItem)) {
+//        if (CollectionUtil.isEmpty(allItem)) {
 //            return Collections.emptyList();
 //        }
 //        List<TreeItemExt> items = new ArrayList<>(allItem.size());

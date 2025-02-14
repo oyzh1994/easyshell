@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.tabs.terminal;
 
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.shell.SSHShellTerminalTextArea;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import javafx.fxml.FXML;
@@ -44,7 +44,7 @@ public class SSHTerminalTabContentController {
      *
      * @return 当前ssh信息
      */
-    protected SSHInfo info() {
+    protected SSHConnect info() {
         return this.client.sshInfo();
     }
 

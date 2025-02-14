@@ -6,7 +6,7 @@ import cn.oyzh.easyfx.event.EventReceiver;
 import cn.oyzh.easyfx.event.EventUtil;
 import cn.oyzh.easyfx.keyboard.KeyboardListener;
 import cn.oyzh.easyfx.node.ResizeEnhance;
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHPageInfo;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.fx.SSHConnectTreeItem;
@@ -22,7 +22,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.stage.WindowEvent;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +44,7 @@ public class SSHMainController extends FXController {
     /**
      * 当前激活的ssh信息
      */
-    private SSHInfo info;
+    private SSHConnect info;
 
     /**
      * 左侧组件
@@ -86,7 +85,7 @@ public class SSHMainController extends FXController {
      * @param info ssh信息
      */
     @EventReceiver(value = SSHEvents.SSH_INFO_UPDATED, async = true)
-    private void onInfoUpdate(SSHInfo info) {
+    private void onInfoUpdate(SSHConnect info) {
         if (this.info == info) {
             this.view.appendTitle(" (" + info.getName() + ")");
         }

@@ -6,15 +6,15 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author oyzh
  * @since 2023/6/16
  */
-public class SSHInfo implements Comparable<SSHInfo> {
+public class SSHConnect implements Comparable<SSHConnect>, Serializable {
 
     /**
      * 数据id
@@ -84,7 +84,7 @@ public class SSHInfo implements Comparable<SSHInfo> {
      * @param info ssh信息
      * @return 当前对象
      */
-    public SSHInfo copy(@NonNull SSHInfo info) {
+    public SSHConnect copy(@NonNull SSHConnect info) {
         this.id = info.id;
         this.name = info.name;
         this.host = info.host;
@@ -168,7 +168,7 @@ public class SSHInfo implements Comparable<SSHInfo> {
     }
 
     @Override
-    public int compareTo(SSHInfo o) {
+    public int compareTo(SSHConnect o) {
         if (o == null) {
             return 1;
         }

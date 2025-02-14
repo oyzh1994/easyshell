@@ -1,28 +1,22 @@
 package cn.oyzh.easyssh.store;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.UUID;
-import cn.hutool.core.util.StrUtil;
-import cn.oyzh.common.util.FileStore;
-import cn.oyzh.easyssh.SSHConst;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHGroup;
-import com.alibaba.fastjson.JSON;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import cn.oyzh.store.jdbc.DeleteParam;
+import cn.oyzh.store.jdbc.JdbcStandardStore;
+import cn.oyzh.store.jdbc.QueryParam;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
- * ssh分组存储
+ * zk分组存储
  *
  * @author oyzh
- * @since 2023/6/22
+ * @since 2023/5/12
  */
-public class SSHGroupStore extends FileStore<SSHGroup> {
+public class SSHGroupStore extends JdbcStandardStore<SSHGroup> {
 
     /**
      * 当前实例
@@ -30,103 +24,62 @@ public class SSHGroupStore extends FileStore<SSHGroup> {
     public static final SSHGroupStore INSTANCE = new SSHGroupStore();
 
     /**
-     * 已加载的ssh键
+     * 加载数据
+     *
+     * @return 数据列表
      */
-    private final List<SSHGroup> SSHGroups;
-
-    {
-        this.filePath(SSHConst.STORE_PATH + "ssh_group.json");
-        JulLog.info("SSHGroupStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
-        this.SSHGroups = this.load();
-    }
-
-    @Override
-    public synchronized List<SSHGroup> load() {
-        if (this.SSHGroups == null) {
-            String text = FileUtil.readString(this.storeFile(), this.charset());
-            if (StringUtil.isBlank(text)) {
-                return new ArrayList<>();
-            }
-            List<SSHGroup> SSHGroups = JSON.parseArray(text, SSHGroup.class);
-            if (CollUtil.isNotEmpty(SSHGroups)) {
-                SSHGroups = SSHGroups.parallelStream().sorted().collect(Collectors.toList());
-            }
-            return SSHGroups;
-        }
-        return this.SSHGroups;
+    public List<SSHGroup> load() {
+        return super.selectList();
     }
 
     /**
-     * 添加分组
+     * 替换
      *
-     * @param groupName 分组名称
+     * @param model 模型
      * @return 结果
      */
-    public synchronized SSHGroup add(@NonNull String groupName) {
-        SSHGroup group = new SSHGroup(UUID.fastUUID().toString(true), groupName, false);
-        if (this.add(group)) {
-            return group;
-        }
-        return null;
-    }
-
-    @Override
-    public synchronized boolean add(@NonNull SSHGroup SSHGroup) {
-        try {
-            if (!this.SSHGroups.contains(SSHGroup)) {
-                // 添加到集合
-                this.SSHGroups.add(SSHGroup);
-                // 更新数据
-                return this.save(this.SSHGroups);
+    public boolean replace(SSHGroup model) {
+        if (model != null) {
+            if (this.exist(model.getName()) || super.exist(model.getGid())) {
+                return this.update(model);
             }
-        } catch (Exception e) {
-            JulLog.warn("add error,err:{}", e.getMessage());
+            return this.insert(model);
         }
         return false;
-    }
-
-    @Override
-    public synchronized boolean update(@NonNull SSHGroup SSHGroup) {
-        try {
-            // 更新数据
-            if (this.SSHGroups.contains(SSHGroup)) {
-                return this.save(this.SSHGroups);
-            }
-        } catch (Exception e) {
-            JulLog.warn("update error,err:{}", e.getMessage());
-        }
-        return false;
-    }
-
-    @Override
-    public synchronized boolean delete(@NonNull SSHGroup SSHGroup) {
-        try {
-            // 删除数据
-            if (this.SSHGroups.remove(SSHGroup)) {
-                return this.save(this.SSHGroups);
-            }
-        } catch (Exception e) {
-            JulLog.warn("delete error,err:{}", e.getMessage());
-            return false;
-        }
-        return true;
     }
 
     /**
-     * 是否存在此分组信息
+     * 根据分组名称删除分组
      *
-     * @param SSHGroup 分组信息
+     * @param name 分组名称
      * @return 结果
      */
-    public boolean exist(SSHGroup SSHGroup) {
-        if (SSHGroup == null) {
-            return false;
-        }
-        for (SSHGroup group : this.SSHGroups) {
-            if (Objects.equals(group.getName(), SSHGroup.getName()) && group != SSHGroup) {
-                return true;
-            }
+    public boolean delete(String name) {
+        if (StringUtil.isNotBlank(name)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(new QueryParam("name", name));
+            return this.delete(param);
         }
         return false;
+    }
+
+    /**
+     * 是否存在此分组
+     *
+     * @param name 分组名称
+     * @return 结果
+     */
+    public boolean exist(String name) {
+        if (StringUtil.isNotBlank(name)) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", name);
+            return super.exist(params);
+        }
+        return false;
+    }
+
+    @Override
+    protected Class<SSHGroup> modelClass() {
+        return SSHGroup.class;
     }
 }

@@ -3,10 +3,9 @@ package cn.oyzh.easyssh.controller.info;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.SSHConst;
 import cn.oyzh.easyssh.domain.SSHGroup;
-import cn.oyzh.easyssh.domain.SSHInfo;
-import cn.oyzh.easyssh.parser.SSHExceptionParser;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.ssh.SSHEvents;
-import cn.oyzh.easyssh.store.SSHInfoStore;
+import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
@@ -20,7 +19,6 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 添加ssh信息业务
@@ -91,7 +89,7 @@ public class SSHInfoAddController extends StageController {
     /**
      * ssh连接储存对象
      */
-    private final SSHInfoStore infoStore = SSHInfoStore.INSTANCE;
+    private final SSHConnectStore infoStore = SSHConnectStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -141,7 +139,7 @@ public class SSHInfoAddController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            SSHInfo sshInfo = new SSHInfo();
+            SSHConnect sshInfo = new SSHConnect();
             sshInfo.setName(name);
             // 检查名称是否存在
             if (this.infoStore.exist(sshInfo)) {

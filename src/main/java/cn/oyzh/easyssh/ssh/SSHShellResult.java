@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.ssh;
 
-import cn.hutool.core.util.StrUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.util.SSHShellUtil;
 import lombok.Getter;
 import lombok.Setter;

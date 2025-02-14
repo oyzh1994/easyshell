@@ -2,11 +2,14 @@ package cn.oyzh.easyssh;
 
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.common.JulLog.JulLog;
-import cn.oyzh.common.util.SystemUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyssh.controller.MainController;
+import cn.oyzh.easyssh.controller.SettingController;
 import cn.oyzh.easyssh.store.SSHStoreUtil;
 import cn.oyzh.event.EventFactory;
+import cn.oyzh.fx.gui.tray.DesktopTrayItem;
+import cn.oyzh.fx.gui.tray.QuitTrayItem;
+import cn.oyzh.fx.gui.tray.SettingTrayItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.event.FxEventBus;
 import cn.oyzh.fx.plus.event.FxEventConfig;
@@ -45,7 +48,7 @@ public class EasySSHApp extends FXApplication {
             System.setProperty("prism.text", "t2k");
             System.setProperty("prism.lcdtext", "false");
             SysConst.projectName(PROJECT.getName());
-            JulJulLog.info("项目启动中...");
+            JulLog.info("项目启动中...");
             // 储存初始化
             SSHStoreUtil.init();
             SysConst.storeDir(SSHConst.STORE_PATH);
@@ -59,7 +62,7 @@ public class EasySSHApp extends FXApplication {
             launch(EasySSHApp.class, args);
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulJulLog.warn("main error", ex);
+            JulLog.warn("main error", ex);
         }
     }
 
@@ -69,7 +72,7 @@ public class EasySSHApp extends FXApplication {
             // fx程序实例
             FXConst.INSTANCE = this;
             // 日志开始
-            JulJulLog.info("{} init start.", SysConst.projectName());
+            JulLog.info("{} init start.", SysConst.projectName());
             // 禁用fx的css日志
             FXUtil.disableCSSLogger();
             // 配置对象
@@ -88,7 +91,7 @@ public class EasySSHApp extends FXApplication {
             super.init();
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulJulLog.warn("main error", ex);
+            JulLog.warn("main error", ex);
         }
     }
 
@@ -96,15 +99,9 @@ public class EasySSHApp extends FXApplication {
     public void start(Stage primaryStage) {
         try {
             super.start(primaryStage);
-            // 注册命令
-            TerminalManager.setLoadHandlerAction(ZKTerminalManager::registerHandlers);
-            // 显示迁移弹窗
-            if (ZKStoreUtil.checkOlder()) {
-                FXUtil.runWait(() -> StageManager.showStage(ZKMigrationTipsController.class, primaryStage), 1000);
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulJulLog.warn("start error", ex);
+            JulLog.warn("start error", ex);
         }
     }
 
@@ -115,7 +112,7 @@ public class EasySSHApp extends FXApplication {
             StageManager.showStage(MainController.class);
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulJulLog.warn("showMainView error", ex);
+            JulLog.warn("showMainView error", ex);
         }
     }
 
@@ -123,14 +120,14 @@ public class EasySSHApp extends FXApplication {
     protected void initSystemTray() {
         try {
             if (!TrayManager.supported()) {
-                JulJulLog.warn("tray is not supported.");
+                JulLog.warn("tray is not supported.");
                 return;
             }
             if (TrayManager.exist()) {
                 return;
             }
             // 初始化
-            TrayManager.init(ZKConst.TRAY_ICON_PATH);
+            TrayManager.init(SSHConst.TRAY_ICON_PATH);
             // 设置标题
             TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
             // 打开主页
@@ -139,7 +136,7 @@ public class EasySSHApp extends FXApplication {
             TrayManager.addMenuItem(new SettingTrayItem("12", this::showSetting));
             // 退出程序
             TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
-                JulJulLog.warn("exit app by tray.");
+                JulLog.warn("exit app by tray.");
                 StageManager.exit();
             }));
             // 鼠标事件
@@ -152,7 +149,7 @@ public class EasySSHApp extends FXApplication {
             // 显示托盘
             TrayManager.show();
         } catch (Exception ex) {
-            JulJulLog.warn("不支持系统托盘!", ex);
+            JulLog.warn("不支持系统托盘!", ex);
         }
     }
 
@@ -163,10 +160,10 @@ public class EasySSHApp extends FXApplication {
         FXUtil.runLater(() -> {
             StageAdapter wrapper = StageManager.getStage(MainController.class);
             if (wrapper != null) {
-                JulJulLog.info("front main.");
+                JulLog.info("front main.");
                 wrapper.toFront();
             } else {
-                JulJulLog.info("show main.");
+                JulLog.info("show main.");
                 StageManager.showStage(MainController.class);
             }
         });
@@ -177,13 +174,13 @@ public class EasySSHApp extends FXApplication {
      */
     private void showSetting() {
         FXUtil.runLater(() -> {
-            StageAdapter wrapper = StageManager.getStage(SettingController2.class);
+            StageAdapter wrapper = StageManager.getStage(SettingController.class);
             if (wrapper != null) {
-                JulJulLog.info("front setting.");
+                JulLog.info("front setting.");
                 wrapper.toFront();
             } else {
-                JulJulLog.info("show setting.");
-                StageManager.showStage(SettingController2.class, StageManager.getPrimaryStage());
+                JulLog.info("show setting.");
+                StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
             }
         });
     }

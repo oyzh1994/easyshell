@@ -3,21 +3,22 @@ package cn.oyzh.easyssh.controller.info;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.SSHConst;
 import cn.oyzh.easyssh.SSHStyle;
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.ssh.SSHEvents;
-import cn.oyzh.easyssh.store.SSHInfoStore;
+import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
+import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FlexTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FlexTextArea;
 import cn.oyzh.fx.plus.controls.text.field.FlexTextField;
-import cn.oyzh.fx.plus.handler.TabSwitchHandler;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * SSH信息修改业务
@@ -41,7 +42,7 @@ public class SSHInfoUpdateController extends StageController {
     /**
      * ssh信息
      */
-    private SSHInfo sshInfo;
+    private SSHConnect sshInfo;
 
     /**
      * 名称
@@ -71,7 +72,7 @@ public class SSHInfoUpdateController extends StageController {
      * 连接端口
      */
     @FXML
-    private PortField hostPort;
+    private PortTextField hostPort;
 
     /**
      * 备注
@@ -83,12 +84,12 @@ public class SSHInfoUpdateController extends StageController {
      * 连接超时
      */
     @FXML
-    private NumberField connectTimeOut;
+    private NumberTextField connectTimeOut;
 
     /**
      * ssh连接储存对象
      */
-    private final SSHInfoStore infoStore = SSHInfoStore.INSTANCE;
+    private final SSHConnectStore infoStore = SSHConnectStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -119,7 +120,7 @@ public class SSHInfoUpdateController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isNotBlank(host)) {
-            SSHConnectUtil.testConnect(this.view, this.user.getText(), host, this.password.getText(), 3);
+            SSHConnectUtil.testConnect(this.stage, this.user.getText(), host, this.password.getText(), 3);
         }
     }
 
@@ -154,7 +155,7 @@ public class SSHInfoUpdateController extends StageController {
         if (this.infoStore.update(this.sshInfo)) {
             EventUtil.fire(SSHEvents.SSH_INFO_UPDATED, this.sshInfo);
             MessageBox.okToast("修改信息成功!");
-            this.closeView();
+            this.closeWindow();
         } else {
             MessageBox.warn("修改信息失败！");
         }
@@ -171,13 +172,6 @@ public class SSHInfoUpdateController extends StageController {
         this.password.setText(this.sshInfo.getPassword());
         this.connectTimeOut.setValue(this.sshInfo.getConnectTimeOut());
         this.hostPort.setText(String.valueOf(this.sshInfo.hostPort()));
-        TabSwitchHandler.init(this.view);
-        this.view.hideOnEscape();
-    }
-
-    @Override
-    public void onWindowHidden(WindowEvent event) {
-        TabSwitchHandler.destroy(this.view);
-        super.onWindowHidden(event);
+        this.stage.hideOnEscape();
     }
 }

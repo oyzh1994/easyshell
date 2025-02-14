@@ -4,10 +4,9 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.json.JSONArray;
 import cn.oyzh.common.json.JSONObject;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyssh.domain.SSHInfo;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class SSHInfoExport {
      * 导出连接数据
      */
     @Getter
-    private List<SSHInfo> connects;
+    private List<SSHConnect> connects;
 
     /**
      * 从ssh连接数据生成
@@ -44,7 +43,7 @@ public class SSHInfoExport {
      * @param sshInfos 连接列表
      * @return SSHInfoExport
      */
-    public static SSHInfoExport fromConnects(@NonNull List<SSHInfo> sshInfos) {
+    public static SSHInfoExport fromConnects(@NonNull List<SSHConnect> sshInfos) {
         SSHInfoExport export = new SSHInfoExport();
         Project project = SpringUtil.getBean(Project.class);
         export.version = project.getVersion();
@@ -66,7 +65,7 @@ public class SSHInfoExport {
         export.connects = new ArrayList<>();
         export.version = object.getString("version");
         JSONArray nodes = object.getJSONArray("connects");
-        export.connects = nodes.toJavaList(SSHInfo.class);
+        export.connects = nodes.toJavaList(SSHConnect.class);
         return export;
     }
 

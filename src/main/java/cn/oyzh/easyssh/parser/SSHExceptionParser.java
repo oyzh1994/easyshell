@@ -1,7 +1,6 @@
 package cn.oyzh.easyssh.parser;
 
-import cn.hutool.core.util.StrUtil;
-import cn.oyzh.common.Parser;
+import cn.oyzh.common.util.StringUtil;
 import com.jcraft.jsch.JSchException;
 import lombok.NonNull;
 

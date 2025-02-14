@@ -1,17 +1,11 @@
 package cn.oyzh.easyssh.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyssh.domain.SSHInfo;
-import cn.oyzh.easyssh.dto.SSHConnect;
-import cn.oyzh.easyssh.parser.SSHExceptionParser;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * ssh连接工具类
@@ -38,7 +32,7 @@ public class SSHConnectUtil {
                 view.waitCursor();
                 view.appendTitle("==连接测试中...");
                 // 创建ssh信息
-                SSHInfo sshInfo = new SSHInfo();
+                SSHConnect sshInfo = new SSHConnect();
                 sshInfo.setUser(user);
                 sshInfo.setHost(host);
                 sshInfo.setPassword(password);
@@ -90,13 +84,13 @@ public class SSHConnectUtil {
      * @param input 输入内容
      * @return 连接
      */
-    public static SSHConnect parse(String input) {
+    public static cn.oyzh.easyssh.dto.SSHConnect parse(String input) {
         if (input == null) {
             return null;
         }
         try {
             String[] words = input.split(" ");
-            SSHConnect connect = new SSHConnect();
+            cn.oyzh.easyssh.dto.SSHConnect connect = new cn.oyzh.easyssh.dto.SSHConnect();
             int type = -1;
             for (String word : words) {
                 if (type == 0) {

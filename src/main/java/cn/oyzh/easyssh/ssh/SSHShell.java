@@ -1,9 +1,8 @@
 package cn.oyzh.easyssh.ssh;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.oyzh.common.thread.RunnableTask;
-import cn.oyzh.common.thread.TimerUtil;
+import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.util.SSHShellUtil;
 import com.jcraft.jsch.ChannelShell;
 import lombok.Getter;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -29,7 +29,7 @@ public class SSHShell {
 
     private final ChannelShell shell;
 
-    private RunnableTask realtimeTask;
+    private Future<?> realtimeTask;
 
     @Getter
     @Setter
@@ -117,9 +117,9 @@ public class SSHShell {
      */
     private void responseForRealtime(String command) {
         // 取消旧任务
-        TimerUtil.cancel(this.realtimeTask);
+        TaskManager.cancel(this.realtimeTask);
         // 创建任务
-        this.realtimeTask = TimerUtil.start(new RunnableTask(() -> {
+        this.realtimeTask = TaskManager.startInterval(() -> {
             try {
                 String result = SSHShellUtil.readInput(this.in, -1, 500);
                 SSHShellResult shellResult = new SSHShellResult(command, result);
@@ -132,7 +132,7 @@ public class SSHShell {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }), 100, 100);
+        }, 100, 100);
     }
 
     /**
@@ -150,11 +150,11 @@ public class SSHShell {
 
     public void close() {
         try {
-            TimerUtil.cancel(this.realtimeTask);
+            TaskManager.cancel(this.realtimeTask);
             this.shell.disconnect();
-            IoUtil.close(this.in);
-            IoUtil.close(this.out);
-            IoUtil.close(this.writer);
+            IOUtil.close(this.in);
+            IOUtil.close(this.out);
+            IOUtil.close(this.writer);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

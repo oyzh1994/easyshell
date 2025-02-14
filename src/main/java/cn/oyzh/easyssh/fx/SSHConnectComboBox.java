@@ -1,9 +1,9 @@
 package cn.oyzh.easyssh.fx;
 
-import cn.oyzh.easyfx.SimpleStringConverter;
-import cn.oyzh.easyfx.controls.FlexComboBox;
-import cn.oyzh.easyssh.domain.SSHInfo;
-import cn.oyzh.easyssh.store.SSHInfoStore;
+import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.store.SSHConnectStore;
+import cn.oyzh.fx.plus.SimpleStringConverter;
+import cn.oyzh.fx.plus.controls.combo.FlexComboBox;
 
 /**
  * ssh连接选择框
@@ -11,18 +11,18 @@ import cn.oyzh.easyssh.store.SSHInfoStore;
  * @author oyzh
  * @since 2023/07/20
  */
-public class SSHConnectComboBox extends FlexComboBox<SSHInfo> {
+public class SSHConnectComboBox extends FlexComboBox<SSHConnect> {
 
     {
         this.setConverter(new SimpleStringConverter<>() {
             @Override
-            public String toString(SSHInfo o) {
+            public String toString(SSHConnect o) {
                 if (o == null) {
                     return "";
                 }
                 return o.getName();
             }
         });
-        this.getItems().setAll(SSHInfoStore.INSTANCE.load());
+        this.getItems().setAll(SSHConnectStore.INSTANCE.load());
     }
 }
