@@ -18,7 +18,6 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/17
  */
-@Slf4j
 public class PageInfoStore extends FileStore<SSHPageInfo> {
 
     /**
@@ -33,14 +32,14 @@ public class PageInfoStore extends FileStore<SSHPageInfo> {
 
     {
         this.filePath(SSHConst.STORE_PATH + "page_info.json");
-        log.info("PageInfoStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
+        JulLog.info("PageInfoStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
     }
 
     @Override
     public synchronized List<SSHPageInfo> load() {
         SSHPageInfo pageInfo = null;
         String text = FileUtil.readString(this.storeFile(), this.charset());
-        if (StrUtil.isNotBlank(text)) {
+        if (StringUtil.isNotBlank(text)) {
             try {
                 pageInfo = JSON.parseObject(text, SSHPageInfo.class);
             } catch (Exception ex) {

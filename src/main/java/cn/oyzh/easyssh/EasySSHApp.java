@@ -2,7 +2,7 @@ package cn.oyzh.easyssh;
 
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.JulLog.JulLog;
 import cn.oyzh.common.util.SystemUtil;
 import cn.oyzh.easyssh.controller.MainController;
 import cn.oyzh.easyssh.store.SSHStoreUtil;
@@ -45,7 +45,7 @@ public class EasySSHApp extends FXApplication {
             System.setProperty("prism.text", "t2k");
             System.setProperty("prism.lcdtext", "false");
             SysConst.projectName(PROJECT.getName());
-            JulLog.info("项目启动中...");
+            JulJulLog.info("项目启动中...");
             // 储存初始化
             SSHStoreUtil.init();
             SysConst.storeDir(SSHConst.STORE_PATH);
@@ -59,7 +59,7 @@ public class EasySSHApp extends FXApplication {
             launch(EasySSHApp.class, args);
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulLog.warn("main error", ex);
+            JulJulLog.warn("main error", ex);
         }
     }
 
@@ -69,7 +69,7 @@ public class EasySSHApp extends FXApplication {
             // fx程序实例
             FXConst.INSTANCE = this;
             // 日志开始
-            JulLog.info("{} init start.", SysConst.projectName());
+            JulJulLog.info("{} init start.", SysConst.projectName());
             // 禁用fx的css日志
             FXUtil.disableCSSLogger();
             // 配置对象
@@ -88,7 +88,7 @@ public class EasySSHApp extends FXApplication {
             super.init();
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulLog.warn("main error", ex);
+            JulJulLog.warn("main error", ex);
         }
     }
 
@@ -104,7 +104,7 @@ public class EasySSHApp extends FXApplication {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulLog.warn("start error", ex);
+            JulJulLog.warn("start error", ex);
         }
     }
 
@@ -115,7 +115,7 @@ public class EasySSHApp extends FXApplication {
             StageManager.showStage(MainController.class);
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulLog.warn("showMainView error", ex);
+            JulJulLog.warn("showMainView error", ex);
         }
     }
 
@@ -123,7 +123,7 @@ public class EasySSHApp extends FXApplication {
     protected void initSystemTray() {
         try {
             if (!TrayManager.supported()) {
-                JulLog.warn("tray is not supported.");
+                JulJulLog.warn("tray is not supported.");
                 return;
             }
             if (TrayManager.exist()) {
@@ -139,7 +139,7 @@ public class EasySSHApp extends FXApplication {
             TrayManager.addMenuItem(new SettingTrayItem("12", this::showSetting));
             // 退出程序
             TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
-                JulLog.warn("exit app by tray.");
+                JulJulLog.warn("exit app by tray.");
                 StageManager.exit();
             }));
             // 鼠标事件
@@ -152,7 +152,7 @@ public class EasySSHApp extends FXApplication {
             // 显示托盘
             TrayManager.show();
         } catch (Exception ex) {
-            JulLog.warn("不支持系统托盘!", ex);
+            JulJulLog.warn("不支持系统托盘!", ex);
         }
     }
 
@@ -163,10 +163,10 @@ public class EasySSHApp extends FXApplication {
         FXUtil.runLater(() -> {
             StageAdapter wrapper = StageManager.getStage(MainController.class);
             if (wrapper != null) {
-                JulLog.info("front main.");
+                JulJulLog.info("front main.");
                 wrapper.toFront();
             } else {
-                JulLog.info("show main.");
+                JulJulLog.info("show main.");
                 StageManager.showStage(MainController.class);
             }
         });
@@ -179,10 +179,10 @@ public class EasySSHApp extends FXApplication {
         FXUtil.runLater(() -> {
             StageAdapter wrapper = StageManager.getStage(SettingController2.class);
             if (wrapper != null) {
-                JulLog.info("front setting.");
+                JulJulLog.info("front setting.");
                 wrapper.toFront();
             } else {
-                JulLog.info("show setting.");
+                JulJulLog.info("show setting.");
                 StageManager.showStage(SettingController2.class, StageManager.getPrimaryStage());
             }
         });

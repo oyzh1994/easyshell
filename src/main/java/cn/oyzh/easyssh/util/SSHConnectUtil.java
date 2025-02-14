@@ -1,14 +1,12 @@
 package cn.oyzh.easyssh.util;
 
-import cn.hutool.core.thread.ThreadUtil;
-import cn.oyzh.common.thread.TimerUtil;
-import cn.oyzh.easyfx.information.FXAlertUtil;
-import cn.oyzh.easyfx.information.FXToastUtil;
-import cn.oyzh.easyfx.view.FXView;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.domain.SSHInfo;
 import cn.oyzh.easyssh.dto.SSHConnect;
 import cn.oyzh.easyssh.parser.SSHExceptionParser;
 import cn.oyzh.easyssh.ssh.SSHClient;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +19,6 @@ import java.io.InputStream;
  * @author oyzh
  * @since 2023/07/01
  */
-@Slf4j
 @UtilityClass
 public class SSHConnectUtil {
 
@@ -34,8 +31,8 @@ public class SSHConnectUtil {
      * @param password 密码
      * @param timeout  超时时间
      */
-    public static void testConnect(FXView view, String user, String host, String password, int timeout) {
-        TimerUtil.start(() -> {
+    public static void testConnect(StageAdapter view, String user, String host, String password, int timeout) {
+        ThreadUtil.start(() -> {
             try {
                 view.disable();
                 view.waitCursor();
@@ -51,13 +48,13 @@ public class SSHConnectUtil {
                 client.start();
                 if (client.isConnected()) {
                     client.close();
-                    FXToastUtil.ok("连接成功！");
+                    MessageBox.okToast("连接成功！");
                 } else {
-                    FXAlertUtil.warn("连接失败，请检查地址是否有效！");
+                    MessageBox.warn("连接失败，请检查地址是否有效！");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                FXAlertUtil.warn(ex, SSHExceptionParser.INSTANCE);
+                MessageBox.exception(ex);
             } finally {
                 view.enable();
                 view.defaultCursor();
@@ -77,7 +74,7 @@ public class SSHConnectUtil {
             if (client != null && client.isConnected()) {
                 Runnable func = client::close;
                 if (async) {
-                    TimerUtil.start(func);
+                    ThreadUtil.start(func);
                 } else {
                     func.run();
                 }

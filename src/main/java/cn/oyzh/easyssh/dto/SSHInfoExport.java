@@ -1,10 +1,10 @@
 package cn.oyzh.easyssh.dto;
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.common.util.SpringUtil;
+import cn.oyzh.common.json.JSONArray;
+import cn.oyzh.common.json.JSONObject;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyssh.domain.SSHInfo;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/22
  */
-@Slf4j
 public class SSHInfoExport {
 
     /**
@@ -61,7 +60,7 @@ public class SSHInfoExport {
      * @return SSHInfoExport
      */
     public static SSHInfoExport fromJSON(@NonNull String json) {
-        log.info("json: {}", json);
+        JulLog.info("json: {}", json);
         JSONObject object = JSONObject.parseObject(json);
         SSHInfoExport export = new SSHInfoExport();
         export.connects = new ArrayList<>();

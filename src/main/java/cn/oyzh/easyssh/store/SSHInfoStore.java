@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/6/23
  */
-@Slf4j
 public class SSHInfoStore extends FileStore<SSHInfo> {
 
     /**
@@ -38,10 +37,10 @@ public class SSHInfoStore extends FileStore<SSHInfo> {
 
     {
         this.filePath(SSHConst.STORE_PATH + "ssh_info.json");
-        log.info("SSHInfoStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
+        JulLog.info("SSHInfoStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
         this.sshInfos = this.load();
         for (SSHInfo SSHInfo : this.sshInfos) {
-            if (StrUtil.isBlank(SSHInfo.getId())) {
+            if (StringUtil.isBlank(SSHInfo.getId())) {
                 SSHInfo.setId(UUID.fastUUID().toString(true));
                 this.update(SSHInfo);
             }
@@ -52,7 +51,7 @@ public class SSHInfoStore extends FileStore<SSHInfo> {
     public synchronized List<SSHInfo> load() {
         if (this.sshInfos == null) {
             String text = FileUtil.readString(this.storeFile(), this.charset());
-            if (StrUtil.isBlank(text)) {
+            if (StringUtil.isBlank(text)) {
                 return new ArrayList<>();
             }
             List<SSHInfo> sshInfos = JSON.parseArray(text, SSHInfo.class);
@@ -75,7 +74,7 @@ public class SSHInfoStore extends FileStore<SSHInfo> {
                 return this.save(this.sshInfos);
             }
         } catch (Exception e) {
-            log.warn("add error,err:{}", e.getMessage());
+            JulLog.warn("add error,err:{}", e.getMessage());
         }
         return false;
     }
@@ -88,7 +87,7 @@ public class SSHInfoStore extends FileStore<SSHInfo> {
                 return this.save(this.sshInfos);
             }
         } catch (Exception e) {
-            log.warn("update error,err:{}", e.getMessage());
+            JulLog.warn("update error,err:{}", e.getMessage());
         }
         return false;
     }
@@ -101,7 +100,7 @@ public class SSHInfoStore extends FileStore<SSHInfo> {
                 return this.save(this.sshInfos);
             }
         } catch (Exception e) {
-            log.warn("delete error,err:{}", e.getMessage());
+            JulLog.warn("delete error,err:{}", e.getMessage());
             return false;
         }
         return true;
@@ -117,7 +116,7 @@ public class SSHInfoStore extends FileStore<SSHInfo> {
         if (CollUtil.isNotEmpty(sshInfos)) {
             String searchKeyWord = params == null ? null : (String) params.get("searchKeyWord");
             // 过滤数据
-            if (StrUtil.isNotBlank(searchKeyWord)) {
+            if (StringUtil.isNotBlank(searchKeyWord)) {
                 final String kw = searchKeyWord.toLowerCase().trim();
                 sshInfos = sshInfos.parallelStream().filter(z ->
                         z.getHost() != null && z.getHost().contains(kw)

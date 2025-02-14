@@ -22,7 +22,6 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/27
  */
-@Slf4j
 public abstract class BaseTreeItem extends TreeItem {
 
     /**
@@ -128,7 +127,7 @@ public abstract class BaseTreeItem extends TreeItem {
         if (this.getParent() != null) {
             this.getParent().getChildren().remove(this);
         } else {
-            log.warn("remove fail, this.getParent() is null.");
+            JulLog.warn("remove fail, this.getParent() is null.");
         }
     }
 

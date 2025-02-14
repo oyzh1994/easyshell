@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author oyzh
  * @since 2023/07/7
  */
-@Slf4j
 @Accessors(chain = true, fluent = true)
 public class SSHTreeItemValue {
 
@@ -71,8 +70,8 @@ public class SSHTreeItemValue {
         // 移除键图标组件
         if (!(this.getRootNode().getChildren().get(0) instanceof FXText)) {
             this.getRootNode().getChildren().remove(0);
-            if (log.isDebugEnabled()) {
-                log.debug("remove graphic.");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("remove graphic.");
             }
         }
     }
@@ -89,8 +88,8 @@ public class SSHTreeItemValue {
         // 移除图标
         if (this.graphic == null && !(node instanceof FXText)) {
             this.getRootNode().getChildren().remove(0);
-            if (log.isDebugEnabled()) {
-                log.debug("remove graphic.");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("remove graphic.");
             }
             return;
         }
@@ -179,8 +178,8 @@ public class SSHTreeItemValue {
                 this.setRootNode(new FXHBox());
                 ;
                 this.getRootNode().setCursor(Cursor.HAND);
-                if (log.isDebugEnabled()) {
-                    log.debug("create rootNode:{}", this.nodeName());
+                if (JulLog.isDebugEnabled()) {
+                    JulLog.debug("create rootNode:{}", this.nodeName());
                 }
             }
             // 初始化键名称组件
@@ -200,8 +199,8 @@ public class SSHTreeItemValue {
         try {
             if (this.getRootNode() != null) {
                 this.setRootNode(null);
-                if (log.isDebugEnabled()) {
-                    log.debug("destroy rootNode:{}", this.nodeName());
+                if (JulLog.isDebugEnabled()) {
+                    JulLog.debug("destroy rootNode:{}", this.nodeName());
                 }
             }
         } catch (Exception ex) {

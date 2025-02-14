@@ -1,13 +1,12 @@
 package cn.oyzh.easyssh.tabs;
 
-import cn.oyzh.common.thread.TimerUtil;
-import cn.oyzh.easyfx.controls.FlexTabPane;
-import cn.oyzh.easyfx.event.EventReceiver;
-import cn.oyzh.easyfx.util.FXUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.domain.SSHInfo;
 import cn.oyzh.easyssh.ssh.SSHEvents;
 import cn.oyzh.easyssh.tabs.home.SSHHomeTab;
 import cn.oyzh.easyssh.tabs.terminal.SSHTerminalTab;
+import cn.oyzh.fx.gui.tabs.DynamicTabPane;
+import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.collections.ListChangeListener;
 import javafx.scene.CacheHint;
 import javafx.scene.control.Tab;
@@ -21,14 +20,14 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/16
  */
-public class SSHTabPane extends FlexTabPane {
+public class SSHTabPane extends DynamicTabPane {
 
     {
         this.setCache(true);
         this.setCacheHint(CacheHint.QUALITY);
         this.initHomeTab();
         this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
-            TimerUtil.delayTask(() -> {
+            ThreadUtil.start(() -> {
                 if (this.tabsEmpty()) {
                     this.initHomeTab();
                 } else if (this.tabsSize() > 1) {

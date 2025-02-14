@@ -2,11 +2,10 @@ package cn.oyzh.easyssh.controller;
 
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.common.util.SpringUtil;
-import cn.oyzh.easyfx.controller.FXController;
-import cn.oyzh.easyfx.controls.FlexText;
-import cn.oyzh.easyfx.view.FXWindow;
 import cn.oyzh.easyssh.SSHConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.text.FlexText;
+import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -17,13 +16,12 @@ import javafx.stage.WindowEvent;
  * @author oyzh
  * @since 2022/06/22
  */
-@FXWindow(
-        resizeable = false,
-        iconUrls = SSHConst.ICON_PATH,
+@StageAttribute(
+        resizable  = false,
         modality = Modality.APPLICATION_MODAL,
         value = SSHConst.FXML_BASE_PATH + "about.fxml"
 )
-public class AboutController extends FXController {
+public class AboutController extends StageController {
 
     @FXML
     private FlexText name;
@@ -40,14 +38,14 @@ public class AboutController extends FXController {
     /**
      * 项目信息
      */
-    private final Project project = SpringUtil.getBean(Project.class);
+    private final Project project = Project.load();
 
     @Override
-    public void onViewShown(WindowEvent event) {
+    public void onWindowShown(WindowEvent event) {
         this.name.setText(this.project.getName());
         this.version.setText("v" + this.project.getVersion());
         this.updateDate.setText(this.project.getUpdateDate());
         this.copyright.setText(this.project.getCopyright());
-        this.view.hideOnEscape();
+        this.stage.hideOnEscape();
     }
 }

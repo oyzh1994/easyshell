@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.oyzh.easyfx.controls.FlexImageView;
 import cn.oyzh.easyfx.event.EventReceiver;
 import cn.oyzh.easyfx.event.EventUtil;
-import cn.oyzh.easyfx.information.FXAlertUtil;
+import cn.oyzh.easyfx.information.MessageBox;
 import cn.oyzh.easyfx.information.FXDialogUtil;
 import cn.oyzh.easyfx.information.FXToastUtil;
 import cn.oyzh.easyfx.menu.FXMenuItem;
@@ -44,7 +44,6 @@ import java.util.Optional;
  * @author oyzh
  * @since 2023/06/16
  */
-@Slf4j
 public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
 
     /**
@@ -104,7 +103,7 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
     private void exportConnect() {
         List<SSHInfo> sshInfos = this.infoStore.load();
         if (sshInfos.isEmpty()) {
-            FXAlertUtil.warn("连接为空！");
+            MessageBox.warn("连接为空！");
             return;
         }
         SSHInfoExport export = SSHInfoExport.fromConnects(sshInfos);
@@ -113,10 +112,10 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
         if (file != null) {
             try {
                 FileUtil.writeUtf8String(export.toJSONString(), file);
-                FXToastUtil.ok("保存连接成功！");
+                MessageBox.okToast("保存连接成功！");
             } catch (Exception ex) {
                 ex.printStackTrace();
-                FXAlertUtil.warn("保存连接失败！");
+                MessageBox.warn("保存连接失败！");
             }
         }
     }
@@ -133,7 +132,7 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
             return;
         }
         if (files.size() != 1) {
-            FXAlertUtil.warn("仅支持单个文件！");
+            MessageBox.warn("仅支持单个文件！");
             return;
         }
         File file = files.get(0);
@@ -162,19 +161,19 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
             return;
         }
         if (!file.exists()) {
-            FXAlertUtil.warn("文件不存在！");
+            MessageBox.warn("文件不存在！");
             return;
         }
         if (file.isDirectory()) {
-            FXAlertUtil.warn("不支持文件夹！");
+            MessageBox.warn("不支持文件夹！");
             return;
         }
         if (!FileNameUtil.isType(file.getName(), "json")) {
-            FXAlertUtil.warn("仅支持json文件！");
+            MessageBox.warn("仅支持json文件！");
             return;
         }
         if (file.length() == 0) {
-            FXAlertUtil.warn("文件内容为空！");
+            MessageBox.warn("文件内容为空！");
             return;
         }
         try {
@@ -184,18 +183,18 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
             if (CollUtil.isNotEmpty(sshInfos)) {
                 for (SSHInfo info : sshInfos) {
                     if (this.infoStore.exist(info)) {
-                        FXAlertUtil.warn("连接[" + info.getName() + "]已存在");
+                        MessageBox.warn("连接[" + info.getName() + "]已存在");
                     } else if (this.infoStore.add(info)) {
                         this.addConnect(info);
                     } else {
-                        FXAlertUtil.warn("连接[" + info.getName() + "]导入失败");
+                        MessageBox.warn("连接[" + info.getName() + "]导入失败");
                     }
                 }
-                FXToastUtil.ok("导入连接成功！");
+                MessageBox.okToast("导入连接成功！");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            FXAlertUtil.warn("解析连接失败！");
+            MessageBox.warn("解析连接失败！");
         }
     }
 
@@ -227,21 +226,21 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
         String groupName = FXDialogUtil.prompt("请输入分组名称");
 
         // 名称为空，则忽略
-        if (StrUtil.isBlank(groupName)) {
+        if (StringUtil.isBlank(groupName)) {
             return;
         }
 
         SSHGroup group = new SSHGroup();
         group.setName(groupName);
         if (this.groupStore.exist(group)) {
-            FXAlertUtil.warn("此分组已存在！");
+            MessageBox.warn("此分组已存在！");
             return;
         }
         group = this.groupStore.add(groupName);
         if (group != null) {
             this.addChild(new SSHGroupTreeItem(group, this.treeView()));
         } else {
-            FXAlertUtil.warn("添加分组失败！");
+            MessageBox.warn("添加分组失败！");
         }
     }
 
@@ -272,7 +271,7 @@ public class SSHRootTreeItem extends BaseTreeItem implements ConnectManager {
      * @param groupId 分组id
      */
     private SSHGroupTreeItem getGroupItem(String groupId) {
-        if (StrUtil.isNotBlank(groupId)) {
+        if (StringUtil.isNotBlank(groupId)) {
             List<SSHGroupTreeItem> items = this.getGroupItems();
             Optional<SSHGroupTreeItem> groupTreeItem = items.parallelStream().filter(g -> Objects.equals(g.value().getGid(), groupId)).findAny();
             return groupTreeItem.orElse(null);

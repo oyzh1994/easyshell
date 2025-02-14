@@ -1,20 +1,16 @@
 package cn.oyzh.easyssh.controller;
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.easyfx.controller.FXController;
-import cn.oyzh.easyfx.event.EventUtil;
-import cn.oyzh.easyfx.information.FXAlertUtil;
-import cn.oyzh.easyfx.node.NodeGroupManage;
-import cn.oyzh.easyfx.svg.SVGLabel;
-import cn.oyzh.easyfx.view.FXView;
-import cn.oyzh.easyfx.view.FXViewUtil;
 import cn.oyzh.easyssh.ssh.SSHEvents;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controller.SubStageController;
+import cn.oyzh.fx.plus.controls.svg.SVGLabel;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeMutexes;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 /**
  * 主页头部业务
@@ -22,16 +18,12 @@ import org.springframework.stereotype.Component;
  * @author oyzh
  * @since 2023/06/16
  */
-@Lazy
-@Slf4j
-@Component
-public class HeaderController extends FXController {
+public class HeaderController extends SubStageController {
 
     /**
      * 项目信息
      */
-    @Autowired
-    private Project project;
+    private final Project project = Project.load();
 
     /**
      * 展开ssh树
@@ -48,18 +40,18 @@ public class HeaderController extends FXController {
     /**
      * ssh树互斥器
      */
-    private final NodeGroupManage treeMutexes = new NodeGroupManage();
+    private final NodeMutexes treeMutexes = new NodeMutexes();
 
     /**
      * 设置
      */
     @FXML
     private void setting() {
-        FXView fxView = FXViewUtil.getView(SettingController.class);
+        StageAdapter fxView = StageManager.getStage(SettingController.class);
         if (fxView != null) {
             fxView.toFront();
         } else {
-            FXViewUtil.showView(SettingController.class, this.view);
+            StageManager.showStage(SettingController.class, this.stage);
         }
     }
 
@@ -68,7 +60,7 @@ public class HeaderController extends FXController {
      */
     @FXML
     private void about() {
-        FXViewUtil.showView(AboutController.class, this.view);
+        StageManager.showStage(AboutController.class, this.stage);
     }
 
     /**
@@ -76,7 +68,7 @@ public class HeaderController extends FXController {
      */
     @FXML
     private void quit() {
-        if (FXAlertUtil.confirm("确定退出" + this.project.getName() + "？")) {
+        if (MessageBox.confirm("确定退出" + this.project.getName() + "？")) {
             EventUtil.fire(SSHEvents.APP_EXIT);
         }
     }
@@ -100,8 +92,8 @@ public class HeaderController extends FXController {
     }
 
     @Override
-    public void onViewShown(WindowEvent event) {
-        super.onViewShown(event);
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
         this.treeMutexes.addNodes(this.collapseTree, this.expandTree);
         this.treeMutexes.manageBindVisible();
     }

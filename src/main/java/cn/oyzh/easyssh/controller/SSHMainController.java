@@ -35,9 +35,6 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/22
  */
-@Lazy
-@Slf4j
-@Component
 public class SSHMainController extends FXController {
 
     /**
@@ -125,8 +122,8 @@ public class SSHMainController extends FXController {
     }
 
     @Override
-    public void onViewShown(WindowEvent event) {
-        super.onViewShown(event);
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
         // 注册事件处理
         EventUtil.register(this);
         EventUtil.register(this.tree);
@@ -139,8 +136,8 @@ public class SSHMainController extends FXController {
     }
 
     @Override
-    public void onViewHidden(WindowEvent event) {
-        super.onViewHidden(event);
+    public void onWindowHidden(WindowEvent event) {
+        super.onWindowHidden(event);
         // 取消注册事件处理
         EventUtil.unregister(this);
         EventUtil.unregister(this.tree);
@@ -262,7 +259,7 @@ public class SSHMainController extends FXController {
         this.tabPane.setLayoutX(w);
         this.tabPane.setFlexWidth("100% - " + w);
         this.mainLeft.parentAutosize();
-        log.info("LEFT_EXTEND.");
+        JulLog.info("LEFT_EXTEND.");
     }
 
     /**
@@ -274,6 +271,6 @@ public class SSHMainController extends FXController {
         this.tabPane.setLayoutX(0);
         this.tabPane.setFlexWidth("100%");
         this.mainLeft.parentAutosize();
-        log.info("LEFT_COLLAPSE.");
+        JulLog.info("LEFT_COLLAPSE.");
     }
 }

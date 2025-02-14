@@ -1,15 +1,14 @@
 package cn.oyzh.easyssh.controller;
 
 
-import cn.oyzh.easyfx.controller.FXController;
-import cn.oyzh.easyfx.controls.FXToggleGroup;
-import cn.oyzh.easyfx.controls.FlexCheckBox;
-import cn.oyzh.easyfx.information.FXToastUtil;
-import cn.oyzh.easyfx.view.FXWindow;
 import cn.oyzh.easyssh.SSHConst;
-import cn.oyzh.easyssh.SSHStyle;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.store.SSHSettingStore;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Modality;
@@ -21,14 +20,12 @@ import javafx.stage.WindowEvent;
  * @author oyzh
  * @since 2023/06/16
  */
-@FXWindow(
+@StageAttribute(
         title = "应用设置",
-        iconUrls = SSHConst.ICON_PATH,
         modality = Modality.APPLICATION_MODAL,
-        cssUrls = SSHStyle.COMMON,
         value = SSHConst.FXML_BASE_PATH + "setting.fxml"
 )
-public class SettingController extends FXController {
+public class SettingController extends StageController {
 
     /**
      * 退出方式
@@ -58,19 +55,19 @@ public class SettingController extends FXController {
      * 记住页面大小
      */
     @FXML
-    private FlexCheckBox pageSize;
+    private FXCheckBox pageSize;
 
     /**
      * 记住页面拉伸
      */
     @FXML
-    private FlexCheckBox pageResize;
+    private FXCheckBox pageResize;
 
     /**
      * 记住页面位置
      */
     @FXML
-    private FlexCheckBox pageLocation;
+    private FXCheckBox pageLocation;
 
     /**
      * 配置对象
@@ -83,8 +80,8 @@ public class SettingController extends FXController {
     private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
 
     @Override
-    public void onViewShowing(WindowEvent event) {
-        super.onViewShowing(event);
+    public void onWindowShowing(WindowEvent event) {
+        super.onWindowShowing(event);
         // 应用退出处理
         if (this.setting.getExitMode() != null) {
             switch (this.setting.getExitMode()) {
@@ -94,10 +91,10 @@ public class SettingController extends FXController {
             }
         }
 
-        // 记住页面大小处理
-        if (this.setting.getPageInfo() != null) {
-            this.pageSize.setSelected(this.setting.isRememberPageSize());
-        }
+//        // 记住页面大小处理
+//        if (this.setting.getPageInfo() != null) {
+//            this.pageSize.setSelected(this.setting.isRememberPageSize());
+//        }
 
         // 记住页面拉伸处理
         if (this.setting.getRememberPageResize() != null) {
@@ -115,22 +112,22 @@ public class SettingController extends FXController {
      */
     @FXML
     private void saveSetting() {
-        String tips = "";
-        // 设置参数
-        this.setting.setPageInfo(this.pageSize.isSelected() ? 1 : 0);
-        this.setting.setRememberPageResize(this.pageResize.isSelected() ? 1 : 0);
-        this.setting.setRememberPageLocation(this.pageLocation.isSelected() ? 1 : 0);
-        this.setting.setExitMode(Integer.parseInt(this.exitMode.selectedUserData()));
-        if (this.settingStore.update(this.setting)) {
-            FXToastUtil.ok("保存配置成功" + tips);
-            this.closeView();
-        } else {
-            FXToastUtil.warn("保存配置失败！");
-        }
+//        String tips = "";
+//        // 设置参数
+//        this.setting.setPageInfo(this.pageSize.isSelected() ? 1 : 0);
+//        this.setting.setRememberPageResize(this.pageResize.isSelected() ? 1 : 0);
+//        this.setting.setRememberPageLocation(this.pageLocation.isSelected() ? 1 : 0);
+//        this.setting.setExitMode(Integer.parseInt(this.exitMode.selectedUserData()));
+//        if (this.settingStore.update(this.setting)) {
+//            MessageBox.okToast("保存配置成功" + tips);
+//            this.closeView();
+//        } else {
+//            FXToastUtil.warn("保存配置失败！");
+//        }
     }
 
     @Override
-    public void onViewShown(WindowEvent event) {
-        this.view.hideOnEscape();
+    public void onWindowShown(WindowEvent event) {
+        this.stage.hideOnEscape();
     }
 }

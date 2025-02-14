@@ -29,7 +29,6 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2023/1/29
  */
-@Slf4j
 @Accessors(chain = true, fluent = true)
 public class SSHTreeView extends FlexTreeView {
 

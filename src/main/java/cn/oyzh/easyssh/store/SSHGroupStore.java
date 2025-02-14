@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/6/22
  */
-@Slf4j
 public class SSHGroupStore extends FileStore<SSHGroup> {
 
     /**
@@ -37,7 +36,7 @@ public class SSHGroupStore extends FileStore<SSHGroup> {
 
     {
         this.filePath(SSHConst.STORE_PATH + "ssh_group.json");
-        log.info("SSHGroupStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
+        JulLog.info("SSHGroupStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
         this.SSHGroups = this.load();
     }
 
@@ -45,7 +44,7 @@ public class SSHGroupStore extends FileStore<SSHGroup> {
     public synchronized List<SSHGroup> load() {
         if (this.SSHGroups == null) {
             String text = FileUtil.readString(this.storeFile(), this.charset());
-            if (StrUtil.isBlank(text)) {
+            if (StringUtil.isBlank(text)) {
                 return new ArrayList<>();
             }
             List<SSHGroup> SSHGroups = JSON.parseArray(text, SSHGroup.class);
@@ -81,7 +80,7 @@ public class SSHGroupStore extends FileStore<SSHGroup> {
                 return this.save(this.SSHGroups);
             }
         } catch (Exception e) {
-            log.warn("add error,err:{}", e.getMessage());
+            JulLog.warn("add error,err:{}", e.getMessage());
         }
         return false;
     }
@@ -94,7 +93,7 @@ public class SSHGroupStore extends FileStore<SSHGroup> {
                 return this.save(this.SSHGroups);
             }
         } catch (Exception e) {
-            log.warn("update error,err:{}", e.getMessage());
+            JulLog.warn("update error,err:{}", e.getMessage());
         }
         return false;
     }
@@ -107,7 +106,7 @@ public class SSHGroupStore extends FileStore<SSHGroup> {
                 return this.save(this.SSHGroups);
             }
         } catch (Exception e) {
-            log.warn("delete error,err:{}", e.getMessage());
+            JulLog.warn("delete error,err:{}", e.getMessage());
             return false;
         }
         return true;

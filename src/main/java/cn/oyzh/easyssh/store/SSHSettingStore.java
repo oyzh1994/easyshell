@@ -18,7 +18,6 @@ import java.util.List;
  * @author oyzh
  * @since 2026/06/26
  */
-@Slf4j
 public class SSHSettingStore extends FileStore<SSHSetting> {
 
     /**
@@ -33,14 +32,14 @@ public class SSHSettingStore extends FileStore<SSHSetting> {
 
     {
         this.filePath(SSHConst.STORE_PATH + "ssh_setting.json");
-        log.info("SSHSettingStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
+        JulLog.info("SSHSettingStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
     }
 
     @Override
     public synchronized List<SSHSetting> load() {
         SSHSetting setting = null;
         String text = FileUtil.readString(this.storeFile(), this.charset());
-        if (StrUtil.isNotBlank(text)) {
+        if (StringUtil.isNotBlank(text)) {
             try {
                 setting = JSON.parseObject(text, SSHSetting.class);
             } catch (Exception ex) {

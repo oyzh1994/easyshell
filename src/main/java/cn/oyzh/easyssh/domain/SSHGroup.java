@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.domain;
 
-import cn.oyzh.easyfx.tree.TreeGroup;
+
+import cn.oyzh.fx.plus.domain.TreeGroup;
 
 /**
  * @author oyzh

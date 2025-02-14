@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.RunnableWrapper;
 import cn.oyzh.common.thread.TimerUtil;
 import cn.oyzh.common.util.SystemUtil;
 import cn.oyzh.easyfx.event.EventUtil;
-import cn.oyzh.easyfx.information.FXAlertUtil;
+import cn.oyzh.easyfx.information.MessageBox;
 import cn.oyzh.easyfx.information.FXDialogUtil;
 import cn.oyzh.easyfx.menu.FXMenuItem;
 import cn.oyzh.easyfx.svg.SVGGlyph;
@@ -76,7 +76,7 @@ public class SSHConnectTreeItem extends BaseTreeItem {
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            FXAlertUtil.warn(ex, SSHExceptionParser.INSTANCE);
+            MessageBox.warn(ex, SSHExceptionParser.INSTANCE);
         }
         return false;
     }
@@ -145,7 +145,7 @@ public class SSHConnectTreeItem extends BaseTreeItem {
                     this.client.start();
                     if (!this.isConnected()) {
                         if (!this.canceled) {
-                            FXAlertUtil.warn(this.value.getName() + "连接失败");
+                            MessageBox.warn(this.value.getName() + "连接失败");
                         }
                         this.canceled = false;
                     } else if (this.initConnect()) {
@@ -155,7 +155,7 @@ public class SSHConnectTreeItem extends BaseTreeItem {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    FXAlertUtil.warn(ex, SSHExceptionParser.INSTANCE);
+                    MessageBox.warn(ex, SSHExceptionParser.INSTANCE);
                 }
             }, this::stopWaiting);
             // 执行连接
@@ -207,11 +207,11 @@ public class SSHConnectTreeItem extends BaseTreeItem {
 
     @Override
     public void delete() {
-        if (FXAlertUtil.confirm("删除" + this.value.getName(), "确定删除连接？")) {
+        if (MessageBox.confirm("删除" + this.value.getName(), "确定删除连接？")) {
             this._disConnect();
             if (this.getParent() instanceof ConnectManager connectManager) {
                 if (!connectManager.delConnectItem(this)) {
-                    FXAlertUtil.warn("删除连接失败！");
+                    MessageBox.warn("删除连接失败！");
                 }
             }
         }
@@ -227,8 +227,8 @@ public class SSHConnectTreeItem extends BaseTreeItem {
         }
 
         // 检查名称
-        if (StrUtil.isBlank(connectName)) {
-            // FXAlertUtil.warn("连接名称不能为空！");
+        if (StringUtil.isBlank(connectName)) {
+            // MessageBox.warn("连接名称不能为空！");
             return;
         }
 
@@ -237,7 +237,7 @@ public class SSHConnectTreeItem extends BaseTreeItem {
         this.value.setName(connectName);
         if (this.infoStore.exist(this.value)) {
             this.value.setName(name);
-            FXAlertUtil.warn("此连接名称已存在！");
+            MessageBox.warn("此连接名称已存在！");
             return;
         }
 
@@ -245,7 +245,7 @@ public class SSHConnectTreeItem extends BaseTreeItem {
         if (this.infoStore.update(this.value)) {
             this.itemValue(connectName);
         } else {
-            FXAlertUtil.warn("修改连接名称失败！");
+            MessageBox.warn("修改连接名称失败！");
         }
     }
 

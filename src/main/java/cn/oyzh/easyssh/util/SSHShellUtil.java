@@ -14,7 +14,6 @@ import java.io.InputStream;
  * @author oyzh
  * @since 2023/08/17
  */
-@Slf4j
 @UtilityClass
 public class SSHShellUtil {
 

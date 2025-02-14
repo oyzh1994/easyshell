@@ -23,22 +23,22 @@ public class SSHExceptionParser implements Parser<Exception, String> {
         String message = e.getMessage();
 
         if (e instanceof JSchException) {
-            if (StrUtil.contains(message, "java.net.UnknownHostException")) {
+            if (StringUtil.contains(message, "java.net.UnknownHostException")) {
                 return "主机地址异常";
             }
-            if (StrUtil.contains(message, "Auth fail")) {
+            if (StringUtil.contains(message, "Auth fail")) {
                 return "认证失败";
             }
-            if (StrUtil.contains(message, "connection is closed by foreign host")) {
+            if (StringUtil.contains(message, "connection is closed by foreign host")) {
                 return "连接被外部主机关闭";
             }
-            if (StrUtil.contains(message, "Connection refused: connect")) {
+            if (StringUtil.contains(message, "Connection refused: connect")) {
                 return "拒绝连接";
             }
-            if (StrUtil.contains(message, "socket is not established")) {
+            if (StringUtil.contains(message, "socket is not established")) {
                 return "连接未建立";
             }
-            if (StrUtil.contains(message, "session is down")) {
+            if (StringUtil.contains(message, "session is down")) {
                 return "会话已断开";
             }
             return message;

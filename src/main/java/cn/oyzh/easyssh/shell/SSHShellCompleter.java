@@ -1,6 +1,5 @@
 package cn.oyzh.easyssh.shell;
 
-import cn.oyzh.easyshell.comple.BaseShellCompleter;
 
 /**
  * ssh终端提示器

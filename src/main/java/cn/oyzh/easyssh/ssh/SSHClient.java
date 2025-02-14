@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.ssh;
 
-import cn.hutool.core.util.StrUtil;
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHInfo;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
@@ -24,7 +25,6 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-@Slf4j
 public class SSHClient {
 
     /**
@@ -112,13 +112,13 @@ public class SSHClient {
      * 初始化客户端
      */
     private void initClient() throws JSchException {
-        if (log.isInfoEnabled()) {
-            log.info("initClient user:{} password:{} host:{}", this.sshInfo.getUser(), this.sshInfo.getPassword(), this.sshInfo.getHost());
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("initClient user:{} password:{} host:{}", this.sshInfo.getUser(), this.sshInfo.getPassword(), this.sshInfo.getHost());
         }
         // 创建会话
         this.session = JSCH.getSession(this.sshInfo.getUser(), this.sshInfo.hostIp(), this.sshInfo.hostPort());
         // 主机密码
-        if (StrUtil.isNotBlank(this.sshInfo.getPassword())) {
+        if (StringUtil.isNotBlank(this.sshInfo.getPassword())) {
             this.session.setPassword(this.sshInfo.getPassword());
         }
         // 去掉首次连接确认

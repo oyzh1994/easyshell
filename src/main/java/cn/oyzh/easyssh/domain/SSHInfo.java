@@ -1,13 +1,13 @@
 package cn.oyzh.easyssh.domain;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -105,7 +105,7 @@ public class SSHInfo implements Comparable<SSHInfo> {
      * @return 结果
      */
     public boolean isCollect(int dbIndex, @NonNull String key) {
-        return CollUtil.isNotEmpty(this.collects) && this.collects.contains(this.getCollectName(dbIndex, key));
+        return CollectionUtil.isNotEmpty(this.collects) && this.collects.contains(this.getCollectName(dbIndex, key));
     }
 
     /**
@@ -181,7 +181,7 @@ public class SSHInfo implements Comparable<SSHInfo> {
      * @return 连接ip
      */
     public String hostIp() {
-        if (StrUtil.isBlank(this.host)) {
+        if (StringUtil.isBlank(this.host)) {
             return "";
         }
         return this.host.split(":")[0];
@@ -193,7 +193,7 @@ public class SSHInfo implements Comparable<SSHInfo> {
      * @return 连接端口
      */
     public int hostPort() {
-        if (StrUtil.isBlank(this.host)) {
+        if (StringUtil.isBlank(this.host)) {
             return -1;
         }
         try {

@@ -1,8 +1,8 @@
 package cn.oyzh.easyssh.tabs.home;
 
-import cn.oyzh.easyfx.svg.SVGGlyph;
-import cn.oyzh.easyfx.view.FXMLLoaderExt;
-import cn.oyzh.easyssh.tabs.SSHBaseTab;
+import cn.oyzh.fx.gui.tabs.DynamicTab;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -13,7 +13,7 @@ import javafx.scene.Node;
  * @author oyzh
  * @since 2023/6/24
  */
-public class SSHHomeTab extends SSHBaseTab {
+public class SSHHomeTab extends DynamicTab {
 
     {
         this.setClosable(true);

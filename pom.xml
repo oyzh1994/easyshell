@@ -42,6 +42,18 @@
         <!-- 自定义类库，shell相关 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
+            <artifactId>fx-gui</artifactId>
+        </dependency>
+
+        <!-- 自定义类库，shell相关 -->
+        <dependency>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>fx-plus</artifactId>
+        </dependency>
+
+        <!-- 自定义类库，shell相关 -->
+        <dependency>
+            <groupId>cn.oyzh</groupId>
             <artifactId>fx-terminal</artifactId>
         </dependency>
 

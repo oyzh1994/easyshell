@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.domain;
 
-import cn.oyzh.easyfx.domain.Setting;
+
+import cn.oyzh.fx.plus.domain.Setting;
 
 /**
  * ssh设置

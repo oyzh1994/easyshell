@@ -1,14 +1,10 @@
 package cn.oyzh.easyssh.tabs.home;
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.easyfx.controls.FXLabel;
-import cn.oyzh.easyfx.event.EventUtil;
 import cn.oyzh.easyssh.ssh.SSHEvents;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,8 +15,6 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2023/6/24
  */
-@Lazy
-@Component
 public class SSHHomeTabContentController implements Initializable {
 
     /**

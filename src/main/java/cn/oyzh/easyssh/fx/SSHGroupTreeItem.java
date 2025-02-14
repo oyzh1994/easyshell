@@ -2,7 +2,7 @@ package cn.oyzh.easyssh.fx;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.oyzh.easyfx.information.FXAlertUtil;
+import cn.oyzh.easyfx.information.MessageBox;
 import cn.oyzh.easyfx.information.FXDialogUtil;
 import cn.oyzh.easyfx.menu.FXMenuItem;
 import cn.oyzh.easyfx.svg.SVGGlyph;
@@ -32,7 +32,6 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/05/12
  */
-@Slf4j
 public class SSHGroupTreeItem extends BaseTreeItem implements ConnectManager {
 
     /**
@@ -96,8 +95,8 @@ public class SSHGroupTreeItem extends BaseTreeItem implements ConnectManager {
         }
 
         // 检查名称
-        if (StrUtil.isBlank(groupName)) {
-            // FXAlertUtil.warn("分组名称不能为空！");
+        if (StringUtil.isBlank(groupName)) {
+            // MessageBox.warn("分组名称不能为空！");
             return;
         }
 
@@ -106,7 +105,7 @@ public class SSHGroupTreeItem extends BaseTreeItem implements ConnectManager {
         this.value.setName(groupName);
         if (this.groupStore.exist(this.value)) {
             this.value.setName(name);
-            FXAlertUtil.warn("此分组已存在！");
+            MessageBox.warn("此分组已存在！");
             return;
         }
 
@@ -114,22 +113,22 @@ public class SSHGroupTreeItem extends BaseTreeItem implements ConnectManager {
         if (this.groupStore.update(this.value)) {
             this.itemValue(groupName);
         } else {
-            FXAlertUtil.warn("修改分组名称失败！");
+            MessageBox.warn("修改分组名称失败！");
         }
     }
 
     @Override
     public void delete() {
-        if (this.isChildEmpty() && !FXAlertUtil.confirm("确定删除此分组？")) {
+        if (this.isChildEmpty() && !MessageBox.confirm("确定删除此分组？")) {
             return;
         }
-        if (!this.isChildEmpty() && !FXAlertUtil.confirm("确定删除此分组？(连接将移动到根键)")) {
+        if (!this.isChildEmpty() && !MessageBox.confirm("确定删除此分组？(连接将移动到根键)")) {
             return;
         }
 
         // 删除失败
         if (!this.groupStore.delete(this.value)) {
-            FXAlertUtil.warn("删除分组失败！");
+            MessageBox.warn("删除分组失败！");
             return;
         }
 

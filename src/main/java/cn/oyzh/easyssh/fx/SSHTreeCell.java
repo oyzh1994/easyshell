@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.fx;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyfx.controls.FXTreeCell;
 import cn.oyzh.easyfx.drag.DrapEnhance;
 import javafx.scene.Cursor;
@@ -18,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author oyzh
  * @since 2023/06/31
  */
-@Slf4j
 public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
 
     /**
@@ -79,8 +79,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
                 this.drapEnhance.initSourceDrapEffect(connectTreeItem.itemNode());
             }
             event.consume();
-            if (log.isDebugEnabled()) {
-                log.debug("OnDragDetected");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("OnDragDetected");
             }
         });
 
@@ -91,8 +91,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
             // 清除数据
             event.getDragboard().clear();
             event.consume();
-            if (log.isDebugEnabled()) {
-                log.debug("OnDragDone");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("OnDragDone");
             }
         });
 
@@ -101,8 +101,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
             // 触发拖动事件
             event.acceptTransferModes(TransferMode.MOVE);
             event.consume();
-            if (log.isDebugEnabled()) {
-                log.debug("OnDragOver");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("OnDragOver");
             }
         });
 
@@ -115,8 +115,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
             this.drapEnhance.accept(null);
             this.drapEnhance.clearTargetDrapEffect();
             event.consume();
-            if (log.isDebugEnabled()) {
-                log.debug("OnDragExited");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("OnDragExited");
             }
         });
 
@@ -126,21 +126,21 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
                 // 检查来源
                 Object gestureSource = event.getGestureSource();
                 if (gestureSource == this) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("getGestureSource==this");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("getGestureSource==this");
                     }
                     return;
                 }
                 if (!(gestureSource instanceof SSHTreeCell gestureSourceCell)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("gestureSource not SSHTreeCell");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("gestureSource not SSHTreeCell");
                     }
                     return;
                 }
                 TreeItem<?> gestureSourceItem = gestureSourceCell.getTreeItem();
                 if (!(gestureSourceItem instanceof SSHConnectTreeItem connectTreeItem)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("gestureSource.getTreeItem() not SSHConnectTreeItem");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("gestureSource.getTreeItem() not SSHConnectTreeItem");
                     }
                     return;
                 }
@@ -148,23 +148,23 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
                 // 检查目标
                 Object target = event.getTarget();
                 if (!(target instanceof SSHTreeCell targetCell)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("target not SSHTreeCell");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("target not SSHTreeCell");
                     }
                     return;
                 }
                 TreeItem<?> targetItem = targetCell.getTreeItem();
                 if (!(targetItem instanceof ConnectManager manager)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("target.getTreeItem() not ConnectManager");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("target.getTreeItem() not ConnectManager");
                     }
                     return;
                 }
 
                 // 检查是否同一个组
                 if (connectTreeItem.getGroupItem() == manager) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("connectTreeItem.getGroupItem()==targetItem");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("connectTreeItem.getGroupItem()==targetItem");
                     }
                     return;
                 }
@@ -180,8 +180,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
                 this.drapEnhance.source(connectTreeItem);
             } finally {
                 event.consume();
-                if (log.isDebugEnabled()) {
-                    log.debug("OnDragEntered");
+                if (JulLog.isDebugEnabled()) {
+                    JulLog.debug("OnDragEntered");
                 }
             }
         });
@@ -193,8 +193,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
                 this.drapEnhance.clearDrapEffect();
                 // 判断是否可以执行
                 if (!this.drapEnhance.accept()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("OnDragDropped accept is false");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("OnDragDropped accept is false");
                     }
                     return;
                 }
@@ -209,8 +209,8 @@ public class SSHTreeCell extends FXTreeCell<SSHTreeItemValue> {
             } finally {
                 event.setDropCompleted(true);
                 event.consume();
-                if (log.isDebugEnabled()) {
-                    log.debug("OnDragDropped accept={}", this.drapEnhance.accept());
+                if (JulLog.isDebugEnabled()) {
+                    JulLog.debug("OnDragDropped accept={}", this.drapEnhance.accept());
                 }
             }
         });

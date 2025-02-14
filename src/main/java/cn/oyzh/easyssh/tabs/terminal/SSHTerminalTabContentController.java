@@ -7,9 +7,6 @@ import javafx.fxml.FXML;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * ssh命令行tab内容组件
@@ -17,9 +14,6 @@ import org.springframework.stereotype.Component;
  * @author oyzh
  * @since 2023/07/21
  */
-@Lazy
-@Component
-@Scope("prototype")
 public class SSHTerminalTabContentController {
 
     /**

@@ -1,9 +1,6 @@
 package cn.oyzh.easyssh.shell;
 
-import cn.oyzh.common.thread.TimerUtil;
-import cn.oyzh.easyfx.util.FXUtil;
-import cn.oyzh.easyshell.terminal.ShellTerminal;
-import cn.oyzh.easyshell.terminal.ShellTerminalTextArea;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyssh.dto.SSHConnect;
 import cn.oyzh.easyssh.parser.SSHExceptionParser;
 import cn.oyzh.easyssh.ssh.SSHClient;
@@ -11,6 +8,8 @@ import cn.oyzh.easyssh.ssh.SSHConnState;
 import cn.oyzh.easyssh.ssh.SSHShell;
 import cn.oyzh.easyssh.ssh.SSHShellResult;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.terminal.TerminalTextArea;
 import javafx.beans.value.ChangeListener;
 import lombok.Getter;
 import lombok.NonNull;
@@ -23,12 +22,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author oyzh
  * @since 2023/7/21
  */
-@Slf4j
-public class SSHShellTerminalTextArea extends ShellTerminalTextArea {
+public class SSHShellTerminalTextArea extends TerminalTextArea {
 
     {
         this.setLineCompleter(SSHShellCompleter.INSTANCE);
-        this.setHistoryStore(SSHShellHistoryStore.INSTANCE);
     }
 
     /**
@@ -206,7 +203,7 @@ public class SSHShellTerminalTextArea extends ShellTerminalTextArea {
                     this.outputByAppend(host + " 连接失败.");
                     this.flushCaret();
                 }
-                log.info("connState={}", t1);
+                JulLog.info("connState={}", t1);
             };
         }
         this.client().addConnStateListener(this.connStateChangeListener);

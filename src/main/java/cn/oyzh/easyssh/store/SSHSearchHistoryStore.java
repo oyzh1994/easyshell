@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/16
  */
-@Slf4j
 public class SSHSearchHistoryStore extends FileStore<SSHSearchHistory> {
 
     /**
@@ -38,13 +37,13 @@ public class SSHSearchHistoryStore extends FileStore<SSHSearchHistory> {
 
     {
         this.filePath(SSHConst.STORE_PATH + "ssh_search_history.json");
-        log.info("SSHSearchHistoryStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
+        JulLog.info("SSHSearchHistoryStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
     }
 
     @Override
     public synchronized List<SSHSearchHistory> load() {
         String text = FileUtil.readString(this.storeFile(), this.charset());
-        if (StrUtil.isBlank(text)) {
+        if (StringUtil.isBlank(text)) {
             return new ArrayList<>();
         }
         return JSON.parseArray(text, SSHSearchHistory.class);
@@ -92,7 +91,7 @@ public class SSHSearchHistoryStore extends FileStore<SSHSearchHistory> {
             // 保存数据
             return this.save(histories);
         } catch (Exception e) {
-            log.warn("add error,err:{}", e.getMessage());
+            JulLog.warn("add error,err:{}", e.getMessage());
         }
         return false;
     }
@@ -130,7 +129,7 @@ public class SSHSearchHistoryStore extends FileStore<SSHSearchHistory> {
                 return this.save(histories);
             }
         } catch (Exception e) {
-            log.warn("delete error,err:{}", e.getMessage());
+            JulLog.warn("delete error,err:{}", e.getMessage());
         }
         return false;
     }

@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author oyzh
  * @since 2023/08/10
  */
-@Slf4j
 @Accessors(chain = true, fluent = true)
 public class SSHConnectTreeItemValue extends SSHTreeItemValue {
 
@@ -55,11 +54,11 @@ public class SSHConnectTreeItemValue extends SSHTreeItemValue {
      * @param role 当前角色
      */
     public void role(String role) {
-        if (StrUtil.equalsIgnoreCase("sentinel", role)) {
+        if (StringUtil.equalsIgnoreCase("sentinel", role)) {
             this.role = "哨兵";
-        } else if (StrUtil.equalsIgnoreCase("master", role)) {
+        } else if (StringUtil.equalsIgnoreCase("master", role)) {
             this.role = "主节点";
-        } else if (StrUtil.equalsIgnoreCase("slave", role)) {
+        } else if (StringUtil.equalsIgnoreCase("slave", role)) {
             this.role = "从节点";
         } else {
             this.role = null;

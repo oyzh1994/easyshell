@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author oyzh
  * @since 2023/7/21
  */
-@Slf4j
 public class SSHShellHistoryStore extends ShellHistoryStore {
 
     /**
@@ -20,7 +19,7 @@ public class SSHShellHistoryStore extends ShellHistoryStore {
 
     {
         this.filePath(SSHConst.STORE_PATH + "ssh_shell_history.json");
-        log.info("SSHShellHistoryStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
+        JulLog.info("SSHShellHistoryStore filePath:{} charset:{} init {}.", this.filePath(), this.charset(), super.init() ? "success" : "fail");
     }
 
 }

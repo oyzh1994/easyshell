@@ -85,11 +85,11 @@ public class SSHShell {
         this.in = this.shell.getInputStream();
         // 读取结果
         String result = SSHShellUtil.readInput(this.in, 30, 500);
-        // if (StrUtil.isEmpty(result)) {
+        // if (StringUtil.isEmpty(result)) {
         //     result = SSHShellUtil.readInput(this.in, 30, 500);
         // }
         // 处理响应
-        if (this.onResponse != null && StrUtil.isNotEmpty(result)) {
+        if (this.onResponse != null && StringUtil.isNotEmpty(result)) {
             SSHShellResult shellResult = new SSHShellResult(command, result);
             // 单次
             if (shellResult.hasPrompt()) {

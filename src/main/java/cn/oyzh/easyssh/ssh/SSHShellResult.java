@@ -39,7 +39,7 @@ public class SSHShellResult {
             String[] lines = result.split("\n");
             StringBuilder builder = new StringBuilder();
             for (String str : lines) {
-                if (StrUtil.equals(str.replace("\r", ""), this.command)) {
+                if (StringUtil.equals(str.replace("\r", ""), this.command)) {
                     continue;
                 }
                 if (SSHShellUtil.isPrompt(str)) {
