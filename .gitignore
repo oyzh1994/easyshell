@@ -1,18 +1,17 @@
-# Default ignored files
-/.idea/workspace.xml
-/.idea/compiler.xml
-/.idea/encodings.xml
-/.idea/vcs.xml
-/.idea/misc.xml
-/.idea/modules.xml
-/.idea/uiDesigner.xml
-/.idea/libraries
-/.idea/shelf
-/.idea/codeStyles
-/.idea/inspectionProfiles
-/.idea/jarRepositories.xml
-/.idea/aws.xml
-/**/target/
-/**/logs
-/out
+### compile ###
+target/
+
+### 崩溃日志
 hs_err_*.log
+
+### IntelliJ IDEA ###
+.idea/
+
+### logs ###
+logs/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
