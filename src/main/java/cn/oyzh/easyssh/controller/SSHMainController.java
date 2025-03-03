@@ -1,5 +1,7 @@
 package cn.oyzh.easyssh.controller;
 
+import cn.oyzh.easyssh.controller.main.ConnectController;
+import cn.oyzh.easyssh.controller.main.MessageController;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.event.tree.SSHTreeItemChangedEvent;
@@ -43,6 +45,18 @@ public class SSHMainController extends ParentStageController {
      */
     @FXML
     private SSHTabPane tabPane;
+
+    /**
+     * zk连接
+     */
+    @FXML
+    private ConnectController connectController;
+
+    /**
+     * zk消息
+     */
+    @FXML
+    private MessageController messageController;
 
     /**
      * 刷新窗口标题
@@ -111,10 +125,6 @@ public class SSHMainController extends ParentStageController {
         NodeResizer resizer = new NodeResizer(this.tabPaneLeft, Cursor.DEFAULT, this::resizeLeft);
         resizer.widthLimit(240f, 650f);
         resizer.initResizeEvent();
-        // // 搜索触发事件
-        // KeyListener.listenReleased(this.stage, new KeyHandler().keyCode(KeyCode.F).controlDown(true).handler(t1 -> SSHEventUtil.searchFire()));
-        // // 刷新触发事件
-        // KeyListener.listenReleased(this.tabPane, KeyCode.F5, keyEvent -> this.tabPane.reload());
     }
 
     /**
@@ -124,7 +134,7 @@ public class SSHMainController extends ParentStageController {
      */
     @EventSubscribe
     private void treeItemChanged(SSHTreeItemChangedEvent event) {
-            this.flushViewTitle(null);
+        this.flushViewTitle(null);
     }
 
     /**
@@ -152,6 +162,6 @@ public class SSHMainController extends ParentStageController {
 
     @Override
     public List<SubStageController> getSubControllers() {
-        return List.of();
+        return List.of(this.connectController, this.messageController);
     }
 }

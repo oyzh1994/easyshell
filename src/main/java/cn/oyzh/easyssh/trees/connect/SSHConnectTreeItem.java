@@ -200,7 +200,6 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
         SSHConnect zkConnect = new SSHConnect();
         zkConnect.copy(this.value);
         zkConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
-        zkConnect.setCollects(Collections.emptyList());
         if (this.connectStore.insert(zkConnect)) {
             this.connectManager().addConnect(zkConnect);
         } else {

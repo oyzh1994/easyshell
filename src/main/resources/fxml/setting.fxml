@@ -1,92 +1,515 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.CancelButton?>
-<?import cn.oyzh.easyfx.controls.FXCheckBox?>
-<?import cn.oyzh.easyfx.controls.FXHBox?>
-<?import cn.oyzh.easyfx.controls.FXTabPane?>
-<?import cn.oyzh.easyfx.controls.FXVBox?>
-<?import cn.oyzh.easyfx.controls.FXLabel?>
-<?import cn.oyzh.easyfx.controls.FXRadioButton?>
-<?import cn.oyzh.easyfx.controls.FXTab?>
-<?import cn.oyzh.easyfx.controls.FXToggleGroup?>
-<?import cn.oyzh.easyfx.controls.SubmitButton?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SaveButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.picker.FXColorPicker?>
+<?import cn.oyzh.fx.plus.controls.text.FXSlider?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import cn.oyzh.fx.plus.font.FontFamilyComboBox?>
+<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
+<?import cn.oyzh.fx.plus.font.FontWeightComboBox?>
+<?import cn.oyzh.fx.plus.i18n.LocaleComboBox?>
+<?import cn.oyzh.fx.plus.theme.ThemeComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyssh.controller.SettingController" realWidth="500" realHeight="280">
-    <FXTabPane flexWidth="100%" flexHeight="100% - 60">
-        <FXTab text="页面设置">
-            <FXVBox flexWidth="100%">
-                <FXHBox flexWidth="100%" realHeight="50">
-                    <FXLabel text="窗口关闭" realHeight="30" realWidth="65" styleClass="lbl,lbl-primary">
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.setting.SettingMainPane?>
+<?import cn.oyzh.fx.gui.setting.SettingLeftTreeView?>
+<?import cn.oyzh.fx.gui.setting.SettingRightAction?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+                 fx:controller="cn.oyzh.easyssh.controller.SettingController" realWidth="700" realHeight="450">
+    <left>
+        <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
+        </SettingLeftTreeView>
+    </left>
+    <right>
+        <FXVBox flexWidth="100%" flexHeight="100% - 110">
+            <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
+                    groupId="setting_item">
+                <InfoLabel text="%base.load">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <fx:define>
+                    <FXToggleGroup fx:id="loadMode"/>
+                </fx:define>
+                <FXHBox>
+                    <FXRadioButton toggleGroup="$loadMode" text="%zk.setting.loadFirst"
+                                   realHeight="25" selected="true" fx:id="loadMode0" userData="0">
                         <HBox.margin>
-                            <Insets left="20" top="10"/>
+                            <Insets left="30" top="5"/>
                         </HBox.margin>
-                    </FXLabel>
+                    </FXRadioButton>
+                    <FXRadioButton toggleGroup="$loadMode" text="%zk.setting.loadAll"
+                                   realHeight="25" fx:id="loadMode1" userData="1">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                    <FXRadioButton toggleGroup="$loadMode" text="%zk.setting.loadRoot"
+                                   realHeight="25" fx:id="loadMode2" userData="2">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                </FXHBox>
+                <InfoLabel text="%base.viewport">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <fx:define>
+                    <FXToggleGroup fx:id="viewport"/>
+                </fx:define>
+                <FXHBox>
+                    <FXRadioButton toggleGroup="$viewport" text="%base.nodeName"
+                                   realHeight="25" selected="true" fx:id="viewport0" userData="0">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                    <FXRadioButton toggleGroup="$viewport" text="%base.nodePath"
+                                   realHeight="25" fx:id="viewport1" userData="1">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                </FXHBox>
+                <InfoLabel text="%base.auth">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXCheckBox tipText="%zk.info.autoAuthTip" text="%base.autoAuth" selected="true" fx:id="authMode">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXCheckBox>
+                <InfoLabel text="%zk.setting.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <NumberTextField step="100" fx:id="nodeLoadLimit" minVal="0" value="1000"
+                                 tipText="%zk.setting.tip2" flexWidth="100% - 180" prefHeight="25">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </NumberTextField>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="window_box" flexWidth="100%" flexHeight="100%"
+                    groupId="setting_item">
+                <InfoLabel text="%base.close">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
                     <fx:define>
                         <FXToggleGroup fx:id="exitMode"/>
                     </fx:define>
-                    <FXRadioButton toggleGroup="$exitMode" text="最小化到托盘" realHeight="25" selected="true"
+                    <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode3" realHeight="25" selected="true"
                                    fx:id="exitMode0" userData="0">
                         <HBox.margin>
-                            <Insets left="10" top="12"/>
+                            <Insets left="30" top="5"/>
                         </HBox.margin>
                     </FXRadioButton>
-                    <FXRadioButton toggleGroup="$exitMode" text="询问是否退出" realHeight="25" fx:id="exitMode1"
+                    <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode1" realHeight="25" fx:id="exitMode1"
                                    userData="1">
                         <HBox.margin>
-                            <Insets left="10" top="12"/>
+                            <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXRadioButton>
-                    <FXRadioButton toggleGroup="$exitMode" text="直接退出程序" realHeight="25" fx:id="exitMode2"
+                    <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode2" realHeight="25" fx:id="exitMode2"
                                    userData="2">
                         <HBox.margin>
-                            <Insets left="10" top="12"/>
+                            <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXRadioButton>
-                    <VBox.margin>
-                        <Insets top="10"/>
-                    </VBox.margin>
                 </FXHBox>
-                <FXHBox flexWidth="100%" realHeight="50">
-                    <FXLabel text="页面记忆" realHeight="30" realWidth="65" styleClass="lbl,lbl-primary">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <FXCheckBox text="记住页面大小" realHeight="25" fx:id="pageSize">
-                        <HBox.margin>
-                            <Insets left="10" top="12"/>
-                        </HBox.margin>
-                    </FXCheckBox>
-                    <FXCheckBox text="记住页面位置" realHeight="25" fx:id="pageLocation">
-                        <HBox.margin>
-                            <Insets left="10" top="12"/>
-                        </HBox.margin>
-                    </FXCheckBox>
-                    <FXCheckBox text="记住页面拉伸" selected="true" realHeight="25" fx:id="pageResize">
-                        <HBox.margin>
-                            <Insets left="10" top="12"/>
-                        </HBox.margin>
-                    </FXCheckBox>
+                <InfoLabel text="%base.remember">
                     <VBox.margin>
-                        <Insets top="10"/>
+                        <Insets left="30" top="10"/>
                     </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox text="%base.windowSize" selected="true" fx:id="pageSize">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox text="%base.windowLocation" fx:id="pageLocation">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox text="%base.windowResize" fx:id="pageResize">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+                <InfoLabel text="%base.windowOpacity">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXSlider realHeight="25" fx:id="opacity" min="50" value="100">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXSlider>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetOpacity">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.titleBarOpacity">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXSlider realHeight="25" fx:id="titleBarOpacity" min="50" value="100">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXSlider>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetTitleBarOpacity">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-    </FXTabPane>
-
-    <FXHBox flexWidth="100%" realHeight="50">
-        <SubmitButton onAction="#saveSetting" text="保存">
-            <HBox.margin>
-                <Insets left="95" top="10"/>
-            </HBox.margin>
-        </SubmitButton>
-        <CancelButton>
-            <HBox.margin>
-                <Insets left="15" top="10"/>
-            </HBox.margin>
-        </CancelButton>
-    </FXHBox>
-</FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="font_general_box" flexWidth="100%"
+                    flexHeight="100%" groupId="setting_item">
+                <InfoLabel text="%base.fontName">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="fontFamily">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontFamilyComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetFontFamily">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontSize">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="fontSize">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontSizeComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetFontSize">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontWeight">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="fontWeight">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontWeightComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetFontWeight">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="font_editor_box" flexWidth="100%"
+                    flexHeight="100%" groupId="setting_item">
+                <InfoLabel text="%base.fontName">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="editorFontFamily">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontFamilyComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetEditorFontFamily">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontSize">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="editorFontSize">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontSizeComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetEditorFontSize">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontWeight">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="editorFontWeight">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontWeightComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetEditorFontWeight">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="font_terminal_box" flexWidth="100%"
+                    flexHeight="100%" groupId="setting_item">
+                <InfoLabel text="%base.fontName">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="terminalFontFamily">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontFamilyComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetTerminalFontFamily">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontSize">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="terminalFontSize">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontSizeComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetTerminalFontSize">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontWeight">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="terminalFontWeight">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontWeightComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetTerminalFontWeight">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="font_query_box" flexWidth="100%"
+                    flexHeight="100%" groupId="setting_item">
+                <InfoLabel text="%base.fontName">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="queryFontFamily">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontFamilyComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetQueryFontFamily">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontSize">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="queryFontSize">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontSizeComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetQueryFontSize">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.fontWeight">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="queryFontWeight">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FontWeightComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetQueryFontWeight">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="theme_box" flexWidth="100%" flexHeight="100%"
+                    groupId="setting_item">
+                <InfoLabel text="%base.themeName">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ThemeComboBox realHeight="30" flexWidth="100% - 140" initIndex="0" tipText="%base.themeTip"
+                               fx:id="theme">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ThemeComboBox>
+                <InfoLabel text="%base.fgColor">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox fx:id="fgColorBox" disable="true">
+                    <FXColorPicker realHeight="30" flexWidth="100% - 225" tipText="%base.fgColorTip"
+                                   fx:id="fgColor">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXColorPicker>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetFgColor">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.bgColor">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox fx:id="bgColorBox" disable="true">
+                    <FXColorPicker realHeight="30" flexWidth="100% - 225" tipText="%base.bgColorTip"
+                                   fx:id="bgColor">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXColorPicker>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetBgColor">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+                <InfoLabel text="%base.accentColor">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox fx:id="accentColorBox" disable="true">
+                    <FXColorPicker realHeight="30" flexWidth="100% - 225" tipText="%base.accentColorTip"
+                                   fx:id="accentColor">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXColorPicker>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetAccentColor">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="locale_box" flexWidth="100%" flexHeight="100%"
+                    groupId="setting_item">
+                <InfoLabel text="%base.language">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <LocaleComboBox realHeight="30" flexWidth="100% - 225" initIndex="0" fx:id="locale">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </LocaleComboBox>
+                    <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetLocale">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </UndoSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+        </FXVBox>
+    </right>
+    <action>
+        <SettingRightAction flexWidth="100%" realHeight="50">
+            <SaveButton onAction="#saveSetting">
+                <HBox.margin>
+                    <Insets left="30" top="20"/>
+                </HBox.margin>
+            </SaveButton>
+            <CancelButton>
+                <HBox.margin>
+                    <Insets left="15" top="20"/>
+                </HBox.margin>
+            </CancelButton>
+        </SettingRightAction>
+    </action>
+</SettingMainPane>

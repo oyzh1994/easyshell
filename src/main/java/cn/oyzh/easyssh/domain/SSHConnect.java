@@ -2,9 +2,13 @@ package cn.oyzh.easyssh.domain;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.store.jdbc.Column;
+import cn.oyzh.store.jdbc.PrimaryKey;
+import cn.oyzh.store.jdbc.Table;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,34 +18,38 @@ import java.util.List;
  * @author oyzh
  * @since 2023/6/16
  */
+@Setter
+@ToString
+@Table("t_connect")
 public class SSHConnect implements Comparable<SSHConnect>, Serializable {
 
     /**
      * 数据id
      */
     @Getter
-    @Setter
+    @Column
+    @PrimaryKey
     private String id;
 
     /**
      * 连接地址
      */
     @Getter
-    @Setter
+    @Column
     private String host;
 
     /**
      * 名称
      */
     @Getter
-    @Setter
+    @Column
     private String name;
 
     /**
      * 备注信息
      */
     @Getter
-    @Setter
+    @Column
     private String remark;
 
     /**
@@ -49,6 +57,7 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
      */
     @Getter
     @Setter
+    @Column
     private String groupId;
 
     /**
@@ -56,6 +65,7 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
      */
     @Getter
     @Setter
+    @Column
     private String user;
 
     /**
@@ -63,19 +73,14 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
      */
     @Getter
     @Setter
+    @Column
     private String password;
-
-    /**
-     * 收藏的键
-     */
-    @Getter
-    @Setter
-    private List<String> collects;
 
     /**
      * 连接超时时间
      */
     @Setter
+    @Column
     private Integer connectTimeOut;
 
     /**
@@ -91,62 +96,9 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
         this.user = info.user;
         this.remark = info.remark;
         this.groupId = info.groupId;
-        this.collects = info.collects;
         this.password = info.password;
         this.connectTimeOut = info.connectTimeOut;
         return this;
-    }
-
-    /**
-     * 是否被收藏
-     *
-     * @param dbIndex 数据库索引
-     * @param key     键
-     * @return 结果
-     */
-    public boolean isCollect(int dbIndex, @NonNull String key) {
-        return CollectionUtil.isNotEmpty(this.collects) && this.collects.contains(this.getCollectName(dbIndex, key));
-    }
-
-    /**
-     * 添加收藏
-     *
-     * @param dbIndex 数据库索引
-     * @param key     键
-     */
-    public void addCollect(int dbIndex, @NonNull String key) {
-        if (this.collects == null) {
-            this.collects = new ArrayList<>();
-        }
-        String name = this.getCollectName(dbIndex, key);
-        if (!this.collects.contains(name)) {
-            this.collects.add(name);
-        }
-    }
-
-    /**
-     * 取消收藏
-     *
-     * @param dbIndex 数据库索引
-     * @param key     键
-     * @return 结果
-     */
-    public boolean removeCollect(int dbIndex, @NonNull String key) {
-        if (this.collects != null) {
-            return this.collects.remove(this.getCollectName(dbIndex, key));
-        }
-        return false;
-    }
-
-    /**
-     * 获取收藏名称
-     *
-     * @param dbIndex db索引
-     * @param key     键名称
-     * @return 收藏名称
-     */
-    private String getCollectName(int dbIndex, String key) {
-        return dbIndex + "_@coll@_" + key;
     }
 
     /**

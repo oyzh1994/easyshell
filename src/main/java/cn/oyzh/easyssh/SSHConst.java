@@ -13,10 +13,10 @@ import java.io.File;
 @UtilityClass
 public class SSHConst {
 
-    /**
-     * fxml基础地址
-     */
-    public final static String FXML_BASE_PATH = "/fxml/";
+//    /**
+//     * fxml基础地址
+//     */
+//    public final static String FXML_BASE_PATH = "/fxml/";
 
     /**
      * 数据保存路径

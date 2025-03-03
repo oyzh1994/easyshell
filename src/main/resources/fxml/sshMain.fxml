@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.FXPane?>
-<?import cn.oyzh.easyfx.controls.FXVBox?>
-<?import cn.oyzh.easyssh.fx.SSHTreeView?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.easyssh.tabs.SSHTabPane?>
-<FXPane styleClass="mainPane,panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyssh.controller.SSHMainController" flexWidth="100%" flexHeight="100% - 30">
-    <FXVBox realWidth="440" flexHeight="100%" fx:id="mainLeft"
-              style="-fx-border-width: 0 1 0 0; -fx-border-color: gray">
-        <SSHTreeView fx:id="tree" flexHeight="100%" flexWidth="100% - 8"/>
-    </FXVBox>
-    <SSHTabPane fx:id="tabPane" layoutX="440" flexWidth="100% - 440" tabClosingPolicy="ALL_TABS" flexHeight="100%"/>
+<FXPane xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.SSHMainController" flexWidth="100% - 30" flexHeight="100%">
+    <FXTabPane flexHeight="100%" realWidth="300" fx:id="tabPaneLeft" tabMaxHeight="25">
+        <fx:include fx:id="connect" source="main/connect.fxml"/>
+        <fx:include fx:id="message" source="main/message.fxml"/>
+    </FXTabPane>
+    <SSHTabPane fx:id="tabPane" layoutX="300" flexWidth="100% - 300" tabClosingPolicy="ALL_TABS"
+               flexHeight="100%"/>
 </FXPane>

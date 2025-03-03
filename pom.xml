@@ -14,26 +14,17 @@
 
     <dependencies>
 
-        <!-- ssh模块 -->
+        <!-- 内存数据库 -->
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>common</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version>
         </dependency>
 
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>ssh</artifactId>
-        </dependency>
-
-        <!-- ssh模块 -->
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>event</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>fx-gui</artifactId>
         </dependency>
 
         <!-- java 辅助工具包 -->
@@ -59,11 +50,6 @@
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>fx-gui</artifactId>
-        </dependency>
-        <!-- 自定义类库，shell相关 -->
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>fx-plus</artifactId>
         </dependency>
 
         <!-- 自定义类库，shell相关 -->

@@ -50,7 +50,7 @@ public class MainController extends ParentStageController {
      * zk主页业务
      */
     @FXML
-    private SSHMainController zkMainController;
+    private SSHMainController sshMainController;
 
     /**
      * zk相关配置
@@ -64,8 +64,7 @@ public class MainController extends ParentStageController {
 
     @Override
     public List<? extends StageController> getSubControllers() {
-        return Arrays.asList(this.zkMainController, this.headerController);
-//        return Collections.singletonList(this.zkMainController);
+        return Arrays.asList(this.sshMainController, this.headerController);
     }
 
     @Override
@@ -164,6 +163,6 @@ public class MainController extends ParentStageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("zk.title.main");
+        return I18nResourceBundle.i18nString("ssh.title.main");
     }
 }

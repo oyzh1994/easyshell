@@ -1,7 +1,10 @@
 package cn.oyzh.easyssh.store;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
+import cn.oyzh.store.jdbc.QueryParam;
 
 import java.util.List;
 
@@ -27,11 +30,27 @@ public class SSHConnectStore extends JdbcStandardStore<SSHConnect> {
         return SSHConnect.class;
     }
 
-    public boolean replace(SSHConnect connect) {
-        return false;
+    public List<SSHConnect> loadFull() {
+        return this.load();
     }
 
-    public List<SSHConnect> loadFull() {
-        return null;
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
+    public boolean replace(SSHConnect model) {
+        boolean result = false;
+        if (model != null) {
+            if (super.exist(model.getId())) {
+                result = this.update(model);
+            } else {
+                result = this.insert(model);
+            }
+
+        }
+        return result;
     }
 }
+

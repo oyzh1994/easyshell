@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.trees.connect;
 
-import cn.oyzh.easyssh.fx.svg.glyph.ZookeeperSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.SSHSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
@@ -33,7 +33,7 @@ public class SSHConnectTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (this.graphic == null) {
-            this.graphic = new ZookeeperSVGGlyph("12");
+            this.graphic = new SSHSVGGlyph("12");
         }
         return super.graphic();
     }

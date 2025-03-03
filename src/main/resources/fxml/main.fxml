@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.FXPane?>
-<FXPane styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyssh.controller.MainController" realHeight="700" realWidth="1300">
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.MainController" realHeight="700" realWidth="1300">
     <fx:include fx:id="header" source="header.fxml"/>
-    <fx:include fx:id="sshMain" layoutY="30" source="sshMain.fxml"/>
+    <fx:include fx:id="sshMain" layoutX="30" source="sshMain.fxml"/>
 </FXPane>

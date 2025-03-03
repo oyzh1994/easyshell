@@ -1,11 +1,9 @@
 package cn.oyzh.easyssh.tabs.home;
 
+import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
-import javafx.scene.CacheHint;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 
 /**
  * ssh主页tab
@@ -15,30 +13,29 @@ import javafx.scene.Node;
  */
 public class SSHHomeTab extends RichTab {
 
-    {
-        this.setClosable(true);
-        this.loadContent();
+    public SSHHomeTab() {
+        super();
+        super.flush();
     }
 
     @Override
-    protected void loadContent() {
-        FXMLLoaderExt loaderExt = new FXMLLoaderExt();
-        Node content = loaderExt.load("/tabs/home/sshHomeTabContent.fxml");
-        content.setCache(true);
-        content.setCacheHint(CacheHint.QUALITY);
-        this.setContent(content);
-        this.setText("主页");
-        // 刷新图标
-        this.flushGraphic();
+    protected String url() {
+        return "/tabs/home/sshHomeTab.fxml";
     }
 
     @Override
     public void flushGraphic() {
-        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
-        if (graphic == null) {
-            graphic = new SVGGlyph("/font/home.svg", "13");
-            graphic.setCursor(Cursor.DEFAULT);
-            this.setGraphic(graphic);
+        HomeSVGGlyph glyph = (HomeSVGGlyph) this.getGraphic();
+        if (glyph == null) {
+            glyph = new HomeSVGGlyph("12");
+            glyph.setCursor(Cursor.DEFAULT);
+            this.graphic(glyph);
         }
     }
+
+    @Override
+    public String getTabTitle() {
+        return I18nHelper.homeTitle();
+    }
+
 }
