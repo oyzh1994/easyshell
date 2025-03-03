@@ -42,6 +42,18 @@ import java.util.List;
 public class SSHUpdateConnectController extends StageController {
 
     /**
+     * 用户名
+     */
+    @FXML
+    private ClearableTextField userName;
+
+    /**
+     * 密码
+     */
+    @FXML
+    private ClearableTextField password;
+
+    /**
      * tab组件
      */
     @FXML
@@ -81,12 +93,6 @@ public class SSHUpdateConnectController extends StageController {
      */
     @FXML
     private NumberTextField connectTimeOut;
-
-    /**
-     * 会话超时时间
-     */
-    @FXML
-    private NumberTextField sessionTimeOut;
 
     /**
      * ssh连接储存对象
@@ -142,6 +148,16 @@ public class SSHUpdateConnectController extends StageController {
         if (host == null) {
             return;
         }
+        String userName = this.userName.getTextTrim();
+        if (StringUtil.isBlank(userName)) {
+            this.userName.requestFocus();
+            return;
+        }
+        String password = this.password.getTextTrim();
+        if (StringUtil.isBlank(password)) {
+            this.password.requestFocus();
+            return;
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -150,9 +166,10 @@ public class SSHUpdateConnectController extends StageController {
             String name = this.name.getTextTrim();
             this.sshConnect.setName(name);
             Number connectTimeOut = this.connectTimeOut.getValue();
-            Number sessionTimeOut = this.sessionTimeOut.getValue();
 
             this.sshConnect.setHost(host.trim());
+            this.sshConnect.setUser(userName.trim());
+            this.sshConnect.setPassword(password.trim());
             this.sshConnect.setRemark(this.remark.getTextTrim());
             this.sshConnect.setConnectTimeOut(connectTimeOut.intValue());
             // 保存数据
@@ -190,10 +207,12 @@ public class SSHUpdateConnectController extends StageController {
         super.onWindowShown(event);
         this.sshConnect = this.getWindowProp("sshConnect");
         this.name.setText(this.sshConnect.getName());
-        this.remark.setText(this.sshConnect.getRemark());
-        this.connectTimeOut.setValue(this.sshConnect.getConnectTimeOut());
         this.hostIp.setText(this.sshConnect.hostIp());
+        this.remark.setText(this.sshConnect.getRemark());
+        this.userName.setText(this.sshConnect.getUser());
         this.hostPort.setValue(this.sshConnect.hostPort());
+        this.password.setText(this.sshConnect.getPassword());
+        this.connectTimeOut.setValue(this.sshConnect.getConnectTimeOut());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

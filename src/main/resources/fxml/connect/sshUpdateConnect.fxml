@@ -32,27 +32,46 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.host">
+                <InfoLabel text="%base.userName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
                                     flexWidth="100% - 180" maxLen="1024">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.port">
+                <InfoLabel text="%base.password">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <PortTextField flexWidth="100% - 180" fx:id="hostPort" realHeight="30" value="22">
+                <ClearableTextField fx:id="password" tipText="%base.passwordTip" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </PortTextField>
+                </ClearableTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="60%" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField flexWidth="40% - 180" fx:id="hostPort" realHeight="30" value="22">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.extra">
@@ -70,24 +89,6 @@
                         </HBox.margin>
                     </NumberTextField>
                     <FXLabel text="%base.second">
-                        <HBox.margin>
-                            <Insets left="10" top="9"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FXHBox>
-                <InfoLabel text="%base.sessionTimeout">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox>
-                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="5" max="120" fx:id="sessionTimeOut"
-                                     tipText="%ssh.info.sessionTimoutTip" value="30" require="true" step="5">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </NumberTextField>
-                    <FXLabel text="%base.minute">
                         <HBox.margin>
                             <Insets left="10" top="9"/>
                         </HBox.margin>

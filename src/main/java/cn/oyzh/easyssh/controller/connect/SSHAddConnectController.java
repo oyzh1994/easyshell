@@ -42,22 +42,16 @@ import java.util.ArrayList;
 public class SSHAddConnectController extends StageController {
 
     /**
-     * 只读模式
+     * 用户名
      */
     @FXML
-    private FXCheckBox readonly;
+    private ClearableTextField userName;
 
     /**
-     * 监听节点
+     * 密码
      */
     @FXML
-    private FXCheckBox listen;
-
-    /**
-     * 兼容模式开关
-     */
-    @FXML
-    private FXCheckBox compatibility;
+    private ClearableTextField password;
 
     /**
      * tab组件
@@ -94,12 +88,6 @@ public class SSHAddConnectController extends StageController {
      */
     @FXML
     private NumberTextField connectTimeOut;
-
-    /**
-     * 会话超时时间
-     */
-    @FXML
-    private NumberTextField sessionTimeOut;
 
     /**
      * 分组
@@ -159,6 +147,16 @@ public class SSHAddConnectController extends StageController {
         if (host == null) {
             return;
         }
+        String userName = this.userName.getTextTrim();
+        if (StringUtil.isBlank(userName)) {
+            this.userName.requestFocus();
+            return;
+        }
+        String password = this.password.getTextTrim();
+        if (StringUtil.isBlank(password)) {
+            this.password.requestFocus();
+            return;
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -168,9 +166,10 @@ public class SSHAddConnectController extends StageController {
             SSHConnect sshConnect = new SSHConnect();
             sshConnect.setName(name);
             Number connectTimeOut = this.connectTimeOut.getValue();
-            Number sessionTimeOut = this.sessionTimeOut.getValue();
 
             sshConnect.setHost(host.trim());
+            sshConnect.setUser(userName.trim());
+            sshConnect.setPassword(password.trim());
             sshConnect.setRemark(this.remark.getTextTrim());
             sshConnect.setGroupId(this.group == null ? null : this.group.getGid());
             sshConnect.setConnectTimeOut(connectTimeOut.intValue());
