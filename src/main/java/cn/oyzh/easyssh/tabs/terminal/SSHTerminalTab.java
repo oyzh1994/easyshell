@@ -2,8 +2,7 @@ package cn.oyzh.easyssh.tabs.terminal;
 
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.ssh.SSHClient;
-import cn.oyzh.easyssh.ssh.SSHEvents;
-import cn.oyzh.fx.gui.tabs.DynamicTab;
+import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import javafx.scene.CacheHint;
@@ -16,11 +15,11 @@ import javafx.scene.Node;
  * @author oyzh
  * @since 2023/7/21
  */
-public class SSHTerminalTab extends DynamicTab {
+public class SSHTerminalTab extends RichTab {
 
     {
         this.setClosable(true);
-        this.setOnCloseRequest(event -> EventUtil.fire(SSHEvents.SSH_CLOSE_CONNECT, this.info()));
+//        this.setOnCloseRequest(event -> EventUtil.fire(SSHEvents.SSH_CLOSE_CONNECT, this.info()));
         this.loadContent();
     }
 

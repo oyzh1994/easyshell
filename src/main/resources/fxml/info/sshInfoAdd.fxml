@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyfx.controls.CancelButton?>
-<?import cn.oyzh.easyfx.controls.FlexHBox?>
-<?import cn.oyzh.easyfx.controls.FlexTabPane?>
-<?import cn.oyzh.easyfx.controls.FlexTextField?>
-<?import cn.oyzh.easyfx.controls.FlexVBox?>
+<?import cn.oyzh.easyfx.controls.FXHBox?>
+<?import cn.oyzh.easyfx.controls.FXTabPane?>
+<?import cn.oyzh.easyfx.controls.FXTextField?>
+<?import cn.oyzh.easyfx.controls.FXVBox?>
 <?import cn.oyzh.easyfx.controls.FXLabel?>
 <?import cn.oyzh.easyfx.controls.FXTab?>
 <?import cn.oyzh.easyfx.controls.IconButton?>
@@ -16,12 +16,12 @@
 <?import cn.oyzh.easyfx.svg.SVGGlyph?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FlexVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyssh.controller.info.SSHInfoAddController" realWidth="750" realHeight="320">
-    <FlexTabPane flexWidth="100%" flexHeight="100% - 60" fx:id="tabPane">
+<FXVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.info.SSHConnectAddController" realWidth="750" realHeight="320">
+    <FXTabPane flexWidth="100%" flexHeight="100% - 60" fx:id="tabPane">
         <FXTab text="基础设置">
-            <FlexVBox flexWidth="100%" flexHeight="100%">
-                <FlexHBox flexWidth="100%" realHeight="50">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox flexWidth="100%" realHeight="50">
                     <FXLabel realHeight="30" realWidth="65" text="名      称" styleClass="lbl,lbl-primary">
                         <HBox.margin>
                             <Insets left="20" top="10"/>
@@ -33,8 +33,8 @@
                             <Insets left="10" top="10"/>
                         </HBox.margin>
                     </RangeTextField>
-                </FlexHBox>
-                <FlexHBox flexWidth="100%" realHeight="50">
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
                     <FXLabel realHeight="30" realWidth="65" text="主机地址" styleClass="lbl,lbl-primary">
                         <HBox.margin>
                             <Insets left="20" top="10"/>
@@ -65,8 +65,8 @@
                             <Insets left="5" top="10"/>
                         </HBox.margin>
                     </NumberFieldExt>
-                </FlexHBox>
-                <FlexHBox flexWidth="100%" realHeight="50">
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
                     <FXLabel realHeight="30" realWidth="65" text="认证信息" styleClass="lbl,lbl-primary">
                         <HBox.margin>
                             <Insets left="20" top="10"/>

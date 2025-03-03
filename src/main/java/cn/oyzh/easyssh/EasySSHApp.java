@@ -5,6 +5,9 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyssh.controller.MainController;
 import cn.oyzh.easyssh.controller.SettingController;
+import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.parser.SSHExceptionParser;
+import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.store.SSHStoreUtil;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.fx.gui.tray.DesktopTrayItem;
@@ -76,7 +79,7 @@ public class EasySSHApp extends FXApplication {
             // 禁用fx的css日志
             FXUtil.disableCSSLogger();
             // 配置对象
-            ZKSetting setting = ZKSettingStore.SETTING;
+            SSHSetting setting = SSHSettingStore.SETTING;
             // 应用区域
             I18nManager.apply(setting.getLocale());
             // 应用字体
@@ -86,7 +89,7 @@ public class EasySSHApp extends FXApplication {
             // 应用透明度
             OpacityManager.apply(setting.opacityConfig());
             // 注册异常处理器
-            MessageBox.registerExceptionParser(ZKExceptionParser.INSTANCE);
+            MessageBox.registerExceptionParser(SSHExceptionParser.INSTANCE);
             // 调用父类
             super.init();
         } catch (Exception ex) {

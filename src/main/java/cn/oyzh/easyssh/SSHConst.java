@@ -33,4 +33,6 @@ public class SSHConst {
      */
     public final static String ICON_PATH = "/image/ssh_clip.png";
 
+    public final static String TRAY_ICON_PATH = "/image/ssh_clip.png";
+
 }

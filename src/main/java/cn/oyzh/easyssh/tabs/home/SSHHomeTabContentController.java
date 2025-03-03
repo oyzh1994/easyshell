@@ -1,7 +1,7 @@
 package cn.oyzh.easyssh.tabs.home;
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.easyssh.ssh.SSHEvents;
+import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,8 +32,7 @@ public class SSHHomeTabContentController implements Initializable {
     /**
      * 项目对象
      */
-    @Autowired
-    private Project project;
+    private Project project = Project.load();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,7 +52,7 @@ public class SSHHomeTabContentController implements Initializable {
      */
     @FXML
     private void addConnect() {
-        EventUtil.fire(SSHEvents.SSH_ADD_CONNECT);
+        SSHEventUtil.showAddConnect();
     }
 
     /**
@@ -61,15 +60,6 @@ public class SSHHomeTabContentController implements Initializable {
      */
     @FXML
     private void addGroup() {
-        EventUtil.fire(SSHEvents.SSH_ADD_GROUP);
+        SSHEventUtil.addGroup();
     }
-
-    /**
-     * 打开终端
-     */
-    @FXML
-    private void openTerminal() {
-        EventUtil.fire(SSHEvents.SSH_OPEN_TERMINAL);
-    }
-
 }

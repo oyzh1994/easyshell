@@ -2,7 +2,7 @@ package cn.oyzh.easyssh.trees.connect;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.controller.connect.SSHConnectAddController;
+import cn.oyzh.easyssh.controller.connect.SSHAddConnectController;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import cn.oyzh.easyssh.event.SSHEventUtil;
@@ -146,7 +146,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
      * 添加连接
      */
     private void addConnect() {
-        StageAdapter fxView = StageManager.parseStage(SSHConnectAddController.class, this.window());
+        StageAdapter fxView = StageManager.parseStage(SSHAddConnectController.class, this.window());
         fxView.setProp("group", this.value);
         fxView.display();
     }

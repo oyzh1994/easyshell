@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyfx.controls.CancelButton?>
-<?import cn.oyzh.easyfx.controls.FlexCheckBox?>
-<?import cn.oyzh.easyfx.controls.FlexHBox?>
-<?import cn.oyzh.easyfx.controls.FlexTabPane?>
-<?import cn.oyzh.easyfx.controls.FlexVBox?>
+<?import cn.oyzh.easyfx.controls.FXCheckBox?>
+<?import cn.oyzh.easyfx.controls.FXHBox?>
+<?import cn.oyzh.easyfx.controls.FXTabPane?>
+<?import cn.oyzh.easyfx.controls.FXVBox?>
 <?import cn.oyzh.easyfx.controls.FXLabel?>
 <?import cn.oyzh.easyfx.controls.FXRadioButton?>
 <?import cn.oyzh.easyfx.controls.FXTab?>
@@ -12,12 +12,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FlexVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="cn.oyzh.easyssh.controller.SettingController" realWidth="500" realHeight="280">
-    <FlexTabPane flexWidth="100%" flexHeight="100% - 60">
+    <FXTabPane flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="页面设置">
-            <FlexVBox flexWidth="100%">
-                <FlexHBox flexWidth="100%" realHeight="50">
+            <FXVBox flexWidth="100%">
+                <FXHBox flexWidth="100%" realHeight="50">
                     <FXLabel text="窗口关闭" realHeight="30" realWidth="65" styleClass="lbl,lbl-primary">
                         <HBox.margin>
                             <Insets left="20" top="10"/>
@@ -47,37 +47,37 @@
                     <VBox.margin>
                         <Insets top="10"/>
                     </VBox.margin>
-                </FlexHBox>
-                <FlexHBox flexWidth="100%" realHeight="50">
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
                     <FXLabel text="页面记忆" realHeight="30" realWidth="65" styleClass="lbl,lbl-primary">
                         <HBox.margin>
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </FXLabel>
-                    <FlexCheckBox text="记住页面大小" realHeight="25" fx:id="pageSize">
+                    <FXCheckBox text="记住页面大小" realHeight="25" fx:id="pageSize">
                         <HBox.margin>
                             <Insets left="10" top="12"/>
                         </HBox.margin>
-                    </FlexCheckBox>
-                    <FlexCheckBox text="记住页面位置" realHeight="25" fx:id="pageLocation">
+                    </FXCheckBox>
+                    <FXCheckBox text="记住页面位置" realHeight="25" fx:id="pageLocation">
                         <HBox.margin>
                             <Insets left="10" top="12"/>
                         </HBox.margin>
-                    </FlexCheckBox>
-                    <FlexCheckBox text="记住页面拉伸" selected="true" realHeight="25" fx:id="pageResize">
+                    </FXCheckBox>
+                    <FXCheckBox text="记住页面拉伸" selected="true" realHeight="25" fx:id="pageResize">
                         <HBox.margin>
                             <Insets left="10" top="12"/>
                         </HBox.margin>
-                    </FlexCheckBox>
+                    </FXCheckBox>
                     <VBox.margin>
                         <Insets top="10"/>
                     </VBox.margin>
-                </FlexHBox>
-            </FlexVBox>
+                </FXHBox>
+            </FXVBox>
         </FXTab>
-    </FlexTabPane>
+    </FXTabPane>
 
-    <FlexHBox flexWidth="100%" realHeight="50">
+    <FXHBox flexWidth="100%" realHeight="50">
         <SubmitButton onAction="#saveSetting" text="保存">
             <HBox.margin>
                 <Insets left="95" top="10"/>
@@ -88,5 +88,5 @@
                 <Insets left="15" top="10"/>
             </HBox.margin>
         </CancelButton>
-    </FlexHBox>
-</FlexVBox>
+    </FXHBox>
+</FXVBox>

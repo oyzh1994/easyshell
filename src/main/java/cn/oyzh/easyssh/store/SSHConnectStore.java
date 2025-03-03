@@ -27,4 +27,11 @@ public class SSHConnectStore extends JdbcStandardStore<SSHConnect> {
         return SSHConnect.class;
     }
 
+    public boolean replace(SSHConnect connect) {
+        return false;
+    }
+
+    public List<SSHConnect> loadFull() {
+        return null;
+    }
 }

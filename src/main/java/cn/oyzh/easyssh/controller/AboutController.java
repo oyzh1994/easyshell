@@ -4,7 +4,7 @@ package cn.oyzh.easyssh.controller;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.easyssh.SSHConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.text.FlexText;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -24,16 +24,16 @@ import javafx.stage.WindowEvent;
 public class AboutController extends StageController {
 
     @FXML
-    private FlexText name;
+    private FXText name;
 
     @FXML
-    private FlexText version;
+    private FXText version;
 
     @FXML
-    private FlexText updateDate;
+    private FXText updateDate;
 
     @FXML
-    private FlexText copyright;
+    private FXText copyright;
 
     /**
      * 项目信息

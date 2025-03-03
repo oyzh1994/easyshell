@@ -4,7 +4,7 @@
 //import cn.oyzh.common.thread.RunnableWrapper;
 //import cn.oyzh.common.thread.TimerUtil;
 //import cn.oyzh.common.util.TextUtil;
-//import cn.oyzh.easyfx.controller.FXController;
+//import cn.oyzh.easyfx.controller.StageController;
 //import cn.oyzh.easyfx.controls.BaseTextArea;
 //import cn.oyzh.easyfx.util.ControlUtil;
 //import cn.oyzh.easyfx.util.TreeViewUtil;
@@ -36,7 +36,7 @@
 // * @since 2023/06/22
 // */
 //@Accessors(chain = true, fluent = true)
-//public class SSHMainSearchHandler extends FXController {
+//public class SSHMainSearchHandler extends StageController {
 //
 //    /**
 //     * 键索引

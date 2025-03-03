@@ -1,13 +1,11 @@
 package cn.oyzh.easyssh.trees.connect;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyssh.controller.connect.SSHConnectAddController;
-import cn.oyzh.easyssh.event.connect.SSHAddConnectEvent;
+import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.event.connect.SSHConnectAddedEvent;
 import cn.oyzh.easyssh.event.connect.SSHConnectUpdatedEvent;
 import cn.oyzh.easyssh.event.group.SSHAddGroupEvent;
-import cn.oyzh.easyssh.event.query.SSHQueryAddedEvent;
-import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
+import cn.oyzh.easyssh.event.window.SSHShowAddConnectEvent;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -39,7 +37,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
     @Override
     protected void initRoot() {
         super.setRoot(new SSHRootTreeItem(this));
-        this.getRoot().expend();
+        this.root().expend();
         super.initRoot();
     }
 
@@ -56,15 +54,15 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
     }
 
     @Override
-    public SSHRootTreeItem getRoot() {
-        return (SSHRootTreeItem) super.getRoot();
+    public SSHRootTreeItem root() {
+        return (SSHRootTreeItem) super.root();
     }
 
     /**
      * 关闭连接
      */
     public void closeConnects() {
-        for (SSHConnectTreeItem treeItem : this.getRoot().getConnectedItems()) {
+        for (SSHConnectTreeItem treeItem : this.root().getConnectedItems()) {
             ThreadUtil.startVirtual(() -> treeItem.closeConnect(false));
         }
     }
@@ -102,7 +100,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
      */
     @EventSubscribe
     public void addGroup(SSHAddGroupEvent event) {
-        this.getRoot().addGroup();
+        this.root().addGroup();
     }
 
     /**
@@ -112,7 +110,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
      */
     @EventSubscribe
     private void connectAdded(SSHConnectAddedEvent event) {
-        this.getRoot().connectAdded(event.data());
+        this.root().connectAdded(event.data());
     }
 
     /**
@@ -122,22 +120,15 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
      */
     @EventSubscribe
     private void connectUpdated(SSHConnectUpdatedEvent event) {
-        this.getRoot().connectUpdated(event.data());
+        this.root().connectUpdated(event.data());
     }
 
     /**
      * 添加连接
      */
     @EventSubscribe
-    private void addConnect(SSHAddConnectEvent event) {
-        StageManager.showStage(SSHConnectAddController.class, this.window());
-    }
-
-    /**
-     * 查询已添加事件
-     */
-    @EventSubscribe
-    private void queryAdded(SSHQueryAddedEvent event) {
-        this.getRoot().queryAdded(event.data());
+    private void addConnect(SSHShowAddConnectEvent event) {
+//        StageManager.showStage(SSHConnectAddController.class, this.window());
+        SSHEventUtil.showAddConnect();
     }
 }

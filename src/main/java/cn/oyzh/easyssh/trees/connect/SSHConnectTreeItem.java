@@ -1,10 +1,11 @@
 package cn.oyzh.easyssh.trees.connect;
 
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.SystemUtil;
+import cn.oyzh.easyssh.controller.connect.SSHUpdateConnectController;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
@@ -75,31 +76,20 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
             FXMenuItem closeConnect = MenuItemHelper.closeConnect("12", this::closeConnect);
             FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
             FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
-            FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
-            FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
-            FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
 
             items.add(closeConnect);
             items.add(editConnect);
             items.add(cloneConnect);
-            items.add(exportData);
-            items.add(importData);
-            items.add(transportData);
         } else {
             FXMenuItem connect = MenuItemHelper.startConnect("12", this::connect);
             FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
             FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
             FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
-            FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
-            FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
             FXMenuItem cloneConnect = MenuItemHelper.repeatConnect("12", this::cloneConnect);
 
             items.add(connect);
             items.add(editConnect);
             items.add(renameConnect);
-            items.add(exportData);
-            items.add(importData);
-            items.add(transportData);
             items.add(cloneConnect);
             items.add(deleteConnect);
         }
@@ -153,31 +143,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     public void loadChild() {
         if (!this.isLoaded()) {
             this.setLoaded(true);
-            SSHDataTreeItem dataItem = new SSHDataTreeItem(this.getTreeView());
-            SSHQueriesTreeItem queryItem = new SSHQueriesTreeItem(this.getTreeView());
-            SSHServerInfoTreeItem informationItem = new SSHServerInfoTreeItem(this.getTreeView());
-            SSHTerminalTreeItem terminalItem = new SSHTerminalTreeItem(this.getTreeView());
-//            this.setChild(List.of(dataItem, informationItem, terminalItem));
-            this.setChild(List.of(dataItem, informationItem, queryItem, terminalItem));
         }
-    }
-
-    /**
-     * 导入数据
-     */
-    private void importData() {
-        StageAdapter fxView = StageManager.parseStage(SSHDataImportController.class, this.window());
-        fxView.setProp("connect", this.value);
-        fxView.display();
-    }
-
-    /**
-     * 传输数据
-     */
-    private void transportData() {
-        StageAdapter adapter = StageManager.parseStage(SSHDataTransportController.class, this.window());
-        adapter.setProp("sourceInfo", this.value);
-        adapter.display();
     }
 
     /**
@@ -222,7 +188,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
             }
             this.closeConnect();
         }
-        StageAdapter fxView = StageManager.parseStage(SSHConnectUpdateController.class, this.window());
+        StageAdapter fxView = StageManager.parseStage(SSHUpdateConnectController.class, this.window());
         fxView.setProp("zkConnect", this.value());
         fxView.display();
     }
@@ -289,11 +255,6 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
                 // 清理子节点
                 this.clearChild();
             }
-            // 连接中断事件
-            if (n == SSHConnState.SUSPENDED) {
-                this.client.close();
-                MessageBox.warn(this.value().getName() + I18nHelper.connectSuspended());
-            }
         });
         super.setValue(new SSHConnectTreeItemValue(this));
     }
@@ -349,9 +310,5 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
 
     public String getId() {
         return this.value.getId();
-    }
-
-    public SSHQueriesTreeItem queriesItem() {
-        return (SSHQueriesTreeItem) this.unfilteredChildren().stream().filter(i-> i instanceof SSHQueriesTreeItem).findAny().get();
     }
 }

@@ -9,7 +9,7 @@ import lombok.Data;
  * @since 2023/8/10
  */
 @Data
-public class SSHConnect {
+public class SSHConnectInfo {
 
     /**
      * 地址

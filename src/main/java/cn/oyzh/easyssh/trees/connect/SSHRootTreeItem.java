@@ -4,19 +4,13 @@ import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.controller.connect.SSHConnectAddController;
+import cn.oyzh.easyssh.controller.connect.SSHAddConnectController;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
-import cn.oyzh.easyssh.domain.SSHQuery;
 import cn.oyzh.easyssh.dto.SSHConnectExport;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.easyssh.store.SSHGroupStore;
-import cn.oyzh.easyssh.trees.connect.SSHConnectManager;
-import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
-import cn.oyzh.easyssh.trees.connect.SSHConnectTreeView;
-import cn.oyzh.easyssh.trees.connect.SSHGroupTreeItem;
-import cn.oyzh.easyssh.trees.connect.SSHRootTreeItemValue;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.drag.DragNodeItem;
@@ -179,7 +173,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      * 添加连接
      */
     private void addConnect() {
-        StageManager.showStage(SSHConnectAddController.class, this.window());
+        StageManager.showStage(SSHAddConnectController.class, this.window());
     }
 
     /**
@@ -401,17 +395,6 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
                 }
             }
             // this.addConnects(list);
-        }
-    }
-
-    public void queryAdded(SSHQuery query) {
-        List<SSHConnectTreeItem> items = this.getConnectItems();
-        if (items != null) {
-            for (SSHConnectTreeItem item : items) {
-                if (StringUtil.equals(item.getId(), query.getIid())) {
-                    item.queriesItem().add(query);
-                }
-            }
         }
     }
 }

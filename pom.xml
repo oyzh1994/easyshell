@@ -17,6 +17,11 @@
         <!-- ssh模块 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.oyzh</groupId>
             <artifactId>ssh</artifactId>
         </dependency>
 
@@ -24,6 +29,11 @@
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>event</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>fx-gui</artifactId>
         </dependency>
 
         <!-- java 辅助工具包 -->
@@ -39,10 +49,21 @@
             <artifactId>common</artifactId>
         </dependency>
 
+        <!-- 自定义类库，通用 -->
+        <dependency>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>event</artifactId>
+        </dependency>
+
         <!-- 自定义类库，shell相关 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>fx-gui</artifactId>
+        </dependency>
+        <!-- 自定义类库，shell相关 -->
+        <dependency>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>fx-plus</artifactId>
         </dependency>
 
         <!-- 自定义类库，shell相关 -->
@@ -62,6 +83,14 @@
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>2.1.4</version>
+        </dependency>
+
+        <!-- json类库 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

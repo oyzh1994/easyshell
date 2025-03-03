@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.FlexFlowPane?>
+<?import cn.oyzh.easyfx.controls.FXFlowPane?>
 <?import cn.oyzh.easyfx.svg.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.FlowPane?>
-<FlexFlowPane styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+<FXFlowPane styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
               fx:controller="cn.oyzh.easyssh.controller.HeaderController" flexWidth="100%" realHeight="30">
     <SVGLabel text="设置" onMousePrimaryClicked="#setting" tipText="程序设置" url="/font/setting.svg" size="14">
         <FlowPane.margin>
@@ -33,4 +33,4 @@
             <Insets left="10" top="5" bottom="5"/>
         </FlowPane.margin>
     </SVGLabel>
-</FlexFlowPane>
+</FXFlowPane>

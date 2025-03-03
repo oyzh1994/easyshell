@@ -43,10 +43,10 @@ public class SSHClient {
      */
     private Session session;
 
-    /**
-     * ssh交互式终端
-     */
-    private SSHShell shell;
+//    /**
+//     * ssh交互式终端
+//     */
+//    private SSHShell shell;
 
     /**
      * 连接状态
@@ -63,15 +63,18 @@ public class SSHClient {
     }
 
     /**
-     * 连接状态属性
-     *
-     * @return 连接状态属性
+     * 连接状态
      */
-    private ReadOnlyObjectWrapper<SSHConnState> connState() {
-        if (this.connState == null) {
-            this.connState = new ReadOnlyObjectWrapper<>(SSHConnState.NOT_INITIALIZED);
-        }
-        return this.connState;
+    @Getter
+    private final ReadOnlyObjectWrapper<SSHConnState> state = new ReadOnlyObjectWrapper<>();
+
+    /**
+     * 获取连接状态
+     *
+     * @return 连接状态
+     */
+    public SSHConnState state() {
+        return this.stateProperty().get();
     }
 
     /**
@@ -79,9 +82,31 @@ public class SSHClient {
      *
      * @return 连接状态属性
      */
-    private ReadOnlyObjectProperty<SSHConnState> connStateProperty() {
-        return this.connState().getReadOnlyProperty();
+    public ReadOnlyObjectProperty<SSHConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
     }
+
+//
+//    /**
+//     * 连接状态属性
+//     *
+//     * @return 连接状态属性
+//     */
+//    private ReadOnlyObjectWrapper<SSHConnState> state() {
+//        if (this.connState == null) {
+//            this.connState = new ReadOnlyObjectWrapper<>(SSHConnState.NOT_INITIALIZED);
+//        }
+//        return this.connState;
+//    }
+//
+//    /**
+//     * 连接状态属性
+//     *
+//     * @return 连接状态属性
+//     */
+//    private ReadOnlyObjectProperty<SSHConnState> connStateProperty() {
+//        return this.connState().getReadOnlyProperty();
+//    }
 
     /**
      * 添加连接状态监听器
@@ -91,7 +116,7 @@ public class SSHClient {
     public void addConnStateListener(@NonNull ChangeListener<SSHConnState> listener) {
         if (!this.connStateListeners.contains(listener)) {
             this.connStateListeners.add(listener);
-            this.connStateProperty().addListener(listener);
+            this.stateProperty().addListener(listener);
         }
     }
 
@@ -103,7 +128,7 @@ public class SSHClient {
     public void removeConnStateListener(ChangeListener<SSHConnState> listener) {
         if (listener != null) {
             this.connStateListeners.remove(listener);
-            this.connStateProperty().removeListener(listener);
+            this.stateProperty().removeListener(listener);
         }
     }
 
@@ -134,13 +159,13 @@ public class SSHClient {
     public void close() {
         try {
             if (this.isConnected()) {
-                if (this.shell != null) {
-                    this.shell.close();
-                }
+//                if (this.shell != null) {
+//                    this.shell.close();
+//                }
                 this.session.disconnect();
-                this.connState().set(SSHConnState.CLOSED);
+                this.state.set(SSHConnState.CLOSED);
             }
-            this.shell = null;
+//            this.shell = null;
             this.session = null;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -154,12 +179,12 @@ public class SSHClient {
         // 移除监听器
         if (!this.connStateListeners.isEmpty()) {
             for (ChangeListener<SSHConnState> listener : connStateListeners) {
-                this.connStateProperty().removeListener(listener);
+                this.stateProperty().removeListener(listener);
             }
             this.connStateListeners.clear();
         }
         this.close();
-        this.connState().set(SSHConnState.NOT_INITIALIZED);
+        this.state.set(SSHConnState.NOT_INITIALIZED);
     }
 
     /**
@@ -173,19 +198,19 @@ public class SSHClient {
             // 关闭旧连接
             this.close();
             // 初始化连接池
-            this.connState().set(SSHConnState.CONNECTING);
+            this.state.set(SSHConnState.CONNECTING);
             // 初始化客户端
             this.initClient();
             // 执行连接
             this.session.connect();
             // 判断连接结果
             if (this.session.isConnected()) {
-                this.connState().set(SSHConnState.CONNECTED);
+                this.state.set(SSHConnState.CONNECTED);
             } else {
-                this.connState().set(SSHConnState.FAILED);
+                this.state.set(SSHConnState.FAILED);
             }
         } catch (Exception ex) {
-            this.connState().set(SSHConnState.FAILED);
+            this.state.set(SSHConnState.FAILED);
             throw ex;
         }
     }
@@ -197,7 +222,7 @@ public class SSHClient {
      */
     public boolean isConnecting() {
         if (!this.isClosed()) {
-            return this.connState().get() == SSHConnState.CONNECTING;
+            return this.state.get() == SSHConnState.CONNECTING;
         }
         return false;
     }
@@ -209,7 +234,7 @@ public class SSHClient {
      */
     public boolean isConnected() {
         if (!this.isClosed()) {
-            return this.connState().get().isConnected();
+            return this.state.get().isConnected();
         }
         return false;
     }
@@ -220,7 +245,7 @@ public class SSHClient {
      * @return 结果
      */
     public boolean isClosed() {
-        return this.session == null || !this.session.isConnected() || !this.connState().get().isConnected();
+        return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
     }
 
     /**
@@ -232,26 +257,33 @@ public class SSHClient {
         return this.sshInfo.getName();
     }
 
-    /**
-     * 获取交互式终端
-     *
-     * @return 交互式终端
-     */
-    public SSHShell shell() throws Exception {
-        if (!this.isConnected()) {
-            return null;
-        }
-        try {
-            // 执行连接
-            if (this.shell == null) {
-                ChannelShell shell = (ChannelShell) this.session.openChannel("shell");
-                this.shell = new SSHShell(shell);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }
-        return this.shell;
+//    /**
+//     * 获取交互式终端
+//     *
+//     * @return 交互式终端
+//     */
+//    public SSHShell shell() throws Exception {
+//        if (!this.isConnected()) {
+//            return null;
+//        }
+//        try {
+//            // 执行连接
+//            if (this.shell == null) {
+//                ChannelShell shell = (ChannelShell) this.session.openChannel("shell");
+//                this.shell = new SSHShell(shell);
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            throw ex;
+//        }
+//        return this.shell;
+//    }
+
+    public Object connectName() {
+        return this.sshInfo.getName();
     }
 
+    public SSHConnect sshConnect() {
+        return this.sshInfo;
+    }
 }

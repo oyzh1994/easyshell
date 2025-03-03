@@ -1,40 +1,31 @@
 package cn.oyzh.easyssh.controller;
 
-import cn.oyzh.easyfx.controller.FXController;
-import cn.oyzh.easyfx.controls.FlexVBox;
-import cn.oyzh.easyfx.event.EventReceiver;
-import cn.oyzh.easyfx.event.EventUtil;
-import cn.oyzh.easyfx.keyboard.KeyboardListener;
-import cn.oyzh.easyfx.node.ResizeEnhance;
 import cn.oyzh.easyssh.domain.SSHConnect;
-import cn.oyzh.easyssh.domain.SSHPageInfo;
 import cn.oyzh.easyssh.domain.SSHSetting;
-import cn.oyzh.easyssh.fx.SSHConnectTreeItem;
-import cn.oyzh.easyssh.fx.SSHTreeView;
-import cn.oyzh.easyssh.ssh.SSHEvents;
-import cn.oyzh.easyssh.store.PageInfoStore;
+import cn.oyzh.easyssh.event.tree.SSHTreeItemChangedEvent;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.tabs.SSHTabPane;
+import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.gui.event.Layout1Event;
+import cn.oyzh.fx.gui.event.Layout2Event;
+import cn.oyzh.fx.plus.controller.ParentStageController;
+import cn.oyzh.fx.plus.controller.SubStageController;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+import cn.oyzh.fx.plus.node.NodeResizer;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.TreeItem;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.TransferMode;
 import javafx.stage.WindowEvent;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.util.List;
 
 
 /**
- * ssh键主页
+ * zk主页
  *
  * @author oyzh
- * @since 2023/06/22
+ * @since 2020/9/16
  */
-public class SSHMainController extends FXController {
+public class SSHMainController extends ParentStageController {
 
     /**
      * 配置对象
@@ -42,112 +33,45 @@ public class SSHMainController extends FXController {
     private final SSHSetting setting = SSHSettingStore.SETTING;
 
     /**
-     * 当前激活的ssh信息
-     */
-    private SSHConnect info;
-
-    /**
      * 左侧组件
      */
     @FXML
-    private FlexVBox mainLeft;
+    private FXTabPane tabPaneLeft;
 
     /**
-     * 左侧ssh树
-     */
-    @FXML
-    private SSHTreeView tree;
-
-    /**
-     * 大小调整增强
-     */
-    private ResizeEnhance resizeEnhance;
-
-    /**
-     * ssh切换面板
+     * zk切换面板
      */
     @FXML
     private SSHTabPane tabPane;
 
     /**
-     * 页面信息
-     */
-    private final SSHPageInfo pageInfo = PageInfoStore.PAGE_INFO;
-
-    /**
-     * 页面信息储存
-     */
-    private final PageInfoStore pageInfoStore = PageInfoStore.INSTANCE;
-
-    /**
-     * ssh信息修改事件
+     * 刷新窗口标题
      *
-     * @param info ssh信息
+     * @param connect zk连接
      */
-    @EventReceiver(value = SSHEvents.SSH_INFO_UPDATED, async = true)
-    private void onInfoUpdate(SSHConnect info) {
-        if (this.info == info) {
-            this.view.appendTitle(" (" + info.getName() + ")");
-        }
-    }
-
-    /**
-     * 树节点变化事件
-     *
-     * @param item 节点
-     */
-    private void treeItemChanged(TreeItem<?> item) {
-        if (item instanceof SSHConnectTreeItem treeItem) {
-            this.connectTreeItemChanged(treeItem);
+    private void flushViewTitle(SSHConnect connect) {
+        if (connect != null) {
+            this.stage.appendTitle(" (" + connect.getName() + ")");
         } else {
-            this.connectTreeItemChanged(null);
+            this.stage.restoreTitle();
         }
-    }
-
-    /**
-     * 连接节点变化事件
-     *
-     * @param item 连接节点
-     */
-    private void connectTreeItemChanged(SSHConnectTreeItem item) {
-        if (item == null) {
-            this.info = null;
-            this.view.restoreTitle();
-        } else if (this.info != item.value()) {
-            this.info = item.value();
-            this.onInfoUpdate(this.info);
-        }
-        EventUtil.fire(SSHEvents.CONNECTION_CHANGED, item);
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        // 注册事件处理
-        EventUtil.register(this);
-        EventUtil.register(this.tree);
-        EventUtil.register(this.tabPane);
-
         // 设置上次保存的页面拉伸
         if (this.setting.isRememberPageResize()) {
-            this.resizeMainLeft(this.pageInfo.getMainLeftWidth());
+            this.resizeLeft(this.setting.getPageLeftWidth());
         }
     }
 
     @Override
     public void onWindowHidden(WindowEvent event) {
         super.onWindowHidden(event);
-        // 取消注册事件处理
-        EventUtil.unregister(this);
-        EventUtil.unregister(this.tree);
-        EventUtil.unregister(this.tabPane);
-        // 关闭连接
-        this.tree.closeConnects();
         // 保存页面拉伸
         this.savePageResize();
-        // 取消F5按键监听
-        KeyboardListener.unListenKeyReleased(this.tree, KeyCode.F5);
-        KeyboardListener.unListenKeyReleased(this.tabPane, KeyCode.F5);
+        // KeyListener.unListenReleased(this.tabPane, KeyCode.F5);
     }
 
     /**
@@ -155,13 +79,13 @@ public class SSHMainController extends FXController {
      *
      * @param newWidth 新宽度
      */
-    private void resizeMainLeft(Double newWidth) {
+    private void resizeLeft(Float newWidth) {
         if (newWidth != null && !Double.isNaN(newWidth)) {
             // 设置组件宽
-            this.mainLeft.setWidthAll(newWidth);
+            this.tabPaneLeft.setRealWidth(newWidth);
             this.tabPane.setLayoutX(newWidth);
             this.tabPane.setFlexWidth("100% - " + newWidth);
-            this.mainLeft.parentAutosize();
+            this.tabPaneLeft.parentAutosize();
         }
     }
 
@@ -176,100 +100,58 @@ public class SSHMainController extends FXController {
      */
     private void savePageResize() {
         if (this.setting.isRememberPageResize()) {
-            this.pageInfo.setMainLeftWidth(this.mainLeft.getMinWidth());
-            this.pageInfoStore.update(this.pageInfo);
+            this.setting.setPageLeftWidth((float) this.tabPaneLeft.getMinWidth());
+            SSHSettingStore.INSTANCE.replace(this.setting);
         }
     }
 
     @Override
     protected void bindListeners() {
-        this.tabPane.selectedTabChanged((abs, o, n) -> {
-            if (o != null) {
-                o.getStyleClass().remove("tab-active");
-            }
-            if (n != null) {
-                n.getStyleClass().add("tab-active");
-            }
-        });
-        // ssh树键变化事件
-        this.tree.treeItemChanged(this::treeItemChanged);
-
-        // 文件拖拽相关
-        this.view.getScene().setOnDragOver(event1 -> {
-            // 忽略ssh树的拖动
-            Dragboard dragboard = event1.getDragboard();
-            if (dragboard != null && Objects.equals(dragboard.getString(), "ssh_tree_drag")) {
-                return;
-            }
-            this.view.disable();
-            this.view.appendTitle("===松开鼠标以释放文件===");
-            event1.acceptTransferModes(TransferMode.ANY);
-            event1.consume();
-        });
-        this.view.getScene().setOnDragExited(event1 -> {
-            // 忽略ssh树的拖动
-            Dragboard dragboard = event1.getDragboard();
-            if (dragboard != null && Objects.equals(dragboard.getString(), "ssh_tree_drag")) {
-                return;
-            }
-            this.view.enable();
-            this.view.restoreTitle();
-            event1.consume();
-        });
-        this.view.getScene().setOnDragDropped(event1 -> {
-            // 忽略ssh树的拖动
-            Dragboard dragboard = event1.getDragboard();
-            if (dragboard != null && Objects.equals(dragboard.getString(), "ssh_tree_drag")) {
-                return;
-            }
-            this.tree.root().dragFile(event1);
-            event1.setDropCompleted(true);
-            event1.consume();
-        });
-
-        // 拖动改变ssh树大小处理
-        this.resizeEnhance = new ResizeEnhance(this.mainLeft, Cursor.DEFAULT);
-        this.resizeEnhance.minWidth(390d);
-        this.resizeEnhance.maxWidth(800d);
-        this.resizeEnhance.triggerThreshold(8d);
-        this.resizeEnhance.mouseDragged(event -> {
-            double sceneX = event.getSceneX();
-            if (this.resizeEnhance.resizeWidthAble(sceneX)) {
-                // 左侧组件重新布局
-                this.resizeMainLeft(sceneX);
-            }
-        });
-
-        // 初始化拉伸事件
-        this.tree.setOnMouseMoved(this.resizeEnhance.mouseMoved());
-        this.resizeEnhance.initResizeEvent();
-
-        // 监听F5按键
-        KeyboardListener.listenKeyReleased(this.tree, KeyCode.F5, keyEvent -> this.tree.reload());
+        // 大小调整增强
+        NodeResizer resizer = new NodeResizer(this.tabPaneLeft, Cursor.DEFAULT, this::resizeLeft);
+        resizer.widthLimit(240f, 650f);
+        resizer.initResizeEvent();
+        // // 搜索触发事件
+        // KeyListener.listenReleased(this.stage, new KeyHandler().keyCode(KeyCode.F).controlDown(true).handler(t1 -> SSHEventUtil.searchFire()));
+        // // 刷新触发事件
+        // KeyListener.listenReleased(this.tabPane, KeyCode.F5, keyEvent -> this.tabPane.reload());
     }
 
     /**
-     * 展开左侧
+     * 树节点变化事件
+     *
+     * @param event 事件
      */
-    @EventReceiver(value = SSHEvents.LEFT_EXTEND, async = true, verbose = true)
-    private void leftExtend() {
-        this.mainLeft.showNode();
-        double w = this.mainLeft.getMinWidth();
+    @EventSubscribe
+    private void treeItemChanged(SSHTreeItemChangedEvent event) {
+            this.flushViewTitle(null);
+    }
+
+    /**
+     * 布局2
+     */
+    @EventSubscribe
+    private void layout2(Layout2Event event) {
+        this.tabPaneLeft.display();
+        double w = this.tabPaneLeft.realWidth();
         this.tabPane.setLayoutX(w);
         this.tabPane.setFlexWidth("100% - " + w);
-        this.mainLeft.parentAutosize();
-        JulLog.info("LEFT_EXTEND.");
+        this.tabPaneLeft.parentAutosize();
     }
 
     /**
-     * 收缩左侧
+     * 布局1
      */
-    @EventReceiver(value = SSHEvents.LEFT_COLLAPSE, async = true, verbose = true)
-    private void leftCollapse() {
-        this.mainLeft.hideNode();
+    @EventSubscribe
+    private void layout1(Layout1Event event) {
+        this.tabPaneLeft.disappear();
         this.tabPane.setLayoutX(0);
         this.tabPane.setFlexWidth("100%");
-        this.mainLeft.parentAutosize();
-        JulLog.info("LEFT_COLLAPSE.");
+        this.tabPaneLeft.parentAutosize();
+    }
+
+    @Override
+    public List<SubStageController> getSubControllers() {
+        return List.of();
     }
 }

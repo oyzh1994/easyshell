@@ -1,14 +1,13 @@
 package cn.oyzh.easyssh.controller;
 
-import cn.oyzh.common.dto.Project;
-import cn.oyzh.easyssh.ssh.SSHEvents;
+import cn.oyzh.common.SysConst;
+import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controller.SubStageController;
-import cn.oyzh.fx.plus.controls.svg.SVGLabel;
+import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeMutexes;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
@@ -16,43 +15,16 @@ import javafx.stage.WindowEvent;
  * 主页头部业务
  *
  * @author oyzh
- * @since 2023/06/16
+ * @since 2022/1/26
  */
-public class HeaderController extends SubStageController {
-
-    /**
-     * 项目信息
-     */
-    private final Project project = Project.load();
-
-    /**
-     * 展开ssh树
-     */
-    @FXML
-    private SVGLabel expandTree;
-
-    /**
-     * 收缩ssh树
-     */
-    @FXML
-    private SVGLabel collapseTree;
-
-    /**
-     * ssh树互斥器
-     */
-    private final NodeMutexes treeMutexes = new NodeMutexes();
+public class HeaderController extends StageController {
 
     /**
      * 设置
      */
     @FXML
     private void setting() {
-        StageAdapter fxView = StageManager.getStage(SettingController.class);
-        if (fxView != null) {
-            fxView.toFront();
-        } else {
-            StageManager.showStage(SettingController.class, this.stage);
-        }
+        SSHEventUtil.showSetting();
     }
 
     /**
@@ -60,7 +32,7 @@ public class HeaderController extends SubStageController {
      */
     @FXML
     private void about() {
-        StageManager.showStage(AboutController.class, this.stage);
+        SSHEventUtil.showAbout();
     }
 
     /**
@@ -68,33 +40,46 @@ public class HeaderController extends SubStageController {
      */
     @FXML
     private void quit() {
-        if (MessageBox.confirm("确定退出" + this.project.getName() + "？")) {
-            EventUtil.fire(SSHEvents.APP_EXIT);
+        if (MessageBox.confirm(I18nHelper.quit() + " " + SysConst.projectName())) {
+            StageManager.exit();
         }
     }
 
     /**
-     * 收缩左侧ssh树
+     * 工具箱
      */
     @FXML
-    private void collapseTree() {
-        this.treeMutexes.visible(this.expandTree);
-        EventUtil.fire(SSHEvents.LEFT_COLLAPSE);
+    private void tool() {
+        SSHEventUtil.showTool();
     }
 
     /**
-     * 展开左侧ssh树
+     * 布局1
      */
     @FXML
-    private void expandTree() {
-        this.treeMutexes.visible(this.collapseTree);
-        EventUtil.fire(SSHEvents.LEFT_EXTEND);
+    private void layout1() {
+        SSHEventUtil.layout1();
     }
 
+    /**
+     * 布局2
+     */
+    @FXML
+    private void layout2() {
+        SSHEventUtil.layout2();
+    }
+
+    /**
+     * 分割面板
+     */
+    @FXML
+    private FXPane splitPane;
+
     @Override
-    public void onWindowShown(WindowEvent event) {
-        super.onWindowShown(event);
-        this.treeMutexes.addNodes(this.collapseTree, this.expandTree);
-        this.treeMutexes.manageBindVisible();
+    public void onWindowShowing(WindowEvent event) {
+        super.onWindowShowing(event);
+        if (OSUtil.isWindows() || OSUtil.isLinux()) {
+            this.splitPane.setFlexHeight("100% - 280");
+        }
     }
 }

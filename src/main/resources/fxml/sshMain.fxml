@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.FlexPane?>
-<?import cn.oyzh.easyfx.controls.FlexVBox?>
+<?import cn.oyzh.easyfx.controls.FXPane?>
+<?import cn.oyzh.easyfx.controls.FXVBox?>
 <?import cn.oyzh.easyssh.fx.SSHTreeView?>
 <?import cn.oyzh.easyssh.tabs.SSHTabPane?>
-<FlexPane styleClass="mainPane,panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+<FXPane styleClass="mainPane,panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="cn.oyzh.easyssh.controller.SSHMainController" flexWidth="100%" flexHeight="100% - 30">
-    <FlexVBox realWidth="440" flexHeight="100%" fx:id="mainLeft"
+    <FXVBox realWidth="440" flexHeight="100%" fx:id="mainLeft"
               style="-fx-border-width: 0 1 0 0; -fx-border-color: gray">
         <SSHTreeView fx:id="tree" flexHeight="100%" flexWidth="100% - 8"/>
-    </FlexVBox>
+    </FXVBox>
     <SSHTabPane fx:id="tabPane" layoutX="440" flexWidth="100% - 440" tabClosingPolicy="ALL_TABS" flexHeight="100%"/>
-</FlexPane>
+</FXPane>

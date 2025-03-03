@@ -2,6 +2,7 @@ package cn.oyzh.easyssh.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.dto.SSHConnectInfo;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -84,36 +85,10 @@ public class SSHConnectUtil {
      * @param input 输入内容
      * @return 连接
      */
-    public static cn.oyzh.easyssh.dto.SSHConnect parse(String input) {
-        if (input == null) {
-            return null;
-        }
-        try {
-            String[] words = input.split(" ");
-            cn.oyzh.easyssh.dto.SSHConnect connect = new cn.oyzh.easyssh.dto.SSHConnect();
-            int type = -1;
-            for (String word : words) {
-                if (type == 0) {
-                    connect.setHost(word.trim());
-                } else if (type == 1) {
-                    connect.setPort(Integer.parseInt(word.trim()));
-                } else if (type == 2) {
-                    connect.setPassword(word.trim());
-                }
-                if (word.equalsIgnoreCase("-h")) {
-                    type = 0;
-                } else if (word.equalsIgnoreCase("-p")) {
-                    type = 1;
-                } else if (word.equalsIgnoreCase("-a")) {
-                    type = 2;
-                } else {
-                    type = -1;
-                }
-            }
-            return connect;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public static SSHConnectInfo parse(String input) {
         return null;
+    }
+
+    public static void testConnect(StageAdapter stage, SSHConnect zkConnect) {
     }
 }

@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
-<?import cn.oyzh.easyfx.controls.FlexVBox?>
-<?import cn.oyzh.easyfx.controls.FlexHBox?>
+<?import cn.oyzh.easyfx.controls.FXVBox?>
+<?import cn.oyzh.easyfx.controls.FXHBox?>
 <?import cn.oyzh.easyfx.controls.FXLabel?>
-<?import cn.oyzh.easyfx.controls.FlexText?>
-<FlexVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
+<?import cn.oyzh.easyfx.controls.FXText?>
+<FXVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="cn.oyzh.easyssh.controller.AboutController" realWidth="330" realHeight="120">
-    <FlexHBox flexWidth="100%" realHeight="25">
+    <FXHBox flexWidth="100%" realHeight="25">
         <FXLabel text="程序名称：">
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </FXLabel>
-        <FlexText fx:id="name">
+        <FXText fx:id="name">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </FlexText>
-    </FlexHBox>
-    <FlexHBox flexWidth="100%" realHeight="25">
+        </FXText>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="25">
         <FXLabel text="程序版本：">
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </FXLabel>
-        <FlexText fx:id="version">
+        <FXText fx:id="version">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </FlexText>
-    </FlexHBox>
-    <FlexHBox flexWidth="100%" realHeight="25">
+        </FXText>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="25">
         <FXLabel text="更新日期：">
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </FXLabel>
-        <FlexText fx:id="updateDate">
+        <FXText fx:id="updateDate">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </FlexText>
-    </FlexHBox>
-    <FlexHBox flexWidth="100%" realHeight="25">
-        <FlexText fx:id="copyright">
+        </FXText>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="25">
+        <FXText fx:id="copyright">
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>
-        </FlexText>
-    </FlexHBox>
-</FlexVBox>
+        </FXText>
+    </FXHBox>
+</FXVBox>

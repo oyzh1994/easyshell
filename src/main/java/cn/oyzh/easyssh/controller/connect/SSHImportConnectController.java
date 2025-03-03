@@ -1,0 +1,162 @@
+package cn.oyzh.easyssh.controller.connect;
+
+import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.SSHGroup;
+import cn.oyzh.easyssh.dto.SSHConnectExport;
+import cn.oyzh.easyssh.event.SSHEventUtil;
+import cn.oyzh.easyssh.store.SSHConnectStore;
+import cn.oyzh.easyssh.store.SSHGroupStore;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.fx.plus.file.FileChooserHelper;
+import cn.oyzh.fx.plus.file.FileExtensionFilter;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+
+import java.io.File;
+import java.util.List;
+
+
+/**
+ * zk连接导入业务
+ *
+ * @author oyzh
+ * @since 2025/02/21
+ */
+@StageAttribute(
+        stageStyle = FXStageStyle.UNIFIED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "connect/zkImportConnect.fxml"
+)
+public class SSHImportConnectController extends StageController {
+
+    /**
+     * 导入文件
+     */
+    private File importFile;
+
+    /**
+     * 文件名
+     */
+    @FXML
+    private FXText fileName;
+
+    /**
+     * 选择文件
+     */
+    @FXML
+    private FXButton selectFile;
+
+    /**
+     * 包含分组
+     */
+    @FXML
+    private FXCheckBox includeGroup;
+
+    /**
+     * 分组存储
+     */
+    private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
+
+    /**
+     * 连接存储
+     */
+    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+
+    /**
+     * 执行导入
+     */
+    @FXML
+    private void doImport() {
+        try {
+            String text = FileUtil.readUtf8String(this.importFile);
+            SSHConnectExport export = SSHConnectExport.fromJSON(text);
+            List<SSHConnect> connects = export.getConnects();
+            boolean success = true;
+            if (CollectionUtil.isNotEmpty(connects)) {
+                for (SSHConnect connect : connects) {
+                    if (!this.connectStore.replace(connect)) {
+                        success = false;
+                    }
+                }
+            }
+            List<SSHGroup> groups = export.getGroups();
+            if (this.includeGroup.isSelected() && CollectionUtil.isNotEmpty(groups)) {
+                for (SSHGroup group : groups) {
+                    if (!this.groupStore.replace(group)) {
+                        success = false;
+                    }
+                }
+            }
+            if (success) {
+                MessageBox.okToast(I18nHelper.importConnectionSuccess());
+                SSHEventUtil.connectImported();
+                this.closeWindow();
+            } else {
+                MessageBox.warn(I18nHelper.importConnectionFail());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, I18nHelper.importConnectionFail());
+        }
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nHelper.importConnect();
+    }
+
+    /**
+     * 选择文件
+     */
+    @FXML
+    private void selectFile() {
+        FileExtensionFilter filter = FileChooserHelper.jsonExtensionFilter();
+        this.importFile = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
+        this.parseFile();
+    }
+
+    private void parseFile() {
+        if (this.importFile == null) {
+            this.fileName.clear();
+            return;
+        }
+        this.fileName.setText(this.importFile.getPath());
+        if (!this.importFile.exists()) {
+            MessageBox.warn(I18nHelper.fileNotExists());
+            return;
+        }
+        if (this.importFile.isDirectory()) {
+            MessageBox.warn(I18nHelper.notSupportFolder());
+            return;
+        }
+        if (!FileNameUtil.isJsonType(FileNameUtil.extName(this.importFile.getName()))) {
+            MessageBox.warn(I18nHelper.invalidFormat());
+            return;
+        }
+        if (this.importFile.length() == 0) {
+            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+        }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        this.importFile = this.getWindowProp("file");
+        if (this.importFile != null) {
+            this.selectFile.disable();
+            this.parseFile();
+        }
+    }
+}

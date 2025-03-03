@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.FlexPane?>
+<?import cn.oyzh.easyfx.controls.FXPane?>
 <?import cn.oyzh.easyfx.controls.FXLabel?>
 <?import cn.oyzh.easyfx.controls.FXText?>
 <?import cn.oyzh.easyfx.controls.IconButton?>
 <?import cn.oyzh.easyfx.svg.SVGGlyph?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<FlexPane flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<FXPane flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="cn.oyzh.easyssh.tabs.home.SSHHomeTabContentController">
     <ImageView fitWidth="120" fitHeight="120" layoutX="120" layoutY="120">
@@ -33,4 +33,4 @@
             <SVGGlyph url="/font/code library.svg"/>
         </graphic>
     </IconButton>
-</FlexPane>
+</FXPane>

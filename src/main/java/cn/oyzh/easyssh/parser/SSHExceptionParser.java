@@ -1,16 +1,14 @@
 package cn.oyzh.easyssh.parser;
 
-import cn.oyzh.common.util.StringUtil;
-import com.jcraft.jsch.JSchException;
-import lombok.NonNull;
+import java.util.function.Function;
 
 /**
- * ssh异常信息解析
+ * zk异常解析器
  *
  * @author oyzh
- * @since 2023/7/2
+ * @since 2020/7/2
  */
-public class SSHExceptionParser implements Parser<Exception, String> {
+public class SSHExceptionParser implements Function<Throwable, String> {
 
     /**
      * 当前实例
@@ -18,31 +16,18 @@ public class SSHExceptionParser implements Parser<Exception, String> {
     public final static SSHExceptionParser INSTANCE = new SSHExceptionParser();
 
     @Override
-    public String parse(@NonNull Exception e) {
-        String message = e.getMessage();
-
-        if (e instanceof JSchException) {
-            if (StringUtil.contains(message, "java.net.UnknownHostException")) {
-                return "主机地址异常";
-            }
-            if (StringUtil.contains(message, "Auth fail")) {
-                return "认证失败";
-            }
-            if (StringUtil.contains(message, "connection is closed by foreign host")) {
-                return "连接被外部主机关闭";
-            }
-            if (StringUtil.contains(message, "Connection refused: connect")) {
-                return "拒绝连接";
-            }
-            if (StringUtil.contains(message, "socket is not established")) {
-                return "连接未建立";
-            }
-            if (StringUtil.contains(message, "session is down")) {
-                return "会话已断开";
-            }
-            return message;
+    public String apply(Throwable e) {
+        if (e == null) {
+            return null;
         }
 
+        if (e instanceof RuntimeException) {
+            if (e.getCause() != null) {
+                e = e.getCause();
+            }
+        }
+
+        String message = e.getMessage();
         if (e instanceof UnsupportedOperationException) {
             return message;
         }
@@ -52,6 +37,6 @@ public class SSHExceptionParser implements Parser<Exception, String> {
         }
 
         e.printStackTrace();
-        return "未知错误！";
+        return message;
     }
 }
