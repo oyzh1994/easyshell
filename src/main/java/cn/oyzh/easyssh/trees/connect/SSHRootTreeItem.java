@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * zk树根节点
+ * ssh树根节点
  *
  * @author oyzh
  * @since 2023/1/29
@@ -40,12 +40,12 @@ import java.util.Optional;
 public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implements SSHConnectManager {
 
     /**
-     * zk分组储存
+     * ssh分组储存
      */
     private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
 
     /**
-     * zk连接储存
+     * ssh连接储存
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
 
@@ -84,7 +84,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
         }
         SSHConnectExport export = SSHConnectExport.fromConnects(infos);
         FileExtensionFilter extensionFilter = FileChooserHelper.jsonExtensionFilter();
-        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.zk", "base.connect", "base._json"), extensionFilter);
+        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.ssh", "base.connect", "base._json"), extensionFilter);
         if (file != null) {
             try {
                 FileUtil.writeUtf8String(export.toJSONString(), file);
@@ -237,29 +237,29 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     /**
      * 连接新增事件
      *
-     * @param zkConnect zk连接
+     * @param sshConnect ssh连接
      */
-    public void connectAdded(SSHConnect zkConnect) {
-        this.addConnect(zkConnect);
+    public void connectAdded(SSHConnect sshConnect) {
+        this.addConnect(sshConnect);
     }
 
     /**
      * 连接变更事件
      *
-     * @param zkConnect zk连接
+     * @param sshConnect ssh连接
      */
-    public void connectUpdated(SSHConnect zkConnect) {
+    public void connectUpdated(SSHConnect sshConnect) {
         f1:
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof SSHConnectTreeItem connectTreeItem) {
-                if (connectTreeItem.value() == zkConnect) {
-                    connectTreeItem.value(zkConnect);
+                if (connectTreeItem.value() == sshConnect) {
+                    connectTreeItem.value(sshConnect);
                     break;
                 }
             } else if (item instanceof SSHGroupTreeItem groupTreeItem) {
                 for (SSHConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
-                    if (connectTreeItem.value() == zkConnect) {
-                        connectTreeItem.value(zkConnect);
+                    if (connectTreeItem.value() == sshConnect) {
+                        connectTreeItem.value(sshConnect);
                         break f1;
                     }
                 }

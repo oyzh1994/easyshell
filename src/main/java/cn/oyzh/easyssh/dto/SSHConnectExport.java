@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * zk连接导出对象
+ * ssh连接导出对象
  *
  * @author oyzh
  * @since 2023/2/22
@@ -44,7 +44,7 @@ public class SSHConnectExport {
     private List<SSHConnect> connects;
 
     /**
-     * 从zk连接数据生成
+     * 从ssh连接数据生成
      *
      * @param sshConnects 连接列表
      * @return SSHConnectExport

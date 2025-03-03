@@ -20,7 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.util.Callback;
 
 /**
- * zk连接树
+ * ssh连接树
  *
  * @author oyzh
  * @since 2023/1/29
@@ -29,7 +29,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
 
     @Override
     protected void initTreeView() {
-        this.dragContent = "zk_connect_tree_drag";
+        this.dragContent = "ssh_connect_tree_drag";
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new RichTreeCell<>());
         super.initTreeView();
     }
@@ -121,14 +121,5 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
     @EventSubscribe
     private void connectUpdated(SSHConnectUpdatedEvent event) {
         this.root().connectUpdated(event.data());
-    }
-
-    /**
-     * 添加连接
-     */
-    @EventSubscribe
-    private void addConnect(SSHShowAddConnectEvent event) {
-//        StageManager.showStage(SSHConnectAddController.class, this.window());
-        SSHEventUtil.showAddConnect();
     }
 }

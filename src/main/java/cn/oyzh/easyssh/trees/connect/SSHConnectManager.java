@@ -17,9 +17,9 @@ public interface SSHConnectManager {
     /**
      * 添加连接
      *
-     * @param zkConnect 连接信息
+     * @param sshConnect 连接信息
      */
-    void addConnect(@NonNull SSHConnect zkConnect);
+    void addConnect(@NonNull SSHConnect sshConnect);
 
     /**
      * 添加连接节点

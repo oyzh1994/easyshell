@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * zk更新日志tab内容组件
+ * ssh更新日志tab内容组件
  *
  * @author oyzh
  * @since 2024/04/07

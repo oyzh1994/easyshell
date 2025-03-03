@@ -22,7 +22,7 @@ import java.util.List;
 
 
 /**
- * zk主页
+ * ssh主页
  *
  * @author oyzh
  * @since 2020/9/16
@@ -41,19 +41,19 @@ public class SSHMainController extends ParentStageController {
     private FXTabPane tabPaneLeft;
 
     /**
-     * zk切换面板
+     * ssh切换面板
      */
     @FXML
     private SSHTabPane tabPane;
 
     /**
-     * zk连接
+     * ssh连接
      */
     @FXML
     private ConnectController connectController;
 
     /**
-     * zk消息
+     * ssh消息
      */
     @FXML
     private MessageController messageController;
@@ -61,7 +61,7 @@ public class SSHMainController extends ParentStageController {
     /**
      * 刷新窗口标题
      *
-     * @param connect zk连接
+     * @param connect ssh连接
      */
     private void flushViewTitle(SSHConnect connect) {
         if (connect != null) {

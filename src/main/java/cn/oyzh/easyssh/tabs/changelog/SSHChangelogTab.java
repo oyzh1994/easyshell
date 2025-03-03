@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * zk更新日志表tab
+ * ssh更新日志表tab
  *
  * @author oyzh
  * @since 2024/04/07
@@ -30,7 +30,7 @@ public class SSHChangelogTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/changelog/zkChangelogTab.fxml";
+        return "/tabs/changelog/sshChangelogTab.fxml";
     }
 
     @Override

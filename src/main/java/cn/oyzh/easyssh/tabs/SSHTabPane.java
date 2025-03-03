@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * zk切换面板
+ * ssh切换面板
  *
  * @author oyzh
  * @since 2023/05/21
@@ -65,7 +65,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
         this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
             while (c.next()) {
                 if (c.wasAdded() || c.wasRemoved()) {
-                    TaskManager.startDelay("zk:homeTab:flush", this::flushHomeTab, 100);
+                    TaskManager.startDelay("ssh:homeTab:flush", this::flushHomeTab, 100);
                 }
             }
         });
@@ -110,7 +110,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
     /**
      * 获取终端tab
      *
-     * @param client zk客户端
+     * @param client ssh客户端
      * @return 终端tab
      */
     private SSHTerminalTab getTerminalTab(SSHClient client) {

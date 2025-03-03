@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyssh.trees.connect.SSHConnectTreeView?>
+<FXTab xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyssh.controller.main.ConnectController" text="%base.connection">
+    <graphic>
+        <ConnectionSVGGlyph cursorType="DEFAULT" size="12"/>
+    </graphic>
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <AddSVGGlyph size="15" onMousePrimaryClicked="#addConnect">
+                <HBox.margin>
+                    <Insets left="5" top="10"/>
+                </HBox.margin>
+            </AddSVGGlyph>
+            <ImportSVGGlyph size="15" onMousePrimaryClicked="#importConnect" tipText="%base.importConnect">
+                <HBox.margin>
+                    <Insets left="5" top="10"/>
+                </HBox.margin>
+            </ImportSVGGlyph>
+            <ExportSVGGlyph size="15" onMousePrimaryClicked="#exportConnect" tipText="%base.exportConnect">
+                <HBox.margin>
+                    <Insets left="5" top="10"/>
+                </HBox.margin>
+            </ExportSVGGlyph>
+        </FXHBox>
+        <SSHConnectTreeView fx:id="tree" flexHeight="100% - 60" flexWidth="100%"/>
+        <FXHBox realHeight="30" flexWidth="100%">
+            <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </SortSVGPane>
+            <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </PositioningSVGGlyph>
+        </FXHBox>
+    </FXVBox>
+</FXTab>
+

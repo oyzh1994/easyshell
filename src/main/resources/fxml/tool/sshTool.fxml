@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CalcButton?>
+<?import cn.oyzh.fx.gui.button.ClearButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTabPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="cn.oyzh.easyssh.controller.tool.SSHToolController" realWidth="850" realHeight="600">
+    <FXTab text="%base.cache">
+        <FXVBox flexHeight="100%" flexWidth="100%">
+            <InfoLabel text="%base.info">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <ReadOnlyTextArea fx:id="cacheArea" flexWidth="100% - 140" flexHeight="100% - 150">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </ReadOnlyTextArea>
+            <FXHBox flexWidth="100%" realHeight="50">
+                <CalcButton onAction="#calcCache" realHeight="30">
+                    <HBox.margin>
+                        <Insets left="30" top="20"/>
+                    </HBox.margin>
+                </CalcButton>
+                <ClearButton onAction="#clearCache" prefHeight="30">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </ClearButton>
+            </FXHBox>
+        </FXVBox>
+    </FXTab>
+</FXTabPane>

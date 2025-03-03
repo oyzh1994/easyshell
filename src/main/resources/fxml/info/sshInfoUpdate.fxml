@@ -1,162 +1,162 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyfx.controls.CancelButton?>
-<?import cn.oyzh.easyfx.controls.FXCheckBox?>
-<?import cn.oyzh.easyfx.controls.FXHBox?>
-<?import cn.oyzh.easyfx.controls.FXTabPane?>
-<?import cn.oyzh.easyfx.controls.FXTextField?>
-<?import cn.oyzh.easyfx.controls.FXVBox?>
-<?import cn.oyzh.easyfx.controls.FXLabel?>
-<?import cn.oyzh.easyfx.controls.FXTab?>
-<?import cn.oyzh.easyfx.controls.IconButton?>
-<?import cn.oyzh.easyfx.controls.NumberField?>
-<?import cn.oyzh.easyfx.controls.PortField?>
-<?import cn.oyzh.easyfx.controls.SubmitButton?>
-<?import cn.oyzh.easyfx.svg.SVGGlyph?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyfx.controls.RangeTextField?>
-<?import cn.oyzh.easyfx.controls.NumberFieldExt?>
-<?import cn.oyzh.easyfx.controls.RangeTextArea?>
-<FXVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyssh.controller.info.SSHConnectUpdateController" realWidth="750" realHeight="320">
-    <FXTabPane flexWidth="100%" flexHeight="100% - 60" fx:id="tabPane">
-        <FXTab text="基础设置">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <FXHBox flexWidth="100%" realHeight="50">
-                    <FXLabel realHeight="30" realWidth="65" text="名      称" styleClass="lbl,lbl-primary">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <RangeTextField tipText="请输入名称" maxLen="30" require="true" fx:id="name"
-                                   realHeight="30" flexWidth="100% - 140" clearable="true">
-                        <HBox.margin>
-                            <Insets left="10" top="10"/>
-                        </HBox.margin>
-                    </RangeTextField>
-                </FXHBox>
-                <FXHBox flexWidth="100%" realHeight="50">
-                    <FXLabel realHeight="30" realWidth="65" text="主机地址" styleClass="lbl,lbl-primary">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <RangeTextField fx:id="hostIp" tipText="主机地址，例如192.168.2.100" require="true" realHeight="30"
-                                   flexWidth="100% - 280" maxLen="1024" clearable="true">
-                        <HBox.margin>
-                            <Insets left="10" top="10"/>
-                        </HBox.margin>
-                    </RangeTextField>
-                    <NumberFieldExt realHeight="30" realWidth="130" step="1" buttonSize="20">
-                        <minusInsets>
-                            <Insets top="11"/>
-                        </minusInsets>
-                        <dataField>
-                            <PortField realWidth="91" fx:id="hostPort" tipText="端口号(1-65535)，默认22" realHeight="30"
-                                       text="22">
-                                <HBox.margin>
-                                    <Insets left="2" right="2"/>
-                                </HBox.margin>
-                            </PortField>
-                        </dataField>
-                        <plusInsets>
-                            <Insets top="11"/>
-                        </plusInsets>
-                        <HBox.margin>
-                            <Insets left="5" top="10"/>
-                        </HBox.margin>
-                    </NumberFieldExt>
-                </FXHBox>
-                <FXHBox flexWidth="100%" realHeight="50">
-                    <FXLabel realHeight="30" realWidth="65" text="认证信息" styleClass="lbl,lbl-primary">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <FXTextField fx:id="user" tipText="用户名，默认root(可选)"
-                                   realHeight="30" flexWidth="50% - 70" clearable="true">
-                        <HBox.margin>
-                            <Insets left="10" top="10"/>
-                        </HBox.margin>
-                    </FlexTextField>
-                    <FlexTextField fx:id="password" tipText="密码(可选)"
-                                   require="true"
-                                   realHeight="30" flexWidth="50% - 75" clearable="true">
-                        <HBox.margin>
-                            <Insets left="5" top="10"/>
-                        </HBox.margin>
-                    </FlexTextField>
-                </FlexHBox>
-            </FlexVBox>
-        </FXTab>
-        <FXTab text="高级设置">
-            <FlexVBox flexWidth="100%" flexHeight="100%">
-                <FlexHBox flexWidth="100%" realHeight="50">
-                    <FXLabel realHeight="30" realWidth="65" text="连接超时" styleClass="lbl,lbl-primary">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <NumberFieldExt realHeight="30" flexWidth="100% - 140" step="1" buttonSize="20">
-                        <minusInsets>
-                            <Insets top="5"/>
-                        </minusInsets>
-                        <dataField>
-                            <NumberField flexWidth="100% - 43" minVal="3" maxVal="120" fx:id="connectTimeOut"
-                                         tipText="连接超时(3-120)，单位秒，默认15秒" text="15"
-                                         require="true">
-                                <HBox.margin>
-                                    <Insets right="2" left="2"/>
-                                </HBox.margin>
-                            </NumberField>
-                        </dataField>
-                        <plusInsets>
-                            <Insets top="5"/>
-                        </plusInsets>
-                        <HBox.margin>
-                            <Insets left="10" top="10"/>
-                        </HBox.margin>
-                    </NumberFieldExt>
-                    <FXLabel text="秒">
-                        <HBox.margin>
-                            <Insets left="5" top="18"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FlexHBox>
-                <FlexHBox flexWidth="100%" realHeight="100">
-                    <FXLabel realHeight="30" realWidth="65" text="备      注" styleClass="lbl,lbl-primary">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <RangeTextArea fx:id="remark" tipText="请输入备注信息" maxLen="100"
-                                  realHeight="80" flexWidth="100% - 140">
-                        <HBox.margin>
-                            <Insets left="10" top="10"/>
-                        </HBox.margin>
-                    </RangeTextArea>
-                </FlexHBox>
-            </FlexVBox>
-        </FXTab>
-    </FlexTabPane>
-    <FlexHBox flexWidth="100%" realHeight="50">
-        <IconButton onAction="#testConnect" text="测试" styleClass="btn,btn-success" iconSizePercent="0.8">
-            <graphic>
-                <SVGGlyph url="/font/link.svg"/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="95" top="10"/>
-            </HBox.margin>
-        </IconButton>
-        <SubmitButton onAction="#update" text="确定">
-            <HBox.margin>
-                <Insets left="15" top="10"/>
-            </HBox.margin>
-        </SubmitButton>
-        <CancelButton>
-            <HBox.margin>
-                <Insets left="15" top="10"/>
-            </HBox.margin>
-        </CancelButton>
-    </FlexHBox>
-</FlexVBox>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<?import cn.oyzh.easyfx.controls.CancelButton?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXCheckBox?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXHBox?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXTabPane?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXTextField?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXVBox?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXLabel?>-->
+<!--<?import cn.oyzh.easyfx.controls.FXTab?>-->
+<!--<?import cn.oyzh.easyfx.controls.IconButton?>-->
+<!--<?import cn.oyzh.easyfx.controls.NumberField?>-->
+<!--<?import cn.oyzh.easyfx.controls.PortField?>-->
+<!--<?import cn.oyzh.easyfx.controls.SubmitButton?>-->
+<!--<?import cn.oyzh.easyfx.svg.SVGGlyph?>-->
+<!--<?import javafx.geometry.Insets?>-->
+<!--<?import javafx.scene.layout.HBox?>-->
+<!--<?import cn.oyzh.easyfx.controls.RangeTextField?>-->
+<!--<?import cn.oyzh.easyfx.controls.NumberFieldExt?>-->
+<!--<?import cn.oyzh.easyfx.controls.RangeTextArea?>-->
+<!--<FXVBox styleClass="panel,panel-primary" xmlns:fx="http://javafx.com/fxml/1"-->
+<!--        fx:controller="cn.oyzh.easyssh.controller.info.SSHConnectUpdateController" realWidth="750" realHeight="320">-->
+<!--    <FXTabPane flexWidth="100%" flexHeight="100% - 60" fx:id="tabPane">-->
+<!--        <FXTab text="基础设置">-->
+<!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
+<!--                <FXHBox flexWidth="100%" realHeight="50">-->
+<!--                    <FXLabel realHeight="30" realWidth="65" text="名      称" styleClass="lbl,lbl-primary">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="20" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <RangeTextField tipText="请输入名称" maxLen="30" require="true" fx:id="name"-->
+<!--                                   realHeight="30" flexWidth="100% - 140" clearable="true">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="10" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </RangeTextField>-->
+<!--                </FXHBox>-->
+<!--                <FXHBox flexWidth="100%" realHeight="50">-->
+<!--                    <FXLabel realHeight="30" realWidth="65" text="主机地址" styleClass="lbl,lbl-primary">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="20" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <RangeTextField fx:id="hostIp" tipText="主机地址，例如192.168.2.100" require="true" realHeight="30"-->
+<!--                                   flexWidth="100% - 280" maxLen="1024" clearable="true">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="10" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </RangeTextField>-->
+<!--                    <NumberFieldExt realHeight="30" realWidth="130" step="1" buttonSize="20">-->
+<!--                        <minusInsets>-->
+<!--                            <Insets top="11"/>-->
+<!--                        </minusInsets>-->
+<!--                        <dataField>-->
+<!--                            <PortField realWidth="91" fx:id="hostPort" tipText="端口号(1-65535)，默认22" realHeight="30"-->
+<!--                                       text="22">-->
+<!--                                <HBox.margin>-->
+<!--                                    <Insets left="2" right="2"/>-->
+<!--                                </HBox.margin>-->
+<!--                            </PortField>-->
+<!--                        </dataField>-->
+<!--                        <plusInsets>-->
+<!--                            <Insets top="11"/>-->
+<!--                        </plusInsets>-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="5" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </NumberFieldExt>-->
+<!--                </FXHBox>-->
+<!--                <FXHBox flexWidth="100%" realHeight="50">-->
+<!--                    <FXLabel realHeight="30" realWidth="65" text="认证信息" styleClass="lbl,lbl-primary">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="20" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <FXTextField fx:id="user" tipText="用户名，默认root(可选)"-->
+<!--                                   realHeight="30" flexWidth="50% - 70" clearable="true">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="10" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FlexTextField>-->
+<!--                    <FlexTextField fx:id="password" tipText="密码(可选)"-->
+<!--                                   require="true"-->
+<!--                                   realHeight="30" flexWidth="50% - 75" clearable="true">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="5" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FlexTextField>-->
+<!--                </FlexHBox>-->
+<!--            </FlexVBox>-->
+<!--        </FXTab>-->
+<!--        <FXTab text="高级设置">-->
+<!--            <FlexVBox flexWidth="100%" flexHeight="100%">-->
+<!--                <FlexHBox flexWidth="100%" realHeight="50">-->
+<!--                    <FXLabel realHeight="30" realWidth="65" text="连接超时" styleClass="lbl,lbl-primary">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="20" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <NumberFieldExt realHeight="30" flexWidth="100% - 140" step="1" buttonSize="20">-->
+<!--                        <minusInsets>-->
+<!--                            <Insets top="5"/>-->
+<!--                        </minusInsets>-->
+<!--                        <dataField>-->
+<!--                            <NumberField flexWidth="100% - 43" minVal="3" maxVal="120" fx:id="connectTimeOut"-->
+<!--                                         tipText="连接超时(3-120)，单位秒，默认15秒" text="15"-->
+<!--                                         require="true">-->
+<!--                                <HBox.margin>-->
+<!--                                    <Insets right="2" left="2"/>-->
+<!--                                </HBox.margin>-->
+<!--                            </NumberField>-->
+<!--                        </dataField>-->
+<!--                        <plusInsets>-->
+<!--                            <Insets top="5"/>-->
+<!--                        </plusInsets>-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="10" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </NumberFieldExt>-->
+<!--                    <FXLabel text="秒">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="5" top="18"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                </FlexHBox>-->
+<!--                <FlexHBox flexWidth="100%" realHeight="100">-->
+<!--                    <FXLabel realHeight="30" realWidth="65" text="备      注" styleClass="lbl,lbl-primary">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="20" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <RangeTextArea fx:id="remark" tipText="请输入备注信息" maxLen="100"-->
+<!--                                  realHeight="80" flexWidth="100% - 140">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="10" top="10"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </RangeTextArea>-->
+<!--                </FlexHBox>-->
+<!--            </FlexVBox>-->
+<!--        </FXTab>-->
+<!--    </FlexTabPane>-->
+<!--    <FlexHBox flexWidth="100%" realHeight="50">-->
+<!--        <IconButton onAction="#testConnect" text="测试" styleClass="btn,btn-success" iconSizePercent="0.8">-->
+<!--            <graphic>-->
+<!--                <SVGGlyph url="/font/link.svg"/>-->
+<!--            </graphic>-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="95" top="10"/>-->
+<!--            </HBox.margin>-->
+<!--        </IconButton>-->
+<!--        <SubmitButton onAction="#update" text="确定">-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="15" top="10"/>-->
+<!--            </HBox.margin>-->
+<!--        </SubmitButton>-->
+<!--        <CancelButton>-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="15" top="10"/>-->
+<!--            </HBox.margin>-->
+<!--        </CancelButton>-->
+<!--    </FlexHBox>-->
+<!--</FlexVBox>-->

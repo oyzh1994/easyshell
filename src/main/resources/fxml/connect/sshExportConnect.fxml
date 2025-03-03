@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.ExportButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.connect.SSHExportConnectController" realWidth="600" realHeight="480">
+    <FXHBox flexWidth="100%" realHeight="80">
+        <FXHBox flexHeight="100%" flexWidth="100%">
+            <ExportSVGGlyph sizeStr="40,40" color="yellowgreen">
+                <HBox.margin>
+                    <Insets left="30" top="20"/>
+                </HBox.margin>
+            </ExportSVGGlyph>
+            <FXText realHeight="25" text="%ssh.export.tip2" fontSize="15">
+                <HBox.margin>
+                    <Insets left="15" top="30"/>
+                </HBox.margin>
+            </FXText>
+        </FXHBox>
+    </FXHBox>
+    <InfoLabel text="%base.filePath">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox flexWidth="100%">
+        <FXButton onAction="#selectFile" text="%base.select">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXButton>
+        <FXText fx:id="fileName">
+            <HBox.margin>
+                <Insets left="10" top="12"/>
+            </HBox.margin>
+        </FXText>
+    </FXHBox>
+    <InfoLabel text="%base.content">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <FXCheckBox disable="true" text="%base.connect" selected="true">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="includeGroup" text="%base.group">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox >
+        <ExportButton tipText="%base.export" groupId="exec" onAction="#doExport" realHeight="30">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </ExportButton>
+    </FXHBox>
+</FXVBox>

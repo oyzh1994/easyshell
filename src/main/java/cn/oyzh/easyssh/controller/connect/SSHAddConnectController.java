@@ -29,7 +29,7 @@ import javafx.stage.WindowEvent;
 import java.util.ArrayList;
 
 /**
- * zk连接新增业务
+ * ssh连接新增业务
  *
  * @author oyzh
  * @since 2020/9/15
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/zkAddConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/sshAddConnect.fxml"
 )
 public class SSHAddConnectController extends StageController {
 
@@ -102,92 +102,14 @@ public class SSHAddConnectController extends StageController {
     private NumberTextField sessionTimeOut;
 
     /**
-     * ssh面板
-     */
-    @FXML
-    private FXTab sshTab;
-
-    /**
-     * 开启ssh
-     */
-    @FXML
-    private FXToggleSwitch sshForward;
-
-    /**
-     * ssh主机地址
-     */
-    @FXML
-    private ClearableTextField sshHost;
-
-    /**
-     * ssh主机端口
-     */
-    @FXML
-    private PortTextField sshPort;
-
-    /**
-     * ssh主机端口
-     */
-    @FXML
-    private NumberTextField sshTimeout;
-
-    /**
-     * ssh主机用户
-     */
-    @FXML
-    private ClearableTextField sshUser;
-
-    /**
-     * ssh主机密码
-     */
-    @FXML
-    private ClearableTextField sshPassword;
-
-    /**
-     * ssh面板
-     */
-    @FXML
-    private FXTab saslTab;
-
-    /**
-     * 开启sasl
-     */
-    @FXML
-    private FXToggleSwitch saslAuth;
-
-    /**
-     * sasl用户
-     */
-    @FXML
-    private ClearableTextField saslUser;
-
-    /**
-     * sasl密码
-     */
-    @FXML
-    private ClearableTextField saslPassword;
-
-    /**
      * 分组
      */
     private SSHGroup group;
 
     /**
-     * zk连接储存对象
+     * ssh连接储存对象
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
-
-    /**
-     * 认证搜索
-     */
-    @FXML
-    private ClearableTextField authSearchKW;
-
-    /**
-     * 过滤搜索
-     */
-    @FXML
-    private ClearableTextField filterSearchKW;
 
     /**
      * 获取连接地址
@@ -220,16 +142,16 @@ public class SSHAddConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
             MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
-            // 创建zk连接
-            SSHConnect zkConnect = new SSHConnect();
-            zkConnect.setHost(host);
-            zkConnect.setConnectTimeOut(3);
-            SSHConnectUtil.testConnect(this.stage, zkConnect);
+            // 创建ssh连接
+            SSHConnect sshConnect = new SSHConnect();
+            sshConnect.setHost(host);
+            sshConnect.setConnectTimeOut(3);
+            SSHConnectUtil.testConnect(this.stage, sshConnect);
         }
     }
 
     /**
-     * 添加zk信息
+     * 添加ssh信息
      */
     @FXML
     private void add() {
@@ -243,18 +165,18 @@ public class SSHAddConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            SSHConnect zkConnect = new SSHConnect();
-            zkConnect.setName(name);
+            SSHConnect sshConnect = new SSHConnect();
+            sshConnect.setName(name);
             Number connectTimeOut = this.connectTimeOut.getValue();
             Number sessionTimeOut = this.sessionTimeOut.getValue();
 
-            zkConnect.setHost(host.trim());
-            zkConnect.setRemark(this.remark.getTextTrim());
-            zkConnect.setGroupId(this.group == null ? null : this.group.getGid());
-            zkConnect.setConnectTimeOut(connectTimeOut.intValue());
+            sshConnect.setHost(host.trim());
+            sshConnect.setRemark(this.remark.getTextTrim());
+            sshConnect.setGroupId(this.group == null ? null : this.group.getGid());
+            sshConnect.setConnectTimeOut(connectTimeOut.intValue());
             // 保存数据
-            if (this.connectStore.replace(zkConnect)) {
-                SSHEventUtil.connectAdded(zkConnect);
+            if (this.connectStore.replace(sshConnect)) {
+                SSHEventUtil.connectAdded(sshConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
@@ -278,22 +200,6 @@ public class SSHAddConnectController extends StageController {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }
-        });
-        // ssh配置
-        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.sshTab, "ssh");
-            } else {
-                NodeGroupUtil.disable(this.sshTab, "ssh");
-            }
-        });
-        // sasl配置
-        this.saslAuth.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.saslTab, "sasl");
-            } else {
-                NodeGroupUtil.disable(this.saslTab, "sasl");
             }
         });
     }

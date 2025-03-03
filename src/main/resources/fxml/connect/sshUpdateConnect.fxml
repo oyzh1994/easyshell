@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.button.TestButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
+<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.connect.SSHUpdateConnectController" realWidth="750" realHeight="400">
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
+        <FXTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="name" tipText="%base.nameTip" maxLen="30" require="true" realHeight="30"
+                                    flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.port">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <PortTextField flexWidth="100% - 180" fx:id="hostPort" realHeight="30" value="22">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PortTextField>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.extra">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.connectTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
+                                     tipText="%ssh.info.connectTimoutTip" value="5" require="true">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.sessionTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="5" max="120" fx:id="sessionTimeOut"
+                                     tipText="%ssh.info.sessionTimoutTip" value="30" require="true" step="5">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.minute">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.remark">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="remark" realHeight="80" flexWidth="100% - 180" tipText="%base.remarkTip"
+                              maxLen="100">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <TestButton onAction="#testConnect" iconSizePercent="0.8">
+            <HBox.margin>
+                <Insets left="30" top="10"/>
+            </HBox.margin>
+        </TestButton>
+        <SubmitButton onAction="#update">
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

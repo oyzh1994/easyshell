@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.MessageSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<FXTab xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyssh.controller.main.MessageController" text="%base.msg">
+    <graphic>
+        <MessageSVGGlyph cursorType="DEFAULT" size="13"/>
+    </graphic>
+    <FXVBox flexHeight="100%" flexWidth="100%" style="-fx-border-width: 0 1 0 0; -fx-border-color: c0c0c0">
+        <FXHBox realHeight="30">
+            <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearMsg">
+                <HBox.margin>
+                    <Insets left="10" top="9"/>
+                </HBox.margin>
+            </ClearSVGGlyph>
+        </FXHBox>
+        <MsgTextArea fx:id="msgArea" flexHeight="100% - 32" flexWidth="100%" lineLimit="1000"/>
+    </FXVBox>
+</FXTab>
+

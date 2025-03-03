@@ -3,7 +3,7 @@ package cn.oyzh.easyssh.parser;
 import java.util.function.Function;
 
 /**
- * zk异常解析器
+ * ssh异常解析器
  *
  * @author oyzh
  * @since 2020/7/2

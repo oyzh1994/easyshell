@@ -29,7 +29,7 @@ import lombok.NonNull;
 import java.util.List;
 
 /**
- * zk连接修改业务
+ * ssh连接修改业务
  *
  * @author oyzh
  * @since 2020/9/15
@@ -37,27 +37,9 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/zkUpdateConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/sshUpdateConnect.fxml"
 )
 public class SSHUpdateConnectController extends StageController {
-
-    /**
-     * 只读模式
-     */
-    @FXML
-    private FXCheckBox readonly;
-
-    /**
-     * 监听节点
-     */
-    @FXML
-    private FXCheckBox listen;
-
-    /**
-     * 兼容模式开关
-     */
-    @FXML
-    private FXCheckBox compatibility;
 
     /**
      * tab组件
@@ -66,9 +48,9 @@ public class SSHUpdateConnectController extends StageController {
     private FXTabPane tabPane;
 
     /**
-     * zk信息
+     * ssh信息
      */
-    private SSHConnect zkConnect;
+    private SSHConnect sshConnect;
 
     /**
      * 名称
@@ -107,87 +89,9 @@ public class SSHUpdateConnectController extends StageController {
     private NumberTextField sessionTimeOut;
 
     /**
-     * ssh面板
-     */
-    @FXML
-    private FXTab sshTab;
-
-    /**
-     * 开启ssh
-     */
-    @FXML
-    private FXToggleSwitch sshForward;
-
-    /**
-     * ssh主机地址
-     */
-    @FXML
-    private ClearableTextField sshHost;
-
-    /**
-     * ssh主机端口
-     */
-    @FXML
-    private PortTextField sshPort;
-
-    /**
-     * ssh主机端口
-     */
-    @FXML
-    private NumberTextField sshTimeout;
-
-    /**
-     * ssh主机用户
-     */
-    @FXML
-    private ClearableTextField sshUser;
-
-    /**
-     * ssh主机密码
-     */
-    @FXML
-    private ClearableTextField sshPassword;
-
-    /**
-     * ssh面板
-     */
-    @FXML
-    private FXTab saslTab;
-
-    /**
-     * 开启sasl
-     */
-    @FXML
-    private FXToggleSwitch saslAuth;
-
-    /**
-     * sasl用户
-     */
-    @FXML
-    private ClearableTextField saslUser;
-
-    /**
-     * sasl密码
-     */
-    @FXML
-    private ClearableTextField saslPassword;
-
-    /**
-     * zk连接储存对象
+     * ssh连接储存对象
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
-
-    /**
-     * 认证搜索
-     */
-    @FXML
-    private ClearableTextField authSearchKW;
-
-    /**
-     * 过滤搜索
-     */
-    @FXML
-    private ClearableTextField filterSearchKW;
 
     /**
      * 获取连接地址
@@ -220,17 +124,17 @@ public class SSHUpdateConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
             MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
-            // 创建zk信息
-            SSHConnect zkConnect = new SSHConnect();
-            zkConnect.setHost(host);
-            zkConnect.setConnectTimeOut(3);
-            zkConnect.setId(this.zkConnect.getId());
-            SSHConnectUtil.testConnect(this.stage, zkConnect);
+            // 创建ssh信息
+            SSHConnect sshConnect = new SSHConnect();
+            sshConnect.setHost(host);
+            sshConnect.setConnectTimeOut(3);
+            sshConnect.setId(this.sshConnect.getId());
+            SSHConnectUtil.testConnect(this.stage, sshConnect);
         }
     }
 
     /**
-     * 修改zk信息
+     * 修改ssh信息
      */
     @FXML
     private void update() {
@@ -244,16 +148,16 @@ public class SSHUpdateConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            this.zkConnect.setName(name);
+            this.sshConnect.setName(name);
             Number connectTimeOut = this.connectTimeOut.getValue();
             Number sessionTimeOut = this.sessionTimeOut.getValue();
 
-            this.zkConnect.setHost(host.trim());
-            this.zkConnect.setRemark(this.remark.getTextTrim());
-            this.zkConnect.setConnectTimeOut(connectTimeOut.intValue());
+            this.sshConnect.setHost(host.trim());
+            this.sshConnect.setRemark(this.remark.getTextTrim());
+            this.sshConnect.setConnectTimeOut(connectTimeOut.intValue());
             // 保存数据
-            if (this.connectStore.replace(this.zkConnect)) {
-                SSHEventUtil.connectUpdated(this.zkConnect);
+            if (this.connectStore.replace(this.sshConnect)) {
+                SSHEventUtil.connectUpdated(this.sshConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
@@ -279,33 +183,17 @@ public class SSHUpdateConnectController extends StageController {
                 }
             }
         });
-        // ssh配置
-        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.sshTab, "ssh");
-            } else {
-                NodeGroupUtil.disable(this.sshTab, "ssh");
-            }
-        });
-        // sasl配置
-        this.saslAuth.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.saslTab, "sasl");
-            } else {
-                NodeGroupUtil.disable(this.saslTab, "sasl");
-            }
-        });
     }
 
     @Override
     public void onWindowShown(@NonNull WindowEvent event) {
         super.onWindowShown(event);
-        this.zkConnect = this.getWindowProp("zkConnect");
-        this.name.setText(this.zkConnect.getName());
-        this.remark.setText(this.zkConnect.getRemark());
-        this.connectTimeOut.setValue(this.zkConnect.getConnectTimeOut());
-        this.hostIp.setText(this.zkConnect.hostIp());
-        this.hostPort.setValue(this.zkConnect.hostPort());
+        this.sshConnect = this.getWindowProp("sshConnect");
+        this.name.setText(this.sshConnect.getName());
+        this.remark.setText(this.sshConnect.getRemark());
+        this.connectTimeOut.setValue(this.sshConnect.getConnectTimeOut());
+        this.hostIp.setText(this.sshConnect.hostIp());
+        this.hostPort.setValue(this.sshConnect.hostPort());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -314,5 +202,4 @@ public class SSHUpdateConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectUpdateTitle();
     }
-
 }

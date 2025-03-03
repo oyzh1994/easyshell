@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.AddConnectButton?>
+<?import cn.oyzh.fx.gui.button.AddGroupButton?>
+<?import cn.oyzh.fx.gui.button.ChangelogButton?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyssh.tabs.home.SSHHomeTabController">
+    <ImageView fitWidth="190" fitHeight="190" layoutX="50" layoutY="100">
+        <Image url="/image/ssh_no_bg.png"/>
+    </ImageView>
+    <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="260" layoutY="100">
+        <FXText text="%ssh.home.welcome" fontSize="30" enableFont="false">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </FXText>
+        <FXText fx:id="softInfo">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </FXText>
+        <FXText fx:id="jdkInfo">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </FXText>
+    </FXVBox>
+    <FXHBox flexWidth="100% - 300" realHeight="300" layoutX="260" layoutY="260">
+        <AddConnectButton onMousePrimaryClicked="#addConnect"/>
+        <AddGroupButton onMousePrimaryClicked="#addGroup">
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+        </AddGroupButton>
+        <ChangelogButton onMousePrimaryClicked="#changelog">
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+        </ChangelogButton>
+    </FXHBox>
+</FXPane>

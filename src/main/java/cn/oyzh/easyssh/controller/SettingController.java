@@ -100,60 +100,6 @@ public class SettingController extends StageController {
     private FXCheckBox pageLocation;
 
     /**
-     * 节点加载
-     */
-    @FXML
-    private FXToggleGroup loadMode;
-
-    /**
-     * 节点加载方式0
-     */
-    @FXML
-    private RadioButton loadMode0;
-
-    /**
-     * 节点加载方式1
-     */
-    @FXML
-    private RadioButton loadMode1;
-
-    /**
-     * ZK连接后加载方式2
-     */
-    @FXML
-    private RadioButton loadMode2;
-
-    /**
-     * 节点视图
-     */
-    @FXML
-    private FXToggleGroup viewport;
-
-    /**
-     * 节点视图0
-     */
-    @FXML
-    private RadioButton viewport0;
-
-    /**
-     * 节点视图1
-     */
-    @FXML
-    private RadioButton viewport1;
-
-    /**
-     * 节点自动认证
-     */
-    @FXML
-    private FXCheckBox authMode;
-
-    /**
-     * 节点加载限制
-     */
-    @FXML
-    private NumberTextField nodeLoadLimit;
-
-    /**
      * 主题
      */
     @FXML
@@ -353,9 +299,6 @@ public class SettingController extends StageController {
     @FXML
     private void saveSetting() {
         try {
-            byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
-            byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
-            byte viewport = Byte.parseByte(this.viewport.selectedUserData());
             String locale = this.locale.name();
             Byte fontSize = this.fontSize.byteValue();
             short fontWeight = this.fontWeight.getWeight();
@@ -456,7 +399,7 @@ public class SettingController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         SettingLeftTreeView treeView = this.root.getLeftTreeView();
-        treeView.addItem(SettingLeftItem.of(I18nHelper.zk(), "zk_box"));
+        treeView.addItem(SettingLeftItem.of(I18nHelper.base(), "ssh_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
         SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.general(), "font_general_box"));
@@ -465,7 +408,7 @@ public class SettingController extends StageController {
         fontItem.addItem(SettingLeftItem.of(I18nHelper.query(), "font_query_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.theme(), "theme_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.locale(), "locale_box"));
-        treeView.selectItem("zk_box");
+        treeView.selectItem("ssh_box");
         super.onWindowShown(event);
         this.stage.hideOnEscape();
     }

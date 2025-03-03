@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * zk连接节点
+ * ssh连接节点
  *
  * @author oyzh
  * @since 2023/1/29
@@ -37,14 +37,14 @@ import java.util.Objects;
 public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
 
     /**
-     * zk信息
+     * ssh信息
      */
     @Getter
     @Accessors(chain = true, fluent = true)
     private SSHConnect value;
 
     /**
-     * zk客户端
+     * ssh客户端
      */
     @Getter
     @Accessors(chain = true, fluent = true)
@@ -56,7 +56,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     private boolean canceled;
 
     /**
-     * zk连接存储
+     * ssh连接存储
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
 
@@ -189,7 +189,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
             this.closeConnect();
         }
         StageAdapter fxView = StageManager.parseStage(SSHUpdateConnectController.class, this.window());
-        fxView.setProp("zkConnect", this.value());
+        fxView.setProp("sshConnect", this.value());
         fxView.display();
     }
 
@@ -197,11 +197,11 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      * 克隆连接
      */
     private void cloneConnect() {
-        SSHConnect zkConnect = new SSHConnect();
-        zkConnect.copy(this.value);
-        zkConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
-        if (this.connectStore.insert(zkConnect)) {
-            this.connectManager().addConnect(zkConnect);
+        SSHConnect sshConnect = new SSHConnect();
+        sshConnect.copy(this.value);
+        sshConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
+        if (this.connectStore.insert(sshConnect)) {
+            this.connectManager().addConnect(sshConnect);
         } else {
             MessageBox.warn(I18nHelper.operationFail());
         }
@@ -243,7 +243,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     /**
      * 设置值
      *
-     * @param value zk信息
+     * @param value ssh信息
      */
     public void value(@NonNull SSHConnect value) {
         this.value = value;

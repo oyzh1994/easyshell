@@ -3,13 +3,29 @@ package cn.oyzh.easyssh;
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.easyssh.controller.AboutController;
 import cn.oyzh.easyssh.controller.MainController;
 import cn.oyzh.easyssh.controller.SettingController;
+import cn.oyzh.easyssh.controller.connect.SSHAddConnectController;
+import cn.oyzh.easyssh.controller.connect.SSHExportConnectController;
+import cn.oyzh.easyssh.controller.connect.SSHImportConnectController;
+import cn.oyzh.easyssh.controller.connect.SSHUpdateConnectController;
+import cn.oyzh.easyssh.controller.tool.SSHToolController;
 import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.event.window.SSHShowAboutEvent;
+import cn.oyzh.easyssh.event.window.SSHShowAddConnectEvent;
+import cn.oyzh.easyssh.event.window.SSHShowExportConnectEvent;
+import cn.oyzh.easyssh.event.window.SSHShowImportConnectEvent;
+import cn.oyzh.easyssh.event.window.SSHShowSettingEvent;
+import cn.oyzh.easyssh.event.window.SSHShowToolEvent;
+import cn.oyzh.easyssh.event.window.SSHShowUpdateConnectEvent;
 import cn.oyzh.easyssh.parser.SSHExceptionParser;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.store.SSHStoreUtil;
 import cn.oyzh.event.EventFactory;
+import cn.oyzh.event.EventListener;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tray.DesktopTrayItem;
 import cn.oyzh.fx.gui.tray.QuitTrayItem;
 import cn.oyzh.fx.gui.tray.SettingTrayItem;
@@ -25,12 +41,8 @@ import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nManager;
-import com.sun.javafx.application.PlatformImpl;
-import javafx.application.Platform;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
 import java.awt.event.MouseEvent;
 
@@ -41,8 +53,11 @@ import java.awt.event.MouseEvent;
  * @author oyzh
  * @since 2023/08/16
  */
-public class EasySSHApp extends FXApplication {
+public class EasySSHApp extends FXApplication implements EventListener {
 
+    /**
+     * 项目信息
+     */
     private static final Project PROJECT = Project.load();
 
     public static void main(String[] args) {
@@ -51,6 +66,7 @@ public class EasySSHApp extends FXApplication {
             System.setProperty("prism.text", "t2k");
             System.setProperty("prism.lcdtext", "false");
             SysConst.projectName(PROJECT.getName());
+            SysConst.storeDir(SSHConst.STORE_PATH);
             JulLog.info("项目启动中...");
             // 储存初始化
             SSHStoreUtil.init();
@@ -90,6 +106,8 @@ public class EasySSHApp extends FXApplication {
             OpacityManager.apply(setting.opacityConfig());
             // 注册异常处理器
             MessageBox.registerExceptionParser(SSHExceptionParser.INSTANCE);
+            // 注册事件处理
+            EventListener.super.register();
             // 调用父类
             super.init();
         } catch (Exception ex) {
@@ -106,6 +124,12 @@ public class EasySSHApp extends FXApplication {
             ex.printStackTrace();
             JulLog.warn("start error", ex);
         }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        EventListener.super.unregister();
     }
 
     @Override
@@ -130,13 +154,17 @@ public class EasySSHApp extends FXApplication {
                 return;
             }
             // 初始化
-            TrayManager.init(SSHConst.TRAY_ICON_PATH);
+            if (OSUtil.isWindows()) {
+                TrayManager.init(SSHConst.TRAY_ICON_PATH);
+            } else {
+                TrayManager.init(SSHConst.ICON_PATH);
+            }
             // 设置标题
             TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
             // 打开主页
             TrayManager.addMenuItem(new DesktopTrayItem("12", this::showMain));
             // 打开设置
-            TrayManager.addMenuItem(new SettingTrayItem("12", this::showSetting));
+            TrayManager.addMenuItem(new SettingTrayItem("12", () -> this.showSetting(null)));
             // 退出程序
             TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
                 JulLog.warn("exit app by tray.");
@@ -161,13 +189,18 @@ public class EasySSHApp extends FXApplication {
      */
     private void showMain() {
         FXUtil.runLater(() -> {
-            StageAdapter wrapper = StageManager.getStage(MainController.class);
-            if (wrapper != null) {
-                JulLog.info("front main.");
-                wrapper.toFront();
-            } else {
-                JulLog.info("show main.");
-                StageManager.showStage(MainController.class);
+            try {
+                StageAdapter adapter = StageManager.getStage(MainController.class);
+                if (adapter != null) {
+                    JulLog.info("front main.");
+                    adapter.toFront();
+                } else {
+                    JulLog.info("show main.");
+                    StageManager.showStage(MainController.class);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
         });
     }
@@ -175,15 +208,118 @@ public class EasySSHApp extends FXApplication {
     /**
      * 显示设置
      */
-    private void showSetting() {
+    @EventSubscribe
+    private void showSetting(SSHShowSettingEvent event) {
         FXUtil.runLater(() -> {
-            StageAdapter wrapper = StageManager.getStage(SettingController.class);
-            if (wrapper != null) {
-                JulLog.info("front setting.");
-                wrapper.toFront();
-            } else {
-                JulLog.info("show setting.");
-                StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
+            try {
+
+                StageAdapter adapter = StageManager.getStage(SettingController.class);
+                if (adapter != null) {
+                    JulLog.info("front setting.");
+                    adapter.toFront();
+                } else {
+                    JulLog.info("show setting.");
+                    StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示添加连接
+     */
+    @EventSubscribe
+    private void addConnect(SSHShowAddConnectEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageAdapter adapter = StageManager.parseStage(SSHAddConnectController.class);
+                adapter.setProp("group", event.data());
+                adapter.display();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示修改连接
+     */
+    @EventSubscribe
+    private void updateConnect(SSHShowUpdateConnectEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageAdapter adapter = StageManager.parseStage(SSHUpdateConnectController.class);
+                adapter.setProp("sshConnect", event.data());
+                adapter.display();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示工具页面
+     */
+    @EventSubscribe
+    private void tool(SSHShowToolEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageManager.showStage(SSHToolController.class, StageManager.getPrimaryStage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示关于页面
+     */
+    @EventSubscribe
+    private void about(SSHShowAboutEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageManager.showStage(AboutController.class, StageManager.getPrimaryStage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示导出连接页面
+     */
+    @EventSubscribe
+    private void exportConnect(SSHShowExportConnectEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageManager.showStage(SSHExportConnectController.class, StageManager.getPrimaryStage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示导入连接页面
+     */
+    @EventSubscribe
+    private void importConnect(SSHShowImportConnectEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageAdapter adapter = StageManager.parseStage(SSHImportConnectController.class, StageManager.getPrimaryStage());
+                adapter.setProp("file", event.data());
+                adapter.display();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
         });
     }

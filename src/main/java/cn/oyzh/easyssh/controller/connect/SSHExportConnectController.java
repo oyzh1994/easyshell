@@ -24,7 +24,7 @@ import java.util.List;
 
 
 /**
- * zk连接导出业务
+ * ssh连接导出业务
  *
  * @author oyzh
  * @since 2025/02/21
@@ -32,7 +32,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/zkExportConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/sshExportConnect.fxml"
 )
 public class SSHExportConnectController extends StageController {
 

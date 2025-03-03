@@ -47,13 +47,13 @@ public class MainController extends ParentStageController {
     private HeaderController headerController;
 
     /**
-     * zk主页业务
+     * ssh主页业务
      */
     @FXML
     private SSHMainController sshMainController;
 
     /**
-     * zk相关配置
+     * ssh相关配置
      */
     private final SSHSetting setting = SSHSettingStore.SETTING;
 

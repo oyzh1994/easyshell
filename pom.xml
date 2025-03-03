@@ -58,18 +58,18 @@
             <artifactId>fx-plus</artifactId>
         </dependency>
 
-        <!-- 自定义类库，shell相关 -->
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>fx-terminal</artifactId>
-        </dependency>
+<!--        &lt;!&ndash; 自定义类库，shell相关 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>cn.oyzh</groupId>-->
+<!--            <artifactId>fx-terminal</artifactId>-->
+<!--        </dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
-        <dependency>
-            <groupId>org.dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>2.1.4</version>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.dom4j/dom4j &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.dom4j</groupId>-->
+<!--            <artifactId>dom4j</artifactId>-->
+<!--            <version>2.1.4</version>-->
+<!--        </dependency>-->
 
         <!-- json类库 -->
         <dependency>

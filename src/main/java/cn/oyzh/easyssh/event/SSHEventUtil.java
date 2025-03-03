@@ -43,7 +43,7 @@ public class SSHEventUtil {
     /**
      * 连接丢失事件
      *
-     * @param item zk客户端
+     * @param item ssh客户端
      */
     public static void connectionOpened(SSHConnectTreeItem item) {
         SSHConnectOpenedEvent event = new SSHConnectOpenedEvent();
@@ -54,7 +54,7 @@ public class SSHEventUtil {
     /**
      * 连接丢失事件
      *
-     * @param client zk客户端
+     * @param client ssh客户端
      */
     public static void connectionLost(SSHClient client) {
         SSHConnectionLostEvent event = new SSHConnectionLostEvent();
@@ -65,7 +65,7 @@ public class SSHEventUtil {
     /**
      * 连接关闭事件
      *
-     * @param client zk客户端
+     * @param client ssh客户端
      */
     public static void connectionClosed(SSHClient client) {
         SSHConnectionClosedEvent event = new SSHConnectionClosedEvent();
@@ -76,7 +76,7 @@ public class SSHEventUtil {
     /**
      * 连接成功事件
      *
-     * @param client zk客户端
+     * @param client ssh客户端
      */
     public static void connectionSucceed(SSHClient client) {
         SSHConnectionConnectedEvent event = new SSHConnectionConnectedEvent();
@@ -87,33 +87,33 @@ public class SSHEventUtil {
     /**
      * 连接已新增事件
      *
-     * @param zkConnect zk连接
+     * @param sshConnect ssh连接
      */
-    public static void connectAdded(SSHConnect zkConnect) {
+    public static void connectAdded(SSHConnect sshConnect) {
         SSHConnectAddedEvent event = new SSHConnectAddedEvent();
-        event.data(zkConnect);
+        event.data(sshConnect);
         EventUtil.post(event);
     }
 
     /**
      * 连接已修改事件
      *
-     * @param zkConnect zk连接
+     * @param sshConnect ssh连接
      */
-    public static void connectUpdated(SSHConnect zkConnect) {
+    public static void connectUpdated(SSHConnect sshConnect) {
         SSHConnectUpdatedEvent event = new SSHConnectUpdatedEvent();
-        event.data(zkConnect);
+        event.data(sshConnect);
         EventUtil.post(event);
     }
 
     /**
      * 连接已删除事件
      *
-     * @param zkConnect zk连接
+     * @param sshConnect ssh连接
      */
-    public static void connectDeleted(SSHConnect zkConnect) {
+    public static void connectDeleted(SSHConnect sshConnect) {
         SSHConnectDeletedEvent event = new SSHConnectDeletedEvent();
-        event.data(zkConnect);
+        event.data(sshConnect);
         EventUtil.post(event);
     }
     /**
@@ -225,7 +225,7 @@ public class SSHEventUtil {
     /**
      * 显示修改连接页面
      *
-     * @param connect zk连接
+     * @param connect ssh连接
      */
     public static void showUpdateConnect(SSHConnect connect) {
         SSHShowUpdateConnectEvent event = new SSHShowUpdateConnectEvent();

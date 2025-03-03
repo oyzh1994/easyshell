@@ -89,6 +89,6 @@ public class SSHConnectUtil {
         return null;
     }
 
-    public static void testConnect(StageAdapter stage, SSHConnect zkConnect) {
+    public static void testConnect(StageAdapter stage, SSHConnect sshConnect) {
     }
 }

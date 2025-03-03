@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * zk分组节点
+ * ssh分组节点
  *
  * @author oyzh
  * @since 2023/05/12
@@ -44,12 +44,12 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     private final SSHGroup value;
 
     /**
-     * zk分组储存
+     * ssh分组储存
      */
     private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
 
     /**
-     * zk连接储存
+     * ssh连接储存
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
 
@@ -158,8 +158,8 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     }
 
     @Override
-    public void addConnect(@NonNull SSHConnect zkConnect) {
-        this.addConnectItem(new SSHConnectTreeItem(zkConnect, this.getTreeView()));
+    public void addConnect(@NonNull SSHConnect sshConnect) {
+        this.addConnectItem(new SSHConnectTreeItem(sshConnect, this.getTreeView()));
     }
 
     @Override

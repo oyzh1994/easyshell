@@ -5,7 +5,7 @@ import cn.oyzh.store.jdbc.JdbcKeyValueStore;
 
 
 /**
- * zk设置存储
+ * ssh设置存储
  *
  * @author oyzh
  * @since 2024/09/23
@@ -25,7 +25,7 @@ public class SSHSettingStore extends JdbcKeyValueStore<SSHSetting> {
     /**
      * 加载
      *
-     * @return zk设置
+     * @return ssh设置
      */
     public SSHSetting load() {
         SSHSetting setting = null;
