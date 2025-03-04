@@ -6,7 +6,6 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
-<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
@@ -32,28 +31,25 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.userName">
+                <InfoLabel text="%base.authInfo">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
-                <InfoLabel text="%base.password">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField fx:id="password" tipText="%base.passwordTip" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
+                <FXHBox>
+                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
+                                        flexWidth="50% - 90" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <ClearableTextField fx:id="password" tipText="%base.passwordTip" require="true" realHeight="30"
+                                        flexWidth="50% - 100" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -66,7 +62,7 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <PortTextField flexWidth="40% - 180" fx:id="hostPort" realHeight="30" value="22">
+                    <PortTextField flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="22">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
@@ -100,7 +96,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXTextArea fx:id="remark" realHeight="80" flexWidth="100% - 180" tipText="%base.remarkTip"
-                              maxLen="100">
+                            maxLen="100">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
