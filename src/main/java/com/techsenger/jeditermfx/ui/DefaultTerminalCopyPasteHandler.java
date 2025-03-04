@@ -1,10 +1,9 @@
 package com.techsenger.jeditermfx.ui;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.util.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -14,8 +13,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 
 public class DefaultTerminalCopyPasteHandler implements TerminalCopyPasteHandler, ClipboardOwner {
-
-    private static final Logger logger = LoggerFactory.getLogger(DefaultTerminalCopyPasteHandler.class);
 
     @Override
     public void setContents(@NotNull String text, boolean useSystemSelectionClipboardIfAvailable) {
@@ -97,9 +94,9 @@ public class DefaultTerminalCopyPasteHandler implements TerminalCopyPasteHandler
 
     private static void logException(@NotNull String message, @NotNull Exception e) {
         if (Platform.isWindows() && e instanceof IllegalStateException) {
-            logger.debug(message, e);
+            JulLog.debug(message, e);
         } else {
-            logger.warn(message, e);
+            JulLog.warn(message, e);
         }
     }
 

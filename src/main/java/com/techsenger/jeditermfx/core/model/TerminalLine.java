@@ -1,13 +1,12 @@
 package com.techsenger.jeditermfx.core.model;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.StyledTextConsumer;
 import com.techsenger.jeditermfx.core.TextStyle;
 import com.techsenger.jeditermfx.core.util.CharUtils;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +21,6 @@ import java.util.stream.Collectors;
  * @author traff
  */
 public final class TerminalLine {
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminalLine.class);
 
     private TextEntries myTextEntries = new TextEntries();
 
@@ -313,7 +310,7 @@ public final class TerminalLine {
         int startTextOffsetInd = Arrays.binarySearch(offsets, startTextOffset);
         int endTextOffsetInd = Arrays.binarySearch(offsets, endTextOffset);
         if (startTextOffsetInd < 0 || endTextOffsetInd < 0) {
-            logger.error("Cannot find " + Arrays.toString(new int[]{startTextOffset, endTextOffset})
+            JulLog.error("Cannot find " + Arrays.toString(new int[]{startTextOffset, endTextOffset})
                     + " in " + Arrays.toString(offsets) + ": " + Arrays.toString(new int[]{startTextOffsetInd, endTextOffsetInd}));
             consumer.consume(startTextOffset, y, te.getStyle(), text, startRow);
             return;

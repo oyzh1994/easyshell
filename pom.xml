@@ -13,17 +13,23 @@
     <description>ssh连接，增强能力</description>
 
     <properties>
-        <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <jna.version>5.16.0</jna.version>
+        <pty4j.version>0.13.2</pty4j.version>
+        <annotations.version>26.0.2</annotations.version>
         <purejavacomm.version>0.0.11.1</purejavacomm.version>
         <kotlin.stdlib.version>2.1.10</kotlin.stdlib.version>
-        <annotations.version>26.0.2</annotations.version>
-        <pty4j.version>0.13.2</pty4j.version>
-        <slf4j.version>2.0.9</slf4j.version>
-        <log4j.version>2.21.1</log4j.version>
+        <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
     </properties>
 
     <dependencies>
+
+        <!-- ssh类库 -->
+        <!-- https://mvnrepository.com/artifact/com.github.mwiede/jsch -->
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
+        </dependency>
 
         <!-- 内存数据库 -->
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
@@ -33,11 +39,6 @@
             <version>2.3.232</version>
         </dependency>
 
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>ssh</artifactId>
-        </dependency>
-
         <!-- java 辅助工具包 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -45,42 +46,25 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- 自定义类库，通用 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>common</artifactId>
         </dependency>
 
-        <!-- 自定义类库，通用 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>event</artifactId>
         </dependency>
 
-        <!-- 自定义类库，shell相关 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>fx-gui</artifactId>
         </dependency>
 
-        <!-- 自定义类库，shell相关 -->
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>fx-plus</artifactId>
         </dependency>
-
-<!--        &lt;!&ndash; 自定义类库，shell相关 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>cn.oyzh</groupId>-->
-<!--            <artifactId>fx-terminal</artifactId>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.dom4j/dom4j &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.dom4j</groupId>-->
-<!--            <artifactId>dom4j</artifactId>-->
-<!--            <version>2.1.4</version>-->
-<!--        </dependency>-->
 
         <!-- json类库 -->
         <dependency>
@@ -137,44 +121,44 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--### LOGGING ###-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <!-- To route SLF4j to Log4j  -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <!--
-            To route JUL to Log4j (without sending them to SLF4J bridge) use log4j-jul
-            and -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager . For details see
-            http://logging.apache.org/log4j/2.x/faq.html#which_jars
-        -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jul</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <!-- To route Apache Commons Logging (JCL) to Log4j  -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jcl</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
+<!--        &lt;!&ndash;### LOGGING ###&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-api</artifactId>-->
+<!--            <version>${slf4j.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-api</artifactId>-->
+<!--            <version>${log4j.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-core</artifactId>-->
+<!--            <version>${log4j.version}</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; To route SLF4j to Log4j  &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-slf4j2-impl</artifactId>-->
+<!--            <version>${log4j.version}</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;-->
+<!--            To route JUL to Log4j (without sending them to SLF4J bridge) use log4j-jul-->
+<!--            and -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager . For details see-->
+<!--            http://logging.apache.org/log4j/2.x/faq.html#which_jars-->
+<!--        &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-jul</artifactId>-->
+<!--            <version>${log4j.version}</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; To route Apache Commons Logging (JCL) to Log4j  &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-jcl</artifactId>-->
+<!--            <version>${log4j.version}</version>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>

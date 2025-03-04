@@ -1,14 +1,11 @@
 package com.techsenger.jeditermfx.ui;
 
+import cn.oyzh.common.log.JulLog;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class FxFontMetrics {
-
-    private static final Logger logger = LoggerFactory.getLogger(FxFontMetrics.class);
 
     public static FxFontMetrics create(Font font, String str) {
         var text = new Text(str);
@@ -18,7 +15,7 @@ public class FxFontMetrics {
         var height = text.getLayoutBounds().getHeight();
         var descent = text.getLayoutBounds().getHeight() - text.getBaselineOffset();
         var metrics = new FxFontMetrics(width, height, descent);
-        logger.trace("Created metrics: {} for {}", metrics, font);
+        JulLog.trace("Created metrics: {} for {}", metrics, font);
         return metrics;
     }
 

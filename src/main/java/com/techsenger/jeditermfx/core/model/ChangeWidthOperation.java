@@ -1,9 +1,8 @@
 package com.techsenger.jeditermfx.core.model;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.compatibility.Point;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 
 class ChangeWidthOperation {
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminalTextBuffer.class);
 
     private final TerminalTextBuffer myTextBuffer;
 
@@ -38,7 +35,7 @@ class ChangeWidthOperation {
 
     void addPointToTrack(@NotNull Point point, boolean isForceVisible) {
         if (isForceVisible && (point.y < 0 || point.y >= myTextBuffer.getHeight())) {
-            logger.warn("Registered visible point " + point + " is outside screen: [0, " + (myTextBuffer.getHeight() - 1) + "]");
+            JulLog.warn("Registered visible point " + point + " is outside screen: [0, " + (myTextBuffer.getHeight() - 1) + "]");
             point.y = Math.min(Math.max(point.y, 0), myTextBuffer.getHeight() - 1);
         }
         myTrackingPoints.put(new TrackingPoint(point, isForceVisible), null);
@@ -54,7 +51,7 @@ class ChangeWidthOperation {
         if (result != null) {
             return result;
         }
-        logger.warn("Not tracked point: " + original);
+        JulLog.warn("Not tracked point: " + original);
         return original;
     }
 
@@ -73,7 +70,7 @@ class ChangeWidthOperation {
         }
         LinesBuffer screenBuffer = myTextBuffer.getScreenBufferOrBackup();
         if (screenBuffer.getLineCount() > myTextBuffer.getHeight()) {
-            logger.warn("Terminal height < screen buffer line count: " + myTextBuffer.getHeight() + " < " + screenBuffer.getLineCount());
+            JulLog.warn("Terminal height < screen buffer line count: " + myTextBuffer.getHeight() + " < " + screenBuffer.getLineCount());
         }
         int oldScreenLineCount = Math.min(screenBuffer.getLineCount(), myTextBuffer.getHeight());
         for (int i = 0; i < oldScreenLineCount; i++) {

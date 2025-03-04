@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.ui;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.Color;
 import com.techsenger.jeditermfx.core.CursorShape;
 import com.techsenger.jeditermfx.core.HyperlinkStyle;
@@ -82,8 +83,6 @@ import javafx.util.Duration;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -102,8 +101,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.techsenger.jeditermfx.core.util.Platform.isWindows;
 
 public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminalPanel.class);
 
     private static final long serialVersionUID = -1048763516632093014L;
 
@@ -675,7 +672,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                 item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
                 new Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
         updateSelection(selection, true);
-        logger.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
+        JulLog.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
                 item.getEnd().x, item.getEnd().y);
         if (mySelection.get().getStart().y < getTerminalTextBuffer().getHeight() / 2) {
             var value = FxScrollBarUtils.getValueFor(item.getStart().y, historyLineCount + screenLineCount,
@@ -705,7 +702,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                     try {
                         terminalPanel.doRepaint();
                     } catch (Exception ex) {
-                        logger.error("Error while terminal panel redraw", ex);
+                        JulLog.error("Error while terminal panel redraw", ex);
                     }
                 }
             } else { // terminalPanel was garbage collected
@@ -821,7 +818,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
             }
             myTerminalStarter.sendString(text, true);
         } catch (RuntimeException e) {
-            logger.info("", e);
+            JulLog.info("", e);
         }
     }
 
@@ -873,18 +870,18 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         mySpaceBetweenLines = Math.max(0, (int) Math.round(((myCharSize.getHeight() - fontMetricsHeight) / 2) * 2));
         fontMetrics = FxFontMetrics.create(myNormalFont, "qpjg");
         myDescent = fontMetrics.getDescent();
-        if (logger.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             // The magic +2 here is to give lines a tiny bit of extra height to avoid clipping when rendering some Apple
             // emoji, which are slightly higher than the font metrics reported character height :(
             double oldCharHeight = fontMetricsHeight + (int) (lineSpacing * 2) + 2;
             double oldDescent = fontMetrics.getDescent() + (int) lineSpacing;
-            logger.debug("charHeight=" + oldCharHeight + "->" + myCharSize.getHeight() +
+            JulLog.debug("charHeight=" + oldCharHeight + "->" + myCharSize.getHeight() +
                     ", descent=" + oldDescent + "->" + myDescent);
         }
 //TODO
 //    var myMonospaced = isMonospaced(fo);
 //    if (!myMonospaced) {
-//      logger.info("WARNING: Font " + myNormalFont.getName() + " is non-monospaced");
+//      JulLog.info("WARNING: Font " + myNormalFont.getName() + " is non-monospaced");
 //    }
     }
 
@@ -1551,7 +1548,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
             }
             xCoord = Math.round(xCoord);
             baseLine = Math.round(baseLine);
-            //logger.debug("Drawing {} at {}:{}", str, xCoord, baseLine);
+            //JulLog.debug("Drawing {} at {}:{}", str, xCoord, baseLine);
             graphicsContext.fillText(str, xCoord, baseLine);
             graphicsContext.restore();
             startOffset = endOffset;
@@ -1939,7 +1936,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                         try {
                             Desktop.getDesktop().browse(new URI(selectedText));
                         } catch (Exception ex) {
-                            logger.error("Error opening url: {}", selectedText, ex);
+                            JulLog.error("Error opening url: {}", selectedText, ex);
                         }
                     });
                 }
@@ -2053,7 +2050,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                 return processCharacter(e, keychar);
             }
         } catch (Exception ex) {
-            logger.error("Error sending pressed key to emulator", ex);
+            JulLog.error("Error sending pressed key to emulator", ex);
         }
         return false;
     }
@@ -2112,7 +2109,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
             try {
                 return processCharacter(e, keyChar);
             } catch (Exception ex) {
-                logger.error("Error sending typed key to emulator", ex);
+                JulLog.error("Error sending typed key to emulator", ex);
             }
         }
         return false;
@@ -2256,7 +2253,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     }
 
     void logScrollBar() {
-        logger.info("ScrollBar value: {}, visibleAmount: {}, min: {}, max: {}", this.scrollBar.getValue(),
+        JulLog.info("ScrollBar value: {}, visibleAmount: {}, min: {}, max: {}", this.scrollBar.getValue(),
                 this.scrollBar.getVisibleAmount(), this.scrollBar.getMin(), this.scrollBar.getMax());
     }
 

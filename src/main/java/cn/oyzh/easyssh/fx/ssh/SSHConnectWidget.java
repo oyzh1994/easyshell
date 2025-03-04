@@ -1,35 +1,21 @@
 package cn.oyzh.easyssh.fx.ssh;
 
 import cn.oyzh.common.log.JulLog;
-import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
-import com.techsenger.jeditermfx.app.JediTermFx;
-import com.techsenger.jeditermfx.app.debug.TerminalDebugUtil;
-import com.techsenger.jeditermfx.app.pty.LoggingTtyConnector;
-import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.techsenger.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.techsenger.jeditermfx.core.TtyConnector;
-import com.techsenger.jeditermfx.core.model.TerminalTextBuffer;
 import com.techsenger.jeditermfx.core.util.Platform;
 import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
-import com.techsenger.jeditermfx.ui.TerminalWidget;
 import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
-import kotlin.collections.ArraysKt;
 import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 
@@ -76,7 +62,7 @@ public class SSHConnectWidget extends JediTermFxWidget {
                     .setConsole(false)
                     .setUseWinConPty(true)
                     .start();
-            return new JediTermFx.LoggingPtyProcessTtyConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
+            return new LoggingPtyProcessTtyConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -109,8 +95,8 @@ public class SSHConnectWidget extends JediTermFxWidget {
 
     public void openSession( TtyConnector ttyConnector) {
         JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-        if (ttyConnector instanceof JediTermFx.LoggingPtyProcessTtyConnector) {
-            ((JediTermFx.LoggingPtyProcessTtyConnector) ttyConnector).setWidget(session);
+        if (ttyConnector instanceof LoggingPtyProcessTtyConnector) {
+            ((LoggingPtyProcessTtyConnector) ttyConnector).setWidget(session);
         }
         session.start();
     }

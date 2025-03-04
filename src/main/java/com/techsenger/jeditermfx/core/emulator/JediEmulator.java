@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.core.emulator;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.Color;
 import com.techsenger.jeditermfx.core.CursorShape;
 import com.techsenger.jeditermfx.core.DataStreamIteratingEmulator;
@@ -15,8 +16,6 @@ import com.techsenger.jeditermfx.core.util.Ascii;
 import com.techsenger.jeditermfx.core.util.CharUtils;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,8 +31,6 @@ import java.util.List;
  */
 
 public class JediEmulator extends DataStreamIteratingEmulator {
-
-    private static final Logger logger = LoggerFactory.getLogger(JediEmulator.class);
 
     private static int logThrottlerCounter = 0;
 
@@ -109,13 +106,13 @@ public class JediEmulator extends DataStreamIteratingEmulator {
         switch (ch) {
             case '[': // Control Sequence Introducer (CSI)
                 ControlSequence args = new ControlSequence(myDataStream);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Control Sequence (" + args.getDebugInfo() + ")");
+                if (JulLog.isDebugEnabled()) {
+                    JulLog.debug("Control Sequence (" + args.getDebugInfo() + ")");
                 }
                 if (!args.pushBackReordered(myDataStream)) {
                     boolean result = processControlSequence(args);
                     if (!result) {
-                        logger.warn("Unhandled Control Sequence (" + args.getDebugInfo() + ")");
+                        JulLog.warn("Unhandled Control Sequence (" + args.getDebugInfo() + ")");
                     }
                 }
                 break;
@@ -140,7 +137,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
             case 'P': // Device Control String (DCS)
                 SystemCommandSequence command = new SystemCommandSequence(myDataStream);
                 if (!deviceControlString(command)) {
-                    logger.warn("Error processing DCS: ESCP" + command);
+                    JulLog.warn("Error processing DCS: ESCP" + command);
                 }
                 break;
             case ']': // Operating System Command (OSC)
@@ -207,11 +204,11 @@ public class JediEmulator extends DataStreamIteratingEmulator {
         SystemCommandSequence osc = new SystemCommandSequence(myDataStream);
         try {
             boolean processed = doProcessOsc(osc);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Processed OSC (" + osc + "): " + processed);
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("Processed OSC (" + osc + "): " + processed);
             }
         } catch (Exception e) {
-            logger.error("Error processing OSC (" + osc + ")", e);
+            JulLog.error("Error processing OSC (" + osc + ")", e);
         }
     }
 
@@ -285,8 +282,8 @@ public class JediEmulator extends DataStreamIteratingEmulator {
         }
         if (color != null) {
             String str = args.format(List.of(String.valueOf(ps), color.toXParseColor()));
-            if (logger.isDebugEnabled()) {
-                logger.debug("Responding to OSC " + ps + " query: " + str);
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("Responding to OSC " + ps + " query: " + str);
             }
             myTerminal.deviceStatusReport(str);
         }
@@ -389,7 +386,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
                 if (logThrottlerLimit / logThrottlerRatio > 1) {
                     msg += " and " + (logThrottlerLimit / logThrottlerRatio) + " more...";
                 }
-                logger.warn(msg);
+                JulLog.warn(msg);
             }
         } else {
             logThrottlerLimit *= 10;
@@ -709,31 +706,31 @@ public class JediEmulator extends DataStreamIteratingEmulator {
     }
 
     private boolean restoreDecPrivateModeValues(ControlSequence args) {
-        logger.warn("Unsupported: " + args);
+        JulLog.warn("Unsupported: " + args);
 
         return false;
     }
 
     private boolean deviceStatusReport(ControlSequence args) {
         if (args.startsWithQuestionMark()) {
-            logger.warn("Don't support DEC-specific Device Report Status");
+            JulLog.warn("Don't support DEC-specific Device Report Status");
             return false;
         }
         int c = args.getArg(0, 0);
         if (c == 5) {
             String str = "\033[0n";
-            logger.debug("Sending Device Report Status : " + str);
+            JulLog.debug("Sending Device Report Status : " + str);
             myTerminal.deviceStatusReport(str);
             return true;
         } else if (c == 6) {
             int row = myTerminal.getCursorY();
             int column = myTerminal.getCursorX();
             String str = "\033[" + row + ";" + column + "R";
-            logger.debug("Sending Device Report Status : " + str);
+            JulLog.debug("Sending Device Report Status : " + str);
             myTerminal.deviceStatusReport(str);
             return true;
         } else {
-            logger.warn("Sending Device Report Status : unsupported parameter: " + args);
+            JulLog.warn("Sending Device Report Status : unsupported parameter: " + args);
             return false;
         }
     }
@@ -761,7 +758,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
                 myTerminal.cursorShape(CursorShape.STEADY_VERTICAL_BAR);
                 return true;
             default:
-                logger.warn("Setting cursor shape : unsupported parameter " + args);
+                JulLog.warn("Setting cursor shape : unsupported parameter " + args);
                 return false;
         }
     }
@@ -772,8 +769,8 @@ public class JediEmulator extends DataStreamIteratingEmulator {
     }
 
     private boolean sendDeviceAttributes() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Identifying to remote system as VT102");
+        if (JulLog.isDebugEnabled()) {
+            JulLog.debug("Identifying to remote system as VT102");
         }
         myTerminal.deviceAttributes(CharUtils.VT102_RESPONSE);
 
@@ -906,7 +903,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
             int step = 1;
             final int arg = args.getArg(i, -1);
             if (arg == -1) {
-                logger.warn("Error in processing char attributes, arg " + i);
+                JulLog.warn("Error in processing char attributes, arg " + i);
                 i++;
                 continue;
             }
@@ -1023,7 +1020,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
                     builder.setBackground(ColorPalette.getIndexedTerminalColor(arg - 92));
                     break;
                 default:
-                    logger.warn("Unknown character attribute:" + arg);
+                    JulLog.warn("Unknown character attribute:" + arg);
             }
             i = i + step;
         }
@@ -1042,14 +1039,14 @@ public class JediEmulator extends DataStreamIteratingEmulator {
                     (val2 >= 0 && val2 < 256)) {
                 return new TerminalColor(val0, val1, val2);
             } else {
-                logger.warn("Bogus color setting " + args);
+                JulLog.warn("Bogus color setting " + args);
                 return null;
             }
         } else if (code == 5) {
             /* indexed color */
             return ColorPalette.getIndexedTerminalColor(args.getArg(index + 2, 0));
         } else {
-            logger.warn("Unsupported code for color attribute " + args);
+            JulLog.warn("Unsupported code for color attribute " + args);
             return null;
         }
     }
@@ -1072,8 +1069,8 @@ public class JediEmulator extends DataStreamIteratingEmulator {
     }
 
     private void setModeEnabled(final TerminalMode mode, final boolean enabled) {
-        if (logger.isDebugEnabled()) {
-            logger.info("Setting mode " + mode + " enabled = " + enabled);
+        if (JulLog.isDebugEnabled()) {
+            JulLog.info("Setting mode " + mode + " enabled = " + enabled);
         }
         myTerminal.setModeEnabled(mode, enabled);
     }

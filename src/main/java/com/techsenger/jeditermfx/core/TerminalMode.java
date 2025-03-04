@@ -1,7 +1,6 @@
 package com.techsenger.jeditermfx.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.oyzh.common.log.JulLog;
 
 public enum TerminalMode {
 
@@ -123,9 +122,7 @@ public enum TerminalMode {
         }
     };
 
-    private static final Logger logger = LoggerFactory.getLogger(TerminalMode.class);
-
     public void setEnabled(Terminal terminal, boolean enabled) {
-        logger.warn("Mode " + name() + " is not implemented, setting to " + enabled);
+        JulLog.warn("Mode " + name() + " is not implemented, setting to " + enabled);
     }
 }

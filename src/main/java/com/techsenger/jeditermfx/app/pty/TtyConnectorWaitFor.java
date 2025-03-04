@@ -1,16 +1,13 @@
 package com.techsenger.jeditermfx.app.pty;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.TtyConnector;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.function.IntConsumer;
 
 public class TtyConnectorWaitFor {
-
-    private static final Logger logger = LoggerFactory.getLogger(TtyConnectorWaitFor.class);
 
     public TtyConnectorWaitFor(@NotNull TtyConnector ttyConnector, @NotNull ExecutorService executor,
                                @NotNull IntConsumer terminationCallback) {
@@ -22,7 +19,7 @@ public class TtyConnectorWaitFor {
                         exitCode = ttyConnector.waitFor();
                         break;
                     } catch (InterruptedException e) {
-                        logger.debug("", e);
+                        JulLog.debug("", e);
                     }
                 }
             } finally {

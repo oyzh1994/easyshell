@@ -10,7 +10,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.techsenger.jeditermfx.core.input.KeyEvent.*;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_BACK_SPACE;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_DELETE;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_DOWN;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_END;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_ENTER;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F1;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F10;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F11;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F12;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F2;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F3;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F4;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F5;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F6;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F7;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F8;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_F9;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_HOME;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_INSERT;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_KP_DOWN;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_KP_LEFT;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_KP_RIGHT;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_KP_UP;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_LEFT;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_PAGE_DOWN;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_PAGE_UP;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_RIGHT;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_TAB;
+import static com.techsenger.jeditermfx.core.input.KeyEvent.VK_UP;
 
 /**
  * @author traff

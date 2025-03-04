@@ -1,12 +1,11 @@
 package com.techsenger.jeditermfx.core.typeahead;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.typeahead.TypeAheadTerminalModel.LineWithCursorX;
 import com.techsenger.jeditermfx.core.util.Ascii;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +22,6 @@ public class TerminalTypeAheadManager {
     private static final int LATENCY_MIN_SAMPLES_TO_TURN_ON = 2;
 
     private static final double LATENCY_TOGGLE_OFF_THRESHOLD = 0.5;
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminalTypeAheadManager.class);
 
     private final TypeAheadTerminalModel myTerminalModel;
 
@@ -129,7 +126,7 @@ public class TerminalTypeAheadManager {
             TypeAheadPrediction prediction = createPrediction(lineWithCursorX, keyEvent);
             myPredictions.add(prediction);
             applyPredictions();
-            logger.debug("Created " + keyEvent.myEventType + " prediction");
+            JulLog.debug("Created " + keyEvent.myEventType + " prediction");
         } finally {
             myTerminalModel.unlock();
         }
@@ -166,7 +163,7 @@ public class TerminalTypeAheadManager {
         myTerminalModel.lock();
         try {
             if (!myPredictions.isEmpty()) {
-                logger.debug("Debounce");
+                JulLog.debug("Debounce");
                 resetState();
             }
         } finally {

@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.app.example;
 
+import cn.oyzh.common.log.JulLog;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
@@ -12,16 +13,12 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BasicTerminalShellExample extends Application {
-
-    private static final Logger logger = LoggerFactory.getLogger(BasicTerminalShellExample.class);
 
     private @NotNull JediTermFxWidget createTerminalWidget() {
         JediTermFxWidget widget = new JediTermFxWidget(80, 24, new DefaultSettingsProvider());
@@ -54,13 +51,13 @@ public class BasicTerminalShellExample extends Application {
         JediTermFxWidget widget = createTerminalWidget();
         widget.addListener(terminalWidget -> {
             widget.close(); // terminate the current process and dispose all allocated resources
-            logger.debug("Closed widget");
+            JulLog.debug("Closed widget");
         });
         stage.setTitle("Basic Terminal Shell Example");
         stage.setOnCloseRequest(e -> {
             widget.close();
             widget.getTtyConnector().close(); // terminate the current process
-            logger.debug("Closed TTY connector");
+            JulLog.debug("Closed TTY connector");
         });
         Scene scene = new Scene(widget.getPane(), 600, 400);
         stage.setScene(scene);

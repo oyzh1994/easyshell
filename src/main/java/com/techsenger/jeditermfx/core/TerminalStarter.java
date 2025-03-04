@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.core;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.emulator.Emulator;
 import com.techsenger.jeditermfx.core.emulator.JediEmulator;
 import com.techsenger.jeditermfx.core.input.KeyEvent;
@@ -7,8 +8,6 @@ import com.techsenger.jeditermfx.core.model.JediTerminal;
 import com.techsenger.jeditermfx.core.typeahead.TerminalTypeAheadManager;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -24,8 +23,6 @@ import java.util.function.BiConsumer;
  * @author traff
  */
 public class TerminalStarter implements TerminalOutputStream {
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminalStarter.class);
 
     private final Emulator myEmulator;
 
@@ -82,7 +79,7 @@ public class TerminalStarter implements TerminalOutputStream {
                 myEmulator.next();
             }
         } catch (InterruptedIOException e) {
-            logger.debug("Terminal I/0 has been interrupted");
+            JulLog.debug("Terminal I/0 has been interrupted");
         } catch (Exception e) {
             if (myTtyConnector.isConnected()) {
                 throw new RuntimeException("Uncaught exception in terminal emulator thread", e);
@@ -199,7 +196,7 @@ public class TerminalStarter implements TerminalOutputStream {
     }
 
     private void logWriteError(@NotNull IOException e) {
-        logger.info("Cannot write to TtyConnector " + myTtyConnector.getClass().getName() + ", connected: "
+        JulLog.info("Cannot write to TtyConnector " + myTtyConnector.getClass().getName() + ", connected: "
                 + myTtyConnector.isConnected(), e);
     }
 
@@ -208,7 +205,7 @@ public class TerminalStarter implements TerminalOutputStream {
             try {
                 myTtyConnector.close();
             } catch (Exception e) {
-                logger.error("Error closing terminal", e);
+                JulLog.error("Error closing terminal", e);
             }
         });
     }

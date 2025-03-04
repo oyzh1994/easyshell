@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.core.model;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.Color;
 import com.techsenger.jeditermfx.core.CursorShape;
 import com.techsenger.jeditermfx.core.HyperlinkStyle;
@@ -32,8 +33,6 @@ import com.techsenger.jeditermfx.core.util.TermSize;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -54,8 +53,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author traff
  */
 public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCoordinates {
-
-    private static final Logger logger = LoggerFactory.getLogger(JediTerminal.class.getName());
 
     private static final int MIN_COLUMNS = 5;
 
@@ -419,7 +416,7 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
                     myTerminalTextBuffer.clearHistory();
                     break;
                 default:
-                    logger.warn("Unsupported erase in display mode:" + arg);
+                    JulLog.warn("Unsupported erase in display mode:" + arg);
                     beginY = 1;
                     endY = 1;
                     break;
@@ -505,7 +502,7 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
                     myTerminalTextBuffer.eraseCharacters(0, -1, myCursorY - 1);
                     break;
                 default:
-                    logger.warn("Unsupported erase in line mode:" + arg);
+                    JulLog.warn("Unsupported erase in line mode:" + arg);
                     break;
             }
         } finally {
@@ -735,7 +732,7 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
     @Override
     public void setScrollingRegion(int top, int bottom) {
         if (top > bottom) {
-            logger.error("Top margin of scroll region can't be greater then bottom: " + top + ">" + bottom);
+            JulLog.error("Top margin of scroll region can't be greater then bottom: " + top + ">" + bottom);
         }
         myScrollRegionTop = Math.max(1, top);
         myScrollRegionBottom = Math.min(myTerminalHeight, bottom);
@@ -902,7 +899,7 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
                 sb.append(String.format("\033[M%c%c%c", (char) (32 + button), (char) (32 + x), (char) (32 + y)));
                 break;
         }
-        logger.debug(myMouseFormat + " (" + charset + ") report : " + button + ", " + x + "x" + y + " = " + sb);
+        JulLog.debug(myMouseFormat + " (" + charset + ") report : " + button + ", " + x + "x" + y + " = " + sb);
         return sb.toString().getBytes(Charset.forName(charset));
     }
 

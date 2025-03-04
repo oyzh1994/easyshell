@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.ui;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.Color;
 import com.techsenger.jeditermfx.core.ProcessTtyConnector;
 import com.techsenger.jeditermfx.core.Terminal;
@@ -32,8 +33,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,8 +48,6 @@ import java.util.function.Consumer;
  * JediTermFX terminal widget with UI implemented in JavaFX.
  */
 public class JediTermFxWidget implements TerminalSession, TerminalWidget, TerminalActionProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(JediTermFxWidget.class);
 
     protected final TerminalPanel myTerminalPanel;
 
@@ -241,7 +238,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
                 Future<?> future = getExecutorServiceManager().getUnboundedExecutorService().submit(task);
                 myRunningSession.set(new Session(task, future));
             } else {
-                logger.error("Should not try to start session again at this point... ");
+                JulLog.error("Should not try to start session again at this point... ");
             }
         }
     }
@@ -428,7 +425,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
                     myStarter.start();
                 }
             } catch (Exception e) {
-                logger.error("Exception running terminal", e);
+                JulLog.error("Exception running terminal", e);
             } finally {
                 try {
                     ttyConnector.close();
@@ -439,12 +436,12 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
                         listener.allSessionsClosed(JediTermFxWidget.this);
                     }
                 } catch (Exception e) {
-                    logger.error("Unhandled exception when closing terminal", e);
+                    JulLog.error("Unhandled exception when closing terminal", e);
                 }
                 try {
                     myOnDone.run();
                 } catch (Exception e) {
-                    logger.error("Unhandled exception when closing terminal", e);
+                    JulLog.error("Unhandled exception when closing terminal", e);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.ui.settings;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.HyperlinkStyle;
 import com.techsenger.jeditermfx.core.TerminalColor;
 import com.techsenger.jeditermfx.core.TextStyle;
@@ -13,8 +14,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
@@ -23,8 +22,6 @@ import static com.techsenger.jeditermfx.core.util.Platform.isWindows;
 import static com.techsenger.jeditermfx.ui.FxTransformers.fromFxToTerminalColor;
 
 public class DefaultSettingsProvider implements SettingsProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSettingsProvider.class);
 
     @Override
     public @NotNull TerminalActionPresentation getOpenUrlActionPresentation() {
@@ -110,7 +107,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
             fontName = "Monospaced";
         }
         var font = Font.font(fontName, getTerminalFontSize());
-        logger.debug("Terminal font: {}", font);
+        JulLog.debug("Terminal font: {}", font);
         return font;
     }
 

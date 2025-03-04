@@ -43,7 +43,7 @@ public final class LoggingPtyProcessTtyConnector extends PtyProcessTtyConnector 
     }
 
     @Override
-    public int read(@NotNull char[] buf, int offset, int length) throws IOException {
+    public int read(char @NotNull [] buf, int offset, int length) throws IOException {
         Intrinsics.checkNotNullParameter(buf, "buf");
         int len = super.read(buf, offset, length);
         if (len > 0) {

@@ -1,13 +1,12 @@
 package com.techsenger.jeditermfx.core.model;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.StyledTextConsumer;
 import com.techsenger.jeditermfx.core.TextStyle;
 import com.techsenger.jeditermfx.core.model.TerminalLine.TextEntry;
 import com.techsenger.jeditermfx.core.model.hyperlinks.TextProcessing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,6 @@ import java.util.List;
  * Holds styled characters lines
  */
 public class LinesBuffer {
-
-    private static final Logger logger = LoggerFactory.getLogger(LinesBuffer.class);
 
     public static final int DEFAULT_MAX_LINES_COUNT = 5000;
 
@@ -212,7 +209,7 @@ public class LinesBuffer {
 
     public @NotNull TerminalLine getLine(int row) {
         if (row < 0) {
-            logger.error("Negative line number: " + row);
+            JulLog.error("Negative line number: " + row);
             return TerminalLine.createEmpty();
         }
         for (int i = getLineCount(); i <= row; i++) {

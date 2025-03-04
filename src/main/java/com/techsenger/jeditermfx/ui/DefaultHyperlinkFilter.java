@@ -15,14 +15,13 @@
  */
 package com.techsenger.jeditermfx.ui;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.model.hyperlinks.HyperlinkFilter;
 import com.techsenger.jeditermfx.core.model.hyperlinks.LinkInfo;
 import com.techsenger.jeditermfx.core.model.hyperlinks.LinkResult;
 import com.techsenger.jeditermfx.core.model.hyperlinks.LinkResultItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.net.URI;
@@ -35,8 +34,6 @@ import java.util.regex.Pattern;
  * @author yole
  */
 public class DefaultHyperlinkFilter implements HyperlinkFilter {
-
-    private static final Logger logger = LoggerFactory.getLogger(DefaultHyperlinkFilter.class);
 
     private static final Pattern URL_PATTERN = Pattern.compile("\\b(mailto:|(news|(ht|f)tp(s?))://|((?<![\\p{L}0-9_.])"
             + "(www\\.)))[-A-Za-z0-9+$&@#/%?=~_|!:,.;]*[-A-Za-z0-9+$&@#/%=~_|]");
@@ -72,7 +69,7 @@ public class DefaultHyperlinkFilter implements HyperlinkFilter {
                             try {
                                 d.browse(new URI(url));
                             } catch (Exception ex) {
-                                logger.error("Error opening url: {}", url, ex);
+                                JulLog.error("Error opening url: {}", url, ex);
                             }
                         });
                     }

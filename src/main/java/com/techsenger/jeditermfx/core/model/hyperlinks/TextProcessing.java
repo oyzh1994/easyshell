@@ -1,5 +1,6 @@
 package com.techsenger.jeditermfx.core.model.hyperlinks;
 
+import cn.oyzh.common.log.JulLog;
 import com.techsenger.jeditermfx.core.HyperlinkStyle;
 import com.techsenger.jeditermfx.core.TextStyle;
 import com.techsenger.jeditermfx.core.model.CharBuffer;
@@ -8,8 +9,6 @@ import com.techsenger.jeditermfx.core.model.TerminalLine;
 import com.techsenger.jeditermfx.core.model.TerminalTextBuffer;
 import com.techsenger.jeditermfx.core.util.CharUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -22,8 +21,6 @@ import java.util.stream.Collectors;
  * @author traff
  */
 public class TextProcessing {
-
-    private static final Logger logger = LoggerFactory.getLogger(TextProcessing.class);
 
     private final List<HyperlinkFilter> myHyperlinkFilter;
 
@@ -56,7 +53,7 @@ public class TextProcessing {
                 // When lines arrive fast enough, the line might be pushed to the history buffer already.
                 updatedLineInd = findHistoryLineInd(myTerminalTextBuffer.getHistoryBuffer(), updatedLine);
                 if (updatedLineInd == -1) {
-                    logger.debug("Cannot find line for links processing");
+                    JulLog.debug("Cannot find line for links processing");
                     return;
                 }
                 buffer = myTerminalTextBuffer.getHistoryBuffer();
