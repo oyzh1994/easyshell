@@ -48,22 +48,12 @@
 
         <dependency>
             <groupId>cn.oyzh</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.oyzh</groupId>
             <artifactId>event</artifactId>
         </dependency>
 
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>fx-gui</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>fx-plus</artifactId>
         </dependency>
 
         <!-- json类库 -->

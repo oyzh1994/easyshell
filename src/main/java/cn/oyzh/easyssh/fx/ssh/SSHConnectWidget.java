@@ -1,6 +1,8 @@
 package cn.oyzh.easyssh.fx.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.OSUtil;
+import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import com.techsenger.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.techsenger.jeditermfx.core.TtyConnector;
@@ -35,25 +37,27 @@ public class SSHConnectWidget extends JediTermFxWidget {
 
     public TtyConnector createTtyConnector() {
         try {
-            var envs = configureEnvironmentVariables();
+            var envs = this.configureEnvironmentVariables();
             String[] command;
-            if (Platform.isWindows()) {
+            if (OSUtil.isWindows()) {
 //                command = new String[]{"cmd.exe"};
                 command = new String[]{"powershell.exe"};
-            } else {
-                String shell = (String) envs.get("SHELL");
+            } else if (OSUtil.isLinux()) {
+                String shell = envs.get("SHELL");
                 if (shell == null) {
                     shell = "/bin/bash";
                 }
-                if (Platform.isMacOS()) {
-                    command = new String[]{shell, "--login"};
-                } else {
-                    command = new String[]{shell};
+                command = new String[]{shell};
+            } else {
+                String shell = envs.get("SHELL");
+                if (shell == null) {
+                    shell = "/bin/bash";
                 }
+                command = new String[]{shell, "--login"};
             }
             var workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
             JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
-            var process = new PtyProcessBuilder()
+            PtyProcess process = new PtyProcessBuilder()
                     .setDirectory(workingDirectory)
                     .setInitialColumns(120)
                     .setInitialRows(20)
@@ -61,15 +65,16 @@ public class SSHConnectWidget extends JediTermFxWidget {
                     .setEnvironment(envs)
                     .setConsole(false)
                     .setUseWinConPty(true)
+                    .setWindowsAnsiColorEnabled(true)
                     .start();
-            return new LoggingPtyProcessTtyConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
+            return new SSHLoggingConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private final Map<String, String> configureEnvironmentVariables() {
-        HashMap envs = new HashMap<String, String>(System.getenv());
+    private Map<String, String> configureEnvironmentVariables() {
+        HashMap<String, String> envs = new HashMap<>(System.getenv());
         if (Platform.isMacOS()) {
             envs.put("LC_CTYPE", Charsets.UTF_8.name());
         }
@@ -79,29 +84,21 @@ public class SSHConnectWidget extends JediTermFxWidget {
         return envs;
     }
 
-    @NotNull
-    protected JediTermFxWidget createTerminalWidget(@NotNull SettingsProvider settingsProvider) {
-        Intrinsics.checkNotNullParameter(settingsProvider, "settingsProvider");
-        JediTermFxWidget widget = new JediTermFxWidget(settingsProvider);
-        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
-        return widget;
-    }
-
-    public void openSession( ) {
+    public void openSession() {
         if (this.canOpenSession()) {
             openSession(createTtyConnector());
         }
     }
 
-    public void openSession( TtyConnector ttyConnector) {
+    public void openSession(TtyConnector ttyConnector) {
         JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-        if (ttyConnector instanceof LoggingPtyProcessTtyConnector) {
-            ((LoggingPtyProcessTtyConnector) ttyConnector).setWidget(session);
+        if (ttyConnector instanceof SSHLoggingConnector loggingConnector) {
+            loggingConnector.setWidget(session);
         }
         session.start();
     }
 
-    public  void onTermination( @NotNull IntConsumer terminationCallback) {
+    public void onTermination(@NotNull IntConsumer terminationCallback) {
         new TtyConnectorWaitFor(this.getTtyConnector(),
                 this.getExecutorServiceManager().getUnboundedExecutorService(),
                 terminationCallback);

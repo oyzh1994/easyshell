@@ -5,6 +5,7 @@ import cn.oyzh.easyssh.fx.ssh.SSHConnectWidget;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.settings.DefaultSettingsProvider;
 import javafx.fxml.FXML;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class SSHConnectTabController extends RichTabController {
         SSHConnectWidget widget = new SSHConnectWidget(new DefaultSettingsProvider());
         widget.openSession();
         widget.onTermination( exitCode -> widget.close());
+        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
         this.root.setChild(widget.getPane());
     }
 
