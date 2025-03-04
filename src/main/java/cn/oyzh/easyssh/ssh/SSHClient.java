@@ -122,10 +122,15 @@ public class SSHClient {
         if (StringUtil.isNotBlank(this.sshConnect.getPassword())) {
             this.session.setPassword(this.sshConnect.getPassword());
         }
-        // 去掉首次连接确认
         Properties config = new Properties();
+        // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
+        // 设置终端类型
+//        config.put("TERM", "xterm-256color");
+        config.put("term", "xterm-256color");
+        config.put("COLORTERM", "truecolor");
         this.session.setConfig(config);
+//        session.setConfig("term", "xterm-256color");
         // 超时连接时间为3秒
         this.session.setTimeout(this.sshConnect.connectTimeOutMs());
     }

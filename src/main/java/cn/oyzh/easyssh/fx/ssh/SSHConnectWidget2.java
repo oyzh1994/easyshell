@@ -7,10 +7,8 @@ import com.pty4j.PtyProcessBuilder;
 import com.techsenger.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.techsenger.jeditermfx.core.TtyConnector;
 import com.techsenger.jeditermfx.core.util.Platform;
-import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
-import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -26,16 +24,16 @@ import java.util.function.IntConsumer;
  * @author oyzh
  * @since 2025-03-04
  */
-public class SSHConnectWidget extends JediTermFxWidget {
+public class SSHConnectWidget2 extends JediTermFxWidget {
 
     @Getter
     private PtyProcess process;
 
-    public SSHConnectWidget(@NotNull SettingsProvider settingsProvider) {
+    public SSHConnectWidget2(@NotNull SettingsProvider settingsProvider) {
         super(settingsProvider);
     }
 
-    public SSHConnectWidget(int columns, int lines, SettingsProvider settingsProvider) {
+    public SSHConnectWidget2(int columns, int lines, SettingsProvider settingsProvider) {
         super(columns, lines, settingsProvider);
     }
 
@@ -44,8 +42,8 @@ public class SSHConnectWidget extends JediTermFxWidget {
             var envs = this.configureEnvironmentVariables();
             String[] command;
             if (OSUtil.isWindows()) {
-                command = new String[]{"cmd.exe"};
-//                command = new String[]{"powershell.exe"};
+//                command = new String[]{"cmd.exe"};
+                command = new String[]{"powershell.exe"};
             } else if (OSUtil.isLinux()) {
                 String shell = envs.get("SHELL");
                 if (shell == null) {
@@ -72,7 +70,7 @@ public class SSHConnectWidget extends JediTermFxWidget {
                     .setWindowsAnsiColorEnabled(true)
                     .start();
 
-            return new SSHLoggingConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
+            return new SSHLoggingConnector2(process, StandardCharsets.UTF_8, Arrays.asList(command));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -97,7 +95,7 @@ public class SSHConnectWidget extends JediTermFxWidget {
 
     public void openSession(TtyConnector ttyConnector) {
         JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-        if (ttyConnector instanceof SSHLoggingConnector loggingConnector) {
+        if (ttyConnector instanceof SSHLoggingConnector2 loggingConnector) {
             loggingConnector.setWidget(session);
         }
         session.start();

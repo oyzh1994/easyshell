@@ -5,11 +5,14 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.fx.ssh.SSHConnectWidget;
+import cn.oyzh.easyssh.fx.ssh.SSHConnectWidget2;
 import cn.oyzh.easyssh.fx.ssh.SSHLoggingConnector;
+import cn.oyzh.easyssh.fx.ssh.SSHLoggingConnector2;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.TerminalWidget;
@@ -44,7 +47,7 @@ public class SSHConnectTabController extends RichTabController {
     @FXML
     private FXVBox root;
 
-    private SSHConnectWidget widget;
+    private SSHConnectWidget2 widget;
 
     /**
      * 设置ssh客户端
@@ -53,25 +56,29 @@ public class SSHConnectTabController extends RichTabController {
      */
     public void init(@NonNull SSHClient client) {
         try {
-        this.client = client;
+            this.client = client;
             this.client.start();
-
-        this.widget = new SSHConnectWidget(new DefaultSettingsProvider());
-        this.widget.openSession();
-        this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
-        this.root.setChild(this.widget.getPane());
+            this.widget = new SSHConnectWidget2(new DefaultSettingsProvider());
+            this.widget.openSession();
+            this.widget.onTermination(exitCode -> this.widget.close());
+            this.widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
+            this.root.setChild(this.widget.getPane());
 //        this.waitReady();
-            SSHLoggingConnector connector= (SSHLoggingConnector) this.widget.getTtyConnector();
-            Channel channel= this.client.getSession().openChannel("shell");
-            channel.setInputStream(System.in);
-            channel.setOutputStream(System.out);
-            connector.setSshInput(channel.getInputStream());
-            connector.setSshOutput(channel.getOutputStream());
-            channel.connect();
+            this.connect1();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void connect1() throws JSchException, IOException {
+        SSHLoggingConnector2 connector = (SSHLoggingConnector2) this.widget.getTtyConnector();
+        ChannelShell channel = (ChannelShell) this.client.getSession().openChannel("shell");
+        channel.setInputStream(System.in);
+        channel.setOutputStream(System.out);
+        connector.setSshInput(channel.getInputStream());
+        connector.setSshOutput(channel.getOutputStream());
+        channel.setPtyType("xterm");
+        channel.connect();
     }
 
     private void waitReady() {
@@ -97,14 +104,14 @@ public class SSHConnectTabController extends RichTabController {
     }
 
     private void onTtyReady() throws Exception {
-//        SSHConnect connect = this.client.sshConnect();
-//        StringBuilder builder = new StringBuilder("ssh ");
-//        builder.append(connect.getUser())
-//                .append("@")
-//                .append(connect.hostIp())
-//                .append(" -p ")
-//                .append(connect.hostPort());
-//        this.widget.getTtyConnector().write(builder.toString());
+        SSHConnect connect = this.client.sshConnect();
+        StringBuilder builder = new StringBuilder("ssh ");
+        builder.append(connect.getUser())
+                .append("@")
+                .append(connect.hostIp())
+                .append(" -p ")
+                .append(connect.hostPort());
+        this.widget.getTtyConnector().write(builder.toString());
 //        this.client.bindStream(this.widget.getProcess());
 //        this.client.bindStream1(this.widget.getTtyConnector());
     }
