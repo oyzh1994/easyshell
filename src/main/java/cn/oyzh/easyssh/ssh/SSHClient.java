@@ -36,30 +36,20 @@ public class SSHClient {
      */
     @Getter
     @Accessors(chain = true, fluent = true)
-    private final SSHConnect sshInfo;
+    private final SSHConnect sshConnect;
 
     /**
      * ssh会话
      */
     private Session session;
 
-//    /**
-//     * ssh交互式终端
-//     */
-//    private SSHShell shell;
-
-    /**
-     * 连接状态
-     */
-    private ReadOnlyObjectWrapper<SSHConnState> connState;
-
     /**
      * 连接状态监听器列表
      */
     private final List<ChangeListener<SSHConnState>> connStateListeners = new ArrayList<>();
 
-    public SSHClient(@NonNull SSHConnect sshInfo) {
-        this.sshInfo = sshInfo;
+    public SSHClient(@NonNull SSHConnect sshConnect) {
+        this.sshConnect = sshConnect;
     }
 
     /**
@@ -85,28 +75,6 @@ public class SSHClient {
     public ReadOnlyObjectProperty<SSHConnState> stateProperty() {
         return this.state.getReadOnlyProperty();
     }
-
-//
-//    /**
-//     * 连接状态属性
-//     *
-//     * @return 连接状态属性
-//     */
-//    private ReadOnlyObjectWrapper<SSHConnState> state() {
-//        if (this.connState == null) {
-//            this.connState = new ReadOnlyObjectWrapper<>(SSHConnState.NOT_INITIALIZED);
-//        }
-//        return this.connState;
-//    }
-//
-//    /**
-//     * 连接状态属性
-//     *
-//     * @return 连接状态属性
-//     */
-//    private ReadOnlyObjectProperty<SSHConnState> connStateProperty() {
-//        return this.connState().getReadOnlyProperty();
-//    }
 
     /**
      * 添加连接状态监听器
@@ -137,20 +105,20 @@ public class SSHClient {
      */
     private void initClient() throws JSchException {
         if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.sshInfo.getUser(), this.sshInfo.getPassword(), this.sshInfo.getHost());
+            JulLog.info("initClient user:{} password:{} host:{}", this.sshConnect.getUser(), this.sshConnect.getPassword(), this.sshConnect.getHost());
         }
         // 创建会话
-        this.session = JSCH.getSession(this.sshInfo.getUser(), this.sshInfo.hostIp(), this.sshInfo.hostPort());
+        this.session = JSCH.getSession(this.sshConnect.getUser(), this.sshConnect.hostIp(), this.sshConnect.hostPort());
         // 主机密码
-        if (StringUtil.isNotBlank(this.sshInfo.getPassword())) {
-            this.session.setPassword(this.sshInfo.getPassword());
+        if (StringUtil.isNotBlank(this.sshConnect.getPassword())) {
+            this.session.setPassword(this.sshConnect.getPassword());
         }
         // 去掉首次连接确认
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");
         this.session.setConfig(config);
         // 超时连接时间为3秒
-        this.session.setTimeout(this.sshInfo.connectTimeOutMs());
+        this.session.setTimeout(this.sshConnect.connectTimeOutMs());
     }
 
     /**
@@ -254,7 +222,7 @@ public class SSHClient {
      * @return 名称
      */
     public String infoName() {
-        return this.sshInfo.getName();
+        return this.sshConnect.getName();
     }
 
 //    /**
@@ -280,10 +248,7 @@ public class SSHClient {
 //    }
 
     public Object connectName() {
-        return this.sshInfo.getName();
+        return this.sshConnect.getName();
     }
 
-    public SSHConnect sshConnect() {
-        return this.sshInfo;
-    }
 }
