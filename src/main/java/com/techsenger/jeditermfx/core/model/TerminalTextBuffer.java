@@ -290,9 +290,7 @@ public class TerminalTextBuffer {
             final StringBuilder sb = new StringBuilder();
             for (int row = 0; row < myHeight; row++) {
                 StringBuilder line = new StringBuilder(myScreenBuffer.getLine(row).getText());
-                for (int i = line.length(); i < myWidth; i++) {
-                    line.append(' ');
-                }
+                line.append(" ".repeat(Math.max(0, myWidth - line.length())));
                 if (line.length() > myWidth) {
                     line.setLength(myWidth);
                 }

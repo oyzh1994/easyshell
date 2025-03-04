@@ -3,10 +3,15 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.pty4j.PtyProcess;
+import com.pty4j.PtyProcessBuilder;
+import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
+import com.techsenger.jeditermfx.core.TtyConnector;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -14,6 +19,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -41,6 +49,7 @@ public class SSHClient {
     /**
      * ssh会话
      */
+    @Getter
     private Session session;
 
     /**
@@ -249,6 +258,105 @@ public class SSHClient {
 
     public Object connectName() {
         return this.sshConnect.getName();
+    }
+
+    public void bindStream(PtyProcess process) throws Exception {
+        if (session == null) {
+            this.start();
+        }
+        // 打开一个通道
+        Channel channel = session.openChannel("shell");
+//        channel.setInputStream(System.in);
+//        channel.setOutputStream(System.out);
+
+        InputStream inputStream = process.getInputStream();
+        OutputStream outputStream = process.getOutputStream();
+
+        inputStream.transferTo(channel.getOutputStream());
+        channel.getInputStream().transferTo(outputStream);
+
+        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
+        Thread readThread = new Thread(() -> {
+            try {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while (true) {
+                    bytesRead = channel.getInputStream().read(buffer);
+                    if (bytesRead != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                        outputStream.flush();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        readThread.start();
+
+        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
+        Thread writeThread = new Thread(() -> {
+            try {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while (true) {
+                    bytesRead = inputStream.read(buffer);
+                    if (bytesRead != -1) {
+                        channel.getOutputStream().write(buffer, 0, bytesRead);
+                        channel.getOutputStream().flush();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        writeThread.start();
+        channel.connect();
+    }
+
+    public void bindStream1(TtyConnector connector) throws Exception {
+        if (session == null) {
+            this.start();
+        }
+        // 打开一个通道
+        Channel channel = session.openChannel("shell");
+//        channel.setInputStream(System.in);
+//        channel.setOutputStream(System.out);
+
+        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
+        Thread readThread = new Thread(() -> {
+            try {
+                char[] buffer = new char[1024];
+                int bytesRead;
+                while (true) {
+                    bytesRead = connector.read(buffer, 0, buffer.length);
+                    if (bytesRead > 0) {
+                        String s = new String(buffer, 0, bytesRead);
+                        channel.getOutputStream().write(s.getBytes());
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        readThread.start();
+
+        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
+        Thread writeThread = new Thread(() -> {
+            try {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while (true) {
+                    bytesRead = channel.getInputStream().read(buffer, 0, buffer.length);
+                    if (bytesRead > 0) {
+                        connector.write(buffer);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        writeThread.start();
+        channel.connect();
     }
 
 }

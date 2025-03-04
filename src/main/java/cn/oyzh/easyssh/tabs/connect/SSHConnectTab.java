@@ -41,10 +41,10 @@ public class SSHConnectTab extends RichTab {
      */
     public void init(SSHConnect sshConnect) {
         try {
-            // 刷新图标
-            this.flushGraphic();
             // 初始化ssh连接
             this.controller().init(new SSHClient(sshConnect));
+            // 刷新图标
+            this.flush();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

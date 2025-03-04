@@ -14,11 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public final class SSHLoggingConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
@@ -32,9 +36,24 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
     private final LinkedList<TerminalState> myStates = new LinkedList<>();
 
     @Nullable
-    private JediTermFxWidget myWidget;
+    private TerminalTextBuffer textBuffer;
 
     private int logStart;
+
+    private InputStreamReader sshReader;
+
+//    private InputStream sshInput;
+
+    private OutputStream sshOutput;
+
+    public void setSshInput(InputStream sshInput) {
+//        this.sshInput = sshInput;
+        this.sshReader = new InputStreamReader(sshInput, Charsets.UTF_8);
+    }
+
+    public void setSshOutput(OutputStream sshOutput) {
+        this.sshOutput = sshOutput;
+    }
 
     public SSHLoggingConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
         super(process, charset, commandLines);
@@ -42,15 +61,19 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
 
     @Override
     public int read(char @NotNull [] buf, int offset, int length) throws IOException {
-        int len = super.read(buf, offset, length);
+        if(sshReader == null) {
+            return super.read(buf, offset, length);
+        }
+        int len = sshReader.read(buf, offset, length);
+//        int len = super.read(buf, offset, length);
         if (len > 0) {
             char[] arr = ArraysKt.copyOfRange(buf, offset, len);
+            System.out.println(new String(arr) + "-------");
             this.myDataChunks.add(arr);
-            TerminalTextBuffer terminalTextBuffer = this.myWidget.getTerminalTextBuffer();
-            String lines = terminalTextBuffer.getScreenLines();
+            String lines = this.textBuffer.getScreenLines();
             TerminalState terminalState =
-                    new TerminalState(lines, TerminalDebugUtil.getStyleLines(terminalTextBuffer),
-                            terminalTextBuffer.getHistoryBuffer().getLines());
+                    new TerminalState(lines, TerminalDebugUtil.getStyleLines(textBuffer),
+                            this.textBuffer.getHistoryBuffer().getLines());
             this.myStates.add(terminalState);
             if (this.myDataChunks.size() > this.MAX_LOG_SIZE) {
                 this.myDataChunks.removeFirst();
@@ -59,6 +82,7 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
             }
         }
         return len;
+//        return -1;
     }
 
     @NotNull
@@ -80,17 +104,21 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
 
     @Override
     public void write(@NotNull String string) throws IOException {
-        JulLog.debug("Writing in OutputStream : " + string);
-        super.write(string);
+        JulLog.info("Writing in OutputStream : {}", string);
+//        super.write(string);
+        this.sshOutput.write(string.getBytes(Charsets.UTF_8));
+        this.sshOutput.flush();
     }
 
     @Override
     public void write(byte @NotNull [] bytes) throws IOException {
-        JulLog.debug("Writing in OutputStream : " + Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
-        super.write(bytes);
+        JulLog.info("Writing in OutputStream : {}", Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
+//        super.write(bytes);
+        this.sshOutput.write(bytes);
+        this.sshOutput.flush();
     }
 
     public void setWidget(@NotNull JediTermFxWidget widget) {
-        this.myWidget = widget;
+        this.textBuffer = widget.getTerminalTextBuffer();
     }
 }

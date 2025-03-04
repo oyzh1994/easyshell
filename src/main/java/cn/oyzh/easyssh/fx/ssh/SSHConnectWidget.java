@@ -12,6 +12,7 @@ import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
 import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -26,6 +27,9 @@ import java.util.function.IntConsumer;
  * @since 2025-03-04
  */
 public class SSHConnectWidget extends JediTermFxWidget {
+
+    @Getter
+    private PtyProcess process;
 
     public SSHConnectWidget(@NotNull SettingsProvider settingsProvider) {
         super(settingsProvider);
@@ -57,16 +61,17 @@ public class SSHConnectWidget extends JediTermFxWidget {
             }
             var workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
             JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
-            PtyProcess process = new PtyProcessBuilder()
+            this.process = new PtyProcessBuilder()
                     .setDirectory(workingDirectory)
                     .setInitialColumns(120)
                     .setInitialRows(20)
                     .setCommand(command)
                     .setEnvironment(envs)
-                    .setConsole(false)
-                    .setUseWinConPty(true)
-                    .setWindowsAnsiColorEnabled(true)
+                    .setConsole(true)
+//                    .setUseWinConPty(true)
+//                    .setWindowsAnsiColorEnabled(true)
                     .start();
+
             return new SSHLoggingConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
         } catch (Exception e) {
             throw new IllegalStateException(e);
