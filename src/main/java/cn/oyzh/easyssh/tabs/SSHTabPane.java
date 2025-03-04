@@ -1,12 +1,12 @@
 package cn.oyzh.easyssh.tabs;
 
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.event.connect.SSHConnectOpenedEvent;
 import cn.oyzh.easyssh.event.connection.SSHConnectionClosedEvent;
-import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.tabs.changelog.SSHChangelogTab;
+import cn.oyzh.easyssh.tabs.connect.SSHConnectTab;
 import cn.oyzh.easyssh.tabs.home.SSHHomeTab;
-import cn.oyzh.easyssh.tabs.terminal.SSHTerminalTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
@@ -16,8 +16,6 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ssh切换面板
@@ -107,22 +105,22 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
         super.closeTab(SSHHomeTab.class);
     }
 
-    /**
-     * 获取终端tab
-     *
-     * @param client ssh客户端
-     * @return 终端tab
-     */
-    private SSHTerminalTab getTerminalTab(SSHClient client) {
-        if (client != null) {
-            for (Tab tab : this.getTabs()) {
-                if (tab instanceof SSHTerminalTab terminalTab && terminalTab.client() == client) {
-                    return terminalTab;
-                }
-            }
-        }
-        return null;
-    }
+//    /**
+//     * 获取终端tab
+//     *
+//     * @param client ssh客户端
+//     * @return 终端tab
+//     */
+//    private SSHTerminalTab getTerminalTab(SSHClient client) {
+//        if (client != null) {
+//            for (Tab tab : this.getTabs()) {
+//                if (tab instanceof SSHTerminalTab terminalTab && terminalTab.client() == client) {
+//                    return terminalTab;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 更新日志事件
@@ -141,6 +139,14 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    private SSHConnectTab getConnectTab(SSHConnect connect) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof SSHConnectTab tab1 && tab1.sshConnect() == connect) {
+                return tab1;
+            }
+        }
+        return null;
+    }
 
     /**
      * 连接打开事件
@@ -149,6 +155,14 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionOpened(SSHConnectOpenedEvent event) {
+        SSHConnectTab tab = this.getConnectTab(event.connect());
+        if (tab == null) {
+            tab = new SSHConnectTab(event.connect());
+            super.addTab(tab);
+        }
+        if (!tab.isSelected()) {
+            this.select(tab);
+        }
     }
 
     /**
@@ -158,8 +172,10 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionClosed(SSHConnectionClosedEvent event) {
+        SSHConnectTab tab = this.getConnectTab(event.connect());
+        if (tab != null) {
+            tab.closeTab();
+        }
     }
-
-
 
 }
