@@ -5,6 +5,10 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -12,10 +16,19 @@
         <FileSVGGlyph sizeStr="11"/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox prefHeight="50" flexWidth="100%">
-
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <RefreshSVGGlyph onMousePrimaryClicked="#refreshFile">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
+            <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
         </FXHBox>
-        <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 50">
+        <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                 <FXTableColumn style="-fx-padding-left:0;" prefWidth="150" valueName="fileName" text="%base.name"/>

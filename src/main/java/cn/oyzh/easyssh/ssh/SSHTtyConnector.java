@@ -67,7 +67,7 @@ public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTt
         }
         if (len > 0) {
             char[] arr = ArraysKt.copyOfRange(buf, offset, len);
-            JulLog.info("shell read: {}", new String(arr));
+            JulLog.debug("shell read: {}", new String(arr));
             this.myDataChunks.add(arr);
             String lines = this.textBuffer.getScreenLines();
             TerminalState terminalState =
@@ -102,7 +102,7 @@ public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTt
 
     @Override
     public void write(@NotNull String str) throws IOException {
-        JulLog.info("shell write : {}", str);
+        JulLog.debug("shell write : {}", str);
 //        super.write(string);
         this.shellWriter.write(str);
         this.shellWriter.flush();
@@ -111,7 +111,7 @@ public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTt
     @Override
     public void write(byte @NotNull [] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
-        JulLog.info("shell write : {}", str);
+        JulLog.debug("shell write : {}", str);
 //        super.write(bytes);
         this.shellWriter.write(str);
         this.shellWriter.flush();

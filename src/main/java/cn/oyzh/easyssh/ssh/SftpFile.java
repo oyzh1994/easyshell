@@ -33,7 +33,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SSHSftpFile {
+public class SftpFile {
 
     ChannelSftp.LsEntry entry;
 
@@ -45,7 +45,7 @@ public class SSHSftpFile {
     @Getter
     private String group;
 
-    public SSHSftpFile(ChannelSftp.LsEntry entry) {
+    public SftpFile(ChannelSftp.LsEntry entry) {
         this.entry = entry;
     }
 
@@ -53,7 +53,7 @@ public class SSHSftpFile {
         return this.entry.getAttrs();
     }
 
-    protected boolean isDir() {
+    public boolean isDir() {
         return this.entry.getAttrs().isDir();
     }
 
@@ -120,6 +120,14 @@ public class SSHSftpFile {
 
     public String getFileName() {
         return this.entry.getFilename();
+    }
+
+    public String getFilePath() {
+        String name = this.getFileName();
+        if (name.startsWith("/")) {
+            return name;
+        }
+        return "/" + name;
     }
 
     public String getLongName() {

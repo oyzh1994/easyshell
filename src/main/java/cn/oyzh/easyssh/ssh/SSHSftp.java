@@ -52,15 +52,15 @@ public class SSHSftp {
         return this.channel.isConnected();
     }
 
-    public List<SSHSftpFile> ls(String path) throws SftpException, JSchException, IOException {
-        return ls(path, null);
+    public List<SftpFile> ls(String path) throws SftpException, JSchException, IOException {
+        return this.ls(path, null);
     }
 
-    public List<SSHSftpFile> ls(String path, SSHClient client) throws SftpException, JSchException, IOException {
+    public List<SftpFile> ls(String path, SSHClient client) throws SftpException, JSchException, IOException {
         Vector<ChannelSftp.LsEntry> vector = this.channel.ls(path);
-        List<SSHSftpFile> files = new ArrayList<>();
+        List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            SSHSftpFile file = new SSHSftpFile(lsEntry);
+            SftpFile file = new SftpFile(lsEntry);
             files.add(file);
             if (client != null) {
                 SftpAttr attr = client.getAttr();
@@ -82,5 +82,21 @@ public class SSHSftp {
             }
         }
         return files;
+    }
+
+    public void rm(String path) throws SftpException {
+        this.channel.rm(path);
+    }
+
+    public void rmDir(String path) throws SftpException {
+        this.channel.rmdir(path);
+    }
+
+    public void rm(SftpFile file) throws SftpException {
+        if (file.isDir()) {
+            this.rmDir(file.getFilePath());
+        } else {
+            this.rm(file.getFilePath());
+        }
     }
 }
