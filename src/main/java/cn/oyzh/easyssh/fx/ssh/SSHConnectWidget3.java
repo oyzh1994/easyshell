@@ -24,16 +24,16 @@ import java.util.function.IntConsumer;
  * @author oyzh
  * @since 2025-03-04
  */
-public class SSHConnectWidget2 extends JediTermFxWidget {
+public class SSHConnectWidget3 extends JediTermFxWidget {
 
     @Getter
     private PtyProcess process;
 
-    public SSHConnectWidget2(@NotNull SettingsProvider settingsProvider) {
+    public SSHConnectWidget3(@NotNull SettingsProvider settingsProvider) {
         super(settingsProvider);
     }
 
-    public SSHConnectWidget2(int columns, int lines, SettingsProvider settingsProvider) {
+    public SSHConnectWidget3(int columns, int lines, SettingsProvider settingsProvider) {
         super(columns, lines, settingsProvider);
     }
 
@@ -42,8 +42,8 @@ public class SSHConnectWidget2 extends JediTermFxWidget {
             var envs = this.configureEnvironmentVariables();
             String[] command;
             if (OSUtil.isWindows()) {
-//                command = new String[]{"cmd.exe"};
-                command = new String[]{"powershell.exe"};
+                command = new String[]{"cmd.exe"};
+//                command = new String[]{"powershell.exe"};
             } else if (OSUtil.isLinux()) {
                 String shell = envs.get("SHELL");
                 if (shell == null) {
@@ -70,7 +70,7 @@ public class SSHConnectWidget2 extends JediTermFxWidget {
                     .setWindowsAnsiColorEnabled(true)
                     .start();
 
-            return new SSHLoggingConnector2(process, StandardCharsets.UTF_8, Arrays.asList(command));
+            return new SSHLoggingConnector3(process, StandardCharsets.UTF_8, Arrays.asList(command));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -95,7 +95,7 @@ public class SSHConnectWidget2 extends JediTermFxWidget {
 
     public void openSession(TtyConnector ttyConnector) {
         JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-        if (ttyConnector instanceof SSHLoggingConnector2 loggingConnector) {
+        if (ttyConnector instanceof SSHLoggingConnector3 loggingConnector) {
             loggingConnector.setWidget(session);
         }
         session.start();

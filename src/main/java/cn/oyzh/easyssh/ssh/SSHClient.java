@@ -265,103 +265,103 @@ public class SSHClient {
         return this.sshConnect.getName();
     }
 
-    public void bindStream(PtyProcess process) throws Exception {
-        if (session == null) {
-            this.start();
-        }
-        // 打开一个通道
-        Channel channel = session.openChannel("shell");
-//        channel.setInputStream(System.in);
-//        channel.setOutputStream(System.out);
-
-        InputStream inputStream = process.getInputStream();
-        OutputStream outputStream = process.getOutputStream();
-
-        inputStream.transferTo(channel.getOutputStream());
-        channel.getInputStream().transferTo(outputStream);
-
-        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
-        Thread readThread = new Thread(() -> {
-            try {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while (true) {
-                    bytesRead = channel.getInputStream().read(buffer);
-                    if (bytesRead != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                        outputStream.flush();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        readThread.start();
-
-        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
-        Thread writeThread = new Thread(() -> {
-            try {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while (true) {
-                    bytesRead = inputStream.read(buffer);
-                    if (bytesRead != -1) {
-                        channel.getOutputStream().write(buffer, 0, bytesRead);
-                        channel.getOutputStream().flush();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        writeThread.start();
-        channel.connect();
-    }
-
-    public void bindStream1(TtyConnector connector) throws Exception {
-        if (session == null) {
-            this.start();
-        }
-        // 打开一个通道
-        Channel channel = session.openChannel("shell");
-//        channel.setInputStream(System.in);
-//        channel.setOutputStream(System.out);
-
-        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
-        Thread readThread = new Thread(() -> {
-            try {
-                char[] buffer = new char[1024];
-                int bytesRead;
-                while (true) {
-                    bytesRead = connector.read(buffer, 0, buffer.length);
-                    if (bytesRead > 0) {
-                        String s = new String(buffer, 0, bytesRead);
-                        channel.getOutputStream().write(s.getBytes());
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        readThread.start();
-
-        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
-        Thread writeThread = new Thread(() -> {
-            try {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while (true) {
-                    bytesRead = channel.getInputStream().read(buffer, 0, buffer.length);
-                    if (bytesRead > 0) {
-                        connector.write(buffer);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        writeThread.start();
-        channel.connect();
-    }
+//    public void bindStream(PtyProcess process) throws Exception {
+//        if (session == null) {
+//            this.start();
+//        }
+//        // 打开一个通道
+//        Channel channel = session.openChannel("shell");
+////        channel.setInputStream(System.in);
+////        channel.setOutputStream(System.out);
+//
+//        InputStream inputStream = process.getInputStream();
+//        OutputStream outputStream = process.getOutputStream();
+//
+//        inputStream.transferTo(channel.getOutputStream());
+//        channel.getInputStream().transferTo(outputStream);
+//
+//        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
+//        Thread readThread = new Thread(() -> {
+//            try {
+//                byte[] buffer = new byte[1024];
+//                int bytesRead;
+//                while (true) {
+//                    bytesRead = channel.getInputStream().read(buffer);
+//                    if (bytesRead != -1) {
+//                        outputStream.write(buffer, 0, bytesRead);
+//                        outputStream.flush();
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        readThread.start();
+//
+//        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
+//        Thread writeThread = new Thread(() -> {
+//            try {
+//                byte[] buffer = new byte[1024];
+//                int bytesRead;
+//                while (true) {
+//                    bytesRead = inputStream.read(buffer);
+//                    if (bytesRead != -1) {
+//                        channel.getOutputStream().write(buffer, 0, bytesRead);
+//                        channel.getOutputStream().flush();
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        writeThread.start();
+//        channel.connect();
+//    }
+//
+//    public void bindStream1(TtyConnector connector) throws Exception {
+//        if (session == null) {
+//            this.start();
+//        }
+//        // 打开一个通道
+//        Channel channel = session.openChannel("shell");
+////        channel.setInputStream(System.in);
+////        channel.setOutputStream(System.out);
+//
+//        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
+//        Thread readThread = new Thread(() -> {
+//            try {
+//                char[] buffer = new char[1024];
+//                int bytesRead;
+//                while (true) {
+//                    bytesRead = connector.read(buffer, 0, buffer.length);
+//                    if (bytesRead > 0) {
+//                        String s = new String(buffer, 0, bytesRead);
+//                        channel.getOutputStream().write(s.getBytes());
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        readThread.start();
+//
+//        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
+//        Thread writeThread = new Thread(() -> {
+//            try {
+//                byte[] buffer = new byte[1024];
+//                int bytesRead;
+//                while (true) {
+//                    bytesRead = channel.getInputStream().read(buffer, 0, buffer.length);
+//                    if (bytesRead > 0) {
+//                        connector.write(buffer);
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        writeThread.start();
+//        channel.connect();
+//    }
 
 }

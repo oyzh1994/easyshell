@@ -7,10 +7,8 @@ import com.pty4j.PtyProcessBuilder;
 import com.techsenger.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.techsenger.jeditermfx.core.TtyConnector;
 import com.techsenger.jeditermfx.core.util.Platform;
-import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
-import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +42,8 @@ public class SSHConnectWidget extends JediTermFxWidget {
             var envs = this.configureEnvironmentVariables();
             String[] command;
             if (OSUtil.isWindows()) {
-                command = new String[]{"cmd.exe"};
-//                command = new String[]{"powershell.exe"};
+//                command = new String[]{"cmd.exe"};
+                command = new String[]{"powershell.exe"};
             } else if (OSUtil.isLinux()) {
                 String shell = envs.get("SHELL");
                 if (shell == null) {

@@ -14,17 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
-public final class SSHLoggingConnector2 extends PtyProcessTtyConnector implements LoggingTtyConnector {
+public final class SSHLoggingConnector3 extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
     @Setter
     private int MAX_LOG_SIZE = 200;
@@ -40,35 +36,13 @@ public final class SSHLoggingConnector2 extends PtyProcessTtyConnector implement
 
     private int logStart;
 
-    private InputStreamReader sshReader;
-
-//    private InputStream sshInput;
-
-    private OutputStream sshOutput;
-
-    public void setSshInput(InputStream sshInput) {
-//        this.sshInput = sshInput;
-        this.sshReader = new InputStreamReader(sshInput, Charsets.UTF_8);
-    }
-
-    public void setSshOutput(OutputStream sshOutput) {
-        this.sshOutput = sshOutput;
-    }
-
-    public SSHLoggingConnector2(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
+    public SSHLoggingConnector3(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
         super(process, charset, commandLines);
     }
 
     @Override
     public int read(char @NotNull [] buf, int offset, int length) throws IOException {
-        if (sshReader == null) {
-            return super.read(buf, offset, length);
-        }
-//        char[] buffer = new char[length];
-//        int len1 = super.read(buffer, offset, length);
-//        System.out.println(buffer);
-        int len = sshReader.read(buf, offset, length);
-//        int len = super.read(buf, offset, length);
+        int len = super.read(buf, offset, length);
         if (len > 0) {
             char[] arr = ArraysKt.copyOfRange(buf, offset, len);
             System.out.println(new String(arr) + "-------");
@@ -107,17 +81,13 @@ public final class SSHLoggingConnector2 extends PtyProcessTtyConnector implement
     @Override
     public void write(@NotNull String string) throws IOException {
         JulLog.info("Writing in OutputStream : {}", string);
-//        super.write(string);
-        this.sshOutput.write(string.getBytes(Charsets.UTF_8));
-        this.sshOutput.flush();
+        super.write(string);
     }
 
     @Override
     public void write(byte @NotNull [] bytes) throws IOException {
         JulLog.info("Writing in OutputStream : {}", Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
-//        super.write(bytes);
-        this.sshOutput.write(bytes);
-        this.sshOutput.flush();
+        super.write(bytes);
     }
 
     public void setWidget(@NotNull JediTermFxWidget widget) {

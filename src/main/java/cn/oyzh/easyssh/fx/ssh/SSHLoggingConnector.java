@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public final class SSHLoggingConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
@@ -40,13 +39,35 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
 
     private int logStart;
 
+    private InputStreamReader sshReader;
+
+//    private InputStream sshInput;
+
+    private OutputStream sshOutput;
+
+    public void setSshInput(InputStream sshInput) {
+//        this.sshInput = sshInput;
+        this.sshReader = new InputStreamReader(sshInput, Charsets.UTF_8);
+    }
+
+    public void setSshOutput(OutputStream sshOutput) {
+        this.sshOutput = sshOutput;
+    }
+
     public SSHLoggingConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
         super(process, charset, commandLines);
     }
 
     @Override
     public int read(char @NotNull [] buf, int offset, int length) throws IOException {
-        int len = super.read(buf, offset, length);
+        if (sshReader == null) {
+            return super.read(buf, offset, length);
+        }
+//        char[] buffer = new char[length];
+//        int len1 = super.read(buffer, offset, length);
+//        System.out.println(buffer);
+        int len = sshReader.read(buf, offset, length);
+//        int len = super.read(buf, offset, length);
         if (len > 0) {
             char[] arr = ArraysKt.copyOfRange(buf, offset, len);
             System.out.println(new String(arr) + "-------");
@@ -85,13 +106,17 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
     @Override
     public void write(@NotNull String string) throws IOException {
         JulLog.info("Writing in OutputStream : {}", string);
-        super.write(string);
+//        super.write(string);
+        this.sshOutput.write(string.getBytes(Charsets.UTF_8));
+        this.sshOutput.flush();
     }
 
     @Override
     public void write(byte @NotNull [] bytes) throws IOException {
         JulLog.info("Writing in OutputStream : {}", Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
-        super.write(bytes);
+//        super.write(bytes);
+        this.sshOutput.write(bytes);
+        this.sshOutput.flush();
     }
 
     public void setWidget(@NotNull JediTermFxWidget widget) {
