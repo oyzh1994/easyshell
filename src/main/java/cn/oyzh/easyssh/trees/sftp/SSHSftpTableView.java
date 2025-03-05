@@ -1,18 +1,23 @@
-package cn.oyzh.easyssh.fx;
+package cn.oyzh.easyssh.trees.sftp;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
 import cn.oyzh.easyssh.ssh.SftpFile;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +25,19 @@ import java.util.List;
  * @since 2025-03-05
  */
 public class SSHSftpTableView extends FXTableView<SftpFile> {
+
+    {
+        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<SftpFile> files = this.getSelectedItems();
+            if (CollectionUtil.isNotEmpty(files)) {
+                this.showContextMenu(this.getMenuItems(), e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+    }
 
     @Setter
     @Getter
@@ -47,7 +65,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             SftpFile file = files.getFirst();
             if (file.isDir() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
                 return;
-            } else if (!MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
+            }
+            if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
                 return;
             }
         } else if (!MessageBox.confirm(I18nHelper.deleteFiles())) {
@@ -59,5 +78,19 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             }
             this.removeItem(files);
         }
+    }
+
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        List<FXMenuItem> menuItems = new ArrayList<>();
+        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> {
+            try {
+                this.deleteFile();
+            } catch (SftpException ex) {
+                MessageBox.exception(ex);
+            }
+        });
+        menuItems.add(deleteFile);
+        return menuItems;
     }
 }

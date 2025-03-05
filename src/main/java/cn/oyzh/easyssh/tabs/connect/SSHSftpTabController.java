@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
-import cn.oyzh.easyssh.fx.SSHSftpTableView;
+import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
 import cn.oyzh.fx.gui.tabs.RichTab;

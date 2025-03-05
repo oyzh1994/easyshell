@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
-<?import cn.oyzh.easyssh.fx.SSHSftpTableView?>
+<?import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
