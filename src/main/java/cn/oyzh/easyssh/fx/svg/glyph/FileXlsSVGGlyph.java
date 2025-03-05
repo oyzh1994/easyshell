@@ -1,0 +1,19 @@
+package cn.oyzh.easyssh.fx.svg.glyph;
+
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+
+/**
+ * @author oyzh
+ * @since 2025-03-05
+ */
+public class FileXlsSVGGlyph extends SVGGlyph {
+
+    public FileXlsSVGGlyph() {
+        super("/font/file-xls.svg");
+    }
+
+    public FileXlsSVGGlyph(String size) {
+        this();
+        this.setSizeStr(size);
+    }
+}

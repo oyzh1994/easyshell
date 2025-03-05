@@ -2,10 +2,15 @@ package cn.oyzh.easyssh.ssh;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author oyzh
@@ -46,5 +51,14 @@ public class SSHSftp {
 
     public boolean isConnected() {
         return this.channel.isConnected();
+    }
+
+    public List<SSHSftpFile> ls(String path) throws SftpException {
+        Vector<ChannelSftp.LsEntry> vector = this.channel.ls(path);
+        List<SSHSftpFile> files = new ArrayList<SSHSftpFile>();
+        for (ChannelSftp.LsEntry lsEntry : vector) {
+            files.add(new SSHSftpFile(lsEntry));
+        }
+        return files;
     }
 }
