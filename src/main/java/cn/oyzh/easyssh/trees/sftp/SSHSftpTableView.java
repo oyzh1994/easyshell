@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.trees.sftp;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
@@ -19,6 +20,7 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,12 +57,19 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void loadFile() throws JSchException, SftpException, IOException {
+        JulLog.info("current path: {}", this.currPath);
         List<SftpFile> files = this.sftp().ls(this.currPath, this.client);
         if (CollectionUtil.isNotEmpty(files)) {
             if (this.currentIsRootDirectory()) {
-                files = files.stream().filter(f -> !f.isReturnDirectory() && !f.isCurrentFile()).collect(Collectors.toList());
+                files = files.stream()
+                        .filter(f -> !f.isReturnDirectory() && !f.isCurrentFile())
+                        .sorted(Comparator.comparingInt(SftpFile::getOrder))
+                        .collect(Collectors.toList());
             } else {
-                files = files.stream().filter(f -> !f.isCurrentFile()).collect(Collectors.toList());
+                files = files.stream()
+                        .filter(f -> !f.isCurrentFile())
+                        .sorted(Comparator.comparingInt(SftpFile::getOrder))
+                        .collect(Collectors.toList());
             }
         }
         this.setItem(files);
@@ -131,7 +140,15 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void intoDir(SftpFile file) throws JSchException, SftpException, IOException {
-        this.currPath = this.currPath + file.getFilePath();
+        if (file.isReturnDirectory()) {
+            this.returnDir();
+            return;
+        }
+        if (this.currPath.endsWith("/")) {
+            this.currPath = this.currPath + file.getFileName();
+        } else {
+            this.currPath = this.currPath + file.getFilePath();
+        }
         if (this.currPath.startsWith("//")) {
             this.currPath = this.currPath.substring(1);
         }
@@ -141,6 +158,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public void returnDir() throws JSchException, SftpException, IOException {
         if (this.currPath.equals("/")) {
             return;
+        }
+        if (this.currPath.endsWith("/")) {
+            this.currPath = this.currPath.substring(0, this.currPath.length() - 1);
         }
         this.currPath = this.currPath.substring(0, this.currPath.lastIndexOf("/") + 1);
         this.loadFile();

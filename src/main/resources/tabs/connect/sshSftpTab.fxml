@@ -18,7 +18,7 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ReturnFolderSVGGlyph onMousePrimaryClicked="#returnDir">
+            <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>

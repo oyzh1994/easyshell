@@ -171,4 +171,14 @@ public class SftpFile {
     public boolean isReturnDirectory() {
         return "..".equals(this.getName());
     }
+
+    public int getOrder() {
+        if (this.isReturnDirectory()) {
+            return -100;
+        }
+        if (this.isDir()) {
+            return -10;
+        }
+        return 0;
+    }
 }
