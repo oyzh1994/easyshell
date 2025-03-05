@@ -1,7 +1,6 @@
-package cn.oyzh.easyssh.fx.ssh;
+package cn.oyzh.easyssh.ssh;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.property.ObjectProperty;
 import com.jcraft.jsch.ChannelShell;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
@@ -13,20 +12,15 @@ import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import kotlin.collections.ArraysKt;
-import kotlin.text.Charsets;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 

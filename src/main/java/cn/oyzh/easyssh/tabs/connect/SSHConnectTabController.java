@@ -1,19 +1,18 @@
 package cn.oyzh.easyssh.tabs.connect;
 
 import cn.oyzh.easyssh.domain.SSHConnect;
-import cn.oyzh.easyssh.fx.ssh.SSHConnectWidget;
-import cn.oyzh.easyssh.fx.ssh.SSHTtyConnector;
+import cn.oyzh.easyssh.ssh.SSHTermWidget;
+import cn.oyzh.easyssh.ssh.SSHTtyConnector;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.JSchException;
-import com.techsenger.jeditermfx.core.TtyConnector;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.settings.DefaultSettingsProvider;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
@@ -43,7 +42,7 @@ public class SSHConnectTabController extends RichTabController {
     @FXML
     private FXVBox root;
 
-    private SSHConnectWidget widget;
+    private SSHTermWidget widget;
 
     /**
      * 设置ssh客户端
@@ -73,7 +72,7 @@ public class SSHConnectTabController extends RichTabController {
     }
 
     private void initWidget(ChannelShell shell) throws IOException {
-        this.widget = new SSHConnectWidget(new DefaultSettingsProvider());
+        this.widget = new SSHTermWidget(new DefaultSettingsProvider());
         SSHTtyConnector connector = (SSHTtyConnector) this.widget.createTtyConnector();
         connector.initShell(shell);
         this.widget.openSession(connector);
@@ -137,5 +136,12 @@ public class SSHConnectTabController extends RichTabController {
      */
     protected SSHConnect sshConnect() {
         return this.client.sshConnect();
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.client.close();
+        this.widget.close();
     }
 }

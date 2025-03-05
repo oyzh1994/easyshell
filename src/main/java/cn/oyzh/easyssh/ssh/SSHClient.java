@@ -18,6 +18,7 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * ssh终端
@@ -133,14 +134,14 @@ public class SSHClient {
      */
     public void close() {
         try {
-            if (this.isConnected()) {
-//                if (this.shell != null) {
-//                    this.shell.close();
-//                }
+            if (this.shell != null) {
+                this.shell.disconnect();
+            }
+            if (this.session != null) {
                 this.session.disconnect();
                 this.state.set(SSHConnState.CLOSED);
             }
-//            this.shell = null;
+            this.shell = null;
             this.session = null;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -166,24 +167,37 @@ public class SSHClient {
      * 开始连接客户端
      */
     public void start() throws Exception {
+        this.start(this.connectTimeout());
+    }
+
+    /**
+     * 开始连接客户端
+     *
+     * @param timeout 超时时间
+     */
+    public void start(int timeout) throws Exception {
         if (this.isConnected() || this.isConnecting()) {
             return;
         }
+        // 初始化客户端
+        this.initClient();
         try {
-            // 关闭旧连接
-            this.close();
+            // 开始连接时间
+            long starTime = System.currentTimeMillis();
             // 初始化连接池
             this.state.set(SSHConnState.CONNECTING);
-            // 初始化客户端
-            this.initClient();
             // 执行连接
-            this.session.connect();
+            this.session.connect(timeout);
             // 判断连接结果
             if (this.session.isConnected()) {
                 this.state.set(SSHConnState.CONNECTED);
+            } else if (this.state.get() == SSHConnState.FAILED) {
+                this.state.set(null);
             } else {
                 this.state.set(SSHConnState.FAILED);
             }
+            long endTime = System.currentTimeMillis();
+            JulLog.info("sshClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
             this.state.set(SSHConnState.FAILED);
             throw ex;
@@ -199,6 +213,7 @@ public class SSHClient {
         if (!this.isClosed()) {
             return this.state.get() == SSHConnState.CONNECTING;
         }
+        this.state.set(SSHConnState.CLOSED);
         return false;
     }
 
@@ -211,6 +226,7 @@ public class SSHClient {
         if (!this.isClosed()) {
             return this.state.get().isConnected();
         }
+        this.state.set(SSHConnState.CLOSED);
         return false;
     }
 
@@ -223,14 +239,14 @@ public class SSHClient {
         return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
     }
 
-    /**
-     * 当前连接名称
-     *
-     * @return 名称
-     */
-    public String infoName() {
-        return this.sshConnect.getName();
-    }
+//    /**
+//     * 当前连接名称
+//     *
+//     * @return 名称
+//     */
+//    public String infoName() {
+//        return this.sshConnect.getName();
+//    }
 
 //    /**
 //     * 获取交互式终端
