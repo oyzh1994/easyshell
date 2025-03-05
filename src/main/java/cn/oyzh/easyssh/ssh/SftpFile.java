@@ -118,16 +118,24 @@ public class SftpFile {
         return NumberUtil.formatSize(this.attrs().getSize());
     }
 
+    public String getName() {
+        String fileName = this.getFileName();
+        if (fileName.contains("/")) {
+            return fileName.substring(fileName.lastIndexOf("/") + 1);
+        }
+        return fileName;
+    }
+
     public String getFileName() {
         return this.entry.getFilename();
     }
 
     public String getFilePath() {
-        String name = this.getFileName();
-        if (name.startsWith("/")) {
-            return name;
+        String fileName = this.getFileName();
+        if (fileName.startsWith("/")) {
+            return fileName;
         }
-        return "/" + name;
+        return "/" + fileName;
     }
 
     public String getLongName() {
@@ -136,6 +144,11 @@ public class SftpFile {
 
     public String getPermissionsString() {
         return this.attrs().getPermissionsString();
+    }
+
+    public String getAddTime() {
+        int aTime = this.attrs().getATime();
+        return DateHelper.formatDateTime(new Date(aTime * 1000L));
     }
 
     public String getModifyTime() {
@@ -149,5 +162,13 @@ public class SftpFile {
 
     public int getGid() {
         return this.attrs().getGId();
+    }
+
+    public boolean isCurrentFile() {
+        return ".".equals(this.getName());
+    }
+
+    public boolean isReturnDirectory() {
+        return "..".equals(this.getName());
     }
 }

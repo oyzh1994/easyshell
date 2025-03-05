@@ -99,4 +99,8 @@ public class SSHSftp {
             this.rm(file.getFilePath());
         }
     }
+
+    public String pwd() throws SftpException {
+        return this.channel.pwd();
+    }
 }

@@ -92,4 +92,14 @@ public class SSHSftpTabController extends SubTabController {
             MessageBox.exception(ex);
         }
     }
+
+    @FXML
+    private void returnDir() {
+        try {
+            this.fileTable.returnDir();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 }

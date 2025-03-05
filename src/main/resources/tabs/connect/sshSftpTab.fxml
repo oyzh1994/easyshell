@@ -9,6 +9,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import javafx.geometry.Insets?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -17,6 +18,11 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
+            <ReturnFolderSVGGlyph onMousePrimaryClicked="#returnDir">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </ReturnFolderSVGGlyph>
             <RefreshSVGGlyph onMousePrimaryClicked="#refreshFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
@@ -34,9 +40,10 @@
                 <FXTableColumn style="-fx-padding-left:0;" prefWidth="150" valueName="fileName" text="%base.name"/>
                 <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
                 <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+                <FXTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
                 <FXTableColumn prefWidth="120" valueName="permissionsString" text="%base.permissions"/>
-                <FXTableColumn prefWidth="100" valueName="owner" text="%base.owner"/>
-                <FXTableColumn prefWidth="100" valueName="group" text="%base.group"/>
+                <FXTableColumn prefWidth="60" valueName="owner" text="%base.owner"/>
+                <FXTableColumn prefWidth="60" valueName="group" text="%base.group"/>
             </columns>
         </SSHSftpTableView>
     </FXVBox>

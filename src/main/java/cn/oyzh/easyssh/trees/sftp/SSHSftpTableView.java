@@ -13,12 +13,14 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -37,6 +39,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 this.clearContextMenu();
             }
         });
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
     }
 
     @Setter
@@ -53,6 +56,13 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void loadFile() throws JSchException, SftpException, IOException {
         List<SftpFile> files = this.sftp().ls(this.currPath, this.client);
+        if (CollectionUtil.isNotEmpty(files)) {
+            if (this.currentIsRootDirectory()) {
+                files = files.stream().filter(f -> !f.isReturnDirectory() && !f.isCurrentFile()).collect(Collectors.toList());
+            } else {
+                files = files.stream().filter(f -> !f.isCurrentFile()).collect(Collectors.toList());
+            }
+        }
         this.setItem(files);
     }
 
@@ -92,5 +102,47 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         });
         menuItems.add(deleteFile);
         return menuItems;
+    }
+
+    protected void onMouseClicked(MouseEvent event) {
+        try {
+            if (event.getClickCount() == 2) {
+                List<SftpFile> files = this.getSelectedItems();
+                if (files == null) {
+                    return;
+                }
+                if (files.size() != 1) {
+                    return;
+                }
+                SftpFile file = files.getFirst();
+                if (!file.isDir()) {
+                    return;
+                }
+                this.intoDir(file);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public boolean currentIsRootDirectory() {
+        return "/".equals(this.currPath);
+    }
+
+    public void intoDir(SftpFile file) throws JSchException, SftpException, IOException {
+        this.currPath = this.currPath + file.getFilePath();
+        if (this.currPath.startsWith("//")) {
+            this.currPath = this.currPath.substring(1);
+        }
+        this.loadFile();
+    }
+
+    public void returnDir() throws JSchException, SftpException, IOException {
+        if (this.currPath.equals("/")) {
+            return;
+        }
+        this.currPath = this.currPath.substring(0, this.currPath.lastIndexOf("/") + 1);
+        this.loadFile();
     }
 }
