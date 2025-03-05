@@ -33,8 +33,6 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private FXTab root;
 
-
-
     public void init() throws IOException, JSchException {
         SSHClient client = this.client();
         SSHSftp sftp = client.openSftp();
