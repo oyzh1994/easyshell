@@ -56,7 +56,7 @@ public class SSHSftpTabController extends SubTabController {
                 MessageBox.warn(I18nHelper.connectFail());
                 return;
             }
-            List<SSHSftpFile> files = sftp.ls("/", client.openExec(), client.getOwner());
+            List<SSHSftpFile> files = sftp.ls("/", client);
             this.fileTable.setItem(files);
         } catch (Exception ex) {
             ex.printStackTrace();

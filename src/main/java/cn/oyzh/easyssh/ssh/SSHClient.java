@@ -14,13 +14,15 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * ssh终端
@@ -411,33 +413,47 @@ public class SSHClient {
         return this.sftp;
     }
 
-    @Getter
-    private SSHExec exec;
-
-    public SSHExec openExec() {
-        if (this.exec == null || this.exec.isClosed()) {
-            try {
-                ChannelExec channel = (ChannelExec) this.session.openChannel("exec");
-                channel.setInputStream(null);
-                channel.setErrStream(System.err);
-                this.exec = new SSHExec(channel);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+    public String exec(String command) {
+        ChannelExec channel = null;
+        try {
+            channel = (ChannelExec) this.session.openChannel("exec");
+            channel.setCommand(command);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            channel.setOutputStream(stream);
+            channel.connect();
+            while (channel.isConnected()) {
+                Thread.sleep(5);
+            }
+            return stream.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (channel != null) {
+                channel.disconnect();
             }
         }
-        return this.exec;
+        return null;
+    }
+
+    public String exec_id_un(int uid) {
+        return this.exec("/usr/bin/id -un " + uid);
+    }
+
+    public String exec_id_gn(int gid) {
+        return this.exec("/usr/bin/id -gn " + gid);
     }
 
     public int connectTimeout() {
         return this.sshConnect.connectTimeOutMs();
     }
 
-    private SSHOwner owner;
+    private SftpAttr attr;
 
-    public SSHOwner getOwner() {
-        if (this.owner == null) {
-            this.owner=new SSHOwner();
+    public SftpAttr getAttr() {
+        if (this.attr == null) {
+            this.attr = new SftpAttr();
         }
-        return this.owner;
+        return this.attr;
     }
+
 }

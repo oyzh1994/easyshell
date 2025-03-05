@@ -53,27 +53,32 @@ public class SSHSftp {
     }
 
     public List<SSHSftpFile> ls(String path) throws SftpException, JSchException, IOException {
-        return ls(path, null, null);
+        return ls(path, null);
     }
 
-    public List<SSHSftpFile> ls(String path, SSHExec exec, SSHOwner owner) throws SftpException, JSchException, IOException {
+    public List<SSHSftpFile> ls(String path, SSHClient client) throws SftpException, JSchException, IOException {
         Vector<ChannelSftp.LsEntry> vector = this.channel.ls(path);
-        List<SSHSftpFile> files = new ArrayList<SSHSftpFile>();
+        List<SSHSftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
             SSHSftpFile file = new SSHSftpFile(lsEntry);
             files.add(file);
-            if (exec != null) {
-                String ownerName = owner == null ? null : owner.get(file.getUid());
+            if (client != null) {
+                SftpAttr attr = client.getAttr();
+                int uid = file.getUid();
+                String ownerName = attr.getOwner(uid);
                 if (ownerName == null) {
-                    ownerName = exec.getOwner(file.getUid());
-                    if ("".equals(ownerName)) {
-                        ownerName = "root";
-                    }
-                    if (ownerName != null && owner != null) {
-                        owner.put(file.getUid(), ownerName);
-                    }
+                    ownerName = client.exec_id_un(uid);
+                    attr.putOwner(uid, ownerName);
                 }
                 file.setOwner(ownerName);
+
+                int gid = file.getGid();
+                String groupName = attr.getGroup(gid);
+                if (groupName == null) {
+                    groupName = client.exec_id_gn(gid);
+                    attr.putGroup(gid, groupName);
+                }
+                file.setGroup(groupName);
             }
         }
         return files;

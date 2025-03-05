@@ -41,6 +41,10 @@ public class SSHSftpFile {
     @Getter
     private String owner;
 
+    @Setter
+    @Getter
+    private String group;
+
     public SSHSftpFile(ChannelSftp.LsEntry entry) {
         this.entry = entry;
     }
@@ -133,5 +137,9 @@ public class SSHSftpFile {
 
     public int getUid() {
         return this.attrs().getUId();
+    }
+
+    public int getGid() {
+        return this.attrs().getGId();
     }
 }

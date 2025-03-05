@@ -21,8 +21,9 @@
                 <FXTableColumn style="-fx-padding-left:0;" prefWidth="150" valueName="fileName" text="%base.name"/>
                 <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
                 <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-                <FXTableColumn prefWidth="100" valueName="owner" text="%base.owner"/>
                 <FXTableColumn prefWidth="120" valueName="permissionsString" text="%base.permissions"/>
+                <FXTableColumn prefWidth="100" valueName="owner" text="%base.owner"/>
+                <FXTableColumn prefWidth="100" valueName="group" text="%base.group"/>
             </columns>
         </SSHSftpTableView>
     </FXVBox>
