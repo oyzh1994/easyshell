@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
+<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
+       text="%base.file" fx:id="root">
+    <graphic>
+        <FileSVGGlyph sizeStr="11"/>
+    </graphic>
+</FXTab>

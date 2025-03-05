@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<FXVBox flexHeight="100%" fx:id="root"   flexWidth="100%"
-        xmlns="http://javafx.com/javafx"
-        xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHConnectTabController">
-</FXVBox>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<FXTabPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="cn.oyzh.easyssh.tabs.connect.SSHConnectTabController"
+           rotateGraphic="true" side="RIGHT">
+    <fx:include fx:id="sshTermTab" source="sshTermTab.fxml"/>
+    <fx:include fx:id="sshSftpTab" source="sshSftpTab.fxml"/>
+</FXTabPane>
