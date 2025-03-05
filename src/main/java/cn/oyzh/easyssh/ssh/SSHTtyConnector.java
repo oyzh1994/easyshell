@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author oyzh
+ * @since 2025-03-04
+ */
 public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
     @Setter

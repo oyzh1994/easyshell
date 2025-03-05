@@ -7,6 +7,7 @@ import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.event.tree.SSHTreeItemChangedEvent;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.tabs.SSHTabPane;
+import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -134,7 +135,11 @@ public class SSHMainController extends ParentStageController {
      */
     @EventSubscribe
     private void treeItemChanged(SSHTreeItemChangedEvent event) {
-        this.flushViewTitle(null);
+        if (event.data() instanceof SSHConnectTreeItem item) {
+            this.flushViewTitle(item.value());
+        } else {
+            this.flushViewTitle(null);
+        }
     }
 
     /**
