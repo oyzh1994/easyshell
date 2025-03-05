@@ -56,7 +56,7 @@ public class SSHSftpTabController extends SubTabController {
                 MessageBox.warn(I18nHelper.connectFail());
                 return;
             }
-            List<SSHSftpFile> files = sftp.ls("/");
+            List<SSHSftpFile> files = sftp.ls("/", client.openExec(), client.getOwner());
             this.fileTable.setItem(files);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -73,7 +73,7 @@ public class SSHSftpTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.init();
             }

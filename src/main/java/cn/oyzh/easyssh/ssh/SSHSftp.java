@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -53,11 +52,29 @@ public class SSHSftp {
         return this.channel.isConnected();
     }
 
-    public List<SSHSftpFile> ls(String path) throws SftpException {
+    public List<SSHSftpFile> ls(String path) throws SftpException, JSchException, IOException {
+        return ls(path, null, null);
+    }
+
+    public List<SSHSftpFile> ls(String path, SSHExec exec, SSHOwner owner) throws SftpException, JSchException, IOException {
         Vector<ChannelSftp.LsEntry> vector = this.channel.ls(path);
         List<SSHSftpFile> files = new ArrayList<SSHSftpFile>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            files.add(new SSHSftpFile(lsEntry));
+            SSHSftpFile file = new SSHSftpFile(lsEntry);
+            files.add(file);
+            if (exec != null) {
+                String ownerName = owner == null ? null : owner.get(file.getUid());
+                if (ownerName == null) {
+                    ownerName = exec.getOwner(file.getUid());
+                    if ("".equals(ownerName)) {
+                        ownerName = "root";
+                    }
+                    if (ownerName != null && owner != null) {
+                        owner.put(file.getUid(), ownerName);
+                    }
+                }
+                file.setOwner(ownerName);
+            }
         }
         return files;
     }

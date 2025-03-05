@@ -4,7 +4,6 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExcelSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileHtmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileImageSVGGlyph;
@@ -14,6 +13,7 @@ import cn.oyzh.easyssh.fx.svg.glyph.FileMarkdownSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePdfSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePptSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileTerminalSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileTextSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileUnknownSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileWordSVGGlyph;
@@ -24,7 +24,8 @@ import cn.oyzh.easyssh.fx.svg.glyph.FolderSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -35,6 +36,10 @@ import java.util.Date;
 public class SSHSftpFile {
 
     ChannelSftp.LsEntry entry;
+
+    @Setter
+    @Getter
+    private String owner;
 
     public SSHSftpFile(ChannelSftp.LsEntry entry) {
         this.entry = entry;
@@ -96,6 +101,9 @@ public class SSHSftpFile {
                 || FileNameUtil.isLogType(extName)) {
             return new FileTextSVGGlyph("12");
         }
+        if (FileNameUtil.isTerminalType(extName)) {
+            return new FileTerminalSVGGlyph("12");
+        }
         return new FileSVGGlyph("12");
     }
 
@@ -121,5 +129,9 @@ public class SSHSftpFile {
     public String getModifyTime() {
         int mtime = this.attrs().getMTime();
         return DateHelper.formatDateTime(new Date(mtime * 1000L));
+    }
+
+    public int getUid() {
+        return this.attrs().getUId();
     }
 }

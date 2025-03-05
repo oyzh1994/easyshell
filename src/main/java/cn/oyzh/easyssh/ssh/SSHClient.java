@@ -3,6 +3,7 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
@@ -410,7 +411,33 @@ public class SSHClient {
         return this.sftp;
     }
 
+    @Getter
+    private SSHExec exec;
+
+    public SSHExec openExec() {
+        if (this.exec == null || this.exec.isClosed()) {
+            try {
+                ChannelExec channel = (ChannelExec) this.session.openChannel("exec");
+                channel.setInputStream(null);
+                channel.setErrStream(System.err);
+                this.exec = new SSHExec(channel);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return this.exec;
+    }
+
     public int connectTimeout() {
         return this.sshConnect.connectTimeOutMs();
+    }
+
+    private SSHOwner owner;
+
+    public SSHOwner getOwner() {
+        if (this.owner == null) {
+            this.owner=new SSHOwner();
+        }
+        return this.owner;
     }
 }
