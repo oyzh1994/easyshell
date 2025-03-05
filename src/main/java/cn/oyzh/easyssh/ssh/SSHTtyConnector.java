@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
+public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
     @Setter
     private int MAX_LOG_SIZE = 200;

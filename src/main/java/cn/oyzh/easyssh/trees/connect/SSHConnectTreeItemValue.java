@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.trees.connect;
 
+import cn.oyzh.easyssh.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.SSHSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -33,7 +34,7 @@ public class SSHConnectTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (this.graphic == null) {
-            this.graphic = new SSHSVGGlyph("12");
+            this.graphic = new LinuxSVGGlyph("12");
         }
         return super.graphic();
     }

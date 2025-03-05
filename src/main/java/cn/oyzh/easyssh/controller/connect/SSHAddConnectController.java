@@ -133,7 +133,8 @@ public class SSHAddConnectController extends StageController {
             // 创建ssh连接
             SSHConnect sshConnect = new SSHConnect();
             sshConnect.setHost(host);
-            sshConnect.setConnectTimeOut(3);
+            sshConnect.setUser(this.userName.getTextTrim());
+            sshConnect.setPassword(this.password.getTextTrim());
             SSHConnectUtil.testConnect(this.stage, sshConnect);
         }
     }

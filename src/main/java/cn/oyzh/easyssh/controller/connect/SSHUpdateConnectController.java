@@ -135,6 +135,8 @@ public class SSHUpdateConnectController extends StageController {
             sshConnect.setHost(host);
             sshConnect.setConnectTimeOut(3);
             sshConnect.setId(this.sshConnect.getId());
+            sshConnect.setUser(this.userName.getTextTrim());
+            sshConnect.setPassword(this.password.getTextTrim());
             SSHConnectUtil.testConnect(this.stage, sshConnect);
         }
     }
