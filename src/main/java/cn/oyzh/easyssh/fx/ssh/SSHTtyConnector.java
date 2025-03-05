@@ -1,12 +1,17 @@
 package cn.oyzh.easyssh.fx.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.property.ObjectProperty;
+import com.jcraft.jsch.ChannelShell;
 import com.pty4j.PtyProcess;
+import com.pty4j.WinSize;
 import com.techsenger.jeditermfx.app.debug.TerminalDebugUtil;
 import com.techsenger.jeditermfx.app.pty.LoggingTtyConnector;
 import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.techsenger.jeditermfx.core.model.TerminalTextBuffer;
+import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
+import javafx.beans.property.SimpleObjectProperty;
 import kotlin.collections.ArraysKt;
 import kotlin.text.Charsets;
 import lombok.Setter;
@@ -17,13 +22,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class SSHLoggingConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
+public final class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
     @Setter
     private int MAX_LOG_SIZE = 200;
@@ -39,38 +46,30 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
 
     private int logStart;
 
-    private InputStreamReader sshReader;
+    private InputStreamReader shellReader;
 
-//    private InputStream sshInput;
+    private OutputStreamWriter shellWriter;
 
-    private OutputStream sshOutput;
-
-    public void setSshInput(InputStream sshInput) {
-//        this.sshInput = sshInput;
-        this.sshReader = new InputStreamReader(sshInput, Charsets.UTF_8);
+    public void initShell(ChannelShell shell) throws IOException {
+        this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
+        this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-    public void setSshOutput(OutputStream sshOutput) {
-        this.sshOutput = sshOutput;
-    }
-
-    public SSHLoggingConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
+    public SSHTtyConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
         super(process, charset, commandLines);
     }
 
     @Override
     public int read(char @NotNull [] buf, int offset, int length) throws IOException {
-        if (sshReader == null) {
-            return super.read(buf, offset, length);
+        int len;
+        if (this.shellReader == null) {
+            len = super.read(buf, offset, length);
+        } else {
+            len = this.shellReader.read(buf, offset, length);
         }
-//        char[] buffer = new char[length];
-//        int len1 = super.read(buffer, offset, length);
-//        System.out.println(buffer);
-        int len = sshReader.read(buf, offset, length);
-//        int len = super.read(buf, offset, length);
         if (len > 0) {
             char[] arr = ArraysKt.copyOfRange(buf, offset, len);
-            System.out.println(new String(arr) + "-------");
+            JulLog.info("shell read: {}", new String(arr));
             this.myDataChunks.add(arr);
             String lines = this.textBuffer.getScreenLines();
             TerminalState terminalState =
@@ -104,22 +103,62 @@ public final class SSHLoggingConnector extends PtyProcessTtyConnector implements
     }
 
     @Override
-    public void write(@NotNull String string) throws IOException {
-        JulLog.info("Writing in OutputStream : {}", string);
+    public void write(@NotNull String str) throws IOException {
+        JulLog.info("shell write : {}", str);
 //        super.write(string);
-        this.sshOutput.write(string.getBytes(Charsets.UTF_8));
-        this.sshOutput.flush();
+        this.shellWriter.write(str);
+        this.shellWriter.flush();
     }
 
     @Override
     public void write(byte @NotNull [] bytes) throws IOException {
-        JulLog.info("Writing in OutputStream : {}", Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
+        String str = new String(bytes, this.myCharset);
+        JulLog.info("shell write : {}", str);
 //        super.write(bytes);
-        this.sshOutput.write(bytes);
-        this.sshOutput.flush();
+        this.shellWriter.write(str);
+        this.shellWriter.flush();
     }
 
     public void setWidget(@NotNull JediTermFxWidget widget) {
         this.textBuffer = widget.getTerminalTextBuffer();
+    }
+
+    private SimpleObjectProperty<TermSize> terminalSizeProperty;
+
+    public SimpleObjectProperty<TermSize> terminalSizeProperty() {
+        if (this.terminalSizeProperty == null) {
+            this.terminalSizeProperty = new SimpleObjectProperty<>(this.getTermSize());
+        }
+        return this.terminalSizeProperty;
+    }
+
+    @Override
+    public void resize(@NotNull TermSize termSize) {
+        super.resize(termSize);
+        if (this.terminalSizeProperty != null) {
+            this.terminalSizeProperty.set(termSize);
+        }
+    }
+
+    public TermSize getTermSize() {
+        WinSize winSize = this.getWinSize();
+        if (winSize != null) {
+            return new TermSize(winSize.getColumns(), winSize.getRows());
+        }
+        return null;
+    }
+
+    public WinSize getWinSize() {
+        try {
+            return this.getProcess().getWinSize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public @NotNull PtyProcess getProcess() {
+        return (PtyProcess) super.getProcess();
     }
 }

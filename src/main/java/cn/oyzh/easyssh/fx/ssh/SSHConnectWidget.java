@@ -2,11 +2,13 @@ package cn.oyzh.easyssh.fx.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.fx.plus.node.NodeUtil;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import com.techsenger.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.techsenger.jeditermfx.core.TtyConnector;
 import com.techsenger.jeditermfx.core.util.Platform;
+import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
 import kotlin.text.Charsets;
@@ -66,11 +68,10 @@ public class SSHConnectWidget extends JediTermFxWidget {
                     .setCommand(command)
                     .setEnvironment(envs)
                     .setConsole(false)
-                    .setUseWinConPty(true)
+//                    .setUseWinConPty(true)
                     .setWindowsAnsiColorEnabled(true)
                     .start();
-
-            return new SSHLoggingConnector(process, StandardCharsets.UTF_8, Arrays.asList(command));
+            return new SSHTtyConnector(this.process, StandardCharsets.UTF_8, Arrays.asList(command));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -89,13 +90,13 @@ public class SSHConnectWidget extends JediTermFxWidget {
 
     public void openSession() {
         if (this.canOpenSession()) {
-            openSession(createTtyConnector());
+            openSession(this.createTtyConnector());
         }
     }
 
     public void openSession(TtyConnector ttyConnector) {
         JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-        if (ttyConnector instanceof SSHLoggingConnector loggingConnector) {
+        if (ttyConnector instanceof SSHTtyConnector loggingConnector) {
             loggingConnector.setWidget(session);
         }
         session.start();
@@ -106,4 +107,22 @@ public class SSHConnectWidget extends JediTermFxWidget {
                 this.getExecutorServiceManager().getUnboundedExecutorService(),
                 terminationCallback);
     }
+
+    @Override
+    public SSHTtyConnector getTtyConnector() {
+        return (SSHTtyConnector) super.getTtyConnector();
+    }
+
+    public double getWidth() {
+        return NodeUtil.getWidth(this.getPane());
+    }
+
+    public double getHeight() {
+        return NodeUtil.getHeight(this.getPane());
+    }
+
+    public TermSize getTermSize() {
+        return this.getTtyConnector().getTermSize();
+    }
+
 }

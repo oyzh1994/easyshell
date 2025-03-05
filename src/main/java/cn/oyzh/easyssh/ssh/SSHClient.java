@@ -3,25 +3,18 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
-import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.pty4j.PtyProcess;
-import com.pty4j.PtyProcessBuilder;
-import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
-import com.techsenger.jeditermfx.core.TtyConnector;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -85,29 +78,29 @@ public class SSHClient {
         return this.state.getReadOnlyProperty();
     }
 
-    /**
-     * 添加连接状态监听器
-     *
-     * @param listener 监听器
-     */
-    public void addConnStateListener(@NonNull ChangeListener<SSHConnState> listener) {
-        if (!this.connStateListeners.contains(listener)) {
-            this.connStateListeners.add(listener);
-            this.stateProperty().addListener(listener);
-        }
-    }
-
-    /**
-     * 移除连接状态监听器
-     *
-     * @param listener 监听器
-     */
-    public void removeConnStateListener(ChangeListener<SSHConnState> listener) {
-        if (listener != null) {
-            this.connStateListeners.remove(listener);
-            this.stateProperty().removeListener(listener);
-        }
-    }
+//    /**
+//     * 添加连接状态监听器
+//     *
+//     * @param listener 监听器
+//     */
+//    public void addConnStateListener(@NonNull ChangeListener<SSHConnState> listener) {
+//        if (!this.connStateListeners.contains(listener)) {
+//            this.connStateListeners.add(listener);
+//            this.stateProperty().addListener(listener);
+//        }
+//    }
+//
+//    /**
+//     * 移除连接状态监听器
+//     *
+//     * @param listener 监听器
+//     */
+//    public void removeConnStateListener(ChangeListener<SSHConnState> listener) {
+//        if (listener != null) {
+//            this.connStateListeners.remove(listener);
+//            this.stateProperty().removeListener(listener);
+//        }
+//    }
 
     /**
      * 初始化客户端
@@ -324,8 +317,8 @@ public class SSHClient {
 //        }
 //        // 打开一个通道
 //        Channel channel = session.openChannel("shell");
-////        channel.setInputStream(System.in);
-////        channel.setOutputStream(System.out);
+    /// /        channel.setInputStream(System.in);
+    /// /        channel.setOutputStream(System.out);
 //
 //        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
 //        Thread readThread = new Thread(() -> {
@@ -364,4 +357,24 @@ public class SSHClient {
 //        channel.connect();
 //    }
 
+    @Getter
+    private ChannelShell shell;
+
+    public ChannelShell openShell() {
+        if (this.shell == null || this.shell.isClosed()) {
+            try {
+                this.shell = (ChannelShell) this.session.openChannel("shell");
+                this.shell.setInputStream(System.in);
+                this.shell.setOutputStream(System.out);
+                this.shell.setPtyType("xterm");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return this.shell;
+    }
+
+    public int connectTimeout() {
+        return this.sshConnect.connectTimeOutMs();
+    }
 }

@@ -2,15 +2,20 @@ package cn.oyzh.easyssh.tabs.connect;
 
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.fx.ssh.SSHConnectWidget;
-import cn.oyzh.easyssh.fx.ssh.SSHLoggingConnector;
+import cn.oyzh.easyssh.fx.ssh.SSHTtyConnector;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
+import com.techsenger.jeditermfx.core.TtyConnector;
+import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
 import com.techsenger.jeditermfx.ui.settings.DefaultSettingsProvider;
 import javafx.fxml.FXML;
+import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -48,28 +53,46 @@ public class SSHConnectTabController extends RichTabController {
     public void init(@NonNull SSHClient client) {
         try {
             this.client = client;
-            this.client.start();
-            this.widget = new SSHConnectWidget(new DefaultSettingsProvider());
-            this.widget.openSession();
-            this.widget.onTermination(exitCode -> this.widget.close());
-            this.widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
-            this.root.setChild(this.widget.getPane());
-//        this.waitReady();
-            this.connect1();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (!this.client.isConnected()) {
+                this.client.start();
+            }
+            if (!this.client.isConnected()) {
+                MessageBox.warn(I18nHelper.connectFail());
+                return;
+            }
+            ChannelShell shell = this.client.openShell();
+            this.initWidget(shell);
+            shell.connect(this.client.connectTimeout());
+            if (!shell.isConnected()) {
+                MessageBox.warn(I18nHelper.connectFail());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 
-    private void connect1() throws JSchException, IOException {
-        SSHLoggingConnector connector = (SSHLoggingConnector) this.widget.getTtyConnector();
-        ChannelShell channel = (ChannelShell) this.client.getSession().openChannel("shell");
-        channel.setInputStream(System.in);
-        channel.setOutputStream(System.out);
-        connector.setSshInput(channel.getInputStream());
-        connector.setSshOutput(channel.getOutputStream());
-        channel.setPtyType("xterm");
-        channel.connect();
+    private void initWidget(ChannelShell shell) throws IOException {
+        this.widget = new SSHConnectWidget(new DefaultSettingsProvider());
+        SSHTtyConnector connector = (SSHTtyConnector) this.widget.createTtyConnector();
+        connector.initShell(shell);
+        this.widget.openSession(connector);
+        this.widget.onTermination(exitCode -> this.widget.close());
+        this.widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
+        Pane pane = this.widget.getPane();
+        this.root.setChild(this.widget.getPane());
+//        pane.widthProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
+//        pane.heightProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
+    }
+
+    private void initShellSize()   {
+        int sizeW = (int) this.widget.getWidth();
+        int sizeH = (int) this.widget.getHeight();
+        TermSize termSize = this.widget.getTermSize();
+//        System.out.println(termSize);
+        ChannelShell shell = this.client.openShell();
+        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
 //    private void waitReady() {
