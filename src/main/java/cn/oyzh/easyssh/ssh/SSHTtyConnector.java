@@ -48,7 +48,7 @@ public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTt
 
     private OutputStreamWriter shellWriter;
 
-    public void initShell(ChannelShell shell) throws IOException {
+    public void initShell(SSHShell shell) throws IOException {
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }

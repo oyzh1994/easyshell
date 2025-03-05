@@ -3,6 +3,7 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -135,7 +136,10 @@ public class SSHClient {
     public void close() {
         try {
             if (this.shell != null) {
-                this.shell.disconnect();
+                this.shell.close();
+            }
+            if (this.sftp != null) {
+                this.sftp.close();
             }
             if (this.session != null) {
                 this.session.disconnect();
@@ -374,20 +378,36 @@ public class SSHClient {
 //    }
 
     @Getter
-    private ChannelShell shell;
+    private SSHShell shell;
 
-    public ChannelShell openShell() {
+    public SSHShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
-                this.shell = (ChannelShell) this.session.openChannel("shell");
-                this.shell.setInputStream(System.in);
-                this.shell.setOutputStream(System.out);
-                this.shell.setPtyType("xterm");
+                ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+                channel.setInputStream(System.in);
+                channel.setOutputStream(System.out);
+                channel.setPtyType("xterm");
+                this.shell = new SSHShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         return this.shell;
+    }
+
+    @Getter
+    private SSHSftp sftp;
+
+    public SSHSftp openSftp() {
+        if (this.sftp == null || this.sftp.isClosed()) {
+            try {
+                ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
+                this.sftp = new SSHSftp(channel);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return this.sftp;
     }
 
     public int connectTimeout() {

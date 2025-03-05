@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.easyssh.ssh.SSHShell;
 import cn.oyzh.easyssh.ssh.SSHTermWidget;
 import cn.oyzh.easyssh.ssh.SSHTtyConnector;
 import cn.oyzh.easyssh.ssh.SSHClient;
@@ -36,7 +37,7 @@ public class SSHTermTabController extends SubTabController {
      */
     private SSHTermWidget widget;
 
-    private void initWidget(ChannelShell shell) throws IOException {
+    private void initWidget(SSHShell shell) throws IOException {
         this.widget = new SSHTermWidget(new DefaultSettingsProvider());
         SSHTtyConnector connector = (SSHTtyConnector) this.widget.createTtyConnector();
         connector.initShell(shell);
@@ -51,13 +52,13 @@ public class SSHTermTabController extends SubTabController {
         int sizeW = (int) this.widget.getWidth();
         int sizeH = (int) this.widget.getHeight();
         TermSize termSize = this.widget.getTermSize();
-        ChannelShell shell = this.client().openShell();
+        SSHShell shell = this.client().openShell();
         shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
     public void init() throws IOException, JSchException {
         SSHClient client = this.client();
-        ChannelShell shell = client.openShell();
+        SSHShell shell = client.openShell();
         this.initWidget(shell);
         shell.connect(client.connectTimeout());
         if (!shell.isConnected()) {
