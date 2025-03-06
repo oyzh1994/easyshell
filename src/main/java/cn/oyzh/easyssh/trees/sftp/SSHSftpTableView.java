@@ -5,6 +5,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
 import cn.oyzh.easyssh.ssh.SftpFile;
+import cn.oyzh.easyssh.util.SSHI18nHelper;
+import cn.oyzh.easyssh.util.SftpUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -133,11 +135,21 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         } else if (!MessageBox.confirm(I18nHelper.deleteFiles())) {
             return;
         }
+        List<SftpFile> filesToDelete = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(files)) {
             for (SftpFile file : files) {
-                this.sftp().rm(file);
+                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
+                    continue;
+                }
+                String path = SftpUtil.concat(this.currPath(), file.getFileName());
+                if (file.isDir()) {
+                    this.sftp().rmDir(path);
+                } else {
+                    this.sftp().rm(path);
+                }
+                filesToDelete.add(file);
             }
-            this.removeItem(files);
+            this.removeItem(filesToDelete);
         }
     }
 
@@ -186,15 +198,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             this.returnDir();
             return;
         }
-        String currPath = this.currPath();
-        if (currPath.endsWith("/")) {
-            currPath = currPath + file.getFileName();
-        } else {
-            currPath = currPath + file.getFilePath();
-        }
-        if (currPath.startsWith("//")) {
-            currPath = currPath.substring(1);
-        }
+        String currPath = SftpUtil.concat(this.currPath(), file.getFileName());
         this.currPath(currPath);
         this.loadFile();
     }
@@ -213,18 +217,25 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void copyFilePath() {
-        try {
-            List<SftpFile> files = this.getSelectedItems();
-            if (files.isEmpty()) {
-                ClipboardUtil.copy(this.getCurrPath());
-            } else if (files.size() == 1) {
-                ClipboardUtil.copy(this.getCurrPath() + files.getFirst().getFileName());
-            } else {
-                MessageBox.warn(I18nHelper.tooManyFiles());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
+        List<SftpFile> files = this.getSelectedItems();
+        if (files.isEmpty()) {
+            ClipboardUtil.copy(this.getCurrPath());
+        } else if (files.size() == 1) {
+            ClipboardUtil.copy(SftpUtil.concat(this.getCurrPath(), files.getFirst().getFileName()));
+        } else {
+            MessageBox.warn(I18nHelper.tooManyFiles());
         }
+    }
+
+    public void mkDir(String name) throws SftpException, JSchException, IOException {
+        String filePath = SftpUtil.concat(this.getCurrPath(), name);
+        this.sftp().mkdir(filePath);
+        this.loadFile();
+    }
+
+    public void touchFile(String name) throws SftpException, JSchException, IOException {
+        String filePath = SftpUtil.concat(this.getCurrPath(), name);
+        this.sftp().touch(filePath);
+        this.loadFile();
     }
 }

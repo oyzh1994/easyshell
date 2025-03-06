@@ -140,4 +140,26 @@ public class SSHSftpTabController extends SubTabController {
             MessageBox.exception(ex);
         }
     }
+
+    @FXML
+    private void mkDir() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            this.fileTable.mkDir(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void touchFile() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            this.fileTable.touchFile(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 }

@@ -13,6 +13,8 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.FolderAddSVGGlyph?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.FileAddSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -31,6 +33,16 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
+            <FolderAddSVGGlyph onMousePrimaryClicked="#mkDir">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FolderAddSVGGlyph>
+            <FileAddSVGGlyph onMousePrimaryClicked="#touchFile">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FileAddSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>

@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -92,15 +93,16 @@ public class SSHSftp {
         this.channel.rmdir(path);
     }
 
-    public void rm(SftpFile file) throws SftpException {
-        if (file.isDir()) {
-            this.rmDir(file.getFilePath());
-        } else {
-            this.rm(file.getFilePath());
-        }
-    }
-
     public String pwd() throws SftpException {
         return this.channel.pwd();
+    }
+
+    public void mkdir(String path) throws SftpException {
+        this.channel.mkdir(path);
+    }
+
+    public void touch(String path) throws SftpException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
+        this.channel.put(inputStream, path);
     }
 }
