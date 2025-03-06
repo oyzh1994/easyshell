@@ -17,10 +17,12 @@ import cn.oyzh.easyssh.event.tree.SSHTreeItemChangedEvent;
 import cn.oyzh.easyssh.event.window.SSHShowAboutEvent;
 import cn.oyzh.easyssh.event.window.SSHShowAddConnectEvent;
 import cn.oyzh.easyssh.event.window.SSHShowExportConnectEvent;
+import cn.oyzh.easyssh.event.window.SSHShowFileInfoEvent;
 import cn.oyzh.easyssh.event.window.SSHShowImportConnectEvent;
 import cn.oyzh.easyssh.event.window.SSHShowSettingEvent;
 import cn.oyzh.easyssh.event.window.SSHShowToolEvent;
 import cn.oyzh.easyssh.event.window.SSHShowUpdateConnectEvent;
+import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.event.EventUtil;
@@ -116,6 +118,7 @@ public class SSHEventUtil {
         event.data(sshConnect);
         EventUtil.post(event);
     }
+
     /**
      * 添加分组
      */
@@ -260,5 +263,16 @@ public class SSHEventUtil {
 
     public static void connectImported() {
 
+    }
+
+    /**
+     * 显示文件信息页面
+     *
+     * @param file 文件
+     */
+    public static void showFileInfo(SftpFile file) {
+        SSHShowFileInfoEvent event = new SSHShowFileInfoEvent();
+        event.data(file);
+        EventUtil.post(event);
     }
 }

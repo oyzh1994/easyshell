@@ -11,11 +11,13 @@ import cn.oyzh.easyssh.controller.connect.SSHAddConnectController;
 import cn.oyzh.easyssh.controller.connect.SSHExportConnectController;
 import cn.oyzh.easyssh.controller.connect.SSHImportConnectController;
 import cn.oyzh.easyssh.controller.connect.SSHUpdateConnectController;
+import cn.oyzh.easyssh.controller.sftp.SSHSftpFileInfoController;
 import cn.oyzh.easyssh.controller.tool.SSHToolController;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.event.window.SSHShowAboutEvent;
 import cn.oyzh.easyssh.event.window.SSHShowAddConnectEvent;
 import cn.oyzh.easyssh.event.window.SSHShowExportConnectEvent;
+import cn.oyzh.easyssh.event.window.SSHShowFileInfoEvent;
 import cn.oyzh.easyssh.event.window.SSHShowImportConnectEvent;
 import cn.oyzh.easyssh.event.window.SSHShowSettingEvent;
 import cn.oyzh.easyssh.event.window.SSHShowToolEvent;
@@ -315,6 +317,23 @@ public class EasySSHApp extends FXApplication implements EventListener {
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(SSHImportConnectController.class, StageManager.getPrimaryStage());
+                adapter.setProp("file", event.data());
+                adapter.display();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示文件信息页面
+     */
+    @EventSubscribe
+    private void fileInfo(SSHShowFileInfoEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageAdapter adapter = StageManager.parseStage(SSHSftpFileInfoController.class, StageManager.getPrimaryStage());
                 adapter.setProp("file", event.data());
                 adapter.display();
             } catch (Exception ex) {

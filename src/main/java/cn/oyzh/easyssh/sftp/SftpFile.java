@@ -141,6 +141,10 @@ public class SftpFile {
         return this.entry.getLongname();
     }
 
+    public String getPermissions() {
+        return this.attrs().getPermissionsString();
+    }
+
     public String getPermissionsString() {
         return this.attrs().getPermissionsString();
     }

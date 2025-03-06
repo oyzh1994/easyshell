@@ -3,6 +3,7 @@ package cn.oyzh.easyssh.trees.sftp;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
@@ -179,6 +180,14 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         List<SftpFile> files = this.getSelectedItems();
         if (files.size() == 1) {
             SftpFile file = files.getFirst();
+            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> {
+                try {
+                    SSHEventUtil.showFileInfo(file);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+            menuItems.add(fileInfo);
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> {
                 try {
                     ClipboardUtil.copy(SftpUtil.concat(this.getCurrPath(), file.getFileName()));
