@@ -107,4 +107,8 @@ public class SSHSftp {
         ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
         this.channel.put(inputStream, path);
     }
+
+    public void rename(String path, String newPath) throws SftpException {
+        this.channel.rename(path, newPath);
+    }
 }

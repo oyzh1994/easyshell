@@ -176,6 +176,21 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 MessageBox.exception(ex);
             }
         });
+        List<SftpFile> files = this.getSelectedItems();
+        if (files.size() == 1) {
+            SftpFile file = files.getFirst();
+            if (file.isFile()) {
+                FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> {
+                    try {
+                        String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
+                        this.renameFile(file.getFileName(), newName);
+                    } catch (Exception ex) {
+                        MessageBox.exception(ex);
+                    }
+                });
+                menuItems.add(renameFile);
+            }
+        }
         menuItems.add(deleteFile);
         return menuItems;
     }
@@ -249,6 +264,16 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public void touchFile(String name) throws SftpException, JSchException, IOException {
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().touch(filePath);
+        this.loadFile();
+    }
+
+    public void renameFile(String name, String newName) throws SftpException, JSchException, IOException {
+        if (newName == null || StringUtil.equals(name, newName)) {
+            return;
+        }
+        String filePath = SftpUtil.concat(this.getCurrPath(), name);
+        String newPath = SftpUtil.concat(this.getCurrPath(), newName);
+        this.sftp().rename(filePath, newPath);
         this.loadFile();
     }
 }

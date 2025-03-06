@@ -193,4 +193,8 @@ public class SftpFile {
         }
         return 0;
     }
+
+    public boolean isFile() {
+        return !this.isDir() && !this.attrs().isLink();
+    }
 }
