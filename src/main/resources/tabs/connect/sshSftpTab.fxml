@@ -12,6 +12,7 @@
 <?import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -35,6 +36,11 @@
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
+            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles" unselectedText="%base.doNotShowHiddenFiles" >
+                <FXHBox.margin>
+                    <Insets left="10" top="8"/>
+                </FXHBox.margin>
+            </FXToggleSwitch>
         </FXHBox>
         <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>

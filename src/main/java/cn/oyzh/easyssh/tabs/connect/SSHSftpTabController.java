@@ -8,6 +8,7 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
@@ -32,6 +33,9 @@ public class SSHSftpTabController extends SubTabController {
 
     @FXML
     private SVGGlyph copyFilePath;
+
+    @FXML
+    private FXToggleSwitch hiddenFile;
 
     @FXML
     private SSHSftpTableView fileTable;
@@ -71,12 +75,19 @@ public class SSHSftpTabController extends SubTabController {
             }
         });
         this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1==null) {
+            if (t1 == null) {
                 this.filePath.clear();
                 this.copyFilePath.disable();
-            }else{
+            } else {
                 this.filePath.setText(t1);
                 this.copyFilePath.enable();
+            }
+        });
+        this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
+            try {
+                this.fileTable.setShowHiddenFile(t1);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
             }
         });
     }

@@ -47,6 +47,15 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
     }
 
+    private boolean showHiddenFile = true;
+
+    public void setShowHiddenFile(boolean showHiddenFile) throws JSchException, SftpException, IOException {
+        if (showHiddenFile != this.showHiddenFile) {
+            this.showHiddenFile = showHiddenFile;
+            this.loadFile();
+        }
+    }
+
     @Setter
     @Getter
     private SSHClient client;
@@ -89,17 +98,21 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         JulLog.info("current path: {}", currPath);
         List<SftpFile> files = this.sftp().ls(currPath, this.client);
         if (CollectionUtil.isNotEmpty(files)) {
-            if (this.currentIsRootDirectory()) {
-                files = files.stream()
-                        .filter(f -> !f.isReturnDirectory() && !f.isCurrentFile())
-                        .sorted(Comparator.comparingInt(SftpFile::getOrder))
-                        .collect(Collectors.toList());
-            } else {
-                files = files.stream()
-                        .filter(f -> !f.isCurrentFile())
-                        .sorted(Comparator.comparingInt(SftpFile::getOrder))
-                        .collect(Collectors.toList());
-            }
+            files = files.stream()
+                    .filter(f -> {
+                        if (f.isCurrentFile()) {
+                            return false;
+                        }
+                        if (this.currentIsRootDirectory() && f.isReturnDirectory()) {
+                            return false;
+                        }
+                        if (!this.showHiddenFile && f.isHiddenFile()) {
+                            return false;
+                        }
+                        return true;
+                    })
+                    .sorted(Comparator.comparingInt(SftpFile::getOrder))
+                    .collect(Collectors.toList());
         }
         this.setItem(files);
     }
