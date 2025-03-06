@@ -37,7 +37,9 @@ import java.util.Date;
  */
 public class SftpFile {
 
-    ChannelSftp.LsEntry entry;
+    private ChannelSftp.LsEntry entry;
+
+    private SftpATTRS attrs;
 
     @Setter
     @Getter
@@ -47,16 +49,27 @@ public class SftpFile {
     @Getter
     private String group;
 
+    @Setter
+    private String fileName;
+
     public SftpFile(ChannelSftp.LsEntry entry) {
         this.entry = entry;
     }
 
+    public SftpFile(String fileName, SftpATTRS attrs) {
+        this.fileName = fileName;
+        this.attrs = attrs;
+    }
+
     protected SftpATTRS attrs() {
-        return this.entry.getAttrs();
+        if (this.attrs == null) {
+            return this.entry.getAttrs();
+        }
+        return this.attrs;
     }
 
     public boolean isDir() {
-        return this.entry.getAttrs().isDir();
+        return this.attrs().isDir();
     }
 
     public SVGGlyph getIcon() {
@@ -126,7 +139,10 @@ public class SftpFile {
     }
 
     public String getFileName() {
-        return this.entry.getFilename();
+        if (this.fileName == null) {
+            return this.entry.getFilename();
+        }
+        return this.fileName;
     }
 
     public String getFilePath() {
@@ -137,9 +153,9 @@ public class SftpFile {
         return "/" + fileName;
     }
 
-    public String getLongName() {
-        return this.entry.getLongname();
-    }
+//    public String getLongName() {
+//        return this.entry.getLongname();
+//    }
 
     public String getPermissions() {
         return this.attrs().getPermissionsString();

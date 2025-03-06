@@ -1,5 +1,7 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
@@ -44,6 +46,10 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private ClearableTextField filterFile;
 
+    private final SSHSetting setting = SSHSettingStore.SETTING;
+
+    private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
+
     private void init() {
         try {
             SSHClient client = this.client();
@@ -57,6 +63,7 @@ public class SSHSftpTabController extends SubTabController {
                 return;
             }
             this.fileTable.setClient(client);
+            this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
             this.fileTable.loadFile();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -72,35 +79,43 @@ public class SSHSftpTabController extends SubTabController {
 
     @Override
     public void onTabInit(RichTab tab) {
-        super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                this.init();
-            }
-        });
-        this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 == null) {
-                this.filePath.clear();
-                this.copyFilePath.disable();
-            } else {
-                this.filePath.setText(t1);
-                this.copyFilePath.enable();
-            }
-        });
-        this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
-            try {
-                this.fileTable.setShowHiddenFile(t1);
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        });
-        this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
-            try {
-                this.fileTable.setFilterText(t1);
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        });
+        try {
+            super.onTabInit(tab);
+            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
+            this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1) {
+                    this.init();
+                }
+            });
+            this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1 == null) {
+                    this.filePath.clear();
+                    this.copyFilePath.disable();
+                } else {
+                    this.filePath.setText(t1);
+                    this.copyFilePath.enable();
+                }
+            });
+            this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
+                try {
+                    this.fileTable.setShowHiddenFile(t1);
+                    this.setting.setShowHiddenFile(t1);
+                    this.settingStore.update(this.setting);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+            this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+                try {
+                    this.fileTable.setFilterText(t1);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     @Override

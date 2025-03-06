@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -56,7 +57,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public void setFilterText(String filterText) throws JSchException, SftpException, IOException {
         if (!StringUtil.equals(this.filterText, filterText)) {
             this.filterText = filterText;
-            this.loadFile();
+            this.refreshFile();
         }
     }
 
@@ -65,7 +66,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public void setShowHiddenFile(boolean showHiddenFile) throws JSchException, SftpException, IOException {
         if (showHiddenFile != this.showHiddenFile) {
             this.showHiddenFile = showHiddenFile;
-            this.loadFile();
+            this.refreshFile();
         }
     }
 
@@ -102,6 +103,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         return this.client.getSftp();
     }
 
+    private List<SftpFile> files;
+
     public void loadFile() throws JSchException, SftpException, IOException {
         String currPath = this.getCurrPath();
         if (currPath == null) {
@@ -109,9 +112,21 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             currPath = this.getCurrPath();
         }
         JulLog.info("current path: {}", currPath);
-        List<SftpFile> files = this.sftp().ls(currPath, this.client);
+        this.files = this.sftp().ls(currPath, this.client);
+        this.setItem(this.doFilter(this.files));
+    }
+
+    public void refreshFile() throws JSchException, SftpException, IOException {
+        if (this.files == null) {
+            this.loadFile();
+        } else {
+            this.setItem(this.doFilter(this.files));
+        }
+    }
+
+    private List<SftpFile> doFilter(List<SftpFile> files) {
         if (CollectionUtil.isNotEmpty(files)) {
-            files = files.stream()
+            return files.stream()
                     .filter(f -> {
                         if (f.isCurrentFile()) {
                             return false;
@@ -130,10 +145,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     .sorted(Comparator.comparingInt(SftpFile::getOrder))
                     .collect(Collectors.toList());
         }
-        this.setItem(files);
+        return files;
     }
 
-    public void deleteFile() throws SftpException {
+    public void deleteFile() throws SftpException, JSchException, IOException {
         List<SftpFile> files = this.getSelectedItems();
         if (CollectionUtil.isEmpty(files)) {
             return;
@@ -149,8 +164,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         } else if (!MessageBox.confirm(I18nHelper.deleteFiles())) {
             return;
         }
-        List<SftpFile> filesToDelete = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(files)) {
+            List<SftpFile> filesToDelete = new ArrayList<>();
             for (SftpFile file : files) {
                 if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
                     continue;
@@ -163,7 +178,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 }
                 filesToDelete.add(file);
             }
-            this.removeItem(filesToDelete);
+//            this.removeItem(filesToDelete);
+            this.files.removeAll(filesToDelete);
+            this.refreshFile();
         }
     }
 
@@ -173,7 +190,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> {
             try {
                 this.deleteFile();
-            } catch (SftpException ex) {
+            } catch (Exception ex) {
                 MessageBox.exception(ex);
             }
         });
@@ -187,6 +204,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     MessageBox.exception(ex);
                 }
             });
+
             menuItems.add(fileInfo);
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> {
                 try {
@@ -201,7 +219,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> {
                     try {
                         String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
-                        this.renameFile(file.getFileName(), newName);
+                        this.renameFile(file, newName);
                     } catch (Exception ex) {
                         MessageBox.exception(ex);
                     }
@@ -276,22 +294,35 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public void mkDir(String name) throws SftpException, JSchException, IOException {
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().mkdir(filePath);
-        this.loadFile();
+        SftpATTRS attrs = this.sftp().stat(filePath);
+        SftpFile file = new SftpFile(name, attrs);
+//        this.addItem(file);
+        this.files.add(file);
+        this.refreshFile();
+//        this.loadFile();
     }
 
     public void touchFile(String name) throws SftpException, JSchException, IOException {
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().touch(filePath);
-        this.loadFile();
+        SftpATTRS attrs = this.sftp().stat(filePath);
+        SftpFile file = new SftpFile(name, attrs);
+//        this.addItem(file);
+        this.files.add(file);
+        this.refreshFile();
+//        this.loadFile();
     }
 
-    public void renameFile(String name, String newName) throws SftpException, JSchException, IOException {
+    public void renameFile(SftpFile file, String newName) throws SftpException, JSchException, IOException {
+        String name = file.getFileName();
         if (newName == null || StringUtil.equals(name, newName)) {
             return;
         }
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         String newPath = SftpUtil.concat(this.getCurrPath(), newName);
         this.sftp().rename(filePath, newPath);
-        this.loadFile();
+        file.setFileName(newName);
+        this.refreshFile();
+//        this.loadFile();
     }
 }
