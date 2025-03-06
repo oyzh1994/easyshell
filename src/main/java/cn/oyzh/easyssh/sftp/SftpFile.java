@@ -8,7 +8,9 @@ import cn.oyzh.easyssh.fx.svg.glyph.FileExcelSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileHtmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileImageSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJpgSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileJsSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJsonSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileJspSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileLinkSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileMarkdownSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePdfSVGGlyph;
@@ -104,6 +106,10 @@ public class SftpFile {
                 glyph = new FileHtmlSVGGlyph("12");
             } else if (FileNameUtil.isXmlType(extName)) {
                 glyph = new FileXmlSVGGlyph("12");
+            } else if (FileNameUtil.isJsType(extName)) {
+                glyph = new FileJsSVGGlyph("12");
+            } else if (FileNameUtil.isJspType(extName)) {
+                glyph = new FileJspSVGGlyph("12");
             } else if (FileNameUtil.isJsonType(extName)) {
                 glyph = new FileJsonSVGGlyph("12");
             } else if (FileNameUtil.isMarkdownType(extName)) {

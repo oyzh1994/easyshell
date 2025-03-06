@@ -3,6 +3,7 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpAttr;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;

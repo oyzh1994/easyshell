@@ -1,15 +1,11 @@
-package cn.oyzh.easyssh.ssh;
+package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyssh.sftp.SftpAttr;
-import cn.oyzh.easyssh.sftp.SftpFile;
-import cn.oyzh.easyssh.sftp.SftpMonitor;
-import cn.oyzh.easyssh.sftp.SftpUploadManager;
+import cn.oyzh.easyssh.ssh.SSHClient;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,6 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 /**
  * @author oyzh
@@ -63,32 +60,20 @@ public class SSHSftp {
         return this.channel.isConnected();
     }
 
-    public List<SftpFile> ls(String path) throws SftpException, JSchException, IOException {
+    public List<SftpFile> ls(String path) throws SftpException {
         return this.ls(path, null);
     }
 
-    public List<SftpFile> ls(String path, SSHClient client) throws SftpException, JSchException, IOException {
+    public List<SftpFile> ls(String path, SSHClient client) throws SftpException {
         Vector<ChannelSftp.LsEntry> vector = this.channel.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
             SftpFile file = new SftpFile(lsEntry);
             files.add(file);
             if (client != null) {
-                SftpAttr attr = client.getAttr();
-                int uid = file.getUid();
-                String ownerName = attr.getOwner(uid);
-                if (ownerName == null) {
-                    ownerName = client.exec_id_un(uid);
-                    attr.putOwner(uid, ownerName);
-                }
-                file.setOwner(ownerName);
-
-                int gid = file.getGid();
-                String groupName = attr.getGroup(gid);
-                if (groupName == null) {
-                    groupName = client.exec_id_gn(gid);
-                    attr.putGroup(gid, groupName);
-                }
+                String ownerName = SftpUtil.getOwner(file.getUid(), client);
+                file.setGroup(ownerName);
+                String groupName = SftpUtil.getGroup(file.getGid(), client);
                 file.setGroup(groupName);
             }
         }
@@ -127,19 +112,19 @@ public class SSHSftp {
     private final SftpUploadManager uploadManager = new SftpUploadManager();
 
     public void upload(File file, String dst) {
-        uploadManager.addFile(file, dst);
-        doUpload();
+        this.uploadManager.addFile(file, dst);
+        this.doUpload();
     }
 
     private void doUpload() {
-        if (uploadManager.isUploading()) {
+        if (this.uploadManager.isUploading()) {
             return;
         }
-        uploadManager.setUploading(true);
+        this.uploadManager.setUploading(true);
         ThreadUtil.start(() -> {
             try {
                 do {
-                    SftpMonitor monitor = uploadManager.takeMonitor();
+                    SftpUploadMonitor monitor = this.uploadManager.takeMonitor();
                     if (monitor == null) {
                         break;
                     }
@@ -148,10 +133,18 @@ public class SSHSftp {
                     } catch (SftpException ex) {
                         ex.printStackTrace();
                     }
-                } while (!uploadManager.isEmpty());
+                } while (!this.uploadManager.isEmpty());
             } finally {
-                uploadManager.setUploading(false);
+                this.uploadManager.setUploading(false);
             }
         });
+    }
+
+    public void setUploadEndCallback(Consumer<SftpUploadEnded> callback) {
+        this.uploadManager.setUploadEndCallback(callback);
+    }
+
+    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
+        this.uploadManager.setUploadChangedCallback(callback);
     }
 }

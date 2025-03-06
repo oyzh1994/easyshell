@@ -1,13 +1,17 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.sftp.SftpUploadChanged;
+import cn.oyzh.easyssh.sftp.SftpUploadEnded;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView;
 import cn.oyzh.easyssh.ssh.SSHClient;
-import cn.oyzh.easyssh.ssh.SSHSftp;
+import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -39,6 +43,9 @@ public class SSHSftpTabController extends SubTabController {
     private FXLabel filePath;
 
     @FXML
+    private FXLabel fileUpload;
+
+    @FXML
     private SVGGlyph copyFilePath;
 
     @FXML
@@ -49,6 +56,12 @@ public class SSHSftpTabController extends SubTabController {
 
     @FXML
     private ClearableTextField filterFile;
+
+    @FXML
+    private FXHBox downloadBox;
+
+    @FXML
+    private FXHBox uploadBox;
 
     private final SSHSetting setting = SSHSettingStore.SETTING;
 
@@ -68,6 +81,8 @@ public class SSHSftpTabController extends SubTabController {
             }
             this.fileTable.setClient(client);
             this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
+            this.fileTable.setUploadEndCallback(this::updateUploadInfo);
+            this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
             this.fileTable.loadFile();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -199,9 +214,43 @@ public class SSHSftpTabController extends SubTabController {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FileChooserHelper.allExtensionFilter());
             this.fileTable.uploadFile(files);
+            this.uploadBox.display();
+            this.updateLayout();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    private void updateUploadInfo(SftpUploadEnded ended) {
+        try {
+            this.fileTable.fileUploaded(ended.getFileName());
+            if (ended.getFileCount() == 0) {
+                this.fileUpload.clear();
+                this.uploadBox.disappear();
+                this.updateLayout();
+            }
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void updateUploadInfo(SftpUploadChanged changed) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Count: ").append(changed.getFileCount());
+        builder.append(" Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
+        builder.append(" File: ").append(changed.getFileName());
+        this.fileUpload.text(builder.toString());
+    }
+
+    private void updateLayout() {
+        if (this.uploadBox.isVisible() && this.downloadBox.isVisible()) {
+            this.fileTable.setFlexHeight("100% - 120");
+        } else if (this.uploadBox.isVisible() || this.downloadBox.isVisible()) {
+            this.fileTable.setFlexHeight("100% - 90");
+        } else {
+            this.fileTable.setFlexHeight("100% - 60");
+        }
+        this.fileTable.parentAutosize();
     }
 }
