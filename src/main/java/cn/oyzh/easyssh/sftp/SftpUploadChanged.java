@@ -13,6 +13,8 @@ public class SftpUploadChanged {
 
     private long current;
 
+    private long fileSize;
+
     private String fileName;
 
     private int fileCount;

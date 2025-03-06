@@ -12,8 +12,10 @@ import java.io.File;
  */
 public class SftpUploadMonitor implements SftpProgressMonitor {
 
+    @Getter
     private long total;
 
+    @Getter
     private long current;
 
     private final File file;
@@ -37,7 +39,7 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     @Override
     public boolean count(long current) {
         this.current += current;
-        this.manager.uploadChanged(new SftpUploadChanged(this.total, this.current, this.getFileName()));
+        this.manager.uploadChanged(this);
         return true;
     }
 
@@ -53,5 +55,9 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
 
     public String getFilePath() {
         return this.file.getPath();
+    }
+
+    public long getFileLength() {
+        return this.file.length();
     }
 }

@@ -96,6 +96,11 @@
             </FXLabel>
         </FXHBox>
         <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
+            <FXLabel text="%base.upload">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
             <FXLabel fx:id="fileUpload">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
@@ -103,6 +108,11 @@
             </FXLabel>
         </FXHBox>
         <FXHBox prefHeight="30" flexWidth="100%">
+            <FXLabel text="%base.location">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
             <FXLabel fx:id="filePath">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>

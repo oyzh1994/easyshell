@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.sftp.SftpUploadChanged;
@@ -213,9 +214,11 @@ public class SSHSftpTabController extends SubTabController {
     private void uploadFile() {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FileChooserHelper.allExtensionFilter());
-            this.fileTable.uploadFile(files);
-            this.uploadBox.display();
-            this.updateLayout();
+            if (CollectionUtil.isNotEmpty(files)) {
+                this.fileTable.uploadFile(files);
+                this.uploadBox.display();
+                this.updateLayout();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -237,9 +240,15 @@ public class SSHSftpTabController extends SubTabController {
 
     private void updateUploadInfo(SftpUploadChanged changed) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Count: ").append(changed.getFileCount());
-        builder.append(" Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
-        builder.append(" File: ").append(changed.getFileName());
+        if (changed.getFileCount() > 1) {
+            builder.append("File Count: ").append(changed.getFileCount());
+            builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
+            builder.append(" Upload Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
+            builder.append(" Current File: ").append(changed.getFileName());
+        } else {
+            builder.append("Upload Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
+            builder.append(" File: ").append(changed.getFileName());
+        }
         this.fileUpload.text(builder.toString());
     }
 

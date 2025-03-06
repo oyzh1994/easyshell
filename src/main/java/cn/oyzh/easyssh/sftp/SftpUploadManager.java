@@ -37,16 +37,21 @@ public class SftpUploadManager {
         this.monitors.remove(monitor);
         if (this.uploadEndCallback != null) {
             SftpUploadEnded ended = new SftpUploadEnded();
-            ended.setFileCount(this.monitors.size());
+            ended.setFileCount(this.size());
             ended.setFileName(monitor.getFileName());
             this.uploadEndCallback.accept(ended);
         }
     }
 
-    public void uploadChanged(SftpUploadChanged uploadChanged) {
+    public void uploadChanged(SftpUploadMonitor monitor) {
         if (this.uploadChangedCallback != null) {
-            uploadChanged.setFileCount(this.monitors.size());
-            this.uploadChangedCallback.accept(uploadChanged);
+            SftpUploadChanged changed = new SftpUploadChanged();
+            changed.setFileCount(this.size());
+            changed.setFileSize(this.count());
+            changed.setTotal(monitor.getTotal());
+            changed.setCurrent(monitor.getCurrent());
+            changed.setFileName(monitor.getFileName());
+            this.uploadChangedCallback.accept(changed);
         }
     }
 
@@ -62,5 +67,17 @@ public class SftpUploadManager {
 
     public boolean isUploading() {
         return this.uploading.get();
+    }
+
+    public int size() {
+        return this.monitors.size();
+    }
+
+    public long count() {
+        long cnt = 0;
+        for (SftpUploadMonitor monitor : this.monitors) {
+            cnt += monitor.getFileLength();
+        }
+        return cnt;
     }
 }

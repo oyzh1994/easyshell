@@ -72,7 +72,7 @@ public class SSHSftp {
             files.add(file);
             if (client != null) {
                 String ownerName = SftpUtil.getOwner(file.getUid(), client);
-                file.setGroup(ownerName);
+                file.setOwner(ownerName);
                 String groupName = SftpUtil.getGroup(file.getGid(), client);
                 file.setGroup(groupName);
             }

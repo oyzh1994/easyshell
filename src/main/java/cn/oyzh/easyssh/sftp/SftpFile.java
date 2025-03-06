@@ -133,7 +133,7 @@ public class SftpFile {
         if (this.isDir()) {
             return "";
         }
-        return NumberUtil.formatSize(this.attrs().getSize());
+        return NumberUtil.formatSize(this.attrs().getSize(), 4);
     }
 
     public String getName() {

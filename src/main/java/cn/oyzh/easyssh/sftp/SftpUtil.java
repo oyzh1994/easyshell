@@ -32,7 +32,7 @@ public class SftpUtil {
 
     public static String getGroup(int gid, SSHClient client) {
         SftpAttr attr = client.getAttr();
-        String groupName = SftpUtil.getOwner(gid, client);
+        String groupName = attr.getGroup(gid);
         if (groupName == null) {
             groupName = client.exec_id_gn(gid);
             attr.putGroup(gid, groupName);
