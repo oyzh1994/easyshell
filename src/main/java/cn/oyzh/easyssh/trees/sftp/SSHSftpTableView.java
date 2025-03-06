@@ -13,6 +13,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
@@ -22,6 +23,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,8 +40,15 @@ import java.util.stream.Collectors;
  */
 public class SSHSftpTableView extends FXTableView<SftpFile> {
 
-    {
+    @Override
+    protected void initTableView() {
+        super.initTableView();
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
+
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
         // 右键菜单事件
         this.setOnContextMenuRequested(e -> {
             List<SftpFile> files = this.getSelectedItems();
@@ -50,6 +59,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             }
         });
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
+
+        // 初始化鼠标多选辅助类
+        new TableViewMouseSelectHelper(this);
     }
 
     private String filterText;
@@ -233,8 +245,12 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     protected void onMouseClicked(MouseEvent event) {
         try {
-            if (event.getClickCount() == 2) {
-                List<SftpFile> files = this.getSelectedItems();
+            List<SftpFile> files = this.getSelectedItems();
+            if (event.getButton() == MouseButton.SECONDARY) {
+                event.consume();
+                return;
+            }
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 if (files == null) {
                     return;
                 }
@@ -303,6 +319,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void touchFile(String name) throws SftpException, JSchException, IOException {
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().touch(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
