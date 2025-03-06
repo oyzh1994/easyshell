@@ -179,6 +179,15 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         List<SftpFile> files = this.getSelectedItems();
         if (files.size() == 1) {
             SftpFile file = files.getFirst();
+            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> {
+                try {
+                    ClipboardUtil.copy(SftpUtil.concat(this.getCurrPath(), file.getFileName()));
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+            menuItems.add(copyFilePath);
+
             if (file.isFile()) {
                 FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> {
                     try {
