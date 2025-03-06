@@ -1,8 +1,10 @@
 package cn.oyzh.easyssh.ssh;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.sftp.SftpAttr;
 import cn.oyzh.easyssh.sftp.SftpFile;
-import cn.oyzh.easyssh.sftp.SftpUploader;
+import cn.oyzh.easyssh.sftp.SftpMonitor;
+import cn.oyzh.easyssh.sftp.SftpUploadManager;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
@@ -11,8 +13,6 @@ import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +26,7 @@ import java.util.Vector;
  */
 public class SSHSftp {
 
-    private SftpUploader uploader = new SftpUploader();
+    private SftpUploadManager uploader = new SftpUploadManager();
 
     private ChannelSftp channel = null;
 
@@ -124,44 +124,34 @@ public class SSHSftp {
         return this.channel.stat(path);
     }
 
-    public void upload(String path, String dst) throws SftpException, IOException {
-        File file = new File(path);
+    private final SftpUploadManager uploadManager = new SftpUploadManager();
 
-        SftpProgressMonitor monitor = new SftpProgressMonitor() {
-            @Override
-            public void init(int i, String s, String s1, long l) {
+    public void upload(File file, String dst) {
+        uploadManager.addFile(file, dst);
+        doUpload();
+    }
 
-                System.out.println("i=" + l);
-                System.out.println("s=" + s);
-                System.out.println("s1=" + s1);
-                System.out.println("l=" + l);
+    private void doUpload() {
+        if (uploadManager.isUploading()) {
+            return;
+        }
+        uploadManager.setUploading(true);
+        ThreadUtil.start(() -> {
+            try {
+                do {
+                    SftpMonitor monitor = uploadManager.takeMonitor();
+                    if (monitor == null) {
+                        break;
+                    }
+                    try {
+                        this.channel.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+                    } catch (SftpException ex) {
+                        ex.printStackTrace();
+                    }
+                } while (!uploadManager.isEmpty());
+            } finally {
+                uploadManager.setUploading(false);
             }
-
-            @Override
-            public boolean count(long l) {
-                System.out.println("l=" + l);
-                return true;
-            }
-
-            @Override
-            public void end() {
-
-            }
-        };
-        channel.put(path, dst, monitor, ChannelSftp.OVERWRITE);
-//        FileInputStream fis = new FileInputStream(file);
-//
-//        // 设置缓冲区大小
-//        int bufferSize = 4096 ; // 1MB
-//        channel.setInputStream(fis);
-//        channel.setOutputStream(channel.put(dst + "/" + file.getName(), monitor, ChannelSftp.OVERWRITE));
-//
-//        byte[] buffer = new byte[bufferSize];
-//        int bytesRead;
-//        while ((bytesRead = fis.read(buffer)) != -1) {
-//            channel.getOutputStream().write(buffer, 0, bytesRead);
-//        }
-
-//        this.channel.put(path, dst, , ChannelSftp.OVERWRITE);
+        });
     }
 }

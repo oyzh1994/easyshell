@@ -349,10 +349,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void uploadFile(List<File> files) throws SftpException, JSchException, IOException {
         for (File file : files) {
-            this.sftp().upload(file.getPath(), this.getCurrPath());
-            SftpATTRS attrs = this.sftp().stat(file.getName());
-            this.files.add(new SftpFile(file.getName(), attrs));
-            this.refreshFile();
+            this.sftp().upload(file, this.getCurrPath());
+//            SftpATTRS attrs = this.sftp().stat(file.getName());
+//            this.files.add(new SftpFile(file.getName(), attrs));
+//            this.refreshFile();
         }
     }
 }
