@@ -12,10 +12,14 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.fx.plus.file.FileChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * ssh命令行tab内容组件
@@ -184,6 +188,17 @@ public class SSHSftpTabController extends SubTabController {
         try {
             String name = MessageBox.prompt(I18nHelper.pleaseInputName());
             this.fileTable.touchFile(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void uploadFile() {
+        try {
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FileChooserHelper.allExtensionFilter());
+            this.fileTable.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

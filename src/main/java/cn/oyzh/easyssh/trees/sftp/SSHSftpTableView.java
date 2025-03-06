@@ -28,6 +28,7 @@ import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -161,7 +162,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void deleteFile() throws SftpException, JSchException, IOException {
-        List<SftpFile> files = this.getSelectedItems();
+        List<SftpFile> files = new ArrayList<>(this.getSelectedItems());
         if (CollectionUtil.isEmpty(files)) {
             return;
         }
@@ -177,7 +178,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             return;
         }
         if (CollectionUtil.isNotEmpty(files)) {
-            List<SftpFile> filesToDelete = new ArrayList<>();
+            List<SftpFile> filesToDelete = new ArrayList<>(files.size());
             for (SftpFile file : files) {
                 if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
                     continue;
@@ -199,13 +200,6 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> {
-            try {
-                this.deleteFile();
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        });
         List<SftpFile> files = this.getSelectedItems();
         if (files.size() == 1) {
             SftpFile file = files.getFirst();
@@ -239,6 +233,14 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 menuItems.add(renameFile);
             }
         }
+
+        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> {
+            try {
+                this.deleteFile();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
         menuItems.add(deleteFile);
         return menuItems;
     }
@@ -343,5 +345,14 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         file.setFileName(newName);
         this.refreshFile();
 //        this.loadFile();
+    }
+
+    public void uploadFile(List<File> files) throws SftpException, JSchException, IOException {
+        for (File file : files) {
+            this.sftp().upload(file.getPath(), this.getCurrPath());
+            SftpATTRS attrs = this.sftp().stat(file.getName());
+            this.files.add(new SftpFile(file.getName(), attrs));
+            this.refreshFile();
+        }
     }
 }

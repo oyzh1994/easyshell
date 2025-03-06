@@ -2,12 +2,17 @@ package cn.oyzh.easyssh.ssh;
 
 import cn.oyzh.easyssh.sftp.SftpAttr;
 import cn.oyzh.easyssh.sftp.SftpFile;
+import cn.oyzh.easyssh.sftp.SftpUploader;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +25,8 @@ import java.util.Vector;
  * @since 2025-03-05
  */
 public class SSHSftp {
+
+    private SftpUploader uploader = new SftpUploader();
 
     private ChannelSftp channel = null;
 
@@ -113,7 +120,48 @@ public class SSHSftp {
         this.channel.rename(path, newPath);
     }
 
-    public SftpATTRS stat(String path ) throws SftpException {
-       return this.channel.stat(path);
+    public SftpATTRS stat(String path) throws SftpException {
+        return this.channel.stat(path);
+    }
+
+    public void upload(String path, String dst) throws SftpException, IOException {
+        File file = new File(path);
+
+        SftpProgressMonitor monitor = new SftpProgressMonitor() {
+            @Override
+            public void init(int i, String s, String s1, long l) {
+
+                System.out.println("i=" + l);
+                System.out.println("s=" + s);
+                System.out.println("s1=" + s1);
+                System.out.println("l=" + l);
+            }
+
+            @Override
+            public boolean count(long l) {
+                System.out.println("l=" + l);
+                return true;
+            }
+
+            @Override
+            public void end() {
+
+            }
+        };
+        channel.put(path, dst, monitor, ChannelSftp.OVERWRITE);
+//        FileInputStream fis = new FileInputStream(file);
+//
+//        // 设置缓冲区大小
+//        int bufferSize = 4096 ; // 1MB
+//        channel.setInputStream(fis);
+//        channel.setOutputStream(channel.put(dst + "/" + file.getName(), monitor, ChannelSftp.OVERWRITE));
+//
+//        byte[] buffer = new byte[bufferSize];
+//        int bytesRead;
+//        while ((bytesRead = fis.read(buffer)) != -1) {
+//            channel.getOutputStream().write(buffer, 0, bytesRead);
+//        }
+
+//        this.channel.put(path, dst, , ChannelSftp.OVERWRITE);
     }
 }

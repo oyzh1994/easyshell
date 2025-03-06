@@ -16,6 +16,7 @@
 <?import cn.oyzh.easyssh.fx.svg.glyph.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileAddSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.FileUploadSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -44,6 +45,11 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
+            <FileUploadSVGGlyph onMousePrimaryClicked="#uploadFile">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </FileUploadSVGGlyph>
             <FolderAddSVGGlyph onMousePrimaryClicked="#mkDir">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
