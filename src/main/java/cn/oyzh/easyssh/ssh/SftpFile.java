@@ -21,6 +21,7 @@ import cn.oyzh.easyssh.fx.svg.glyph.FileXlsSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileXmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileZipSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FolderSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
@@ -58,57 +59,52 @@ public class SftpFile {
     }
 
     public SVGGlyph getIcon() {
-        if (this.attrs().isDir()) {
-            return new FolderSVGGlyph("12");
+        SVGGlyph glyph;
+        if (this.isReturnDirectory()) {
+            glyph = new ReturnFolderSVGGlyph("12");
+        } else if (this.attrs().isDir()) {
+            glyph = new FolderSVGGlyph("12");
+        } else if (this.attrs().isLink()) {
+            glyph = new FileLinkSVGGlyph("12");
+        } else {
+            String extName = FileNameUtil.extName(this.getFileName());
+            if (StringUtil.isEmpty(extName)) {
+                glyph = new FileUnknownSVGGlyph("12");
+            } else if (FileNameUtil.isExcelType(extName)) {
+                glyph = new FileExcelSVGGlyph("12");
+            } else if (FileNameUtil.isXlsType(extName) || FileNameUtil.isXlsxType(extName)) {
+                glyph = new FileXlsSVGGlyph("12");
+            } else if (FileNameUtil.isWordType(extName)) {
+                glyph = new FileWordSVGGlyph("12");
+            } else if (FileNameUtil.isPptType(extName) || FileNameUtil.isPptxType(extName)) {
+                glyph = new FilePptSVGGlyph("12");
+            } else if (FileNameUtil.isPdfType(extName)) {
+                glyph = new FilePdfSVGGlyph("12");
+            } else if (FileNameUtil.isImageType(extName)) {
+                glyph = new FileImageSVGGlyph("12");
+            } else if (FileNameUtil.isCompressType(extName)) {
+                glyph = new FileZipSVGGlyph("12");
+            } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
+                glyph = new FileHtmlSVGGlyph("12");
+            } else if (FileNameUtil.isXmlType(extName)) {
+                glyph = new FileXmlSVGGlyph("12");
+            } else if (FileNameUtil.isJsonType(extName)) {
+                glyph = new FileJsonSVGGlyph("12");
+            } else if (FileNameUtil.isMarkdownType(extName)) {
+                glyph = new FileMarkdownSVGGlyph("12");
+            } else if (FileNameUtil.isTxtType(extName) || FileNameUtil.isTextType(extName)
+                    || FileNameUtil.isLogType(extName)) {
+                glyph = new FileTextSVGGlyph("12");
+            } else if (FileNameUtil.isTerminalType(extName)) {
+                glyph = new FileTerminalSVGGlyph("12");
+            } else {
+                glyph = new FileSVGGlyph("12");
+            }
         }
-        if (this.attrs().isLink()) {
-            return new FileLinkSVGGlyph("12");
+        if (this.isHiddenFile()) {
+            glyph.setOpacity(0.5);
         }
-        String extName = FileNameUtil.extName(this.getFileName());
-        if (StringUtil.isEmpty(extName)) {
-            return new FileUnknownSVGGlyph("12");
-        }
-        if (FileNameUtil.isExcelType(extName)) {
-            return new FileExcelSVGGlyph("12");
-        }
-        if (FileNameUtil.isXlsType(extName) || FileNameUtil.isXlsxType(extName)) {
-            return new FileXlsSVGGlyph("12");
-        }
-        if (FileNameUtil.isWordType(extName)) {
-            return new FileWordSVGGlyph("12");
-        }
-        if (FileNameUtil.isPptType(extName) || FileNameUtil.isPptxType(extName)) {
-            return new FilePptSVGGlyph("12");
-        }
-        if (FileNameUtil.isPdfType(extName)) {
-            return new FilePdfSVGGlyph("12");
-        }
-        if (FileNameUtil.isImageType(extName)) {
-            return new FileImageSVGGlyph("12");
-        }
-        if (FileNameUtil.isCompressType(extName)) {
-            return new FileZipSVGGlyph("12");
-        }
-        if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-            return new FileHtmlSVGGlyph("12");
-        }
-        if (FileNameUtil.isXmlType(extName)) {
-            return new FileXmlSVGGlyph("12");
-        }
-        if (FileNameUtil.isJsonType(extName)) {
-            return new FileJsonSVGGlyph("12");
-        }
-        if (FileNameUtil.isMarkdownType(extName)) {
-            return new FileMarkdownSVGGlyph("12");
-        }
-        if (FileNameUtil.isTxtType(extName) || FileNameUtil.isTextType(extName)
-                || FileNameUtil.isLogType(extName)) {
-            return new FileTextSVGGlyph("12");
-        }
-        if (FileNameUtil.isTerminalType(extName)) {
-            return new FileTerminalSVGGlyph("12");
-        }
-        return new FileSVGGlyph("12");
+        return glyph;
     }
 
     public String getSize() {
@@ -164,6 +160,13 @@ public class SftpFile {
         return this.attrs().getGId();
     }
 
+    public boolean isHiddenFile() {
+        if (!this.isCurrentFile() && !this.isReturnDirectory()) {
+            return this.getFileName().startsWith(".");
+        }
+        return false;
+    }
+
     public boolean isCurrentFile() {
         return ".".equals(this.getName());
     }
@@ -174,10 +177,16 @@ public class SftpFile {
 
     public int getOrder() {
         if (this.isReturnDirectory()) {
-            return -100;
+            return -10;
         }
         if (this.isDir()) {
-            return -10;
+            if (this.isHiddenFile()) {
+                return -9;
+            }
+            return -8;
+        }
+        if (this.isHiddenFile()) {
+            return -7;
         }
         return 0;
     }

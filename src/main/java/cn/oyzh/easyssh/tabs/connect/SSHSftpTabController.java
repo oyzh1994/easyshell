@@ -5,6 +5,8 @@ import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
@@ -24,6 +26,12 @@ public class SSHSftpTabController extends SubTabController {
      */
     @FXML
     private FXTab root;
+
+    @FXML
+    private FXLabel filePath;
+
+    @FXML
+    private SVGGlyph copyFilePath;
 
     @FXML
     private SSHSftpTableView fileTable;
@@ -62,6 +70,15 @@ public class SSHSftpTabController extends SubTabController {
                 this.init();
             }
         });
+        this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1==null) {
+                this.filePath.clear();
+                this.copyFilePath.disable();
+            }else{
+                this.filePath.setText(t1);
+                this.copyFilePath.enable();
+            }
+        });
     }
 
     @Override
@@ -97,6 +114,16 @@ public class SSHSftpTabController extends SubTabController {
     private void returnDir() {
         try {
             this.fileTable.returnDir();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void copyFilePath() {
+        try {
+            this.fileTable.copyFilePath();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

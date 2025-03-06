@@ -9,9 +9,12 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseEvent;
@@ -48,17 +51,43 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     @Getter
     private SSHClient client;
 
-    @Setter
-    @Getter
-    private String currPath = "/";
+    /**
+     * 当前路径
+     */
+    private final StringProperty currPathProperty = new SimpleStringProperty();
+
+    public String getCurrPath() {
+        return this.currPathProperty.get();
+    }
+
+    public StringProperty currPathProperty() {
+        return this.currPathProperty;
+    }
+
+    protected void setCurrPath(String currPath) {
+        this.currPathProperty.set(currPath);
+    }
+
+    protected String currPath() {
+        return this.currPathProperty.get();
+    }
+
+    protected void currPath(String currPath) {
+        this.currPathProperty.set(currPath);
+    }
 
     public SSHSftp sftp() {
         return this.client.getSftp();
     }
 
     public void loadFile() throws JSchException, SftpException, IOException {
-        JulLog.info("current path: {}", this.currPath);
-        List<SftpFile> files = this.sftp().ls(this.currPath, this.client);
+        String currPath = this.getCurrPath();
+        if (currPath == null) {
+            this.setCurrPath(this.sftp().pwd());
+            currPath = this.getCurrPath();
+        }
+        JulLog.info("current path: {}", currPath);
+        List<SftpFile> files = this.sftp().ls(currPath, this.client);
         if (CollectionUtil.isNotEmpty(files)) {
             if (this.currentIsRootDirectory()) {
                 files = files.stream()
@@ -136,7 +165,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public boolean currentIsRootDirectory() {
-        return "/".equals(this.currPath);
+        return "/".equals(this.currPath());
     }
 
     public void intoDir(SftpFile file) throws JSchException, SftpException, IOException {
@@ -144,25 +173,45 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             this.returnDir();
             return;
         }
-        if (this.currPath.endsWith("/")) {
-            this.currPath = this.currPath + file.getFileName();
+        String currPath = this.currPath();
+        if (currPath.endsWith("/")) {
+            currPath = currPath + file.getFileName();
         } else {
-            this.currPath = this.currPath + file.getFilePath();
+            currPath = currPath + file.getFilePath();
         }
-        if (this.currPath.startsWith("//")) {
-            this.currPath = this.currPath.substring(1);
+        if (currPath.startsWith("//")) {
+            currPath = currPath.substring(1);
         }
+        this.currPath(currPath);
         this.loadFile();
     }
 
     public void returnDir() throws JSchException, SftpException, IOException {
-        if (this.currPath.equals("/")) {
+        if (this.currentIsRootDirectory()) {
             return;
         }
-        if (this.currPath.endsWith("/")) {
-            this.currPath = this.currPath.substring(0, this.currPath.length() - 1);
+        String currPath = this.currPath();
+        if (currPath.endsWith("/")) {
+            currPath = currPath.substring(0, currPath.length() - 1);
         }
-        this.currPath = this.currPath.substring(0, this.currPath.lastIndexOf("/") + 1);
+        currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
+        this.currPath(currPath);
         this.loadFile();
+    }
+
+    public void copyFilePath() {
+        try {
+            List<SftpFile> files = this.getSelectedItems();
+            if (files.isEmpty()) {
+                ClipboardUtil.copy(this.getCurrPath());
+            } else if (files.size() == 1) {
+                ClipboardUtil.copy(this.getCurrPath() + files.getFirst().getFileName());
+            } else {
+                MessageBox.warn(I18nHelper.tooManyFiles());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 }

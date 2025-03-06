@@ -10,6 +10,8 @@
 <?import javafx.geometry.Insets?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -34,17 +36,29 @@
                 </FXHBox.margin>
             </DeleteSVGGlyph>
         </FXHBox>
-        <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
+        <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                 <FXTableColumn style="-fx-padding-left:0;" prefWidth="150" valueName="fileName" text="%base.name"/>
-                <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
-                <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-                <FXTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
-                <FXTableColumn prefWidth="120" valueName="permissionsString" text="%base.permissions"/>
-                <FXTableColumn prefWidth="60" valueName="owner" text="%base.owner"/>
-                <FXTableColumn prefWidth="60" valueName="group" text="%base.group"/>
+                <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
+                <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>
+                <FXTableColumn prefWidth="110" valueName="permissionsString" text="%base.permissions"/>
+                <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
             </columns>
         </SSHSftpTableView>
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <CopySVGGlyph disable="true" onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </CopySVGGlyph>
+            <FXLabel fx:id="filePath">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FXLabel>
+        </FXHBox>
     </FXVBox>
 </FXTab>
