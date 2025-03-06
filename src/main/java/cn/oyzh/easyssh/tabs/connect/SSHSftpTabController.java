@@ -5,6 +5,7 @@ import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -39,6 +40,9 @@ public class SSHSftpTabController extends SubTabController {
 
     @FXML
     private SSHSftpTableView fileTable;
+
+    @FXML
+    private ClearableTextField filterFile;
 
     private void init() {
         try {
@@ -90,6 +94,13 @@ public class SSHSftpTabController extends SubTabController {
                 MessageBox.exception(ex);
             }
         });
+        this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+            try {
+                this.fileTable.setFilterText(t1);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     @Override
@@ -135,6 +146,7 @@ public class SSHSftpTabController extends SubTabController {
     private void copyFilePath() {
         try {
             this.fileTable.copyFilePath();
+            MessageBox.okToast(I18nHelper.copySuccess());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

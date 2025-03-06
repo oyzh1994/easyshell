@@ -2,11 +2,12 @@ package cn.oyzh.easyssh.trees.sftp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHSftp;
-import cn.oyzh.easyssh.ssh.SftpFile;
+import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.util.SSHI18nHelper;
-import cn.oyzh.easyssh.util.SftpUtil;
+import cn.oyzh.easyssh.sftp.SftpUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -47,6 +48,15 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             }
         });
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
+    }
+
+    private String filterText;
+
+    public void setFilterText(String filterText) throws JSchException, SftpException, IOException {
+        if (!StringUtil.equals(this.filterText, filterText)) {
+            this.filterText = filterText;
+            this.loadFile();
+        }
     }
 
     private boolean showHiddenFile = true;
@@ -109,6 +119,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                             return false;
                         }
                         if (!this.showHiddenFile && f.isHiddenFile()) {
+                            return false;
+                        }
+                        if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(f.getFileName(), this.filterText)) {
                             return false;
                         }
                         return true;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.util;
+package cn.oyzh.easyssh.sftp;
 
 import lombok.experimental.UtilityClass;
 

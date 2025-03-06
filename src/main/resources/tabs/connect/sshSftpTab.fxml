@@ -15,6 +15,7 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileAddSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -23,6 +24,11 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
+            <ClearableTextField realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="3"/>
+                </FXHBox.margin>
+            </ClearableTextField>
             <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
@@ -33,24 +39,29 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
+            <CopySVGGlyph disable="true" onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </CopySVGGlyph>
             <FolderAddSVGGlyph onMousePrimaryClicked="#mkDir">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FolderAddSVGGlyph>
             <FileAddSVGGlyph onMousePrimaryClicked="#touchFile">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FileAddSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
             <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles" unselectedText="%base.doNotShowHiddenFiles" >
                 <FXHBox.margin>
-                    <Insets left="10" top="8"/>
+                    <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </FXToggleSwitch>
         </FXHBox>
@@ -67,14 +78,9 @@
             </columns>
         </SSHSftpTableView>
         <FXHBox prefHeight="30" flexWidth="100%">
-            <CopySVGGlyph disable="true" onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">
-                <FXHBox.margin>
-                    <Insets left="5" top="10"/>
-                </FXHBox.margin>
-            </CopySVGGlyph>
             <FXLabel fx:id="filePath">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
         </FXHBox>

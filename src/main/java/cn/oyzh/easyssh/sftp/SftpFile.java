@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.ssh;
+package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExcelSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileHtmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileImageSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileJpgSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJsonSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileLinkSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileMarkdownSVGGlyph;
@@ -80,6 +81,8 @@ public class SftpFile {
                 glyph = new FilePptSVGGlyph("12");
             } else if (FileNameUtil.isPdfType(extName)) {
                 glyph = new FilePdfSVGGlyph("12");
+            } else if (FileNameUtil.isJpgType(extName)) {
+                glyph = new FileJpgSVGGlyph("12");
             } else if (FileNameUtil.isImageType(extName)) {
                 glyph = new FileImageSVGGlyph("12");
             } else if (FileNameUtil.isCompressType(extName)) {

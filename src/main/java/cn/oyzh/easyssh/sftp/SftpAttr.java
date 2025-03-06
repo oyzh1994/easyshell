@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.ssh;
+package cn.oyzh.easyssh.sftp;
 
 import java.util.HashMap;
 import java.util.Map;
