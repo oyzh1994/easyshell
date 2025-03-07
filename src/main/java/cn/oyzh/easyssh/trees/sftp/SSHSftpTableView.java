@@ -357,7 +357,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void uploadFile(List<File> files) throws SftpException, JSchException, IOException {
         for (File file : files) {
-            this.sftp().upload(file, this.getCurrPath());
+            this.client.upload(file, this.getCurrPath());
 //            SftpATTRS attrs = this.sftp().stat(file.getName());
 //            this.files.add(new SftpFile(file.getName(), attrs));
 //            this.refreshFile();
@@ -366,7 +366,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void fileUploaded(String fileName, String dest) throws SftpException, JSchException, IOException {
         if (StringUtil.equals(this.getCurrPath(), dest)) {
-            SftpATTRS attrs = this.sftp().stat(fileName);
+            String filePath = SftpUtil.concat(dest, fileName);
+            SftpATTRS attrs = this.sftp().stat(filePath);
             SftpFile file = new SftpFile(fileName, attrs);
             file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
             file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
@@ -376,18 +377,18 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
-        this.sftp().setUploadEndedCallback(callback);
+        this.client.setUploadEndedCallback(callback);
     }
 
     public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
-        this.sftp().setUploadCanceledCallback(callback);
+        this.client.setUploadCanceledCallback(callback);
     }
 
     public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
-        this.sftp().setUploadChangedCallback(callback);
+        this.client.setUploadChangedCallback(callback);
     }
 
     public void cancelUpload() {
-        this.sftp().cancelUpload();
+        this.client.cancelUpload();
     }
 }

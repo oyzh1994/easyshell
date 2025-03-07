@@ -6,6 +6,9 @@ import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
+import cn.oyzh.easyssh.sftp.SftpUploadCanceled;
+import cn.oyzh.easyssh.sftp.SftpUploadChanged;
+import cn.oyzh.easyssh.sftp.SftpUploadEnded;
 import cn.oyzh.easyssh.sftp.SftpUploadManager;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -21,9 +24,11 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 /**
  * ssh终端
@@ -405,7 +410,8 @@ public class SSHClient {
         if (!this.sftpManager.hasAvailable()) {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                SSHSftp sftp = new SSHSftp(channel, this.sftpUploadManager);
+                SSHSftp sftp = new SSHSftp(channel);
+//                SSHSftp sftp = new SSHSftp(channel, this.sftpUploadManager);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
             } catch (Exception ex) {
@@ -458,4 +464,64 @@ public class SSHClient {
         return this.attr;
     }
 
+    public void upload(File file, String dst) {
+        this.sftpUploadManager.createMonitor(file, dst, this.openSftp());
+    }
+
+//    public void upload(File file, String dst) {
+//        this.sftpUploadManager.addFile(file, dst);
+//        this.doUpload();
+//    }
+//
+//    private void doUpload() {
+//        if (this.isUploading()) {
+//            return;
+//        }
+//        this.setUploading(true);
+//        ThreadUtil.start(() -> {
+//            try {
+//                do {
+//                    SftpUploadMonitor monitor = this.sftpUploadManager.takeMonitor();
+//                    if (monitor == null) {
+//                        break;
+//                    }
+//                    try {
+//                        SSHSftp sftp = this.openSftp();
+//                        sftp.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+//                        sftp.close();
+//                    } catch (SftpException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                } while (!this.sftpUploadManager.isEmpty());
+//            } finally {
+//                this.setUploading(false);
+//            }
+//        });
+//    }
+//
+//    private final AtomicBoolean uploading = new AtomicBoolean(false);
+//
+//    public void setUploading(boolean uploading) {
+//        this.uploading.set(uploading);
+//    }
+//
+//    public boolean isUploading() {
+//        return this.uploading.get();
+//    }
+
+    public void cancelUpload() {
+        this.sftpUploadManager.cancel();
+    }
+
+    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
+        this.sftpUploadManager.setUploadEndedCallback(callback);
+    }
+
+    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
+        this.sftpUploadManager.setUploadCanceledCallback(callback);
+    }
+
+    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
+        this.sftpUploadManager.setUploadChangedCallback(callback);
+    }
 }

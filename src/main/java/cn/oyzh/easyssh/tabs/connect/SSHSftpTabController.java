@@ -219,6 +219,13 @@ public class SSHSftpTabController extends SubTabController {
     private void uploadFile() {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FileChooserHelper.allExtensionFilter());
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    MessageBox.warn(I18nHelper.directory() + " [" + file.getName() + "] " + I18nHelper.notSupport());
+                    return;
+                }
+            }
+//            files = files.stream().filter(File::isFile).toList();
             if (CollectionUtil.isNotEmpty(files)) {
                 this.fileTable.uploadFile(files);
                 this.uploadBox.display();

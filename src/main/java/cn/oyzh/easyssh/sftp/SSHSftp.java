@@ -1,14 +1,13 @@
 package cn.oyzh.easyssh.sftp;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 /**
  * @author oyzh
@@ -26,12 +24,16 @@ public class SSHSftp {
 
     private ChannelSftp channel;
 
-    private final SftpUploadManager uploadManager;
+//    private final SftpUploadManager uploadManager;
 
-    public SSHSftp(ChannelSftp channel, SftpUploadManager uploadManager) {
+    public SSHSftp(ChannelSftp channel) {
         this.channel = channel;
-        this.uploadManager = uploadManager;
     }
+
+//    public SSHSftp(ChannelSftp channel, SftpUploadManager uploadManager) {
+//        this.channel = channel;
+//        this.uploadManager = uploadManager;
+//    }
 
     public void close() {
         try {
@@ -110,47 +112,44 @@ public class SSHSftp {
     public SftpATTRS stat(String path) throws SftpException {
         return this.channel.stat(path);
     }
-
-    public void upload(File file, String dst) {
-        this.uploadManager.addFile(file, dst);
-        this.doUpload();
-    }
-
-    private void doUpload() {
-        if (this.isUploading()) {
-            return;
-        }
-        this.setUploading(true);
-        ThreadUtil.start(() -> {
-            try {
-                do {
-                    SftpUploadMonitor monitor = this.uploadManager.takeMonitor();
-                    if (monitor == null) {
-                        break;
-                    }
-                    try {
-                        this.channel.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
-                    } catch (SftpException ex) {
-                        ex.printStackTrace();
-                    }
-                } while (!this.uploadManager.isEmpty());
-            } finally {
-                this.setUploading(false);
-            }
-        });
-    }
-
-    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
-        this.uploadManager.setUploadEndedCallback(callback);
-    }
-
-    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
-        this.uploadManager.setUploadCanceledCallback(callback);
-    }
-
-    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
-        this.uploadManager.setUploadChangedCallback(callback);
-    }
+//
+//    public void upload(File file, String dst) {
+//        this.uploadManager.createMonitor(file, dst);
+//    }
+//
+//    private void doUpload(SftpUploadMonitor monitor) {
+////        if (this.isUploading()) {
+////            return;
+////        }
+//        System.out.println(this.hashCode());
+////        SftpUploadMonitor monitor = this.uploadManager.takeMonitor();
+////        if (monitor != null) {
+//        this.setUploading(true);
+//        ThreadUtil.s(() -> {
+//            try {
+//                try {
+//                    this.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+//                } catch (SftpException ex) {
+//                    ex.printStackTrace();
+//                }
+//            } finally {
+//                this.setUploading(false);
+//            }
+//        });
+    /// /        }
+//    }
+//
+//    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
+//        this.uploadManager.setUploadEndedCallback(callback);
+//    }
+//
+//    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
+//        this.uploadManager.setUploadCanceledCallback(callback);
+//    }
+//
+//    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
+//        this.uploadManager.setUploadChangedCallback(callback);
+//    }
 
     private final AtomicBoolean uploading = new AtomicBoolean(false);
 
@@ -162,7 +161,11 @@ public class SSHSftp {
         return this.uploading.get();
     }
 
-    public void cancelUpload() {
-        this.uploadManager.cancel();
+//    public void cancelUpload() {
+//        this.uploadManager.cancel();
+//    }
+
+    public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
+        this.channel.put(src, dest, monitor, mode);
     }
 }

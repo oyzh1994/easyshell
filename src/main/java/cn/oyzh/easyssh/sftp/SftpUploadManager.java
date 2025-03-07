@@ -1,5 +1,8 @@
 package cn.oyzh.easyssh.sftp;
 
+import cn.oyzh.common.thread.ThreadUtil;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.SftpException;
 import lombok.Setter;
 
 import java.io.File;
@@ -25,11 +28,12 @@ public class SftpUploadManager {
     @Setter
     private Consumer<SftpUploadCanceled> uploadCanceledCallback;
 
-    public void addFile(File file, String dest) {
+    public void createMonitor(File file, String dest, SSHSftp sftp) {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-        this.monitors.add(new SftpUploadMonitor(file, dest, this));
+        this.monitors.add(new SftpUploadMonitor(file, dest, this, sftp));
+        this.doUpload();
     }
 
     public SftpUploadMonitor takeMonitor() {
@@ -75,6 +79,10 @@ public class SftpUploadManager {
         return this.monitors.isEmpty();
     }
 
+    public void removeMonitor(SftpUploadMonitor monitor) {
+        this.monitors.remove(monitor);
+    }
+
     public int size() {
         return this.monitors.size();
     }
@@ -91,5 +99,46 @@ public class SftpUploadManager {
         for (SftpUploadMonitor monitor : this.monitors) {
             monitor.cancel();
         }
+    }
+
+    private void doUpload() {
+        if (this.isUploading()) {
+            return;
+        }
+        this.setUploading(true);
+        ThreadUtil.start(() -> {
+            try {
+                while (!this.isEmpty()) {
+                    SftpUploadMonitor monitor = this.takeMonitor();
+                    if (monitor == null) {
+                        break;
+                    }
+                    if (monitor.isFinished()) {
+                        ThreadUtil.sleep(100);
+                        continue;
+                    }
+                    try {
+                        monitor.getSftp().put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+                    } catch (SftpException ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        monitor.getSftp().setUploading(false);
+                    }
+                    ThreadUtil.sleep(100);
+                }
+            } finally {
+                this.setUploading(false);
+            }
+        });
+    }
+
+    private final AtomicBoolean uploading = new AtomicBoolean(false);
+
+    public void setUploading(boolean uploading) {
+        this.uploading.set(uploading);
+    }
+
+    public boolean isUploading() {
+        return this.uploading.get();
     }
 }
