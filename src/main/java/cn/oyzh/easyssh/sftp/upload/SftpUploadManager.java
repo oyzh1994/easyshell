@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.sftp.upload;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
@@ -24,6 +25,9 @@ public class SftpUploadManager {
 
     @Setter
     private Consumer<SftpUploadEnded> uploadEndedCallback;
+
+    @Setter
+    private Consumer<SftpUploadFailed> uploadFailedCallback;
 
     @Setter
     private Consumer<SftpUploadChanged> uploadChangedCallback;
@@ -75,6 +79,17 @@ public class SftpUploadManager {
             ended.setDest(monitor.getDest());
             ended.setFileName(monitor.getFileName());
             this.uploadEndedCallback.accept(ended);
+        }
+    }
+
+    public void uploadFailed(SftpUploadMonitor monitor) {
+        this.monitors.remove(monitor);
+        if (this.uploadFailedCallback != null) {
+            SftpUploadFailed changed = new SftpUploadFailed();
+            changed.setFileCount(this.size());
+            changed.setDest(monitor.getDest());
+            changed.setFileName(monitor.getFileName());
+            this.uploadFailedCallback.accept(changed);
         }
     }
 
@@ -147,9 +162,11 @@ public class SftpUploadManager {
                     SSHSftp sftp = monitor.getSftp();
                     sftp.setUsing(true);
                     try {
-                        sftp.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
-                    } catch (SftpException ex) {
+                        sftp.put(monitor.getFilePath()+"1", monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+                    } catch (Exception ex) {
                         ex.printStackTrace();
+                        JulLog.warn("file upload failed", ex);
+                        this.uploadFailed(monitor);
                     } finally {
                         sftp.setUsing(false);
                     }

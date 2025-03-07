@@ -11,6 +11,7 @@ import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
@@ -469,6 +470,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
         this.client.setUploadEndedCallback(callback);
+    }
+
+    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
+        this.client.setUploadFailedCallback(callback);
     }
 
     public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {

@@ -9,6 +9,7 @@ import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView;
 import cn.oyzh.easyssh.ssh.SSHClient;
@@ -101,6 +102,7 @@ public class SSHSftpTabController extends SubTabController {
             this.fileTable.setClient(this.client());
             this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
             this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
+            this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
             this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
             this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
             this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
@@ -293,7 +295,25 @@ public class SSHSftpTabController extends SubTabController {
                 this.fileUpload.clear();
                 this.uploadBox.disappear();
                 this.updateLayout();
+                // 重新载入一次文件
+                this.fileTable.loadFile();
             }
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void updateUploadInfo(SftpUploadFailed failed) {
+        try {
+            JulLog.info("updateUploadInfo:{}", failed);
+            if (failed.getFileCount() == 0) {
+                this.fileUpload.clear();
+                this.uploadBox.disappear();
+                this.updateLayout();
+                // 重新载入一次文件
+                this.fileTable.loadFile();
+            }
+            MessageBox.warn(failed.getFileName() + " " + I18nHelper.uploadFail());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

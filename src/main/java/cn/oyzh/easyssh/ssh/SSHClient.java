@@ -14,6 +14,7 @@ import cn.oyzh.easyssh.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -482,6 +483,10 @@ public class SSHClient {
 
     public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
         this.sftpUploadManager.setUploadEndedCallback(callback);
+    }
+
+    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
+        this.sftpUploadManager.setUploadFailedCallback(callback);
     }
 
     public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
