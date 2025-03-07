@@ -7,13 +7,16 @@ import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadFailed;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadInPreparation;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadInPreparation;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView;
 import cn.oyzh.easyssh.ssh.SSHClient;
+import cn.oyzh.easyssh.util.SSHI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -107,11 +110,13 @@ public class SSHSftpTabController extends SubTabController {
             this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
             this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
             this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
+            this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
 
             this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
+            this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
             this.fileTable.loadFile();
         } catch (Exception ex) {
             this.initialized = false;
@@ -218,7 +223,7 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     @FXML
-    private void mkDir() {
+    private void mkdir() {
         try {
             String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
             this.fileTable.mkDir(name);
@@ -244,16 +249,6 @@ public class SSHSftpTabController extends SubTabController {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
             this.fileTable.uploadFile(files);
-//            for (File file : files) {
-//                if (file.isDirectory()) {
-//                    MessageBox.warn(I18nHelper.directory() + " [" + file.getName() + "] " + I18nHelper.notSupport());
-//                    return;
-//                }
-//            }
-//            if (this.fileTable.uploadFile(files)) {
-//                this.uploadBox.display();
-//                this.updateLayout();
-//            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -341,9 +336,9 @@ public class SSHSftpTabController extends SubTabController {
         }
         if (changed.getFileCount() > 1) {
             StringBuilder builder = new StringBuilder();
-            builder.append("File Count: ").append(changed.getFileCount());
+            builder.append("Total Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Current File: ").append(changed.getLocalFileName());
+            builder.append(" Current: ").append(changed.getLocalFileName());
             builder.append(" Dest: ").append(changed.getRemoteFile());
             this.fileUpload.text(builder.toString());
         } else {
@@ -358,6 +353,14 @@ public class SSHSftpTabController extends SubTabController {
                 .append(NumberUtil.formatSize(changed.getTotal(), 2));
         this.uploadProgressInfo.text(progress.toString());
         this.uploadProgress.progress(changed.progress());
+    }
+
+    private void updateUploadInfo(SftpUploadInPreparation inPreparation) {
+        if (!this.uploadBox.isVisible()) {
+            this.uploadBox.display();
+            this.updateLayout();
+        }
+        this.uploadProgressInfo.text(SSHI18nHelper.fileTip7());
     }
 
     private void updateDownloadInfo(SftpDownloadEnded ended) {
@@ -424,7 +427,15 @@ public class SSHSftpTabController extends SubTabController {
         this.downloadProgress.progress(changed.progress());
     }
 
-    private void updateLayout() {
+    private void updateDownloadInfo(SftpDownloadInPreparation inPreparation) {
+        if (!this.downloadBox.isVisible()) {
+            this.downloadBox.display();
+            this.updateLayout();
+        }
+        this.downloadProgressInfo.text(SSHI18nHelper.fileTip8());
+    }
+
+    private synchronized void updateLayout() {
         if (this.uploadBox.isVisible() && this.downloadBox.isVisible()) {
             this.fileTable.setFlexHeight("100% - 120");
         } else if (this.uploadBox.isVisible() || this.downloadBox.isVisible()) {

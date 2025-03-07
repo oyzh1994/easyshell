@@ -98,7 +98,12 @@ public class SftpFile {
         return !this.isCurrentFile() && !this.isReturnDirectory();
     }
 
+    private SVGGlyph icon;
+
     public SVGGlyph getIcon() {
+        if (this.icon != null) {
+            return this.icon;
+        }
         SVGGlyph glyph;
         if (this.isReturnDirectory()) {
             glyph = new ReturnFolderSVGGlyph("12");
@@ -182,7 +187,20 @@ public class SftpFile {
         if (this.isHiddenFile()) {
             glyph.setOpacity(0.5);
         }
-        return glyph;
+        return this.icon = glyph;
+    }
+
+    public void startWaiting() {
+        if (this.icon != null) {
+            this.icon.startWaiting();
+        }
+    }
+
+    public boolean isWaiting() {
+        if (this.icon != null) {
+            return this.icon.isWaiting();
+        }
+        return false;
     }
 
     public String getSize() {

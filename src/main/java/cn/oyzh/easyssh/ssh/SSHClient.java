@@ -11,11 +11,13 @@ import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadFailed;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadInPreparation;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadInPreparation;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -494,6 +496,10 @@ public class SSHClient {
         this.sftpUploadManager.setUploadCanceledCallback(callback);
     }
 
+    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
+        this.sftpUploadManager.setUploadInPreparationCallback(callback);
+    }
+
     public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
         this.sftpUploadManager.setUploadChangedCallback(callback);
     }
@@ -520,5 +526,9 @@ public class SSHClient {
 
     public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
         this.sftpDownloadManager.setDownloadChangedCallback(callback);
+    }
+
+    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
+        this.sftpDownloadManager.setDownloadInPreparationCallback(callback);
     }
 }

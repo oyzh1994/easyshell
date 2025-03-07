@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.trees.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -9,10 +10,12 @@ import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadFailed;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadInPreparation;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadInPreparation;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
@@ -174,7 +177,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         return files;
     }
 
-    public void deleteFile() throws SftpException, JSchException, IOException {
+    public void deleteFile() {
         List<SftpFile> files = new ArrayList<>(this.getSelectedItems());
         if (CollectionUtil.isEmpty(files)) {
             return;
@@ -190,23 +193,32 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         } else if (!MessageBox.confirm(SSHI18nHelper.fileTip2())) {
             return;
         }
-        if (CollectionUtil.isNotEmpty(files)) {
-            List<SftpFile> filesToDelete = new ArrayList<>(files.size());
-            for (SftpFile file : files) {
-                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
-                    continue;
-                }
-                String path = SftpUtil.concat(this.currPath(), file.getFileName());
-                if (file.isDir()) {
-                    this.sftp().rmdirRecursive(path);
-                } else {
-                    this.sftp().rm(path);
-                }
-                filesToDelete.add(file);
-            }
-            this.files.removeAll(filesToDelete);
-            this.refreshFile();
+        if (CollectionUtil.isEmpty(files)) {
+            return;
         }
+        ThreadUtil.start(() -> {
+            try {
+                List<SftpFile> filesToDelete = new ArrayList<>(files.size());
+                for (SftpFile file : files) {
+                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
+                        continue;
+                    }
+                    file.startWaiting();
+                    String path = SftpUtil.concat(this.currPath(), file.getFileName());
+                    if (file.isDir()) {
+                        this.sftp().rmdirRecursive(path);
+                    } else {
+                        this.sftp().rm(path);
+                    }
+                    filesToDelete.add(file);
+                }
+                this.files.removeAll(filesToDelete);
+                this.refreshFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     @Override
@@ -214,6 +226,12 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         List<SftpFile> files = this.getSelectedItems();
         if (CollectionUtil.isEmpty(files)) {
             return Collections.emptyList();
+        }
+        // 发现操作中的文件，则跳过
+        for (SftpFile file : files) {
+            if (file.isWaiting()) {
+                return Collections.emptyList();
+            }
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
 
@@ -479,6 +497,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.client.setUploadChangedCallback(callback);
     }
 
+    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
+        this.client.setUploadInPreparationCallback(callback);
+    }
+
     public void cancelUpload() {
         this.client.cancelUpload();
     }
@@ -497,6 +519,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
         this.client.setDownloadChangedCallback(callback);
+    }
+
+    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
+        this.client.setDownloadInPreparationCallback(callback);
     }
 
     public void cancelDownload() {

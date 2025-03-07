@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpUtil;
+import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
@@ -35,13 +36,23 @@ public class SftpUploadManager {
     @Setter
     private Consumer<SftpUploadCanceled> uploadCanceledCallback;
 
+    @Setter
+    private Consumer<SftpUploadInPreparation> uploadInPreparationCallback;
+
     public void createMonitor(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-//        this.monitors.add(new SftpUploadMonitor(file, dest, this, sftp));
-        this.addMonitorRecursive(localFile, remoteFile, sftp);
-        this.doUpload();
+        ThreadUtil.start(() -> {
+            try {
+                this.uploadInPreparation();
+                this.addMonitorRecursive(localFile, remoteFile, sftp);
+                this.doUpload();
+            } catch (SftpException ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     protected void addMonitorRecursive(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
@@ -52,13 +63,11 @@ public class SftpUploadManager {
             if (ArrayUtil.isNotEmpty(files)) {
                 // 远程文件夹
                 String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
-                System.out.println(remoteDir);
+                // 递归创建文件夹
                 sftp.mkdirRecursive(remoteDir);
                 for (File file : files) {
                     // 远程文件
                     String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
-//                    //
-//                    sftp.touch(remoteFile1);
                     this.addMonitorRecursive(file, remoteFile1, sftp);
                 }
             }
@@ -117,6 +126,13 @@ public class SftpUploadManager {
         }
     }
 
+    public void uploadInPreparation() {
+        if (this.uploadInPreparationCallback != null) {
+            SftpUploadInPreparation inPreparation = new SftpUploadInPreparation();
+            this.uploadInPreparationCallback.accept(inPreparation);
+        }
+    }
+
     public boolean isEmpty() {
         return this.monitors.isEmpty();
     }
@@ -156,7 +172,7 @@ public class SftpUploadManager {
                         break;
                     }
                     if (monitor.isFinished()) {
-                        ThreadUtil.sleep(10);
+                        ThreadUtil.sleep(5);
                         continue;
                     }
                     SSHSftp sftp = monitor.getSftp();
@@ -167,7 +183,7 @@ public class SftpUploadManager {
                         JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
                         this.uploadFailed(monitor);
                     }
-                    ThreadUtil.sleep(10);
+                    ThreadUtil.sleep(5);
                 }
             } finally {
                 this.setUploading(false);

@@ -58,7 +58,7 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FolderUploadSVGGlyph>
-            <FolderAddSVGGlyph onMousePrimaryClicked="#mkDir" tipText="%base.mkdir">
+            <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>

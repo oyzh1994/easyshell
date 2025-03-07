@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
-import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
+import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
@@ -38,13 +38,23 @@ public class SftpDownloadManager {
     @Setter
     private Consumer<SftpDownloadCanceled> downloadCanceledCallback;
 
-    public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
+    @Setter
+    private Consumer<SftpDownloadInPreparation> downloadInPreparationCallback;
+
+    public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-//        this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
-        this.addMonitorRecursive(localFile, remoteFile, sftp);
-        this.doDownload();
+        ThreadUtil.start(() -> {
+            try {
+                this.downloadInPreparation();
+                this.addMonitorRecursive(localFile, remoteFile, sftp);
+                this.doDownload();
+            } catch (SftpException ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     protected void addMonitorRecursive(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
@@ -118,6 +128,13 @@ public class SftpDownloadManager {
         }
     }
 
+    public void downloadInPreparation() {
+        if (this.downloadInPreparationCallback != null) {
+            SftpDownloadInPreparation inPreparation = new SftpDownloadInPreparation();
+            this.downloadInPreparationCallback.accept(inPreparation);
+        }
+    }
+
     public boolean isEmpty() {
         return this.monitors.isEmpty();
     }
@@ -157,7 +174,7 @@ public class SftpDownloadManager {
                         break;
                     }
                     if (monitor.isFinished()) {
-                        ThreadUtil.sleep(10);
+                        ThreadUtil.sleep(5);
                         continue;
                     }
                     SSHSftp sftp = monitor.getSftp();
@@ -168,7 +185,7 @@ public class SftpDownloadManager {
                         JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
                         this.downloadFailed(monitor);
                     }
-                    ThreadUtil.sleep(10);
+                    ThreadUtil.sleep(5);
                 }
             } finally {
                 this.setDownloading(false);
