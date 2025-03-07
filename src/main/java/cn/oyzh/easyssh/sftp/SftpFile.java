@@ -4,7 +4,9 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.fx.svg.glyph.FileDmgSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExcelSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileExeSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileHtmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileImageSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJpgSVGGlyph;
@@ -13,6 +15,8 @@ import cn.oyzh.easyssh.fx.svg.glyph.FileJsonSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJspSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileLinkSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileMarkdownSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileMp3SVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileMp4SVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePdfSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePptSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileSVGGlyph;
@@ -98,6 +102,14 @@ public class SftpFile {
                 glyph = new FilePdfSVGGlyph("12");
             } else if (FileNameUtil.isJpgType(extName)) {
                 glyph = new FileJpgSVGGlyph("12");
+            } else if (FileNameUtil.isExeType(extName)) {
+                glyph = new FileExeSVGGlyph("12");
+            } else if (FileNameUtil.isMp3Type(extName)) {
+                glyph = new FileMp3SVGGlyph("12");
+            } else if (FileNameUtil.isMp4Type(extName)) {
+                glyph = new FileMp4SVGGlyph("12");
+            } else if (FileNameUtil.isDmgType(extName)) {
+                glyph = new FileDmgSVGGlyph("12");
             } else if (FileNameUtil.isImageType(extName)) {
                 glyph = new FileImageSVGGlyph("12");
             } else if (FileNameUtil.isCompressType(extName)) {

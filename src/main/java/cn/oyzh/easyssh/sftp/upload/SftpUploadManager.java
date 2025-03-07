@@ -1,6 +1,7 @@
-package cn.oyzh.easyssh.sftp;
+package cn.oyzh.easyssh.sftp.upload;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyssh.sftp.SSHSftp;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
