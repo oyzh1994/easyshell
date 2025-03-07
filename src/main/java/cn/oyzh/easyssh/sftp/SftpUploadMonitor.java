@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import com.jcraft.jsch.SftpProgressMonitor;
 import lombok.Getter;
 
@@ -25,6 +26,9 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
 
     private final SftpUploadManager manager;
 
+    @Getter
+    private transient boolean cancelled;
+
     public SftpUploadMonitor(final File file, String dest, SftpUploadManager manager) {
         this.file = file;
         this.dest = dest;
@@ -40,13 +44,18 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     public boolean count(long current) {
         this.current += current;
         this.manager.uploadChanged(this);
-        return true;
+        return !this.cancelled;
     }
 
     @Override
     public void end() {
-        JulLog.info("file:{} upload finished", this.getFilePath());
-        this.manager.uploadEnd(this);
+        if (this.cancelled) {
+            this.manager.uploadCanceled(this);
+            JulLog.warn("file:{} upload cancelled, uploaded:{} total:{}", this.getFilePath(), this.current, this.total);
+        } else {
+            JulLog.info("file:{} upload finished", this.getFilePath());
+            this.manager.uploadCanceled(this);
+        }
     }
 
     public String getFileName() {
@@ -59,5 +68,10 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
 
     public long getFileLength() {
         return this.file.length();
+    }
+
+    public synchronized void cancel() {
+        this.cancelled = true;
+        ThreadUtil.start(this::end, 100);
     }
 }

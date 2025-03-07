@@ -17,6 +17,7 @@
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileAddSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileUploadSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -101,6 +102,11 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
+            <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelUpload">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </CancelSVGGlyph>
             <FXLabel fx:id="fileUpload">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>

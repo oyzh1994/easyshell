@@ -3,7 +3,7 @@ package cn.oyzh.easyssh.sftp;
 import lombok.Data;
 
 @Data
-public class SftpUploadEnded {
+public class SftpUploadCanceled {
 
     private String dest;
 

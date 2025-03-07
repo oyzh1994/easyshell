@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.event.SSHEventUtil;
+import cn.oyzh.easyssh.sftp.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.SftpUploadEnded;
 import cn.oyzh.easyssh.ssh.SSHClient;
@@ -116,12 +117,12 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public SSHSftp sftp() {
-        return this.client.getSftp();
+        return this.client.openSftp();
     }
 
     private List<SftpFile> files;
 
-    public void loadFile() throws JSchException, SftpException, IOException {
+    public void loadFile() throws SftpException {
         String currPath = this.getCurrPath();
         if (currPath == null) {
             this.setCurrPath(this.sftp().pwd());
@@ -132,7 +133,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.setItem(this.doFilter(this.files));
     }
 
-    public void refreshFile() throws JSchException, SftpException, IOException {
+    public void refreshFile() throws SftpException {
         if (this.files == null) {
             this.loadFile();
         } else {
@@ -363,20 +364,30 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         }
     }
 
-    public void fileUploaded(String fileName) throws SftpException, JSchException, IOException {
-        SftpATTRS attrs = this.sftp().stat(fileName);
-        SftpFile file = new SftpFile(fileName, attrs);
-        file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
-        file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
-        this.files.add(file);
-        this.refreshFile();
+    public void fileUploaded(String fileName, String dest) throws SftpException, JSchException, IOException {
+        if (StringUtil.equals(this.getCurrPath(), dest)) {
+            SftpATTRS attrs = this.sftp().stat(fileName);
+            SftpFile file = new SftpFile(fileName, attrs);
+            file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+            this.files.add(file);
+            this.refreshFile();
+        }
     }
 
-    public void setUploadEndCallback(Consumer<SftpUploadEnded> callback) {
-        this.sftp().setUploadEndCallback(callback);
+    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
+        this.sftp().setUploadEndedCallback(callback);
+    }
+
+    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
+        this.sftp().setUploadCanceledCallback(callback);
     }
 
     public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
         this.sftp().setUploadChangedCallback(callback);
+    }
+
+    public void cancelUpload() {
+        this.sftp().cancelUpload();
     }
 }

@@ -3,12 +3,12 @@ package cn.oyzh.easyssh.tabs.connect;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.sftp.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.SftpUploadEnded;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView;
 import cn.oyzh.easyssh.ssh.SSHClient;
-import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -68,24 +68,22 @@ public class SSHSftpTabController extends SubTabController {
 
     private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
 
+    private boolean initialized = false;
+
     private void init() {
+        if (this.initialized) {
+            return;
+        }
         try {
-            SSHClient client = this.client();
-            SSHSftp sftp = client.openSftp();
-            if (sftp.isConnected()) {
-                return;
-            }
-            sftp.connect(client.connectTimeout());
-            if (!sftp.isConnected()) {
-                MessageBox.warn(I18nHelper.connectFail());
-                return;
-            }
-            this.fileTable.setClient(client);
+            this.initialized = true;
+            this.fileTable.setClient(this.client());
             this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
-            this.fileTable.setUploadEndCallback(this::updateUploadInfo);
+            this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
             this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
+            this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
             this.fileTable.loadFile();
         } catch (Exception ex) {
+            this.initialized = false;
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
@@ -225,9 +223,19 @@ public class SSHSftpTabController extends SubTabController {
         }
     }
 
+    @FXML
+    private void cancelUpload() {
+        try {
+            this.fileTable.cancelUpload();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
     private void updateUploadInfo(SftpUploadEnded ended) {
         try {
-            this.fileTable.fileUploaded(ended.getFileName());
+            this.fileTable.fileUploaded(ended.getFileName(), ended.getDest());
             if (ended.getFileCount() == 0) {
                 this.fileUpload.clear();
                 this.uploadBox.disappear();
@@ -238,16 +246,28 @@ public class SSHSftpTabController extends SubTabController {
         }
     }
 
+    private void updateUploadInfo(SftpUploadCanceled canceled) {
+        try {
+            this.fileUpload.clear();
+            this.uploadBox.disappear();
+            this.updateLayout();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
     private void updateUploadInfo(SftpUploadChanged changed) {
         StringBuilder builder = new StringBuilder();
         if (changed.getFileCount() > 1) {
             builder.append("File Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Upload Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
             builder.append(" Current File: ").append(changed.getFileName());
+            builder.append(" Dest: ").append(changed.getDest());
+            builder.append(" Current Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
         } else {
-            builder.append("Upload Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
-            builder.append(" File: ").append(changed.getFileName());
+            builder.append("File: ").append(changed.getFileName());
+            builder.append(" Dest: ").append(changed.getDest());
+            builder.append(" Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
         }
         this.fileUpload.text(builder.toString());
     }

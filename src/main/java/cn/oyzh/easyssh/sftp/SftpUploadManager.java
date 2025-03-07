@@ -17,10 +17,13 @@ public class SftpUploadManager {
     private Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
 
     @Setter
-    private Consumer<SftpUploadEnded> uploadEndCallback;
+    private Consumer<SftpUploadEnded> uploadEndedCallback;
 
     @Setter
     private Consumer<SftpUploadChanged> uploadChangedCallback;
+
+    @Setter
+    private Consumer<SftpUploadCanceled> uploadCanceledCallback;
 
     public void addFile(File file, String dest) {
         if (this.monitors == null) {
@@ -33,13 +36,25 @@ public class SftpUploadManager {
         return this.monitors.peek();
     }
 
-    public void uploadEnd(SftpUploadMonitor monitor) {
+    public void uploadEnded(SftpUploadMonitor monitor) {
         this.monitors.remove(monitor);
-        if (this.uploadEndCallback != null) {
+        if (this.uploadEndedCallback != null) {
             SftpUploadEnded ended = new SftpUploadEnded();
             ended.setFileCount(this.size());
+            ended.setDest(monitor.getDest());
             ended.setFileName(monitor.getFileName());
-            this.uploadEndCallback.accept(ended);
+            this.uploadEndedCallback.accept(ended);
+        }
+    }
+
+    public void uploadCanceled(SftpUploadMonitor monitor) {
+        this.monitors.remove(monitor);
+        if (this.uploadCanceledCallback != null) {
+            SftpUploadCanceled ended = new SftpUploadCanceled();
+            ended.setFileCount(this.size());
+            ended.setDest(monitor.getDest());
+            ended.setFileName(monitor.getFileName());
+            this.uploadCanceledCallback.accept(ended);
         }
     }
 
@@ -48,6 +63,7 @@ public class SftpUploadManager {
             SftpUploadChanged changed = new SftpUploadChanged();
             changed.setFileCount(this.size());
             changed.setFileSize(this.count());
+            changed.setDest(monitor.getDest());
             changed.setTotal(monitor.getTotal());
             changed.setCurrent(monitor.getCurrent());
             changed.setFileName(monitor.getFileName());
@@ -57,16 +73,6 @@ public class SftpUploadManager {
 
     public boolean isEmpty() {
         return this.monitors.isEmpty();
-    }
-
-    private final AtomicBoolean uploading = new AtomicBoolean(false);
-
-    public void setUploading(boolean uploading) {
-        this.uploading.set(uploading);
-    }
-
-    public boolean isUploading() {
-        return this.uploading.get();
     }
 
     public int size() {
@@ -79,5 +85,11 @@ public class SftpUploadManager {
             cnt += monitor.getFileLength();
         }
         return cnt;
+    }
+
+    public void cancel() {
+        for (SftpUploadMonitor monitor : this.monitors) {
+            monitor.cancel();
+        }
     }
 }

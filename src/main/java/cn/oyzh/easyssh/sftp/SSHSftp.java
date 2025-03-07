@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -23,12 +24,13 @@ import java.util.function.Consumer;
  */
 public class SSHSftp {
 
-    private SftpUploadManager uploader = new SftpUploadManager();
+    private ChannelSftp channel;
 
-    private ChannelSftp channel = null;
+    private final SftpUploadManager uploadManager;
 
-    public SSHSftp(ChannelSftp channel) {
+    public SSHSftp(ChannelSftp channel, SftpUploadManager uploadManager) {
         this.channel = channel;
+        this.uploadManager = uploadManager;
     }
 
     public void close() {
@@ -109,18 +111,16 @@ public class SSHSftp {
         return this.channel.stat(path);
     }
 
-    private final SftpUploadManager uploadManager = new SftpUploadManager();
-
     public void upload(File file, String dst) {
         this.uploadManager.addFile(file, dst);
         this.doUpload();
     }
 
     private void doUpload() {
-        if (this.uploadManager.isUploading()) {
+        if (this.isUploading()) {
             return;
         }
-        this.uploadManager.setUploading(true);
+        this.setUploading(true);
         ThreadUtil.start(() -> {
             try {
                 do {
@@ -135,16 +135,34 @@ public class SSHSftp {
                     }
                 } while (!this.uploadManager.isEmpty());
             } finally {
-                this.uploadManager.setUploading(false);
+                this.setUploading(false);
             }
         });
     }
 
-    public void setUploadEndCallback(Consumer<SftpUploadEnded> callback) {
-        this.uploadManager.setUploadEndCallback(callback);
+    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
+        this.uploadManager.setUploadEndedCallback(callback);
+    }
+
+    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
+        this.uploadManager.setUploadCanceledCallback(callback);
     }
 
     public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
         this.uploadManager.setUploadChangedCallback(callback);
+    }
+
+    private final AtomicBoolean uploading = new AtomicBoolean(false);
+
+    public void setUploading(boolean uploading) {
+        this.uploading.set(uploading);
+    }
+
+    public boolean isUploading() {
+        return this.uploading.get();
+    }
+
+    public void cancelUpload() {
+        this.uploadManager.cancel();
     }
 }

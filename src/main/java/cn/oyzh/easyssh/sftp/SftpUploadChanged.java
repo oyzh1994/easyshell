@@ -11,21 +11,14 @@ public class SftpUploadChanged {
 
     private long total;
 
+    private String dest;
+
     private long current;
 
     private long fileSize;
 
-    private String fileName;
-
     private int fileCount;
 
-    public SftpUploadChanged() {
-    }
-
-    public SftpUploadChanged(long total, long current, String fileName) {
-        this.total = total;
-        this.current = current;
-        this.fileName = fileName;
-    }
+    private String fileName;
 
 }

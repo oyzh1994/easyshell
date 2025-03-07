@@ -4,7 +4,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.sftp.SSHSftp;
+import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
+import cn.oyzh.easyssh.sftp.SftpUploadManager;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
@@ -137,11 +139,9 @@ public class SSHClient {
      */
     public void close() {
         try {
+            this.sftpManager.close();
             if (this.shell != null) {
                 this.shell.close();
-            }
-            if (this.sftp != null) {
-                this.sftp.close();
             }
             if (this.session != null) {
                 this.session.disconnect();
@@ -397,19 +397,22 @@ public class SSHClient {
         return this.shell;
     }
 
-    @Getter
-    private SSHSftp sftp;
+    private final SSHSftpManager sftpManager = new SSHSftpManager();
+
+    private final SftpUploadManager sftpUploadManager = new SftpUploadManager();
 
     public SSHSftp openSftp() {
-        if (this.sftp == null || this.sftp.isClosed()) {
+        if (!this.sftpManager.hasAvailable()) {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                this.sftp = new SSHSftp(channel);
+                SSHSftp sftp = new SSHSftp(channel, this.sftpUploadManager);
+                sftp.connect(this.connectTimeout());
+                this.sftpManager.push(sftp);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        return this.sftp;
+        return this.sftpManager.take();
     }
 
     public String exec(String command) {
