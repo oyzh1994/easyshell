@@ -1,7 +1,9 @@
 package cn.oyzh.easyssh.sftp.upload;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
+import cn.oyzh.easyssh.sftp.SftpUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
@@ -29,12 +31,36 @@ public class SftpUploadManager {
     @Setter
     private Consumer<SftpUploadCanceled> uploadCanceledCallback;
 
-    public void createMonitor(File file, String dest, SSHSftp sftp) {
+    public void createMonitor(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-        this.monitors.add(new SftpUploadMonitor(file, dest, this, sftp));
+//        this.monitors.add(new SftpUploadMonitor(file, dest, this, sftp));
+        this.addMonitorRecursive(localFile, remoteFile, sftp);
         this.doUpload();
+    }
+
+    protected void addMonitorRecursive(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
+        // 文件夹
+        if (localFile.isDirectory()) {
+            // 列举文件
+            File[] files = localFile.listFiles();
+            if (ArrayUtil.isNotEmpty(files)) {
+                // 远程文件夹
+                String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
+                System.out.println(remoteDir);
+                sftp.mkdirRecursive(remoteDir);
+                for (File file : files) {
+                    // 远程文件
+                    String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
+//                    //
+//                    sftp.touch(remoteFile1);
+                    this.addMonitorRecursive(file, remoteFile1, sftp);
+                }
+            }
+        } else {// 文件
+            this.monitors.add(new SftpUploadMonitor(localFile, remoteFile, this, sftp));
+        }
     }
 
     public SftpUploadMonitor takeMonitor() {

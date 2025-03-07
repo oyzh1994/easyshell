@@ -196,13 +196,12 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 }
                 String path = SftpUtil.concat(this.currPath(), file.getFileName());
                 if (file.isDir()) {
-                    this.sftp().rmDir(path);
+                    this.sftp().rmdirRecursive(path);
                 } else {
                     this.sftp().rm(path);
                 }
                 filesToDelete.add(file);
             }
-//            this.removeItem(filesToDelete);
             this.files.removeAll(filesToDelete);
             this.refreshFile();
         }
@@ -408,9 +407,17 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     this.client.download(dir, file);
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    MessageBox.exception(ex);
                 }
             }
             return true;
+        }
+        return false;
+    }
+
+    public boolean uploadFile(File file) {
+        if (file != null && file.exists()) {
+            return this.uploadFile(Collections.singletonList(file));
         }
         return false;
     }
@@ -429,7 +436,12 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             }
         }
         for (File file : files) {
-            this.client.upload(file, this.getCurrPath());
+            try {
+                this.client.upload(file, this.getCurrPath());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
 //            SftpATTRS attrs = this.sftp().stat(file.getName());
 //            this.files.add(new SftpFile(file.getName(), attrs));
 //            this.refreshFile();

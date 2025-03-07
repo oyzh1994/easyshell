@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.sftp;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -87,8 +88,24 @@ public class SSHSftp {
         this.channel.rm(path);
     }
 
-    public void rmDir(String path) throws SftpException {
+    public void rmdir(String path) throws SftpException {
         this.channel.rmdir(path);
+    }
+
+    public void rmdirRecursive(String path) throws SftpException {
+        Vector<ChannelSftp.LsEntry> entries = this.channel.ls(path);
+        for (ChannelSftp.LsEntry entry : entries) {
+            String filename = entry.getFilename();
+            if (!filename.equals(".") && !filename.equals("..")) {
+                String fullPath = path + "/" + filename;
+                if (entry.getAttrs().isDir()) {
+                    this.rmdirRecursive(fullPath);
+                } else {
+                    this.rm(fullPath);
+                }
+            }
+        }
+        this.rmdir(path);
     }
 
     public String pwd() throws SftpException {
@@ -97,6 +114,56 @@ public class SSHSftp {
 
     public void mkdir(String path) throws SftpException {
         this.channel.mkdir(path);
+    }
+
+    public void mkdirIfNotExist(String path) throws SftpException {
+        if (!this.exist(path)) {
+            this.mkdir(path);
+        }
+    }
+
+    public void mkdirRecursive(String path) throws SftpException {
+        String[] dirs = path.split("/");
+        StringBuilder currentPath = new StringBuilder();
+        for (String dir : dirs) {
+            if (dir.isEmpty()) continue;
+            currentPath.append("/").append(dir);
+            try {
+                this.channel.stat(currentPath.toString());  // 检查目录是否存在‌:ml-citation{ref="1,7" data="citationList"}
+            } catch (SftpException e) {
+                if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                    this.channel.mkdir(currentPath.toString());  // 创建缺失目录‌:ml-citation{ref="1,6" data="citationList"}
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+
+//    public void mkdirRecursive(String path) throws SftpException {
+//        String[] dirs = path.split("/");
+//        String dir = "";
+//        for (String s : dirs) {
+//            if(s.isEmpty()) {
+//                continue;
+//            }
+//            dir = dir + "/" + s;
+//            if (!this.exist(dir)) {
+//                this.mkdir(path);
+//            }
+//        }
+//    }
+
+    public boolean exist(String path) throws SftpException {
+        try {
+            return this.stat(path) != null;
+        } catch (SftpException ex) {
+            if (StringUtil.contains(ex.getMessage(), "No such file")) {
+                return false;
+            }
+            throw ex;
+        }
     }
 
     public void touch(String path) throws SftpException {

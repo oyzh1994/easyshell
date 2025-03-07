@@ -472,8 +472,8 @@ public class SSHClient {
         return this.attr;
     }
 
-    public void upload(File file, String dst) {
-        this.sftpUploadManager.createMonitor(file, dst, this.openSftp());
+    public void upload(File localFile, String remoteFile) throws SftpException {
+        this.sftpUploadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
     public void cancelUpload() {

@@ -19,6 +19,7 @@
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileUploadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.FXProgressBar?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.FolderUploadSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -47,11 +48,16 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
-            <FileUploadSVGGlyph enableWaiting="false" onMousePrimaryClicked="#uploadFile">
+            <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false" onMousePrimaryClicked="#uploadFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FileUploadSVGGlyph>
+            <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false" onMousePrimaryClicked="#uploadFolder">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </FolderUploadSVGGlyph>
             <FolderAddSVGGlyph onMousePrimaryClicked="#mkDir" tipText="%base.mkdir">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
@@ -91,7 +97,7 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <FXLabel fx:id="fileDownload" maxWidth="1000">
+            <FXLabel fx:id="fileDownload" maxWidth="600">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
@@ -118,7 +124,7 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <FXLabel fx:id="fileUpload" maxWidth="1000">
+            <FXLabel fx:id="fileUpload" maxWidth="600">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>

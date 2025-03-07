@@ -15,6 +15,7 @@ import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -236,16 +237,28 @@ public class SSHSftpTabController extends SubTabController {
     private void uploadFile() {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    MessageBox.warn(I18nHelper.directory() + " [" + file.getName() + "] " + I18nHelper.notSupport());
-                    return;
-                }
-            }
-            if (this.fileTable.uploadFile(files)) {
-                this.uploadBox.display();
-                this.updateLayout();
-            }
+            this.fileTable.uploadFile(files);
+//            for (File file : files) {
+//                if (file.isDirectory()) {
+//                    MessageBox.warn(I18nHelper.directory() + " [" + file.getName() + "] " + I18nHelper.notSupport());
+//                    return;
+//                }
+//            }
+//            if (this.fileTable.uploadFile(files)) {
+//                this.uploadBox.display();
+//                this.updateLayout();
+//            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void uploadFolder() {
+        try {
+            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+            this.fileTable.uploadFile(file);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -298,6 +311,10 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     private void updateUploadInfo(SftpUploadChanged changed) {
+        if (!this.uploadBox.isVisible()) {
+            this.uploadBox.display();
+            this.updateLayout();
+        }
         if (changed.getFileCount() > 1) {
             StringBuilder builder = new StringBuilder();
             builder.append("File Count: ").append(changed.getFileCount());
@@ -344,7 +361,7 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     private void updateDownloadInfo(SftpDownloadChanged changed) {
-        if(!this.downloadBox.isVisible()){
+        if (!this.downloadBox.isVisible()) {
             this.downloadBox.display();
             this.updateLayout();
         }
