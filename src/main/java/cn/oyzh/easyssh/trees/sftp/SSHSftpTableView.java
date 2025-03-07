@@ -215,21 +215,17 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
 
+        FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> {
+            try {
+                this.downloadFile(files);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+        menuItems.add(downloadFile);
+
         if (files.size() == 1) {
             SftpFile file = files.getFirst();
-            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> {
-                try {
-                    File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
-                    if (dir != null && dir.isDirectory() && dir.exists()) {
-                        String remote = SftpUtil.concat(this.currPath(), file.getFileName());
-                        this.client.download(dir, remote);
-                    }
-                } catch (Exception ex) {
-                    MessageBox.exception(ex);
-                }
-            });
-            menuItems.add(downloadFile);
-
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> {
                 try {
                     SSHEventUtil.showFileInfo(file);
@@ -385,6 +381,18 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         file.setFileName(newName);
         this.refreshFile();
 //        this.loadFile();
+    }
+
+    public boolean downloadFile(List<SftpFile> files) {
+        File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
+        if (dir != null && dir.isDirectory() && dir.exists()) {
+            for (SftpFile file : files) {
+                String remote = SftpUtil.concat(this.currPath(), file.getFileName());
+                this.client.download(dir, remote);
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean uploadFile(List<File> files) {
