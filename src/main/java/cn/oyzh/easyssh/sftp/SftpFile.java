@@ -5,13 +5,16 @@ import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.fx.svg.glyph.File7zSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileBmpSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileCompressSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileDmgSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExcelSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExeSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileGifSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileGzSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileHtmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileImageSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileJarSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJpgSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJsSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJsonSVGGlyph;
@@ -23,9 +26,13 @@ import cn.oyzh.easyssh.fx.svg.glyph.FileMp4SVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePdfSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePptSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileRarSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileRmvbSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileSwfSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileTarSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileTerminalSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileTextSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileTsSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileUnknownSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileWordSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileXlsSVGGlyph;
@@ -115,8 +122,6 @@ public class SftpFile {
                 glyph = new FileMp4SVGGlyph("12");
             } else if (FileNameUtil.isDmgType(extName)) {
                 glyph = new FileDmgSVGGlyph("12");
-            } else if (FileNameUtil.isImageType(extName)) {
-                glyph = new FileImageSVGGlyph("12");
             } else if (FileNameUtil.isRarType(extName)) {
                 glyph = new FileRarSVGGlyph("12");
             } else if (FileNameUtil.is7zType(extName)) {
@@ -125,8 +130,22 @@ public class SftpFile {
                 glyph = new FileGzSVGGlyph("12");
             } else if (FileNameUtil.isZipType(extName)) {
                 glyph = new FileZipSVGGlyph("12");
-            } else if (FileNameUtil.isCompressType(extName)) {
-                glyph = new FileCompressSVGGlyph("12");
+            } else if (FileNameUtil.isTsType(extName)) {
+                glyph = new FileTsSVGGlyph("12");
+            } else if (FileNameUtil.isBmpType(extName)) {
+                glyph = new FileBmpSVGGlyph("12");
+            } else if (FileNameUtil.isJarType(extName)) {
+                glyph = new FileJarSVGGlyph("12");
+            } else if (FileNameUtil.isSwfType(extName)) {
+                glyph = new FileSwfSVGGlyph("12");
+            } else if (FileNameUtil.isTarType(extName)) {
+                glyph = new FileTarSVGGlyph("12");
+            } else if (FileNameUtil.isRmvbType(extName)) {
+                glyph = new FileRmvbSVGGlyph("12");
+            } else if (FileNameUtil.isGifType(extName)) {
+                glyph = new FileGifSVGGlyph("12");
+            } else if (FileNameUtil.isGzType(extName)) {
+                glyph = new FileRmvbSVGGlyph("12");
             } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
                 glyph = new FileHtmlSVGGlyph("12");
             } else if (FileNameUtil.isXmlType(extName)) {
@@ -142,6 +161,10 @@ public class SftpFile {
             } else if (FileNameUtil.isTxtType(extName) || FileNameUtil.isTextType(extName)
                     || FileNameUtil.isLogType(extName)) {
                 glyph = new FileTextSVGGlyph("12");
+            } else if (FileNameUtil.isImageType(extName)) {
+                glyph = new FileImageSVGGlyph("12");
+            } else if (FileNameUtil.isCompressType(extName)) {
+                glyph = new FileCompressSVGGlyph("12");
             } else if (FileNameUtil.isTerminalType(extName)) {
                 glyph = new FileTerminalSVGGlyph("12");
             } else {
