@@ -76,8 +76,8 @@ public class SftpUploadManager {
         if (this.uploadEndedCallback != null) {
             SftpUploadEnded ended = new SftpUploadEnded();
             ended.setFileCount(this.size());
-            ended.setDest(monitor.getDest());
-            ended.setFileName(monitor.getFileName());
+            ended.setRemoteFile(monitor.getRemoteFile());
+            ended.setLocalFileName(monitor.getLocalFileName());
             this.uploadEndedCallback.accept(ended);
         }
     }
@@ -87,8 +87,8 @@ public class SftpUploadManager {
         if (this.uploadFailedCallback != null) {
             SftpUploadFailed changed = new SftpUploadFailed();
             changed.setFileCount(this.size());
-            changed.setDest(monitor.getDest());
-            changed.setFileName(monitor.getFileName());
+            changed.setRemoteFile(monitor.getRemoteFile());
+            changed.setLocalFileName(monitor.getLocalFileName());
             this.uploadFailedCallback.accept(changed);
         }
     }
@@ -98,8 +98,8 @@ public class SftpUploadManager {
         if (this.uploadCanceledCallback != null) {
             SftpUploadCanceled ended = new SftpUploadCanceled();
             ended.setFileCount(this.size());
-            ended.setDest(monitor.getDest());
-            ended.setFileName(monitor.getFileName());
+            ended.setRemoteFile(monitor.getRemoteFile());
+            ended.setLocalFileName(monitor.getLocalFileName());
             this.uploadCanceledCallback.accept(ended);
         }
     }
@@ -109,10 +109,10 @@ public class SftpUploadManager {
             SftpUploadChanged changed = new SftpUploadChanged();
             changed.setFileCount(this.size());
             changed.setFileSize(this.count());
-            changed.setDest(monitor.getDest());
             changed.setTotal(monitor.getTotal());
             changed.setCurrent(monitor.getCurrent());
-            changed.setFileName(monitor.getFileName());
+            changed.setRemoteFile(monitor.getRemoteFile());
+            changed.setLocalFileName(monitor.getLocalFileName());
             this.uploadChangedCallback.accept(changed);
         }
     }
@@ -132,7 +132,7 @@ public class SftpUploadManager {
     public long count() {
         long cnt = 0;
         for (SftpUploadMonitor monitor : this.monitors) {
-            cnt += monitor.getFileLength();
+            cnt += monitor.getLocalFileLength();
         }
         return cnt;
     }
@@ -162,10 +162,10 @@ public class SftpUploadManager {
                     SSHSftp sftp = monitor.getSftp();
                     sftp.setUsing(true);
                     try {
-                        sftp.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+                        sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JulLog.warn("file:{} upload failed", monitor.getFileName(), ex);
+                        JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
                         this.uploadFailed(monitor);
                     } finally {
                         sftp.setUsing(false);

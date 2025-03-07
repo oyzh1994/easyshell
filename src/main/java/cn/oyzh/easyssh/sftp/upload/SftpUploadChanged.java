@@ -11,7 +11,7 @@ public class SftpUploadChanged {
 
     private long total;
 
-    private String dest;
+    private String remoteFile;
 
     private long current;
 
@@ -19,7 +19,7 @@ public class SftpUploadChanged {
 
     private int fileCount;
 
-    private String fileName;
+    private String localFileName;
 
     public double progress() {
         return 1D * this.current / this.total;

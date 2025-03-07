@@ -21,10 +21,10 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     @Getter
     private long current;
 
-    private final File file;
+    private final File localFile;
 
     @Getter
-    private final String dest;
+    private final String remoteFile;
 
     private final SftpUploadManager manager;
 
@@ -39,9 +39,9 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     @Getter
     private final SSHSftp sftp;
 
-    public SftpUploadMonitor(final File file, String dest, SftpUploadManager manager, SSHSftp sftp) {
-        this.file = file;
-        this.dest = dest;
+    public SftpUploadMonitor(final File localFile, String remoteFile, SftpUploadManager manager, SSHSftp sftp) {
+        this.localFile = localFile;
+        this.remoteFile = remoteFile;
         this.sftp = sftp;
         this.manager = manager;
     }
@@ -63,7 +63,7 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     public void end() {
         this.ended = true;
         if (this.cancelled) {
-            JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getFilePath(), this.current, this.total);
+            JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
             this.manager.uploadCanceled(this);
         } else {
             long endTime = System.currentTimeMillis();
@@ -71,21 +71,21 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
             if (duration == 0) {
                 duration = 1;
             }
-            JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getFilePath(), duration);
+            JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
             this.manager.uploadEnded(this);
         }
     }
 
-    public String getFileName() {
-        return this.file.getName();
+    public String getLocalFileName() {
+        return this.localFile.getName();
     }
 
-    public String getFilePath() {
-        return this.file.getPath();
+    public String getLocalFilePath() {
+        return this.localFile.getPath();
     }
 
-    public long getFileLength() {
-        return this.file.length();
+    public long getLocalFileLength() {
+        return this.localFile.length();
     }
 
     public synchronized void cancel() {

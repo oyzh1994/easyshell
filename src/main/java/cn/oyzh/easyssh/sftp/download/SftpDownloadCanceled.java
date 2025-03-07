@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class SftpDownloadCanceled {
 
-    private String remote;
+    private String remoteFile;
 
     private int fileCount;
 
-    private String fileName;
+    private String localFileName;
 }

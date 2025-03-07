@@ -294,7 +294,7 @@ public class SSHSftpTabController extends SubTabController {
     private void updateUploadInfo(SftpUploadEnded ended) {
         try {
             JulLog.info("updateUploadInfo:{}", ended);
-            this.fileTable.fileUploaded(ended.getFileName(), ended.getDest());
+            this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
             if (ended.getFileCount() == 0) {
                 this.fileUpload.clear();
                 this.uploadBox.disappear();
@@ -317,7 +317,7 @@ public class SSHSftpTabController extends SubTabController {
                 // 重新载入一次文件
                 this.fileTable.loadFile();
             }
-            MessageBox.warn(failed.getFileName() + " " + I18nHelper.uploadFailed());
+            MessageBox.warn(failed.getLocalFileName() + " " + I18nHelper.uploadFailed());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -343,13 +343,13 @@ public class SSHSftpTabController extends SubTabController {
             StringBuilder builder = new StringBuilder();
             builder.append("File Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Current File: ").append(changed.getFileName());
-            builder.append(" Dest: ").append(changed.getDest());
+            builder.append(" Current File: ").append(changed.getLocalFileName());
+            builder.append(" Dest: ").append(changed.getRemoteFile());
             this.fileUpload.text(builder.toString());
         } else {
             StringBuilder builder = new StringBuilder();
-            builder.append("File: ").append(changed.getFileName());
-            builder.append(" Dest: ").append(changed.getDest());
+            builder.append("File: ").append(changed.getLocalFileName());
+            builder.append(" Dest: ").append(changed.getRemoteFile());
             this.fileUpload.text(builder.toString());
         }
         StringBuilder progress = new StringBuilder();
@@ -381,7 +381,7 @@ public class SSHSftpTabController extends SubTabController {
                 this.downloadBox.disappear();
                 this.updateLayout();
             }
-            MessageBox.warn(failed.getRemote() + " " + I18nHelper.downloadFailed());
+            MessageBox.warn(failed.getRemoteFile() + " " + I18nHelper.downloadFailed());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -407,13 +407,13 @@ public class SSHSftpTabController extends SubTabController {
             StringBuilder builder = new StringBuilder();
             builder.append("File Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Current File: ").append(changed.getFileName());
-            builder.append(" Remote: ").append(changed.getRemote());
+            builder.append(" Current File: ").append(changed.getLocalFileName());
+            builder.append(" Remote: ").append(changed.getRemoteFile());
             this.fileDownload.text(builder.toString());
         } else {
             StringBuilder builder = new StringBuilder();
-            builder.append("File: ").append(changed.getFileName());
-            builder.append(" Remote: ").append(changed.getRemote());
+            builder.append("File: ").append(changed.getLocalFileName());
+            builder.append(" Remote: ").append(changed.getRemoteFile());
             this.fileDownload.text(builder.toString());
         }
         StringBuilder progress = new StringBuilder();

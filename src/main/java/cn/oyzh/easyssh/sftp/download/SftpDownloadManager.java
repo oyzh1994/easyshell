@@ -77,8 +77,8 @@ public class SftpDownloadManager {
         if (this.downloadEndedCallback != null) {
             SftpDownloadEnded ended = new SftpDownloadEnded();
             ended.setFileCount(this.size());
-            ended.setRemote(monitor.getRemoteFileName());
-            ended.setFileName(monitor.getLocalFileName());
+            ended.setRemoteFile(monitor.getRemoteFileName());
+            ended.setLocalFileName(monitor.getLocalFileName());
             this.downloadEndedCallback.accept(ended);
         }
     }
@@ -88,8 +88,8 @@ public class SftpDownloadManager {
         if (this.downloadEndedCallback != null) {
             SftpDownloadFailed failed = new SftpDownloadFailed();
             failed.setFileCount(this.size());
-            failed.setRemote(monitor.getRemoteFileName());
-            failed.setFileName(monitor.getLocalFileName());
+            failed.setRemoteFile(monitor.getRemoteFileName());
+            failed.setLocalFileName(monitor.getLocalFileName());
             this.downloadFailedCallback.accept(failed);
         }
     }
@@ -99,8 +99,8 @@ public class SftpDownloadManager {
         if (this.downloadCanceledCallback != null) {
             SftpDownloadCanceled ended = new SftpDownloadCanceled();
             ended.setFileCount(this.size());
-            ended.setRemote(monitor.getRemoteFileName());
-            ended.setFileName(monitor.getLocalFileName());
+            ended.setRemoteFile(monitor.getRemoteFileName());
+            ended.setLocalFileName(monitor.getLocalFileName());
             this.downloadCanceledCallback.accept(ended);
         }
     }
@@ -111,9 +111,9 @@ public class SftpDownloadManager {
             changed.setFileCount(this.size());
             changed.setFileSize(this.count());
             changed.setTotal(monitor.getTotal());
-            changed.setRemote(monitor.getRemoteFileName());
             changed.setCurrent(monitor.getCurrent());
-            changed.setFileName(monitor.getLocalFileName());
+            changed.setRemoteFile(monitor.getRemoteFileName());
+            changed.setLocalFileName(monitor.getLocalFileName());
             this.downloadChangedCallback.accept(changed);
         }
     }

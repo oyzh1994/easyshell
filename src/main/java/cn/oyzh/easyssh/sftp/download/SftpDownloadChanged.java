@@ -11,7 +11,7 @@ public class SftpDownloadChanged {
 
     private long total;
 
-    private String remote;
+    private String remoteFile;
 
     private long current;
 
@@ -19,7 +19,7 @@ public class SftpDownloadChanged {
 
     private int fileCount;
 
-    private String fileName;
+    private String localFileName;
 
     public double progress() {
         return 1D * this.current / this.total;

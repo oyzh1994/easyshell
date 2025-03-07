@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class SftpUploadEnded {
 
-    private String dest;
+    private String remoteFile;
 
     private int fileCount;
 
-    private String fileName;
+    private String localFileName;
 }
