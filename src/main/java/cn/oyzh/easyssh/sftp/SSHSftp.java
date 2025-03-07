@@ -30,6 +30,16 @@ public class SSHSftp {
         this.channel = channel;
     }
 
+    private final AtomicBoolean using = new AtomicBoolean(false);
+
+    public void setUsing(boolean using) {
+        this.using.set(using);
+    }
+
+    public boolean isUsing() {
+        return this.using.get();
+    }
+
     public void close() {
         try {
             this.channel.disconnect();
@@ -59,17 +69,26 @@ public class SSHSftp {
         return this.channel.isConnected();
     }
 
-    public List<SftpFile> lsNormal(String path) throws SftpException {
-        List<SftpFile> files = this.ls(path);
+    public Vector<ChannelSftp.LsEntry> ls(String path) throws SftpException {
+        try {
+            this.setUsing(true);
+            return this.channel.ls(path);
+        } finally {
+            this.setUsing(false);
+        }
+    }
+
+    public List<SftpFile> lsFileNormal(String path) throws SftpException {
+        List<SftpFile> files = this.lsFile(path);
         return files.stream().filter(SftpFile::isNormal).collect(Collectors.toList());
     }
 
-    public List<SftpFile> ls(String path) throws SftpException {
-        return this.ls(path, null);
+    public List<SftpFile> lsFile(String path) throws SftpException {
+        return this.lsFile(path, null);
     }
 
-    public List<SftpFile> ls(String path, SSHClient client) throws SftpException {
-        Vector<ChannelSftp.LsEntry> vector = this.channel.ls(path);
+    public List<SftpFile> lsFile(String path, SSHClient client) throws SftpException {
+        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
             SftpFile file = new SftpFile(lsEntry);
@@ -85,15 +104,25 @@ public class SSHSftp {
     }
 
     public void rm(String path) throws SftpException {
-        this.channel.rm(path);
+        try {
+            this.setUsing(true);
+            this.channel.rm(path);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void rmdir(String path) throws SftpException {
-        this.channel.rmdir(path);
+        try {
+            this.setUsing(true);
+            this.channel.rmdir(path);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void rmdirRecursive(String path) throws SftpException {
-        Vector<ChannelSftp.LsEntry> entries = this.channel.ls(path);
+        Vector<ChannelSftp.LsEntry> entries = this.ls(path);
         for (ChannelSftp.LsEntry entry : entries) {
             String filename = entry.getFilename();
             if (!filename.equals(".") && !filename.equals("..")) {
@@ -109,11 +138,21 @@ public class SSHSftp {
     }
 
     public String pwd() throws SftpException {
-        return this.channel.pwd();
+        try {
+            this.setUsing(true);
+            return this.channel.pwd();
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void mkdir(String path) throws SftpException {
-        this.channel.mkdir(path);
+        try {
+            this.setUsing(true);
+            this.channel.mkdir(path);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void mkdirIfNotExist(String path) throws SftpException {
@@ -129,31 +168,16 @@ public class SSHSftp {
             if (dir.isEmpty()) continue;
             currentPath.append("/").append(dir);
             try {
-                this.channel.stat(currentPath.toString());  // 检查目录是否存在‌:ml-citation{ref="1,7" data="citationList"}
+                this.stat(currentPath.toString());  // 检查目录是否存在‌:ml-citation{ref="1,7" data="citationList"}
             } catch (SftpException e) {
                 if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
-                    this.channel.mkdir(currentPath.toString());  // 创建缺失目录‌:ml-citation{ref="1,6" data="citationList"}
+                    this.mkdir(currentPath.toString());  // 创建缺失目录‌:ml-citation{ref="1,6" data="citationList"}
                 } else {
                     throw e;
                 }
             }
         }
     }
-
-
-//    public void mkdirRecursive(String path) throws SftpException {
-//        String[] dirs = path.split("/");
-//        String dir = "";
-//        for (String s : dirs) {
-//            if(s.isEmpty()) {
-//                continue;
-//            }
-//            dir = dir + "/" + s;
-//            if (!this.exist(dir)) {
-//                this.mkdir(path);
-//            }
-//        }
-//    }
 
     public boolean exist(String path) throws SftpException {
         try {
@@ -167,33 +191,48 @@ public class SSHSftp {
     }
 
     public void touch(String path) throws SftpException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
-        this.channel.put(inputStream, path);
+        try {
+            this.setUsing(true);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
+            this.channel.put(inputStream, path);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void rename(String path, String newPath) throws SftpException {
-        this.channel.rename(path, newPath);
+        try {
+            this.setUsing(true);
+            this.channel.rename(path, newPath);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public SftpATTRS stat(String path) throws SftpException {
-        return this.channel.stat(path);
-    }
-
-    private final AtomicBoolean using = new AtomicBoolean(false);
-
-    public void setUsing(boolean using) {
-        this.using.set(using);
-    }
-
-    public boolean isUsing() {
-        return this.using.get();
+        try {
+            this.setUsing(true);
+            return this.channel.stat(path);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        this.channel.put(src, dest, monitor, mode);
+        try {
+            this.setUsing(true);
+            this.channel.put(src, dest, monitor, mode);
+        } finally {
+            this.setUsing(false);
+        }
     }
 
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        this.channel.get(src, dest, monitor, mode);
+        try {
+            this.setUsing(true);
+            this.channel.get(src, dest, monitor, mode);
+        } finally {
+            this.setUsing(false);
+        }
     }
 }

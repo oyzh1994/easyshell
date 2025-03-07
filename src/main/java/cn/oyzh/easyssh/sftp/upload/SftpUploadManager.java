@@ -156,21 +156,18 @@ public class SftpUploadManager {
                         break;
                     }
                     if (monitor.isFinished()) {
-                        ThreadUtil.sleep(100);
+                        ThreadUtil.sleep(10);
                         continue;
                     }
                     SSHSftp sftp = monitor.getSftp();
-                    sftp.setUsing(true);
                     try {
                         sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
                         this.uploadFailed(monitor);
-                    } finally {
-                        sftp.setUsing(false);
                     }
-                    ThreadUtil.sleep(100);
+                    ThreadUtil.sleep(10);
                 }
             } finally {
                 this.setUploading(false);

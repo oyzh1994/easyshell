@@ -138,7 +138,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             currPath = this.getCurrPath();
         }
         JulLog.info("current path: {}", currPath);
-        this.files = this.sftp().ls(currPath, this.client);
+        this.files = this.sftp().lsFile(currPath, this.client);
         this.setItem(this.doFilter(this.files));
     }
 
@@ -368,10 +368,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         SftpFile file = new SftpFile(name, attrs);
         file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
         file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
-//        this.addItem(file);
         this.files.add(file);
         this.refreshFile();
-//        this.loadFile();
     }
 
     public void renameFile(SftpFile file, String newName) throws SftpException, JSchException, IOException {
@@ -384,7 +382,6 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.sftp().rename(filePath, newPath);
         file.setFileName(newName);
         this.refreshFile();
-//        this.loadFile();
     }
 
     public boolean downloadFile(List<SftpFile> files) {
@@ -444,9 +441,6 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }
-//            SftpATTRS attrs = this.sftp().stat(file.getName());
-//            this.files.add(new SftpFile(file.getName(), attrs));
-//            this.refreshFile();
         }
         return true;
     }

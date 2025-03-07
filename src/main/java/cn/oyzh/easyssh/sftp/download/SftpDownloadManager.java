@@ -51,7 +51,7 @@ public class SftpDownloadManager {
         // 文件夹
         if (remoteFile.isDir()) {
             // 列举文件
-            List<SftpFile> files = sftp.lsNormal(remoteFile.getFilePath());
+            List<SftpFile> files = sftp.lsFileNormal(remoteFile.getFilePath());
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
                 File localDir = new File(localFile.getPath(), remoteFile.getFileName());
@@ -157,21 +157,18 @@ public class SftpDownloadManager {
                         break;
                     }
                     if (monitor.isFinished()) {
-                        ThreadUtil.sleep(100);
+                        ThreadUtil.sleep(10);
                         continue;
                     }
                     SSHSftp sftp = monitor.getSftp();
-                    sftp.setUsing(true);
                     try {
                         sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
                         this.downloadFailed(monitor);
-                    } finally {
-                        sftp.setUsing(false);
                     }
-                    ThreadUtil.sleep(100);
+                    ThreadUtil.sleep(10);
                 }
             } finally {
                 this.setDownloading(false);
