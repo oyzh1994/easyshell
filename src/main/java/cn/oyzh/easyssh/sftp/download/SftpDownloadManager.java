@@ -2,6 +2,7 @@ package cn.oyzh.easyssh.sftp.download;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
+import cn.oyzh.easyssh.sftp.SftpFile;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
@@ -29,11 +30,11 @@ public class SftpDownloadManager {
     @Setter
     private Consumer<SftpDownloadCanceled> downloadCanceledCallback;
 
-    public void createMonitor(File file, String remote, SSHSftp sftp) {
+    public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-        this.monitors.add(new SftpDownloadMonitor(file, remote, this, sftp));
+        this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
         this.doDownload();
     }
 
@@ -46,8 +47,8 @@ public class SftpDownloadManager {
         if (this.downloadEndedCallback != null) {
             SftpDownloadEnded ended = new SftpDownloadEnded();
             ended.setFileCount(this.size());
-            ended.setRemote(monitor.getRemote());
-            ended.setFileName(monitor.getFileName());
+            ended.setRemote(monitor.getRemoteFileName());
+            ended.setFileName(monitor.getLocalFileName());
             this.downloadEndedCallback.accept(ended);
         }
     }
@@ -57,8 +58,8 @@ public class SftpDownloadManager {
         if (this.downloadCanceledCallback != null) {
             SftpDownloadCanceled ended = new SftpDownloadCanceled();
             ended.setFileCount(this.size());
-            ended.setRemote(monitor.getRemote());
-            ended.setFileName(monitor.getFileName());
+            ended.setRemote(monitor.getRemoteFileName());
+            ended.setFileName(monitor.getLocalFileName());
             this.downloadCanceledCallback.accept(ended);
         }
     }
@@ -69,9 +70,9 @@ public class SftpDownloadManager {
             changed.setFileCount(this.size());
             changed.setFileSize(this.count());
             changed.setTotal(monitor.getTotal());
-            changed.setRemote(monitor.getRemote());
+            changed.setRemote(monitor.getRemoteFileName());
             changed.setCurrent(monitor.getCurrent());
-            changed.setFileName(monitor.getFileName());
+            changed.setFileName(monitor.getLocalFileName());
             this.downloadChangedCallback.accept(changed);
         }
     }
@@ -91,7 +92,7 @@ public class SftpDownloadManager {
     public long count() {
         long cnt = 0;
         for (SftpDownloadMonitor monitor : this.monitors) {
-            cnt += monitor.getFileLength();
+            cnt += monitor.getRemoteLength();
         }
         return cnt;
     }
@@ -121,7 +122,7 @@ public class SftpDownloadManager {
                     SSHSftp sftp = monitor.getSftp();
                     sftp.setUsing(true);
                     try {
-                        sftp.get(monitor.getRemote(), monitor.getFilePath(), monitor, ChannelSftp.OVERWRITE);
+                        sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
                     } catch (SftpException ex) {
                         ex.printStackTrace();
                     } finally {

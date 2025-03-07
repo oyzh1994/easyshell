@@ -17,7 +17,7 @@ import cn.oyzh.easyssh.util.SSHI18nHelper;
 import cn.oyzh.easyssh.sftp.SftpUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
-import cn.oyzh.fx.plus.file.DirChooserHelper;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -387,8 +387,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
             for (SftpFile file : files) {
-                String remote = SftpUtil.concat(this.currPath(), file.getFileName());
-                this.client.download(dir, remote);
+                file.setParentPath(this.currPath());
+                this.client.download(dir, file);
             }
             return true;
         }

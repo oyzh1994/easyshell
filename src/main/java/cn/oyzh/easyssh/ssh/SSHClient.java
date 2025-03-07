@@ -6,6 +6,7 @@ import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
+import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
@@ -490,8 +491,8 @@ public class SSHClient {
         this.sftpUploadManager.setUploadChangedCallback(callback);
     }
 
-    public void download(File file, String remote) {
-        this.sftpDownloadManager.createMonitor(file, remote, this.openSftp());
+    public void download(File localFile, SftpFile remoteFile) {
+        this.sftpDownloadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
     public void cancelDownload() {

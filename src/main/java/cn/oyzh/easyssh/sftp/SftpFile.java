@@ -70,6 +70,10 @@ public class SftpFile {
     @Setter
     private String fileName;
 
+    @Setter
+    @Getter
+    private String parentPath;
+
     public SftpFile(ChannelSftp.LsEntry entry) {
         this.entry = entry;
     }
@@ -184,6 +188,10 @@ public class SftpFile {
         return NumberUtil.formatSize(this.attrs().getSize(), 4);
     }
 
+    public long size() {
+        return this.attrs().getSize();
+    }
+
     public String getName() {
         String fileName = this.getFileName();
         if (fileName.contains("/")) {
@@ -204,7 +212,7 @@ public class SftpFile {
         if (fileName.startsWith("/")) {
             return fileName;
         }
-        return "/" + fileName;
+        return SftpUtil.concat(this.parentPath, fileName);
     }
 
     public String getPermissions() {
