@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.trees.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.event.SSHEventUtil;
@@ -386,6 +387,19 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public boolean downloadFile(List<SftpFile> files) {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
+            String[] fileArr = dir.list();
+            // 检查文件是否存在
+            if (ArrayUtil.isNotEmpty(fileArr)) {
+                for (String f1 : fileArr) {
+                    Optional<SftpFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
+                    if (file.isPresent()) {
+                        if (!MessageBox.confirm(SSHI18nHelper.fileTip6())) {
+                            return false;
+                        }
+                        break;
+                    }
+                }
+            }
             for (SftpFile file : files) {
                 file.setParentPath(this.currPath());
                 this.client.download(dir, file);
