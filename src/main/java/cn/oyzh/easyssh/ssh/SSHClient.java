@@ -6,6 +6,10 @@ import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
@@ -406,6 +410,8 @@ public class SSHClient {
 
     private final SftpUploadManager sftpUploadManager = new SftpUploadManager();
 
+    private final SftpDownloadManager sftpDownloadManager = new SftpDownloadManager();
+
     public SSHSftp openSftp() {
         if (!this.sftpManager.hasAvailable()) {
             try {
@@ -468,47 +474,6 @@ public class SSHClient {
         this.sftpUploadManager.createMonitor(file, dst, this.openSftp());
     }
 
-//    public void upload(File file, String dst) {
-//        this.sftpUploadManager.addFile(file, dst);
-//        this.doUpload();
-//    }
-//
-//    private void doUpload() {
-//        if (this.isUploading()) {
-//            return;
-//        }
-//        this.setUploading(true);
-//        ThreadUtil.start(() -> {
-//            try {
-//                do {
-//                    SftpUploadMonitor monitor = this.sftpUploadManager.takeMonitor();
-//                    if (monitor == null) {
-//                        break;
-//                    }
-//                    try {
-//                        SSHSftp sftp = this.openSftp();
-//                        sftp.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
-//                        sftp.close();
-//                    } catch (SftpException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                } while (!this.sftpUploadManager.isEmpty());
-//            } finally {
-//                this.setUploading(false);
-//            }
-//        });
-//    }
-//
-//    private final AtomicBoolean uploading = new AtomicBoolean(false);
-//
-//    public void setUploading(boolean uploading) {
-//        this.uploading.set(uploading);
-//    }
-//
-//    public boolean isUploading() {
-//        return this.uploading.get();
-//    }
-
     public void cancelUpload() {
         this.sftpUploadManager.cancel();
     }
@@ -523,5 +488,25 @@ public class SSHClient {
 
     public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
         this.sftpUploadManager.setUploadChangedCallback(callback);
+    }
+
+    public void download(File file, String remote) {
+        this.sftpDownloadManager.createMonitor(file, remote, this.openSftp());
+    }
+
+    public void cancelDownload() {
+        this.sftpDownloadManager.cancel();
+    }
+
+    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
+        this.sftpDownloadManager.setDownloadEndedCallback(callback);
+    }
+
+    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
+        this.sftpDownloadManager.setDownloadCanceledCallback(callback);
+    }
+
+    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
+        this.sftpDownloadManager.setDownloadChangedCallback(callback);
     }
 }

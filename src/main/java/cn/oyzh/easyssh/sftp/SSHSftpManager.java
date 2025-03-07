@@ -17,7 +17,7 @@ public class SSHSftpManager {
             if (sshSftp.isClosed()) {
                 continue;
             }
-            if (sshSftp.isUploading()) {
+            if (sshSftp.isUsing()) {
                 continue;
             }
             return true;
@@ -33,7 +33,7 @@ public class SSHSftpManager {
                     removes.add(sshSftp);
                     continue;
                 }
-                if (sshSftp.isUploading()) {
+                if (sshSftp.isUsing()) {
                     continue;
                 }
                 return sshSftp;

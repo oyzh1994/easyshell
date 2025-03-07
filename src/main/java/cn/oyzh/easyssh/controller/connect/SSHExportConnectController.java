@@ -10,6 +10,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.fx.plus.file.FXChooser;
 import cn.oyzh.fx.plus.file.FileChooserHelper;
 import cn.oyzh.fx.plus.file.FileExtensionFilter;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -101,7 +102,7 @@ public class SSHExportConnectController extends StageController {
      */
     @FXML
     private void selectFile() {
-        FileExtensionFilter filter = FileChooserHelper.jsonExtensionFilter();
+        FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
         String fileName = "Zookeeper-" + I18nHelper.connect() + ".json";
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
         if (this.exportFile != null) {

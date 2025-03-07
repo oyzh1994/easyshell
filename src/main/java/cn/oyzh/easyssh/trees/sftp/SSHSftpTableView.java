@@ -4,6 +4,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.event.SSHEventUtil;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
@@ -14,6 +17,7 @@ import cn.oyzh.easyssh.util.SSHI18nHelper;
 import cn.oyzh.easyssh.sftp.SftpUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.file.DirChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -34,6 +38,7 @@ import lombok.Setter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -204,10 +209,27 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<FXMenuItem> menuItems = new ArrayList<>();
         List<SftpFile> files = this.getSelectedItems();
+        if (CollectionUtil.isEmpty(files)) {
+            return Collections.emptyList();
+        }
+        List<FXMenuItem> menuItems = new ArrayList<>();
+
         if (files.size() == 1) {
             SftpFile file = files.getFirst();
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> {
+                try {
+                    File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
+                    if (dir != null && dir.isDirectory() && dir.exists()) {
+                        String remote = SftpUtil.concat(this.currPath(), file.getFileName());
+                        this.client.download(dir, remote);
+                    }
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+            menuItems.add(downloadFile);
+
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> {
                 try {
                     SSHEventUtil.showFileInfo(file);
@@ -215,8 +237,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     MessageBox.exception(ex);
                 }
             });
-
             menuItems.add(fileInfo);
+
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> {
                 try {
                     ClipboardUtil.copy(SftpUtil.concat(this.getCurrPath(), file.getFileName()));
@@ -253,10 +275,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     protected void onMouseClicked(MouseEvent event) {
         try {
             List<SftpFile> files = this.getSelectedItems();
-            if (event.getButton() == MouseButton.SECONDARY) {
-                event.consume();
-                return;
-            }
+//            if (event.getButton() == MouseButton.SECONDARY) {
+//                event.consume();
+//                return;
+//            }
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 if (files == null) {
                     return;
@@ -419,6 +441,22 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void cancelUpload() {
         this.client.cancelUpload();
+    }
+
+    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
+        this.client.setDownloadEndedCallback(callback);
+    }
+
+    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
+        this.client.setDownloadCanceledCallback(callback);
+    }
+
+    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
+        this.client.setDownloadChangedCallback(callback);
+    }
+
+    public void cancelDownload() {
+        this.client.cancelDownload();
     }
 
     public boolean existFile(String fileName) {

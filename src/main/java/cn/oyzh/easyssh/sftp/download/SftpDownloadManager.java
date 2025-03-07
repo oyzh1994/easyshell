@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.sftp.upload;
+package cn.oyzh.easyssh.sftp.download;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
@@ -16,63 +16,63 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpUploadManager {
+public class SftpDownloadManager {
 
-    private Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
-
-    @Setter
-    private Consumer<SftpUploadEnded> uploadEndedCallback;
+    private Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
 
     @Setter
-    private Consumer<SftpUploadChanged> uploadChangedCallback;
+    private Consumer<SftpDownloadEnded> downloadEndedCallback;
 
     @Setter
-    private Consumer<SftpUploadCanceled> uploadCanceledCallback;
+    private Consumer<SftpDownloadChanged> downloadChangedCallback;
 
-    public void createMonitor(File file, String dest, SSHSftp sftp) {
+    @Setter
+    private Consumer<SftpDownloadCanceled> downloadCanceledCallback;
+
+    public void createMonitor(File file, String remote, SSHSftp sftp) {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-        this.monitors.add(new SftpUploadMonitor(file, dest, this, sftp));
-        this.doUpload();
+        this.monitors.add(new SftpDownloadMonitor(file, remote, this, sftp));
+        this.doDownload();
     }
 
-    public SftpUploadMonitor takeMonitor() {
+    public SftpDownloadMonitor takeMonitor() {
         return this.monitors.peek();
     }
 
-    public void uploadEnded(SftpUploadMonitor monitor) {
+    public void downloadEnded(SftpDownloadMonitor monitor) {
         this.monitors.remove(monitor);
-        if (this.uploadEndedCallback != null) {
-            SftpUploadEnded ended = new SftpUploadEnded();
+        if (this.downloadEndedCallback != null) {
+            SftpDownloadEnded ended = new SftpDownloadEnded();
             ended.setFileCount(this.size());
-            ended.setDest(monitor.getDest());
+            ended.setRemote(monitor.getRemote());
             ended.setFileName(monitor.getFileName());
-            this.uploadEndedCallback.accept(ended);
+            this.downloadEndedCallback.accept(ended);
         }
     }
 
-    public void uploadCanceled(SftpUploadMonitor monitor) {
+    public void downloadCanceled(SftpDownloadMonitor monitor) {
         this.monitors.remove(monitor);
-        if (this.uploadCanceledCallback != null) {
-            SftpUploadCanceled ended = new SftpUploadCanceled();
+        if (this.downloadCanceledCallback != null) {
+            SftpDownloadCanceled ended = new SftpDownloadCanceled();
             ended.setFileCount(this.size());
-            ended.setDest(monitor.getDest());
+            ended.setRemote(monitor.getRemote());
             ended.setFileName(monitor.getFileName());
-            this.uploadCanceledCallback.accept(ended);
+            this.downloadCanceledCallback.accept(ended);
         }
     }
 
-    public void uploadChanged(SftpUploadMonitor monitor) {
-        if (this.uploadChangedCallback != null) {
-            SftpUploadChanged changed = new SftpUploadChanged();
+    public void downloadChanged(SftpDownloadMonitor monitor) {
+        if (this.downloadChangedCallback != null) {
+            SftpDownloadChanged changed = new SftpDownloadChanged();
             changed.setFileCount(this.size());
             changed.setFileSize(this.count());
-            changed.setDest(monitor.getDest());
             changed.setTotal(monitor.getTotal());
+            changed.setRemote(monitor.getRemote());
             changed.setCurrent(monitor.getCurrent());
             changed.setFileName(monitor.getFileName());
-            this.uploadChangedCallback.accept(changed);
+            this.downloadChangedCallback.accept(changed);
         }
     }
 
@@ -80,7 +80,7 @@ public class SftpUploadManager {
         return this.monitors.isEmpty();
     }
 
-    public void removeMonitor(SftpUploadMonitor monitor) {
+    public void removeMonitor(SftpDownloadMonitor monitor) {
         this.monitors.remove(monitor);
     }
 
@@ -90,27 +90,27 @@ public class SftpUploadManager {
 
     public long count() {
         long cnt = 0;
-        for (SftpUploadMonitor monitor : this.monitors) {
+        for (SftpDownloadMonitor monitor : this.monitors) {
             cnt += monitor.getFileLength();
         }
         return cnt;
     }
 
     public void cancel() {
-        for (SftpUploadMonitor monitor : this.monitors) {
+        for (SftpDownloadMonitor monitor : this.monitors) {
             monitor.cancel();
         }
     }
 
-    private void doUpload() {
-        if (this.isUploading()) {
+    private void doDownload() {
+        if (this.isDownloading()) {
             return;
         }
-        this.setUploading(true);
+        this.setDownloading(true);
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    SftpUploadMonitor monitor = this.takeMonitor();
+                    SftpDownloadMonitor monitor = this.takeMonitor();
                     if (monitor == null) {
                         break;
                     }
@@ -121,7 +121,7 @@ public class SftpUploadManager {
                     SSHSftp sftp = monitor.getSftp();
                     sftp.setUsing(true);
                     try {
-                        sftp.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+                        sftp.get(monitor.getRemote(), monitor.getFilePath(), monitor, ChannelSftp.OVERWRITE);
                     } catch (SftpException ex) {
                         ex.printStackTrace();
                     } finally {
@@ -130,18 +130,18 @@ public class SftpUploadManager {
                     ThreadUtil.sleep(100);
                 }
             } finally {
-                this.setUploading(false);
+                this.setDownloading(false);
             }
         });
     }
 
-    private final AtomicBoolean uploading = new AtomicBoolean(false);
+    private final AtomicBoolean downloading = new AtomicBoolean(false);
 
-    public void setUploading(boolean uploading) {
-        this.uploading.set(uploading);
+    public void setDownloading(boolean downloading) {
+        this.downloading.set(downloading);
     }
 
-    public boolean isUploading() {
-        return this.uploading.get();
+    public boolean isDownloading() {
+        return this.downloading.get();
     }
 }

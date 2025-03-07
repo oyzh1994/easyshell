@@ -14,6 +14,7 @@ import cn.oyzh.easyssh.store.SSHGroupStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.drag.DragNodeItem;
+import cn.oyzh.fx.plus.file.FXChooser;
 import cn.oyzh.fx.plus.file.FileChooserHelper;
 import cn.oyzh.fx.plus.file.FileExtensionFilter;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -83,7 +84,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
             return;
         }
         SSHConnectExport export = SSHConnectExport.fromConnects(infos);
-        FileExtensionFilter extensionFilter = FileChooserHelper.jsonExtensionFilter();
+        FileExtensionFilter extensionFilter = FXChooser.jsonExtensionFilter();
         File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.ssh", "base.connect", "base._json"), extensionFilter);
         if (file != null) {
             try {
@@ -117,7 +118,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      * 导入连接
      */
     public void importConnect() {
-        FileExtensionFilter filter1 = FileChooserHelper.jsonExtensionFilter();
+        FileExtensionFilter filter1 = FXChooser.jsonExtensionFilter();
         File file = FileChooserHelper.choose(I18nHelper.chooseFile(), filter1);
         // 解析文件
         this.parseConnect(file);

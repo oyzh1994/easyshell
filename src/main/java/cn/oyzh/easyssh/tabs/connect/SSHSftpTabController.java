@@ -3,6 +3,9 @@ package cn.oyzh.easyssh.tabs.connect;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
@@ -18,6 +21,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.fx.plus.file.FXChooser;
 import cn.oyzh.fx.plus.file.FileChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
@@ -48,7 +52,19 @@ public class SSHSftpTabController extends SubTabController {
     private FXLabel fileUpload;
 
     @FXML
-    private FXLabel fileProgress;
+    private FXLabel uploadProgressInfo;
+
+    @FXML
+    private FXProgressBar uploadProgress;
+
+    @FXML
+    private FXLabel fileDownload;
+
+    @FXML
+    private FXLabel downloadProgressInfo;
+
+    @FXML
+    private FXProgressBar downloadProgress;
 
     @FXML
     private SVGGlyph copyFilePath;
@@ -59,8 +75,6 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private SSHSftpTableView fileTable;
 
-    @FXML
-    private FXProgressBar uploadProgress;
 
     @FXML
     private ClearableTextField filterFile;
@@ -88,6 +102,9 @@ public class SSHSftpTabController extends SubTabController {
             this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
             this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
             this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
+            this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
+            this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
+            this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
             this.fileTable.loadFile();
         } catch (Exception ex) {
             this.initialized = false;
@@ -218,7 +235,7 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private void uploadFile() {
         try {
-            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FileChooserHelper.allExtensionFilter());
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
             for (File file : files) {
                 if (file.isDirectory()) {
                     MessageBox.warn(I18nHelper.directory() + " [" + file.getName() + "] " + I18nHelper.notSupport());
@@ -239,6 +256,16 @@ public class SSHSftpTabController extends SubTabController {
     private void cancelUpload() {
         try {
             this.fileTable.cancelUpload();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void cancelDownload() {
+        try {
+            this.fileTable.cancelDownload();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -288,8 +315,58 @@ public class SSHSftpTabController extends SubTabController {
         progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
                 .append("/")
                 .append(NumberUtil.formatSize(changed.getTotal(), 2));
-        this.fileProgress.text(progress.toString());
+        this.uploadProgressInfo.text(progress.toString());
         this.uploadProgress.progress(changed.progress());
+    }
+
+    private void updateDownloadInfo(SftpDownloadEnded ended) {
+        try {
+            JulLog.info("updateDownloadInfo:{}", ended);
+            if (ended.getFileCount() == 0) {
+                this.fileDownload.clear();
+                this.downloadBox.disappear();
+                this.updateLayout();
+            }
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void updateDownloadInfo(SftpDownloadCanceled canceled) {
+        try {
+            JulLog.info("updateDownloadInfo:{}", canceled);
+            this.fileDownload.clear();
+            this.downloadBox.disappear();
+            this.updateLayout();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void updateDownloadInfo(SftpDownloadChanged changed) {
+        if(!this.downloadBox.isVisible()){
+            this.downloadBox.display();
+            this.updateLayout();
+        }
+        if (changed.getFileCount() > 1) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("File Count: ").append(changed.getFileCount());
+            builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
+            builder.append(" Current File: ").append(changed.getFileName());
+            builder.append(" Remote: ").append(changed.getRemote());
+            this.fileDownload.text(builder.toString());
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("File: ").append(changed.getFileName());
+            builder.append(" Remote: ").append(changed.getRemote());
+            this.fileDownload.text(builder.toString());
+        }
+        StringBuilder progress = new StringBuilder();
+        progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+                .append("/")
+                .append(NumberUtil.formatSize(changed.getTotal(), 2));
+        this.downloadProgressInfo.text(progress.toString());
+        this.downloadProgress.progress(changed.progress());
     }
 
     private void updateLayout() {

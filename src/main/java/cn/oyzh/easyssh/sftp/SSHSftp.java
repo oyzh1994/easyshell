@@ -24,16 +24,9 @@ public class SSHSftp {
 
     private ChannelSftp channel;
 
-//    private final SftpUploadManager uploadManager;
-
     public SSHSftp(ChannelSftp channel) {
         this.channel = channel;
     }
-
-//    public SSHSftp(ChannelSftp channel, SftpUploadManager uploadManager) {
-//        this.channel = channel;
-//        this.uploadManager = uploadManager;
-//    }
 
     public void close() {
         try {
@@ -112,60 +105,22 @@ public class SSHSftp {
     public SftpATTRS stat(String path) throws SftpException {
         return this.channel.stat(path);
     }
-//
-//    public void upload(File file, String dst) {
-//        this.uploadManager.createMonitor(file, dst);
-//    }
-//
-//    private void doUpload(SftpUploadMonitor monitor) {
-////        if (this.isUploading()) {
-////            return;
-////        }
-//        System.out.println(this.hashCode());
-////        SftpUploadMonitor monitor = this.uploadManager.takeMonitor();
-////        if (monitor != null) {
-//        this.setUploading(true);
-//        ThreadUtil.s(() -> {
-//            try {
-//                try {
-//                    this.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
-//                } catch (SftpException ex) {
-//                    ex.printStackTrace();
-//                }
-//            } finally {
-//                this.setUploading(false);
-//            }
-//        });
-    /// /        }
-//    }
-//
-//    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
-//        this.uploadManager.setUploadEndedCallback(callback);
-//    }
-//
-//    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
-//        this.uploadManager.setUploadCanceledCallback(callback);
-//    }
-//
-//    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
-//        this.uploadManager.setUploadChangedCallback(callback);
-//    }
 
-    private final AtomicBoolean uploading = new AtomicBoolean(false);
+    private final AtomicBoolean using = new AtomicBoolean(false);
 
-    public void setUploading(boolean uploading) {
-        this.uploading.set(uploading);
+    public void setUsing(boolean using) {
+        this.using.set(using);
     }
 
-    public boolean isUploading() {
-        return this.uploading.get();
+    public boolean isUsing() {
+        return this.using.get();
     }
-
-//    public void cancelUpload() {
-//        this.uploadManager.cancel();
-//    }
 
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         this.channel.put(src, dest, monitor, mode);
+    }
+
+    public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
+        this.channel.get(src, dest, monitor, mode);
     }
 }
