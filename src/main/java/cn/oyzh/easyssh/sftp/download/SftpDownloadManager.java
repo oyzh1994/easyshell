@@ -1,6 +1,8 @@
 package cn.oyzh.easyssh.sftp.download;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
 import com.jcraft.jsch.ChannelSftp;
@@ -9,6 +11,7 @@ import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -30,12 +33,34 @@ public class SftpDownloadManager {
     @Setter
     private Consumer<SftpDownloadCanceled> downloadCanceledCallback;
 
-    public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) {
+    public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-        this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
+//        this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
+        this.addMonitorRecursive(localFile, remoteFile, sftp);
         this.doDownload();
+    }
+
+    protected void addMonitorRecursive(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
+        // 文件夹
+        if (remoteFile.isDir()) {
+            // 列举文件
+            List<SftpFile> files = sftp.lsNormal(remoteFile.getFilePath());
+            if (CollectionUtil.isNotEmpty(files)) {
+                // 本地文件夹
+                File localDir = new File(localFile.getPath(), remoteFile.getFileName());
+                FileUtil.mkdir(localDir);
+                for (SftpFile file : files) {
+                    file.setParentPath(remoteFile.getFilePath());
+                    // 本地文件
+                    File localFile1 = new File(localDir, file.getFileName());
+                    this.addMonitorRecursive(localFile1, file, sftp);
+                }
+            }
+        } else {// 文件
+            this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
+        }
     }
 
     public SftpDownloadMonitor takeMonitor() {

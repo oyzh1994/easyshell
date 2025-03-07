@@ -21,6 +21,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -491,7 +492,7 @@ public class SSHClient {
         this.sftpUploadManager.setUploadChangedCallback(callback);
     }
 
-    public void download(File localFile, SftpFile remoteFile) {
+    public void download(File localFile, SftpFile remoteFile) throws SftpException {
         this.sftpDownloadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 

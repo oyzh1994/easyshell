@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -55,6 +56,11 @@ public class SSHSftp {
 
     public boolean isConnected() {
         return this.channel.isConnected();
+    }
+
+    public List<SftpFile> lsNormal(String path) throws SftpException {
+        List<SftpFile> files = this.ls(path);
+        return files.stream().filter(SftpFile::isNormal).collect(Collectors.toList());
     }
 
     public List<SftpFile> ls(String path) throws SftpException {

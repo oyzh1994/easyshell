@@ -94,6 +94,10 @@ public class SftpFile {
         return this.attrs().isDir();
     }
 
+    public boolean isNormal() {
+        return !this.isCurrentFile() && !this.isReturnDirectory();
+    }
+
     public SVGGlyph getIcon() {
         SVGGlyph glyph;
         if (this.isReturnDirectory()) {

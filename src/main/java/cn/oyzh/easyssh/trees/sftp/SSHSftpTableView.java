@@ -337,6 +337,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         if (StringUtil.isEmpty(name)) {
             return;
         }
+        name = name.trim();
         if (this.existFile(name) && !MessageBox.confirm(SSHI18nHelper.fileTip5())) {
             return;
         }
@@ -356,6 +357,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         if (StringUtil.isEmpty(name)) {
             return;
         }
+        name = name.trim();
         if (this.existFile(name) && !MessageBox.confirm(SSHI18nHelper.fileTip4())) {
             return;
         }
@@ -401,8 +403,12 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 }
             }
             for (SftpFile file : files) {
-                file.setParentPath(this.currPath());
-                this.client.download(dir, file);
+                try {
+                    file.setParentPath(this.currPath());
+                    this.client.download(dir, file);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             return true;
         }
