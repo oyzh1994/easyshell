@@ -47,7 +47,7 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
-            <FileUploadSVGGlyph onMousePrimaryClicked="#uploadFile">
+            <FileUploadSVGGlyph enableWaiting="false" onMousePrimaryClicked="#uploadFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>

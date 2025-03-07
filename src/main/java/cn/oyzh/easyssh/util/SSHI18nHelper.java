@@ -22,4 +22,11 @@ public class SSHI18nHelper {
         return I18nResourceBundle.i18nString("ssh.file.tip3");
     }
 
+    public static String fileTip4() {
+        return I18nResourceBundle.i18nString("ssh.file.tip4");
+    }
+
+    public static String fileTip5() {
+        return I18nResourceBundle.i18nString("ssh.file.tip5");
+    }
 }

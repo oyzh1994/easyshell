@@ -196,7 +196,7 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private void mkDir() {
         try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
             this.fileTable.mkDir(name);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -207,7 +207,7 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private void touchFile() {
         try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
             this.fileTable.touchFile(name);
         } catch (Exception ex) {
             ex.printStackTrace();

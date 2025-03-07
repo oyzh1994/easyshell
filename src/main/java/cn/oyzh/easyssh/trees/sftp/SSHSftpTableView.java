@@ -280,7 +280,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         return "/".equals(this.currPath());
     }
 
-    public void intoDir(SftpFile file) throws JSchException, SftpException, IOException {
+    public void intoDir(SftpFile file) throws SftpException {
         if (file.isReturnDirectory()) {
             this.returnDir();
             return;
@@ -314,7 +314,13 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         }
     }
 
-    public void mkDir(String name) throws SftpException, JSchException, IOException {
+    public void mkDir(String name) throws SftpException {
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        if (this.existFile(name) && !MessageBox.confirm(SSHI18nHelper.fileTip5())) {
+            return;
+        }
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().mkdir(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
@@ -327,8 +333,11 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 //        this.loadFile();
     }
 
-    public void touchFile(String name) throws SftpException, JSchException, IOException {
+    public void touchFile(String name) throws SftpException {
         if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        if (this.existFile(name) && !MessageBox.confirm(SSHI18nHelper.fileTip4())) {
             return;
         }
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
@@ -362,8 +371,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         }
         // 检查要上传的文件是否存在
         for (File file : files) {
-            Optional<SftpFile> optional = this.files.stream().filter(f -> StringUtil.equals(file.getName(), f.getFileName())).findAny();
-            if (optional.isPresent()) {
+            if (this.existFile(file.getName())) {
                 if (!MessageBox.confirm(SSHI18nHelper.fileTip3())) {
                     return false;
                 }
@@ -379,7 +387,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         return true;
     }
 
-    public void fileUploaded(String fileName, String dest) throws SftpException, JSchException, IOException {
+    public void fileUploaded(String fileName, String dest) throws SftpException {
         if (StringUtil.equals(this.getCurrPath(), dest)) {
             Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
             String filePath = SftpUtil.concat(dest, fileName);
@@ -411,5 +419,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void cancelUpload() {
         this.client.cancelUpload();
+    }
+
+    public boolean existFile(String fileName) {
+        Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
+        return sftpFile.isPresent();
     }
 }
