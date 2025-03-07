@@ -12,6 +12,7 @@ import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -47,6 +48,9 @@ public class SSHSftpTabController extends SubTabController {
     private FXLabel fileUpload;
 
     @FXML
+    private FXLabel fileProgress;
+
+    @FXML
     private SVGGlyph copyFilePath;
 
     @FXML
@@ -54,6 +58,9 @@ public class SSHSftpTabController extends SubTabController {
 
     @FXML
     private SSHSftpTableView fileTable;
+
+    @FXML
+    private FXProgressBar uploadProgress;
 
     @FXML
     private ClearableTextField filterFile;
@@ -257,19 +264,25 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     private void updateUploadInfo(SftpUploadChanged changed) {
-        StringBuilder builder = new StringBuilder();
         if (changed.getFileCount() > 1) {
+            StringBuilder builder = new StringBuilder();
             builder.append("File Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
             builder.append(" Current File: ").append(changed.getFileName());
             builder.append(" Dest: ").append(changed.getDest());
-            builder.append(" Current Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
+            this.fileUpload.text(builder.toString());
         } else {
+            StringBuilder builder = new StringBuilder();
             builder.append("File: ").append(changed.getFileName());
             builder.append(" Dest: ").append(changed.getDest());
-            builder.append(" Progress: ").append(NumberUtil.formatSize(changed.getCurrent(), 2)).append("/").append(NumberUtil.formatSize(changed.getTotal(), 2));
+            this.fileUpload.text(builder.toString());
         }
-        this.fileUpload.text(builder.toString());
+        StringBuilder progress = new StringBuilder();
+        progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+                .append("/")
+                .append(NumberUtil.formatSize(changed.getTotal(), 2));
+        this.fileProgress.text(progress.toString());
+        this.uploadProgress.progress(changed.progress());
     }
 
     private void updateLayout() {

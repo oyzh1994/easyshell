@@ -21,4 +21,7 @@ public class SftpUploadChanged {
 
     private String fileName;
 
+    public double progress() {
+        return 1D * this.current / this.total;
+    }
 }

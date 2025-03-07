@@ -18,6 +18,7 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileUploadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.FXProgressBar?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -102,16 +103,26 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelUpload">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </CancelSVGGlyph>
-            <FXLabel fx:id="fileUpload">
+            <FXLabel fx:id="fileUpload" maxWidth="1000">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
+            <FXProgressBar fx:id="uploadProgress">
+                <FXHBox.margin>
+                    <Insets left="5" top="8"/>
+                </FXHBox.margin>
+            </FXProgressBar>
+            <FXLabel fx:id="fileProgress" prefWidth="150" maxWidth="250">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
+            <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelUpload">
+                <FXHBox.margin>
+                    <Insets left="5" top="8"/>
+                </FXHBox.margin>
+            </CancelSVGGlyph>
         </FXHBox>
         <FXHBox prefHeight="30" flexWidth="100%">
             <FXLabel text="%base.location">
