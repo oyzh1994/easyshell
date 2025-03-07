@@ -6,6 +6,7 @@ import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadFailed;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
@@ -101,11 +102,14 @@ public class SSHSftpTabController extends SubTabController {
             this.initialized = true;
             this.fileTable.setClient(this.client());
             this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
+
             this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
             this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
             this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
             this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
+
             this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
+            this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
             this.fileTable.loadFile();
@@ -313,7 +317,7 @@ public class SSHSftpTabController extends SubTabController {
                 // 重新载入一次文件
                 this.fileTable.loadFile();
             }
-            MessageBox.warn(failed.getFileName() + " " + I18nHelper.uploadFail());
+            MessageBox.warn(failed.getFileName() + " " + I18nHelper.uploadFailed());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -364,6 +368,20 @@ public class SSHSftpTabController extends SubTabController {
                 this.downloadBox.disappear();
                 this.updateLayout();
             }
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void updateDownloadInfo(SftpDownloadFailed failed) {
+        try {
+            JulLog.info("updateDownloadInfo:{}", failed);
+            if (failed.getFileCount() == 0) {
+                this.fileDownload.clear();
+                this.downloadBox.disappear();
+                this.updateLayout();
+            }
+            MessageBox.warn(failed.getRemote() + " " + I18nHelper.downloadFailed());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

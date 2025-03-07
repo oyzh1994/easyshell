@@ -1,10 +1,12 @@
 package cn.oyzh.easyssh.sftp.download;
 
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
@@ -26,6 +28,9 @@ public class SftpDownloadManager {
 
     @Setter
     private Consumer<SftpDownloadEnded> downloadEndedCallback;
+
+    @Setter
+    private Consumer<SftpDownloadFailed> downloadFailedCallback;
 
     @Setter
     private Consumer<SftpDownloadChanged> downloadChangedCallback;
@@ -75,6 +80,17 @@ public class SftpDownloadManager {
             ended.setRemote(monitor.getRemoteFileName());
             ended.setFileName(monitor.getLocalFileName());
             this.downloadEndedCallback.accept(ended);
+        }
+    }
+
+    public void downloadFailed(SftpDownloadMonitor monitor) {
+        this.monitors.remove(monitor);
+        if (this.downloadEndedCallback != null) {
+            SftpDownloadFailed failed = new SftpDownloadFailed();
+            failed.setFileCount(this.size());
+            failed.setRemote(monitor.getRemoteFileName());
+            failed.setFileName(monitor.getLocalFileName());
+            this.downloadFailedCallback.accept(failed);
         }
     }
 
@@ -148,8 +164,10 @@ public class SftpDownloadManager {
                     sftp.setUsing(true);
                     try {
                         sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
-                    } catch (SftpException ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
+                        JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
+                        this.downloadFailed(monitor);
                     } finally {
                         sftp.setUsing(false);
                     }

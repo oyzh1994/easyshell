@@ -8,6 +8,7 @@ import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadFailed;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
@@ -490,6 +491,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
         this.client.setDownloadEndedCallback(callback);
+    }
+
+    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
+        this.client.setDownloadFailedCallback(callback);
     }
 
     public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {

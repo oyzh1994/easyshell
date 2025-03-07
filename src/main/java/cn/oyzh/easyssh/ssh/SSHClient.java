@@ -10,6 +10,7 @@ import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
+import cn.oyzh.easyssh.sftp.download.SftpDownloadFailed;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadChanged;
@@ -507,6 +508,10 @@ public class SSHClient {
 
     public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
         this.sftpDownloadManager.setDownloadEndedCallback(callback);
+    }
+
+    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
+        this.sftpDownloadManager.setDownloadFailedCallback(callback);
     }
 
     public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {

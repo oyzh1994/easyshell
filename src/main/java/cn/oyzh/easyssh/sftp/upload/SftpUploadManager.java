@@ -162,10 +162,10 @@ public class SftpUploadManager {
                     SSHSftp sftp = monitor.getSftp();
                     sftp.setUsing(true);
                     try {
-                        sftp.put(monitor.getFilePath()+"1", monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
+                        sftp.put(monitor.getFilePath(), monitor.getDest(), monitor, ChannelSftp.OVERWRITE);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JulLog.warn("file upload failed", ex);
+                        JulLog.warn("file:{} upload failed", monitor.getFileName(), ex);
                         this.uploadFailed(monitor);
                     } finally {
                         sftp.setUsing(false);
