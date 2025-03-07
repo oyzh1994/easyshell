@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -178,7 +179,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
                 return;
             }
-        } else if (!MessageBox.confirm(I18nHelper.deleteFiles())) {
+        } else if (!MessageBox.confirm(SSHI18nHelper.fileTip2())) {
             return;
         }
         if (CollectionUtil.isNotEmpty(files)) {
@@ -289,7 +290,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.loadFile();
     }
 
-    public void returnDir() throws JSchException, SftpException, IOException {
+    public void returnDir() throws SftpException {
         if (this.currentIsRootDirectory()) {
             return;
         }
@@ -355,23 +356,43 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 //        this.loadFile();
     }
 
-    public void uploadFile(List<File> files) throws SftpException, JSchException, IOException {
+    public boolean uploadFile(List<File> files) {
+        if (CollectionUtil.isEmpty(files)) {
+            return false;
+        }
+        // 检查要上传的文件是否存在
+        for (File file : files) {
+            Optional<SftpFile> optional = this.files.stream().filter(f -> StringUtil.equals(file.getName(), f.getFileName())).findAny();
+            if (optional.isPresent()) {
+                if (!MessageBox.confirm(SSHI18nHelper.fileTip3())) {
+                    return false;
+                }
+                break;
+            }
+        }
         for (File file : files) {
             this.client.upload(file, this.getCurrPath());
 //            SftpATTRS attrs = this.sftp().stat(file.getName());
 //            this.files.add(new SftpFile(file.getName(), attrs));
 //            this.refreshFile();
         }
+        return true;
     }
 
     public void fileUploaded(String fileName, String dest) throws SftpException, JSchException, IOException {
         if (StringUtil.equals(this.getCurrPath(), dest)) {
+            Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
             String filePath = SftpUtil.concat(dest, fileName);
-            SftpATTRS attrs = this.sftp().stat(filePath);
-            SftpFile file = new SftpFile(fileName, attrs);
-            file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
-            file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
-            this.files.add(file);
+            if (sftpFile.isPresent()) {
+                SftpATTRS attrs = this.sftp().stat(filePath);
+                sftpFile.get().setAttrs(attrs);
+            } else {
+                SftpATTRS attrs = this.sftp().stat(filePath);
+                SftpFile file = new SftpFile(fileName, attrs);
+                file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+                file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+                this.files.add(file);
+            }
             this.refreshFile();
         }
     }

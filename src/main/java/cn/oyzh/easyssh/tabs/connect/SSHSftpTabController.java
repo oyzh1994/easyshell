@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
-import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadCanceled;
@@ -225,9 +225,7 @@ public class SSHSftpTabController extends SubTabController {
                     return;
                 }
             }
-//            files = files.stream().filter(File::isFile).toList();
-            if (CollectionUtil.isNotEmpty(files)) {
-                this.fileTable.uploadFile(files);
+            if (this.fileTable.uploadFile(files)) {
                 this.uploadBox.display();
                 this.updateLayout();
             }
@@ -249,6 +247,7 @@ public class SSHSftpTabController extends SubTabController {
 
     private void updateUploadInfo(SftpUploadEnded ended) {
         try {
+            JulLog.info("updateUploadInfo:{}", ended);
             this.fileTable.fileUploaded(ended.getFileName(), ended.getDest());
             if (ended.getFileCount() == 0) {
                 this.fileUpload.clear();
@@ -262,6 +261,7 @@ public class SSHSftpTabController extends SubTabController {
 
     private void updateUploadInfo(SftpUploadCanceled canceled) {
         try {
+            JulLog.info("updateUploadInfo:{}", canceled);
             this.fileUpload.clear();
             this.uploadBox.disappear();
             this.updateLayout();

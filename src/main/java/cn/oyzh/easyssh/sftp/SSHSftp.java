@@ -74,7 +74,7 @@ public class SSHSftp {
         for (ChannelSftp.LsEntry lsEntry : vector) {
             SftpFile file = new SftpFile(lsEntry);
             files.add(file);
-            if (client != null) {
+            if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
                 String ownerName = SftpUtil.getOwner(file.getUid(), client);
                 file.setOwner(ownerName);
                 String groupName = SftpUtil.getGroup(file.getGid(), client);

@@ -76,11 +76,11 @@
         <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                <FXTableColumn style="-fx-padding-left:0;" prefWidth="150" valueName="fileName" text="%base.name"/>
+                <FXTableColumn style="-fx-padding-left:0;" prefWidth="180" valueName="fileName" text="%base.name"/>
                 <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
                 <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
                 <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>
-                <FXTableColumn prefWidth="110" valueName="permissionsString" text="%base.permissions"/>
+                <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
                 <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
                 <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
             </columns>
@@ -113,7 +113,7 @@
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </FXProgressBar>
-            <FXLabel fx:id="fileProgress" prefWidth="150" maxWidth="250">
+            <FXLabel fx:id="fileProgress" prefWidth="120" maxWidth="200">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>

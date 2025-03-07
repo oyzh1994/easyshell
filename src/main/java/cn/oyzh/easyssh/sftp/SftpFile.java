@@ -4,9 +4,12 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.fx.svg.glyph.File7zSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileCompressSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileDmgSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExcelSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileExeSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileGzSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileHtmlSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileImageSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileJpgSVGGlyph;
@@ -19,6 +22,7 @@ import cn.oyzh.easyssh.fx.svg.glyph.FileMp3SVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileMp4SVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePdfSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FilePptSVGGlyph;
+import cn.oyzh.easyssh.fx.svg.glyph.FileRarSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileTerminalSVGGlyph;
 import cn.oyzh.easyssh.fx.svg.glyph.FileTextSVGGlyph;
@@ -45,6 +49,7 @@ public class SftpFile {
 
     private ChannelSftp.LsEntry entry;
 
+    @Setter
     private SftpATTRS attrs;
 
     @Setter
@@ -112,8 +117,16 @@ public class SftpFile {
                 glyph = new FileDmgSVGGlyph("12");
             } else if (FileNameUtil.isImageType(extName)) {
                 glyph = new FileImageSVGGlyph("12");
-            } else if (FileNameUtil.isCompressType(extName)) {
+            } else if (FileNameUtil.isRarType(extName)) {
+                glyph = new FileRarSVGGlyph("12");
+            } else if (FileNameUtil.is7zType(extName)) {
+                glyph = new File7zSVGGlyph("12");
+            } else if (FileNameUtil.isGzType(extName)) {
+                glyph = new FileGzSVGGlyph("12");
+            } else if (FileNameUtil.isZipType(extName)) {
                 glyph = new FileZipSVGGlyph("12");
+            } else if (FileNameUtil.isCompressType(extName)) {
+                glyph = new FileCompressSVGGlyph("12");
             } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
                 glyph = new FileHtmlSVGGlyph("12");
             } else if (FileNameUtil.isXmlType(extName)) {
@@ -142,7 +155,7 @@ public class SftpFile {
     }
 
     public String getSize() {
-        if (this.isDir()) {
+        if (this.isDir() || this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
         return NumberUtil.formatSize(this.attrs().getSize(), 4);
@@ -171,24 +184,25 @@ public class SftpFile {
         return "/" + fileName;
     }
 
-//    public String getLongName() {
-//        return this.entry.getLongname();
-//    }
-
     public String getPermissions() {
-        return this.attrs().getPermissionsString();
-    }
-
-    public String getPermissionsString() {
+        if (this.isReturnDirectory() || this.isCurrentFile()) {
+            return "";
+        }
         return this.attrs().getPermissionsString();
     }
 
     public String getAddTime() {
+        if (this.isReturnDirectory() || this.isCurrentFile()) {
+            return "";
+        }
         int aTime = this.attrs().getATime();
         return DateHelper.formatDateTime(new Date(aTime * 1000L));
     }
 
     public String getModifyTime() {
+        if (this.isReturnDirectory() || this.isCurrentFile()) {
+            return "";
+        }
         int mtime = this.attrs().getMTime();
         return DateHelper.formatDateTime(new Date(mtime * 1000L));
     }
@@ -202,10 +216,10 @@ public class SftpFile {
     }
 
     public boolean isHiddenFile() {
-        if (!this.isCurrentFile() && !this.isReturnDirectory()) {
-            return this.getFileName().startsWith(".");
+        if (this.isReturnDirectory() || this.isCurrentFile()) {
+            return false;
         }
-        return false;
+        return this.getFileName().startsWith(".");
     }
 
     public boolean isCurrentFile() {
