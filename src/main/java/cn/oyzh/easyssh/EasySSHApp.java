@@ -75,7 +75,11 @@ public class EasySSHApp extends FXApplication implements EventListener {
             SSHStoreUtil.init();
             SysConst.storeDir(SSHConst.STORE_PATH);
             SysConst.cacheDir(SSHConst.CACHE_PATH);
-            FXConst.appIcon(SSHConst.ICON_PATH);
+            if (OSUtil.isWindows()) {
+                FXConst.appIcon(SSHConst.ICON_32_PATH);
+            } else {
+                FXConst.appIcon(SSHConst.ICON_PATH);
+            }
             // 事件总线
             EventFactory.registerEventBus(FxEventBus.class);
             EventFactory.syncEventConfig(FxEventConfig.SYNC);
@@ -160,7 +164,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
             }
             // 初始化
             if (OSUtil.isWindows()) {
-                TrayManager.init(SSHConst.TRAY_ICON_PATH);
+                TrayManager.init(SSHConst.ICON_24_PATH);
             } else {
                 TrayManager.init(SSHConst.ICON_PATH);
             }

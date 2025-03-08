@@ -13,11 +13,6 @@ import java.io.File;
 @UtilityClass
 public class SSHConst {
 
-//    /**
-//     * fxml基础地址
-//     */
-//    public final static String FXML_BASE_PATH = "/fxml/";
-
     /**
      * 数据保存路径
      */
@@ -31,8 +26,16 @@ public class SSHConst {
     /**
      * icon地址
      */
-    public final static String ICON_PATH = "/image/ssh_clip.png";
+    public final static String ICON_PATH = "/image/ssh_no_bg.png";
 
-    public final static String TRAY_ICON_PATH = "/image/ssh_clip.png";
+    /**
+     * 托盘图标，windows专用
+     */
+    public final static String ICON_24_PATH = "/image/ssh_24.png";
+
+    /**
+     * 任务栏图标，windows专用
+     */
+    public final static String ICON_32_PATH = "/image/ssh_24.png";
 
 }

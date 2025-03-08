@@ -36,9 +36,13 @@ mvn -X clean package -DskipTests
 另外建议国内使用阿里镜像加速地址  
 
 # 程序打包
+###### png去背景
+https://www.iloveimg.com/zh-cn/remove-background
 ###### 图标转换
-###### png转icns
+###### png转icns(地址2)
 https://anyconv.com/png-to-icns-converter/
+###### png转icns(地址2)
+https://www.aconvert.com/cn/image/png-to-icns/
 ###### png转ico
 https://www.freeconvert.com/zh/png-to-ico
 
