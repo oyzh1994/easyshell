@@ -84,6 +84,13 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
     private Integer connectTimeOut;
 
     /**
+     * x11转发
+     */
+    @Setter
+    @Column
+    private Boolean x11forwarding;
+
+    /**
      * 复制对象
      *
      * @param info ssh信息
@@ -97,8 +104,13 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
         this.remark = info.remark;
         this.groupId = info.groupId;
         this.password = info.password;
+        this.x11forwarding = info.x11forwarding;
         this.connectTimeOut = info.connectTimeOut;
         return this;
+    }
+
+    public  boolean isX11forwarding(){
+        return this.x11forwarding != null && this.x11forwarding;
     }
 
     /**

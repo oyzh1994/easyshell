@@ -90,6 +90,12 @@ public class SSHAddConnectController extends StageController {
     private NumberTextField connectTimeOut;
 
     /**
+     * x11转发
+     */
+    @FXML
+    private FXToggleSwitch x11forwarding;
+
+    /**
      * 分组
      */
     private SSHGroup group;
@@ -172,8 +178,9 @@ public class SSHAddConnectController extends StageController {
             sshConnect.setUser(userName.trim());
             sshConnect.setPassword(password.trim());
             sshConnect.setRemark(this.remark.getTextTrim());
-            sshConnect.setGroupId(this.group == null ? null : this.group.getGid());
             sshConnect.setConnectTimeOut(connectTimeOut.intValue());
+            sshConnect.setX11forwarding(this.x11forwarding.isSelected());
+            sshConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(sshConnect)) {
                 SSHEventUtil.connectAdded(sshConnect);

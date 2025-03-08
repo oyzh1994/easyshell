@@ -95,6 +95,12 @@ public class SSHUpdateConnectController extends StageController {
     private NumberTextField connectTimeOut;
 
     /**
+     * x11转发
+     */
+    @FXML
+    private FXToggleSwitch x11forwarding;
+
+    /**
      * ssh连接储存对象
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
@@ -174,6 +180,7 @@ public class SSHUpdateConnectController extends StageController {
             this.sshConnect.setPassword(password.trim());
             this.sshConnect.setRemark(this.remark.getTextTrim());
             this.sshConnect.setConnectTimeOut(connectTimeOut.intValue());
+            this.sshConnect.setX11forwarding(this.x11forwarding.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.sshConnect)) {
                 SSHEventUtil.connectUpdated(this.sshConnect);
@@ -215,6 +222,7 @@ public class SSHUpdateConnectController extends StageController {
         this.hostPort.setValue(this.sshConnect.hostPort());
         this.password.setText(this.sshConnect.getPassword());
         this.connectTimeOut.setValue(this.sshConnect.getConnectTimeOut());
+        this.x11forwarding.setSelected(this.sshConnect.isX11forwarding());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

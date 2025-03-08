@@ -104,33 +104,33 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
         ThreadUtil.startVirtual(() -> this.client.close());
     }
 
-//    /**
-//     * 连接
-//     */
-//    public void connect() {
-//        if (this.isConnected() || this.isConnecting()) {
-//            return;
-//        }
-//        Task task = TaskBuilder.newBuilder()
-//                .onStart(() -> {
-//                    this.client.start();
-//                    if (!this.isConnected()) {
-//                        if (!this.canceled) {
-//                            MessageBox.warn("[" + this.value.getName() + "] " + I18nHelper.connectFail());
-//                        }
-//                        this.canceled = false;
-//                        this.closeConnect(false);
-//                    } else {
-//                        this.loadChild();
-//                        this.expend();
-//                    }
-//                })
-//                .onSuccess(this::flushLocal)
-//                .onError(MessageBox::exception)
-//                .build();
-//        // 执行连接
-//        this.startWaiting(task);
-//    }
+    /**
+     * 连接
+     */
+    public void connect() {
+        if (this.isConnected() || this.isConnecting()) {
+            return;
+        }
+        Task task = TaskBuilder.newBuilder()
+                .onStart(() -> {
+                    this.client.start();
+                    if (!this.isConnected()) {
+                        if (!this.canceled) {
+                            MessageBox.warn("[" + this.value.getName() + "] " + I18nHelper.connectFail());
+                        }
+                        this.canceled = false;
+                        this.closeConnect(false);
+                    } else {
+                        this.loadChild();
+                        this.expend();
+                    }
+                })
+                .onSuccess(this::flushLocal)
+                .onError(MessageBox::exception)
+                .build();
+        // 执行连接
+        this.startWaiting(task);
+    }
 
     @Override
     public void clearChild() {
@@ -142,6 +142,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     public void loadChild() {
         if (!this.isLoaded()) {
             this.setLoaded(true);
+            SSHEventUtil.connectionOpened(this);
         }
     }
 
@@ -296,8 +297,8 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     @Override
     public void onPrimaryDoubleClick() {
         if (!this.isConnected() && !this.isConnecting()) {
-//            this.connect();
-            SSHEventUtil.connectionOpened(this);
+            this.connect();
+//            SSHEventUtil.connectionOpened(this);
         } else {
             super.onPrimaryDoubleClick();
         }

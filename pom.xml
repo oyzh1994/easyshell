@@ -110,8 +110,12 @@
             <version>${purejavacomm.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 
-<!--        &lt;!&ndash;### LOGGING ###&ndash;&gt;-->
+        <!--        &lt;!&ndash;### LOGGING ###&ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.slf4j</groupId>-->
 <!--            <artifactId>slf4j-api</artifactId>-->

@@ -143,6 +143,9 @@ public class SSHClient {
 //        config.put("TERM", "xterm-256color");
         config.put("term", "xterm-256color");
         config.put("COLORTERM", "truecolor");
+        // 关键配置：启用X11转发
+        config.put("ForwardX11", "yes");
+        config.put("ForwardX11Trusted", "yes");
         this.session.setConfig(config);
 //        session.setConfig("term", "xterm-256color");
         // 超时连接时间为3秒
@@ -401,6 +404,7 @@ public class SSHClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+                channel.setXForwarding(true);
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
                 channel.setPtyType("xterm");

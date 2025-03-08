@@ -157,7 +157,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
     private void connectionOpened(SSHConnectOpenedEvent event) {
         SSHConnectTab tab = this.getConnectTab(event.connect());
         if (tab == null) {
-            tab = new SSHConnectTab(event.connect());
+            tab = new SSHConnectTab(event.data());
             super.addTab(tab);
         }
         if (!tab.isSelected()) {
