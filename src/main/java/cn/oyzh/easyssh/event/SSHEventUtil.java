@@ -30,11 +30,9 @@ import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import javafx.scene.control.TreeItem;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @author oyzh

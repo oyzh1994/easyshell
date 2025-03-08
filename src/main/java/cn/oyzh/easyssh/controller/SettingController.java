@@ -2,7 +2,6 @@ package cn.oyzh.easyssh.controller;
 
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.SSHConst;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.util.SSHProcessUtil;
@@ -10,7 +9,6 @@ import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingTreeItem;
-import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;

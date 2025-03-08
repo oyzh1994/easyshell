@@ -1,11 +1,8 @@
 package cn.oyzh.easyssh.store;
 
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHX11Config;
-import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
-import cn.oyzh.store.jdbc.QueryParam;
 
 import java.util.List;
 

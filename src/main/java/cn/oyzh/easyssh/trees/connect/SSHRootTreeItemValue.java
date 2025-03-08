@@ -1,10 +1,8 @@
 package cn.oyzh.easyssh.trees.connect;
 
 import cn.oyzh.easyssh.fx.svg.glyph.LinuxSVGGlyph;
-import cn.oyzh.easyssh.fx.svg.glyph.SSHSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.i18n.I18nHelper;
 
 /**
  * ssh树节点值

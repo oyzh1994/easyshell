@@ -1,14 +1,13 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.ssh.SSHShell;
 import cn.oyzh.easyssh.ssh.SSHTermWidget;
 import cn.oyzh.easyssh.ssh.SSHTtyConnector;
-import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;

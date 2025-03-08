@@ -1,18 +1,15 @@
 package cn.oyzh.easyssh.trees.connect;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.event.connect.SSHConnectAddedEvent;
 import cn.oyzh.easyssh.event.connect.SSHConnectUpdatedEvent;
 import cn.oyzh.easyssh.event.group.SSHAddGroupEvent;
-import cn.oyzh.easyssh.event.window.SSHShowAddConnectEvent;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
-import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;

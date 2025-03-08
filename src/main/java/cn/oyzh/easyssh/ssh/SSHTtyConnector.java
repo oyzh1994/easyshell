@@ -1,7 +1,6 @@
 package cn.oyzh.easyssh.ssh;
 
 import cn.oyzh.common.log.JulLog;
-import com.jcraft.jsch.ChannelShell;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
 import com.techsenger.jeditermfx.app.debug.TerminalDebugUtil;

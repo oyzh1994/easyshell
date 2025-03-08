@@ -6,7 +6,6 @@ import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import lombok.Getter;
 import lombok.NonNull;

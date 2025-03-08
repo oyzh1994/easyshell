@@ -1,19 +1,11 @@
 package cn.oyzh.easyssh.ssh;
 
-import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.common.util.StringUtil;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
 
 /**
  * @author oyzh
