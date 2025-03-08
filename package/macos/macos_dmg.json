@@ -1,0 +1,109 @@
+{
+    "packMode": "jpackage",
+    "platform": "macos",
+    "dest": "/Volumes/Files/Package/EasyRedis/${appVersion}",
+    "appIcon": "${projectPath}/resource/redis.icns",
+    "mainJar": "${projectPath}/target/easyredis-${appVersion}.jar",
+    "jdkPath": "$SYSTEM",
+    "jpackage": {
+        "verbose": true,
+        "vendor": "oyzh",
+        "type": "dmg",
+        "mac-package-identifier": "cn.oyzh.easyredis",
+        "description": "这是一个Redis管理工具，提供导入、导出、传输、终端、可视化操作等功能."
+    },
+    "jdeps": {
+        "multi-release": 23,
+        "summary": true,
+        "skips": [
+            "javafx-.*.jar"
+        ],
+        "excludes": [
+            "jdk.jfr"
+        ]
+    },
+    "jlink": {
+        "exclude-files": [
+            "**.md",
+            "**LICENSE",
+            "**COPYRIGHT",
+            "**classlist",
+            "**README.txt",
+            "**sound.properties",
+            "**ASSEMBLY_EXCEPTION",
+            "**ADDITIONAL_LICENSE_INFO"
+        ],
+        "add-modules": [
+            "java.xml",
+            "java.sql",
+            "java.base",
+            "java.naming",
+            "java.logging",
+            "java.desktop",
+            "java.scripting",
+            "java.management",
+            "java.datatransfer",
+            "java.security.jgss",
+            "jdk.unsupported"
+        ]
+    },
+    "jre": {
+        "excludes": [
+            "COPYRIGHT",
+            "README.txt",
+            "sound.properties",
+            "ASSEMBLY_EXCEPTION",
+            "ADDITIONAL_LICENSE_INFO",
+            ".*.md",
+            "lcms.*",
+            "jawt.*",
+            "j2gss.*",
+            "prefs.*",
+            "jsound.*",
+            "LICENSE.*",
+            "javajpeg.*",
+            "classlist.*",
+            "jrunscript.*",
+            "splashscreen.*"
+        ]
+    },
+    "jar": {
+        "removeEmpty": true,
+        "excludes": [
+            "pom.xml",
+            "pom.properties",
+            "AUTHORS",
+            "README.md",
+            "README.txt",
+            "DEPENDENCIES",
+            "aot.factories",
+            "changelog.txt",
+            "module-info.class",
+            "latestchanges.html",
+            "package-info.class",
+            "ASSEMBLY_EXCEPTION",
+            "reflectionconfig.json",
+            "release-timestamp.txt",
+            "ADDITIONAL_LICENSE_INFO",
+            "reactor.blockhound.integration.BlockHoundIntegration",
+            "classpath.idx",
+            "LICENSE.*",
+            ".*.md",
+            ".*.pro",
+            ".*.xsd",
+            "NOTICE.*",
+            ".*.tooling",
+            ".*.schemas",
+            ".*.handlers",
+            "lombok-.*.jar",
+            ".*.processors",
+            ".*.kotlin_module",
+            ".*.dll",
+            ".*.so",
+            "data.zip",
+            "git.properties",
+            "native-image.properties",
+            "spring-boot-jarmode-layertools-.*.jar"
+        ]
+    }
+}

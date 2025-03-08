@@ -29,8 +29,8 @@ import java.util.function.IntConsumer;
  */
 public class SSHTermWidget extends JediTermFxWidget {
 
-    public SSHTermWidget(@NotNull SettingsProvider settingsProvider) {
-        super(settingsProvider);
+    public SSHTermWidget() {
+        super(new SSHSettingsProvider());
     }
 
     protected String[] getProcessCommand() {

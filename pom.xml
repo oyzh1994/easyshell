@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyssh</artifactId>
     <version>1.0</version>
-    <description>ssh连接，增强能力</description>
+    <description>ssh连接，sftp文件管理，x11转发支持，本地终端增强能力</description>
 
     <properties>
         <jna.version>5.16.0</jna.version>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.3.232</version>
+            <version>${h2.version}</version>
         </dependency>
 
         <!-- java 辅助工具包 -->

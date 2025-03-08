@@ -37,7 +37,7 @@ public class SSHTermTabController extends SubTabController {
     private SSHTermWidget widget;
 
     private void initWidget(SSHShell shell) throws IOException {
-        this.widget = new SSHTermWidget(new DefaultSettingsProvider());
+        this.widget = new SSHTermWidget();
         SSHTtyConnector connector = (SSHTtyConnector) this.widget.createTtyConnector();
         connector.initShell(shell);
         this.widget.openSession(connector);
