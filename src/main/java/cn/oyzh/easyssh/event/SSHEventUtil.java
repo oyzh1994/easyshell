@@ -78,7 +78,7 @@ public class SSHEventUtil {
      *
      * @param client ssh客户端
      */
-    public static void connectionSucceed(SSHClient client) {
+    public static void connectionConnected(SSHClient client) {
         SSHConnectionConnectedEvent event = new SSHConnectionConnectedEvent();
         event.data(client);
         EventUtil.post(event);

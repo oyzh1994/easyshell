@@ -6,6 +6,7 @@ import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import lombok.Getter;
 import lombok.NonNull;
@@ -20,13 +21,6 @@ import java.util.List;
  * @since 2023/07/21
  */
 public class SSHConnectTabController extends ParentTabController {
-
-//    /**
-//     * ssh客户端
-//     */
-//    @Getter
-//    @Accessors(chain = true, fluent = true)
-//    private SSHClient client;
 
     @Getter
     @Accessors(chain = true, fluent = true)
@@ -56,18 +50,17 @@ public class SSHConnectTabController extends ParentTabController {
     public void init(@NonNull SSHConnectTreeItem treeItem) {
         try {
             this.treeItem = treeItem;
-//            if (!this.treeItem.isConnected()) {
-//                this.client.start();
-//            }
-//            if (!this.client.isConnected()) {
-//                MessageBox.warn(I18nHelper.connectFail());
-//                return;
-//            }
             this.sshTermTabController.init();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.client().close();
     }
 
     /**

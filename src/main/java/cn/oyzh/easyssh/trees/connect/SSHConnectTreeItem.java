@@ -121,10 +121,8 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
                         this.closeConnect(false);
                     } else {
                         this.loadChild();
-                        this.expend();
                     }
                 })
-                .onSuccess(this::flushLocal)
                 .onError(MessageBox::exception)
                 .build();
         // 执行连接
@@ -139,10 +137,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
 
     @Override
     public void loadChild() {
-        if (!this.isLoaded()) {
-            this.setLoaded(true);
-            SSHEventUtil.connectionOpened(this);
-        }
+        SSHEventUtil.connectionOpened(this);
     }
 
     /**
@@ -160,10 +155,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      * @param waiting 是否开启等待动画
      */
     public void closeConnect(boolean waiting) {
-        Runnable func = () -> {
-            this.client.close();
-            this.clearChild();
-        };
+        Runnable func = () -> this.client.close();
         if (waiting) {
             Task task = TaskBuilder.newBuilder()
                     .onStart(func::run)
@@ -247,13 +239,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     public void value(@NonNull SSHConnect value) {
         this.value = value;
         this.client = new SSHClient(value);
-        this.client.stateProperty().addListener((observable, o, n) -> {
-            // 连接关闭
-            if (n == null || !n.isConnected()) {
-                // 清理子节点
-                this.clearChild();
-            }
-        });
+        this.client.addStateListener((observable, o, n) -> this.refresh());
         super.setValue(new SSHConnectTreeItemValue(this));
     }
 

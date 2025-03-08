@@ -1,17 +1,14 @@
 package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.ssh.SSHChannel;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -22,12 +19,10 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SSHSftp {
-
-    private ChannelSftp channel;
+public class SSHSftp extends SSHChannel {
 
     public SSHSftp(ChannelSftp channel) {
-        this.channel = channel;
+       super(channel);
     }
 
     private final AtomicBoolean using = new AtomicBoolean(false);
@@ -40,39 +35,15 @@ public class SSHSftp {
         return this.using.get();
     }
 
-    public void close() {
-        try {
-            this.channel.disconnect();
-            this.channel = null;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public boolean isClosed() {
-        return this.channel == null || this.channel.isClosed();
-    }
-
-    public InputStream getInputStream() throws IOException {
-        return this.channel.getInputStream();
-    }
-
-    public OutputStream getOutputStream() throws IOException {
-        return this.channel.getOutputStream();
-    }
-
-    public void connect(int connectTimeout) throws JSchException {
-        this.channel.connect(connectTimeout);
-    }
-
-    public boolean isConnected() {
-        return this.channel.isConnected();
+    @Override
+    public ChannelSftp getChannel() {
+        return (ChannelSftp) super.getChannel();
     }
 
     public Vector<ChannelSftp.LsEntry> ls(String path) throws SftpException {
         try {
             this.setUsing(true);
-            return this.channel.ls(path);
+            return this.getChannel().ls(path);
         } finally {
             this.setUsing(false);
         }
@@ -106,7 +77,7 @@ public class SSHSftp {
     public void rm(String path) throws SftpException {
         try {
             this.setUsing(true);
-            this.channel.rm(path);
+            this.getChannel().rm(path);
         } finally {
             this.setUsing(false);
         }
@@ -115,7 +86,7 @@ public class SSHSftp {
     public void rmdir(String path) throws SftpException {
         try {
             this.setUsing(true);
-            this.channel.rmdir(path);
+            this.getChannel().rmdir(path);
         } finally {
             this.setUsing(false);
         }
@@ -140,7 +111,7 @@ public class SSHSftp {
     public String pwd() throws SftpException {
         try {
             this.setUsing(true);
-            return this.channel.pwd();
+            return this.getChannel().pwd();
         } finally {
             this.setUsing(false);
         }
@@ -149,7 +120,7 @@ public class SSHSftp {
     public void mkdir(String path) throws SftpException {
         try {
             this.setUsing(true);
-            this.channel.mkdir(path);
+            this.getChannel().mkdir(path);
         } finally {
             this.setUsing(false);
         }
@@ -194,7 +165,7 @@ public class SSHSftp {
         try {
             this.setUsing(true);
             ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
-            this.channel.put(inputStream, path);
+            this.getChannel().put(inputStream, path);
         } finally {
             this.setUsing(false);
         }
@@ -203,7 +174,7 @@ public class SSHSftp {
     public void rename(String path, String newPath) throws SftpException {
         try {
             this.setUsing(true);
-            this.channel.rename(path, newPath);
+            this.getChannel().rename(path, newPath);
         } finally {
             this.setUsing(false);
         }
@@ -212,7 +183,7 @@ public class SSHSftp {
     public SftpATTRS stat(String path) throws SftpException {
         try {
             this.setUsing(true);
-            return this.channel.stat(path);
+            return this.getChannel().stat(path);
         } finally {
             this.setUsing(false);
         }
@@ -221,7 +192,7 @@ public class SSHSftp {
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
-            this.channel.put(src, dest, monitor, mode);
+            this.getChannel().put(src, dest, monitor, mode);
         } finally {
             this.setUsing(false);
         }
@@ -230,7 +201,7 @@ public class SSHSftp {
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
-            this.channel.get(src, dest, monitor, mode);
+            this.getChannel().get(src, dest, monitor, mode);
         } finally {
             this.setUsing(false);
         }

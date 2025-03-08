@@ -177,5 +177,4 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
             tab.closeTab();
         }
     }
-
 }

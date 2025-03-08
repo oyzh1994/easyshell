@@ -68,7 +68,6 @@ public class SSHTermTabController extends SubTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.client().close();
         this.widget.close();
     }
 

@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHX11Config;
+import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
@@ -75,12 +76,26 @@ public class SSHClient {
     private final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
 
     /**
-     * 连接状态监听器列表
+     * 静默关闭标志位
      */
-    private final List<ChangeListener<SSHConnState>> connStateListeners = new ArrayList<>();
+    private boolean closeQuietly;
 
     public SSHClient(@NonNull SSHConnect sshConnect) {
         this.sshConnect = sshConnect;
+        // 监听连接状态
+        this.stateProperty().addListener((observable, oldValue, newValue) -> {
+            switch (newValue) {
+                case CLOSED -> {
+                    if (!this.closeQuietly) {
+                        SSHEventUtil.connectionClosed(this);
+                    }
+                }
+                case CONNECTED -> SSHEventUtil.connectionConnected(this);
+                default -> {
+
+                }
+            }
+        });
     }
 
     /**
@@ -108,6 +123,17 @@ public class SSHClient {
     }
 
     /**
+     * 添加连接状态监听器
+     *
+     * @param stateListener 监听器
+     */
+    public void addStateListener(ChangeListener<SSHConnState> stateListener) {
+        if (stateListener != null) {
+            this.stateProperty().addListener(stateListener);
+        }
+    }
+
+    /**
      * 初始化客户端
      */
     private void initClient() throws JSchException {
@@ -122,10 +148,10 @@ public class SSHClient {
         }
         // 配置参数
         Properties config = new Properties();
-        // 去掉首次连接确认
-        config.put("StrictHostKeyChecking", "no");
         // 设置终端类型
         config.put("term", "xterm-256color");
+        // 去掉首次连接确认
+        config.put("StrictHostKeyChecking", "no");
         // 设置配置
         this.session.setConfig(config);
         // 启用X11转发
@@ -150,9 +176,16 @@ public class SSHClient {
                 throw new RuntimeException("X11forwarding is enable but x11config is null");
             }
         }
-
         // 超时连接
         this.session.setTimeout(this.sshConnect.connectTimeOutMs());
+    }
+
+    /**
+     * 关闭客户端，静默模式
+     */
+    public void closeQuiet() {
+        this.closeQuietly = true;
+        this.close();
     }
 
     /**
@@ -163,32 +196,32 @@ public class SSHClient {
             this.sftpManager.close();
             if (this.shell != null) {
                 this.shell.close();
+                this.shell = null;
             }
             if (this.session != null) {
                 this.session.disconnect();
+                this.session = null;
                 this.state.set(SSHConnState.CLOSED);
             }
-            this.shell = null;
-            this.session = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    /**
-     * 重置客户端
-     */
-    public void reset() {
-        // 移除监听器
-        if (!this.connStateListeners.isEmpty()) {
-            for (ChangeListener<SSHConnState> listener : connStateListeners) {
-                this.stateProperty().removeListener(listener);
-            }
-            this.connStateListeners.clear();
-        }
-        this.close();
-        this.state.set(SSHConnState.NOT_INITIALIZED);
-    }
+//    /**
+//     * 重置客户端
+//     */
+//    public void reset() {
+//        // 移除监听器
+//        if (!this.connStateListeners.isEmpty()) {
+//            for (ChangeListener<SSHConnState> listener : connStateListeners) {
+//                this.stateProperty().removeListener(listener);
+//            }
+//            this.connStateListeners.clear();
+//        }
+//        this.close();
+//        this.state.set(SSHConnState.NOT_INITIALIZED);
+//    }
 
     /**
      * 开始连接客户端
