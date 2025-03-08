@@ -19,6 +19,7 @@ import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadInPreparation;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyssh.x11.X11Manager;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
@@ -99,30 +100,6 @@ public class SSHClient {
         return this.state.getReadOnlyProperty();
     }
 
-//    /**
-//     * 添加连接状态监听器
-//     *
-//     * @param listener 监听器
-//     */
-//    public void addConnStateListener(@NonNull ChangeListener<SSHConnState> listener) {
-//        if (!this.connStateListeners.contains(listener)) {
-//            this.connStateListeners.add(listener);
-//            this.stateProperty().addListener(listener);
-//        }
-//    }
-//
-//    /**
-//     * 移除连接状态监听器
-//     *
-//     * @param listener 监听器
-//     */
-//    public void removeConnStateListener(ChangeListener<SSHConnState> listener) {
-//        if (listener != null) {
-//            this.connStateListeners.remove(listener);
-//            this.stateProperty().removeListener(listener);
-//        }
-//    }
-
     /**
      * 初始化客户端
      */
@@ -136,19 +113,22 @@ public class SSHClient {
         if (StringUtil.isNotBlank(this.sshConnect.getPassword())) {
             this.session.setPassword(this.sshConnect.getPassword());
         }
+        // 配置参数
         Properties config = new Properties();
+        // 启用X11转发
+        if (this.sshConnect.isX11forwarding()) {
+            config.put("ForwardX11", "yes");
+            config.put("ForwardX11Trusted", "yes");
+            // 启动x11服务
+            X11Manager.startXServer();
+        }
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
         // 设置终端类型
-//        config.put("TERM", "xterm-256color");
         config.put("term", "xterm-256color");
-        config.put("COLORTERM", "truecolor");
-        // 关键配置：启用X11转发
-        config.put("ForwardX11", "yes");
-        config.put("ForwardX11Trusted", "yes");
+        // 设置配置
         this.session.setConfig(config);
-//        session.setConfig("term", "xterm-256color");
-        // 超时连接时间为3秒
+        // 超时连接
         this.session.setTimeout(this.sshConnect.connectTimeOutMs());
     }
 
@@ -263,139 +243,9 @@ public class SSHClient {
         return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
     }
 
-//    /**
-//     * 当前连接名称
-//     *
-//     * @return 名称
-//     */
-//    public String infoName() {
-//        return this.sshConnect.getName();
-//    }
-
-//    /**
-//     * 获取交互式终端
-//     *
-//     * @return 交互式终端
-//     */
-//    public SSHShell shell() throws Exception {
-//        if (!this.isConnected()) {
-//            return null;
-//        }
-//        try {
-//            // 执行连接
-//            if (this.shell == null) {
-//                ChannelShell shell = (ChannelShell) this.session.openChannel("shell");
-//                this.shell = new SSHShell(shell);
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            throw ex;
-//        }
-//        return this.shell;
-//    }
-
     public Object connectName() {
         return this.sshConnect.getName();
     }
-
-//    public void bindStream(PtyProcess process) throws Exception {
-//        if (session == null) {
-//            this.start();
-//        }
-//        // 打开一个通道
-//        Channel channel = session.openChannel("shell");
-////        channel.setInputStream(System.in);
-////        channel.setOutputStream(System.out);
-//
-//        InputStream inputStream = process.getInputStream();
-//        OutputStream outputStream = process.getOutputStream();
-//
-//        inputStream.transferTo(channel.getOutputStream());
-//        channel.getInputStream().transferTo(outputStream);
-//
-//        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
-//        Thread readThread = new Thread(() -> {
-//            try {
-//                byte[] buffer = new byte[1024];
-//                int bytesRead;
-//                while (true) {
-//                    bytesRead = channel.getInputStream().read(buffer);
-//                    if (bytesRead != -1) {
-//                        outputStream.write(buffer, 0, bytesRead);
-//                        outputStream.flush();
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        readThread.start();
-//
-//        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
-//        Thread writeThread = new Thread(() -> {
-//            try {
-//                byte[] buffer = new byte[1024];
-//                int bytesRead;
-//                while (true) {
-//                    bytesRead = inputStream.read(buffer);
-//                    if (bytesRead != -1) {
-//                        channel.getOutputStream().write(buffer, 0, bytesRead);
-//                        channel.getOutputStream().flush();
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        writeThread.start();
-//        channel.connect();
-//    }
-//
-//    public void bindStream1(TtyConnector connector) throws Exception {
-//        if (session == null) {
-//            this.start();
-//        }
-//        // 打开一个通道
-//        Channel channel = session.openChannel("shell");
-    /// /        channel.setInputStream(System.in);
-    /// /        channel.setOutputStream(System.out);
-//
-//        // 读取 SSH 通道的输出并写入 pty4j 进程的输入
-//        Thread readThread = new Thread(() -> {
-//            try {
-//                char[] buffer = new char[1024];
-//                int bytesRead;
-//                while (true) {
-//                    bytesRead = connector.read(buffer, 0, buffer.length);
-//                    if (bytesRead > 0) {
-//                        String s = new String(buffer, 0, bytesRead);
-//                        channel.getOutputStream().write(s.getBytes());
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        readThread.start();
-//
-//        // 读取 pty4j 进程的输出并写入 SSH 通道的输入
-//        Thread writeThread = new Thread(() -> {
-//            try {
-//                byte[] buffer = new byte[1024];
-//                int bytesRead;
-//                while (true) {
-//                    bytesRead = channel.getInputStream().read(buffer, 0, buffer.length);
-//                    if (bytesRead > 0) {
-//                        connector.write(buffer);
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        writeThread.start();
-//        channel.connect();
-//    }
 
     @Getter
     private SSHShell shell;
@@ -404,7 +254,9 @@ public class SSHClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
-                channel.setXForwarding(true);
+                if (this.sshConnect.isX11forwarding()) {
+                    channel.setXForwarding(true);
+                }
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
                 channel.setPtyType("xterm");
@@ -427,7 +279,6 @@ public class SSHClient {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
                 SSHSftp sftp = new SSHSftp(channel);
-//                SSHSftp sftp = new SSHSftp(channel, this.sftpUploadManager);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
             } catch (Exception ex) {
@@ -441,6 +292,9 @@ public class SSHClient {
         ChannelExec channel = null;
         try {
             channel = (ChannelExec) this.session.openChannel("exec");
+            if (this.sshConnect.isX11forwarding()) {
+                channel.setXForwarding(true);
+            }
             channel.setCommand(command);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);

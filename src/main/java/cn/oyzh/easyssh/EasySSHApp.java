@@ -25,6 +25,7 @@ import cn.oyzh.easyssh.event.window.SSHShowUpdateConnectEvent;
 import cn.oyzh.easyssh.parser.SSHExceptionParser;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.store.SSHStoreUtil;
+import cn.oyzh.easyssh.x11.X11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
@@ -131,6 +132,8 @@ public class EasySSHApp extends FXApplication implements EventListener {
     @Override
     public void stop() {
         super.stop();
+        // 关闭x11服务
+        X11Manager.stopXServer();
         EventListener.super.unregister();
     }
 
