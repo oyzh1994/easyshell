@@ -2,8 +2,10 @@ package cn.oyzh.easyssh.controller.connect;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.SSHX11Config;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
+import cn.oyzh.easyssh.store.SSHX11ConfigStore;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -19,6 +21,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -101,6 +104,18 @@ public class SSHUpdateConnectController extends StageController {
     private FXToggleSwitch x11forwarding;
 
     /**
+     * x11地址
+     */
+    @FXML
+    private ClearableTextField x11Host;
+
+    /**
+     * x11端口
+     */
+    @FXML
+    private PortTextField x11Port;
+
+    /**
      * ssh连接储存对象
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
@@ -124,6 +139,19 @@ public class SSHUpdateConnectController extends StageController {
         }
         hostText = hostIp + ":" + this.hostPort.getValue();
         return hostText;
+    }
+
+    /**
+     * 获取x11配置信息
+     *
+     * @return x11配置信息
+     */
+    private SSHX11Config getX11Config() {
+        SSHX11Config sshConfig = new SSHX11Config();
+        sshConfig.setIid(this.sshConnect.getId());
+        sshConfig.setHost(this.x11Host.getText());
+        sshConfig.setPort(this.x11Port.getIntValue());
+        return sshConfig;
     }
 
     /**
@@ -180,6 +208,8 @@ public class SSHUpdateConnectController extends StageController {
             this.sshConnect.setPassword(password.trim());
             this.sshConnect.setRemark(this.remark.getTextTrim());
             this.sshConnect.setConnectTimeOut(connectTimeOut.intValue());
+            // x11配置
+            this.sshConnect.setX11Config(this.getX11Config());
             this.sshConnect.setX11forwarding(this.x11forwarding.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.sshConnect)) {
@@ -223,8 +253,23 @@ public class SSHUpdateConnectController extends StageController {
         this.password.setText(this.sshConnect.getPassword());
         this.connectTimeOut.setValue(this.sshConnect.getConnectTimeOut());
         this.x11forwarding.setSelected(this.sshConnect.isX11forwarding());
+
+        // x11配置
+        SSHX11Config x11Config = this.sshConnect.getX11Config();
+        if (x11Config != null) {
+            this.x11Host.setValue(x11Config.getHost());
+            this.x11Port.setValue(x11Config.getPort());
+        }
+
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.x11Host.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
     }
 
     @Override

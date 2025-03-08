@@ -39,7 +39,7 @@
                 </InfoLabel>
                 <FXHBox>
                     <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                        flexWidth="50% - 90" maxLen="1024">
+                                        flexWidth="50% - 90" maxLen="1024" text="root">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -116,6 +116,26 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXToggleSwitch>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField text="127.0.0.1" fx:id="x11Host" tipText="%base.contentTip1" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.port">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <PortTextField text="6000" fx:id="x11Port" tipText="%base.contentTip1" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PortTextField>
             </FXVBox>
         </FXTab>
     </FXTabPane>

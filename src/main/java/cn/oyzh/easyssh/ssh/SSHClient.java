@@ -3,6 +3,7 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.SSHX11Config;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
@@ -115,19 +116,31 @@ public class SSHClient {
         }
         // 配置参数
         Properties config = new Properties();
-        // 启用X11转发
-        if (this.sshConnect.isX11forwarding()) {
-            config.put("ForwardX11", "yes");
-            config.put("ForwardX11Trusted", "yes");
-            // 启动x11服务
-            X11Manager.startXServer();
-        }
+
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
         // 设置终端类型
         config.put("term", "xterm-256color");
         // 设置配置
         this.session.setConfig(config);
+        // 启用X11转发
+        if (this.sshConnect.isX11forwarding()) {
+            SSHX11Config x11Config = sshConnect.getX11Config();
+            if (x11Config != null) {
+                // x11配置
+                this.session.setConfig("ForwardX11", "yes");
+                this.session.setConfig("ForwardX11Trusted", "yes");
+                this.session.setX11Host(x11Config.getHost());
+                this.session.setX11Port(x11Config.getPort());
+                // 本地转发，启动x11服务
+                if (x11Config.isLocal()) {
+                    X11Manager.startXServer();
+                }
+            } else {
+                throw new RuntimeException("X11forwarding is enable but x11config is null");
+            }
+        }
+
         // 超时连接
         this.session.setTimeout(this.sshConnect.connectTimeOutMs());
     }

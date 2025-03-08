@@ -27,16 +27,17 @@ public class X11Manager {
      * 启动x11服务
      */
     public synchronized static void startXServer() {
+        if (x11Process != null && x11Process.isAlive()) {
+            return;
+        }
+        // 判断进程是否存在
+        String processName = "vcxsrv.exe";
+        if (ProcessUtil.isProcessRunning(processName)) {
+            return;
+        }
         if (OSUtil.isWindows()) {
             // 异步启动
             ThreadUtil.start(() -> {
-                // 杀死可能的旧进程
-                if (x11Process == null) {
-                    String processName = "vcxsrv.exe";
-                    if (ProcessUtil.isProcessRunning(processName)) {
-                        ProcessUtil.killProcess(processName);
-                    }
-                }
                 StringBuilder command = new StringBuilder("cmd.exe /c start vcxsrv.exe");
                 // 剪切板互通
                 command.append(" -clipboard ");

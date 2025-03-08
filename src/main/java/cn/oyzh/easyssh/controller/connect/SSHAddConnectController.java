@@ -3,8 +3,10 @@ package cn.oyzh.easyssh.controller.connect;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
+import cn.oyzh.easyssh.domain.SSHX11Config;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
+import cn.oyzh.easyssh.store.SSHX11ConfigStore;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -20,6 +22,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -96,6 +99,18 @@ public class SSHAddConnectController extends StageController {
     private FXToggleSwitch x11forwarding;
 
     /**
+     * x11地址
+     */
+    @FXML
+    private ClearableTextField x11Host;
+
+    /**
+     * x11端口
+     */
+    @FXML
+    private PortTextField x11Port;
+
+    /**
      * 分组
      */
     private SSHGroup group;
@@ -104,6 +119,11 @@ public class SSHAddConnectController extends StageController {
      * ssh连接储存对象
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+
+    /**
+     * x11配置存储对象
+     */
+    private final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -127,6 +147,18 @@ public class SSHAddConnectController extends StageController {
     }
 
     /**
+     * 获取x11配置信息
+     *
+     * @return x11配置信息
+     */
+    private SSHX11Config getX11Config() {
+        SSHX11Config sshConfig = new SSHX11Config();
+        sshConfig.setHost(this.x11Host.getText());
+        sshConfig.setPort(this.x11Port.getIntValue());
+        return sshConfig;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -139,6 +171,7 @@ public class SSHAddConnectController extends StageController {
             // 创建ssh连接
             SSHConnect sshConnect = new SSHConnect();
             sshConnect.setHost(host);
+            sshConnect.setConnectTimeOut(3);
             sshConnect.setUser(this.userName.getTextTrim());
             sshConnect.setPassword(this.password.getTextTrim());
             SSHConnectUtil.testConnect(this.stage, sshConnect);
@@ -179,6 +212,8 @@ public class SSHAddConnectController extends StageController {
             sshConnect.setPassword(password.trim());
             sshConnect.setRemark(this.remark.getTextTrim());
             sshConnect.setConnectTimeOut(connectTimeOut.intValue());
+            // x11配置
+            sshConnect.setX11Config(this.getX11Config());
             sshConnect.setX11forwarding(this.x11forwarding.isSelected());
             sshConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
@@ -217,6 +252,13 @@ public class SSHAddConnectController extends StageController {
         this.group = this.getWindowProp("group");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.x11Host.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
     }
 
     @Override

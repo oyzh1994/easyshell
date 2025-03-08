@@ -8,15 +8,14 @@
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyssh.controller.connect.SSHAddConnectController" realWidth="750" realHeight="400">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
@@ -117,6 +116,26 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXToggleSwitch>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField text="127.0.0.1" fx:id="x11Host" tipText="%base.contentTip1" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.port">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <PortTextField text="6000" fx:id="x11Port" tipText="%base.contentTip1" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PortTextField>
             </FXVBox>
         </FXTab>
     </FXTabPane>

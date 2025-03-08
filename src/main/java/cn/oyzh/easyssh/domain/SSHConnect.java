@@ -86,26 +86,33 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
     /**
      * x11转发
      */
-    @Setter
+    @Getter
     @Column
     private Boolean x11forwarding;
 
     /**
+     * x11配置
+     */
+    @Getter
+    private SSHX11Config x11Config;
+
+    /**
      * 复制对象
      *
-     * @param info ssh信息
+     * @param sshConnect ssh信息
      * @return 当前对象
      */
-    public SSHConnect copy(@NonNull SSHConnect info) {
-        this.id = info.id;
-        this.name = info.name;
-        this.host = info.host;
-        this.user = info.user;
-        this.remark = info.remark;
-        this.groupId = info.groupId;
-        this.password = info.password;
-        this.x11forwarding = info.x11forwarding;
-        this.connectTimeOut = info.connectTimeOut;
+    public SSHConnect copy(@NonNull SSHConnect sshConnect) {
+        this.id = sshConnect.id;
+        this.name = sshConnect.name;
+        this.host = sshConnect.host;
+        this.user = sshConnect.user;
+        this.remark = sshConnect.remark;
+        this.groupId = sshConnect.groupId;
+        this.password = sshConnect.password;
+        this.x11Config = sshConnect.x11Config;
+        this.x11forwarding = sshConnect.x11forwarding;
+        this.connectTimeOut = sshConnect.connectTimeOut;
         return this;
     }
 
