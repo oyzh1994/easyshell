@@ -1,0 +1,46 @@
+#!/bin/zsh.exe
+
+export PATH="/bin"
+
+NAME="`basename $0`"
+
+case "$1" in
+  start|stop|config|configure|show)
+    if [ "$1" = "start" ]; then
+      builtin printf "%-36s" "starting $NAME daemon..."
+    elif [ "$1" = "stop" ]; then
+      builtin printf "%-36s" "stopping $NAME daemon..."
+    fi
+    /bin/MobaBox.exe MobaSendMsg MobaXterm "service $NAME $1"
+    if [ "$?" = "0" ]; then
+      if [ "$1" = "stop" ] || [ "$1" = "start" ]; then
+        /bin/MobaBox.exe MobaSendMsg MobaXterm "service $NAME status"
+        if [ "$?" -eq "0" -a "$1" = "stop" ] || [ "$?" -eq "1" -a "$1" = "start" ]; then
+          builtin echo -e "\e[32m[OK]\e[0m"
+        else
+          builtin echo -e "\e[31m[Ko]\e[0m"
+        fi
+      fi
+    else
+      builtin echo -e "\e[31m[Ko]\e[0m"
+    fi
+  ;;
+  restart)
+    "$0" stop
+    "$0" start
+  ;;
+  status)
+    /bin/MobaBox.exe MobaSendMsg MobaXterm "service $NAME $1"
+    if [ "$?" = "1" ]; then
+      builtin echo -e "$NAME daemon is \e[32mrunning\e[0m"
+    else
+      builtin echo -e "$NAME daemon is \e[31mstopped\e[0m"
+    fi
+  ;;
+  *)
+    /bin/MobaBox.exe MobaSendMsg MobaXterm "service $NAME config"
+esac
+
+
+exit 0
+

@@ -20,6 +20,7 @@ import cn.oyzh.easyssh.sftp.upload.SftpUploadEnded;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadFailed;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadInPreparation;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyssh.store.SSHX11ConfigStore;
 import cn.oyzh.easyssh.x11.X11Manager;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -69,6 +70,11 @@ public class SSHClient {
     private Session session;
 
     /**
+     * x11配置存储
+     */
+    private final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
+
+    /**
      * 连接状态监听器列表
      */
     private final List<ChangeListener<SSHConnState>> connStateListeners = new ArrayList<>();
@@ -116,7 +122,6 @@ public class SSHClient {
         }
         // 配置参数
         Properties config = new Properties();
-
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
         // 设置终端类型
@@ -125,7 +130,12 @@ public class SSHClient {
         this.session.setConfig(config);
         // 启用X11转发
         if (this.sshConnect.isX11forwarding()) {
-            SSHX11Config x11Config = sshConnect.getX11Config();
+            // x11配置
+            SSHX11Config x11Config = this.sshConnect.getX11Config();
+            // 获取x11配置
+            if (x11Config == null) {
+                x11Config = this.x11ConfigStore.getByIid(this.sshConnect.getId());
+            }
             if (x11Config != null) {
                 // x11配置
                 this.session.setConfig("ForwardX11", "yes");

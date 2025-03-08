@@ -5,6 +5,7 @@ import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ResourceUtil;
+import cn.oyzh.common.util.StringUtil;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -17,6 +18,14 @@ import java.io.File;
  */
 @UtilityClass
 public class X11Manager {
+
+
+    /**
+     * x11类型
+     * moba 默认
+     * vcxsrv
+     */
+    public static String x11_type = "moba";
 
     /**
      * x11进程
@@ -31,14 +40,21 @@ public class X11Manager {
             return;
         }
         // 判断进程是否存在
-        String processName = "vcxsrv.exe";
+        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
         if (ProcessUtil.isProcessRunning(processName)) {
             return;
         }
         if (OSUtil.isWindows()) {
             // 异步启动
             ThreadUtil.start(() -> {
-                StringBuilder command = new StringBuilder("cmd.exe /c start vcxsrv.exe");
+                StringBuilder command = new StringBuilder("cmd.exe /c start ");
+                // moba
+                if (StringUtil.equals(x11_type, "moba")) {
+                    command.append("XWin_MobaX.exe");
+                } else {// vcxsrv
+                    command.append("vcxsrv.exe");
+                }
+                // vcxsrv
                 // 剪切板互通
                 command.append(" -clipboard ");
                 // 鉴权
@@ -53,11 +69,17 @@ public class X11Manager {
                 command.append(" -notrayicon");
 //            // 指定分辨率
 //            command.append(" -screen 1920x1080");
-                // vcxsrv服务地址
-                String dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
+                // 工作目录
+                String dir;
+                if (StringUtil.equals(x11_type, "moba")) {
+                    dir = ResourceUtil.getResource("/bin/moba/").getFile();
+                } else {// vcxsrv
+                    dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
+                }
                 if (dir.startsWith("/")) {
                     dir = dir.substring(1);
                 }
+                // 启动进程
                 x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
                 // 注册钩子
                 RuntimeUtil.addShutdownHook(new Thread(X11Manager::stopXServer));
