@@ -44,12 +44,18 @@ public class SSHSetting extends AppSetting {
         if (OSUtil.isMacOS()) {
             return "/opt/X11";
         }
+        if (OSUtil.isWindows()) {
+            return "C:/Program Files/VcXsrv";
+        }
         return "";
     }
 
-    public String x11Binary() {
+    public String[] x11Binary() {
         if (OSUtil.isMacOS()) {
-            return "startx";
+            return new String[]{"startx"};
+        }
+        if (OSUtil.isWindows()) {
+            return new String[]{"vcxsrv.exe", "XWin_MobaX.exe","XWin.exe"};
         }
         return null;
     }
@@ -61,6 +67,9 @@ public class SSHSetting extends AppSetting {
         }
         if (OSUtil.isMacOS()) {
             return x11Path + "/bin/";
+        }
+        if (OSUtil.isWindows()) {
+            return x11Path;
         }
         return null;
     }

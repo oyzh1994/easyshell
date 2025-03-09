@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.controller.connect;
 
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
@@ -17,6 +18,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -258,5 +260,16 @@ public class SSHAddConnectController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
+    }
+
+    @FXML
+    private void downloadX11() {
+        String url = "";
+        if (OSUtil.isWindows()) {
+            url = "https://sourceforge.net/projects/vcxsrv/";
+        } else if (OSUtil.isMacOS()) {
+            url = "https://www.xquartz.org/";
+        }
+        FXUtil.showDocument(url);
     }
 }

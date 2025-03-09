@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.util.SSHProcessUtil;
+import cn.oyzh.easyssh.x11.X11Util;
 import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
@@ -14,6 +15,7 @@ import cn.oyzh.fx.gui.setting.SettingTreeItem;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
+import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -550,33 +552,45 @@ public class SettingController extends StageController {
 
     @FXML
     private void chooseX11Path() {
+        File dir = null;
         if (OSUtil.isWindows()) {
+            String initDir;
+            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
+                initDir = "C:/Program Files/VcXsrv";
+            } else {
+                initDir = FXChooser.DESKTOP_DIR.getPath();
+            }
+            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
 
         } else if (OSUtil.isMacOS()) {
             String initDir;
             if (FileUtil.exist("/opt/X11")) {
                 initDir = "/opt/X11";
             } else {
-                initDir = "/opt";
+                initDir = FXChooser.DESKTOP_DIR.getPath();
             }
-            File dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
-            if (dir != null && dir.isDirectory() && dir.exists()) {
-                this.x11Path.setText(dir.getPath());
-            }
+            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
+        }
+        if (dir != null && dir.isDirectory() && dir.exists()) {
+            this.x11Path.setText(dir.getPath());
         }
     }
 
     @FXML
     private void testX11Path() {
+        String dir = this.x11Path.getText();
+        // 寻找存在的二进制命令
+        String bin;
         if (OSUtil.isWindows()) {
-
-        } else if (OSUtil.isMacOS()) {
-            String path = this.x11Path.getText();
-            if (FileUtil.exist(path + "/bin/startx")) {
-                MessageBox.okToast(I18nHelper.testSuccess());
-            } else {
-                MessageBox.warnToast(I18nHelper.testFailed());
-            }
+            // 寻找存在的二进制命令
+            bin = X11Util.findExist(dir, setting.x11Binary());
+        } else {
+            bin = X11Util.findExist(dir, "/bin/", setting.x11Binary());
+        }
+        if (bin != null) {
+            MessageBox.okToast(I18nHelper.testSuccess());
+        } else {
+            MessageBox.warnToast(I18nHelper.testFailed());
         }
     }
 }

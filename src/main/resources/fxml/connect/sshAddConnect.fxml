@@ -16,6 +16,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyssh.controller.connect.SSHAddConnectController" realWidth="750" realHeight="400">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
@@ -111,11 +112,18 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXToggleSwitch text="%ssh.connect.tip1" fx:id="x11forwarding">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXToggleSwitch>
+                <FXHBox>
+                    <FXToggleSwitch text="%ssh.connect.tip1" fx:id="x11forwarding">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                    <FXButton text="%ssh.connect.tip3" onMousePrimaryClicked="#downloadX11">
+                        <FXHBox.margin>
+                            <Insets left="10" top="5"/>
+                        </FXHBox.margin>
+                    </FXButton>
+                </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

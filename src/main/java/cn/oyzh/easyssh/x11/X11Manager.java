@@ -15,20 +15,13 @@ import lombok.experimental.UtilityClass;
 import java.io.File;
 
 /**
- * 程序主入口
+ * x11管理器
  *
  * @author oyzh
  * @since 2025/03/08
  */
 @UtilityClass
 public class X11Manager {
-
-    /**
-     * x11类型
-     * moba 默认
-     * vcxsrv
-     */
-    public static String x11_type = "moba";
 
     /**
      * x11进程
@@ -44,80 +37,132 @@ public class X11Manager {
      * 启动x11服务
      */
     public synchronized static void startXServer() {
+        // x11进程存在
         if (x11Process != null && x11Process.isAlive()) {
+            return;
+        }
+        // 检查工作目录
+        if (setting.x11WorkDir() == null) {
+            JulLog.warn("x11 WorkDir is null");
             return;
         }
         if (OSUtil.isWindows()) {
             startXServer_windows();
         } else if (OSUtil.isMacOS()) {
-//            startXServer_macos_arm64();
             startXServer_macos();
         }
     }
 
+    /**
+     * windows下启动x-server
+     */
     private static void startXServer_windows() {
         // 判断进程是否存在
-        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
+        String[] processName = setting.x11Binary();
         if (ProcessUtil.isProcessRunning(processName)) {
             return;
         }
         // 异步启动
         ThreadUtil.start(() -> {
-            StringBuilder command = new StringBuilder("cmd.exe /c start ");
-            // moba
-            if (StringUtil.equals(x11_type, "moba")) {
-                command.append("XWin_MobaX.exe");
-            } else {// vcxsrv
-                command.append("vcxsrv.exe");
-            }
-            // vcxsrv
-            // 剪切板互通
-            command.append(" -clipboard ");
-            // 鉴权
-            command.append(" -ac");
-            // gpu加速
-            command.append(" -wgl");
-            // 多窗口
-            command.append(" -multiwindow");
-            // 静默处理错误
-            command.append(" -silent-dup-error");
-            // 关闭托盘
-            command.append(" -notrayicon");
+            try {
+                // 寻找存在的二进制命令
+                String bin = X11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
+                // 命令
+                StringBuilder command = new StringBuilder("cmd.exe /c start ");
+                // 二进制程序名称
+                command.append(bin);
+                // vcxsrv
+                // 剪切板互通
+                command.append(" -clipboard ");
+                // 鉴权
+                command.append(" -ac");
+                // gpu加速
+                command.append(" -wgl");
+                // 多窗口
+                command.append(" -multiwindow");
+                // 静默处理错误
+                command.append(" -silent-dup-error");
+                // 关闭托盘
+                command.append(" -notrayicon");
 //            // 指定分辨率
 //            command.append(" -screen 1920x1080");
-            // 工作目录
-            String dir;
-            if (StringUtil.equals(x11_type, "moba")) {
-                dir = ResourceUtil.getResource("/bin/moba/").getFile();
-            } else {// vcxsrv
-                dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
+                // 工作目录
+                File dir = new File(setting.x11WorkDir());
+                // 启动进程
+                x11Process = RuntimeUtil.exec(command.toString(), null, dir);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
-            if (dir.startsWith("/")) {
-                dir = dir.substring(1);
-            }
-            // 启动进程
-            x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
         });
     }
 
+//    /**
+//     * windows下启动x-server
+//     */
+//    private static void startXServer_windows() {
+//        // 判断进程是否存在
+//        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
+//        if (ProcessUtil.isProcessRunning(processName)) {
+//            return;
+//        }
+//        // 异步启动
+//        ThreadUtil.start(() -> {
+//            StringBuilder command = new StringBuilder("cmd.exe /c start ");
+//            // moba
+//            if (StringUtil.equals(x11_type, "moba")) {
+//                command.append("XWin_MobaX.exe");
+//            } else {// vcxsrv
+//                command.append("vcxsrv.exe");
+//            }
+//            // vcxsrv
+//            // 剪切板互通
+//            command.append(" -clipboard ");
+//            // 鉴权
+//            command.append(" -ac");
+//            // gpu加速
+//            command.append(" -wgl");
+//            // 多窗口
+//            command.append(" -multiwindow");
+//            // 静默处理错误
+//            command.append(" -silent-dup-error");
+//            // 关闭托盘
+//            command.append(" -notrayicon");
+////            // 指定分辨率
+////            command.append(" -screen 1920x1080");
+//            // 工作目录
+//            String dir;
+//            if (StringUtil.equals(x11_type, "moba")) {
+//                dir = ResourceUtil.getResource("/bin/moba/").getFile();
+//            } else {// vcxsrv
+//                dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
+//            }
+//            if (dir.startsWith("/")) {
+//                dir = dir.substring(1);
+//            }
+//            // 启动进程
+//            x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
+//        });
+//    }
+
+    /**
+     * macos下启动x-server
+     */
     private static void startXServer_macos() {
         // 判断进程是否存在
         String[] processName = {"XQuartz"};
         if (ProcessUtil.isProcessRunning(processName)) {
             return;
         }
-        // 检查二进制文件
-        if (setting.x11WorkDir() == null) {
-            JulLog.warn("x11 WorkDir is null");
-            return;
-        }
         // 异步启动
         ThreadUtil.start(() -> {
             try {
+                // 寻找存在的二进制命令
+                String bin = X11Util.findExist(setting.x11WorkDir(),"/bin/", setting.x11Binary());
                 // 工作目录
                 File dir = new File(setting.x11WorkDir());
                 // 构建进程
-                ProcessBuilder processBuilder = new ProcessBuilder(setting.x11Binary());
+                ProcessBuilder processBuilder = new ProcessBuilder(bin);
                 processBuilder.directory(dir);
                 // 启动进程
                 x11Process = processBuilder.start();
