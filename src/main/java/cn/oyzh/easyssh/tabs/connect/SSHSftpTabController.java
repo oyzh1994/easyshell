@@ -3,6 +3,8 @@ package cn.oyzh.easyssh.tabs.connect;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteDeleted;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
@@ -81,7 +83,6 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private SSHSftpTableView fileTable;
 
-
     @FXML
     private ClearableTextField filterFile;
 
@@ -90,6 +91,12 @@ public class SSHSftpTabController extends SubTabController {
 
     @FXML
     private FXHBox uploadBox;
+
+    @FXML
+    private FXLabel fileDelete;
+
+    @FXML
+    private FXHBox deleteBox;
 
     private final SSHSetting setting = SSHSettingStore.SETTING;
 
@@ -106,17 +113,24 @@ public class SSHSftpTabController extends SubTabController {
             this.fileTable.setClient(this.client());
             this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
 
+            // 下载
             this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
             this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
             this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
             this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
             this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
 
+            // 上传
             this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
             this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
+
+            // 删除
+            this.fileTable.setDeleteEndedCallback(this::updateDeleteInfo);
+            this.fileTable.setDeleteDeletedCallback(this::updateDeleteInfo);
+
             this.fileTable.loadFile();
         } catch (Exception ex) {
             this.initialized = false;
@@ -324,6 +338,7 @@ public class SSHSftpTabController extends SubTabController {
             this.fileUpload.clear();
             this.uploadBox.disappear();
             this.updateLayout();
+            this.fileTable.loadFile();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -338,13 +353,11 @@ public class SSHSftpTabController extends SubTabController {
             StringBuilder builder = new StringBuilder();
             builder.append("Total Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Dest: ").append(changed.getRemoteFile());
-            builder.append(" File: ").append(changed.getLocalFileName());
+            builder.append(" Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
             this.fileUpload.text(builder.toString());
         } else {
             StringBuilder builder = new StringBuilder();
-            builder.append("Dest: ").append(changed.getRemoteFile());
-            builder.append(" File: ").append(changed.getLocalFileName());
+            builder.append("Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
             this.fileUpload.text(builder.toString());
         }
         StringBuilder progress = new StringBuilder();
@@ -435,14 +448,31 @@ public class SSHSftpTabController extends SubTabController {
         this.downloadProgressInfo.text(SSHI18nHelper.fileTip8());
     }
 
-    private synchronized void updateLayout() {
-        if (this.uploadBox.isVisible() && this.downloadBox.isVisible()) {
-            this.fileTable.setFlexHeight("100% - 120");
-        } else if (this.uploadBox.isVisible() || this.downloadBox.isVisible()) {
-            this.fileTable.setFlexHeight("100% - 90");
-        } else {
-            this.fileTable.setFlexHeight("100% - 60");
+    private void updateDeleteInfo(SftpDeleteEnded ended) {
+        this.deleteBox.disappear();
+        this.updateLayout();
+    }
+
+    private void updateDeleteInfo(SftpDeleteDeleted deleted) {
+        if (!this.deleteBox.isVisible()) {
+            this.deleteBox.display();
+            this.updateLayout();
         }
+        this.fileDelete.text(I18nHelper.fileDeleteIng() + ": " + deleted.getRemoteFile());
+    }
+
+    private synchronized void updateLayout() {
+        int showNum = 0;
+        if (this.deleteBox.isVisible()) {
+            showNum++;
+        }
+        if (this.uploadBox.isVisible()) {
+            showNum++;
+        }
+        if (this.downloadBox.isVisible()) {
+            showNum++;
+        }
+        this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
         this.fileTable.parentAutosize();
     }
 }

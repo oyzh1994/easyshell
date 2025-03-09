@@ -9,6 +9,8 @@ import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.SftpUtil;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteDeleted;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
@@ -213,6 +215,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     filesToDelete.add(file);
                 }
                 this.files.removeAll(filesToDelete);
+                // 删除文件结束
+                this.client.getSftpDeleteManager().deleteEnded();
                 this.refreshFile();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -532,5 +536,13 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     public boolean existFile(String fileName) {
         Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
         return sftpFile.isPresent();
+    }
+
+    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
+        this.client.setDeleteEndedCallback(callback);
+    }
+
+    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
+        this.client.setDeleteDeletedCallback(callback);
     }
 }

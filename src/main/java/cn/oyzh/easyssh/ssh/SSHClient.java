@@ -9,6 +9,9 @@ import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
 import cn.oyzh.easyssh.sftp.SftpAttr;
 import cn.oyzh.easyssh.sftp.SftpFile;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteDeleted;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteEnded;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadCanceled;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadChanged;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadEnded;
@@ -328,13 +331,16 @@ public class SSHClient {
 
     private final SftpUploadManager sftpUploadManager = new SftpUploadManager();
 
+    @Getter
+    private final SftpDeleteManager sftpDeleteManager = new SftpDeleteManager();
+
     private final SftpDownloadManager sftpDownloadManager = new SftpDownloadManager();
 
     public SSHSftp openSftp() {
         if (!this.sftpManager.hasAvailable()) {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                SSHSftp sftp = new SSHSftp(channel);
+                SSHSftp sftp = new SSHSftp(channel,this.sftpDeleteManager);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
             } catch (Exception ex) {
@@ -444,5 +450,13 @@ public class SSHClient {
 
     public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
         this.sftpDownloadManager.setDownloadInPreparationCallback(callback);
+    }
+
+    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
+        this.sftpDeleteManager.setDeleteEndedCallback(callback);
+    }
+
+    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
+        this.sftpDeleteManager.setDeleteDeletedCallback(callback);
     }
 }

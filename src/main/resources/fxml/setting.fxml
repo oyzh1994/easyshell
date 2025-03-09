@@ -23,6 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.easyssh.fx.SSHTerminalTypeComboBox?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyssh.controller.SettingController" realWidth="700" realHeight="450">
     <left>
@@ -33,6 +34,16 @@
         <FXVBox flexWidth="100%" flexHeight="100% - 110">
             <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
+                <InfoLabel text="%ssh.connect.tip4">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SSHTerminalTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SSHTerminalTypeComboBox>
                 <InfoLabel text="%ssh.connect.tip2">
                     <VBox.margin>
                         <Insets left="30"/>
@@ -44,16 +55,16 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ReadOnlyTextField>
-                   <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">
-                       <HBox.margin>
-                           <Insets left="5" top="5"/>
-                       </HBox.margin>
-                   </FXButton>
-                   <FXButton text="%base.test" onMousePrimaryClicked="#testX11Path">
-                       <HBox.margin>
-                           <Insets left="5" top="5"/>
-                       </HBox.margin>
-                   </FXButton>
+                    <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </FXButton>
+                    <FXButton text="%base.test" onMousePrimaryClicked="#testX11Path">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </FXButton>
                 </FXHBox>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="window_box" flexWidth="100%" flexHeight="100%"

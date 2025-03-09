@@ -73,7 +73,8 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles" unselectedText="%base.doNotShowHiddenFiles" >
+            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"
+                            unselectedText="%base.doNotShowHiddenFiles">
                 <FXHBox.margin>
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
@@ -91,6 +92,18 @@
                 <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
             </columns>
         </SSHSftpTableView>
+        <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
+            <FXLabel text="%base.delete">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
+            <FXLabel fx:id="fileDelete">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
+        </FXHBox>
         <FXHBox fx:id="downloadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
             <FXLabel text="%base.download">
                 <FXHBox.margin>

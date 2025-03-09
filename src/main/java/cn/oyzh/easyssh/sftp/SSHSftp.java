@@ -1,6 +1,7 @@
 package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyssh.ssh.SSHChannel;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import com.jcraft.jsch.ChannelSftp;
@@ -21,8 +22,11 @@ import java.util.stream.Collectors;
  */
 public class SSHSftp extends SSHChannel {
 
-    public SSHSftp(ChannelSftp channel) {
-       super(channel);
+    private final SftpDeleteManager deleteManager;
+
+    public SSHSftp(ChannelSftp channel, SftpDeleteManager deleteManager) {
+        super(channel);
+        this.deleteManager = deleteManager;
     }
 
     private final AtomicBoolean using = new AtomicBoolean(false);
@@ -78,6 +82,7 @@ public class SSHSftp extends SSHChannel {
         try {
             this.setUsing(true);
             this.getChannel().rm(path);
+            this.deleteManager.deleteDeleted(path);
         } finally {
             this.setUsing(false);
         }
@@ -87,6 +92,7 @@ public class SSHSftp extends SSHChannel {
         try {
             this.setUsing(true);
             this.getChannel().rmdir(path);
+            this.deleteManager.deleteDeleted(path);
         } finally {
             this.setUsing(false);
         }

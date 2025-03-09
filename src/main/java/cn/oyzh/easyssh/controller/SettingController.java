@@ -5,6 +5,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.fx.SSHTerminalTypeComboBox;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.easyssh.util.SSHProcessUtil;
 import cn.oyzh.easyssh.x11.X11Util;
@@ -243,6 +244,12 @@ public class SettingController extends StageController {
     private ReadOnlyTextField x11Path;
 
     /**
+     * 终端类型
+     */
+    @FXML
+    private SSHTerminalTypeComboBox terminalType;
+
+    /**
      * 配置对象
      */
     private final SSHSetting setting = SSHSettingStore.SETTING;
@@ -304,6 +311,12 @@ public class SettingController extends StageController {
         }
         // x11目录
         this.x11Path.setText(this.setting.x11Path());
+        // 终端类型
+        if (StringUtil.isBlank(this.setting.getTerminalType())) {
+            this.terminalType.selectFirst();
+        } else {
+            this.terminalType.select(this.setting.getTerminalType());
+        }
     }
 
     /**
@@ -351,6 +364,8 @@ public class SettingController extends StageController {
             this.setting.setLocale(locale);
             // x11目录
             this.setting.setX11Path(this.x11Path.getText());
+            // 终端类型
+            this.setting.setTerminalType(this.terminalType.getSelectedItem());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
             this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());

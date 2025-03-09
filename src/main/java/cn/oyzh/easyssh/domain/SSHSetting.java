@@ -28,6 +28,12 @@ public class SSHSetting extends AppSetting {
     private String x11Path;
 
     /**
+     * 终端类型
+     */
+    @Column
+    private String terminalType;
+
+    /**
      * 是否显示隐藏文件
      */
     @Column

@@ -2,6 +2,9 @@ package cn.oyzh.easyssh.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.domain.SSHSetting;
+import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
@@ -10,7 +13,6 @@ import com.techsenger.jeditermfx.core.TtyConnector;
 import com.techsenger.jeditermfx.core.util.Platform;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
-import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
 import kotlin.text.Charsets;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +31,25 @@ import java.util.function.IntConsumer;
  */
 public class SSHTermWidget extends JediTermFxWidget {
 
+    /**
+     * 设置
+     */
+    private final SSHSetting setting = SSHSettingStore.SETTING;
+
     public SSHTermWidget() {
         super(new SSHSettingsProvider());
     }
 
     protected String[] getProcessCommand() {
-        String[] command;
+        // 如果设置了指定类型的终端，则直接返回
+        String terminalType = this.setting.getTerminalType();
+        if (StringUtil.isNotBlank(terminalType)) {
+            if (OSUtil.isMacOS()) {
+                return new String[]{terminalType, "--login"};
+            }
+            return new String[]{terminalType};
+        }
+        String[] command = new String[]{"/bin/bash"};
         Map<String, String> envs = this.getEnvironments();
         if (OSUtil.isWindows()) {
 //                command = new String[]{"cmd.exe"};
@@ -45,7 +60,7 @@ public class SSHTermWidget extends JediTermFxWidget {
                 shell = "/bin/bash";
             }
             command = new String[]{shell};
-        } else {
+        } else if (OSUtil.isMacOS()) {
             String shell = envs.get("SHELL");
             if (shell == null) {
                 shell = "/bin/bash";
@@ -67,7 +82,7 @@ public class SSHTermWidget extends JediTermFxWidget {
                 .setCommand(command)
                 .setEnvironment(envs)
                 .setConsole(false)
-//                    .setUseWinConPty(true)
+                .setUseWinConPty(false)
                 .setWindowsAnsiColorEnabled(true)
                 .start();
     }
@@ -131,5 +146,4 @@ public class SSHTermWidget extends JediTermFxWidget {
     public TermSize getTermSize() {
         return this.getTtyConnector().getTermSize();
     }
-
 }
