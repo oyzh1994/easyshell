@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyssh</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <description>ssh连接，sftp文件管理，x11转发支持，本地终端增强能力</description>
 
     <properties>
@@ -64,13 +64,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>2.4.1</version>
-            <scope>test</scope>
-        </dependency>
-
         <!--### JNA ###-->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
@@ -110,9 +103,25 @@
             <version>${purejavacomm.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- fx打包 -->
+        <dependency>
+            <groupId>cn.oyzh</groupId>
+            <artifactId>fx-pkg</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>2.4.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!--        &lt;!&ndash;### LOGGING ###&ndash;&gt;-->
@@ -155,4 +164,43 @@
 <!--        </dependency>-->
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- 资源插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Spring Boot打包相关 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.18</version>
+                <configuration>
+                    <mainClass>cn.oyzh.easyssh.EasySSHBootstrap</mainClass>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-jarmode-layertools</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

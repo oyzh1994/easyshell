@@ -1,15 +1,15 @@
 {
     "packMode": "jpackage",
     "platform": "macos",
-    "dest": "/Volumes/Files/Package/EasyRedis/${appVersion}/EasyRedis_${appVersion}.app",
-    "appIcon": "${projectPath}/resource/redis.icns",
-    "mainJar": "${projectPath}/target/easyredis-${appVersion}.jar",
+    "dest": "/Volumes/Files/Package/EasySSH/${appVersion}/EasyRedis_${appVersion}.app",
+    "appIcon": "${projectPath}/resource/ssh.icns",
+    "mainJar": "${projectPath}/target/easyssh-${appVersion}.jar",
     "jdkPath": "$SYSTEM",
     "jpackage": {
         "verbose": true,
         "vendor": "oyzh",
         "type": "app-image",
-        "description": "这是一个Redis管理工具，提供导入、导出、传输、终端、可视化操作等功能."
+        "description": "这是一个SSH管理工具，提供ssh连接、sftp文件管理，x11转发等功能."
     },
     "compress": {
         "type": "zip"
