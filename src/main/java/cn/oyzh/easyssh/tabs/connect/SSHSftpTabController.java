@@ -338,13 +338,13 @@ public class SSHSftpTabController extends SubTabController {
             StringBuilder builder = new StringBuilder();
             builder.append("Total Count: ").append(changed.getFileCount());
             builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Current: ").append(changed.getLocalFileName());
             builder.append(" Dest: ").append(changed.getRemoteFile());
+            builder.append(" File: ").append(changed.getLocalFileName());
             this.fileUpload.text(builder.toString());
         } else {
             StringBuilder builder = new StringBuilder();
-            builder.append("File: ").append(changed.getLocalFileName());
-            builder.append(" Dest: ").append(changed.getRemoteFile());
+            builder.append("Dest: ").append(changed.getRemoteFile());
+            builder.append(" File: ").append(changed.getLocalFileName());
             this.fileUpload.text(builder.toString());
         }
         StringBuilder progress = new StringBuilder();

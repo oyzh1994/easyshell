@@ -70,6 +70,9 @@
     "jar": {
         "removeEmpty": true,
         "excludes": [
+            "AL2.0",
+            "LGPL2.1",
+            "package.html",
             "pom.xml",
             "pom.properties",
             "AUTHORS",
