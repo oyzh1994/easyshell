@@ -110,29 +110,44 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
+            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelDownload">
+                <FXHBox.margin>
+                    <Insets left="5" top="8"/>
+                </FXHBox.margin>
+            </CancelSVGGlyph>
+            <FXProgressBar fx:id="downloadProgress">
+                <FXHBox.margin>
+                    <Insets left="5" top="9"/>
+                </FXHBox.margin>
+            </FXProgressBar>
+            <FXLabel fx:id="downloadProgressInfo" maxWidth="200">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
             <FXLabel fx:id="fileDownload" maxWidth="600">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <FXProgressBar fx:id="downloadProgress">
-                <FXHBox.margin>
-                    <Insets left="5" top="8"/>
-                </FXHBox.margin>
-            </FXProgressBar>
-            <FXLabel fx:id="downloadProgressInfo" prefWidth="120" maxWidth="200">
+        </FXHBox>
+        <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
+            <FXLabel text="%base.upload">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelDownload">
+            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelUpload">
                 <FXHBox.margin>
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </CancelSVGGlyph>
-        </FXHBox>
-        <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
-            <FXLabel text="%base.upload">
+            <FXProgressBar fx:id="uploadProgress">
+                <FXHBox.margin>
+                    <Insets left="5" top="9"/>
+                </FXHBox.margin>
+            </FXProgressBar>
+            <FXLabel fx:id="uploadProgressInfo" maxWidth="200">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
@@ -142,21 +157,6 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <FXProgressBar fx:id="uploadProgress">
-                <FXHBox.margin>
-                    <Insets left="5" top="8"/>
-                </FXHBox.margin>
-            </FXProgressBar>
-            <FXLabel fx:id="uploadProgressInfo" prefWidth="120" maxWidth="200">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </FXLabel>
-            <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelUpload">
-                <FXHBox.margin>
-                    <Insets left="5" top="8"/>
-                </FXHBox.margin>
-            </CancelSVGGlyph>
         </FXHBox>
         <FXHBox prefHeight="30" flexWidth="100%">
             <FXLabel text="%base.location">

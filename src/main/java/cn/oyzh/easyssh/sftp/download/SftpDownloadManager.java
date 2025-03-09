@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
-import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.easyssh.sftp.SftpUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.Setter;
@@ -41,18 +41,23 @@ public class SftpDownloadManager {
     @Setter
     private Consumer<SftpDownloadInPreparation> downloadInPreparationCallback;
 
+    /**
+     * 执行线程
+     */
+    private Thread executeThread;
+
     public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
-        ThreadUtil.start(() -> {
+        this.executeThread = ThreadUtil.start(() -> {
             try {
                 this.downloadInPreparation();
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
                 this.doDownload();
             } catch (SftpException ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+//                MessageBox.exception(ex);
             }
         });
     }
@@ -62,18 +67,21 @@ public class SftpDownloadManager {
         if (remoteFile.isDir()) {
             // 列举文件
             List<SftpFile> files = sftp.lsFileNormal(remoteFile.getFilePath());
+            // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
                 File localDir = new File(localFile.getPath(), remoteFile.getFileName());
                 FileUtil.mkdir(localDir);
+                // 添加文件
                 for (SftpFile file : files) {
                     file.setParentPath(remoteFile.getFilePath());
-                    // 本地文件
                     File localFile1 = new File(localDir, file.getFileName());
                     this.addMonitorRecursive(localFile1, file, sftp);
                 }
             }
         } else {// 文件
+            String filePath = SftpUtil.concat(remoteFile.getFilePath(), remoteFile.getFileName());
+            this.downloadInPreparation(filePath);
             this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
         }
     }
@@ -129,8 +137,13 @@ public class SftpDownloadManager {
     }
 
     public void downloadInPreparation() {
+        this.downloadInPreparation(null);
+    }
+
+    public void downloadInPreparation(String fileName) {
         if (this.downloadInPreparationCallback != null) {
             SftpDownloadInPreparation inPreparation = new SftpDownloadInPreparation();
+            inPreparation.setFileName(fileName);
             this.downloadInPreparationCallback.accept(inPreparation);
         }
     }
@@ -155,10 +168,21 @@ public class SftpDownloadManager {
         return cnt;
     }
 
+    /**
+     * 取消
+     */
     public void cancel() {
+        // 停止线程
+        ThreadUtil.interrupt(this.executeThread);
+        // 取消业务
         for (SftpDownloadMonitor monitor : this.monitors) {
-            monitor.cancel();
+            try {
+                monitor.cancel();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+        ThreadUtil.start(() -> this.monitors.clear(), 500);
     }
 
     private void doDownload() {
@@ -166,31 +190,29 @@ public class SftpDownloadManager {
             return;
         }
         this.setDownloading(true);
-        ThreadUtil.start(() -> {
-            try {
-                while (!this.isEmpty()) {
-                    SftpDownloadMonitor monitor = this.takeMonitor();
-                    if (monitor == null) {
-                        break;
-                    }
-                    if (monitor.isFinished()) {
-                        ThreadUtil.sleep(5);
-                        continue;
-                    }
-                    SSHSftp sftp = monitor.getSftp();
-                    try {
-                        sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
-                        this.downloadFailed(monitor);
-                    }
-                    ThreadUtil.sleep(5);
+        try {
+            while (!this.isEmpty()) {
+                SftpDownloadMonitor monitor = this.takeMonitor();
+                if (monitor == null) {
+                    break;
                 }
-            } finally {
-                this.setDownloading(false);
+                if (monitor.isFinished()) {
+                    ThreadUtil.sleep(5);
+                    continue;
+                }
+                SSHSftp sftp = monitor.getSftp();
+                try {
+                    sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
+                    this.downloadFailed(monitor);
+                }
+                ThreadUtil.sleep(5);
             }
-        });
+        } finally {
+            this.setDownloading(false);
+        }
     }
 
     private final AtomicBoolean downloading = new AtomicBoolean(false);

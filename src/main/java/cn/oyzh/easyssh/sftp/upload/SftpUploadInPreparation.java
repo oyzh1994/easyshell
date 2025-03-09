@@ -9,5 +9,6 @@ import lombok.Data;
 @Data
 public class SftpUploadInPreparation {
 
+    private String fileName;
 
 }

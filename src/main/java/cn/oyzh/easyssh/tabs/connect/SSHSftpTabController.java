@@ -351,20 +351,28 @@ public class SSHSftpTabController extends SubTabController {
         }
         if (changed.getFileCount() > 1) {
             StringBuilder builder = new StringBuilder();
-            builder.append("Total Count: ").append(changed.getFileCount());
-            builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
+            builder.append("Count: ").append(changed.getFileCount());
             builder.append(" Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
             this.fileUpload.text(builder.toString());
+
+            StringBuilder progress = new StringBuilder();
+            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+                    .append("/")
+                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
+                    .append("/")
+                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
+            this.uploadProgressInfo.text(progress.toString());
         } else {
             StringBuilder builder = new StringBuilder();
             builder.append("Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
             this.fileUpload.text(builder.toString());
+
+            StringBuilder progress = new StringBuilder();
+            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+                    .append("/")
+                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
+            this.uploadProgressInfo.text(progress.toString());
         }
-        StringBuilder progress = new StringBuilder();
-        progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-                .append("/")
-                .append(NumberUtil.formatSize(changed.getTotal(), 2));
-        this.uploadProgressInfo.text(progress.toString());
         this.uploadProgress.progress(changed.progress());
     }
 
@@ -373,7 +381,11 @@ public class SSHSftpTabController extends SubTabController {
             this.uploadBox.display();
             this.updateLayout();
         }
-        this.uploadProgressInfo.text(SSHI18nHelper.fileTip7());
+        if (inPreparation.getFileName() != null) {
+            this.fileUpload.text(SSHI18nHelper.fileTip7());
+        } else {
+            this.fileUpload.text(SSHI18nHelper.fileTip7() + ": " + inPreparation.getFileName());
+        }
     }
 
     private void updateDownloadInfo(SftpDownloadEnded ended) {
@@ -421,22 +433,30 @@ public class SSHSftpTabController extends SubTabController {
         }
         if (changed.getFileCount() > 1) {
             StringBuilder builder = new StringBuilder();
-            builder.append("File Count: ").append(changed.getFileCount());
-            builder.append(" Total Size: ").append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            builder.append(" Current File: ").append(changed.getLocalFileName());
+            builder.append("Count: ").append(changed.getFileCount());
+            builder.append(" File: ").append(changed.getLocalFileName());
             builder.append(" Remote: ").append(changed.getRemoteFile());
             this.fileDownload.text(builder.toString());
+
+            StringBuilder progress = new StringBuilder();
+            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+                    .append("/")
+                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
+                    .append("/")
+                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
+            this.downloadProgressInfo.text(progress.toString());
         } else {
             StringBuilder builder = new StringBuilder();
             builder.append("File: ").append(changed.getLocalFileName());
             builder.append(" Remote: ").append(changed.getRemoteFile());
             this.fileDownload.text(builder.toString());
+
+            StringBuilder progress = new StringBuilder();
+            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+                    .append("/")
+                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
+            this.downloadProgressInfo.text(progress.toString());
         }
-        StringBuilder progress = new StringBuilder();
-        progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-                .append("/")
-                .append(NumberUtil.formatSize(changed.getTotal(), 2));
-        this.downloadProgressInfo.text(progress.toString());
         this.downloadProgress.progress(changed.progress());
     }
 
@@ -445,7 +465,11 @@ public class SSHSftpTabController extends SubTabController {
             this.downloadBox.display();
             this.updateLayout();
         }
-        this.downloadProgressInfo.text(SSHI18nHelper.fileTip8());
+        if (inPreparation.getFileName() != null) {
+            this.fileDownload.text(SSHI18nHelper.fileTip8() + ": " + inPreparation.getFileName());
+        } else {
+            this.fileDownload.text(SSHI18nHelper.fileTip8());
+        }
     }
 
     private void updateDeleteInfo(SftpDeleteEnded ended) {

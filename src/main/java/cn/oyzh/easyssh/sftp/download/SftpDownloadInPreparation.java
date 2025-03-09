@@ -9,4 +9,6 @@ import lombok.Data;
 @Data
 public class SftpDownloadInPreparation {
 
+    private String fileName;
+
 }
