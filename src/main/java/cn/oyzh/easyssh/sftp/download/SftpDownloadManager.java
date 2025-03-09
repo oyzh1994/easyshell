@@ -101,11 +101,12 @@ public class SftpDownloadManager {
         }
     }
 
-    public void downloadFailed(SftpDownloadMonitor monitor) {
+    public void downloadFailed(SftpDownloadMonitor monitor, Exception exception) {
         this.monitors.remove(monitor);
         if (this.downloadEndedCallback != null) {
             SftpDownloadFailed failed = new SftpDownloadFailed();
             failed.setFileCount(this.size());
+            failed.setException(exception);
             failed.setRemoteFile(monitor.getRemoteFileName());
             failed.setLocalFileName(monitor.getLocalFileName());
             this.downloadFailedCallback.accept(failed);
@@ -206,7 +207,7 @@ public class SftpDownloadManager {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
-                    this.downloadFailed(monitor);
+                    this.downloadFailed(monitor, ex);
                 }
                 ThreadUtil.sleep(5);
             }

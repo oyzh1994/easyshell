@@ -14,4 +14,6 @@ public class SftpUploadFailed {
     private int fileCount;
 
     private String localFileName;
+
+    private Exception exception;
 }

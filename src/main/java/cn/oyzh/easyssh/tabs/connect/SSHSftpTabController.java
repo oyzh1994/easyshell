@@ -2,6 +2,7 @@ package cn.oyzh.easyssh.tabs.connect;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyssh.sftp.delete.SftpDeleteEnded;
@@ -408,6 +409,11 @@ public class SSHSftpTabController extends SubTabController {
                 this.fileDownload.clear();
                 this.downloadBox.disappear();
                 this.updateLayout();
+            }
+            Exception exception = failed.getException();
+            // 如果异常里面包含文件不存在等信息，则尝试刷新文件列表
+            if (exception != null && StringUtil.containsAny(exception.getMessage(), "No such file")) {
+                this.fileTable.loadFile();
             }
             MessageBox.warn(failed.getRemoteFile() + " " + I18nHelper.downloadFailed());
         } catch (Exception ex) {

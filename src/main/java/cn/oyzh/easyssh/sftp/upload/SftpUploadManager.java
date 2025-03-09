@@ -97,10 +97,11 @@ public class SftpUploadManager {
         }
     }
 
-    public void uploadFailed(SftpUploadMonitor monitor) {
+    public void uploadFailed(SftpUploadMonitor monitor, Exception exception) {
         this.monitors.remove(monitor);
         if (this.uploadFailedCallback != null) {
             SftpUploadFailed changed = new SftpUploadFailed();
+            changed.setException(exception);
             changed.setFileCount(this.size());
             changed.setRemoteFile(monitor.getRemoteFile());
             changed.setLocalFileName(monitor.getLocalFileName());
@@ -202,7 +203,7 @@ public class SftpUploadManager {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
-                    this.uploadFailed(monitor);
+                    this.uploadFailed(monitor, ex);
                 }
                 ThreadUtil.sleep(5);
             }
