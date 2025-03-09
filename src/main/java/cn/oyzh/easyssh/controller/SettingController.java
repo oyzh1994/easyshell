@@ -1,6 +1,8 @@
 package cn.oyzh.easyssh.controller;
 
 
+import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.store.SSHSettingStore;
@@ -9,7 +11,9 @@ import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingTreeItem;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -35,6 +39,7 @@ import javafx.scene.control.RadioButton;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.util.Objects;
 
 /**
@@ -230,6 +235,12 @@ public class SettingController extends StageController {
     private FXSlider titleBarOpacity;
 
     /**
+     * x11目录
+     */
+    @FXML
+    private ReadOnlyTextField x11Path;
+
+    /**
      * 配置对象
      */
     private final SSHSetting setting = SSHSettingStore.SETTING;
@@ -289,6 +300,8 @@ public class SettingController extends StageController {
         if (this.setting.getTitleBarOpacity() != null) {
             this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
         }
+        // x11目录
+        this.x11Path.setText(this.setting.x11Path());
     }
 
     /**
@@ -334,6 +347,8 @@ public class SettingController extends StageController {
             this.setting.setAccentColor(this.accentColor.getColor());
             // 区域相关处理
             this.setting.setLocale(locale);
+            // x11目录
+            this.setting.setX11Path(this.x11Path.getText());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
             this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
@@ -531,5 +546,37 @@ public class SettingController extends StageController {
     @FXML
     private void resetQueryFontWeight() {
         this.queryFontWeight.selectWeight(AppSetting.defaultQueryFontWeight());
+    }
+
+    @FXML
+    private void chooseX11Path() {
+        if (OSUtil.isWindows()) {
+
+        } else if (OSUtil.isMacOS()) {
+            String initDir;
+            if (FileUtil.exist("/opt/X11")) {
+                initDir = "/opt/X11";
+            } else {
+                initDir = "/opt";
+            }
+            File dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
+            if (dir != null && dir.isDirectory() && dir.exists()) {
+                this.x11Path.setText(dir.getPath());
+            }
+        }
+    }
+
+    @FXML
+    private void testX11Path() {
+        if (OSUtil.isWindows()) {
+
+        } else if (OSUtil.isMacOS()) {
+            String path = this.x11Path.getText();
+            if (FileUtil.exist(path + "/bin/startx")) {
+                MessageBox.okToast(I18nHelper.testSuccess());
+            } else {
+                MessageBox.warnToast(I18nHelper.testFailed());
+            }
+        }
     }
 }

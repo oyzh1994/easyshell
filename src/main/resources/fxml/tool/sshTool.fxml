@@ -10,8 +10,33 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
 <FXTabPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cn.oyzh.easyssh.controller.tool.SSHToolController" realWidth="850" realHeight="600">
+    <FXTab text="X11">
+        <FXVBox flexHeight="100%" flexWidth="100%">
+            <InfoLabel text="XQuartz">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHyperlink text="https://www.xquartz.org/">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </FXHyperlink>
+            <InfoLabel text="VcXsrv">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHyperlink text="https://sourceforge.net/projects/vcxsrv/">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </FXHyperlink>
+        </FXVBox>
+    </FXTab>
     <FXTab text="%base.cache">
         <FXVBox flexHeight="100%" flexWidth="100%">
             <InfoLabel text="%base.info">
