@@ -44,7 +44,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
 
     @Override
     public void processChar(char ch, Terminal terminal) throws IOException {
-        System.out.println(ch);
+//        System.out.println(ch);
         switch (ch) {
             case 0:
                 break;

@@ -2,9 +2,12 @@
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SaveButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.setting.SettingLeftTreeView?>
+<?import cn.oyzh.fx.gui.setting.SettingMainPane?>
+<?import cn.oyzh.fx.gui.setting.SettingRightAction?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.picker.FXColorPicker?>
@@ -18,11 +21,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
-<?import cn.oyzh.fx.gui.setting.SettingMainPane?>
-<?import cn.oyzh.fx.gui.setting.SettingLeftTreeView?>
-<?import cn.oyzh.fx.gui.setting.SettingRightAction?>
-<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyssh.controller.SettingController" realWidth="700" realHeight="450">
     <left>
@@ -33,6 +33,28 @@
         <FXVBox flexWidth="100%" flexHeight="100% - 110">
             <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
+                <InfoLabel text="%ssh.connect.tip2">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ReadOnlyTextField fx:id="x11Path" flexWidth="100% - 225">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ReadOnlyTextField>
+                   <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">
+                       <HBox.margin>
+                           <Insets left="5" top="5"/>
+                       </HBox.margin>
+                   </FXButton>
+                   <FXButton text="%base.test" onMousePrimaryClicked="#testX11Path">
+                       <HBox.margin>
+                           <Insets left="5" top="5"/>
+                       </HBox.margin>
+                   </FXButton>
+                </FXHBox>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="window_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
