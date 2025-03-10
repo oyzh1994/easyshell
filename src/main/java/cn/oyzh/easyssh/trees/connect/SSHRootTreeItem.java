@@ -327,9 +327,9 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
         List<SSHConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof SSHConnectTreeItem connectTreeItem) {
-                if (connectTreeItem.isConnected()) {
+//                if (connectTreeItem.isConnected()) {
                     items.add(connectTreeItem);
-                }
+//                }
             } else if (item instanceof SSHGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectedItems());
             }

@@ -20,6 +20,10 @@ public class SSHConnectTab extends RichTab {
         this.init(item);
     }
 
+    public SSHConnectTab( ) {
+
+    }
+
     @Override
     protected String url() {
         return "/tabs/connect/sshConnectTab.fxml";

@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.event.connect.SSHConnectOpenedEvent;
 import cn.oyzh.easyssh.event.connection.SSHConnectionClosedEvent;
+import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.tabs.changelog.SSHChangelogTab;
 import cn.oyzh.easyssh.tabs.connect.SSHConnectTab;
 import cn.oyzh.easyssh.tabs.home.SSHHomeTab;
@@ -139,9 +140,9 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    private SSHConnectTab getConnectTab(SSHConnect connect) {
+    private SSHConnectTab getConnectTab(SSHClient client) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof SSHConnectTab tab1 && tab1.sshConnect() == connect) {
+            if (tab instanceof SSHConnectTab tab1 && tab1.client() == client) {
                 return tab1;
             }
         }
@@ -155,11 +156,16 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionOpened(SSHConnectOpenedEvent event) {
-        SSHConnectTab tab = this.getConnectTab(event.connect());
-        if (tab == null) {
-            tab = new SSHConnectTab(event.data());
-            super.addTab(tab);
-        }
+//        SSHConnectTab tab = this.getConnectTab(event.connect());
+//        if (tab == null) {
+//            tab = new SSHConnectTab(event.data());
+//            super.addTab(tab);
+//        }
+//        if (!tab.isSelected()) {
+//            this.select(tab);
+//        }
+        SSHConnectTab tab = new SSHConnectTab(event.data());
+        super.addTab(tab);
         if (!tab.isSelected()) {
             this.select(tab);
         }
@@ -172,7 +178,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionClosed(SSHConnectionClosedEvent event) {
-        SSHConnectTab tab = this.getConnectTab(event.connect());
+        SSHConnectTab tab = this.getConnectTab(event.data());
         if (tab != null) {
             tab.closeTab();
         }

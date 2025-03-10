@@ -56,6 +56,7 @@ public interface SSHConnectManager {
      * @return 已连接的连接节点
      */
     default List<SSHConnectTreeItem> getConnectedItems() {
-        return this.getConnectItems().parallelStream().filter(SSHConnectTreeItem::isConnected).collect(Collectors.toList());
+        return this.getConnectItems();
+//        return this.getConnectItems().parallelStream().filter(SSHConnectTreeItem::isConnected).collect(Collectors.toList());
     }
 }

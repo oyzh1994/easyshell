@@ -158,7 +158,7 @@ public class X11Manager {
         ThreadUtil.start(() -> {
             try {
                 // 寻找存在的二进制命令
-                String bin = X11Util.findExist(setting.x11WorkDir(),"/bin/", setting.x11Binary());
+                String bin = X11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
                 // 工作目录
                 File dir = new File(setting.x11WorkDir());
                 // 构建进程

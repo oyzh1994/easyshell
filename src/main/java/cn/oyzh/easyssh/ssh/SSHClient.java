@@ -276,7 +276,7 @@ public class SSHClient {
         if (!this.isClosed()) {
             return this.state.get() == SSHConnState.CONNECTING;
         }
-        this.state.set(SSHConnState.CLOSED);
+//        this.state.set(SSHConnState.CLOSED);
         return false;
     }
 
@@ -289,7 +289,7 @@ public class SSHClient {
         if (!this.isClosed()) {
             return this.state.get().isConnected();
         }
-        this.state.set(SSHConnState.CLOSED);
+//        this.state.set(SSHConnState.CLOSED);
         return false;
     }
 

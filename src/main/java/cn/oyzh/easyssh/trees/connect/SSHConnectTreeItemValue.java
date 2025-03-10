@@ -38,11 +38,11 @@ public class SSHConnectTreeItemValue extends RichTreeItemValue {
         return super.graphic();
     }
 
-    @Override
-    public Color graphicColor() {
-        if (this.item().isConnected() || this.item().isConnecting()) {
-            return Color.GREEN;
-        }
-        return super.graphicColor();
-    }
+//    @Override
+//    public Color graphicColor() {
+//        if (this.item().isConnected() || this.item().isConnecting()) {
+//            return Color.GREEN;
+//        }
+//        return super.graphicColor();
+//    }
 }
