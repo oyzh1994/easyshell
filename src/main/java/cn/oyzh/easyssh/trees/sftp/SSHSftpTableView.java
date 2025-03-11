@@ -30,6 +30,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
@@ -94,7 +95,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     private boolean showHiddenFile = true;
 
-    public void setShowHiddenFile(boolean showHiddenFile) throws JSchException, SftpException, IOException {
+    public void setShowHiddenFile(boolean showHiddenFile) {
         if (showHiddenFile != this.showHiddenFile) {
             this.showHiddenFile = showHiddenFile;
             this.refreshFile();
@@ -136,7 +137,26 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     private List<SftpFile> files;
 
-    public void loadFile() throws SftpException {
+    public void loadFile() {
+//        String currPath = this.getCurrPath();
+//        if (currPath == null) {
+//            this.setCurrPath(this.sftp().pwd());
+//            currPath = this.getCurrPath();
+//        }
+//        JulLog.info("current path: {}", currPath);
+//        this.files = this.sftp().lsFile(currPath, this.client);
+//        this.setItem(this.doFilter(this.files));
+        StageManager.showMask(() -> {
+            try {
+                this._loadFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void _loadFile() throws SftpException {
         String currPath = this.getCurrPath();
         if (currPath == null) {
             this.setCurrPath(this.sftp().pwd());
@@ -147,7 +167,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.setItem(this.doFilter(this.files));
     }
 
-    public void refreshFile() throws SftpException {
+    public void refreshFile() {
         if (this.files == null) {
             this.loadFile();
         } else {

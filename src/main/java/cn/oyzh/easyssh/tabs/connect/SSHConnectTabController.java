@@ -6,6 +6,7 @@ import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -56,21 +57,23 @@ public class SSHConnectTabController extends ParentTabController {
      * @param treeItem ssh客户端
      */
     public void init(@NonNull SSHConnectTreeItem treeItem) {
-        try {
-            this.treeItem = treeItem;
-            this.client = new SSHClient(treeItem.value());
-            if (!this.client.isConnected()) {
-                this.client.start();
+        this.treeItem = treeItem;
+        this.client = new SSHClient(treeItem.value());
+        StageManager.showMask(() -> {
+            try {
+                if (!this.client.isConnected()) {
+                    this.client.start();
+                }
+                if (!this.client.isConnected()) {
+                    MessageBox.warn(I18nHelper.connectFail());
+                    return;
+                }
+                this.sshTermTabController.init();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
-            if (!this.client.isConnected()) {
-                MessageBox.warn(I18nHelper.connectFail());
-                return;
-            }
-            this.sshTermTabController.init();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        });
     }
 
     @Override

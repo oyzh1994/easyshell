@@ -109,35 +109,29 @@ public class SSHSftpTabController extends SubTabController {
         if (this.initialized) {
             return;
         }
-        try {
-            this.initialized = true;
-            this.fileTable.setClient(this.client());
-            this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
+        this.initialized = true;
+        this.fileTable.setClient(this.client());
+        // 下载
+        this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
+        this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
+        this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
+        this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
+        this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
 
-            // 下载
-            this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
-            this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
-            this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
-            this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
-            this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
+        // 上传
+        this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
+        this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
+        this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
+        this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
+        this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
 
-            // 上传
-            this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
-            this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
-            this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
-            this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
-            this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
+        // 删除
+        this.fileTable.setDeleteEndedCallback(this::updateDeleteInfo);
+        this.fileTable.setDeleteDeletedCallback(this::updateDeleteInfo);
 
-            // 删除
-            this.fileTable.setDeleteEndedCallback(this::updateDeleteInfo);
-            this.fileTable.setDeleteDeletedCallback(this::updateDeleteInfo);
-
-            this.fileTable.loadFile();
-        } catch (Exception ex) {
-            this.initialized = false;
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        // 显示动画
+        this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
+        this.fileTable.loadFile();
     }
 
     @Override
