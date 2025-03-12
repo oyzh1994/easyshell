@@ -66,12 +66,14 @@ public class SSHConnectTabController extends ParentTabController {
                 }
                 if (!this.client.isConnected()) {
                     MessageBox.warn(I18nHelper.connectFail());
+                    this.closeTab();
                     return;
                 }
                 this.sshTermTabController.init();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
+                this.closeTab();
             }
         });
     }
