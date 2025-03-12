@@ -36,6 +36,6 @@ public class SSHConst {
     /**
      * 任务栏图标，windows专用
      */
-    public final static String ICON_32_PATH = "/image/ssh_24.png";
+    public final static String ICON_32_PATH = "/image/ssh_32.png";
 
 }

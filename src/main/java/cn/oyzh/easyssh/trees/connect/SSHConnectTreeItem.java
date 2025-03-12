@@ -84,7 +84,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
             FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
             FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
             FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
-            FXMenuItem cloneConnect = MenuItemHelper.repeatConnect("12", this::cloneConnect);
+            FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
 //            items.add(connect);
             items.add(editConnect);

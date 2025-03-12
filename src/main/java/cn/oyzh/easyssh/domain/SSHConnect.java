@@ -100,7 +100,7 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
      * @return 当前对象
      */
     public SSHConnect copy(@NonNull SSHConnect sshConnect) {
-        this.id = sshConnect.id;
+//        this.id = sshConnect.id;
         this.name = sshConnect.name;
         this.host = sshConnect.host;
         this.user = sshConnect.user;

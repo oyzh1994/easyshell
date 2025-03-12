@@ -81,7 +81,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
 
         // 初始化鼠标多选辅助类
-        new TableViewMouseSelectHelper(this);
+        TableViewMouseSelectHelper.install(this);
     }
 
     private String filterText;
