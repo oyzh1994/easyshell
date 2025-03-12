@@ -16,7 +16,7 @@ public class SSHConst {
     /**
      * 数据保存路径
      */
-    public static final String STORE_PATH = System.getProperty("user.home") + File.separator + ".easyssh" + File.separator;
+    public static final String STORE_PATH = System.getProperty("user.home") + File.separator + ".easyssh_dev" + File.separator;
 
     /**
      * 缓存保存路径

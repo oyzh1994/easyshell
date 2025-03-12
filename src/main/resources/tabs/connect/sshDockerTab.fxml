@@ -20,7 +20,7 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
+            <ClearableTextField realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>

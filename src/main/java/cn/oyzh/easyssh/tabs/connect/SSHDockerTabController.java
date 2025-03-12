@@ -4,6 +4,7 @@ import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.docker.SSHContainerTableView;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.event.Event;
@@ -22,6 +23,9 @@ public class SSHDockerTabController extends SubTabController {
      */
     @FXML
     private FXTab root;
+
+    @FXML
+    private ClearableTextField filterContainer;
 
     @FXML
     private SSHContainerTableView containerTab;
