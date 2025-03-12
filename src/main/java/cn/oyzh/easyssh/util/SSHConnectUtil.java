@@ -6,6 +6,7 @@ import cn.oyzh.easyssh.dto.SSHConnectInfo;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import lombok.experimental.UtilityClass;
 
@@ -97,11 +98,11 @@ public class SSHConnectUtil {
      * @param sshConnect 连接信息
      */
     public static void testConnect(StageAdapter adapter, SSHConnect sshConnect) {
-        ThreadUtil.startVirtual(() -> {
+        StageManager.showMask(() -> {
             try {
-                adapter.disable();
-                adapter.waitCursor();
-                adapter.appendTitle("==" + I18nHelper.connectTesting());
+//                adapter.disable();
+//                adapter.waitCursor();
+//                adapter.appendTitle("==" + I18nHelper.connectTesting());
                 if (sshConnect.getName() == null) {
                     sshConnect.setName(I18nHelper.testConnection());
                 }
@@ -117,10 +118,10 @@ public class SSHConnectUtil {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            } finally {
-                adapter.enable();
-                adapter.defaultCursor();
-                adapter.restoreTitle();
+//            } finally {
+//                adapter.enable();
+//                adapter.defaultCursor();
+//                adapter.restoreTitle();
             }
         });
     }
