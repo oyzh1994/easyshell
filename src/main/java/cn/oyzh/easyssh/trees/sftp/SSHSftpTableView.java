@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.trees.sftp;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
@@ -86,7 +87,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     private String filterText;
 
-    public void setFilterText(String filterText) throws JSchException, SftpException, IOException {
+    public void setFilterText(String filterText) {
         if (!StringUtil.equals(this.filterText, filterText)) {
             this.filterText = filterText;
             this.refreshFile();
@@ -138,14 +139,6 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     private List<SftpFile> files;
 
     public void loadFile() {
-//        String currPath = this.getCurrPath();
-//        if (currPath == null) {
-//            this.setCurrPath(this.sftp().pwd());
-//            currPath = this.getCurrPath();
-//        }
-//        JulLog.info("current path: {}", currPath);
-//        this.files = this.sftp().lsFile(currPath, this.client);
-//        this.setItem(this.doFilter(this.files));
         StageManager.showMask(() -> {
             try {
                 this._loadFile();
@@ -157,14 +150,24 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void _loadFile() throws SftpException {
-        String currPath = this.getCurrPath();
-        if (currPath == null) {
-            this.setCurrPath(this.sftp().pwd());
-            currPath = this.getCurrPath();
+        SSHSftp sftp = this.sftp();
+        try {
+            String currPath = this.getCurrPath();
+            if (currPath == null) {
+                this.setCurrPath(sftp.pwd());
+                currPath = this.getCurrPath();
+            }
+            JulLog.info("current path: {}", currPath);
+            this.files = sftp.lsFile(currPath, this.client);
+            this.setItem(this.doFilter(this.files));
+        } catch (SftpException ex) {
+            if (ExceptionUtil.hasMessage(ex, "inputstream is closed")) {
+                sftp.close();
+                this._loadFile();
+            } else {
+                throw ex;
+            }
         }
-        JulLog.info("current path: {}", currPath);
-        this.files = this.sftp().lsFile(currPath, this.client);
-        this.setItem(this.doFilter(this.files));
     }
 
     public void refreshFile() {
@@ -315,10 +318,6 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     protected void onMouseClicked(MouseEvent event) {
         try {
             List<SftpFile> files = this.getSelectedItems();
-//            if (event.getButton() == MouseButton.SECONDARY) {
-//                event.consume();
-//                return;
-//            }
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 if (files == null) {
                     return;

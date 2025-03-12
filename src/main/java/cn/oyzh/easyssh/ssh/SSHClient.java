@@ -343,6 +343,7 @@ public class SSHClient {
                 SSHSftp sftp = new SSHSftp(channel,this.sftpDeleteManager);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
+                return sftp;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

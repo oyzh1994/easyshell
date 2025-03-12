@@ -155,7 +155,7 @@ public class SSHSftpTabController extends SubTabController {
                     this.filePath.clear();
                     this.copyFilePath.disable();
                 } else {
-                    this.filePath.setText(t1);
+                    this.filePath.text(t1);
                     this.copyFilePath.enable();
                 }
             });
