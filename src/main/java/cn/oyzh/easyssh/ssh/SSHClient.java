@@ -340,7 +340,7 @@ public class SSHClient {
         if (!this.sftpManager.hasAvailable()) {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                SSHSftp sftp = new SSHSftp(channel,this.sftpDeleteManager);
+                SSHSftp sftp = new SSHSftp(channel, this.sftpDeleteManager);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
                 return sftp;
@@ -459,5 +459,9 @@ public class SSHClient {
 
     public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
         this.sftpDeleteManager.setDeleteDeletedCallback(callback);
+    }
+
+    public String exec_docker_ps() {
+        return this.exec("/usr/bin/docker ps");
     }
 }

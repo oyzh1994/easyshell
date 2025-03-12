@@ -3,6 +3,7 @@
 <FXTabPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="cn.oyzh.easyssh.tabs.connect.SSHConnectTabController"
            rotateGraphic="true" side="RIGHT">
-    <fx:include fx:id="sshTermTab" source="sshTermTab.fxml"/>
-    <fx:include fx:id="sshSftpTab" source="sshSftpTab.fxml"/>
+    <fx:include fx:id="termTab" source="sshTermTab.fxml"/>
+    <fx:include fx:id="sftpTab" source="sshSftpTab.fxml"/>
+    <fx:include fx:id="dockerTab" source="sshDockerTab.fxml"/>
 </FXTabPane>

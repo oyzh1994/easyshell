@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyssh.trees.docker.SSHContainerTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyssh.tabs.connect.SSHDockerTabController"
+       text="Docker" fx:id="root">
+    <graphic>
+        <FileSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <ClearableTextField realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="3"/>
+                </FXHBox.margin>
+            </ClearableTextField>
+            <RefreshSVGGlyph onMousePrimaryClicked="#refreshContainer">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
+            <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
+            <FXToggleSwitch realHeight="16" selected="true" fx:id="showStopped" selectedText="%base.showHiddenFiles"
+                            unselectedText="%base.doNotShowHiddenFiles">
+                <FXHBox.margin>
+                    <Insets left="5" top="8"/>
+                </FXHBox.margin>
+            </FXToggleSwitch>
+        </FXHBox>
+        <SSHContainerTableView fx:id="containerTab" flexWidth="100%" flexHeight="100% - 60">
+            <columns>
+                <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
+                <FXTableColumn  prefWidth="150" valueName="image" text="%base.image"/>
+                <FXTableColumn prefWidth="150" valueName="command" text="%base.cmd"/>
+                <FXTableColumn prefWidth="120" valueName="created" text="%base.createTime"/>
+                <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
+                <FXTableColumn prefWidth="150" valueName="ports" text="%base.port"/>
+                <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
+            </columns>
+        </SSHContainerTableView>
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <FXLabel text="%base.location">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
+            <FXLabel fx:id="filePath">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
+        </FXHBox>
+    </FXVBox>
+</FXTab>

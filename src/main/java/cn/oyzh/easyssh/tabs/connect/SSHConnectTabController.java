@@ -39,13 +39,19 @@ public class SSHConnectTabController extends ParentTabController {
      * 终端
      */
     @FXML
-    private SSHTermTabController sshTermTabController;
+    private SSHTermTabController termTabController;
 
     /**
      * 文件
      */
     @FXML
-    private SSHSftpTabController sshSftpTabController;
+    private SSHSftpTabController sftpTabController;
+
+    /**
+     * 文件
+     */
+    @FXML
+    private SSHDockerTabController dockerTabController;
 
 //    public SSHClient client(){
 //        return this.treeItem.client();
@@ -69,7 +75,7 @@ public class SSHConnectTabController extends ParentTabController {
                     this.closeTab();
                     return;
                 }
-                this.sshTermTabController.init();
+                this.termTabController.init();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -95,6 +101,6 @@ public class SSHConnectTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.sshTermTabController, this.sshSftpTabController);
+        return List.of(this.termTabController, this.sftpTabController, this.dockerTabController);
     }
 }

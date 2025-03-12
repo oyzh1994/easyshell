@@ -33,6 +33,8 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.tray.TrayManager;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -305,6 +307,10 @@ public class SSHSftpTabController extends SubTabController {
                 this.updateLayout();
                 // 重新载入一次文件
                 this.fileTable.loadFile();
+                // 提示消息
+                if (!StageManager.hasFocusedWindow()) {
+                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFinished());
+                }
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -320,6 +326,10 @@ public class SSHSftpTabController extends SubTabController {
                 this.updateLayout();
                 // 重新载入一次文件
                 this.fileTable.loadFile();
+                // 提示消息
+                if (!StageManager.hasFocusedWindow()) {
+                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFailed());
+                }
             }
             MessageBox.warn(failed.getLocalFileName() + " " + I18nHelper.uploadFailed());
         } catch (Exception ex) {
@@ -390,6 +400,10 @@ public class SSHSftpTabController extends SubTabController {
                 this.fileDownload.clear();
                 this.downloadBox.disappear();
                 this.updateLayout();
+                // 提示消息
+                if (!StageManager.hasFocusedWindow()) {
+                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFinished());
+                }
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -403,6 +417,10 @@ public class SSHSftpTabController extends SubTabController {
                 this.fileDownload.clear();
                 this.downloadBox.disappear();
                 this.updateLayout();
+                // 提示消息
+                if (!StageManager.hasFocusedWindow()) {
+                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFailed());
+                }
             }
             Exception exception = failed.getException();
             // 如果异常里面包含文件不存在等信息，则尝试刷新文件列表
