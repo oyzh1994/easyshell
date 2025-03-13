@@ -1,26 +1,17 @@
 package cn.oyzh.easyssh.trees.docker;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.docker.DockerContainer;
 import cn.oyzh.easyssh.docker.DockerExec;
 import cn.oyzh.easyssh.docker.DockerParser;
-import cn.oyzh.easyssh.event.SSHEventUtil;
-import cn.oyzh.easyssh.sftp.SftpFile;
-import cn.oyzh.easyssh.sftp.SftpUtil;
-import cn.oyzh.easyssh.ssh.SSHClient;
-import cn.oyzh.easyssh.util.SSHI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,9 +50,7 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
     private List<DockerContainer> containers;
 
     public void loadContainer() {
-        DockerParser parser = new DockerParser();
         String output;
-
         if (this.status == 0) {
             output = this.exec.docker_ps();
         } else if (this.status == 1) {
@@ -69,7 +58,7 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
         } else {
             output = this.exec.docker_ps_exited();
         }
-        this.containers = parser.ps(output);
+        this.containers = DockerParser.ps(output);
         this.setItem(this.doFilter(this.containers));
     }
 

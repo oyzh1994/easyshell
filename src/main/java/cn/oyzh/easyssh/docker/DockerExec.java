@@ -10,22 +10,24 @@ public class DockerExec {
 
     private SSHClient client;
 
-    private final String docker_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
+    private final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
+
+    private final String container_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
 
     public DockerExec(SSHClient client) {
         this.client = client;
     }
 
     public String docker_ps() {
-        return this.client.exec("/usr/bin/docker ps --format " + docker_format);
+        return this.client.exec("/usr/bin/docker ps --format " + this.container_format);
     }
 
     public String docker_ps_a() {
-        return this.client.exec("/usr/bin/docker ps -a --format " + docker_format);
+        return this.client.exec("/usr/bin/docker ps -a --format " + this.container_format);
     }
 
     public String docker_ps_exited() {
-        return this.client.exec("/usr/bin/docker ps -f \"status=exited\" --format " + docker_format);
+        return this.client.exec("/usr/bin/docker ps -f \"status=exited\" --format " + this.container_format);
     }
 
     public String docker_rm(String containerId) {
@@ -46,6 +48,26 @@ public class DockerExec {
 
     public String docker_stop(String containerId) {
         return this.client.exec("/usr/bin/docker stop " + containerId);
+    }
+
+    public String docker_rmi(String imageId) {
+        return this.client.exec("/usr/bin/docker rmi " + imageId);
+    }
+
+    public String docker_rmi_f(String imageId) {
+        return this.client.exec("/usr/bin/docker rmi -f " + imageId);
+    }
+
+    public String docker_inspect(String imageId) {
+        return this.client.exec("/usr/bin/docker inspect " + imageId);
+    }
+
+    public String docker_images( ) {
+        return this.client.exec("/usr/bin/docker images --format " + this.image_format);
+    }
+
+    public String docker_images_unused( ) {
+        return this.client.exec("/usr/bin/docker image ls -f dangling=true --format" + this.image_format);
     }
 
 }
