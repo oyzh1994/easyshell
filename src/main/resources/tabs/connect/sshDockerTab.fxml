@@ -14,62 +14,59 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHDockerTabController"
        text="Docker" fx:id="root">
     <graphic>
         <FileSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
-                <FXHBox.margin>
-                    <Insets left="5" top="3"/>
-                </FXHBox.margin>
-            </ClearableTextField>
-            <RefreshSVGGlyph onMousePrimaryClicked="#refreshContainer">
-                <FXHBox.margin>
-                    <Insets left="5" top="10"/>
-                </FXHBox.margin>
-            </RefreshSVGGlyph>
-            <DeleteSVGGlyph onMousePrimaryClicked="#deleteContainer">
-                <FXHBox.margin>
-                    <Insets left="5" top="10"/>
-                </FXHBox.margin>
-            </DeleteSVGGlyph>
-            <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteContainerForce">
-                <FXHBox.margin>
-                    <Insets left="5" top="10"/>
-                </FXHBox.margin>
-            </DeleteForceSVGGlyph>
-            <SSHContainerStatusComboBox initIndex="0" fx:id="containerStatus" >
-                <FXHBox.margin>
-                    <Insets left="5" top="8"/>
-                </FXHBox.margin>
-            </SSHContainerStatusComboBox>
-        </FXHBox>
-        <SSHContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 60">
-            <columns>
-                <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
-                <FXTableColumn  prefWidth="150" valueName="image" text="%base.image"/>
-                <FXTableColumn prefWidth="150" valueName="command" text="%base.cmd"/>
-                <FXTableColumn prefWidth="120" valueName="created" text="%base.createTime"/>
-                <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
-                <FXTableColumn prefWidth="150" valueName="ports" text="%base.port"/>
-                <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
-            </columns>
-        </SSHContainerTableView>
-        <FXHBox prefHeight="30" flexWidth="100%">
-            <FXLabel text="%base.location">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </FXLabel>
-            <FXLabel fx:id="filePath">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </FXLabel>
-        </FXHBox>
-    </FXVBox>
+    <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM">
+        <FXTab text="%base.container">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <ClearableTextField realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
+                        <FXHBox.margin>
+                            <Insets left="5" top="3"/>
+                        </FXHBox.margin>
+                    </ClearableTextField>
+                    <RefreshSVGGlyph onMousePrimaryClicked="#refreshContainer">
+                        <FXHBox.margin>
+                            <Insets left="5" top="10"/>
+                        </FXHBox.margin>
+                    </RefreshSVGGlyph>
+                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteContainer">
+                        <FXHBox.margin>
+                            <Insets left="5" top="10"/>
+                        </FXHBox.margin>
+                    </DeleteSVGGlyph>
+                    <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteContainerForce">
+                        <FXHBox.margin>
+                            <Insets left="5" top="10"/>
+                        </FXHBox.margin>
+                    </DeleteForceSVGGlyph>
+                    <SSHContainerStatusComboBox initIndex="0" fx:id="containerStatus">
+                        <FXHBox.margin>
+                            <Insets left="5" top="5"/>
+                        </FXHBox.margin>
+                    </SSHContainerStatusComboBox>
+                </FXHBox>
+                <SSHContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
+                    <columns>
+                        <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
+                        <FXTableColumn prefWidth="150" valueName="image" text="%base.image"/>
+                        <FXTableColumn prefWidth="150" valueName="command" text="%base.cmd"/>
+                        <FXTableColumn prefWidth="120" valueName="created" text="%base.createTime"/>
+                        <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
+                        <FXTableColumn prefWidth="150" valueName="ports" text="%base.port"/>
+                        <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
+                    </columns>
+                </SSHContainerTableView>
+            </FXVBox>
+        </FXTab>
+
+        <FXTab text="%base.image">
+        </FXTab>
+
+    </FXTabPane>
 </FXTab>

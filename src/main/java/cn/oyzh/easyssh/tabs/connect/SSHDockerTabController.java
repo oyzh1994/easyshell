@@ -41,7 +41,7 @@ public class SSHDockerTabController extends SubTabController {
             return;
         }
         this.initialized = true;
-        this.containerTable.setClient(this.client());
+        this.containerTable.setExec(this.client().dockerExec());
         this.containerTable.loadContainer();
     }
 

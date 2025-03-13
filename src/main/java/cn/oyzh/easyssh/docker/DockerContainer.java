@@ -1,5 +1,7 @@
 package cn.oyzh.easyssh.docker;
 
+import cn.oyzh.common.util.StringUtil;
+
 /**
  * @author oyzh
  * @since 2025-03-12
@@ -68,5 +70,13 @@ public class DockerContainer {
 
     public void setNames(String names) {
         this.names = names;
+    }
+
+    public boolean isExited() {
+        return StringUtil.contains(this.status, "Exited");
+    }
+
+    public boolean isRunning() {
+        return !this.isExited();
     }
 }

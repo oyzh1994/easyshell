@@ -2,6 +2,7 @@ package cn.oyzh.easyssh.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.docker.DockerExec;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.domain.SSHX11Config;
 import cn.oyzh.easyssh.event.SSHEventUtil;
@@ -461,25 +462,12 @@ public class SSHClient {
         this.sftpDeleteManager.setDeleteDeletedCallback(callback);
     }
 
-    private String docker_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
+    private DockerExec dockerExec;
 
-    public String exec_docker_ps() {
-        return this.exec("/usr/bin/docker ps --format " + docker_format);
-    }
-
-    public String exec_docker_ps_a() {
-        return this.exec("/usr/bin/docker ps -a --format " + docker_format);
-    }
-
-    public String exec_docker_ps_exited() {
-        return this.exec("/usr/bin/docker ps -f \"status=exited\" --format " + docker_format);
-    }
-
-    public String exec_docker_rm(String containerId) {
-        return this.exec("/usr/bin/docker rm " + containerId);
-    }
-
-    public String exec_docker_rm_f(String containerId) {
-        return this.exec("/usr/bin/docker rm -f " + containerId);
+    public DockerExec dockerExec() {
+        if (this.dockerExec == null) {
+            this.dockerExec = new DockerExec(this);
+        }
+        return this.dockerExec;
     }
 }
