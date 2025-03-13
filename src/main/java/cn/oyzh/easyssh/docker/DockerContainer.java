@@ -76,6 +76,10 @@ public class DockerContainer {
         return StringUtil.contains(this.status, "Exited");
     }
 
+    public boolean isPaused() {
+        return StringUtil.contains(this.status, "Paused");
+    }
+
     public boolean isRunning() {
         return !this.isExited();
     }

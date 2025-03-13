@@ -146,6 +146,13 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
             FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", this::restartContainer);
             menuItems.add(stopContainer);
             menuItems.add(restartContainer);
+            if (container.isPaused()) {
+                FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer("12", this::unpauseContainer);
+                menuItems.add(unpauseContainer);
+            } else {
+                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer("12", this::pauseContainer);
+                menuItems.add(pauseContainer);
+            }
         }
         FXMenuItem containerLogs = MenuItemHelper.containerLogs("12", this::containerLogs);
         FXMenuItem deleteContainer = MenuItemHelper.deleteContainer("12", () -> this.deleteContainer(false));
@@ -204,6 +211,46 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_restart(container.getContainerId());
+                if (StringUtil.isNotBlank(output)) {
+                    this.loadContainer();
+                } else {
+                    MessageBox.warn(I18nHelper.operationFail());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void pauseContainer() {
+        DockerContainer container = this.getSelectedItem();
+        if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                String output = this.exec.docker_pause(container.getContainerId());
+                if (StringUtil.isNotBlank(output)) {
+                    this.loadContainer();
+                } else {
+                    MessageBox.warn(I18nHelper.operationFail());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void unpauseContainer() {
+        DockerContainer container = this.getSelectedItem();
+        if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                String output = this.exec.docker_unpause(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {

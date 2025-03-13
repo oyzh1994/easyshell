@@ -50,6 +50,14 @@ public class DockerExec {
         return this.client.exec("/usr/bin/docker restart " + containerId);
     }
 
+    public String docker_pause(String containerId) {
+        return this.client.exec("/usr/bin/docker pause " + containerId);
+    }
+
+    public String docker_unpause(String containerId) {
+        return this.client.exec("/usr/bin/docker unpause " + containerId);
+    }
+
     public String docker_stop(String containerId) {
         return this.client.exec("/usr/bin/docker stop " + containerId);
     }
