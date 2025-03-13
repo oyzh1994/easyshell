@@ -34,6 +34,10 @@ public class DockerExec {
         return this.client.exec("/usr/bin/docker rm " + containerId);
     }
 
+    public String docker_logs(String containerId) {
+        return this.client.exec("/usr/bin/docker logs " + containerId);
+    }
+
     public String docker_rm_f(String containerId) {
         return this.client.exec("/usr/bin/docker rm -f " + containerId);
     }
@@ -62,7 +66,7 @@ public class DockerExec {
         return this.client.exec("/usr/bin/docker inspect " + imageId);
     }
 
-    public String docker_images( ) {
+    public String docker_images() {
         return this.client.exec("/usr/bin/docker images --format " + this.image_format);
     }
 }

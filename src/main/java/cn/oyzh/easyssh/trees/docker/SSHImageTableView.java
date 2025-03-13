@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.docker.DockerInspectController;
+import cn.oyzh.easyssh.docker.DockerContainer;
 import cn.oyzh.easyssh.docker.DockerExec;
 import cn.oyzh.easyssh.docker.DockerImage;
 import cn.oyzh.easyssh.docker.DockerParser;
@@ -11,6 +12,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -118,27 +120,25 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
         });
     }
 
-    public void inspect() {
+    public void imageInspect() {
         DockerImage image = this.getSelectedItem();
-        DownLatch latch = DownLatch.of();
-        AtomicReference<String> output = new AtomicReference<>();
         StageManager.showMask(() -> {
             try {
-                output.set(this.exec.docker_inspect(image.getImageId()));
+                String output = this.exec.docker_inspect(image.getImageId());
+                if (StringUtil.isBlank(output)) {
+                    MessageBox.warn(I18nHelper.operationFail());
+                } else {
+                    FXUtil.runLater(() -> {
+                        StageAdapter adapter = StageManager.parseStage(DockerInspectController.class);
+                        adapter.setProp("inspect", output);
+                        adapter.display();
+                    });
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            } finally {
-                latch.countDown();
             }
         });
-        latch.await();
-        if (StringUtil.isBlank(output.get())) {
-            MessageBox.warn(I18nHelper.operationFail());
-        }
-        StageAdapter adapter = StageManager.parseStage(DockerInspectController.class);
-        adapter.setProp("inspect", output.get());
-        adapter.display();
     }
 
     @Override
@@ -148,7 +148,7 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
             return Collections.emptyList();
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem imageInfo = MenuItemHelper.imageInfo("12", this::inspect);
+        FXMenuItem imageInfo = MenuItemHelper.imageInfo("12", this::imageInspect);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(false));
         FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(true));
         menuItems.add(imageInfo);
