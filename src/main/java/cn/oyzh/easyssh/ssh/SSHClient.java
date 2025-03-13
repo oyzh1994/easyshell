@@ -464,4 +464,12 @@ public class SSHClient {
     public String exec_docker_ps() {
         return this.exec("/usr/bin/docker ps");
     }
+
+    public String exec_docker_rm(String containerId) {
+        return this.exec("/usr/bin/docker rm " + containerId);
+    }
+
+    public String exec_docker_rm_f(String containerId) {
+        return this.exec("/usr/bin/docker rm -f " + containerId);
+    }
 }

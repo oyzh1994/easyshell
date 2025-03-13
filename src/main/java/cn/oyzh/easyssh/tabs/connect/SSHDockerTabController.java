@@ -28,7 +28,7 @@ public class SSHDockerTabController extends SubTabController {
     private ClearableTextField filterContainer;
 
     @FXML
-    private SSHContainerTableView containerTab;
+    private SSHContainerTableView containerTable;
 
     private boolean initialized = false;
 
@@ -37,8 +37,8 @@ public class SSHDockerTabController extends SubTabController {
             return;
         }
         this.initialized = true;
-        this.containerTab.setClient(this.client());
-        this.containerTab.loadContainer();
+        this.containerTable.setClient(this.client());
+        this.containerTable.loadContainer();
     }
 
     @Override
@@ -54,6 +54,13 @@ public class SSHDockerTabController extends SubTabController {
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
                     this.init();
+                }
+            });
+            this.filterContainer.addTextChangeListener((observableValue, aBoolean, t1) -> {
+                try {
+                    this.containerTable.setFilterText(t1);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
                 }
             });
         } catch (Exception ex) {
@@ -74,7 +81,7 @@ public class SSHDockerTabController extends SubTabController {
     @FXML
     private void refreshContainer() {
         try {
-            this.containerTab.loadContainer();
+            this.containerTable.loadContainer();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -82,14 +89,12 @@ public class SSHDockerTabController extends SubTabController {
     }
 
     @FXML
-    private void deleteFile() {
-        try {
-//            this.containerTab.deleteFile();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+    private void deleteContainer() {
+        this.containerTable.deleteContainer(false);
     }
 
-
+    @FXML
+    private void deleteContainerForce() {
+        this.containerTable.deleteContainer(true);
+    }
 }

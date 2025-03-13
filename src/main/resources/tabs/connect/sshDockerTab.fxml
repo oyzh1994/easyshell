@@ -12,6 +12,7 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHDockerTabController"
        text="Docker" fx:id="root">
@@ -30,11 +31,16 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
-            <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
+            <DeleteSVGGlyph onMousePrimaryClicked="#deleteContainer">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
+            <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteContainerForce">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </DeleteForceSVGGlyph>
             <FXToggleSwitch realHeight="16" selected="true" fx:id="showStopped" selectedText="%base.showHiddenFiles"
                             unselectedText="%base.doNotShowHiddenFiles">
                 <FXHBox.margin>
@@ -42,7 +48,7 @@
                 </FXHBox.margin>
             </FXToggleSwitch>
         </FXHBox>
-        <SSHContainerTableView fx:id="containerTab" flexWidth="100%" flexHeight="100% - 60">
+        <SSHContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
                 <FXTableColumn  prefWidth="150" valueName="image" text="%base.image"/>

@@ -146,12 +146,12 @@ public class SSHSftpTabController extends SubTabController {
     public void onTabInit(RichTab tab) {
         try {
             super.onTabInit(tab);
-            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
                     this.init();
                 }
             });
+            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
             this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
                     this.filePath.clear();
