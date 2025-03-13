@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh;
 
+import cn.oyzh.common.util.JarUtil;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -13,15 +14,15 @@ import java.io.File;
 @UtilityClass
 public class SSHConst {
 
-    /**
-     * 数据保存路径
-     */
-    public static final String STORE_PATH = System.getProperty("user.home") + File.separator + ".easyssh_dev" + File.separator;
+//    /**
+//     * 数据保存路径
+//     */
+//    public static final String STORE_PATH = System.getProperty("user.home") + File.separator + ".easyssh_dev" + File.separator;
 
-    /**
-     * 缓存保存路径
-     */
-    public static final String CACHE_PATH = STORE_PATH + "cache" + File.separator;
+//    /**
+//     * 缓存保存路径
+//     */
+//    public static final String CACHE_PATH = STORE_PATH + "cache" + File.separator;
 
     /**
      * icon地址
@@ -37,5 +38,16 @@ public class SSHConst {
      * 任务栏图标，windows专用
      */
     public final static String ICON_32_PATH = "/image/ssh_32.png";
+
+    public static String getStorePath() {
+        if (JarUtil.isInJar()) {
+            return System.getProperty("user.home") + File.separator + ".easyssh_dev" + File.separator;
+        }
+        return System.getProperty("user.home") + File.separator + ".easyssh" + File.separator;
+    }
+
+    public static String getCachePath() {
+        return getStorePath() + "cache" + File.separator;
+    }
 
 }

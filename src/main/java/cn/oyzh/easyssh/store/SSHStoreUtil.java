@@ -22,7 +22,7 @@ public class SSHStoreUtil {
     public static void init() {
         JdbcConst.dbCacheSize(1024);
         JdbcConst.dbDialect(JdbcDialect.H2);
-        JdbcConst.dbFile(SSHConst.STORE_PATH + "db");
+        JdbcConst.dbFile(SSHConst.getStorePath() + "db");
         try {
             JdbcManager.takeoff();
         } catch (Exception ex) {

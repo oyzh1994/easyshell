@@ -69,12 +69,11 @@ public class EasySSHApp extends FXApplication implements EventListener {
             System.setProperty("prism.text", "t2k");
             System.setProperty("prism.lcdtext", "false");
             SysConst.projectName(PROJECT.getName());
-            SysConst.storeDir(SSHConst.STORE_PATH);
+            SysConst.storeDir(SSHConst.getStorePath());
+            SysConst.cacheDir(SSHConst.getCachePath());
             JulLog.info("项目启动中...");
             // 储存初始化
             SSHStoreUtil.init();
-            SysConst.storeDir(SSHConst.STORE_PATH);
-            SysConst.cacheDir(SSHConst.CACHE_PATH);
             if (OSUtil.isWindows()) {
                 FXConst.appIcon(SSHConst.ICON_32_PATH);
             } else {
