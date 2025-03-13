@@ -6,7 +6,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextArea;
 import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -22,9 +21,9 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "docker/dockerImageInspect.fxml"
+        value = FXConst.FXML_PATH + "docker/dockerInspect.fxml"
 )
-public class DockerImageInspectController extends StageController {
+public class DockerInspectController extends StageController {
 
     /**
      * 信息
@@ -49,6 +48,6 @@ public class DockerImageInspectController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.imageInfo();
+        return I18nHelper.info();
     }
 }

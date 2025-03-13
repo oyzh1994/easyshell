@@ -1,14 +1,18 @@
 package cn.oyzh.easyssh.trees.docker;
 
+import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.controller.docker.DockerInspectController;
 import cn.oyzh.easyssh.docker.DockerContainer;
 import cn.oyzh.easyssh.docker.DockerExec;
+import cn.oyzh.easyssh.docker.DockerImage;
 import cn.oyzh.easyssh.docker.DockerParser;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
@@ -16,6 +20,7 @@ import javafx.scene.control.MenuItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -127,7 +132,10 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
         if (container == null) {
             return Collections.emptyList();
         }
+
         List<FXMenuItem> menuItems = new ArrayList<>();
+        FXMenuItem containerInfo = MenuItemHelper.containerInfo("12", this::inspect);
+        menuItems.add(containerInfo);
         if (container.isExited()) {
             FXMenuItem startContainer = MenuItemHelper.startContainer("12", this::startContainer);
             menuItems.add(startContainer);
@@ -216,5 +224,28 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
                 this.clearContextMenu();
             }
         });
+    }
+
+    public void inspect() {
+        DockerContainer container = this.getSelectedItem();
+        DownLatch latch = DownLatch.of();
+        AtomicReference<String> output = new AtomicReference<>();
+        StageManager.showMask(() -> {
+            try {
+                output.set(this.exec.docker_inspect(container.getContainerId()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await();
+        if (StringUtil.isBlank(output.get())) {
+            MessageBox.warn(I18nHelper.operationFail());
+        }
+        StageAdapter adapter = StageManager.parseStage(DockerInspectController.class);
+        adapter.setProp("inspect", output.get());
+        adapter.display();
     }
 }

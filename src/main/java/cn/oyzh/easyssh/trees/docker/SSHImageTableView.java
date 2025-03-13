@@ -1,10 +1,9 @@
 package cn.oyzh.easyssh.trees.docker;
 
 import cn.oyzh.common.thread.DownLatch;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.controller.docker.DockerImageInspectController;
+import cn.oyzh.easyssh.controller.docker.DockerInspectController;
 import cn.oyzh.easyssh.docker.DockerExec;
 import cn.oyzh.easyssh.docker.DockerImage;
 import cn.oyzh.easyssh.docker.DockerParser;
@@ -16,7 +15,6 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Window;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,7 +118,7 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
         });
     }
 
-    public void imageInspect() {
+    public void inspect() {
         DockerImage image = this.getSelectedItem();
         DownLatch latch = DownLatch.of();
         AtomicReference<String> output = new AtomicReference<>();
@@ -138,7 +136,7 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
         if (StringUtil.isBlank(output.get())) {
             MessageBox.warn(I18nHelper.operationFail());
         }
-        StageAdapter adapter = StageManager.parseStage(DockerImageInspectController.class);
+        StageAdapter adapter = StageManager.parseStage(DockerInspectController.class);
         adapter.setProp("inspect", output.get());
         adapter.display();
     }
@@ -150,7 +148,7 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
             return Collections.emptyList();
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem imageInfo = MenuItemHelper.imageInfo("12", this::imageInspect);
+        FXMenuItem imageInfo = MenuItemHelper.imageInfo("12", this::inspect);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(false));
         FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(true));
         menuItems.add(imageInfo);
