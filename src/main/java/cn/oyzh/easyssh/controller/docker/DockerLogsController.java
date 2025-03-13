@@ -14,7 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * docker日志信息业务
+ * docker容器日志业务
  *
  * @author oyzh
  * @since 2025/03/13

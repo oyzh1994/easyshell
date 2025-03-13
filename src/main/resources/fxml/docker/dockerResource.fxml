@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.button.SaveButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.DecimalTextField?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.docker.DockerResourceController" prefWidth="650" realHeight="550">
+    <InfoLabel text="%base.memory">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <NumberTextField fx:id="memory" realHeight="30" flexWidth="100% - 140">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </NumberTextField>
+        <FXLabel text="MB">
+            <FXHBox.margin>
+                <Insets left="5" top="10"/>
+            </FXHBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <InfoLabel text="%base.memorySwap">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <NumberTextField fx:id="memorySwap" realHeight="30" flexWidth="100% - 140">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </NumberTextField>
+        <FXLabel text="MB">
+            <FXHBox.margin>
+                <Insets left="5" top="10"/>
+            </FXHBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <InfoLabel text="CpuShares">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <NumberTextField min="0" fx:id="cpuShares" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </NumberTextField>
+    <InfoLabel text="NanoCpus">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <DecimalTextField min="0" fx:id="nanoCpus" realHeight="30" flexWidth="100% - 140">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </DecimalTextField>
+        <FXLabel text="%base.core">
+            <FXHBox.margin>
+                <Insets left="5" top="10"/>
+            </FXHBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <InfoLabel text="CpuPeriod">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <DecimalTextField min="0" max="1000" fx:id="cpuPeriod" realHeight="30" flexWidth="100% - 140">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </DecimalTextField>
+        <FXLabel text="ns(1s=1000ns)">
+            <FXHBox.margin>
+                <Insets left="5" top="10"/>
+            </FXHBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <InfoLabel text="CpuQuota">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <NumberTextField min="0" fx:id="cpuQuota" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </NumberTextField>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SaveButton onAction="#save">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SaveButton>
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>

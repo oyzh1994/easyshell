@@ -1,5 +1,7 @@
 package cn.oyzh.easyssh.docker;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 
 /**
@@ -13,6 +15,8 @@ public class DockerExec {
     private final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
 
     private final String container_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
+
+    //private final String resource_format = "{{.HostConfig.Memory}}\t{{.HostConfig.MemorySwap}}\t{{.HostConfig.CpuShares}}\t{{.HostConfig.NanoCpus}}\t{{.HostConfig.CpuPeriod}}\t{{.HostConfig.CpuQuota}}";
 
     public DockerExec(SSHClient client) {
         this.client = client;
@@ -70,11 +74,55 @@ public class DockerExec {
         return this.client.exec("/usr/bin/docker rmi -f " + imageId);
     }
 
-    public String docker_inspect(String imageId) {
-        return this.client.exec("/usr/bin/docker inspect " + imageId);
+    public String docker_inspect(String id) {
+        return docker_inspect(id, null);
+    }
+
+    public String docker_inspect(String id, String format) {
+        if (format == null) {
+            return this.client.exec("/usr/bin/docker inspect " + id);
+        }
+        return this.client.exec("/usr/bin/docker inspect --format=" + format + " " + id);
     }
 
     public String docker_images() {
         return this.client.exec("/usr/bin/docker images --format " + this.image_format);
+    }
+
+    public String docker_resource(String id) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.docker_inspect(id, "{{.HostConfig.Memory}}")).append("\t");
+        builder.append(this.docker_inspect(id, "{{.HostConfig.MemorySwap}}")).append("\t");
+        builder.append(this.docker_inspect(id, "{{.HostConfig.CpuShares}}")).append("\t");
+        builder.append(this.docker_inspect(id, "{{.HostConfig.NanoCpus}}")).append("\t");
+        builder.append(this.docker_inspect(id, "{{.HostConfig.CpuPeriod}}")).append("\t");
+        builder.append(this.docker_inspect(id, "{{.HostConfig.CpuQuota}}"));
+//        return this.docker_inspect(id, this.resource_format);
+        return builder.toString();
+    }
+
+    public String docker_update(DockerResource resource, String id) {
+        StringBuilder builder = new StringBuilder("/usr/bin/docker update");
+        if (resource.getMemory() > 0) {
+            builder.append(" --memory ").append(resource.getMemory()).append("m");
+        }
+        if (resource.getMemorySwap() > 0) {
+            builder.append(" --memory-swap ").append(resource.getMemorySwap()).append("m");
+        }
+        if (resource.getCpuShares() > 0) {
+            builder.append(" --cpu-shares ").append(resource.getCpuShares());
+        }
+        if (resource.getNanoCpus() > 0) {
+            builder.append(" --cpus ").append(resource.getNanoCpus());
+        }
+        if (resource.getCpuPeriod() > 0) {
+            builder.append(" --cpu-period ").append(resource.getCpuPeriod());
+        }
+        if (resource.getCpuQuota() > 0) {
+            builder.append(" --cpu-quota ").append(resource.getCpuQuota());
+        }
+        builder.append(" ").append(id);
+        JulLog.info("docker update:{}", builder.toString());
+        return this.client.exec(builder.toString());
     }
 }

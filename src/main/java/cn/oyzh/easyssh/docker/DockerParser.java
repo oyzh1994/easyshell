@@ -79,4 +79,33 @@ public class DockerParser {
         return images;
     }
 
+    public static DockerResource resource(String output) {
+        if (StringUtil.isBlank(output)) {
+            return null;
+        }
+        output = output.replaceAll("\n", "");
+        JulLog.info("docker resource:{}", output);
+        DockerResource dockerResource = new DockerResource();
+        String[] cols = output.replace("\n", "").split("\t");
+        if (cols.length > 0) {
+            dockerResource.setMemory(Long.parseLong(cols[0]));
+        }
+        if (cols.length > 1) {
+            dockerResource.setMemorySwap(Long.parseLong(cols[1]));
+        }
+        if (cols.length > 2) {
+            dockerResource.setCpuShares(Long.parseLong(cols[2]));
+        }
+        if (cols.length > 3) {
+            dockerResource.setNanoCpus(Long.parseLong(cols[3]));
+        }
+        if (cols.length > 4) {
+            dockerResource.setCpuPeriod(Long.parseLong(cols[4]));
+        }
+        if (cols.length > 5) {
+            dockerResource.setCpuQuota(Long.parseLong(cols[5]));
+        }
+        return dockerResource;
+    }
+
 }

@@ -13,7 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * docker镜像信息业务
+ * docker信息业务
  *
  * @author oyzh
  * @since 2025/03/13
