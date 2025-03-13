@@ -461,8 +461,18 @@ public class SSHClient {
         this.sftpDeleteManager.setDeleteDeletedCallback(callback);
     }
 
+    private String docker_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
+
     public String exec_docker_ps() {
-        return this.exec("/usr/bin/docker ps");
+        return this.exec("/usr/bin/docker ps --format " + docker_format);
+    }
+
+    public String exec_docker_ps_a() {
+        return this.exec("/usr/bin/docker ps -a --format " + docker_format);
+    }
+
+    public String exec_docker_ps_exited() {
+        return this.exec("/usr/bin/docker ps -f \"status=exited\" --format " + docker_format);
     }
 
     public String exec_docker_rm(String containerId) {

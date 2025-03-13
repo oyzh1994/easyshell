@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.docker.SSHContainerTableView;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -30,6 +31,9 @@ public class SSHDockerTabController extends SubTabController {
     @FXML
     private SSHContainerTableView containerTable;
 
+    @FXML
+    private SSHContainerStatusComboBox containerStatus;
+
     private boolean initialized = false;
 
     private void init() {
@@ -57,11 +61,10 @@ public class SSHDockerTabController extends SubTabController {
                 }
             });
             this.filterContainer.addTextChangeListener((observableValue, aBoolean, t1) -> {
-                try {
-                    this.containerTable.setFilterText(t1);
-                } catch (Exception ex) {
-                    MessageBox.exception(ex);
-                }
+                this.containerTable.setFilterText(t1);
+            });
+            this.containerStatus.selectedIndexChanged((observableValue, aBoolean, t1) -> {
+                this.containerTable.setStatus(t1.byteValue());
             });
         } catch (Exception ex) {
             ex.printStackTrace();

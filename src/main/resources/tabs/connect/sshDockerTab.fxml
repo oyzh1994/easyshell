@@ -13,6 +13,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
+<?import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHDockerTabController"
        text="Docker" fx:id="root">
@@ -41,12 +42,11 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteForceSVGGlyph>
-            <FXToggleSwitch realHeight="16" selected="true" fx:id="showStopped" selectedText="%base.showHiddenFiles"
-                            unselectedText="%base.doNotShowHiddenFiles">
+            <SSHContainerStatusComboBox initIndex="0" fx:id="containerStatus" >
                 <FXHBox.margin>
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
-            </FXToggleSwitch>
+            </SSHContainerStatusComboBox>
         </FXHBox>
         <SSHContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>

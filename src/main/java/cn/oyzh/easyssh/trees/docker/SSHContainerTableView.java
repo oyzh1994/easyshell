@@ -41,13 +41,33 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
         this.client = client;
     }
 
+    private byte status;
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        if (status != this.status) {
+            this.status = status;
+            this.loadContainer();
+        }
+    }
+
     private List<DockerContainer> containers;
 
     public void loadContainer() {
-        String output = this.client.exec_docker_ps();
         DockerParser parser = new DockerParser();
+        String output;
+        if (this.status == 0) {
+            output = this.client.exec_docker_ps();
+        } else if (this.status == 1) {
+            output = this.client.exec_docker_ps_a();
+        } else {
+            output = this.client.exec_docker_ps_exited();
+        }
         this.containers = parser.ps(output);
-        this.setItem(this.containers);
+        this.setItem(this.doFilter(this.containers));
     }
 
     private String filterText;
