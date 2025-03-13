@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyssh.controller.docker.DockerImageInspectController" prefWidth="850" realHeight="650">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <CopySVGGlyph onMousePrimaryClicked="#copyInspect">
+            <FXHBox.margin>
+                <Insets left="30" top="10"/>
+            </FXHBox.margin>
+        </CopySVGGlyph>
+    </FXHBox>
+    <RichJsonTextAreaPane editable="false" fx:id="inspect" flexHeight="100% - 30" flexWidth="100% - 50">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </RichJsonTextAreaPane>
+</FXVBox>

@@ -65,9 +65,4 @@ public class DockerExec {
     public String docker_images( ) {
         return this.client.exec("/usr/bin/docker images --format " + this.image_format);
     }
-
-    public String docker_images_unused( ) {
-        return this.client.exec("/usr/bin/docker image ls -f dangling=true --format" + this.image_format);
-    }
-
 }
