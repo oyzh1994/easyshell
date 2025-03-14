@@ -22,10 +22,8 @@ public class DockerParser {
         }
         JulLog.info(output);
         List<DockerContainer> containers = new ArrayList<>();
-        // 4. 解析容器信息
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
-            // 按\t分割列
             String[] columns = line.split("\t");
             String containerId = columns[0];
             String image = columns[1];
@@ -45,7 +43,6 @@ public class DockerParser {
             container.setCommand(command);
 
             containers.add(container);
-//            System.out.printf("容器ID: %s | 镜像: %s | 状态: %s%n", containerId, image, status);
         }
         return containers;
     }
@@ -56,10 +53,8 @@ public class DockerParser {
         }
         JulLog.info(output);
         List<DockerImage> images = new ArrayList<>();
-        // 4. 解析容器信息
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
-            // 按\t分割列
             String[] columns = line.split("\t");
             String repository = columns[0];
             String tag = columns[1];
@@ -114,10 +109,8 @@ public class DockerParser {
         }
         JulLog.info(output);
         List<DockerPort> ports = new ArrayList<>();
-        // 4. 解析容器信息
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
-            // 按\t分割列
             String[] cols = line.split("->");
             String outerPort = cols[0];
             String innerPort = cols[1];
@@ -129,5 +122,36 @@ public class DockerParser {
             ports.add(port);
         }
         return ports;
+    }
+
+    public static List<DockerHistory> history(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyList();
+        }
+        JulLog.info(output);
+        List<DockerHistory> histories = new ArrayList<>();
+        String[] lines = output.split("\n");
+        for (String line : lines) {
+            String[] columns = line.split("\r\t");
+            String imageId = columns[0];
+            String created = columns[1];
+            String createdBy = columns[2];
+            String size = columns[3];
+            String comment;
+            if (columns.length >= 5) {
+                comment = columns[4];
+            } else {
+                comment = "";
+            }
+            DockerHistory history = new DockerHistory();
+            history.setSize(size);
+            history.setImageId(imageId);
+            history.setComment(comment);
+            history.setCreated(created);
+            history.setCreatedBy(createdBy);
+
+            histories.add(history);
+        }
+        return histories;
     }
 }

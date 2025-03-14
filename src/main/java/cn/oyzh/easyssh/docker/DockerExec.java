@@ -16,6 +16,8 @@ public class DockerExec {
 
     private final String container_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
 
+    private final String history_format = "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
+
     //private final String resource_format = "{{.HostConfig.Memory}}\t{{.HostConfig.MemorySwap}}\t{{.HostConfig.CpuShares}}\t{{.HostConfig.NanoCpus}}\t{{.HostConfig.CpuPeriod}}\t{{.HostConfig.CpuQuota}}";
 
     public DockerExec(SSHClient client) {
@@ -144,5 +146,9 @@ public class DockerExec {
 
     public String docker_version() {
         return this.client.exec("/usr/bin/docker version");
+    }
+
+    public String docker_history(String imageId) {
+        return this.client.exec("/usr/bin/docker history " + imageId + " --format " + this.history_format);
     }
 }

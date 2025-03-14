@@ -1,11 +1,11 @@
 package cn.oyzh.easyssh.trees.docker;
 
-import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.controller.docker.DockerHistoryController;
 import cn.oyzh.easyssh.controller.docker.DockerInspectController;
-import cn.oyzh.easyssh.docker.DockerContainer;
 import cn.oyzh.easyssh.docker.DockerExec;
+import cn.oyzh.easyssh.docker.DockerHistory;
 import cn.oyzh.easyssh.docker.DockerImage;
 import cn.oyzh.easyssh.docker.DockerParser;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -21,7 +21,6 @@ import javafx.scene.control.MenuItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -141,6 +140,24 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
         });
     }
 
+    public void imageHistory() {
+        DockerImage image = this.getSelectedItem();
+        StageManager.showMask(() -> {
+            try {
+                String output = this.exec.docker_history(image.getImageId());
+                List<DockerHistory> histories = DockerParser.history(output);
+                FXUtil.runLater(() -> {
+                    StageAdapter adapter = StageManager.parseStage(DockerHistoryController.class);
+                    adapter.setProp("histories", histories);
+                    adapter.display();
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
     @Override
     public List<? extends MenuItem> getMenuItems() {
         DockerImage image = this.getSelectedItem();
@@ -149,9 +166,11 @@ public class SSHImageTableView extends FXTableView<DockerImage> {
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
         FXMenuItem imageInfo = MenuItemHelper.imageInfo("12", this::imageInspect);
+        FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(false));
         FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(true));
         menuItems.add(imageInfo);
+        menuItems.add(imageHistory);
         menuItems.add(deleteImage);
         menuItems.add(forceDeleteImage);
         return menuItems;
