@@ -42,6 +42,10 @@ public class DockerExec {
         return this.client.exec("/usr/bin/docker logs " + containerId);
     }
 
+    public String docker_rename(String containerId, String newName) {
+        return this.client.exec("/usr/bin/docker rename " + containerId + " " + newName);
+    }
+
     public String docker_rm_f(String containerId) {
         return this.client.exec("/usr/bin/docker rm -f " + containerId);
     }

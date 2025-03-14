@@ -14,6 +14,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyssh.trees.docker.SSHImageTableView?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHDockerTabController"
        text="Docker" fx:id="root">
@@ -96,6 +97,22 @@
                         <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
                     </columns>
                 </SSHImageTableView>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.extra">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <FXButton realHeight="24"  tipText="Docker Info">
+                        <FXHBox.margin>
+                            <Insets left="5" top="3"/>
+                        </FXHBox.margin>
+                    </FXButton>
+                    <FXButton realHeight="24"  tipText="Docker Version">
+                        <FXHBox.margin>
+                            <Insets left="5" top="3"/>
+                        </FXHBox.margin>
+                    </FXButton>
+                </FXHBox>
             </FXVBox>
         </FXTab>
 

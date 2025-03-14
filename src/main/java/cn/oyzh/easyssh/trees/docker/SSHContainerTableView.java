@@ -156,9 +156,11 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
             }
         }
         FXMenuItem containerLogs = MenuItemHelper.containerLogs("12", this::containerLogs);
+        FXMenuItem renameContainer = MenuItemHelper.renameContainer("12", this::containerRename);
         FXMenuItem deleteContainer = MenuItemHelper.deleteContainer("12", () -> this.deleteContainer(false));
         FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer("12", () -> this.deleteContainer(true));
         menuItems.add(containerLogs);
+        menuItems.add(renameContainer);
         menuItems.add(deleteContainer);
         menuItems.add(forceDeleteContainer);
         return menuItems;
@@ -336,6 +338,28 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
                         adapter.setProp("logs", output);
                         adapter.display();
                     });
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void containerRename() {
+        DockerContainer container = this.getSelectedItem();
+        String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), container.getNames());
+        if (StringUtil.isBlank(newName) || StringUtil.equalsIgnoreCase(container.getNames(), newName)) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                String output = this.exec.docker_rename(container.getContainerId(), newName);
+                if (StringUtil.isNotBlank(output)) {
+                    MessageBox.warn(output);
+                } else {
+                    container.setNames(newName);
+                    this.refreshContainer();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
