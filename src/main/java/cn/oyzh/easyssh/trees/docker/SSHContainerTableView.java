@@ -144,8 +144,10 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
             menuItems.add(startContainer);
         } else {
             FXMenuItem stopContainer = MenuItemHelper.stopContainer("12", this::stopContainer);
+            FXMenuItem killContainer = MenuItemHelper.killContainer("12", this::killContainer);
             FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", this::restartContainer);
             menuItems.add(stopContainer);
+            menuItems.add(killContainer);
             menuItems.add(restartContainer);
             if (container.isPaused()) {
                 FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer("12", this::unpauseContainer);
@@ -194,6 +196,26 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_stop(container.getContainerId());
+                if (StringUtil.isNotBlank(output)) {
+                    this.loadContainer();
+                } else {
+                    MessageBox.warn(I18nHelper.operationFail());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void killContainer() {
+        DockerContainer container = this.getSelectedItem();
+        if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                String output = this.exec.docker_kill(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {

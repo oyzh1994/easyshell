@@ -70,6 +70,10 @@ public class DockerExec {
         return this.client.exec("/usr/bin/docker stop " + containerId);
     }
 
+    public String docker_kill(String containerId) {
+        return this.client.exec("/usr/bin/docker kill " + containerId);
+    }
+
     public String docker_rmi(String imageId) {
         return this.client.exec("/usr/bin/docker rmi " + imageId);
     }
