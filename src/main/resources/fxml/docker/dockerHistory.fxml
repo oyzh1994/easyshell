@@ -11,7 +11,7 @@
             <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
             <FXTableColumn prefWidth="220" valueName="created" text="%base.created"/>
             <FXTableColumn prefWidth="220" valueName="createdBy" text="%base.createdBy"/>
-            <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
+            <FXTableColumn prefWidth="100" flexWidth="100% - 680" valueName="size" text="%base.size"/>
             <FXTableColumn prefWidth="120" valueName="comment" text="%base.comment"/>
         </columns>
     </DockerHistoryTableView>

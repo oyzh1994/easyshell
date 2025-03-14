@@ -10,6 +10,7 @@ import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.docker.SSHContainerTableView;
 import cn.oyzh.easyssh.trees.docker.SSHImageTableView;
+import cn.oyzh.easyssh.util.SSHI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -59,13 +60,23 @@ public class SSHDockerTabController extends SubTabController {
             return;
         }
         this.initialized = true;
-        DockerExec exec = this.client().dockerExec();
-        this.containerTable.setExec(exec);
-        this.imageTable.setExec(exec);
-        StageManager.showMask(() -> {
-            this.containerTable.loadContainer();
-            this.imageTable.loadImage();
-        });
+        try {
+            boolean exist = this.client().openSftp().exist("/usr/bin/docker");
+            if (!exist) {
+                MessageBox.info(SSHI18nHelper.connectTip5());
+                return;
+            }
+            DockerExec exec = this.client().dockerExec();
+            this.containerTable.setExec(exec);
+            this.imageTable.setExec(exec);
+            StageManager.showMask(() -> {
+                this.containerTable.loadContainer();
+                this.imageTable.loadImage();
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     @Override
@@ -138,7 +149,7 @@ public class SSHDockerTabController extends SubTabController {
     }
 
     @FXML
-    private void dockerInfo( ) {
+    private void dockerInfo() {
         DockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
@@ -160,7 +171,7 @@ public class SSHDockerTabController extends SubTabController {
     }
 
     @FXML
-    private void dockerVersion( ) {
+    private void dockerVersion() {
         DockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
