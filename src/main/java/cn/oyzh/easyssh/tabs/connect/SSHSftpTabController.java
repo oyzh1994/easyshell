@@ -105,6 +105,9 @@ public class SSHSftpTabController extends SubTabController {
     private SVGGlyph uploadFile;
 
     @FXML
+    private SVGGlyph refreshFile;
+
+    @FXML
     private SVGGlyph uploadDir;
 
     private final SSHSetting setting = SSHSettingStore.SETTING;
@@ -140,7 +143,6 @@ public class SSHSftpTabController extends SubTabController {
         // 显示动画
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
         this.fileTable.loadFile();
-
         // 监听上传中属性
         this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -149,6 +151,22 @@ public class SSHSftpTabController extends SubTabController {
                 this.uploadFile.enable();
             }
         });
+        // 监听删除中属性
+        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.refreshFile.disable();
+            } else {
+                this.refreshFile.enable();
+            }
+        });
+//        // 监听下载中属性
+//        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                this.refreshFile.disable();
+//            } else {
+//                this.refreshFile.enable();
+//            }
+//        });
     }
 
     @Override
@@ -530,13 +548,13 @@ public class SSHSftpTabController extends SubTabController {
     private synchronized void updateLayout() {
         int showNum = 0;
         if (this.deleteBox.isVisible()) {
-            showNum++;
+            ++showNum;
         }
         if (this.uploadBox.isVisible()) {
-            showNum++;
+            ++showNum;
         }
         if (this.downloadBox.isVisible()) {
-            showNum++;
+            ++showNum;
         }
         this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
         this.fileTable.parentAutosize();

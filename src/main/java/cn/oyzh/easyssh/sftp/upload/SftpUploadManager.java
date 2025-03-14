@@ -47,6 +47,7 @@ public class SftpUploadManager {
     public void createMonitor(File localFile, String remoteFile, SSHSftp sftp) {
         this.executeThread = ThreadUtil.start(() -> {
             try {
+                sftp.setHolding(true);
                 this.setUploading(true);
                 this.uploadInPreparation();
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
@@ -54,12 +55,14 @@ public class SftpUploadManager {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
+                sftp.setHolding(false);
                 this.setUploading(false);
             }
         });
     }
 
     protected void addMonitorRecursive(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
+        this.uploadInPreparation(localFile.getPath());
         // 文件夹
         if (localFile.isDirectory()) {
             // 列举文件
@@ -81,7 +84,6 @@ public class SftpUploadManager {
                 }
             }
         } else {// 文件
-            this.uploadInPreparation(localFile.getPath());
             this.monitors.add(new SftpUploadMonitor(localFile, remoteFile, this, sftp));
         }
     }

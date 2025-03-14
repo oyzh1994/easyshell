@@ -38,7 +38,7 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </ReturnFolderSVGGlyph>
-            <RefreshSVGGlyph onMousePrimaryClicked="#refreshFile">
+            <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
@@ -83,7 +83,7 @@
         <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                <FXTableColumn style="-fx-padding-left:0;" prefWidth="180" valueName="fileName" text="%base.name"/>
+                <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName" text="%base.name"/>
                 <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
                 <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
                 <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>

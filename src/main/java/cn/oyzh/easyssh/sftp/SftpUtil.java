@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.sftp;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import lombok.experimental.UtilityClass;
 
@@ -38,5 +39,12 @@ public class SftpUtil {
             attr.putGroup(gid, groupName);
         }
         return groupName;
+    }
+
+    public static String parent(String dest) {
+        if (StringUtil.isEmpty(dest)) {
+            return dest;
+        }
+        return dest.substring(0, dest.lastIndexOf("/"));
     }
 }

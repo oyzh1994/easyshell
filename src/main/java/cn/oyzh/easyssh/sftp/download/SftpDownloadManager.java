@@ -9,6 +9,8 @@ import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.SftpUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Setter;
 
 import java.io.File;
@@ -50,6 +52,7 @@ public class SftpDownloadManager {
         // 执行线程
         this.executeThread = ThreadUtil.start(() -> {
             try {
+                sftp.setHolding(true);
                 this.setDownloading(true);
                 this.downloadInPreparation();
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
@@ -57,12 +60,15 @@ public class SftpDownloadManager {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
+                sftp.setHolding(false);
                 this.setDownloading(false);
             }
         });
     }
 
     protected void addMonitorRecursive(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
+        String filePath = SftpUtil.concat(remoteFile.getFilePath(), remoteFile.getFileName());
+        this.downloadInPreparation(filePath);
         // 文件夹
         if (remoteFile.isDir()) {
             // 列举文件
@@ -75,13 +81,15 @@ public class SftpDownloadManager {
                 // 添加文件
                 for (SftpFile file : files) {
                     file.setParentPath(remoteFile.getFilePath());
-                    File localFile1 = new File(localDir, file.getFileName());
-                    this.addMonitorRecursive(localFile1, file, sftp);
+                    if (file.isDir()) {
+                        this.addMonitorRecursive(localDir, file, sftp);
+                    } else {
+                        File localFile1 = new File(localDir, file.getFileName());
+                        this.addMonitorRecursive(localFile1, file, sftp);
+                    }
                 }
             }
         } else {// 文件
-            String filePath = SftpUtil.concat(remoteFile.getFilePath(), remoteFile.getFileName());
-            this.downloadInPreparation(filePath);
             this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
         }
     }
@@ -95,8 +103,8 @@ public class SftpDownloadManager {
         if (this.downloadEndedCallback != null) {
             SftpDownloadEnded ended = new SftpDownloadEnded();
             ended.setFileCount(this.size());
-            ended.setRemoteFile(monitor.getRemoteFileName());
-            ended.setLocalFileName(monitor.getLocalFileName());
+            ended.setRemoteFile(monitor.getRemoteFilePath());
+            ended.setLocalFileName(monitor.getLocalFilePath());
             this.downloadEndedCallback.accept(ended);
         }
     }
@@ -107,8 +115,8 @@ public class SftpDownloadManager {
             SftpDownloadFailed failed = new SftpDownloadFailed();
             failed.setFileCount(this.size());
             failed.setException(exception);
-            failed.setRemoteFile(monitor.getRemoteFileName());
-            failed.setLocalFileName(monitor.getLocalFileName());
+            failed.setRemoteFile(monitor.getRemoteFilePath());
+            failed.setLocalFileName(monitor.getLocalFilePath());
             this.downloadFailedCallback.accept(failed);
         }
     }
@@ -118,8 +126,8 @@ public class SftpDownloadManager {
         if (this.downloadCanceledCallback != null) {
             SftpDownloadCanceled ended = new SftpDownloadCanceled();
             ended.setFileCount(this.size());
-            ended.setRemoteFile(monitor.getRemoteFileName());
-            ended.setLocalFileName(monitor.getLocalFileName());
+            ended.setRemoteFile(monitor.getRemoteFilePath());
+            ended.setLocalFileName(monitor.getLocalFilePath());
             this.downloadCanceledCallback.accept(ended);
         }
     }
@@ -131,8 +139,8 @@ public class SftpDownloadManager {
             changed.setFileSize(this.count());
             changed.setTotal(monitor.getTotal());
             changed.setCurrent(monitor.getCurrent());
-            changed.setRemoteFile(monitor.getRemoteFileName());
-            changed.setLocalFileName(monitor.getLocalFileName());
+            changed.setRemoteFile(monitor.getRemoteFilePath());
+            changed.setLocalFileName(monitor.getLocalFilePath());
             this.downloadChangedCallback.accept(changed);
         }
     }
@@ -208,13 +216,17 @@ public class SftpDownloadManager {
         }
     }
 
-    private final AtomicBoolean downloading = new AtomicBoolean(false);
+    private final BooleanProperty downloadingProperty= new SimpleBooleanProperty(false);
+
+    public BooleanProperty downloadingProperty() {
+        return this.downloadingProperty;
+    }
 
     public void setDownloading(boolean downloading) {
-        this.downloading.set(downloading);
+        this.downloadingProperty.set(downloading);
     }
 
     public boolean isDownloading() {
-        return this.downloading.get();
+        return this.downloadingProperty.get();
     }
 }

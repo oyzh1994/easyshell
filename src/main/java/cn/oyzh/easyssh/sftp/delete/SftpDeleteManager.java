@@ -6,12 +6,13 @@ import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.SftpUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Setter;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -117,14 +118,18 @@ public class SftpDeleteManager {
         this.deleteDeleted(path);
     }
 
-    private final AtomicBoolean deleting = new AtomicBoolean(false);
+    private final BooleanProperty deletingProperty = new SimpleBooleanProperty(false);
+
+    public BooleanProperty deletingProperty() {
+        return this.deletingProperty;
+    }
 
     public void setDeleting(boolean deleting) {
-        this.deleting.set(deleting);
+        this.deletingProperty.set(deleting);
     }
 
     public boolean isDeleting() {
-        return this.deleting.get();
+        return this.deletingProperty.get();
     }
 
     public static class DeleteFile {

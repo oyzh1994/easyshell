@@ -74,11 +74,13 @@ public class SftpFile {
     @Getter
     private String parentPath;
 
-    public SftpFile(ChannelSftp.LsEntry entry) {
+    public SftpFile(String parentPath, ChannelSftp.LsEntry entry) {
+        this.parentPath = parentPath;
         this.entry = entry;
     }
 
-    public SftpFile(String fileName, SftpATTRS attrs) {
+    public SftpFile(String parentPath, String fileName, SftpATTRS attrs) {
+        this.parentPath = parentPath;
         this.fileName = fileName;
         this.attrs = attrs;
     }

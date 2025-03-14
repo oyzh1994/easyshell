@@ -29,11 +29,11 @@ public class SSHSftpManager {
         List<SSHSftp> removes = new ArrayList<>();
         try {
             for (SSHSftp sshSftp : this.sftpList) {
-                if (sshSftp.isClosed()) {
+                if (sshSftp.isClosed() || !sshSftp.isConnected()) {
                     removes.add(sshSftp);
                     continue;
                 }
-                if (sshSftp.isUsing()) {
+                if (sshSftp.isUsing() || sshSftp.isHolding()) {
                     continue;
                 }
                 return sshSftp;

@@ -52,6 +52,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -158,20 +159,19 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 currPath = this.getCurrPath();
             }
             JulLog.info("current path: {}", currPath);
-            List<SftpFile> oldFiles = this.files;
-            this.files = this.doFilter(sftp.lsFile(currPath, this.client));
-            this.setItem(this.files);
-            if (CollectionUtil.isNotEmpty( this.files) && CollectionUtil.isNotEmpty(oldFiles)) {
-                for (SftpFile file : this.files) {
-                    oldFiles.parallelStream()
-                            .filter(f -> f.getIcon().isWaiting() && StringUtil.equals(f.getFilePath(), file.getFilePath()))
-                            .findAny()
-                            .ifPresent(f -> {
-                                file.startWaiting();
-                            });
-                }
-            }
-//            this.setItem(this.doFilter(this.files));
+//            List<SftpFile> oldFiles = this.files;
+            this.files = sftp.lsFile(currPath, this.client);
+            this.setItem(this.doFilter(this.files));
+//            List<SftpFile> files = this.doFilter(this.files);
+//            this.setItem(files);
+//            if (CollectionUtil.isNotEmpty(files) && CollectionUtil.isNotEmpty(oldFiles)) {
+//                for (SftpFile file : files) {
+//                    oldFiles.parallelStream()
+//                            .filter(f -> f.getIcon().isWaiting() && StringUtil.equals(f.getFilePath(), file.getFilePath()))
+//                            .findAny()
+//                            .ifPresent(f -> file.startWaiting());
+//                }
+//            }
         } catch (SftpException ex) {
             if (ExceptionUtil.hasMessage(ex, "inputstream is closed")) {
                 sftp.close();
@@ -211,7 +211,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     .sorted(Comparator.comparingInt(SftpFile::getOrder))
                     .collect(Collectors.toList());
         }
-        return files;
+        return new CopyOnWriteArrayList<>(files);
     }
 
     public void deleteFile() {
@@ -402,13 +402,11 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().mkdir(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
-        SftpFile file = new SftpFile(name, attrs);
+        SftpFile file = new SftpFile(this.currPath(), name, attrs);
         file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
         file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
-//        this.addItem(file);
         this.files.add(file);
         this.refreshFile();
-//        this.loadFile();
     }
 
     public void touchFile(String name) throws SftpException {
@@ -422,7 +420,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
         this.sftp().touch(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
-        SftpFile file = new SftpFile(name, attrs);
+        SftpFile file = new SftpFile(this.currPath(), name, attrs);
         file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
         file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
         this.files.add(file);
@@ -507,7 +505,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void fileUploaded(String fileName, String dest) throws SftpException {
-        if (StringUtil.equals(this.getCurrPath(), dest)) {
+        String currPath = this.getCurrPath();
+        if (StringUtil.equalsAny(currPath, dest)) {
             Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
             String filePath = SftpUtil.concat(dest, fileName);
             if (sftpFile.isPresent()) {
@@ -515,7 +514,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 sftpFile.get().setAttrs(attrs);
             } else {
                 SftpATTRS attrs = this.sftp().stat(filePath);
-                SftpFile file = new SftpFile(fileName, attrs);
+                SftpFile file = new SftpFile(currPath, fileName, attrs);
                 file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
                 file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
                 this.files.add(file);
@@ -586,7 +585,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     public void fileDeleted(String remoteFile) {
-        Optional<SftpFile> optional = this.files.parallelStream().filter(f -> StringUtil.equals(remoteFile, f.getFilePath())).findAny();
+        Optional<SftpFile> optional = this.files.parallelStream()
+                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
+                .findAny();
         if (optional.isPresent()) {
             this.files.remove(optional.get());
             this.refreshFile();

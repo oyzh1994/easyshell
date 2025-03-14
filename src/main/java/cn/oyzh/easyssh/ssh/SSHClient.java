@@ -340,7 +340,7 @@ public class SSHClient {
         if (!this.sftpManager.hasAvailable()) {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                SSHSftp sftp = new SSHSftp(channel, this.sftpDeleteManager);
+                SSHSftp sftp = new SSHSftp(channel);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
                 return sftp;
@@ -480,6 +480,14 @@ public class SSHClient {
 
     public BooleanProperty uploadingProperty() {
         return this.sftpUploadManager.uploadingProperty();
+    }
+
+    public BooleanProperty deletingProperty() {
+        return this.sftpDeleteManager.deletingProperty();
+    }
+
+    public BooleanProperty downloadingProperty() {
+        return this.sftpDownloadManager.downloadingProperty();
     }
 
     public void delete(SftpFile file) {

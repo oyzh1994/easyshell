@@ -22,11 +22,8 @@ import java.util.stream.Collectors;
  */
 public class SSHSftp extends SSHChannel {
 
-    private final SftpDeleteManager deleteManager;
-
-    public SSHSftp(ChannelSftp channel, SftpDeleteManager deleteManager) {
+    public SSHSftp(ChannelSftp channel) {
         super(channel);
-        this.deleteManager = deleteManager;
     }
 
     private final AtomicBoolean using = new AtomicBoolean(false);
@@ -37,6 +34,16 @@ public class SSHSftp extends SSHChannel {
 
     public boolean isUsing() {
         return this.using.get();
+    }
+
+    private final AtomicBoolean holding = new AtomicBoolean(false);
+
+    public void setHolding(boolean holding) {
+        this.holding.set(holding);
+    }
+
+    public boolean isHolding() {
+        return this.holding.get();
     }
 
     @Override
@@ -66,8 +73,7 @@ public class SSHSftp extends SSHChannel {
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            SftpFile file = new SftpFile(lsEntry);
-            file.setParentPath(path);
+            SftpFile file = new SftpFile(path, lsEntry);
             files.add(file);
             if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
                 String ownerName = SftpUtil.getOwner(file.getUid(), client);
