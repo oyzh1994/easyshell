@@ -4,10 +4,12 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.docker.DockerInspectController;
 import cn.oyzh.easyssh.controller.docker.DockerLogsController;
+import cn.oyzh.easyssh.controller.docker.DockerPortController;
 import cn.oyzh.easyssh.controller.docker.DockerResourceController;
 import cn.oyzh.easyssh.docker.DockerContainer;
 import cn.oyzh.easyssh.docker.DockerExec;
 import cn.oyzh.easyssh.docker.DockerParser;
+import cn.oyzh.easyssh.docker.DockerPort;
 import cn.oyzh.easyssh.docker.DockerResource;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -139,6 +141,8 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
         menuItems.add(containerInfo);
         FXMenuItem containerResource = MenuItemHelper.containerResource("12", this::containerResource);
         menuItems.add(containerResource);
+        FXMenuItem containerPorts = MenuItemHelper.containerPorts("12", this::containerPorts);
+        menuItems.add(containerPorts);
         if (container.isExited()) {
             FXMenuItem startContainer = MenuItemHelper.startContainer("12", this::startContainer);
             menuItems.add(startContainer);
@@ -383,6 +387,24 @@ public class SSHContainerTableView extends FXTableView<DockerContainer> {
                     container.setNames(newName);
                     this.refreshContainer();
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void containerPorts() {
+        DockerContainer container = this.getSelectedItem();
+        StageManager.showMask(() -> {
+            try {
+                String output = this.exec.docker_port(container.getContainerId());
+                List<DockerPort> ports = DockerParser.port(output);
+                FXUtil.runLater(() -> {
+                    StageAdapter adapter = StageManager.parseStage(DockerPortController.class);
+                    adapter.setProp("ports", ports);
+                    adapter.display();
+                });
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

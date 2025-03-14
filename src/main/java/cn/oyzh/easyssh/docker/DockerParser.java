@@ -108,4 +108,26 @@ public class DockerParser {
         return dockerResource;
     }
 
+    public static List<DockerPort> port(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyList();
+        }
+        JulLog.info(output);
+        List<DockerPort> ports = new ArrayList<>();
+        // 4. 解析容器信息
+        String[] lines = output.split("\n");
+        for (String line : lines) { // 跳过表头
+            // 按\t分割列
+            String[] cols = line.split("->");
+            String outerPort = cols[0];
+            String innerPort = cols[1];
+
+            DockerPort port = new DockerPort();
+            port.setInnerPort(innerPort);
+            port.setOuterPort(outerPort);
+
+            ports.add(port);
+        }
+        return ports;
+    }
 }
