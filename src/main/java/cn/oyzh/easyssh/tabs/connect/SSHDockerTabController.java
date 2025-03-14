@@ -191,4 +191,70 @@ public class SSHDockerTabController extends SubTabController {
             }
         });
     }
+
+    @FXML
+    private void dockerPruneContainer() {
+        DockerExec exec = this.client().dockerExec();
+        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                exec.docker_container_prune_f();
+                this.containerTable.loadContainer();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void dockerPruneImage() {
+        DockerExec exec = this.client().dockerExec();
+        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                exec.docker_image_prune_f();
+                this.imageTable.loadImage();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void dockerPruneNetwork() {
+        DockerExec exec = this.client().dockerExec();
+        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                exec.docker_network_prune_f();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void dockerPruneVolume() {
+        DockerExec exec = this.client().dockerExec();
+        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                exec.docker_volume_prune_f();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
 }

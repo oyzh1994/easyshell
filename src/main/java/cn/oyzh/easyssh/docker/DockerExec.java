@@ -151,4 +151,20 @@ public class DockerExec {
     public String docker_history(String imageId) {
         return this.client.exec("/usr/bin/docker history " + imageId + " --format " + this.history_format);
     }
+
+    public String docker_container_prune_f() {
+        return this.client.exec("/usr/bin/docker container prune -f");
+    }
+
+    public String docker_image_prune_f() {
+        return this.client.exec("/usr/bin/docker image prune -f");
+    }
+
+    public String docker_network_prune_f() {
+        return this.client.exec("/usr/bin/docker network prune -f");
+    }
+
+    public String docker_volume_prune_f() {
+        return this.client.exec("/usr/bin/docker volume prune -f");
+    }
 }
