@@ -34,6 +34,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -43,8 +44,6 @@ import lombok.experimental.Accessors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
@@ -470,4 +469,17 @@ public class SSHClient {
         }
         return this.dockerExec;
     }
+
+    public boolean isDownloading() {
+        return this.sftpDownloadManager.isDownloading();
+    }
+
+    public boolean isUploading() {
+        return this.sftpUploadManager.isUploading();
+    }
+
+    public BooleanProperty uploadingProperty() {
+        return this.sftpUploadManager.uploadingProperty();
+    }
+
 }

@@ -50,14 +50,17 @@ public class SftpDownloadManager {
         if (this.monitors == null) {
             this.monitors = new ArrayDeque<>();
         }
+        // 执行线程
         this.executeThread = ThreadUtil.start(() -> {
             try {
+                this.setDownloading(true);
                 this.downloadInPreparation();
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
                 this.doDownload();
-            } catch (SftpException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
-//                MessageBox.exception(ex);
+            } finally {
+                this.setDownloading(false);
             }
         });
     }
@@ -187,32 +190,24 @@ public class SftpDownloadManager {
     }
 
     private void doDownload() {
-        if (this.isDownloading()) {
-            return;
-        }
-        this.setDownloading(true);
-        try {
-            while (!this.isEmpty()) {
-                SftpDownloadMonitor monitor = this.takeMonitor();
-                if (monitor == null) {
-                    break;
-                }
-                if (monitor.isFinished()) {
-                    ThreadUtil.sleep(5);
-                    continue;
-                }
-                SSHSftp sftp = monitor.getSftp();
-                try {
-                    sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
-                    this.downloadFailed(monitor, ex);
-                }
-                ThreadUtil.sleep(5);
+        while (!this.isEmpty()) {
+            SftpDownloadMonitor monitor = this.takeMonitor();
+            if (monitor == null) {
+                break;
             }
-        } finally {
-            this.setDownloading(false);
+            if (monitor.isFinished()) {
+                ThreadUtil.sleep(5);
+                continue;
+            }
+            SSHSftp sftp = monitor.getSftp();
+            try {
+                sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
+                this.downloadFailed(monitor, ex);
+            }
+            ThreadUtil.sleep(5);
         }
     }
 

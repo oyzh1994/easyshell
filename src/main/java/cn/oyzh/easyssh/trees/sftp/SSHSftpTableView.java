@@ -269,6 +269,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 MessageBox.exception(ex);
             }
         });
+        if (this.client.isDownloading()) {
+            downloadFile.disable();
+        }
         menuItems.add(downloadFile);
 
         if (files.size() == 1) {
@@ -464,6 +467,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public boolean uploadFile(List<File> files) {
         if (CollectionUtil.isEmpty(files)) {
+            return false;
+        }
+        if (this.client.isUploading()) {
+            MessageBox.info(SSHI18nHelper.fileTip9());
             return false;
         }
         // 检查要上传的文件是否存在

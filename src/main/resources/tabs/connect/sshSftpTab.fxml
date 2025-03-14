@@ -48,12 +48,12 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
-            <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false" onMousePrimaryClicked="#uploadFile">
+            <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false" onMousePrimaryClicked="#uploadFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FileUploadSVGGlyph>
-            <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false" onMousePrimaryClicked="#uploadFolder">
+            <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false" onMousePrimaryClicked="#uploadFolder">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>

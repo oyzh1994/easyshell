@@ -42,6 +42,10 @@ public class SSHI18nHelper {
         return I18nResourceBundle.i18nString("ssh.file.tip8");
     }
 
+    public static String fileTip9() {
+        return I18nResourceBundle.i18nString("ssh.file.tip9");
+    }
+
     public static String connectTip5() {
         return I18nResourceBundle.i18nString("ssh.connect.tip5");
     }

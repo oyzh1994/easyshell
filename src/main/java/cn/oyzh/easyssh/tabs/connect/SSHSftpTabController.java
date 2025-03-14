@@ -101,6 +101,12 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private FXHBox deleteBox;
 
+    @FXML
+    private SVGGlyph uploadFile;
+
+    @FXML
+    private SVGGlyph uploadDir;
+
     private final SSHSetting setting = SSHSettingStore.SETTING;
 
     private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
@@ -134,6 +140,15 @@ public class SSHSftpTabController extends SubTabController {
         // 显示动画
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
         this.fileTable.loadFile();
+
+        // 监听上传中属性
+        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.uploadFile.disable();
+            } else {
+                this.uploadFile.enable();
+            }
+        });
     }
 
     @Override
@@ -151,6 +166,8 @@ public class SSHSftpTabController extends SubTabController {
                     this.init();
                 }
             });
+            // 绑定属性
+            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
             this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
             this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {

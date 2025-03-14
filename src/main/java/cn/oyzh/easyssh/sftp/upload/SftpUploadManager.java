@@ -7,12 +7,13 @@ import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -49,12 +50,14 @@ public class SftpUploadManager {
         }
         this.executeThread = ThreadUtil.start(() -> {
             try {
+                this.setUploading(true);
                 this.uploadInPreparation();
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
                 this.doUpload();
             } catch (Exception ex) {
                 ex.printStackTrace();
-//                MessageBox.exception(ex);
+            } finally {
+                this.setUploading(false);
             }
         });
     }
@@ -183,42 +186,38 @@ public class SftpUploadManager {
     }
 
     private void doUpload() {
-        if (this.isUploading()) {
-            return;
-        }
-        this.setUploading(true);
-        try {
-            while (!this.isEmpty()) {
-                SftpUploadMonitor monitor = this.takeMonitor();
-                if (monitor == null) {
-                    break;
-                }
-                if (monitor.isFinished()) {
-                    ThreadUtil.sleep(5);
-                    continue;
-                }
-                SSHSftp sftp = monitor.getSftp();
-                try {
-                    sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
-                    this.uploadFailed(monitor, ex);
-                }
-                ThreadUtil.sleep(5);
+        while (!this.isEmpty()) {
+            SftpUploadMonitor monitor = this.takeMonitor();
+            if (monitor == null) {
+                break;
             }
-        } finally {
-            this.setUploading(false);
+            if (monitor.isFinished()) {
+                ThreadUtil.sleep(5);
+                continue;
+            }
+            SSHSftp sftp = monitor.getSftp();
+            try {
+                sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
+                this.uploadFailed(monitor, ex);
+            }
+            ThreadUtil.sleep(5);
         }
     }
 
-    private final AtomicBoolean uploading = new AtomicBoolean(false);
+    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
+
+    public BooleanProperty uploadingProperty(){
+        return this.uploadingProperty;
+    }
 
     public void setUploading(boolean uploading) {
-        this.uploading.set(uploading);
+        this.uploadingProperty.set(uploading);
     }
 
     public boolean isUploading() {
-        return this.uploading.get();
+        return this.uploadingProperty.get();
     }
 }
