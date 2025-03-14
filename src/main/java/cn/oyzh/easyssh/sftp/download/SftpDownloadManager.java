@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class SftpDownloadManager {
 
-    private Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
+    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
 
     @Setter
     private Consumer<SftpDownloadEnded> downloadEndedCallback;
@@ -47,9 +47,6 @@ public class SftpDownloadManager {
     private Thread executeThread;
 
     public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) {
-        if (this.monitors == null) {
-            this.monitors = new ArrayDeque<>();
-        }
         // 执行线程
         this.executeThread = ThreadUtil.start(() -> {
             try {

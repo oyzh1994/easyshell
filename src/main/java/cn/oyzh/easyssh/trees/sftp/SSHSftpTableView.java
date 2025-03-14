@@ -158,8 +158,20 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 currPath = this.getCurrPath();
             }
             JulLog.info("current path: {}", currPath);
-            this.files = sftp.lsFile(currPath, this.client);
-            this.setItem(this.doFilter(this.files));
+            List<SftpFile> oldFiles = this.files;
+            this.files = this.doFilter(sftp.lsFile(currPath, this.client));
+            this.setItem(this.files);
+            if (CollectionUtil.isNotEmpty( this.files) && CollectionUtil.isNotEmpty(oldFiles)) {
+                for (SftpFile file : this.files) {
+                    oldFiles.parallelStream()
+                            .filter(f -> f.getIcon().isWaiting() && StringUtil.equals(f.getFilePath(), file.getFilePath()))
+                            .findAny()
+                            .ifPresent(f -> {
+                                file.startWaiting();
+                            });
+                }
+            }
+//            this.setItem(this.doFilter(this.files));
         } catch (SftpException ex) {
             if (ExceptionUtil.hasMessage(ex, "inputstream is closed")) {
                 sftp.close();
@@ -223,23 +235,24 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         }
         ThreadUtil.start(() -> {
             try {
-                List<SftpFile> filesToDelete = new ArrayList<>(files.size());
+//                List<SftpFile> filesToDelete = new ArrayList<>(files.size());
                 for (SftpFile file : files) {
                     if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
                         continue;
                     }
                     file.startWaiting();
-                    String path = SftpUtil.concat(this.currPath(), file.getFileName());
-                    if (file.isDir()) {
-                        this.sftp().rmdirRecursive(path);
-                    } else {
-                        this.sftp().rm(path);
-                    }
-                    filesToDelete.add(file);
+//                    String path = SftpUtil.concat(this.currPath(), file.getFileName());
+                    this.client.delete(file);
+//                    if (file.isDir()) {
+//                        this.sftp().rmdirRecursive(path);
+//                    } else {
+//                        this.sftp().rm(path);
+//                    }
+//                    filesToDelete.add(file);
                 }
-                this.files.removeAll(filesToDelete);
-                // 删除文件结束
-                this.client.getSftpDeleteManager().deleteEnded();
+//                this.files.removeAll(filesToDelete);
+//                // 删除文件结束
+//                this.client.getSftpDeleteManager().deleteEnded();
                 this.refreshFile();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -354,7 +367,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         this.loadFile();
     }
 
-    public void returnDir() throws SftpException {
+    public void returnDir() {
         if (this.currentIsRootDirectory()) {
             return;
         }
@@ -570,5 +583,13 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
 
     public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
         this.client.setDeleteDeletedCallback(callback);
+    }
+
+    public void fileDeleted(String remoteFile) {
+        Optional<SftpFile> optional = this.files.parallelStream().filter(f -> StringUtil.equals(remoteFile, f.getFilePath())).findAny();
+        if (optional.isPresent()) {
+            this.files.remove(optional.get());
+            this.refreshFile();
+        }
     }
 }

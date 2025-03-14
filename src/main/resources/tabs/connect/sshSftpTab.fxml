@@ -98,7 +98,7 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <FXLabel fx:id="fileDelete">
+            <FXLabel fx:id="fileDelete" maxWidth="800">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>

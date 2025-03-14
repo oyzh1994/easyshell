@@ -320,6 +320,7 @@ public class SSHSftpTabController extends SubTabController {
             this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
             if (ended.getFileCount() == 0) {
                 this.fileUpload.clear();
+                this.uploadProgressInfo.clear();
                 this.uploadBox.disappear();
                 this.updateLayout();
                 // 重新载入一次文件
@@ -339,6 +340,7 @@ public class SSHSftpTabController extends SubTabController {
             JulLog.info("updateUploadInfo:{}", failed);
             if (failed.getFileCount() == 0) {
                 this.fileUpload.clear();
+                this.uploadProgressInfo.clear();
                 this.uploadBox.disappear();
                 this.updateLayout();
                 // 重新载入一次文件
@@ -358,6 +360,7 @@ public class SSHSftpTabController extends SubTabController {
         try {
             JulLog.info("updateUploadInfo:{}", canceled);
             this.fileUpload.clear();
+            this.uploadProgressInfo.clear();
             this.uploadBox.disappear();
             this.updateLayout();
             this.fileTable.loadFile();
@@ -404,9 +407,9 @@ public class SSHSftpTabController extends SubTabController {
             this.updateLayout();
         }
         if (inPreparation.getFileName() != null) {
-            this.fileUpload.text(SSHI18nHelper.fileTip7());
-        } else {
             this.fileUpload.text(SSHI18nHelper.fileTip7() + ": " + inPreparation.getFileName());
+        } else {
+            this.fileUpload.text(SSHI18nHelper.fileTip7());
         }
     }
 
@@ -415,6 +418,7 @@ public class SSHSftpTabController extends SubTabController {
             JulLog.info("updateDownloadInfo:{}", ended);
             if (ended.getFileCount() == 0) {
                 this.fileDownload.clear();
+                this.downloadProgressInfo.clear();
                 this.downloadBox.disappear();
                 this.updateLayout();
                 // 提示消息
@@ -432,6 +436,7 @@ public class SSHSftpTabController extends SubTabController {
             JulLog.info("updateDownloadInfo:{}", failed);
             if (failed.getFileCount() == 0) {
                 this.fileDownload.clear();
+                this.downloadProgressInfo.clear();
                 this.downloadBox.disappear();
                 this.updateLayout();
                 // 提示消息
@@ -454,6 +459,7 @@ public class SSHSftpTabController extends SubTabController {
         try {
             JulLog.info("updateDownloadInfo:{}", canceled);
             this.fileDownload.clear();
+            this.downloadProgressInfo.clear();
             this.downloadBox.disappear();
             this.updateLayout();
         } catch (Exception ex) {
@@ -517,6 +523,7 @@ public class SSHSftpTabController extends SubTabController {
             this.deleteBox.display();
             this.updateLayout();
         }
+        this.fileTable.fileDeleted(deleted.getRemoteFile());
         this.fileDelete.text(I18nHelper.fileDeleteIng() + ": " + deleted.getRemoteFile());
     }
 

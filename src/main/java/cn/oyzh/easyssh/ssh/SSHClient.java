@@ -482,4 +482,7 @@ public class SSHClient {
         return this.sftpUploadManager.uploadingProperty();
     }
 
+    public void delete(SftpFile file) {
+        this.sftpDeleteManager.deleteFile(file, this.openSftp());
+    }
 }

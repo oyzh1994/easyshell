@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  */
 public class SftpUploadManager {
 
-    private Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
+    private final Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
 
     @Setter
     private Consumer<SftpUploadEnded> uploadEndedCallback;
@@ -45,9 +45,6 @@ public class SftpUploadManager {
     private Thread executeThread;
 
     public void createMonitor(File localFile, String remoteFile, SSHSftp sftp) {
-        if (this.monitors == null) {
-            this.monitors = new ArrayDeque<>();
-        }
         this.executeThread = ThreadUtil.start(() -> {
             try {
                 this.setUploading(true);
@@ -75,8 +72,12 @@ public class SftpUploadManager {
                 sftp.mkdirRecursive(remoteDir);
                 // 添加文件
                 for (File file : files) {
-                    String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
-                    this.addMonitorRecursive(file, remoteFile1, sftp);
+                    if (file.isDirectory()) {
+                        this.addMonitorRecursive(file, remoteDir, sftp);
+                    } else {
+                        String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
+                        this.addMonitorRecursive(file, remoteFile1, sftp);
+                    }
                 }
             }
         } else {// 文件
@@ -209,7 +210,7 @@ public class SftpUploadManager {
 
     private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
 
-    public BooleanProperty uploadingProperty(){
+    public BooleanProperty uploadingProperty() {
         return this.uploadingProperty;
     }
 

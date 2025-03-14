@@ -67,6 +67,7 @@ public class SSHSftp extends SSHChannel {
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
             SftpFile file = new SftpFile(lsEntry);
+            file.setParentPath(path);
             files.add(file);
             if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
                 String ownerName = SftpUtil.getOwner(file.getUid(), client);
@@ -82,7 +83,7 @@ public class SSHSftp extends SSHChannel {
         try {
             this.setUsing(true);
             this.getChannel().rm(path);
-            this.deleteManager.deleteDeleted(path);
+//            this.deleteManager.deleteDeleted(path);
         } finally {
             this.setUsing(false);
         }
@@ -92,7 +93,7 @@ public class SSHSftp extends SSHChannel {
         try {
             this.setUsing(true);
             this.getChannel().rmdir(path);
-            this.deleteManager.deleteDeleted(path);
+//            this.deleteManager.deleteDeleted(path);
         } finally {
             this.setUsing(false);
         }
