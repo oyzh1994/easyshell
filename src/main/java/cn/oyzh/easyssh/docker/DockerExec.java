@@ -129,4 +129,12 @@ public class DockerExec {
         JulLog.info("docker update:{}", builder.toString());
         return this.client.exec(builder.toString());
     }
+
+    public String docker_info() {
+        return this.client.exec("/usr/bin/docker info");
+    }
+
+    public String docker_version() {
+        return this.client.exec("/usr/bin/docker version");
+    }
 }

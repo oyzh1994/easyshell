@@ -1,6 +1,11 @@
 package cn.oyzh.easyssh.tabs.connect;
 
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyssh.controller.docker.DockerInfoController;
+import cn.oyzh.easyssh.controller.docker.DockerInspectController;
+import cn.oyzh.easyssh.controller.docker.DockerVersionController;
 import cn.oyzh.easyssh.docker.DockerExec;
+import cn.oyzh.easyssh.docker.DockerImage;
 import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.docker.SSHContainerTableView;
@@ -10,9 +15,13 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 
 /**
  * ssh命令行tab内容组件
@@ -126,5 +135,49 @@ public class SSHDockerTabController extends SubTabController {
     @FXML
     private void deleteImageForce() {
         this.imageTable.deleteImage(true);
+    }
+
+    @FXML
+    private void dockerInfo( ) {
+        DockerExec exec = this.client().dockerExec();
+        StageManager.showMask(() -> {
+            try {
+                String output = exec.docker_info();
+                if (StringUtil.isBlank(output)) {
+                    MessageBox.warn(I18nHelper.operationFail());
+                } else {
+                    FXUtil.runLater(() -> {
+                        StageAdapter adapter = StageManager.parseStage(DockerInfoController.class);
+                        adapter.setProp("info", output);
+                        adapter.display();
+                    });
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void dockerVersion( ) {
+        DockerExec exec = this.client().dockerExec();
+        StageManager.showMask(() -> {
+            try {
+                String output = exec.docker_version();
+                if (StringUtil.isBlank(output)) {
+                    MessageBox.warn(I18nHelper.operationFail());
+                } else {
+                    FXUtil.runLater(() -> {
+                        StageAdapter adapter = StageManager.parseStage(DockerVersionController.class);
+                        adapter.setProp("version", output);
+                        adapter.display();
+                    });
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 }
