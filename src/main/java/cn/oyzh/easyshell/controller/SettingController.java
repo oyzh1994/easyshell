@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.SSHSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.SSHTerminalTypeComboBox;
 import cn.oyzh.easyshell.store.SSHSettingStore;
 import cn.oyzh.easyshell.util.SSHProcessUtil;
@@ -252,7 +252,7 @@ public class SettingController extends StageController {
     /**
      * 配置对象
      */
-    private final SSHSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = SSHSettingStore.SETTING;
 
     /**
      * 配置持久化对象

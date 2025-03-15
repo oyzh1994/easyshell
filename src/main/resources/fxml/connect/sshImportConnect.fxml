@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.button.ImportButton?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.SSHImportConnectController" realWidth="600" realHeight="480">
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellImportConnectController" realWidth="600" realHeight="480">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <ExportSVGGlyph sizeStr="40,40" color="yellowgreen">

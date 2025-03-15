@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
-import cn.oyzh.easyshell.domain.SSHSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.ssh.SSHClient;
@@ -104,7 +104,7 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private SVGGlyph uploadDir;
 
-    private final SSHSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = SSHSettingStore.SETTING;
 
     private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
 

@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.connect.SSHAddConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHGroup;
+import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.store.SSHConnectStore;
 import cn.oyzh.easyshell.store.SSHGroupStore;
@@ -41,7 +41,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
      */
     @Getter
     @Accessors(chain = true, fluent = true)
-    private final SSHGroup value;
+    private final ShellGroup value;
 
     /**
      * ssh分组储存
@@ -53,7 +53,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
 
-    public SSHGroupTreeItem(@NonNull SSHGroup group, @NonNull RichTreeView treeView) {
+    public SSHGroupTreeItem(@NonNull ShellGroup group, @NonNull RichTreeView treeView) {
         super(treeView);
         this.value = group;
         this.setValue(new SSHGroupTreeItemValue(this));
@@ -146,7 +146,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
      * 添加连接
      */
     private void addConnect() {
-        StageAdapter fxView = StageManager.parseStage(SSHAddConnectController.class, this.window());
+        StageAdapter fxView = StageManager.parseStage(ShellAddConnectController.class, this.window());
         fxView.setProp("group", this.value);
         fxView.display();
     }

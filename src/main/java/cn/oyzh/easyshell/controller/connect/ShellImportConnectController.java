@@ -4,8 +4,8 @@ import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHGroup;
-import cn.oyzh.easyshell.dto.SSHConnectExport;
+import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.dto.ShellConnectExport;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.store.SSHConnectStore;
 import cn.oyzh.easyshell.store.SSHGroupStore;
@@ -40,7 +40,7 @@ import java.util.List;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "connect/sshImportConnect.fxml"
 )
-public class SSHImportConnectController extends StageController {
+public class ShellImportConnectController extends StageController {
 
     /**
      * 导入文件
@@ -82,7 +82,7 @@ public class SSHImportConnectController extends StageController {
     private void doImport() {
         try {
             String text = FileUtil.readUtf8String(this.importFile);
-            SSHConnectExport export = SSHConnectExport.fromJSON(text);
+            ShellConnectExport export = ShellConnectExport.fromJSON(text);
             List<ShellConnect> connects = export.getConnects();
             boolean success = true;
             if (CollectionUtil.isNotEmpty(connects)) {
@@ -92,9 +92,9 @@ public class SSHImportConnectController extends StageController {
                     }
                 }
             }
-            List<SSHGroup> groups = export.getGroups();
+            List<ShellGroup> groups = export.getGroups();
             if (this.includeGroup.isSelected() && CollectionUtil.isNotEmpty(groups)) {
-                for (SSHGroup group : groups) {
+                for (ShellGroup group : groups) {
                     if (!this.groupStore.replace(group)) {
                         success = false;
                     }

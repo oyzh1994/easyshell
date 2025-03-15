@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHX11Config;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 
@@ -62,7 +62,7 @@ public class SSHConnectStore extends JdbcStandardStore<ShellConnect> {
             }
 
             // x11处理
-            SSHX11Config x11Config = model.getX11Config();
+            ShellX11Config x11Config = model.getX11Config();
             if (x11Config != null) {
                 x11Config.setIid(model.getId());
                 this.x11ConfigStore.replace(x11Config);

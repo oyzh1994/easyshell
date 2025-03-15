@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.store;
 
-import cn.oyzh.easyshell.domain.SSHSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.store.jdbc.JdbcKeyValueStore;
 
 
@@ -10,7 +10,7 @@ import cn.oyzh.store.jdbc.JdbcKeyValueStore;
  * @author oyzh
  * @since 2024/09/23
  */
-public class SSHSettingStore extends JdbcKeyValueStore<SSHSetting> {
+public class SSHSettingStore extends JdbcKeyValueStore<ShellSetting> {
 
     /**
      * 当前实例
@@ -20,22 +20,22 @@ public class SSHSettingStore extends JdbcKeyValueStore<SSHSetting> {
     /**
      * 当前设置
      */
-    public static final SSHSetting SETTING = INSTANCE.load();
+    public static final ShellSetting SETTING = INSTANCE.load();
 
     /**
      * 加载
      *
      * @return ssh设置
      */
-    public SSHSetting load() {
-        SSHSetting setting = null;
+    public ShellSetting load() {
+        ShellSetting setting = null;
         try {
             setting = super.select();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         if (setting == null) {
-            setting = new SSHSetting();
+            setting = new ShellSetting();
         }
         return setting;
     }
@@ -46,7 +46,7 @@ public class SSHSettingStore extends JdbcKeyValueStore<SSHSetting> {
      * @param model 模型
      * @return 结果
      */
-    public boolean replace(SSHSetting model) {
+    public boolean replace(ShellSetting model) {
         if (model != null) {
             return this.update(model);
         }
@@ -54,7 +54,7 @@ public class SSHSettingStore extends JdbcKeyValueStore<SSHSetting> {
     }
 
     @Override
-    protected Class<SSHSetting> modelClass() {
-        return SSHSetting.class;
+    protected Class<ShellSetting> modelClass() {
+        return ShellSetting.class;
     }
 }

@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/9/18
  */
-public class SSHConnectOpenedEvent extends Event<SSHConnectTreeItem>  {
+public class ShellConnectOpenedEvent extends Event<SSHConnectTreeItem>  {
 
 //    public SSHClient client() {
 //        return this.data().client();

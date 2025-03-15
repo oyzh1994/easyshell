@@ -9,10 +9,10 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class SSHConnectAddedEvent extends Event<ShellConnect> implements EventFormatter {
+public class ShellConnectDeletedEvent extends Event<ShellConnect> implements EventFormatter {
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] ", I18nHelper.connect(), this.data().getName());
+        return String.format("[%s:%s deleted] ", I18nHelper.connect(), this.data().getName());
     }
 }

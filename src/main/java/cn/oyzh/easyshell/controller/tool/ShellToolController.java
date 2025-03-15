@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.LongAdder;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "tool/sshTool.fxml"
 )
-public class SSHToolController extends StageController {
+public class ShellToolController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {

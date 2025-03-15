@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHX11Config;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.sftp.SSHSftp;
@@ -204,7 +204,7 @@ public class SSHClient {
         // 启用X11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
-            SSHX11Config x11Config = this.shellConnect.getX11Config();
+            ShellX11Config x11Config = this.shellConnect.getX11Config();
             // 获取x11配置
             if (x11Config == null) {
                 x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());

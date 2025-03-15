@@ -19,7 +19,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.SSHAddConnectController" realWidth="750" realHeight="400">
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectController" realWidth="750" realHeight="400">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.controller.main.MessageController;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.tree.SSHTreeItemChangedEvent;
 import cn.oyzh.easyshell.store.SSHSettingStore;
 import cn.oyzh.easyshell.tabs.SSHTabPane;
@@ -33,7 +33,7 @@ public class SSHMainController extends ParentStageController {
     /**
      * 配置对象
      */
-    private final SSHSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = SSHSettingStore.SETTING;
 
     /**
      * 左侧组件

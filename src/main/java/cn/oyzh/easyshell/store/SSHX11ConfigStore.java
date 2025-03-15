@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.SSHX11Config;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -12,7 +12,7 @@ import cn.oyzh.store.jdbc.QueryParam;
  * @author oyzh
  * @since 2025/03/08
  */
-public class SSHX11ConfigStore extends JdbcStandardStore<SSHX11Config> {
+public class SSHX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
 
     /**
      * 当前实例
@@ -25,7 +25,7 @@ public class SSHX11ConfigStore extends JdbcStandardStore<SSHX11Config> {
      * @param model 模型
      * @return 结果
      */
-    public boolean replace(SSHX11Config model) {
+    public boolean replace(ShellX11Config model) {
         String iid = model.getIid();
         if (super.exist(iid)) {
             return super.update(model);
@@ -39,7 +39,7 @@ public class SSHX11ConfigStore extends JdbcStandardStore<SSHX11Config> {
      * @param iid zk连接id
      * @return sasl配置
      */
-    public SSHX11Config getByIid(String iid) {
+    public ShellX11Config getByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }
@@ -62,7 +62,7 @@ public class SSHX11ConfigStore extends JdbcStandardStore<SSHX11Config> {
     }
 
     @Override
-    protected Class<SSHX11Config> modelClass() {
-        return SSHX11Config.class;
+    protected Class<ShellX11Config> modelClass() {
+        return ShellX11Config.class;
     }
 }

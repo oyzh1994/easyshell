@@ -105,7 +105,7 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
      * x11配置
      */
     @Getter
-    private SSHX11Config x11Config;
+    private ShellX11Config x11Config;
 
     /**
      * 复制对象

@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @Table("t_x11_config")
-public class SSHX11Config implements Serializable {
+public class ShellX11Config implements Serializable {
 
     /**
      * 端口

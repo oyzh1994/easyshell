@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Table("t_group")
-public class SSHGroup extends AppGroup {
+public class ShellGroup extends AppGroup {
 
-    public SSHGroup() {
+    public ShellGroup() {
 
     }
 
-    public SSHGroup(String gid, String name, boolean expand) {
+    public ShellGroup(String gid, String name, boolean expand) {
         super(gid, name, expand);
     }
 }

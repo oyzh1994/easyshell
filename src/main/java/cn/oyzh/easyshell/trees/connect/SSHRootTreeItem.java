@@ -4,10 +4,10 @@ import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.connect.SSHAddConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHGroup;
-import cn.oyzh.easyshell.dto.SSHConnectExport;
+import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.dto.ShellConnectExport;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.store.SSHConnectStore;
 import cn.oyzh.easyshell.store.SSHGroupStore;
@@ -83,7 +83,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
             MessageBox.warn(I18nHelper.connectionIsEmpty());
             return;
         }
-        SSHConnectExport export = SSHConnectExport.fromConnects(infos);
+        ShellConnectExport export = ShellConnectExport.fromConnects(infos);
         FileExtensionFilter extensionFilter = FXChooser.jsonExtensionFilter();
         File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.ssh", "base.connect", "base._json"), extensionFilter);
         if (file != null) {
@@ -151,7 +151,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
         }
         try {
             String text = FileUtil.readUtf8String(file);
-            SSHConnectExport export = SSHConnectExport.fromJSON(text);
+            ShellConnectExport export = ShellConnectExport.fromJSON(text);
             List<ShellConnect> connects = export.getConnects();
             if (CollectionUtil.isNotEmpty(connects)) {
                 for (ShellConnect connect : connects) {
@@ -174,7 +174,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      * 添加连接
      */
     private void addConnect() {
-        StageManager.showStage(SSHAddConnectController.class, this.window());
+        StageManager.showStage(ShellAddConnectController.class, this.window());
     }
 
     /**
@@ -196,7 +196,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
             MessageBox.warn(I18nHelper.contentAlreadyExists());
             return;
         }
-        SSHGroup group = new SSHGroup();
+        ShellGroup group = new ShellGroup();
         group.setName(groupName);
         if (this.groupStore.replace(group)) {
             this.addChild(new SSHGroupTreeItem(group, this.getTreeView()));
@@ -359,12 +359,12 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     public void loadChild() {
         this.clearChild();
         // 初始化分组
-        List<SSHGroup> groups = this.groupStore.load();
+        List<ShellGroup> groups = this.groupStore.load();
         // List<SSHGroupTreeItem> groupItems = this.getGroupItems();
         if (CollectionUtil.isNotEmpty(groups)) {
             List<TreeItem<?>> list = new ArrayList<>();
             // f1:
-            for (SSHGroup group : groups) {
+            for (ShellGroup group : groups) {
                 // for (SSHGroupTreeItem groupItem : groupItems) {
                 //     if (StringUtil.equals(groupItem.getGid(), group.getGid())) {
                 //         continue f1;

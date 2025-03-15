@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.connect;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.SSHConnectExport;
+import cn.oyzh.easyshell.dto.ShellConnectExport;
 import cn.oyzh.easyshell.store.SSHConnectStore;
 import cn.oyzh.easyshell.store.SSHGroupStore;
 import cn.oyzh.fx.plus.FXConst;
@@ -35,7 +35,7 @@ import java.util.List;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "connect/sshExportConnect.fxml"
 )
-public class SSHExportConnectController extends StageController {
+public class ShellExportConnectController extends StageController {
 
     /**
      * 导出文件
@@ -78,7 +78,7 @@ public class SSHExportConnectController extends StageController {
             MessageBox.warn(I18nHelper.pleaseSelectFile());
             return;
         }
-        SSHConnectExport export = SSHConnectExport.fromConnects(connects);
+        ShellConnectExport export = ShellConnectExport.fromConnects(connects);
         // 分组
         if (this.includeGroup.isSelected()) {
             export.setGroups(this.groupStore.load());

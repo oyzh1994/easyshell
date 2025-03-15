@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.SSHGroup;
+import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/5/12
  */
-public class SSHGroupStore extends JdbcStandardStore<SSHGroup> {
+public class SSHGroupStore extends JdbcStandardStore<ShellGroup> {
 
     /**
      * 当前实例
@@ -28,7 +28,7 @@ public class SSHGroupStore extends JdbcStandardStore<SSHGroup> {
      *
      * @return 数据列表
      */
-    public List<SSHGroup> load() {
+    public List<ShellGroup> load() {
         return super.selectList();
     }
 
@@ -38,7 +38,7 @@ public class SSHGroupStore extends JdbcStandardStore<SSHGroup> {
      * @param model 模型
      * @return 结果
      */
-    public boolean replace(SSHGroup model) {
+    public boolean replace(ShellGroup model) {
         if (model != null) {
             if (this.exist(model.getName()) || super.exist(model.getGid())) {
                 return this.update(model);
@@ -79,7 +79,7 @@ public class SSHGroupStore extends JdbcStandardStore<SSHGroup> {
     }
 
     @Override
-    protected Class<SSHGroup> modelClass() {
-        return SSHGroup.class;
+    protected Class<ShellGroup> modelClass() {
+        return ShellGroup.class;
     }
 }

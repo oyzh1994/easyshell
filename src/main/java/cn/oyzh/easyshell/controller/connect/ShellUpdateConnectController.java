@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.connect;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHX11Config;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.store.SSHConnectStore;
@@ -41,7 +41,7 @@ import lombok.NonNull;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "connect/sshUpdateConnect.fxml"
 )
-public class SSHUpdateConnectController extends StageController {
+public class ShellUpdateConnectController extends StageController {
 
     /**
      * 用户名
@@ -208,8 +208,8 @@ public class SSHUpdateConnectController extends StageController {
      *
      * @return x11配置信息
      */
-    private SSHX11Config getX11Config() {
-        SSHX11Config sshConfig = new SSHX11Config();
+    private ShellX11Config getX11Config() {
+        ShellX11Config sshConfig = new ShellX11Config();
         sshConfig.setIid(this.shellConnect.getId());
         sshConfig.setHost(this.x11Host.getText());
         sshConfig.setPort(this.x11Port.getIntValue());
@@ -341,7 +341,7 @@ public class SSHUpdateConnectController extends StageController {
             this.sshPassword.setText(sshConfig.getPassword());
         }
         // x11配置
-        SSHX11Config x11Config = this.shellConnect.getX11Config();
+        ShellX11Config x11Config = this.shellConnect.getX11Config();
         if (x11Config != null) {
             this.x11Host.setValue(x11Config.getHost());
             this.x11Port.setValue(x11Config.getPort());

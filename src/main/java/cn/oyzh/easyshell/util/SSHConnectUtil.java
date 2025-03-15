@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.SSHConnectInfo;
+import cn.oyzh.easyshell.dto.ShellConnectInfo;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -87,7 +87,7 @@ public class SSHConnectUtil {
      * @param input 输入内容
      * @return 连接
      */
-    public static SSHConnectInfo parse(String input) {
+    public static ShellConnectInfo parse(String input) {
         return null;
     }
 

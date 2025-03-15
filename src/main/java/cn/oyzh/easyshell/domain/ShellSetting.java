@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Table("t_setting")
 @EqualsAndHashCode(callSuper = true)
-public class SSHSetting extends AppSetting {
+public class ShellSetting extends AppSetting {
 
     /**
      * x11目录

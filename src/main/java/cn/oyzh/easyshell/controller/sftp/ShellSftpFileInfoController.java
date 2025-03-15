@@ -22,7 +22,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "sftp/sshSftpFileInfo.fxml"
 )
-public class SSHSftpFileInfoController extends StageController {
+public class ShellSftpFileInfoController extends StageController {
 
     /**
      * 分组

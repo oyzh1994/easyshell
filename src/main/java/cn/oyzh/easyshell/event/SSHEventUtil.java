@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.event;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHGroup;
-import cn.oyzh.easyshell.event.connect.SSHConnectAddedEvent;
-import cn.oyzh.easyshell.event.connect.SSHConnectDeletedEvent;
-import cn.oyzh.easyshell.event.connect.SSHConnectOpenedEvent;
+import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.SSHConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.SSHConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.SSHConnectionConnectedEvent;
@@ -46,7 +46,7 @@ public class SSHEventUtil {
      * @param item ssh客户端
      */
     public static void connectionOpened(SSHConnectTreeItem item) {
-        SSHConnectOpenedEvent event = new SSHConnectOpenedEvent();
+        ShellConnectOpenedEvent event = new ShellConnectOpenedEvent();
         event.data(item);
         EventUtil.postSync(event);
     }
@@ -90,7 +90,7 @@ public class SSHEventUtil {
      * @param shellConnect ssh连接
      */
     public static void connectAdded(ShellConnect shellConnect) {
-        SSHConnectAddedEvent event = new SSHConnectAddedEvent();
+        ShellConnectAddedEvent event = new ShellConnectAddedEvent();
         event.data(shellConnect);
         EventUtil.post(event);
     }
@@ -112,7 +112,7 @@ public class SSHEventUtil {
      * @param shellConnect ssh连接
      */
     public static void connectDeleted(ShellConnect shellConnect) {
-        SSHConnectDeletedEvent event = new SSHConnectDeletedEvent();
+        ShellConnectDeletedEvent event = new ShellConnectDeletedEvent();
         event.data(shellConnect);
         EventUtil.post(event);
     }
@@ -239,7 +239,7 @@ public class SSHEventUtil {
      *
      * @param group 分组
      */
-    public static void showAddConnect(SSHGroup group) {
+    public static void showAddConnect(ShellGroup group) {
         SSHShowAddConnectEvent event = new SSHShowAddConnectEvent();
         event.data(group);
         EventUtil.post(event);

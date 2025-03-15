@@ -5,7 +5,7 @@ import cn.oyzh.common.json.JSONObject;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHGroup;
+import cn.oyzh.easyshell.domain.ShellGroup;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2023/2/22
  */
 @Getter
-public class SSHConnectExport {
+public class ShellConnectExport {
 
     /**
      * 导出程序版本号
@@ -36,7 +36,7 @@ public class SSHConnectExport {
      * 连接
      */
     @Setter
-    private List<SSHGroup> groups;
+    private List<ShellGroup> groups;
 
     /**
      * 连接
@@ -49,8 +49,8 @@ public class SSHConnectExport {
      * @param shellConnects 连接列表
      * @return SSHConnectExport
      */
-    public static SSHConnectExport fromConnects(@NonNull List<ShellConnect> shellConnects) {
-        SSHConnectExport export = new SSHConnectExport();
+    public static ShellConnectExport fromConnects(@NonNull List<ShellConnect> shellConnects) {
+        ShellConnectExport export = new ShellConnectExport();
         Project project = Project.load();
         export.version = project.getVersion();
         export.connects = shellConnects;
@@ -64,14 +64,14 @@ public class SSHConnectExport {
      * @param json json字符串
      * @return SSHInfoExport
      */
-    public static SSHConnectExport fromJSON(@NonNull String json) {
+    public static ShellConnectExport fromJSON(@NonNull String json) {
         JulLog.info("json: {}", json);
         JSONObject object = JSONUtil.parseObject(json);
-        SSHConnectExport export = new SSHConnectExport();
+        ShellConnectExport export = new ShellConnectExport();
         export.connects = new ArrayList<>(12);
         export.version = object.getString("version");
         export.platform = object.getString("platform");
-        export.groups = object.getBeanList("groups", SSHGroup.class);
+        export.groups = object.getBeanList("groups", ShellGroup.class);
         export.connects = object.getBeanList("connects", ShellConnect.class);
         return export;
     }

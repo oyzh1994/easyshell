@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.connect.SSHUpdateConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.store.SSHConnectStore;
@@ -174,7 +174,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
 //            }
 ////            this.closeConnect();
 //        }
-        StageAdapter fxView = StageManager.parseStage(SSHUpdateConnectController.class, this.window());
+        StageAdapter fxView = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
         fxView.setProp("sshConnect", this.value());
         fxView.display();
     }

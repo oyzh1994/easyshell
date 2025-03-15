@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.connect;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.SSHGroup;
-import cn.oyzh.easyshell.domain.SSHX11Config;
+import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.SSHEventUtil;
 import cn.oyzh.easyshell.store.SSHConnectStore;
@@ -41,7 +41,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "connect/sshAddConnect.fxml"
 )
-public class SSHAddConnectController extends StageController {
+public class ShellAddConnectController extends StageController {
 
     /**
      * 用户名
@@ -155,7 +155,7 @@ public class SSHAddConnectController extends StageController {
     /**
      * 分组
      */
-    private SSHGroup group;
+    private ShellGroup group;
 
     /**
      * ssh连接储存对象
@@ -208,8 +208,8 @@ public class SSHAddConnectController extends StageController {
      *
      * @return x11配置信息
      */
-    private SSHX11Config getX11Config() {
-        SSHX11Config sshConfig = new SSHX11Config();
+    private ShellX11Config getX11Config() {
+        ShellX11Config sshConfig = new ShellX11Config();
         sshConfig.setHost(this.x11Host.getText());
         sshConfig.setPort(this.x11Port.getIntValue());
         return sshConfig;

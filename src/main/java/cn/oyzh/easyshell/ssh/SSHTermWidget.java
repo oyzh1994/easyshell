@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.SSHSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.SSHSettingStore;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import com.pty4j.PtyProcess;
@@ -34,7 +34,7 @@ public class SSHTermWidget extends JediTermFxWidget {
     /**
      * 设置
      */
-    private final SSHSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = SSHSettingStore.SETTING;
 
     public SSHTermWidget() {
         super(new SSHSettingsProvider());

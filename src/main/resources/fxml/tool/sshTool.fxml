@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
 <FXTabPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="cn.oyzh.easyshell.controller.tool.SSHToolController" realWidth="850" realHeight="600">
+           fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolController" realWidth="850" realHeight="600">
     <FXTab text="X11">
         <FXVBox flexHeight="100%" flexWidth="100%">
             <InfoLabel text="XQuartz">
