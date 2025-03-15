@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * ssh设置
+ * shell设置
  *
  * @author oyzh
  * @since 2023/6/16

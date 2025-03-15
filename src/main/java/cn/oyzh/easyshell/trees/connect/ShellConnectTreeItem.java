@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * ssh连接节点
+ * shell连接节点
  *
  * @author oyzh
  * @since 2023/1/29
@@ -31,14 +31,14 @@ import java.util.Objects;
 public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue> {
 
     /**
-     * ssh信息
+     * shell信息
      */
     @Getter
     @Accessors(chain = true, fluent = true)
     private ShellConnect value;
 
 //    /**
-//     * ssh客户端
+//     * shell客户端
 //     */
 //    @Getter
 //    @Accessors(chain = true, fluent = true)
@@ -50,7 +50,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     private boolean canceled;
 
     /**
-     * ssh连接存储
+     * shell连接存储
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
@@ -175,7 +175,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 ////            this.closeConnect();
 //        }
         StageAdapter fxView = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
-        fxView.setProp("sshConnect", this.value());
+        fxView.setProp("shellConnect", this.value());
         fxView.display();
     }
 

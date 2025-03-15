@@ -47,13 +47,13 @@ public class MainController extends ParentStageController {
     private HeaderController headerController;
 
     /**
-     * ssh主页业务
+     * shell主页业务
      */
     @FXML
     private ShellMainController shellMainController;
 
     /**
-     * ssh相关配置
+     * shell相关配置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 

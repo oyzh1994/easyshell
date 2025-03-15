@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 
-public class SSHTerminalApp extends Application {
+public class ShellTerminalApp extends Application {
 
     private TextFlow outputArea;
 
@@ -107,7 +107,7 @@ public class SSHTerminalApp extends Application {
     public static class SSHTerminalAppTest {
 
         public static void main(String[] args) throws URISyntaxException {
-            SSHTerminalApp.main(args);
+            ShellTerminalApp.main(args);
         }
 
     }

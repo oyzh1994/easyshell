@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * ssh命令行tab内容组件
+ * shell命令行tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -25,7 +25,7 @@ import java.util.List;
 public class ShellConnectTabController extends ParentTabController {
 
     /**
-     * ssh客户端
+     * shell客户端
      */
     @Getter
     @Accessors(chain = true, fluent = true)
@@ -53,14 +53,10 @@ public class ShellConnectTabController extends ParentTabController {
     @FXML
     private ShellDockerTabController dockerTabController;
 
-//    public SSHClient client(){
-//        return this.treeItem.client();
-//    }
-
     /**
-     * 设置ssh客户端
+     * 设置shell客户端
      *
-     * @param treeItem ssh客户端
+     * @param treeItem shell客户端
      */
     public void init(@NonNull ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
@@ -91,11 +87,11 @@ public class ShellConnectTabController extends ParentTabController {
     }
 
     /**
-     * ssh信息
+     * shell信息
      *
-     * @return 当前ssh信息
+     * @return 当前shell信息
      */
-    protected ShellConnect sshConnect() {
+    protected ShellConnect shellConnect() {
         return this.treeItem.value();
     }
 

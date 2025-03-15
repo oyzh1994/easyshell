@@ -17,7 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.util.Callback;
 
 /**
- * ssh连接树
+ * shell连接树
  *
  * @author oyzh
  * @since 2023/1/29
@@ -26,7 +26,7 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
 
     @Override
     protected void initTreeView() {
-        this.dragContent = "ssh_connect_tree_drag";
+        this.dragContent = "shell_connect_tree_drag";
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new RichTreeCell<>());
         super.initTreeView();
     }

@@ -43,7 +43,7 @@ public class ShellEventUtil {
     /**
      * 连接丢失事件
      *
-     * @param item ssh客户端
+     * @param item shell客户端
      */
     public static void connectionOpened(ShellConnectTreeItem item) {
         ShellConnectOpenedEvent event = new ShellConnectOpenedEvent();
@@ -54,7 +54,7 @@ public class ShellEventUtil {
     /**
      * 连接丢失事件
      *
-     * @param client ssh客户端
+     * @param client shell客户端
      */
     public static void connectionLost(ShellClient client) {
         ShellConnectionLostEvent event = new ShellConnectionLostEvent();
@@ -65,7 +65,7 @@ public class ShellEventUtil {
     /**
      * 连接关闭事件
      *
-     * @param client ssh客户端
+     * @param client shell客户端
      */
     public static void connectionClosed(ShellClient client) {
         ShellConnectionClosedEvent event = new ShellConnectionClosedEvent();
@@ -76,7 +76,7 @@ public class ShellEventUtil {
     /**
      * 连接成功事件
      *
-     * @param client ssh客户端
+     * @param client shell客户端
      */
     public static void connectionConnected(ShellClient client) {
         ShellConnectionConnectedEvent event = new ShellConnectionConnectedEvent();
@@ -87,7 +87,7 @@ public class ShellEventUtil {
     /**
      * 连接已新增事件
      *
-     * @param shellConnect ssh连接
+     * @param shellConnect shell连接
      */
     public static void connectAdded(ShellConnect shellConnect) {
         ShellConnectAddedEvent event = new ShellConnectAddedEvent();
@@ -98,7 +98,7 @@ public class ShellEventUtil {
     /**
      * 连接已修改事件
      *
-     * @param shellConnect ssh连接
+     * @param shellConnect shell连接
      */
     public static void connectUpdated(ShellConnect shellConnect) {
         ShellConnectUpdatedEvent event = new ShellConnectUpdatedEvent();
@@ -109,7 +109,7 @@ public class ShellEventUtil {
     /**
      * 连接已删除事件
      *
-     * @param shellConnect ssh连接
+     * @param shellConnect shell连接
      */
     public static void connectDeleted(ShellConnect shellConnect) {
         ShellConnectDeletedEvent event = new ShellConnectDeletedEvent();
@@ -226,7 +226,7 @@ public class ShellEventUtil {
     /**
      * 显示修改连接页面
      *
-     * @param connect ssh连接
+     * @param connect shell连接
      */
     public static void showUpdateConnect(ShellConnect connect) {
         ShellShowUpdateConnectEvent event = new ShellShowUpdateConnectEvent();

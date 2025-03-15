@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 import lombok.NonNull;
 
 /**
- * ssh树group值
+ * shell树group值
  *
  * @author oyzh
  * @since 2023/4/7

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ssh连接导出对象
+ * shell连接导出对象
  *
  * @author oyzh
  * @since 2023/2/22
@@ -44,10 +44,10 @@ public class ShellConnectExport {
     private List<ShellConnect> connects;
 
     /**
-     * 从ssh连接数据生成
+     * 从shell连接数据生成
      *
      * @param shellConnects 连接列表
-     * @return SSHConnectExport
+     * @return ShellConnectExport
      */
     public static ShellConnectExport fromConnects(@NonNull List<ShellConnect> shellConnects) {
         ShellConnectExport export = new ShellConnectExport();

@@ -8,7 +8,7 @@
 //import java.io.InputStream;
 //
 ///**
-// * ssh交互式终端工具类
+// * shell交互式终端工具类
 // *
 // * @author oyzh
 // * @since 2023/08/17

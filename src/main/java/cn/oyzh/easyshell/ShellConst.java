@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.io.File;
 
 /**
- * ssh常量对象
+ * shell常量对象
  *
  * @author oyzh
  * @since 2023/08/16

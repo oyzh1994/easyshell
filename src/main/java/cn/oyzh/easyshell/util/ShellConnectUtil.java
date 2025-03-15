@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
 import lombok.experimental.UtilityClass;
 
 /**
- * ssh连接工具类
+ * shell连接工具类
  *
  * @author oyzh
  * @since 2023/07/01
@@ -19,51 +19,10 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ShellConnectUtil {
 
-//    /**
-//     * 测试连接
-//     *
-//     * @param view     页面
-//     * @param user     用户
-//     * @param host     地址
-//     * @param password 密码
-//     * @param timeout  超时时间
-//     */
-//    public static void testConnect(StageAdapter view, String user, String host, String password, int timeout) {
-//        ThreadUtil.start(() -> {
-//            try {
-//                view.disable();
-//                view.waitCursor();
-//                view.appendTitle("==连接测试中...");
-//                // 创建ssh信息
-//                SSHConnect sshInfo = new SSHConnect();
-//                sshInfo.setUser(user);
-//                sshInfo.setHost(host);
-//                sshInfo.setPassword(password);
-//                sshInfo.setConnectTimeOut(timeout);
-//                SSHClient client = new SSHClient(sshInfo);
-//                // 开始连接
-//                client.start();
-//                if (client.isConnected()) {
-//                    client.close();
-//                    MessageBox.okToast("连接成功！");
-//                } else {
-//                    MessageBox.warn("连接失败，请检查地址是否有效！");
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            } finally {
-//                view.enable();
-//                view.defaultCursor();
-//                view.restoreTitle();
-//            }
-//        });
-//    }
-
     /**
      * 关闭连接
      *
-     * @param client ssh客户端
+     * @param client shell客户端
      * @param async  是否异步
      */
     public static void close(ShellClient client, boolean async) {

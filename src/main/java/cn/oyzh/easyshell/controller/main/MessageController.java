@@ -9,7 +9,7 @@ import javafx.fxml.FXML;
 
 
 /**
- * ssh消息业务
+ * shell消息业务
  *
  * @author oyzh
  * @since 2024/04/23

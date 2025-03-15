@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * ssh树根节点
+ * shell树根节点
  *
  * @author oyzh
  * @since 2023/1/29
@@ -41,12 +41,12 @@ import java.util.Optional;
 public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> implements ShellConnectManager {
 
     /**
-     * ssh分组储存
+     * shell分组储存
      */
     private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
-     * ssh连接储存
+     * shell连接储存
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
@@ -85,7 +85,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         }
         ShellConnectExport export = ShellConnectExport.fromConnects(infos);
         FileExtensionFilter extensionFilter = FXChooser.jsonExtensionFilter();
-        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.ssh", "base.connect", "base._json"), extensionFilter);
+        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.shell", "base.connect", "base._json"), extensionFilter);
         if (file != null) {
             try {
                 FileUtil.writeUtf8String(export.toJSONString(), file);
@@ -379,7 +379,6 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         List<ShellGroupTreeItem> groupItems = this.getGroupItems();
         if (CollectionUtil.isNotEmpty(connects)) {
             List<ShellConnectTreeItem> connectItems = this.getConnectItems();
-            // List<SSHConnect> list = new ArrayList<>();
             f1:
             for (ShellConnect connect : connects) {
                 for (ShellConnectTreeItem connectItem : connectItems) {

@@ -5,7 +5,7 @@
 //import java.util.Objects;
 //
 ///**
-// * ssh搜索参数
+// * shell搜索参数
 // *
 // * @author oyzh
 // * @since 2023/06/10

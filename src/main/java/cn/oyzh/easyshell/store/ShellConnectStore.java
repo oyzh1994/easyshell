@@ -8,7 +8,7 @@ import cn.oyzh.store.jdbc.JdbcStandardStore;
 import java.util.List;
 
 /**
- * ssh信息存储
+ * shell信息存储
  *
  * @author oyzh
  * @since 2023/6/23
@@ -22,7 +22,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
 
     public final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
-    public final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+    public final ShellSSHConfigStore shellConfigStore = ShellSSHConfigStore.INSTANCE;
 
     public synchronized List<ShellConnect> load() {
         return super.selectList();
@@ -52,13 +52,13 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 result = this.insert(model);
             }
 
-            // ssh处理
+            // shell处理
             ShellSSHConfig sshConfig = model.getSshConfig();
             if (sshConfig != null) {
                 sshConfig.setIid(model.getId());
-                this.sshConfigStore.replace(sshConfig);
+                this.shellConfigStore.replace(sshConfig);
             } else {
-                this.sshConfigStore.deleteByIid(model.getId());
+                this.shellConfigStore.deleteByIid(model.getId());
             }
 
             // x11处理

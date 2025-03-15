@@ -11,7 +11,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/3/8
  */
-public class SSHPack {
+public class ShellPack {
 
     private String getProjectPath() {
         String projectPath = getClass().getResource("").getPath();

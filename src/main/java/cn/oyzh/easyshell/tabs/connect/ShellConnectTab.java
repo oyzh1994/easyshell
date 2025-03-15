@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * ssh终端tab
+ * shell终端tab
  *
  * @author oyzh
  * @since 2023/7/21
@@ -42,11 +42,11 @@ public class ShellConnectTab extends RichTab {
     /**
      * 初始化
      *
-     * @param treeItem ssh信息
+     * @param treeItem shell信息
      */
     public void init(ShellConnectTreeItem treeItem) {
         try {
-            // 初始化ssh连接
+            // 初始化shell连接
             this.controller().init(treeItem);
             // 刷新图标
             this.flush();
@@ -57,7 +57,7 @@ public class ShellConnectTab extends RichTab {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().sshConnect().getName();
+        return this.controller().shellConnect().getName();
     }
 
     @Override
@@ -66,18 +66,18 @@ public class ShellConnectTab extends RichTab {
     }
 
     /**
-     * ssh信息
+     * shell信息
      *
-     * @return 当前ssh信息
+     * @return 当前shell信息
      */
-    public ShellConnect sshConnect() {
-        return this.controller().sshConnect();
+    public ShellConnect shellConnect() {
+        return this.controller().shellConnect();
     }
 
     /**
-     * 获取ssh客户端
+     * 获取shell客户端
      *
-     * @return ssh客户端
+     * @return shell客户端
      */
     public ShellClient client() {
         return this.controller().client();

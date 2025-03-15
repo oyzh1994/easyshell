@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 
-public class SSHTerminalApp2 extends Application {
+public class ShellTerminalApp2 extends Application {
 
     private TextArea outputArea;
     private TextField inputField, hostField, userField;
@@ -176,7 +176,7 @@ public class SSHTerminalApp2 extends Application {
     public static class SSHTerminalApp2Test {
 
         public static void main(String[] args) throws URISyntaxException {
-            SSHTerminalApp2.main(args);
+            ShellTerminalApp2.main(args);
         }
 
     }

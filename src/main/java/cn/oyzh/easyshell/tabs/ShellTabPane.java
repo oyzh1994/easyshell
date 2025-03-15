@@ -18,7 +18,7 @@ import javafx.scene.input.KeyCode;
 
 
 /**
- * ssh切换面板
+ * shell切换面板
  *
  * @author oyzh
  * @since 2023/05/21
@@ -63,7 +63,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
             while (c.next()) {
                 if (c.wasAdded() || c.wasRemoved()) {
-                    TaskManager.startDelay("ssh:homeTab:flush", this::flushHomeTab, 100);
+                    TaskManager.startDelay("shell:homeTab:flush", this::flushHomeTab, 100);
                 }
             }
         });
@@ -155,14 +155,6 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionOpened(ShellConnectOpenedEvent event) {
-//        SSHConnectTab tab = this.getConnectTab(event.connect());
-//        if (tab == null) {
-//            tab = new SSHConnectTab(event.data());
-//            super.addTab(tab);
-//        }
-//        if (!tab.isSelected()) {
-//            this.select(tab);
-//        }
         ShellConnectTab tab = new ShellConnectTab(event.data());
         super.addTab(tab);
         if (!tab.isSelected()) {

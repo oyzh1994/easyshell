@@ -110,11 +110,10 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
     /**
      * 复制对象
      *
-     * @param shellConnect ssh信息
+     * @param shellConnect shell信息
      * @return 当前对象
      */
     public ShellConnect copy(@NonNull ShellConnect shellConnect) {
-//        this.id = sshConnect.id;
         this.name = shellConnect.name;
         this.host = shellConnect.host;
         this.user = shellConnect.user;

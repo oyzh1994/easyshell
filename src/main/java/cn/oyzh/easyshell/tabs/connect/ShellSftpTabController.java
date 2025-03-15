@@ -31,7 +31,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * ssh命令行tab内容组件
+ * shell命令行tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -39,7 +39,7 @@ import java.util.List;
 public class ShellSftpTabController extends SubTabController {
 
     /**
-     * ssh命令行文本域
+     * shell命令行文本域
      */
     @FXML
     private FXTab root;

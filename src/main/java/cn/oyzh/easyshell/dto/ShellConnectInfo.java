@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.dto;
 import lombok.Data;
 
 /**
- * ssh连接
+ * shell连接
  *
  * @author oyzh
  * @since 2023/8/10

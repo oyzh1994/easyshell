@@ -43,7 +43,7 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 /**
- * ssh终端
+ * shell终端
  *
  * @author oyzh
  * @since 2023/08/16
@@ -56,14 +56,14 @@ public class ShellClient {
     private static final JSch JSCH = new JSch();
 
     /**
-     * ssh信息
+     * shell信息
      */
     @Getter
     @Accessors(chain = true, fluent = true)
     private final ShellConnect shellConnect;
 
     /**
-     * ssh会话
+     * shell会话
      */
     @Getter
     private Session session;
@@ -79,7 +79,7 @@ public class ShellClient {
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     /**
-     * ssh配置存储
+     * shell配置存储
      */
     private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 

@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import java.util.List;
 
 /**
- * ssh终端类型选择框
+ * shell终端类型选择框
  *
  * @author oyzh
  * @since 23/03/09

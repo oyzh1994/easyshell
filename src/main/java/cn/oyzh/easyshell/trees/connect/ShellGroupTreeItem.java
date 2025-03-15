@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * ssh分组节点
+ * shell分组节点
  *
  * @author oyzh
  * @since 2023/05/12
@@ -44,12 +44,12 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     private final ShellGroup value;
 
     /**
-     * ssh分组储存
+     * shell分组储存
      */
     private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
-     * ssh连接储存
+     * shell连接储存
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 

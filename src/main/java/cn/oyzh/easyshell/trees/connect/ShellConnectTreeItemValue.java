@@ -7,7 +7,7 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 /**
- * ssh树节点值
+ * shell树节点值
  *
  * @author oyzh
  * @since 2023/4/7

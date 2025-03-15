@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * ssh主页tab
+ * shell主页tab
  *
  * @author oyzh
  * @since 2023/6/24

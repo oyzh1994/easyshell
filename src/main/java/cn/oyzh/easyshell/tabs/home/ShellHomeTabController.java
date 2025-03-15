@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * ssh主页tab内容组件
+ * shell主页tab内容组件
  *
  * @author oyzh
  * @since 2023/6/24

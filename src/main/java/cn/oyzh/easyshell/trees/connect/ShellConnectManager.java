@@ -56,6 +56,5 @@ public interface ShellConnectManager {
      */
     default List<ShellConnectTreeItem> getConnectedItems() {
         return this.getConnectItems();
-//        return this.getConnectItems().parallelStream().filter(SSHConnectTreeItem::isConnected).collect(Collectors.toList());
     }
 }

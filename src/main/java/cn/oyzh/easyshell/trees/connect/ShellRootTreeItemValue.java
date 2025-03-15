@@ -5,7 +5,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
 /**
- * ssh树节点值
+ * shell树节点值
  *
  * @author oyzh
  * @since 2023/4/7

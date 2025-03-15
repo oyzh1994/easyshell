@@ -23,7 +23,7 @@ import java.util.List;
 
 
 /**
- * ssh主页
+ * shell主页
  *
  * @author oyzh
  * @since 2020/9/16
@@ -42,7 +42,7 @@ public class ShellMainController extends ParentStageController {
     private FXTabPane tabPaneLeft;
 
     /**
-     * ssh切换面板
+     * shell切换面板
      */
     @FXML
     private ShellTabPane tabPane;

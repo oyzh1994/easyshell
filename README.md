@@ -50,26 +50,26 @@ https://www.freeconvert.com/zh/png-to-ico
 https://github.com/wixtoolset/wix3/releases  
 ###### (推荐)exe打包 
 配置 -> package -> win -> win_exe.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_win_exe  
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_win_exe  
 ###### msi打包 
 配置 -> package -> win -> win_msi.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_win_msi  
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_win_msi  
 ###### app-image打包
 配置 -> package -> win -> win_image.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_win_image  
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_win_image  
 ###### 注意事项
 exe、msi打包需要设置win-menu、win-shortcut参数，避免桌面不显示程序图标的问题
 
 ###### macos
 ###### (推荐)pkg打包
 配置 -> package -> macos -> macos_pkg.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_macos_pkg
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_macos_pkg
 ###### dmg打包 
 配置 -> package -> macos -> macos_dmg.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_macos_dmg  
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_macos_dmg  
 ###### app-image打包
 配置 -> package -> macos -> macos_image.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_macos_image  
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_macos_image  
 ###### 注意事项
 dmg、pkg打包需要设置mac-package-identifier参数，避免因为app同名，启动台不显示程序图标的问题
 
@@ -78,10 +78,10 @@ dmg、pkg打包需要设置mac-package-identifier参数，避免因为app同名�
 sudo apt install fakeroot
 ###### (推荐)deb打包
 配置 -> package -> linux -> linux_deb.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_linux_deb
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_linux_deb
 ###### app-image打包
 配置 -> package -> linux -> linux_image.json  
-入口 -> cn.oyzh.easyshell.test.SSHPack.easyshell_linux_image
+入口 -> cn.oyzh.easyshell.test.ShellPack.easyshell_linux_image
 
 # X11、X-Server
 ###### windows
