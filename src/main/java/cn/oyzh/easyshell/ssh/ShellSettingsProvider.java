@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-08
  */
-public class SSHSettingsProvider extends DefaultSettingsProvider {
+public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     /**
      * 寻找最接近的配色

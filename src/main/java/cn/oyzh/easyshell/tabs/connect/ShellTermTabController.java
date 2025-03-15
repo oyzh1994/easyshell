@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.ssh.ShellClient;
-import cn.oyzh.easyshell.ssh.SSHShell;
+import cn.oyzh.easyshell.ssh.ShellShell;
 import cn.oyzh.easyshell.ssh.ShellTermWidget;
 import cn.oyzh.easyshell.ssh.ShellTtyConnector;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -35,7 +35,7 @@ public class ShellTermTabController extends SubTabController {
      */
     private ShellTermWidget widget;
 
-    private void initWidget(SSHShell shell) throws IOException {
+    private void initWidget(ShellShell shell) throws IOException {
         this.widget = new ShellTermWidget();
         ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector();
         connector.initShell(shell);
@@ -50,13 +50,13 @@ public class ShellTermTabController extends SubTabController {
         int sizeW = (int) this.widget.getWidth();
         int sizeH = (int) this.widget.getHeight();
         TermSize termSize = this.widget.getTermSize();
-        SSHShell shell = this.client().openShell();
+        ShellShell shell = this.client().openShell();
         shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
     public void init() throws IOException, JSchException {
         ShellClient client = this.client();
-        SSHShell shell = client.openShell();
+        ShellShell shell = client.openShell();
         this.initWidget(shell);
         shell.connect(client.connectTimeout());
         if (!shell.isConnected()) {

@@ -47,7 +47,7 @@ public class ShellTtyConnector extends PtyProcessTtyConnector implements Logging
 
     private OutputStreamWriter shellWriter;
 
-    public void initShell(SSHShell shell) throws IOException {
+    public void initShell(ShellShell shell) throws IOException {
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }

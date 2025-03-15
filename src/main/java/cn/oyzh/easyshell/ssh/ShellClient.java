@@ -351,9 +351,9 @@ public class ShellClient {
     }
 
     @Getter
-    private SSHShell shell;
+    private ShellShell shell;
 
-    public SSHShell openShell() {
+    public ShellShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
@@ -363,7 +363,7 @@ public class ShellClient {
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
                 channel.setPtyType("xterm");
-                this.shell = new SSHShell(channel);
+                this.shell = new ShellShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

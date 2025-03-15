@@ -37,7 +37,7 @@ public class ShellTermWidget extends JediTermFxWidget {
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
     public ShellTermWidget() {
-        super(new SSHSettingsProvider());
+        super(new ShellSettingsProvider());
     }
 
     protected String[] getProcessCommand() {
