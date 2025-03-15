@@ -321,7 +321,7 @@ public class ShellUpdateConnectController extends StageController {
     @Override
     public void onWindowShown(@NonNull WindowEvent event) {
         super.onWindowShown(event);
-        this.shellConnect = this.getWindowProp("sshConnect");
+        this.shellConnect = this.getWindowProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());

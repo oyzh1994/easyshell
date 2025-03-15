@@ -20,7 +20,7 @@ public class ShellHomeTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/home/sshHomeTab.fxml";
+        return "/tabs/home/shellHomeTab.fxml";
     }
 
     @Override

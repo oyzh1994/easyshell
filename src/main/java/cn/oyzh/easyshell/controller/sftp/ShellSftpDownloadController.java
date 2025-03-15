@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.sftp.SftpDownloadTableView;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;

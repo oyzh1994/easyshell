@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.tabs.connect;
 
-import cn.oyzh.easyshell.ssh.ShellClient;
-import cn.oyzh.easyshell.ssh.ShellShell;
-import cn.oyzh.easyshell.ssh.ShellTermWidget;
-import cn.oyzh.easyshell.ssh.ShellTtyConnector;
+import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.shell.ShellShell;
+import cn.oyzh.easyshell.shell.ShellTermWidget;
+import cn.oyzh.easyshell.shell.ShellTtyConnector;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;

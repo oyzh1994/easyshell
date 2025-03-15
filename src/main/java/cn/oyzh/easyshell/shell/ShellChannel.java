@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh;
+package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.thread.TaskManager;
 import com.jcraft.jsch.Channel;

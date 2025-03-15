@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.docker;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.shell.ShellClient;
 
 /**
  * @author oyzh

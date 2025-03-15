@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.shell.ShellClient;
 import lombok.experimental.UtilityClass;
 
 /**

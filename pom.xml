@@ -8,7 +8,7 @@
         <version>1.3.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>easyssh</artifactId>
+    <artifactId>easyshell</artifactId>
     <version>1.0.0</version>
     <description>ssh连接，sftp文件管理，x11转发支持，本地终端增强能力</description>
 

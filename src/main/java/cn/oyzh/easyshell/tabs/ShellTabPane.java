@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;

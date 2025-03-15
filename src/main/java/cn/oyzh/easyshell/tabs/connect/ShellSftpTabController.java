@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.sftp.SftpFileTableView;
 import cn.oyzh.fx.gui.tabs.RichTab;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh;
+package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.log.JulLog;
 import com.pty4j.PtyProcess;

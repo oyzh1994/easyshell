@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh;
+package cn.oyzh.easyshell.shell;
 
 import com.jcraft.jsch.ChannelShell;
 

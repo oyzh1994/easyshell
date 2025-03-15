@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.controller.docker.DockerInfoController;
 import cn.oyzh.easyshell.controller.docker.DockerVersionController;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
 import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;

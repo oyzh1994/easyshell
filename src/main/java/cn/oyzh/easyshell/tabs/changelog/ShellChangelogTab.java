@@ -30,7 +30,7 @@ public class ShellChangelogTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/changelog/sshChangelogTab.fxml";
+        return "/tabs/changelog/shellChangelogTab.fxml";
     }
 
     @Override

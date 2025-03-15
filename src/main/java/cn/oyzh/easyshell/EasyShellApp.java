@@ -261,7 +261,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
-                adapter.setProp("sshConnect", event.data());
+                adapter.setProp("shellConnect", event.data());
                 adapter.display();
             } catch (Exception ex) {
                 ex.printStackTrace();

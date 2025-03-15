@@ -28,7 +28,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_win_exe() throws Exception {
+    public void easyshell_win_exe() throws Exception {
         String packagePath = this.getPackagePath();
         String win_pack_config = packagePath + "/win/win_exe.json";
         String getProjectPath = this.getProjectPath();
@@ -42,7 +42,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_win_msi() throws Exception {
+    public void easyshell_win_msi() throws Exception {
         String packagePath = this.getPackagePath();
         String win_pack_config = packagePath + "/win/win_msi.json";
         String getProjectPath = this.getProjectPath();
@@ -56,7 +56,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_win_image() throws Exception {
+    public void easyshell_win_image() throws Exception {
         String packagePath = this.getPackagePath();
         String win_pack_config = packagePath + "/win/win_image.json";
         String getProjectPath = this.getProjectPath();
@@ -70,7 +70,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_linux_deb() throws Exception {
+    public void easyshell_linux_deb() throws Exception {
         String packagePath = this.getPackagePath();
         String linux_pack_config = packagePath + "/linux/linux_deb.json";
         String getProjectPath = this.getProjectPath();
@@ -83,7 +83,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_linux_image() throws Exception {
+    public void easyshell_linux_image() throws Exception {
         String packagePath = this.getPackagePath();
         String linux_pack_config = packagePath + "/linux/linux_image.json";
         String getProjectPath = this.getProjectPath();
@@ -96,7 +96,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_macos_dmg() throws Exception {
+    public void easyshell_macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos/macos_dmg.json";
         String getProjectPath = this.getProjectPath();
@@ -110,7 +110,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_macos_pkg() throws Exception {
+    public void easyshell_macos_pkg() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos/macos_pkg.json";
         String getProjectPath = this.getProjectPath();
@@ -124,7 +124,7 @@ public class SSHPack {
     }
 
     @Test
-    public void easyssh_macos_image() throws Exception {
+    public void easyshell_macos_image() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos/macos_image.json";
         String getProjectPath = this.getProjectPath();
