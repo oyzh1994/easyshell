@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
  * @author oyzh
  * @since 2023/9/18
  */
-public class SSHGroupRenamedEvent extends Event<String> implements EventFormatter {
+public class ShellGroupRenamedEvent extends Event<String> implements EventFormatter {
 
     @Setter
     @Accessors(chain = false, fluent = true)

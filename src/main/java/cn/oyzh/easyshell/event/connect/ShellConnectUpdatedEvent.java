@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class SSHConnectUpdatedEvent extends Event<ShellConnect> implements EventFormatter {
+public class ShellConnectUpdatedEvent extends Event<ShellConnect> implements EventFormatter {
 
     @Override
     public String eventFormat() {

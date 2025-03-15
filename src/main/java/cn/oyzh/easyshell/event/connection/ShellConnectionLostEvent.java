@@ -8,13 +8,13 @@ import cn.oyzh.i18n.I18nHelper;
 
 /**
  * @author oyzh
- * @since 2023/9/18
+ * @since 2023/9/19
  */
-public class SSHConnectionConnectedEvent extends Event<SSHClient> implements EventFormatter {
+public class ShellConnectionLostEvent extends Event<SSHClient> implements EventFormatter {
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s connected] " , I18nHelper.connect(), this.data().connectName());
+        return String.format("[%s:%s lost] ", I18nHelper.connect(), this.data().connectName());
     }
 
     public ShellConnect connect() {

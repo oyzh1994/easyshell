@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 25/03/13
  */
-public class SSHContainerStatusComboBox extends FXComboBox<String> {
+public class ShellContainerStatusComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.running());

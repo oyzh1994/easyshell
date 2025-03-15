@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.easyshell.event.SSHEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -24,7 +24,7 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void setting() {
-        SSHEventUtil.showSetting();
+        ShellEventUtil.showSetting();
     }
 
     /**
@@ -32,7 +32,7 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void about() {
-        SSHEventUtil.showAbout();
+        ShellEventUtil.showAbout();
     }
 
     /**
@@ -50,7 +50,7 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void tool() {
-        SSHEventUtil.showTool();
+        ShellEventUtil.showTool();
     }
 
     /**
@@ -58,7 +58,7 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void layout1() {
-        SSHEventUtil.layout1();
+        ShellEventUtil.layout1();
     }
 
     /**
@@ -66,7 +66,7 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void layout2() {
-        SSHEventUtil.layout2();
+        ShellEventUtil.layout2();
     }
 
     /**

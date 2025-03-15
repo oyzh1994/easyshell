@@ -1,11 +1,12 @@
 package cn.oyzh.easyshell.event.window;
 
-import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.event.Event;
+
+import java.io.File;
 
 /**
  * @author oyzh
  * @since 2025-02-20
  */
-public class SSHShowAddConnectEvent extends Event<ShellGroup> {
+public class ShellShowImportConnectEvent extends Event<File> {
 }

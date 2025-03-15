@@ -8,9 +8,9 @@ import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.dto.ShellConnectExport;
-import cn.oyzh.easyshell.event.SSHEventUtil;
-import cn.oyzh.easyshell.store.SSHConnectStore;
-import cn.oyzh.easyshell.store.SSHGroupStore;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -43,12 +43,12 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     /**
      * ssh分组储存
      */
-    private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
+    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
      * ssh连接储存
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     public SSHRootTreeItem(@NonNull SSHConnectTreeView treeView) {
         super(treeView);
@@ -200,7 +200,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
         group.setName(groupName);
         if (this.groupStore.replace(group)) {
             this.addChild(new SSHGroupTreeItem(group, this.getTreeView()));
-            SSHEventUtil.groupAdded(groupName);
+            ShellEventUtil.groupAdded(groupName);
         } else {
             MessageBox.warn(I18nHelper.operationFail());
         }

@@ -6,9 +6,9 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
-import cn.oyzh.easyshell.event.SSHEventUtil;
-import cn.oyzh.easyshell.store.SSHConnectStore;
-import cn.oyzh.easyshell.store.SSHX11ConfigStore;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.SSHConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -160,12 +160,12 @@ public class ShellAddConnectController extends StageController {
     /**
      * ssh连接储存对象
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * x11配置存储对象
      */
-    private final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
+    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -282,7 +282,7 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {
-                SSHEventUtil.connectAdded(shellConnect);
+                ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {

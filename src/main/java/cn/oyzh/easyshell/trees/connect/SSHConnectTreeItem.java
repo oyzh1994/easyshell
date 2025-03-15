@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.trees.connect;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.SSHEventUtil;
-import cn.oyzh.easyshell.store.SSHConnectStore;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -52,7 +52,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     /**
      * ssh连接存储
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     public SSHConnectTreeItem(@NonNull ShellConnect value, @NonNull RichTreeView treeView) {
         super(treeView);
@@ -132,7 +132,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
 
     @Override
     public void loadChild() {
-        SSHEventUtil.connectionOpened(this);
+        ShellEventUtil.connectionOpened(this);
     }
 
     /**
@@ -198,7 +198,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
         if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]")) {
             this.closeConnect(false);
             if (this.connectManager().delConnectItem(this)) {
-                SSHEventUtil.connectDeleted(this.value);
+                ShellEventUtil.connectDeleted(this.value);
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -278,7 +278,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
     public void onPrimaryDoubleClick() {
 //        if (!this.isConnected() && !this.isConnecting()) {
 //            this.connect();
-            SSHEventUtil.connectionOpened(this);
+            ShellEventUtil.connectionOpened(this);
 //        } else {
 //            super.onPrimaryDoubleClick();
 //        }

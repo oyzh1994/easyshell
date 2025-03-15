@@ -8,12 +8,12 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2020/7/2
  */
-public class SSHExceptionParser implements Function<Throwable, String> {
+public class ShellExceptionParser implements Function<Throwable, String> {
 
     /**
      * 当前实例
      */
-    public final static SSHExceptionParser INSTANCE = new SSHExceptionParser();
+    public final static ShellExceptionParser INSTANCE = new ShellExceptionParser();
 
     @Override
     public String apply(Throwable e) {

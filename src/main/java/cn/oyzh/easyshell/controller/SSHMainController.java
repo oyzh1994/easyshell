@@ -4,8 +4,8 @@ import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.controller.main.MessageController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.tree.SSHTreeItemChangedEvent;
-import cn.oyzh.easyshell.store.SSHSettingStore;
+import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.SSHTabPane;
 import cn.oyzh.easyshell.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.event.EventSubscribe;
@@ -33,7 +33,7 @@ public class SSHMainController extends ParentStageController {
     /**
      * 配置对象
      */
-    private final ShellSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 左侧组件
@@ -116,7 +116,7 @@ public class SSHMainController extends ParentStageController {
     private void savePageResize() {
         if (this.setting.isRememberPageResize()) {
             this.setting.setPageLeftWidth((float) this.tabPaneLeft.getMinWidth());
-            SSHSettingStore.INSTANCE.replace(this.setting);
+            ShellSettingStore.INSTANCE.replace(this.setting);
         }
     }
 
@@ -134,7 +134,7 @@ public class SSHMainController extends ParentStageController {
      * @param event 事件
      */
     @EventSubscribe
-    private void treeItemChanged(SSHTreeItemChangedEvent event) {
+    private void treeItemChanged(ShellTreeItemChangedEvent event) {
         if (event.data() instanceof SSHConnectTreeItem item) {
             this.flushViewTitle(item.value());
         } else {

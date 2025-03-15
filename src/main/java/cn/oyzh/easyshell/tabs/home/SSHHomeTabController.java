@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.home;
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.easyshell.event.SSHEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.i18n.I18nHelper;
@@ -54,7 +54,7 @@ public class SSHHomeTabController extends RichTabController {
      */
     @FXML
     private void addConnect() {
-        SSHEventUtil.showAddConnect();
+        ShellEventUtil.showAddConnect();
     }
 
     /**
@@ -62,7 +62,7 @@ public class SSHHomeTabController extends RichTabController {
      */
     @FXML
     private void addGroup() {
-        SSHEventUtil.addGroup();
+        ShellEventUtil.addGroup();
     }
 
     /**
@@ -70,6 +70,6 @@ public class SSHHomeTabController extends RichTabController {
      */
     @FXML
     private void changelog() {
-        SSHEventUtil.changelog();
+        ShellEventUtil.changelog();
     }
 }

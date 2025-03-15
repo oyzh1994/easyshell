@@ -7,6 +7,6 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/3/29
  */
-public class SSHAddGroupEvent extends Event<Object> {
+public class ShellAddGroupEvent extends Event<Object> {
 
 }

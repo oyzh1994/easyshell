@@ -5,8 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
-import cn.oyzh.easyshell.event.SSHEventUtil;
-import cn.oyzh.easyshell.store.SSHConnectStore;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.util.SSHConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -159,7 +159,7 @@ public class ShellUpdateConnectController extends StageController {
     /**
      * ssh连接储存对象
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * ssh连接储存对象
@@ -282,7 +282,7 @@ public class ShellUpdateConnectController extends StageController {
             this.shellConnect.setX11forwarding(this.x11forwarding.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
-                SSHEventUtil.connectUpdated(this.shellConnect);
+                ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {

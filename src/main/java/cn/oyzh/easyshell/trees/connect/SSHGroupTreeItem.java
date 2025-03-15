@@ -5,9 +5,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
-import cn.oyzh.easyshell.event.SSHEventUtil;
-import cn.oyzh.easyshell.store.SSHConnectStore;
-import cn.oyzh.easyshell.store.SSHGroupStore;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -46,12 +46,12 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     /**
      * ssh分组储存
      */
-    private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
+    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
      * ssh连接储存
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     public SSHGroupTreeItem(@NonNull ShellGroup group, @NonNull RichTreeView treeView) {
         super(treeView);
@@ -109,7 +109,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
         this.value.setName(groupName);
         if (this.groupStore.replace(this.value)) {
             this.refresh();
-            SSHEventUtil.groupRenamed(groupName, oldName);
+            ShellEventUtil.groupRenamed(groupName, oldName);
         } else {
             MessageBox.warn(I18nHelper.operationFail());
         }
@@ -137,7 +137,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
             this.parent().addConnectItems(childes);
         }
         // 发送事件
-        SSHEventUtil.groupDeleted(this.value.getName());
+        ShellEventUtil.groupDeleted(this.value.getName());
         // 移除节点
         this.remove();
     }

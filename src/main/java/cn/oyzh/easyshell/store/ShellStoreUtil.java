@@ -14,7 +14,7 @@ import lombok.experimental.UtilityClass;
  * @since 2025-02-14
  */
 @UtilityClass
-public class SSHStoreUtil {
+public class ShellStoreUtil {
 
     /**
      * 执行初始化

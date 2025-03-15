@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.main;
 
-import cn.oyzh.easyshell.event.SSHEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.trees.connect.SSHConnectTreeView;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.plus.controller.SubStageController;
@@ -51,7 +51,7 @@ public class ConnectController extends SubStageController {
     protected void bindListeners() {
         super.bindListeners();
         // ssh树变化事件
-        this.tree.selectItemChanged(SSHEventUtil::treeItemChanged);
+        this.tree.selectItemChanged(ShellEventUtil::treeItemChanged);
         // 文件拖拽初始化
         this.stage.initDragFile(this.tree.getDragContent(), this.tree.root()::dragFile);
         // 刷新触发事件
@@ -60,7 +60,7 @@ public class ConnectController extends SubStageController {
 
     @FXML
     private void addConnect() {
-        SSHEventUtil.showAddConnect();
+        ShellEventUtil.showAddConnect();
     }
 
     @FXML
@@ -76,11 +76,11 @@ public class ConnectController extends SubStageController {
 
     @FXML
     private void importConnect() {
-        SSHEventUtil.showImportConnect(null);
+        ShellEventUtil.showImportConnect(null);
     }
 
     @FXML
     private void exportConnect() {
-        SSHEventUtil.showExportConnect();
+        ShellEventUtil.showExportConnect();
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.SSHContainerStatusComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox?>
 <?import cn.oyzh.easyshell.trees.docker.SSHContainerTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -46,11 +46,11 @@
                             <Insets left="5" top="10"/>
                         </FXHBox.margin>
                     </DeleteForceSVGGlyph>
-                    <SSHContainerStatusComboBox initIndex="0" fx:id="containerStatus">
+                    <ShellContainerStatusComboBox initIndex="0" fx:id="containerStatus">
                         <FXHBox.margin>
                             <Insets left="5" top="5"/>
                         </FXHBox.margin>
-                    </SSHContainerStatusComboBox>
+                    </ShellContainerStatusComboBox>
                 </FXHBox>
                 <SSHContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
                     <columns>

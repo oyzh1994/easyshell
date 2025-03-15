@@ -12,12 +12,12 @@ import cn.oyzh.store.jdbc.QueryParam;
  * @author oyzh
  * @since 2025/03/08
  */
-public class SSHX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
+public class ShellX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
 
     /**
      * 当前实例
      */
-    public static final SSHX11ConfigStore INSTANCE = new SSHX11ConfigStore();
+    public static final ShellX11ConfigStore INSTANCE = new ShellX11ConfigStore();
 
     /**
      * 替换

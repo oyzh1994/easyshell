@@ -7,5 +7,5 @@ import javafx.scene.control.TreeItem;
  * @author oyzh
  * @since 2024-11-18
  */
-public class SSHTreeItemChangedEvent extends Event<TreeItem<?>> {
+public class ShellTreeItemChangedEvent extends Event<TreeItem<?>> {
 }

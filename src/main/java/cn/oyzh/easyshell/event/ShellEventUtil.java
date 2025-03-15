@@ -5,23 +5,23 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.connect.SSHConnectUpdatedEvent;
-import cn.oyzh.easyshell.event.connection.SSHConnectionClosedEvent;
-import cn.oyzh.easyshell.event.connection.SSHConnectionConnectedEvent;
-import cn.oyzh.easyshell.event.connection.SSHConnectionLostEvent;
-import cn.oyzh.easyshell.event.group.SSHAddGroupEvent;
-import cn.oyzh.easyshell.event.group.SSHGroupAddedEvent;
-import cn.oyzh.easyshell.event.group.SSHGroupDeletedEvent;
-import cn.oyzh.easyshell.event.group.SSHGroupRenamedEvent;
-import cn.oyzh.easyshell.event.tree.SSHTreeItemChangedEvent;
-import cn.oyzh.easyshell.event.window.SSHShowAboutEvent;
-import cn.oyzh.easyshell.event.window.SSHShowAddConnectEvent;
-import cn.oyzh.easyshell.event.window.SSHShowExportConnectEvent;
-import cn.oyzh.easyshell.event.window.SSHShowFileInfoEvent;
-import cn.oyzh.easyshell.event.window.SSHShowImportConnectEvent;
-import cn.oyzh.easyshell.event.window.SSHShowSettingEvent;
-import cn.oyzh.easyshell.event.window.SSHShowToolEvent;
-import cn.oyzh.easyshell.event.window.SSHShowUpdateConnectEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
+import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
+import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
+import cn.oyzh.easyshell.event.connection.ShellConnectionLostEvent;
+import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
+import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
+import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
+import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
+import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
+import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
+import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
+import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
+import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
+import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.trees.connect.SSHConnectTreeItem;
@@ -39,7 +39,7 @@ import java.io.File;
  * @since 2025-02-14
  */
 @UtilityClass
-public class SSHEventUtil {
+public class ShellEventUtil {
     /**
      * 连接丢失事件
      *
@@ -57,7 +57,7 @@ public class SSHEventUtil {
      * @param client ssh客户端
      */
     public static void connectionLost(SSHClient client) {
-        SSHConnectionLostEvent event = new SSHConnectionLostEvent();
+        ShellConnectionLostEvent event = new ShellConnectionLostEvent();
         event.data(client);
         EventUtil.post(event);
     }
@@ -68,7 +68,7 @@ public class SSHEventUtil {
      * @param client ssh客户端
      */
     public static void connectionClosed(SSHClient client) {
-        SSHConnectionClosedEvent event = new SSHConnectionClosedEvent();
+        ShellConnectionClosedEvent event = new ShellConnectionClosedEvent();
         event.data(client);
         EventUtil.post(event);
     }
@@ -79,7 +79,7 @@ public class SSHEventUtil {
      * @param client ssh客户端
      */
     public static void connectionConnected(SSHClient client) {
-        SSHConnectionConnectedEvent event = new SSHConnectionConnectedEvent();
+        ShellConnectionConnectedEvent event = new ShellConnectionConnectedEvent();
         event.data(client);
         EventUtil.post(event);
     }
@@ -101,7 +101,7 @@ public class SSHEventUtil {
      * @param shellConnect ssh连接
      */
     public static void connectUpdated(ShellConnect shellConnect) {
-        SSHConnectUpdatedEvent event = new SSHConnectUpdatedEvent();
+        ShellConnectUpdatedEvent event = new ShellConnectUpdatedEvent();
         event.data(shellConnect);
         EventUtil.post(event);
     }
@@ -121,7 +121,7 @@ public class SSHEventUtil {
      * 添加分组
      */
     public static void addGroup() {
-        EventUtil.post(new SSHAddGroupEvent());
+        EventUtil.post(new ShellAddGroupEvent());
     }
 
 //    /**
@@ -144,7 +144,7 @@ public class SSHEventUtil {
      * @param item 节点
      */
     public static void treeItemChanged(TreeItem<?> item) {
-        SSHTreeItemChangedEvent event = new SSHTreeItemChangedEvent();
+        ShellTreeItemChangedEvent event = new ShellTreeItemChangedEvent();
         event.data(item);
         EventUtil.post(event);
     }
@@ -167,7 +167,7 @@ public class SSHEventUtil {
      * 分组已添加
      */
     public static void groupAdded(String group) {
-        SSHGroupAddedEvent event = new SSHGroupAddedEvent();
+        ShellGroupAddedEvent event = new ShellGroupAddedEvent();
         event.data(group);
         EventUtil.post(event);
     }
@@ -176,7 +176,7 @@ public class SSHEventUtil {
      * 分组已删除
      */
     public static void groupDeleted(String group) {
-        SSHGroupDeletedEvent event = new SSHGroupDeletedEvent();
+        ShellGroupDeletedEvent event = new ShellGroupDeletedEvent();
         event.data(group);
         EventUtil.post(event);
     }
@@ -185,7 +185,7 @@ public class SSHEventUtil {
      * 分组已更名
      */
     public static void groupRenamed(String group, String oldName) {
-        SSHGroupRenamedEvent event = new SSHGroupRenamedEvent();
+        ShellGroupRenamedEvent event = new ShellGroupRenamedEvent();
         event.data(group);
         event.oldName(oldName);
         EventUtil.post(event);
@@ -195,7 +195,7 @@ public class SSHEventUtil {
      * 显示导出连接页面
      */
     public static void showExportConnect() {
-        EventUtil.post(new SSHShowExportConnectEvent());
+        EventUtil.post(new ShellShowExportConnectEvent());
     }
 
     /**
@@ -204,7 +204,7 @@ public class SSHEventUtil {
      * @param file 文件
      */
     public static void showImportConnect(File file) {
-        SSHShowImportConnectEvent event = new SSHShowImportConnectEvent();
+        ShellShowImportConnectEvent event = new ShellShowImportConnectEvent();
         event.data(file);
         EventUtil.post(event);
     }
@@ -213,7 +213,7 @@ public class SSHEventUtil {
      * 显示设置页面
      */
     public static void showSetting() {
-        EventUtil.post(new SSHShowSettingEvent());
+        EventUtil.post(new ShellShowSettingEvent());
     }
 
     /**
@@ -229,7 +229,7 @@ public class SSHEventUtil {
      * @param connect ssh连接
      */
     public static void showUpdateConnect(ShellConnect connect) {
-        SSHShowUpdateConnectEvent event = new SSHShowUpdateConnectEvent();
+        ShellShowUpdateConnectEvent event = new ShellShowUpdateConnectEvent();
         event.data(connect);
         EventUtil.post(event);
     }
@@ -240,7 +240,7 @@ public class SSHEventUtil {
      * @param group 分组
      */
     public static void showAddConnect(ShellGroup group) {
-        SSHShowAddConnectEvent event = new SSHShowAddConnectEvent();
+        ShellShowAddConnectEvent event = new ShellShowAddConnectEvent();
         event.data(group);
         EventUtil.post(event);
     }
@@ -249,14 +249,14 @@ public class SSHEventUtil {
      * 显示工具页面
      */
     public static void showTool() {
-        EventUtil.post(new SSHShowToolEvent());
+        EventUtil.post(new ShellShowToolEvent());
     }
 
     /**
      * 显示关于页面
      */
     public static void showAbout() {
-        EventUtil.post(new SSHShowAboutEvent());
+        EventUtil.post(new ShellShowAboutEvent());
     }
 
     public static void connectImported() {
@@ -269,7 +269,7 @@ public class SSHEventUtil {
      * @param file 文件
      */
     public static void showFileInfo(SftpFile file) {
-        SSHShowFileInfoEvent event = new SSHShowFileInfoEvent();
+        ShellShowFileInfoEvent event = new ShellShowFileInfoEvent();
         event.data(file);
         EventUtil.post(event);
     }

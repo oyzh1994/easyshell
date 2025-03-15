@@ -11,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 23/03/09
  */
-public class SSHTerminalTypeComboBox extends FXComboBox<String> {
+public class ShellTerminalTypeComboBox extends FXComboBox<String> {
 
     {
         if (OSUtil.isLinux()) {

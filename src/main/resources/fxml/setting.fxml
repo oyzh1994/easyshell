@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
-<?import cn.oyzh.easyshell.fx.SSHTerminalTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellTerminalTypeComboBox?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="450">
     <left>
@@ -39,11 +39,11 @@
                         <Insets left="30"/>
                     </VBox.margin>
                 </InfoLabel>
-                <SSHTerminalTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
+                <ShellTerminalTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </SSHTerminalTypeComboBox>
+                </ShellTerminalTypeComboBox>
                 <InfoLabel text="%shell.connect.tip2">
                     <VBox.margin>
                         <Insets left="30"/>

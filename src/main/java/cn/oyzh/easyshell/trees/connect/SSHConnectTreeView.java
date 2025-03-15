@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
-import cn.oyzh.easyshell.event.connect.SSHConnectUpdatedEvent;
-import cn.oyzh.easyshell.event.group.SSHAddGroupEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
+import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -96,7 +96,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
      * @param event 事件
      */
     @EventSubscribe
-    public void addGroup(SSHAddGroupEvent event) {
+    public void addGroup(ShellAddGroupEvent event) {
         this.root().addGroup();
     }
 
@@ -116,7 +116,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
      * @param event 事件
      */
     @EventSubscribe
-    private void connectUpdated(SSHConnectUpdatedEvent event) {
+    private void connectUpdated(ShellConnectUpdatedEvent event) {
         this.root().connectUpdated(event.data());
     }
 }

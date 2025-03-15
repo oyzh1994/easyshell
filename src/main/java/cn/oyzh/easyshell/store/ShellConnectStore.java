@@ -13,14 +13,14 @@ import java.util.List;
  * @author oyzh
  * @since 2023/6/23
  */
-public class SSHConnectStore extends JdbcStandardStore<ShellConnect> {
+public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
 
     /**
      * 当前实例
      */
-    public static final SSHConnectStore INSTANCE = new SSHConnectStore();
+    public static final ShellConnectStore INSTANCE = new ShellConnectStore();
 
-    public final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
+    public final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     public final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 

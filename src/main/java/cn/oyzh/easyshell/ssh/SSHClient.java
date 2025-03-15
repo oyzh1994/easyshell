@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
-import cn.oyzh.easyshell.event.SSHEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SSHSftp;
 import cn.oyzh.easyshell.sftp.SSHSftpManager;
 import cn.oyzh.easyshell.sftp.SftpAttr;
@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
-import cn.oyzh.easyshell.store.SSHX11ConfigStore;
+import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.ssh.SSHException;
@@ -76,7 +76,7 @@ public class SSHClient {
     /**
      * x11配置存储
      */
-    private final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
+    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     /**
      * ssh配置存储
@@ -95,10 +95,10 @@ public class SSHClient {
             switch (newValue) {
                 case CLOSED -> {
                     if (!this.closeQuietly) {
-                        SSHEventUtil.connectionClosed(this);
+                        ShellEventUtil.connectionClosed(this);
                     }
                 }
-                case CONNECTED -> SSHEventUtil.connectionConnected(this);
+                case CONNECTED -> ShellEventUtil.connectionConnected(this);
                 default -> {
 
                 }

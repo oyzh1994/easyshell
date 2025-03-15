@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.SSHEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SSHSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
@@ -317,7 +317,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             SftpFile file = files.getFirst();
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> {
                 try {
-                    SSHEventUtil.showFileInfo(file);
+                    ShellEventUtil.showFileInfo(file);
                 } catch (Exception ex) {
                     MessageBox.exception(ex);
                 }

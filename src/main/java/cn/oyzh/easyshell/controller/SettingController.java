@@ -5,8 +5,8 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.SSHTerminalTypeComboBox;
-import cn.oyzh.easyshell.store.SSHSettingStore;
+import cn.oyzh.easyshell.fx.ShellTerminalTypeComboBox;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.SSHProcessUtil;
 import cn.oyzh.easyshell.x11.X11Util;
 import cn.oyzh.fx.gui.setting.SettingLeftItem;
@@ -247,17 +247,17 @@ public class SettingController extends StageController {
      * 终端类型
      */
     @FXML
-    private SSHTerminalTypeComboBox terminalType;
+    private ShellTerminalTypeComboBox terminalType;
 
     /**
      * 配置对象
      */
-    private final ShellSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 配置持久化对象
      */
-    private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     @Override
     public void onWindowShowing(WindowEvent event) {

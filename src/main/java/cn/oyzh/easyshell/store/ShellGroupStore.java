@@ -16,12 +16,12 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/5/12
  */
-public class SSHGroupStore extends JdbcStandardStore<ShellGroup> {
+public class ShellGroupStore extends JdbcStandardStore<ShellGroup> {
 
     /**
      * 当前实例
      */
-    public static final SSHGroupStore INSTANCE = new SSHGroupStore();
+    public static final ShellGroupStore INSTANCE = new ShellGroupStore();
 
     /**
      * 加载数据

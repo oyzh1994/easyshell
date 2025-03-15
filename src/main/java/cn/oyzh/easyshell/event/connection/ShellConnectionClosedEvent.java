@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class SSHConnectionClosedEvent extends Event<SSHClient> implements EventFormatter {
+public class ShellConnectionClosedEvent extends Event<SSHClient> implements EventFormatter {
 
     @Override
     public String eventFormat() {

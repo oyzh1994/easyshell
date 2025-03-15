@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class SSHGroupDeletedEvent extends Event<String> implements EventFormatter {
+public class ShellGroupDeletedEvent extends Event<String> implements EventFormatter {
 
     @Override
     public String eventFormat() {

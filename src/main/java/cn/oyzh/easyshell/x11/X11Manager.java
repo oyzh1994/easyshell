@@ -6,7 +6,7 @@ import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.store.SSHSettingStore;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.information.MessageBox;
 import lombok.experimental.UtilityClass;
 
@@ -29,7 +29,7 @@ public class X11Manager {
     /**
      * 当前存储对象
      */
-    private static final ShellSetting setting = SSHSettingStore.SETTING;
+    private static final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 启动x11服务

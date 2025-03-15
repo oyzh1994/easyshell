@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.docker.DockerInfoController;
 import cn.oyzh.easyshell.controller.docker.DockerVersionController;
 import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.fx.SSHContainerStatusComboBox;
+import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.trees.docker.SSHContainerTableView;
 import cn.oyzh.easyshell.trees.docker.SSHImageTableView;
@@ -42,7 +42,7 @@ public class SSHDockerTabController extends SubTabController {
     private SSHContainerTableView containerTable;
 
     @FXML
-    private SSHContainerStatusComboBox containerStatus;
+    private ShellContainerStatusComboBox containerStatus;
 
     @FXML
     private ClearableTextField filterImage;

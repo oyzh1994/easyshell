@@ -10,12 +10,12 @@ import cn.oyzh.store.jdbc.JdbcKeyValueStore;
  * @author oyzh
  * @since 2024/09/23
  */
-public class SSHSettingStore extends JdbcKeyValueStore<ShellSetting> {
+public class ShellSettingStore extends JdbcKeyValueStore<ShellSetting> {
 
     /**
      * 当前实例
      */
-    public static final SSHSettingStore INSTANCE = new SSHSettingStore();
+    public static final ShellSettingStore INSTANCE = new ShellSettingStore();
 
     /**
      * 当前设置

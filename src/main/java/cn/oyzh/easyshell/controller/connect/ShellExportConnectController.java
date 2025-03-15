@@ -4,8 +4,8 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.ShellConnectExport;
-import cn.oyzh.easyshell.store.SSHConnectStore;
-import cn.oyzh.easyshell.store.SSHGroupStore;
+import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -57,12 +57,12 @@ public class ShellExportConnectController extends StageController {
     /**
      * 分组存储
      */
-    private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
+    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
      * 连接存储
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * 执行导出

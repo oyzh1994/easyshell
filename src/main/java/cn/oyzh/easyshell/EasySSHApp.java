@@ -14,17 +14,17 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.window.SSHShowAboutEvent;
-import cn.oyzh.easyshell.event.window.SSHShowAddConnectEvent;
-import cn.oyzh.easyshell.event.window.SSHShowExportConnectEvent;
-import cn.oyzh.easyshell.event.window.SSHShowFileInfoEvent;
-import cn.oyzh.easyshell.event.window.SSHShowImportConnectEvent;
-import cn.oyzh.easyshell.event.window.SSHShowSettingEvent;
-import cn.oyzh.easyshell.event.window.SSHShowToolEvent;
-import cn.oyzh.easyshell.event.window.SSHShowUpdateConnectEvent;
-import cn.oyzh.easyshell.parser.SSHExceptionParser;
-import cn.oyzh.easyshell.store.SSHSettingStore;
-import cn.oyzh.easyshell.store.SSHStoreUtil;
+import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
+import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
+import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
+import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
+import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
+import cn.oyzh.easyshell.parser.ShellExceptionParser;
+import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventListener;
@@ -73,7 +73,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
             SysConst.cacheDir(SSHConst.getCachePath());
             JulLog.info("项目启动中...");
             // 储存初始化
-            SSHStoreUtil.init();
+            ShellStoreUtil.init();
             if (OSUtil.isWindows()) {
                 FXConst.appIcon(SSHConst.ICON_32_PATH);
             } else {
@@ -101,7 +101,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
             // 禁用fx的css日志
             FXUtil.disableCSSLogger();
             // 配置对象
-            ShellSetting setting = SSHSettingStore.SETTING;
+            ShellSetting setting = ShellSettingStore.SETTING;
             // 应用区域
             I18nManager.apply(setting.getLocale());
             // 应用字体
@@ -111,7 +111,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
             // 应用透明度
             OpacityManager.apply(setting.opacityConfig());
             // 注册异常处理器
-            MessageBox.registerExceptionParser(SSHExceptionParser.INSTANCE);
+            MessageBox.registerExceptionParser(ShellExceptionParser.INSTANCE);
             // 注册事件处理
             EventListener.super.register();
             // 调用父类
@@ -217,7 +217,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示设置
      */
     @EventSubscribe
-    private void showSetting(SSHShowSettingEvent event) {
+    private void showSetting(ShellShowSettingEvent event) {
         FXUtil.runLater(() -> {
             try {
 
@@ -240,7 +240,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示添加连接
      */
     @EventSubscribe
-    private void addConnect(SSHShowAddConnectEvent event) {
+    private void addConnect(ShellShowAddConnectEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellAddConnectController.class);
@@ -257,7 +257,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示修改连接
      */
     @EventSubscribe
-    private void updateConnect(SSHShowUpdateConnectEvent event) {
+    private void updateConnect(ShellShowUpdateConnectEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
@@ -274,7 +274,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示工具页面
      */
     @EventSubscribe
-    private void tool(SSHShowToolEvent event) {
+    private void tool(ShellShowToolEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageManager.showStage(ShellToolController.class, StageManager.getPrimaryStage());
@@ -289,7 +289,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示关于页面
      */
     @EventSubscribe
-    private void about(SSHShowAboutEvent event) {
+    private void about(ShellShowAboutEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageManager.showStage(AboutController.class, StageManager.getPrimaryStage());
@@ -304,7 +304,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示导出连接页面
      */
     @EventSubscribe
-    private void exportConnect(SSHShowExportConnectEvent event) {
+    private void exportConnect(ShellShowExportConnectEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageManager.showStage(ShellExportConnectController.class, StageManager.getPrimaryStage());
@@ -319,7 +319,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示导入连接页面
      */
     @EventSubscribe
-    private void importConnect(SSHShowImportConnectEvent event) {
+    private void importConnect(ShellShowImportConnectEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellImportConnectController.class, StageManager.getPrimaryStage());
@@ -336,7 +336,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
      * 显示文件信息页面
      */
     @EventSubscribe
-    private void fileInfo(SSHShowFileInfoEvent event) {
+    private void fileInfo(ShellShowFileInfoEvent event) {
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellSftpFileInfoController.class, StageManager.getPrimaryStage());

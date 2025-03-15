@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.store.SSHSettingStore;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -55,12 +55,12 @@ public class MainController extends ParentStageController {
     /**
      * ssh相关配置
      */
-    private final ShellSetting setting = SSHSettingStore.SETTING;
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 设置存储
      */
-    private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     @Override
     public List<? extends StageController> getSubControllers() {

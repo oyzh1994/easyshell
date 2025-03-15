@@ -6,9 +6,9 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.dto.ShellConnectExport;
-import cn.oyzh.easyshell.event.SSHEventUtil;
-import cn.oyzh.easyshell.store.SSHConnectStore;
-import cn.oyzh.easyshell.store.SSHGroupStore;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -68,12 +68,12 @@ public class ShellImportConnectController extends StageController {
     /**
      * 分组存储
      */
-    private final SSHGroupStore groupStore = SSHGroupStore.INSTANCE;
+    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
      * 连接存储
      */
-    private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * 执行导入
@@ -102,7 +102,7 @@ public class ShellImportConnectController extends StageController {
             }
             if (success) {
                 MessageBox.okToast(I18nHelper.importConnectionSuccess());
-                SSHEventUtil.connectImported();
+                ShellEventUtil.connectImported();
                 this.closeWindow();
             } else {
                 MessageBox.warn(I18nHelper.importConnectionFail());

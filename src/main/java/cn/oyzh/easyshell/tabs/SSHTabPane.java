@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.connection.SSHConnectionClosedEvent;
+import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.changelog.SSHChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.SSHConnectTab;
@@ -176,7 +176,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void connectionClosed(SSHConnectionClosedEvent event) {
+    private void connectionClosed(ShellConnectionClosedEvent event) {
         SSHConnectTab tab = this.getConnectTab(event.data());
         if (tab != null) {
             tab.closeTab();
