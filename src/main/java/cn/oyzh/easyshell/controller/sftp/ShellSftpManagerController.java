@@ -1,0 +1,81 @@
+package cn.oyzh.easyshell.controller.sftp;
+
+import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadTask;
+import cn.oyzh.easyssh.ssh.SSHClient;
+import cn.oyzh.easyssh.util.SSHI18nHelper;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.PopupController;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.PopupAttribute;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+
+import static atlantafx.base.controls.Popover.ArrowLocation.TOP_CENTER;
+import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_BOTTOM_LEFT;
+
+/**
+ * @author oyzh
+ * @since 2025-03-15
+ */
+@StageAttribute(
+        stageStyle = FXStageStyle.UNIFIED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "sftp/shellSftpManager.fxml"
+)
+public class ShellSftpManagerController extends StageController {
+
+    @FXML
+    private SftpUploadTableView uploadTable;
+
+    private SftpUploadManager uploadManager;
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        SSHClient client = this.getWindowProp("client");
+        this.uploadManager = client.getSftpUploadManager();
+        this.uploadTable.setItem(uploadManager.getTasks());
+    }
+
+    @FXML
+    private void cancelDownload() {
+        try {
+            SftpUploadTask task = this.uploadTable.getSelectedItem();
+            if (task != null) {
+                if (task.isFinished()) {
+                    if (MessageBox.confirm(SSHI18nHelper.fileTip13())) {
+                        this.uploadManager.remove(task);
+                        this.uploadTable.removeItem(task);
+                    }
+                    return;
+                }
+                if (MessageBox.confirm(SSHI18nHelper.fileTip11())) {
+                    this.uploadManager.cancel(task);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void removeDownload() {
+        try {
+            SftpUploadTask task = this.uploadTable.getSelectedItem();
+            if (task != null && MessageBox.confirm(SSHI18nHelper.fileTip12())) {
+                this.uploadManager.remove(task);
+                this.uploadTable.removeItem(task);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+}

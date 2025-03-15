@@ -331,10 +331,18 @@ public class SSHClient {
 
     private final SftpUploadManager sftpUploadManager = new SftpUploadManager();
 
+    public SftpUploadManager getSftpUploadManager() {
+        return sftpUploadManager;
+    }
+
     @Getter
     private final SftpDeleteManager sftpDeleteManager = new SftpDeleteManager();
 
     private final SftpDownloadManager sftpDownloadManager = new SftpDownloadManager();
+
+    public SftpDownloadManager getSftpDownloadManager() {
+        return sftpDownloadManager;
+    }
 
     public SSHSftp openSftp() {
         if (!this.sftpManager.hasAvailable()) {

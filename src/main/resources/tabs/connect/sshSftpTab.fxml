@@ -20,6 +20,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.FXProgressBar?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FolderUploadSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.BoxSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
@@ -79,6 +80,11 @@
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </FXToggleSwitch>
+            <BoxSVGGlyph onMousePrimaryClicked="#showFileBox" fx:id="fileBox" tipText="%ssh.file.tip10">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </BoxSVGGlyph>
         </FXHBox>
         <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>

@@ -3,6 +3,7 @@ package cn.oyzh.easyssh.tabs.connect;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpManagerController;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyssh.sftp.delete.SftpDeleteEnded;
@@ -34,6 +35,9 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.tray.TrayManager;
+import cn.oyzh.fx.plus.window.PopupAdapter;
+import cn.oyzh.fx.plus.window.PopupManager;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
@@ -78,10 +82,14 @@ public class SSHSftpTabController extends SubTabController {
     private FXProgressBar downloadProgress;
 
     @FXML
+    private SVGGlyph fileBox;
+
+    @FXML
     private SVGGlyph copyFilePath;
 
     @FXML
     private FXToggleSwitch hiddenFile;
+
 
     @FXML
     private SSHSftpTableView fileTable;
@@ -558,5 +566,12 @@ public class SSHSftpTabController extends SubTabController {
         }
         this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
         this.fileTable.parentAutosize();
+    }
+
+    @FXML
+    private void showFileBox( ) {
+        StageAdapter adapter = StageManager.parseStage(ShellSftpManagerController.class);
+        adapter.setProp("client", this.client());
+        adapter.display();
     }
 }
