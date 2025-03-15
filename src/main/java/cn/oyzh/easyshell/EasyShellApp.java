@@ -56,7 +56,7 @@ import java.awt.event.MouseEvent;
  * @author oyzh
  * @since 2023/08/16
  */
-public class EasySSHApp extends FXApplication implements EventListener {
+public class EasyShellApp extends FXApplication implements EventListener {
 
     /**
      * 项目信息
@@ -84,7 +84,7 @@ public class EasySSHApp extends FXApplication implements EventListener {
             EventFactory.syncEventConfig(FxEventConfig.SYNC);
             EventFactory.asyncEventConfig(FxEventConfig.ASYNC);
             EventFactory.defaultEventConfig(FxEventConfig.DEFAULT);
-            launch(EasySSHApp.class, args);
+            launch(EasyShellApp.class, args);
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("main error", ex);

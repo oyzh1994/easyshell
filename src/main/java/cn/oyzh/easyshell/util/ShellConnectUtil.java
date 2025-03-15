@@ -17,7 +17,7 @@ import lombok.experimental.UtilityClass;
  * @since 2023/07/01
  */
 @UtilityClass
-public class SSHConnectUtil {
+public class ShellConnectUtil {
 
 //    /**
 //     * 测试连接

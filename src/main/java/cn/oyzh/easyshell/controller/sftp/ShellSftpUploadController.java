@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.util.SSHI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -45,13 +45,13 @@ public class ShellSftpUploadController extends StageController {
             SftpUploadTask task = this.uploadTable.getSelectedItem();
             if (task != null) {
                 if (task.isFinished()) {
-                    if (MessageBox.confirm(SSHI18nHelper.fileTip13())) {
+                    if (MessageBox.confirm(ShellI18nHelper.fileTip13())) {
                         this.uploadManager.remove(task);
                         this.uploadTable.removeItem(task);
                     }
                     return;
                 }
-                if (MessageBox.confirm(SSHI18nHelper.fileTip11())) {
+                if (MessageBox.confirm(ShellI18nHelper.fileTip11())) {
                     this.uploadManager.cancel(task);
                 }
             }
@@ -65,7 +65,7 @@ public class ShellSftpUploadController extends StageController {
     private void removeTask() {
         try {
             SftpUploadTask task = this.uploadTable.getSelectedItem();
-            if (task != null && MessageBox.confirm(SSHI18nHelper.fileTip12())) {
+            if (task != null && MessageBox.confirm(ShellI18nHelper.fileTip12())) {
                 this.uploadManager.remove(task);
                 this.uploadTable.removeItem(task);
             }

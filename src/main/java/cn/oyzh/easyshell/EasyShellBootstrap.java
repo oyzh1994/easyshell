@@ -6,9 +6,9 @@ package cn.oyzh.easyshell;
  * @author oyzh
  * @since 2023/08/16
  */
-public class EasySSHBootstrap {
+public class EasyShellBootstrap {
 
     public static void main(String[] args) {
-        EasySSHApp.main(args);
+        EasyShellApp.main(args);
     }
 }

@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellTerminalTypeComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.SSHProcessUtil;
+import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.X11Util;
 import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
@@ -388,7 +388,7 @@ public class SettingController extends StageController {
                 OpacityManager.apply(this.setting.opacityConfig());
                 // 提示不为空，说明需要重启，则执行重启
                 if (StringUtil.isNotBlank(tips) && MessageBox.confirm(tips)) {
-                    SSHProcessUtil.restartApplication();
+                    ShellProcessUtil.restartApplication();
                 }
             }
         } catch (Exception ex) {

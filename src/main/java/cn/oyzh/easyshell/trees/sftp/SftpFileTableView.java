@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.util.SSHI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -253,7 +253,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
             if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
                 return;
             }
-        } else if (!MessageBox.confirm(SSHI18nHelper.fileTip2())) {
+        } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
             return;
         }
         if (CollectionUtil.isEmpty(files)) {
@@ -263,7 +263,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
             try {
 //                List<SftpFile> filesToDelete = new ArrayList<>(files.size());
                 for (SftpFile file : files) {
-                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + SSHI18nHelper.fileTip1())) {
+                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
                         continue;
                     }
                     file.startWaiting();
@@ -422,7 +422,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
             return;
         }
         name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(SSHI18nHelper.fileTip5())) {
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
             return;
         }
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
@@ -440,7 +440,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
             return;
         }
         name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(SSHI18nHelper.fileTip4())) {
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
             return;
         }
         String filePath = SftpUtil.concat(this.getCurrPath(), name);
@@ -474,7 +474,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
                 for (String f1 : fileArr) {
                     Optional<SftpFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
                     if (file.isPresent()) {
-                        if (!MessageBox.confirm(SSHI18nHelper.fileTip6())) {
+                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
                             return false;
                         }
                         break;
@@ -490,7 +490,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
                     MessageBox.exception(ex);
                 }
             }
-            MessageBox.okToast(SSHI18nHelper.fileTip16());
+            MessageBox.okToast(ShellI18nHelper.fileTip16());
             return true;
         }
         return false;
@@ -514,7 +514,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
         // 检查要上传的文件是否存在
         for (File file : files) {
             if (this.existFile(file.getName())) {
-                if (!MessageBox.confirm(SSHI18nHelper.fileTip3())) {
+                if (!MessageBox.confirm(ShellI18nHelper.fileTip3())) {
                     return false;
                 }
                 break;
@@ -528,7 +528,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
                 MessageBox.exception(ex);
             }
         }
-        MessageBox.okToast(SSHI18nHelper.fileTip15());
+        MessageBox.okToast(ShellI18nHelper.fileTip15());
         return true;
     }
 

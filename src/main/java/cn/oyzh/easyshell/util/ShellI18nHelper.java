@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
  * @since 2025/03/06
  */
 @UtilityClass
-public class SSHI18nHelper {
+public class ShellI18nHelper {
 
     public static String fileTip1() {
         return I18nResourceBundle.i18nString("shell.file.tip1");

@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
 import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
-import cn.oyzh.easyshell.util.SSHI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -60,7 +60,7 @@ public class ShellDockerTabController extends SubTabController {
         try {
             boolean exist = this.client().openSftp().exist("/usr/bin/docker");
             if (!exist) {
-                MessageBox.info(SSHI18nHelper.connectTip5());
+                MessageBox.info(ShellI18nHelper.connectTip5());
                 return;
             }
             DockerExec exec = this.client().dockerExec();

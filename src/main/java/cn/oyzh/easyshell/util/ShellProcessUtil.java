@@ -11,7 +11,7 @@ import java.io.IOException;
  * @since 2024-12-17
  */
 @UtilityClass
-public class SSHProcessUtil {
+public class ShellProcessUtil {
 
     /**
      * 重启应用

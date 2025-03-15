@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
-import cn.oyzh.easyshell.util.SSHConnectUtil;
+import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
@@ -235,7 +235,7 @@ public class ShellAddConnectController extends StageController {
             if (shellConnect.isSSHForward()) {
                 shellConnect.setSshConfig(this.getSSHConfig());
             }
-            SSHConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
 
