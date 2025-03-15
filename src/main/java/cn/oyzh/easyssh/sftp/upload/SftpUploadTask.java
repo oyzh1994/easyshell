@@ -17,8 +17,6 @@ import javafx.beans.property.StringProperty;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author oyzh
@@ -26,14 +24,49 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class SftpUploadTask {
 
+    /**
+     * 执行线程
+     */
+    private final Thread executeThread;
+
+    /**
+     * 上传监听器
+     */
+    private final Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
+
+    public SftpUploadMonitor takeMonitor() {
+        return this.monitors.peek();
+    }
+
+    public void removeMonitor(SftpUploadMonitor monitor) {
+        this.monitors.remove(monitor);
+        this.updateTotal();
+    }
+
+
+    public boolean isEmpty() {
+        return this.monitors.isEmpty();
+    }
+
+    /**
+     * 上传状态
+     */
     private SftpUploadStatus status;
 
+    /**
+     * 状态属性
+     */
     private final StringProperty statusProperty = new SimpleStringProperty();
 
     public StringProperty statusProperty() {
         return statusProperty;
     }
 
+    /**
+     * 更新状态
+     *
+     * @param status 状态
+     */
     private void updateStatus(SftpUploadStatus status) {
         this.status = status;
         switch (status) {
@@ -44,13 +77,6 @@ public class SftpUploadTask {
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
     }
-
-    private final Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
-
-    /**
-     * 执行线程
-     */
-    private final Thread executeThread;
 
     public SftpUploadTask(File localFile, String remoteFile, SSHSftp sftp) {
         this.executeThread = ThreadUtil.start(() -> {
@@ -70,6 +96,14 @@ public class SftpUploadTask {
         });
     }
 
+    /**
+     * 递归添加监听器
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @param sftp       sftp操作器
+     * @throws SftpException 异常
+     */
     protected void addMonitorRecursive(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
         // 文件夹
         if (localFile.isDirectory()) {
@@ -96,26 +130,9 @@ public class SftpUploadTask {
         }
     }
 
-    public SftpUploadMonitor takeMonitor() {
-        return this.monitors.peek();
-    }
-
-    public boolean isEmpty() {
-        return this.monitors.isEmpty();
-    }
-
-    public int size() {
-        return this.monitors.size();
-    }
-
-    public long count() {
-        long cnt = 0;
-        for (SftpUploadMonitor monitor : this.monitors) {
-            cnt += monitor.getLocalFileLength();
-        }
-        return cnt;
-    }
-
+    /**
+     * 执行上传
+     */
     private void doUpload() {
         while (!this.isEmpty()) {
             SftpUploadMonitor monitor = this.takeMonitor();
@@ -138,42 +155,74 @@ public class SftpUploadTask {
         }
     }
 
-    public void removeMonitor(SftpUploadMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
+    /**
+     * 上传完成
+     *
+     * @param monitor 监听器
+     */
     public void uploadEnded(SftpUploadMonitor monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
+    /**
+     * 上传失败
+     *
+     * @param monitor   监听器
+     * @param exception 异常
+     */
     public void uploadFailed(SftpUploadMonitor monitor, Exception exception) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
+    /**
+     * 上传取消
+     *
+     * @param monitor 监听器
+     */
     public void uploadCanceled(SftpUploadMonitor monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
+    /**
+     * 上传变化
+     *
+     * @param monitor 监听器
+     */
+    public void uploadChanged(SftpUploadMonitor monitor) {
+        this.currentFileProperty.set(monitor.getLocalFilePath());
+        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
+        JulLog.debug("current file:{}", this.currentFileProperty.get());
+        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
+    }
+
+    /**
+     * 总大小属性
+     */
     private final StringProperty totalSizeProperty = new SimpleStringProperty();
 
     public IntegerProperty totalCountProperty() {
         return totalCountProperty;
     }
 
+    /**
+     * 总数量属性
+     */
     private final IntegerProperty totalCountProperty = new SimpleIntegerProperty(0);
 
     public StringProperty totalSizeProperty() {
         return totalSizeProperty;
     }
 
+    /**
+     * 更新总信息
+     */
     private void updateTotal() {
         this.totalCountProperty.set(this.monitors.size());
         long totalSize = 0;
-        for (SftpUploadMonitor monitor : monitors) {
+        for (SftpUploadMonitor monitor : this.monitors) {
             totalSize += monitor.getLocalFileLength();
         }
         this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
@@ -181,23 +230,22 @@ public class SftpUploadTask {
         JulLog.debug("total count:{}", this.totalCountProperty.get());
     }
 
+    /**
+     * 当前文件属性
+     */
     private final StringProperty currentFileProperty = new SimpleStringProperty();
 
     public StringProperty currentFileProperty() {
         return currentFileProperty;
     }
 
+    /**
+     * 当前进度属性
+     */
     private final StringProperty currentProgressProperty = new SimpleStringProperty();
 
     public StringProperty currentProgressProperty() {
         return currentProgressProperty;
-    }
-
-    public void uploadChanged(SftpUploadMonitor monitor) {
-        this.currentFileProperty.set(monitor.getLocalFilePath());
-        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
-        JulLog.debug("current file:{}", this.currentFileProperty.get());
-        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
     }
 
     /**
@@ -218,6 +266,11 @@ public class SftpUploadTask {
         this.updateStatus(SftpUploadStatus.CANCELED);
     }
 
+    /**
+     * 是否已完成
+     *
+     * @return 结果
+     */
     public boolean isFinished() {
         return this.status == SftpUploadStatus.FINISHED;
     }

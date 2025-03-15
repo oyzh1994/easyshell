@@ -176,15 +176,6 @@ public class SftpUploadManager {
 //        return cnt;
 //    }
 
-    public void remove(SftpUploadTask task) {
-        task.cancel();
-        this.tasks.remove(task);
-    }
-
-    public void cancel(SftpUploadTask task) {
-        task.cancel();
-    }
-
     /**
      * 取消
      */
@@ -244,5 +235,14 @@ public class SftpUploadManager {
 
     public List<SftpUploadTask> getTasks() {
         return tasks;
+    }
+
+    public void remove(SftpUploadTask task) {
+        task.cancel();
+        this.tasks.remove(task);
+    }
+
+    public void cancel(SftpUploadTask task) {
+        task.cancel();
     }
 }

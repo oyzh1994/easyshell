@@ -29,14 +29,47 @@ import java.util.Queue;
  */
 public class SftpDownloadTask {
 
+    /**
+     * 执行线程
+     */
+    private final Thread executeThread;
+
+    /**
+     * 下载监控列表
+     */
+    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
+
+    public SftpDownloadMonitor takeMonitor() {
+        return this.monitors.peek();
+    }
+
+    public void removeMonitor(SftpDownloadMonitor monitor) {
+        this.monitors.remove(monitor);
+    }
+
+    public boolean isEmpty() {
+        return this.monitors.isEmpty();
+    }
+
+    /**
+     * 下载状态
+     */
     private SftpDownloadStatus status;
 
+    /**
+     * 状态属性
+     */
     private final StringProperty statusProperty = new SimpleStringProperty();
 
     public StringProperty statusProperty() {
         return statusProperty;
     }
 
+    /**
+     * 更新状态
+     *
+     * @param status 状态
+     */
     private void updateStatus(SftpDownloadStatus status) {
         this.status = status;
         switch (status) {
@@ -47,13 +80,6 @@ public class SftpDownloadTask {
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
     }
-
-    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
-
-    /**
-     * 执行线程
-     */
-    private final Thread executeThread;
 
     public SftpDownloadTask(File localFile, SftpFile remoteFile, SSHSftp sftp) {
         // 执行线程
@@ -74,8 +100,15 @@ public class SftpDownloadTask {
         });
     }
 
+    /**
+     * 递归添加监听器
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @param sftp       sftp操作器
+     * @throws SftpException 异常
+     */
     protected void addMonitorRecursive(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
-        String filePath = SftpUtil.concat(remoteFile.getFilePath(), remoteFile.getFileName());
         // 文件夹
         if (remoteFile.isDir()) {
             // 列举文件
@@ -101,14 +134,9 @@ public class SftpDownloadTask {
         }
     }
 
-    public SftpDownloadMonitor takeMonitor() {
-        return this.monitors.peek();
-    }
-
-    public boolean isEmpty() {
-        return this.monitors.isEmpty();
-    }
-
+    /**
+     * 执行下载
+     */
     private void doDownload() {
         while (!this.isEmpty()) {
             SftpDownloadMonitor monitor = this.takeMonitor();
@@ -131,21 +159,42 @@ public class SftpDownloadTask {
         }
     }
 
+    /**
+     * 下载完成
+     *
+     * @param monitor 监听器
+     */
     public void downloadEnded(SftpDownloadMonitor monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
+    /**
+     * 下载失败
+     *
+     * @param monitor   监听器
+     * @param exception 异常
+     */
     public void downloadFailed(SftpDownloadMonitor monitor, Exception exception) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
+    /**
+     * 下载取消
+     *
+     * @param monitor 监听器
+     */
     public void downloadCanceled(SftpDownloadMonitor monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
+    /**
+     * 下载变化
+     *
+     * @param monitor 监听器
+     */
     public void downloadChanged(SftpDownloadMonitor monitor) {
         this.currentFileProperty.set(monitor.getRemoteFilePath());
         this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
@@ -153,26 +202,31 @@ public class SftpDownloadTask {
         JulLog.debug("current progress:{}", this.currentProgressProperty.get());
     }
 
-    public void removeMonitor(SftpDownloadMonitor monitor) {
-        this.monitors.remove(monitor);
-    }
-
+    /**
+     * 总大小属性
+     */
     private final StringProperty totalSizeProperty = new SimpleStringProperty();
 
     public IntegerProperty totalCountProperty() {
         return totalCountProperty;
     }
 
+    /**
+     * 总数量属性
+     */
     private final IntegerProperty totalCountProperty = new SimpleIntegerProperty(0);
 
     public StringProperty totalSizeProperty() {
         return totalSizeProperty;
     }
 
+    /**
+     * 更新总信息
+     */
     private void updateTotal() {
         this.totalCountProperty.set(this.monitors.size());
         long totalSize = 0;
-        for (SftpDownloadMonitor monitor : monitors) {
+        for (SftpDownloadMonitor monitor : this.monitors) {
             totalSize += monitor.getRemoteLength();
         }
         this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
@@ -180,12 +234,18 @@ public class SftpDownloadTask {
         JulLog.debug("total count:{}", this.totalCountProperty.get());
     }
 
+    /**
+     * 当前文件属性
+     */
     private final StringProperty currentFileProperty = new SimpleStringProperty();
 
     public StringProperty currentFileProperty() {
         return currentFileProperty;
     }
 
+    /**
+     * 当前进度属性
+     */
     private final StringProperty currentProgressProperty = new SimpleStringProperty();
 
     public StringProperty currentProgressProperty() {
@@ -210,6 +270,11 @@ public class SftpDownloadTask {
         this.updateStatus(SftpDownloadStatus.CANCELED);
     }
 
+    /**
+     * 是否结束
+     *
+     * @return 结果
+     */
     public boolean isFinished() {
         return this.status == SftpDownloadStatus.FINISHED;
     }
