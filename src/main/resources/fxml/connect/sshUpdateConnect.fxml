@@ -82,7 +82,7 @@
                 </InfoLabel>
                 <FXHBox>
                     <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
-                                     tipText="%ssh.info.connectTimoutTip" value="5" require="true">
+                                     tipText="%shell.info.connectTimoutTip" value="5" require="true">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -177,12 +177,12 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXToggleSwitch text="%ssh.connect.tip1" fx:id="x11forwarding">
+                    <FXToggleSwitch text="%shell.connect.tip1" fx:id="x11forwarding">
                         <FXHBox.margin>
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
-                    <FXButton text="%ssh.connect.tip3" onMousePrimaryClicked="#downloadX11">
+                    <FXButton text="%shell.connect.tip3" onMousePrimaryClicked="#downloadX11">
                         <FXHBox.margin>
                             <Insets left="10"/>
                         </FXHBox.margin>

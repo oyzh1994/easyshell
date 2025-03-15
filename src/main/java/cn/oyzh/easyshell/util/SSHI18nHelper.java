@@ -11,62 +11,62 @@ import lombok.experimental.UtilityClass;
 public class SSHI18nHelper {
 
     public static String fileTip1() {
-        return I18nResourceBundle.i18nString("ssh.file.tip1");
+        return I18nResourceBundle.i18nString("shell.file.tip1");
     }
 
     public static String fileTip2() {
-        return I18nResourceBundle.i18nString("ssh.file.tip2");
+        return I18nResourceBundle.i18nString("shell.file.tip2");
     }
 
     public static String fileTip3() {
-        return I18nResourceBundle.i18nString("ssh.file.tip3");
+        return I18nResourceBundle.i18nString("shell.file.tip3");
     }
 
     public static String fileTip4() {
-        return I18nResourceBundle.i18nString("ssh.file.tip4");
+        return I18nResourceBundle.i18nString("shell.file.tip4");
     }
 
     public static String fileTip5() {
-        return I18nResourceBundle.i18nString("ssh.file.tip5");
+        return I18nResourceBundle.i18nString("shell.file.tip5");
     }
 
     public static String fileTip6() {
-        return I18nResourceBundle.i18nString("ssh.file.tip6");
+        return I18nResourceBundle.i18nString("shell.file.tip6");
     }
 
     public static String fileTip7() {
-        return I18nResourceBundle.i18nString("ssh.file.tip7");
+        return I18nResourceBundle.i18nString("shell.file.tip7");
     }
 
     public static String fileTip8() {
-        return I18nResourceBundle.i18nString("ssh.file.tip8");
+        return I18nResourceBundle.i18nString("shell.file.tip8");
     }
 
     public static String fileTip9() {
-        return I18nResourceBundle.i18nString("ssh.file.tip9");
+        return I18nResourceBundle.i18nString("shell.file.tip9");
     }
 
     public static String fileTip11() {
-        return I18nResourceBundle.i18nString("ssh.file.tip11");
+        return I18nResourceBundle.i18nString("shell.file.tip11");
     }
 
     public static String fileTip12() {
-        return I18nResourceBundle.i18nString("ssh.file.tip12");
+        return I18nResourceBundle.i18nString("shell.file.tip12");
     }
 
     public static String fileTip13() {
-        return I18nResourceBundle.i18nString("ssh.file.tip13");
+        return I18nResourceBundle.i18nString("shell.file.tip13");
     }
 
     public static String fileTip15() {
-        return I18nResourceBundle.i18nString("ssh.file.tip15");
+        return I18nResourceBundle.i18nString("shell.file.tip15");
     }
 
     public static String fileTip16() {
-        return I18nResourceBundle.i18nString("ssh.file.tip16");
+        return I18nResourceBundle.i18nString("shell.file.tip16");
     }
 
     public static String connectTip5() {
-        return I18nResourceBundle.i18nString("ssh.connect.tip5");
+        return I18nResourceBundle.i18nString("shell.connect.tip5");
     }
 }

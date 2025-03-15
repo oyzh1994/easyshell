@@ -18,7 +18,7 @@
         <Image url="/image/ssh_no_bg.png"/>
     </ImageView>
     <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="260" layoutY="100">
-        <FXText text="%ssh.home.welcome" fontSize="30" enableFont="false">
+        <FXText text="%shell.home.welcome" fontSize="30" enableFont="false">
             <VBox.margin>
                 <Insets top="20"/>
             </VBox.margin>

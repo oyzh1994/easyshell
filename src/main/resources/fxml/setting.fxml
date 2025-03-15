@@ -34,7 +34,7 @@
         <FXVBox flexWidth="100%" flexHeight="100% - 110">
             <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
-                <InfoLabel text="%ssh.connect.tip4">
+                <InfoLabel text="%shell.connect.tip4">
                     <VBox.margin>
                         <Insets left="30"/>
                     </VBox.margin>
@@ -44,7 +44,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </SSHTerminalTypeComboBox>
-                <InfoLabel text="%ssh.connect.tip2">
+                <InfoLabel text="%shell.connect.tip2">
                     <VBox.margin>
                         <Insets left="30"/>
                     </VBox.margin>

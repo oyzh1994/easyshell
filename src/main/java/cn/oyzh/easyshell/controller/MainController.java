@@ -163,6 +163,6 @@ public class MainController extends ParentStageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("ssh.title.main");
+        return I18nResourceBundle.i18nString("shell.title.main");
     }
 }

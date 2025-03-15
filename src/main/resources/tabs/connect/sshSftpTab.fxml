@@ -79,12 +79,12 @@
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </FXToggleSwitch>
-            <UploadBoxSVGGlyph sizeStr="15" fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox" tipText="%ssh.file.tip10">
+            <UploadBoxSVGGlyph sizeStr="15" fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox" tipText="%shell.file.tip10">
                 <FXHBox.margin>
                     <Insets left="30" top="10"/>
                 </FXHBox.margin>
             </UploadBoxSVGGlyph>
-            <DownloadBoxSVGGlyph sizeStr="15" fx:id="downloadBox" onMousePrimaryClicked="#showDownloadBox" tipText="%ssh.file.tip14">
+            <DownloadBoxSVGGlyph sizeStr="15" fx:id="downloadBox" onMousePrimaryClicked="#showDownloadBox" tipText="%shell.file.tip14">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
