@@ -139,14 +139,14 @@ public class SSHSftpTabController extends SubTabController {
 //                this.uploadFile.enable();
 //            }
 //        });
-        // 监听删除中属性
-        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                this.refreshFile.disable();
-            } else {
-                this.refreshFile.enable();
-            }
-        });
+//        // 监听删除中属性
+//        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                this.refreshFile.disable();
+//            } else {
+//                this.refreshFile.enable();
+//            }
+//        });
 //        // 监听下载中属性
 //        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
 //            if (newValue) {

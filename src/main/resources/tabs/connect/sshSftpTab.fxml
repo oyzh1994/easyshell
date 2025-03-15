@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
-<?import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import javafx.geometry.Insets?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileAddSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FileUploadSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.FXProgressBar?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyssh.fx.svg.glyph.FolderUploadSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.BoxSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.UploadBoxSVGGlyph?>
+<?import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadBoxSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UploadBoxSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">

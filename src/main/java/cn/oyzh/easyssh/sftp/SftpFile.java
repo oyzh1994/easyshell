@@ -2,6 +2,7 @@ package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.fx.svg.glyph.File7zSVGGlyph;
@@ -52,7 +53,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SftpFile {
+public class SftpFile implements ObjectCopier<SftpFile> {
 
     private ChannelSftp.LsEntry entry;
 
@@ -303,5 +304,24 @@ public class SftpFile {
 
     public boolean isFile() {
         return !this.isDir() && !this.attrs().isLink();
+    }
+
+    @Override
+    public void copy(SftpFile t1) {
+        if (t1.entry != null) {
+            this.entry = t1.entry;
+        }
+        if (t1.attrs != null) {
+            this.attrs = t1.attrs;
+        }
+        if (t1.owner != null) {
+            this.owner = t1.owner;
+        }
+        if (t1.group != null) {
+            this.group = t1.group;
+        }
+        this.fileName = t1.fileName;
+        this.fileName = t1.fileName;
+        this.parentPath = t1.parentPath;
     }
 }

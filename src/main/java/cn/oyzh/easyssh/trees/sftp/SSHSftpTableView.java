@@ -120,6 +120,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
     }
 
     protected void currPath(String currPath) {
+        if (StringUtil.notEquals(this.currPath(), currPath)) {
+            this.clearItems();
+        }
         this.currPathProperty.set(currPath);
     }
 
@@ -150,8 +153,41 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
             }
             JulLog.info("current path: {}", currPath);
 //            List<SftpFile> oldFiles = this.files;
+            // 更新当前列表
             this.files = sftp.lsFile(currPath, this.client);
-            this.setItem(this.doFilter(this.files));
+            // 过滤出来待显示的列表
+            List<SftpFile> files = this.doFilter(this.files);
+            // 当前在显示的列表
+            List<SftpFile> items = this.getItems();
+
+            // 删除列表
+            List<SftpFile> delList = new ArrayList<>();
+            // 新增列表
+            List<SftpFile> addList = new ArrayList<>();
+
+            // 遍历已有集合，如果不在待显示列表，则删除，否则更新
+            for (SftpFile file : items) {
+                Optional<SftpFile> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+                if (optional.isEmpty()) {
+                    delList.add(file);
+                } else {
+                    file.copy(optional.get());
+                }
+            }
+
+            // 遍历待显示列表，如果不在已显示列表，则新增
+            for (SftpFile file : files) {
+                Optional<SftpFile> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+                if (optional.isEmpty()) {
+                    addList.add(file);
+                }
+            }
+
+            // 删除数据
+            this.removeItem(delList);
+            // 新增数据
+            this.addItem(addList);
+//            this.setItem(this.doFilter(this.files));
 //            List<SftpFile> files = this.doFilter(this.files);
 //            this.setItem(files);
 //            if (CollectionUtil.isNotEmpty(files) && CollectionUtil.isNotEmpty(oldFiles)) {
@@ -201,7 +237,8 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     .sorted(Comparator.comparingInt(SftpFile::getOrder))
                     .collect(Collectors.toList());
         }
-        return new CopyOnWriteArrayList<>(files);
+        return files;
+//        return new CopyOnWriteArrayList<>(files);
     }
 
     public void deleteFile() {
