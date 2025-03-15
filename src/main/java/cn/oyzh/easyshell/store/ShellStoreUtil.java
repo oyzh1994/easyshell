@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.SSHConst;
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.store.jdbc.JdbcConst;
@@ -22,7 +22,7 @@ public class ShellStoreUtil {
     public static void init() {
         JdbcConst.dbCacheSize(1024);
         JdbcConst.dbDialect(JdbcDialect.H2);
-        JdbcConst.dbFile(SSHConst.getStorePath() + "db");
+        JdbcConst.dbFile(ShellConst.getStorePath() + "db");
         try {
             JdbcManager.takeoff();
         } catch (Exception ex) {

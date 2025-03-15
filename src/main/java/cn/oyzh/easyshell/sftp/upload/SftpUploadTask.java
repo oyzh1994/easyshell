@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
@@ -79,7 +79,7 @@ public class SftpUploadTask {
 
     private final SftpUploadManager manager;
 
-    public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, SSHSftp sftp) {
+    public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, ShellSftp sftp) {
         this.manager = manager;
         this.executeThread = ThreadUtil.start(() -> {
             try {
@@ -107,7 +107,7 @@ public class SftpUploadTask {
      * @param sftp       sftp操作器
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
+    protected void addMonitorRecursive(File localFile, String remoteFile, ShellSftp sftp) throws SftpException {
         // 文件夹
         if (localFile.isDirectory()) {
             // 列举文件
@@ -146,7 +146,7 @@ public class SftpUploadTask {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            SSHSftp sftp = monitor.getSftp();
+            ShellSftp sftp = monitor.getSftp();
             try {
                 sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {

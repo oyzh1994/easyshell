@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpProgressMonitor;
 import lombok.Getter;
@@ -38,9 +38,9 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     private long startTime;
 
     @Getter
-    private final SSHSftp sftp;
+    private final ShellSftp sftp;
 
-    public SftpUploadMonitor(final File localFile, String remoteFile, SftpUploadTask task, SSHSftp sftp) {
+    public SftpUploadMonitor(final File localFile, String remoteFile, SftpUploadTask task, ShellSftp sftp) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
         this.sftp = sftp;

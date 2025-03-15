@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SSHSftp extends ShellChannel {
+public class ShellSftp extends ShellChannel {
 
-    public SSHSftp(ChannelSftp channel) {
+    public ShellSftp(ChannelSftp channel) {
         super(channel);
     }
 

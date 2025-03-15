@@ -69,15 +69,15 @@ public class EasyShellApp extends FXApplication implements EventListener {
             System.setProperty("prism.text", "t2k");
             System.setProperty("prism.lcdtext", "false");
             SysConst.projectName(PROJECT.getName());
-            SysConst.storeDir(SSHConst.getStorePath());
-            SysConst.cacheDir(SSHConst.getCachePath());
+            SysConst.storeDir(ShellConst.getStorePath());
+            SysConst.cacheDir(ShellConst.getCachePath());
             JulLog.info("项目启动中...");
             // 储存初始化
             ShellStoreUtil.init();
             if (OSUtil.isWindows()) {
-                FXConst.appIcon(SSHConst.ICON_32_PATH);
+                FXConst.appIcon(ShellConst.ICON_32_PATH);
             } else {
-                FXConst.appIcon(SSHConst.ICON_PATH);
+                FXConst.appIcon(ShellConst.ICON_PATH);
             }
             // 事件总线
             EventFactory.registerEventBus(FxEventBus.class);
@@ -163,9 +163,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
             }
             // 初始化
             if (OSUtil.isWindows()) {
-                TrayManager.init(SSHConst.ICON_24_PATH);
+                TrayManager.init(ShellConst.ICON_24_PATH);
             } else {
-                TrayManager.init(SSHConst.ICON_PATH);
+                TrayManager.init(ShellConst.ICON_PATH);
             }
             // 设置标题
             TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());

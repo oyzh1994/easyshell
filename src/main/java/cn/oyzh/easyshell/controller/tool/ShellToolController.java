@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.tool;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.SSHConst;
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -58,7 +58,7 @@ public class ShellToolController extends StageController {
         this.cacheArea.setText("calc cache start.");
         ThreadUtil.start(() -> {
             try {
-                File dir = new File(SSHConst.getCachePath());
+                File dir = new File(ShellConst.getCachePath());
                 this.doCalcCache(dir, new AtomicInteger(0), new LongAdder());
             } finally {
                 this.cacheArea.appendLine("calc cache finish.");
@@ -98,7 +98,7 @@ public class ShellToolController extends StageController {
         this.cacheArea.setText("clear cache start.");
         ThreadUtil.start(() -> {
             try {
-                File dir = new File(SSHConst.getCachePath());
+                File dir = new File(ShellConst.getCachePath());
                 this.doClearCache(dir, new AtomicInteger(0), new LongAdder());
             } finally {
                 this.cacheArea.appendLine("clear cache finish.");

@@ -12,7 +12,7 @@ import java.io.File;
  * @since 2023/08/16
  */
 @UtilityClass
-public class SSHConst {
+public class ShellConst {
 
 //    /**
 //     * 数据保存路径

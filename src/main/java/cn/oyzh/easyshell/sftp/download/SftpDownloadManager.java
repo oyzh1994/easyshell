@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -39,7 +39,7 @@ public class SftpDownloadManager {
 //     */
 //    private Thread executeThread;
 
-    public void createMonitor(File localFile, SftpFile remoteFile, SSHSftp sftp) {
+    public void createMonitor(File localFile, SftpFile remoteFile, ShellSftp sftp) {
 //        // 执行线程
 //        this.executeThread = ThreadUtil.start(() -> {
 //            try {

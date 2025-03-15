@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sftp.delete;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import com.jcraft.jsch.ChannelSftp;
@@ -29,7 +29,7 @@ public class SftpDeleteManager {
     @Setter
     private Consumer<SftpDeleteDeleted> deleteDeletedCallback;
 
-    public void deleteFile(SftpFile file, SSHSftp sftp) {
+    public void deleteFile(SftpFile file, ShellSftp sftp) {
         this.files.add(new DeleteFile(file, sftp));
         this.doDelete();
     }
@@ -73,7 +73,7 @@ public class SftpDeleteManager {
                 if (deleteFile == null) {
                     break;
                 }
-                SSHSftp sftp = deleteFile.getSftp();
+                ShellSftp sftp = deleteFile.getSftp();
                 try {
                     if (deleteFile.isDir()) {
                         this.rmdirRecursive(deleteFile.getPath(), sftp);
@@ -92,7 +92,7 @@ public class SftpDeleteManager {
         }
     }
 
-    private void rmdirRecursive(String path, SSHSftp sftp) throws SftpException {
+    private void rmdirRecursive(String path, ShellSftp sftp) throws SftpException {
         Vector<ChannelSftp.LsEntry> entries = sftp.ls(path);
         for (ChannelSftp.LsEntry entry : entries) {
             String filename = entry.getFilename();
@@ -108,12 +108,12 @@ public class SftpDeleteManager {
         this.rmdir(path, sftp);
     }
 
-    private void rm(String path, SSHSftp sftp) throws SftpException {
+    private void rm(String path, ShellSftp sftp) throws SftpException {
         sftp.rm(path);
         this.deleteDeleted(path);
     }
 
-    private void rmdir(String path, SSHSftp sftp) throws SftpException {
+    private void rmdir(String path, ShellSftp sftp) throws SftpException {
         sftp.rmdir(path);
         this.deleteDeleted(path);
     }
@@ -136,13 +136,13 @@ public class SftpDeleteManager {
 
         private SftpFile file;
 
-        private SSHSftp sftp;
+        private ShellSftp sftp;
 
-        public SSHSftp getSftp() {
+        public ShellSftp getSftp() {
             return sftp;
         }
 
-        public void setSftp(SSHSftp sftp) {
+        public void setSftp(ShellSftp sftp) {
             this.sftp = sftp;
         }
 
@@ -162,7 +162,7 @@ public class SftpDeleteManager {
             return file.isDir();
         }
 
-        public DeleteFile(SftpFile file, SSHSftp sftp) {
+        public DeleteFile(SftpFile file, ShellSftp sftp) {
             this.file = file;
             this.sftp = sftp;
         }

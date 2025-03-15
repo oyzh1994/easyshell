@@ -7,7 +7,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
@@ -125,7 +125,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
         this.currPathProperty.set(currPath);
     }
 
-    public SSHSftp sftp() {
+    public ShellSftp sftp() {
         return this.client.openSftp();
     }
 
@@ -143,7 +143,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
     }
 
     public synchronized void _loadFile() throws SftpException {
-        SSHSftp sftp = this.sftp();
+        ShellSftp sftp = this.sftp();
         try {
             String currPath = this.getCurrPath();
             if (currPath == null) {

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SSHSftpManager;
 import cn.oyzh.easyshell.sftp.SftpAttr;
 import cn.oyzh.easyshell.sftp.SftpFile;
@@ -388,11 +388,11 @@ public class ShellClient {
         return sftpDownloadManager;
     }
 
-    public SSHSftp openSftp() {
+    public ShellSftp openSftp() {
         if (!this.sftpManager.hasAvailable()) {
             try {
                 ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                SSHSftp sftp = new SSHSftp(channel);
+                ShellSftp sftp = new ShellSftp(channel);
                 sftp.connect(this.connectTimeout());
                 this.sftpManager.push(sftp);
                 return sftp;

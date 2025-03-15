@@ -10,14 +10,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class SSHSftpManager {
 
-    private final List<SSHSftp> sftpList = new CopyOnWriteArrayList<>();
+    private final List<ShellSftp> sftpList = new CopyOnWriteArrayList<>();
 
     public boolean hasAvailable() {
-        for (SSHSftp sshSftp : this.sftpList) {
-            if (sshSftp.isClosed()) {
+        for (ShellSftp shellSftp : this.sftpList) {
+            if (shellSftp.isClosed()) {
                 continue;
             }
-            if (sshSftp.isUsing()) {
+            if (shellSftp.isUsing()) {
                 continue;
             }
             return true;
@@ -25,18 +25,18 @@ public class SSHSftpManager {
         return false;
     }
 
-    public SSHSftp take() {
-        List<SSHSftp> removes = new ArrayList<>();
+    public ShellSftp take() {
+        List<ShellSftp> removes = new ArrayList<>();
         try {
-            for (SSHSftp sshSftp : this.sftpList) {
-                if (sshSftp.isClosed() || !sshSftp.isConnected()) {
-                    removes.add(sshSftp);
+            for (ShellSftp shellSftp : this.sftpList) {
+                if (shellSftp.isClosed() || !shellSftp.isConnected()) {
+                    removes.add(shellSftp);
                     continue;
                 }
-                if (sshSftp.isUsing() || sshSftp.isHolding()) {
+                if (shellSftp.isUsing() || shellSftp.isHolding()) {
                     continue;
                 }
-                return sshSftp;
+                return shellSftp;
             }
         } finally {
             this.sftpList.removeAll(removes);
@@ -44,11 +44,11 @@ public class SSHSftpManager {
         return null;
     }
 
-    public void push(SSHSftp sftp) {
-        List<SSHSftp> removes = new ArrayList<>();
-        for (SSHSftp sshSftp : this.sftpList) {
-            if (sshSftp.isClosed()) {
-                removes.add(sshSftp);
+    public void push(ShellSftp sftp) {
+        List<ShellSftp> removes = new ArrayList<>();
+        for (ShellSftp shellSftp : this.sftpList) {
+            if (shellSftp.isClosed()) {
+                removes.add(shellSftp);
             }
         }
         this.sftpList.removeAll(removes);
@@ -56,8 +56,8 @@ public class SSHSftpManager {
     }
 
     public void close() {
-        for (SSHSftp sshSftp : this.sftpList) {
-            sshSftp.close();
+        for (ShellSftp shellSftp : this.sftpList) {
+            shellSftp.close();
         }
         this.sftpList.clear();
     }

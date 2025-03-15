@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.SSHSftp;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -38,7 +38,7 @@ public class SftpUploadManager {
 //     */
 //    private Thread executeThread;
 
-    public void createMonitor(File localFile, String remoteFile, SSHSftp sftp) {
+    public void createMonitor(File localFile, String remoteFile, ShellSftp sftp) {
 //        this.executeThread = ThreadUtil.start(() -> {
 //            try {
 //                sftp.setHolding(true);
