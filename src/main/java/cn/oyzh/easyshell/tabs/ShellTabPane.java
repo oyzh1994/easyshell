@@ -4,9 +4,9 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.tabs.changelog.SSHChangelogTab;
-import cn.oyzh.easyshell.tabs.connect.SSHConnectTab;
-import cn.oyzh.easyshell.tabs.home.SSHHomeTab;
+import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
+import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
+import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
@@ -23,7 +23,7 @@ import javafx.scene.input.KeyCode;
  * @author oyzh
  * @since 2023/05/21
  */
-public class SSHTabPane extends RichTabPane implements FXEventListener {
+public class ShellTabPane extends RichTabPane implements FXEventListener {
 
     @Override
     public void onNodeInitialize() {
@@ -85,8 +85,8 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      *
      * @return 主页tab
      */
-    public SSHHomeTab getHomeTab() {
-        return super.getTab(SSHHomeTab.class);
+    public ShellHomeTab getHomeTab() {
+        return super.getTab(ShellHomeTab.class);
     }
 
     /**
@@ -94,7 +94,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     public void initHomeTab() {
         if (this.getHomeTab() == null) {
-            super.addTab(new SSHHomeTab());
+            super.addTab(new ShellHomeTab());
         }
     }
 
@@ -102,7 +102,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      * 关闭主页tab
      */
     public void closeHomeTab() {
-        super.closeTab(SSHHomeTab.class);
+        super.closeTab(ShellHomeTab.class);
     }
 
 //    /**
@@ -129,9 +129,9 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void changelog(ChangelogEvent event) {
-        SSHChangelogTab tab = this.getTab(SSHChangelogTab.class);
+        ShellChangelogTab tab = this.getTab(ShellChangelogTab.class);
         if (tab == null) {
-            tab = new SSHChangelogTab();
+            tab = new ShellChangelogTab();
             super.addTab(tab);
         }
         if (!tab.isSelected()) {
@@ -139,9 +139,9 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    private SSHConnectTab getConnectTab(SSHClient client) {
+    private ShellConnectTab getConnectTab(SSHClient client) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof SSHConnectTab tab1 && tab1.client() == client) {
+            if (tab instanceof ShellConnectTab tab1 && tab1.client() == client) {
                 return tab1;
             }
         }
@@ -163,7 +163,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
 //        if (!tab.isSelected()) {
 //            this.select(tab);
 //        }
-        SSHConnectTab tab = new SSHConnectTab(event.data());
+        ShellConnectTab tab = new ShellConnectTab(event.data());
         super.addTab(tab);
         if (!tab.isSelected()) {
             this.select(tab);
@@ -177,7 +177,7 @@ public class SSHTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionClosed(ShellConnectionClosedEvent event) {
-        SSHConnectTab tab = this.getConnectTab(event.data());
+        ShellConnectTab tab = this.getConnectTab(event.data());
         if (tab != null) {
             tab.closeTab();
         }

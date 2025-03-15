@@ -13,15 +13,15 @@ import lombok.experimental.Accessors;
  * @since 2023/4/7
  */
 @Accessors(chain = true, fluent = true)
-public class SSHConnectTreeItemValue extends RichTreeItemValue {
+public class ShellConnectTreeItemValue extends RichTreeItemValue {
 
-    public SSHConnectTreeItemValue(@NonNull SSHConnectTreeItem item) {
+    public ShellConnectTreeItemValue(@NonNull ShellConnectTreeItem item) {
         super(item);
     }
 
     @Override
-    protected SSHConnectTreeItem item() {
-        return (SSHConnectTreeItem) super.item();
+    protected ShellConnectTreeItem item() {
+        return (ShellConnectTreeItem) super.item();
     }
 
     @Override

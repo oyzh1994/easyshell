@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-12
  */
-public class SSHContainerTableView extends FXTableView<DockerContainer> {
+public class DockerContainerTableView extends FXTableView<DockerContainer> {
 
     private DockerExec exec;
 

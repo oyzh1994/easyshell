@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2023/6/24
  */
-public class SSHHomeTabController extends RichTabController {
+public class ShellHomeTabController extends RichTabController {
 
     /**
      * 软件信息

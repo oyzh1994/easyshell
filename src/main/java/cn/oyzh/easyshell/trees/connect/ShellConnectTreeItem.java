@@ -28,7 +28,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/1/29
  */
-public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
+public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue> {
 
     /**
      * ssh信息
@@ -54,7 +54,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public SSHConnectTreeItem(@NonNull ShellConnect value, @NonNull RichTreeView treeView) {
+    public ShellConnectTreeItem(@NonNull ShellConnect value, @NonNull RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         this.value(value);
@@ -220,7 +220,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
         this.value.setName(connectName);
         // 修改名称
         if (this.connectStore.update(this.value)) {
-            this.setValue(new SSHConnectTreeItemValue(this));
+            this.setValue(new ShellConnectTreeItemValue(this));
         } else {
             MessageBox.warn(I18nHelper.operationFail());
         }
@@ -235,7 +235,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
         this.value = value;
 //        this.client = new SSHClient(value);
 //        this.client.addStateListener((observable, o, n) -> this.refresh());
-        super.setValue(new SSHConnectTreeItemValue(this));
+        super.setValue(new ShellConnectTreeItemValue(this));
     }
 
 //    /**
@@ -261,9 +261,9 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      *
      * @return 父节点
      */
-    public SSHConnectManager connectManager() {
+    public ShellConnectManager connectManager() {
         Object object = this.getParent();
-        if (object instanceof SSHConnectManager connectManager) {
+        if (object instanceof ShellConnectManager connectManager) {
             return connectManager;
         }
         return null;

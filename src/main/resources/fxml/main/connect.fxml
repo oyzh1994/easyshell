@@ -11,7 +11,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.trees.connect.SSHConnectTreeView?>
+<?import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
     <graphic>
@@ -35,7 +35,7 @@
                 </HBox.margin>
             </ExportSVGGlyph>
         </FXHBox>
-        <SSHConnectTreeView fx:id="tree" flexHeight="100% - 60" flexWidth="100%"/>
+        <ShellConnectTreeView fx:id="tree" flexHeight="100% - 60" flexWidth="100%"/>
         <FXHBox realHeight="30" flexWidth="100%">
             <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
                 <HBox.margin>

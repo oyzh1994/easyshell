@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<?import cn.oyzh.easyshell.tabs.SSHTabPane?>
+<?import cn.oyzh.easyshell.tabs.ShellTabPane?>
 <FXPane xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.SSHMainController" flexWidth="100% - 30" flexHeight="100%">
     <FXTabPane flexHeight="100%" realWidth="300" fx:id="tabPaneLeft" tabMaxHeight="25">
         <fx:include fx:id="connect" source="main/connect.fxml"/>
         <fx:include fx:id="message" source="main/message.fxml"/>
     </FXTabPane>
-    <SSHTabPane fx:id="tabPane" layoutX="300" flexWidth="100% - 300" tabClosingPolicy="ALL_TABS"
-               flexHeight="100%"/>
+    <ShellTabPane fx:id="tabPane" layoutX="300" flexWidth="100% - 300" tabClosingPolicy="ALL_TABS"
+                  flexHeight="100%"/>
 </FXPane>

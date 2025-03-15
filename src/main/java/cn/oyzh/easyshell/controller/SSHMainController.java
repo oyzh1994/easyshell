@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.tabs.SSHTabPane;
-import cn.oyzh.easyshell.trees.connect.SSHConnectTreeItem;
+import cn.oyzh.easyshell.tabs.ShellTabPane;
+import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -45,7 +45,7 @@ public class SSHMainController extends ParentStageController {
      * ssh切换面板
      */
     @FXML
-    private SSHTabPane tabPane;
+    private ShellTabPane tabPane;
 
     /**
      * ssh连接
@@ -135,7 +135,7 @@ public class SSHMainController extends ParentStageController {
      */
     @EventSubscribe
     private void treeItemChanged(ShellTreeItemChangedEvent event) {
-        if (event.data() instanceof SSHConnectTreeItem item) {
+        if (event.data() instanceof ShellConnectTreeItem item) {
             this.flushViewTitle(item.value());
         } else {
             this.flushViewTitle(null);

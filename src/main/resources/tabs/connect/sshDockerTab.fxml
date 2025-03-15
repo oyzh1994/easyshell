@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox?>
-<?import cn.oyzh.easyshell.trees.docker.SSHContainerTableView?>
+<?import cn.oyzh.easyshell.trees.docker.DockerContainerTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
@@ -13,11 +13,11 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.trees.docker.SSHImageTableView?>
+<?import cn.oyzh.easyshell.trees.docker.DockerImageTableView?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.SSHDockerTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDockerTabController"
        text="Docker" fx:id="root">
     <graphic>
         <FileSVGGlyph sizeStr="11"/>
@@ -52,7 +52,7 @@
                         </FXHBox.margin>
                     </ShellContainerStatusComboBox>
                 </FXHBox>
-                <SSHContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
+                <DockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
                     <columns>
                         <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
                         <FXTableColumn prefWidth="150" valueName="image" text="%base.image"/>
@@ -62,7 +62,7 @@
                         <FXTableColumn prefWidth="150" valueName="ports" text="%base.port"/>
                         <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
                     </columns>
-                </SSHContainerTableView>
+                </DockerContainerTableView>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.image">
@@ -89,7 +89,7 @@
                         </FXHBox.margin>
                     </DeleteForceSVGGlyph>
                 </FXHBox>
-                <SSHImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
+                <DockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
                     <columns>
                         <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
                         <FXTableColumn prefWidth="320" valueName="repository" text="%base.repository"/>
@@ -97,7 +97,7 @@
                         <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
                         <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
                     </columns>
-                </SSHImageTableView>
+                </DockerImageTableView>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.extra">

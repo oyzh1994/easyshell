@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-12
  */
-public class SSHImageTableView extends FXTableView<DockerImage> {
+public class DockerImageTableView extends FXTableView<DockerImage> {
 
     private DockerExec exec;
 

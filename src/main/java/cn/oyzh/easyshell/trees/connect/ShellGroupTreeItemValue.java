@@ -12,15 +12,15 @@ import lombok.NonNull;
  * @author oyzh
  * @since 2023/4/7
  */
-public class SSHGroupTreeItemValue extends RichTreeItemValue {
+public class ShellGroupTreeItemValue extends RichTreeItemValue {
 
-    public SSHGroupTreeItemValue(@NonNull SSHGroupTreeItem item) {
+    public ShellGroupTreeItemValue(@NonNull ShellGroupTreeItem item) {
         super(item);
     }
 
     @Override
-    protected SSHGroupTreeItem item() {
-        return (SSHGroupTreeItem) super.item();
+    protected ShellGroupTreeItem item() {
+        return (ShellGroupTreeItem) super.item();
     }
 
     @Override

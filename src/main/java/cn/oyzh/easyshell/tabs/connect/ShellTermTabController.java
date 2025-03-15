@@ -22,7 +22,7 @@ import java.io.IOException;
  * @author oyzh
  * @since 2023/07/21
  */
-public class SSHTermTabController extends SubTabController {
+public class ShellTermTabController extends SubTabController {
 
     /**
      * ssh命令行文本域
@@ -71,8 +71,8 @@ public class SSHTermTabController extends SubTabController {
     }
 
     @Override
-    public SSHConnectTabController parent() {
-        return (SSHConnectTabController) super.parent();
+    public ShellConnectTabController parent() {
+        return (ShellConnectTabController) super.parent();
     }
 
     public SSHClient client() {

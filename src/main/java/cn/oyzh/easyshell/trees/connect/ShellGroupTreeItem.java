@@ -34,7 +34,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/05/12
  */
-public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implements SSHConnectManager {
+public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> implements ShellConnectManager {
 
     /**
      * 分组对象
@@ -53,10 +53,10 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public SSHGroupTreeItem(@NonNull ShellGroup group, @NonNull RichTreeView treeView) {
+    public ShellGroupTreeItem(@NonNull ShellGroup group, @NonNull RichTreeView treeView) {
         super(treeView);
         this.value = group;
-        this.setValue(new SSHGroupTreeItemValue(this));
+        this.setValue(new ShellGroupTreeItemValue(this));
         // 判断是否展开
         this.setExpanded(this.value.isExpand());
         // 监听收缩变化
@@ -131,7 +131,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
         // 处理连接
         if (!this.isChildEmpty()) {
             // 清除分组id
-            List<SSHConnectTreeItem> childes = this.getConnectItems();
+            List<ShellConnectTreeItem> childes = this.getConnectItems();
             childes.forEach(c -> c.value().setGroupId(null));
             // 连接转移到父节点
             this.parent().addConnectItems(childes);
@@ -152,18 +152,18 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     }
 
     @Override
-    public SSHRootTreeItem parent() {
+    public ShellRootTreeItem parent() {
         TreeItem<?> treeItem = this.getParent();
-        return (SSHRootTreeItem) treeItem;
+        return (ShellRootTreeItem) treeItem;
     }
 
     @Override
     public void addConnect(@NonNull ShellConnect shellConnect) {
-        this.addConnectItem(new SSHConnectTreeItem(shellConnect, this.getTreeView()));
+        this.addConnectItem(new ShellConnectTreeItem(shellConnect, this.getTreeView()));
     }
 
     @Override
-    public void addConnectItem(@NonNull SSHConnectTreeItem item) {
+    public void addConnectItem(@NonNull ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
             if (!Objects.equals(item.value().getGroupId(), this.value.getGid())) {
                 item.value().setGroupId(this.value.getGid());
@@ -174,14 +174,14 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     }
 
     @Override
-    public void addConnectItems(@NonNull List<SSHConnectTreeItem> items) {
+    public void addConnectItems(@NonNull List<ShellConnectTreeItem> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             this.addChild((List) items);
         }
     }
 
     @Override
-    public boolean delConnectItem(@NonNull SSHConnectTreeItem item) {
+    public boolean delConnectItem(@NonNull ShellConnectTreeItem item) {
         // 删除连接
         if (this.connectStore.delete(item.value())) {
             this.removeChild(item);
@@ -191,10 +191,10 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     }
 
     @Override
-    public List<SSHConnectTreeItem> getConnectItems() {
-        List<SSHConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
+    public List<ShellConnectTreeItem> getConnectItems() {
+        List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof SSHConnectTreeItem treeItem) {
+            if (item instanceof ShellConnectTreeItem treeItem) {
                 items.add(treeItem);
             }
         }
@@ -208,7 +208,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
 
     @Override
     public boolean allowDropNode(DragNodeItem item) {
-        if (item instanceof SSHConnectTreeItem connectTreeItem) {
+        if (item instanceof ShellConnectTreeItem connectTreeItem) {
             return !Objects.equals(connectTreeItem.value().getGroupId(), this.value.getGid());
         }
         return false;
@@ -216,7 +216,7 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
 
     @Override
     public void onDropNode(DragNodeItem item) {
-        if (item instanceof SSHConnectTreeItem connectTreeItem) {
+        if (item instanceof ShellConnectTreeItem connectTreeItem) {
             connectTreeItem.remove();
             this.addConnectItem(connectTreeItem);
         }

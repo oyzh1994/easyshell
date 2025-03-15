@@ -10,7 +10,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2023/4/7
  */
-public class SSHRootTreeItemValue extends RichTreeItemValue {
+public class ShellRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String name() {

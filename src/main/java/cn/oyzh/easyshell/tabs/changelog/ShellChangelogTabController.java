@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2024/04/07
  */
-public class SSHChangelogTabController extends RichTabController {
+public class ShellChangelogTabController extends RichTabController {
 
     /**
      * 更新日志

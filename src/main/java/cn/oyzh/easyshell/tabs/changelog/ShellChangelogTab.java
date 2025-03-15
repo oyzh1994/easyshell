@@ -11,9 +11,9 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/04/07
  */
-public class SSHChangelogTab extends RichTab {
+public class ShellChangelogTab extends RichTab {
 
-    public SSHChangelogTab() {
+    public ShellChangelogTab() {
         super();
         super.flush();
     }

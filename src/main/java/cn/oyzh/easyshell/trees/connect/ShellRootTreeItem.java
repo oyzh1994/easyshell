@@ -38,7 +38,7 @@ import java.util.Optional;
  * @author oyzh
  * @since 2023/1/29
  */
-public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implements SSHConnectManager {
+public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> implements ShellConnectManager {
 
     /**
      * ssh分组储存
@@ -50,9 +50,9 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public SSHRootTreeItem(@NonNull SSHConnectTreeView treeView) {
+    public ShellRootTreeItem(@NonNull ShellConnectTreeView treeView) {
         super(treeView);
-        this.setValue(new SSHRootTreeItemValue());
+        this.setValue(new ShellRootTreeItemValue());
         // 加载子节点
         this.loadChild();
     }
@@ -199,7 +199,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
         ShellGroup group = new ShellGroup();
         group.setName(groupName);
         if (this.groupStore.replace(group)) {
-            this.addChild(new SSHGroupTreeItem(group, this.getTreeView()));
+            this.addChild(new ShellGroupTreeItem(group, this.getTreeView()));
             ShellEventUtil.groupAdded(groupName);
         } else {
             MessageBox.warn(I18nHelper.operationFail());
@@ -211,10 +211,10 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      *
      * @param groupId 分组id
      */
-    private SSHGroupTreeItem getGroupItem(String groupId) {
+    private ShellGroupTreeItem getGroupItem(String groupId) {
         if (StringUtil.isNotBlank(groupId)) {
-            List<SSHGroupTreeItem> items = this.getGroupItems();
-            Optional<SSHGroupTreeItem> groupTreeItem = items.parallelStream().filter(g -> Objects.equals(g.value().getGid(), groupId)).findAny();
+            List<ShellGroupTreeItem> items = this.getGroupItems();
+            Optional<ShellGroupTreeItem> groupTreeItem = items.parallelStream().filter(g -> Objects.equals(g.value().getGid(), groupId)).findAny();
             return groupTreeItem.orElse(null);
         }
         return null;
@@ -225,10 +225,10 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      *
      * @return 分组树节点组件
      */
-    private List<SSHGroupTreeItem> getGroupItems() {
-        List<SSHGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
+    private List<ShellGroupTreeItem> getGroupItems() {
+        List<ShellGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof SSHGroupTreeItem groupTreeItem) {
+            if (item instanceof ShellGroupTreeItem groupTreeItem) {
                 items.add(groupTreeItem);
             }
         }
@@ -252,13 +252,13 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     public void connectUpdated(ShellConnect shellConnect) {
         f1:
         for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof SSHConnectTreeItem connectTreeItem) {
+            if (item instanceof ShellConnectTreeItem connectTreeItem) {
                 if (connectTreeItem.value() == shellConnect) {
                     connectTreeItem.value(shellConnect);
                     break;
                 }
-            } else if (item instanceof SSHGroupTreeItem groupTreeItem) {
-                for (SSHConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
+            } else if (item instanceof ShellGroupTreeItem groupTreeItem) {
+                for (ShellConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
                     if (connectTreeItem.value() == shellConnect) {
                         connectTreeItem.value(shellConnect);
                         break f1;
@@ -270,9 +270,9 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
 
     @Override
     public void addConnect(@NonNull ShellConnect info) {
-        SSHGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
+        ShellGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
         if (groupItem == null) {
-            super.addChild(new SSHConnectTreeItem(info, this.getTreeView()));
+            super.addChild(new ShellConnectTreeItem(info, this.getTreeView()));
             this.expend();
         } else {
             groupItem.addConnect(info);
@@ -280,7 +280,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     }
 
     @Override
-    public void addConnectItem(@NonNull SSHConnectTreeItem item) {
+    public void addConnectItem(@NonNull ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
             if (item.value().getGroupId() != null) {
                 item.value().setGroupId(null);
@@ -292,7 +292,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     }
 
     @Override
-    public void addConnectItems(@NonNull List<SSHConnectTreeItem> items) {
+    public void addConnectItems(@NonNull List<ShellConnectTreeItem> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             this.addChild((List) items);
             this.expend();
@@ -300,7 +300,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     }
 
     @Override
-    public boolean delConnectItem(@NonNull SSHConnectTreeItem item) {
+    public boolean delConnectItem(@NonNull ShellConnectTreeItem item) {
         // 删除连接
         if (this.connectStore.delete(item.value())) {
             this.removeChild(item);
@@ -310,12 +310,12 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     }
 
     @Override
-    public List<SSHConnectTreeItem> getConnectItems() {
-        List<SSHConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
+    public List<ShellConnectTreeItem> getConnectItems() {
+        List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> child : this.unfilteredChildren()) {
-            if (child instanceof SSHConnectTreeItem connectTreeItem) {
+            if (child instanceof ShellConnectTreeItem connectTreeItem) {
                 items.add(connectTreeItem);
-            } else if (child instanceof SSHGroupTreeItem groupTreeItem) {
+            } else if (child instanceof ShellGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectItems());
             }
         }
@@ -323,14 +323,14 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     }
 
     @Override
-    public List<SSHConnectTreeItem> getConnectedItems() {
-        List<SSHConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
+    public List<ShellConnectTreeItem> getConnectedItems() {
+        List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof SSHConnectTreeItem connectTreeItem) {
+            if (item instanceof ShellConnectTreeItem connectTreeItem) {
 //                if (connectTreeItem.isConnected()) {
                     items.add(connectTreeItem);
 //                }
-            } else if (item instanceof SSHGroupTreeItem groupTreeItem) {
+            } else if (item instanceof ShellGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectedItems());
             }
         }
@@ -344,12 +344,12 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
 
     @Override
     public boolean allowDropNode(DragNodeItem item) {
-        return item instanceof SSHConnectTreeItem;
+        return item instanceof ShellConnectTreeItem;
     }
 
     @Override
     public void onDropNode(DragNodeItem item) {
-        if (item instanceof SSHConnectTreeItem connectTreeItem) {
+        if (item instanceof ShellConnectTreeItem connectTreeItem) {
             connectTreeItem.remove();
             this.addConnectItem(connectTreeItem);
         }
@@ -370,24 +370,24 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
                 //         continue f1;
                 //     }
                 // }
-                list.add(new SSHGroupTreeItem(group, this.getTreeView()));
+                list.add(new ShellGroupTreeItem(group, this.getTreeView()));
             }
             this.addChild(list);
         }
         // 初始化连接
         List<ShellConnect> connects = this.connectStore.load();
-        List<SSHGroupTreeItem> groupItems = this.getGroupItems();
+        List<ShellGroupTreeItem> groupItems = this.getGroupItems();
         if (CollectionUtil.isNotEmpty(connects)) {
-            List<SSHConnectTreeItem> connectItems = this.getConnectItems();
+            List<ShellConnectTreeItem> connectItems = this.getConnectItems();
             // List<SSHConnect> list = new ArrayList<>();
             f1:
             for (ShellConnect connect : connects) {
-                for (SSHConnectTreeItem connectItem : connectItems) {
+                for (ShellConnectTreeItem connectItem : connectItems) {
                     if (StringUtil.equals(connectItem.getId(), connect.getId())) {
                         continue f1;
                     }
                 }
-                Optional<SSHGroupTreeItem> optional = groupItems.parallelStream().filter(g -> StringUtil.equals(g.getGid(), connect.getGroupId())).findAny();
+                Optional<ShellGroupTreeItem> optional = groupItems.parallelStream().filter(g -> StringUtil.equals(g.getGid(), connect.getGroupId())).findAny();
                 if (optional.isPresent()) {
                     optional.get().addConnect(connect);
                 } else {

@@ -4,7 +4,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.sftp.SSHSftpTableView?>
+<?import cn.oyzh.easyshell.trees.sftp.SftpFileTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadBoxSVGGlyph?>
@@ -21,7 +21,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.SSHSftpTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellSftpTabController"
        text="%base.file" fx:id="root">
     <graphic>
         <FileSVGGlyph sizeStr="11"/>
@@ -90,7 +90,7 @@
                 </FXHBox.margin>
             </DownloadBoxSVGGlyph>
         </FXHBox>
-        <SSHSftpTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
+        <SftpFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                 <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName" text="%base.name"/>
@@ -101,7 +101,7 @@
                 <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
                 <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
             </columns>
-        </SSHSftpTableView>
+        </SftpFileTableView>
         <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
             <FXLabel text="%base.delete">
                 <FXHBox.margin>

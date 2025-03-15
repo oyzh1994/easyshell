@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.controller.docker.DockerVersionController;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.trees.docker.SSHContainerTableView;
-import cn.oyzh.easyshell.trees.docker.SSHImageTableView;
+import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
+import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
 import cn.oyzh.easyshell.util.SSHI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -27,7 +27,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2023/07/21
  */
-public class SSHDockerTabController extends SubTabController {
+public class ShellDockerTabController extends SubTabController {
 
     /**
      * ssh命令行文本域
@@ -39,7 +39,7 @@ public class SSHDockerTabController extends SubTabController {
     private ClearableTextField filterContainer;
 
     @FXML
-    private SSHContainerTableView containerTable;
+    private DockerContainerTableView containerTable;
 
     @FXML
     private ShellContainerStatusComboBox containerStatus;
@@ -48,7 +48,7 @@ public class SSHDockerTabController extends SubTabController {
     private ClearableTextField filterImage;
 
     @FXML
-    private SSHImageTableView imageTable;
+    private DockerImageTableView imageTable;
 
     private boolean initialized = false;
 
@@ -107,8 +107,8 @@ public class SSHDockerTabController extends SubTabController {
     }
 
     @Override
-    public SSHConnectTabController parent() {
-        return (SSHConnectTabController) super.parent();
+    public ShellConnectTabController parent() {
+        return (ShellConnectTabController) super.parent();
     }
 
     public SSHClient client() {

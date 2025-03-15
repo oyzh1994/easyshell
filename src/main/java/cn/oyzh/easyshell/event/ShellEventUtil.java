@@ -24,7 +24,7 @@ import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
 import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.trees.connect.SSHConnectTreeItem;
+import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -45,7 +45,7 @@ public class ShellEventUtil {
      *
      * @param item ssh客户端
      */
-    public static void connectionOpened(SSHConnectTreeItem item) {
+    public static void connectionOpened(ShellConnectTreeItem item) {
         ShellConnectOpenedEvent event = new ShellConnectOpenedEvent();
         event.data(item);
         EventUtil.postSync(event);

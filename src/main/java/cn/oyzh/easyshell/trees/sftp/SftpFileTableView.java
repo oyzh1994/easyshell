@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SSHSftpTableView extends FXTableView<SftpFile> {
+public class SftpFileTableView extends FXTableView<SftpFile> {
 
     @Override
     protected void initTableView() {

@@ -11,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/5/12
  */
-public interface SSHConnectManager {
+public interface ShellConnectManager {
 
     /**
      * 添加连接
@@ -25,14 +25,14 @@ public interface SSHConnectManager {
      *
      * @param item 连接节点
      */
-    void addConnectItem(@NonNull SSHConnectTreeItem item);
+    void addConnectItem(@NonNull ShellConnectTreeItem item);
 
     /**
      * 添加多个连接节点
      *
      * @param items 连接节点列表
      */
-    void addConnectItems(@NonNull List<SSHConnectTreeItem> items);
+    void addConnectItems(@NonNull List<ShellConnectTreeItem> items);
 
     /**
      * 删除连接节点
@@ -40,21 +40,21 @@ public interface SSHConnectManager {
      * @param item 连接节点
      * @return 结果
      */
-    boolean delConnectItem(@NonNull SSHConnectTreeItem item);
+    boolean delConnectItem(@NonNull ShellConnectTreeItem item);
 
     /**
      * 获取连接节点
      *
      * @return 连接节点
      */
-    List<SSHConnectTreeItem> getConnectItems();
+    List<ShellConnectTreeItem> getConnectItems();
 
     /**
      * 获取已连接的连接节点
      *
      * @return 已连接的连接节点
      */
-    default List<SSHConnectTreeItem> getConnectedItems() {
+    default List<ShellConnectTreeItem> getConnectedItems() {
         return this.getConnectItems();
 //        return this.getConnectItems().parallelStream().filter(SSHConnectTreeItem::isConnected).collect(Collectors.toList());
     }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.connect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.trees.connect.SSHConnectTreeItem;
+import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
@@ -14,13 +14,13 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class SSHConnectTab extends RichTab {
+public class ShellConnectTab extends RichTab {
 
-    public SSHConnectTab(SSHConnectTreeItem item) {
+    public ShellConnectTab(ShellConnectTreeItem item) {
         this.init(item);
     }
 
-    public SSHConnectTab( ) {
+    public ShellConnectTab( ) {
 
     }
 
@@ -44,7 +44,7 @@ public class SSHConnectTab extends RichTab {
      *
      * @param treeItem ssh信息
      */
-    public void init(SSHConnectTreeItem treeItem) {
+    public void init(ShellConnectTreeItem treeItem) {
         try {
             // 初始化ssh连接
             this.controller().init(treeItem);
@@ -61,8 +61,8 @@ public class SSHConnectTab extends RichTab {
     }
 
     @Override
-    public SSHConnectTabController controller() {
-        return (SSHConnectTabController) super.controller();
+    public ShellConnectTabController controller() {
+        return (ShellConnectTabController) super.controller();
     }
 
     /**

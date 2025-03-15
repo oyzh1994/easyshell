@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.trees.connect.SSHConnectTreeItem;
+import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -22,7 +22,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/07/21
  */
-public class SSHConnectTabController extends ParentTabController {
+public class ShellConnectTabController extends ParentTabController {
 
     /**
      * ssh客户端
@@ -33,25 +33,25 @@ public class SSHConnectTabController extends ParentTabController {
 
     @Getter
     @Accessors(chain = true, fluent = true)
-    private SSHConnectTreeItem treeItem;
+    private ShellConnectTreeItem treeItem;
 
     /**
      * 终端
      */
     @FXML
-    private SSHTermTabController termTabController;
+    private ShellTermTabController termTabController;
 
     /**
      * 文件
      */
     @FXML
-    private SSHSftpTabController sftpTabController;
+    private ShellSftpTabController sftpTabController;
 
     /**
      * 文件
      */
     @FXML
-    private SSHDockerTabController dockerTabController;
+    private ShellDockerTabController dockerTabController;
 
 //    public SSHClient client(){
 //        return this.treeItem.client();
@@ -62,7 +62,7 @@ public class SSHConnectTabController extends ParentTabController {
      *
      * @param treeItem ssh客户端
      */
-    public void init(@NonNull SSHConnectTreeItem treeItem) {
+    public void init(@NonNull ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
         this.client = new SSHClient(treeItem.value());
         StageManager.showMask(() -> {

@@ -22,7 +22,7 @@ import javafx.util.Callback;
  * @author oyzh
  * @since 2023/1/29
  */
-public class SSHConnectTreeView extends RichTreeView implements FXEventListener {
+public class ShellConnectTreeView extends RichTreeView implements FXEventListener {
 
     @Override
     protected void initTreeView() {
@@ -33,7 +33,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
 
     @Override
     protected void initRoot() {
-        super.setRoot(new SSHRootTreeItem(this));
+        super.setRoot(new ShellRootTreeItem(this));
         this.root().expend();
         super.initRoot();
     }
@@ -44,22 +44,22 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
         // 暂停按键处理
         KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
             TreeItem<?> item = this.getSelectedItem();
-            if (item instanceof SSHConnectTreeItem treeItem) {
+            if (item instanceof ShellConnectTreeItem treeItem) {
                 treeItem.closeConnect();
             }
         });
     }
 
     @Override
-    public SSHRootTreeItem root() {
-        return (SSHRootTreeItem) super.root();
+    public ShellRootTreeItem root() {
+        return (ShellRootTreeItem) super.root();
     }
 
     /**
      * 关闭连接
      */
     public void closeConnects() {
-        for (SSHConnectTreeItem treeItem : this.root().getConnectedItems()) {
+        for (ShellConnectTreeItem treeItem : this.root().getConnectedItems()) {
             ThreadUtil.startVirtual(() -> treeItem.closeConnect(false));
         }
     }
@@ -67,7 +67,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
     @Override
     public void expand() {
         TreeItem<?> item = this.getSelectedItem();
-        if (item instanceof SSHConnectTreeItem treeItem) {
+        if (item instanceof ShellConnectTreeItem treeItem) {
             treeItem.expend();
         } else if (item instanceof RichTreeItem<?> treeItem) {
             treeItem.expend();
@@ -80,7 +80,7 @@ public class SSHConnectTreeView extends RichTreeView implements FXEventListener 
     @Override
     public void collapse() {
         TreeItem<?> item = this.getSelectedItem();
-        if (item instanceof SSHConnectTreeItem treeItem) {
+        if (item instanceof ShellConnectTreeItem treeItem) {
             treeItem.collapse();
         } else if (item instanceof RichTreeItem<?> treeItem) {
             treeItem.collapse();

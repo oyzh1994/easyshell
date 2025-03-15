@@ -11,9 +11,9 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/6/24
  */
-public class SSHHomeTab extends RichTab {
+public class ShellHomeTab extends RichTab {
 
-    public SSHHomeTab() {
+    public ShellHomeTab() {
         super();
         super.flush();
     }

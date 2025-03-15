@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.sftp.SSHSftpTableView;
+import cn.oyzh.easyshell.trees.sftp.SftpFileTableView;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -36,7 +36,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/07/21
  */
-public class SSHSftpTabController extends SubTabController {
+public class ShellSftpTabController extends SubTabController {
 
     /**
      * ssh命令行文本域
@@ -84,7 +84,7 @@ public class SSHSftpTabController extends SubTabController {
     private FXToggleSwitch hiddenFile;
 
     @FXML
-    private SSHSftpTableView fileTable;
+    private SftpFileTableView fileTable;
 
     @FXML
     private ClearableTextField filterFile;
@@ -223,8 +223,8 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     @Override
-    public SSHConnectTabController parent() {
-        return (SSHConnectTabController) super.parent();
+    public ShellConnectTabController parent() {
+        return (ShellConnectTabController) super.parent();
     }
 
     public SSHClient client() {
