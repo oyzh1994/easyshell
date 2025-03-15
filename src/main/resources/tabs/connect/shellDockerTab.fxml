@@ -16,11 +16,12 @@
 <?import cn.oyzh.easyshell.trees.docker.DockerImageTableView?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.DockerSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDockerTabController"
        text="Docker" fx:id="root">
     <graphic>
-        <FileSVGGlyph sizeStr="11"/>
+        <DockerSVGGlyph sizeStr="11"/>
     </graphic>
     <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM">
         <FXTab text="%base.container">

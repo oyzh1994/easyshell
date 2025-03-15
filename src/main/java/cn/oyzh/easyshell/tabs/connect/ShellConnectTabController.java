@@ -54,6 +54,12 @@ public class ShellConnectTabController extends ParentTabController {
     private ShellDockerTabController dockerTabController;
 
     /**
+     * 文件
+     */
+    @FXML
+    private ShellMonitorTabController monitorTabController;
+
+    /**
      * 设置shell客户端
      *
      * @param treeItem shell客户端
@@ -97,6 +103,6 @@ public class ShellConnectTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.termTabController, this.sftpTabController, this.dockerTabController);
+        return List.of(this.termTabController, this.sftpTabController, this.dockerTabController, this.monitorTabController);
     }
 }

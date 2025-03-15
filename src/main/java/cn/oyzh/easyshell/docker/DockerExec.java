@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
  */
 public class DockerExec {
 
-    private ShellClient client;
+    private final ShellClient client;
 
     private final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.chart.FXLineChart?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellMonitorAggregationTabController" text="%base.aggregate">
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <FXHBox flexWidth="100%" flexHeight="50%">
+            <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="connectionsChart">
+                <xAxis>
+                    <CategoryAxis/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="%base.connections"/>
+                </yAxis>
+            </FXLineChart>
+            <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="nodeCountChart">
+                <xAxis>
+                    <CategoryAxis/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="%base.nodeCount"/>
+                </yAxis>
+            </FXLineChart>
+        </FXHBox>
+        <FXHBox flexWidth="100%" flexHeight="50%">
+            <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="latencyChart">
+                <xAxis>
+                    <CategoryAxis/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="%base.latency"/>
+                </yAxis>
+            </FXLineChart>
+            <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="commandChart">
+                <xAxis>
+                    <CategoryAxis/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="%base.cmd"/>
+                </yAxis>
+            </FXLineChart>
+        </FXHBox>
+    </FXVBox>
+</FXTab>
