@@ -39,7 +39,7 @@ import lombok.NonNull;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/sshUpdateConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellUpdateConnect.fxml"
 )
 public class ShellUpdateConnectController extends StageController {
 

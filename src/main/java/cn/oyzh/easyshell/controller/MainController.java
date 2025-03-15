@@ -50,7 +50,7 @@ public class MainController extends ParentStageController {
      * ssh主页业务
      */
     @FXML
-    private SSHMainController sshMainController;
+    private ShellMainController shellMainController;
 
     /**
      * ssh相关配置
@@ -64,7 +64,7 @@ public class MainController extends ParentStageController {
 
     @Override
     public List<? extends StageController> getSubControllers() {
-        return Arrays.asList(this.sshMainController, this.headerController);
+        return Arrays.asList(this.shellMainController, this.headerController);
     }
 
     @Override

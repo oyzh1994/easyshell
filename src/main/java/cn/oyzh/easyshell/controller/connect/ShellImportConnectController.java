@@ -38,7 +38,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/sshImportConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellImportConnect.fxml"
 )
 public class ShellImportConnectController extends StageController {
 

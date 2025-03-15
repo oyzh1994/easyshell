@@ -28,7 +28,7 @@ import java.util.List;
  * @author oyzh
  * @since 2020/9/16
  */
-public class SSHMainController extends ParentStageController {
+public class ShellMainController extends ParentStageController {
 
     /**
      * 配置对象

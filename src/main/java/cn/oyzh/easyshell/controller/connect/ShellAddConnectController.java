@@ -39,7 +39,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/sshAddConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellAddConnect.fxml"
 )
 public class ShellAddConnectController extends StageController {
 

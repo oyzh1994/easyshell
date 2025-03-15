@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.LongAdder;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "tool/sshTool.fxml"
+        value = FXConst.FXML_PATH + "tool/shellTool.fxml"
 )
 public class ShellToolController extends StageController {
 

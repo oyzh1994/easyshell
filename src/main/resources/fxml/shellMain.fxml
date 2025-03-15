@@ -3,7 +3,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.easyshell.tabs.ShellTabPane?>
 <FXPane xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.SSHMainController" flexWidth="100% - 30" flexHeight="100%">
+        fx:controller="cn.oyzh.easyshell.controller.ShellMainController" flexWidth="100% - 30" flexHeight="100%">
     <FXTabPane flexHeight="100%" realWidth="300" fx:id="tabPaneLeft" tabMaxHeight="25">
         <fx:include fx:id="connect" source="main/connect.fxml"/>
         <fx:include fx:id="message" source="main/message.fxml"/>

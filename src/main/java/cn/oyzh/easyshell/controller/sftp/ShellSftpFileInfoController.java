@@ -20,7 +20,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "sftp/sshSftpFileInfo.fxml"
+        value = FXConst.FXML_PATH + "sftp/shellSftpFileInfo.fxml"
 )
 public class ShellSftpFileInfoController extends StageController {
 
