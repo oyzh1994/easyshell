@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -15,6 +17,9 @@ import cn.oyzh.fx.plus.keyboard.KeyListener;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -173,5 +178,24 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         if (tab != null) {
             tab.closeTab();
         }
+    }
+
+    /**
+     * 连接编辑事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void connectEdit(ShellConnectEditEvent event) {
+        ShellConnect connect = event.data();
+        List<Tab> closeTabs = new ArrayList<>();
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellConnectTab tab1) {
+                if (tab1.shellConnect() == connect) {
+                    closeTabs.add(tab);
+                }
+            }
+        }
+        this.removeTab(closeTabs);
     }
 }

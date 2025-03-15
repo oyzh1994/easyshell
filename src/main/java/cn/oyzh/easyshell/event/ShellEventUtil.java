@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
-import cn.oyzh.easyshell.event.connection.ShellConnectionLostEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
@@ -52,13 +52,13 @@ public class ShellEventUtil {
     }
 
     /**
-     * 连接丢失事件
+     * 连接编辑事件
      *
-     * @param client shell客户端
+     * @param connect shell连接
      */
-    public static void connectionLost(ShellClient client) {
-        ShellConnectionLostEvent event = new ShellConnectionLostEvent();
-        event.data(client);
+    public static void connectEdit(ShellConnect connect) {
+        ShellConnectEditEvent event = new ShellConnectEditEvent();
+        event.data(connect);
         EventUtil.post(event);
     }
 

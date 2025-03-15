@@ -76,16 +76,16 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //            items.add(cloneConnect);
 //        } else {
 //            FXMenuItem connect = MenuItemHelper.startConnect("12", this::onPrimaryDoubleClick);
-            FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
-            FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
-            FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
-            FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
+        FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
+        FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
+        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
+        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
 //            items.add(connect);
-            items.add(editConnect);
-            items.add(renameConnect);
-            items.add(cloneConnect);
-            items.add(deleteConnect);
+        items.add(editConnect);
+        items.add(renameConnect);
+        items.add(cloneConnect);
+        items.add(deleteConnect);
 //        }
         return items;
     }
@@ -168,12 +168,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      * 编辑连接
      */
     private void editConnect() {
-//        if (this.isConnected()) {
-//            if (!MessageBox.confirm(I18nHelper.closeAndContinue())) {
-//                return;
-//            }
-////            this.closeConnect();
-//        }
+        if (!MessageBox.confirm(I18nHelper.closeAndContinue())) {
+            return;
+        }
+        // 关闭所有连接
+        ShellEventUtil.connectEdit(this.value);
         StageAdapter fxView = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
         fxView.setProp("shellConnect", this.value());
         fxView.display();
@@ -278,7 +277,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     public void onPrimaryDoubleClick() {
 //        if (!this.isConnected() && !this.isConnecting()) {
 //            this.connect();
-            ShellEventUtil.connectionOpened(this);
+        ShellEventUtil.connectionOpened(this);
 //        } else {
 //            super.onPrimaryDoubleClick();
 //        }
