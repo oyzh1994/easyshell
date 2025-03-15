@@ -1,23 +1,13 @@
 package cn.oyzh.easyssh.sftp.upload;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
-import cn.oyzh.easyssh.sftp.SftpUtil;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import lombok.Setter;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 /**
  * @author oyzh

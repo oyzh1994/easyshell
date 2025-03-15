@@ -3,7 +3,6 @@ package cn.oyzh.easyssh.trees.connect;
 import cn.oyzh.easyssh.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import javafx.scene.paint.Color;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 

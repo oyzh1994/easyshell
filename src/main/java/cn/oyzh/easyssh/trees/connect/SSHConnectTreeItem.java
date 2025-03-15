@@ -1,14 +1,9 @@
 package cn.oyzh.easyssh.trees.connect;
 
-import cn.oyzh.common.system.SystemUtil;
-import cn.oyzh.common.thread.Task;
-import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.connect.SSHUpdateConnectController;
 import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.event.SSHEventUtil;
-import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;

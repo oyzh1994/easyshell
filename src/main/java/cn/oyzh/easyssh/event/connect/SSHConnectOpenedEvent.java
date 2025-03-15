@@ -1,7 +1,6 @@
 package cn.oyzh.easyssh.event.connect;
 
 import cn.oyzh.easyssh.domain.SSHConnect;
-import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.event.Event;
 

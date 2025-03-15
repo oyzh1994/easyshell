@@ -1,10 +1,7 @@
 package cn.oyzh.easyssh.fx;
 
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.easyssh.domain.SSHConnect;
-import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
-import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 
 import java.util.List;
 

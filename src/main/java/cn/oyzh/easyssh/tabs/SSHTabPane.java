@@ -1,7 +1,6 @@
 package cn.oyzh.easyssh.tabs;
 
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.easyssh.domain.SSHConnect;
 import cn.oyzh.easyssh.event.connect.SSHConnectOpenedEvent;
 import cn.oyzh.easyssh.event.connection.SSHConnectionClosedEvent;
 import cn.oyzh.easyssh.ssh.SSHClient;

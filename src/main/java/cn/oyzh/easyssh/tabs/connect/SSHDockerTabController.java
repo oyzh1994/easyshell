@@ -2,10 +2,8 @@ package cn.oyzh.easyssh.tabs.connect;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.docker.DockerInfoController;
-import cn.oyzh.easyssh.controller.docker.DockerInspectController;
 import cn.oyzh.easyssh.controller.docker.DockerVersionController;
 import cn.oyzh.easyssh.docker.DockerExec;
-import cn.oyzh.easyssh.docker.DockerImage;
 import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.docker.SSHContainerTableView;
@@ -22,7 +20,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
 
 /**
  * ssh命令行tab内容组件

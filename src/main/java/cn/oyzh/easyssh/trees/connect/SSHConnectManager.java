@@ -4,7 +4,6 @@ import cn.oyzh.easyssh.domain.SSHConnect;
 import lombok.NonNull;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 连接管理

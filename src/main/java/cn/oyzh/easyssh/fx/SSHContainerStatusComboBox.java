@@ -1,10 +1,7 @@
 package cn.oyzh.easyssh.fx;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
-
-import java.util.List;
 
 /**
  * docker状态选择框

@@ -5,8 +5,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ResourceUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.store.SSHSettingStore;
 import cn.oyzh.fx.plus.information.MessageBox;

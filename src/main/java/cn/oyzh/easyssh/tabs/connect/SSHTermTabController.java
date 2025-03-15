@@ -11,7 +11,6 @@ import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
-import com.techsenger.jeditermfx.ui.settings.DefaultSettingsProvider;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 

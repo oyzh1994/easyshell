@@ -1,7 +1,6 @@
 package cn.oyzh.easyssh.sftp;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyssh.ssh.SSHChannel;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import com.jcraft.jsch.ChannelSftp;
