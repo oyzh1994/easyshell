@@ -409,57 +409,57 @@ public class SSHClient {
         this.sftpUploadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
-    public void cancelUpload() {
-        this.sftpUploadManager.cancel();
-    }
-
-    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
-        this.sftpUploadManager.setUploadEndedCallback(callback);
-    }
-
-    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
-        this.sftpUploadManager.setUploadFailedCallback(callback);
-    }
-
-    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
-        this.sftpUploadManager.setUploadCanceledCallback(callback);
-    }
-
-    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
-        this.sftpUploadManager.setUploadInPreparationCallback(callback);
-    }
-
-    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
-        this.sftpUploadManager.setUploadChangedCallback(callback);
-    }
+//    public void cancelUpload() {
+//        this.sftpUploadManager.cancel();
+//    }
+//
+//    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
+//        this.sftpUploadManager.setUploadEndedCallback(callback);
+//    }
+//
+//    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
+//        this.sftpUploadManager.setUploadFailedCallback(callback);
+//    }
+//
+//    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
+//        this.sftpUploadManager.setUploadCanceledCallback(callback);
+//    }
+//
+//    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
+//        this.sftpUploadManager.setUploadInPreparationCallback(callback);
+//    }
+//
+//    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
+//        this.sftpUploadManager.setUploadChangedCallback(callback);
+//    }
 
     public void download(File localFile, SftpFile remoteFile) throws SftpException {
         this.sftpDownloadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
-    public void cancelDownload() {
-        this.sftpDownloadManager.cancel();
-    }
+//    public void cancelDownload() {
+//        this.sftpDownloadManager.cancel();
+//    }
 
-    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
-        this.sftpDownloadManager.setDownloadEndedCallback(callback);
-    }
-
-    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
-        this.sftpDownloadManager.setDownloadFailedCallback(callback);
-    }
-
-    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
-        this.sftpDownloadManager.setDownloadCanceledCallback(callback);
-    }
-
-    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
-        this.sftpDownloadManager.setDownloadChangedCallback(callback);
-    }
-
-    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
-        this.sftpDownloadManager.setDownloadInPreparationCallback(callback);
-    }
+//    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
+//        this.sftpDownloadManager.setDownloadEndedCallback(callback);
+//    }
+//
+//    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
+//        this.sftpDownloadManager.setDownloadFailedCallback(callback);
+//    }
+//
+//    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
+//        this.sftpDownloadManager.setDownloadCanceledCallback(callback);
+//    }
+//
+//    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
+//        this.sftpDownloadManager.setDownloadChangedCallback(callback);
+//    }
+//
+//    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
+//        this.sftpDownloadManager.setDownloadInPreparationCallback(callback);
+//    }
 
     public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
         this.sftpDeleteManager.setDeleteEndedCallback(callback);
@@ -478,25 +478,25 @@ public class SSHClient {
         return this.dockerExec;
     }
 
-    public boolean isDownloading() {
-        return this.sftpDownloadManager.isDownloading();
-    }
-
-    public boolean isUploading() {
-        return this.sftpUploadManager.isUploading();
-    }
-
-    public BooleanProperty uploadingProperty() {
-        return this.sftpUploadManager.uploadingProperty();
-    }
+//    public boolean isDownloading() {
+//        return this.sftpDownloadManager.isDownloading();
+//    }
+//
+//    public boolean isUploading() {
+//        return this.sftpUploadManager.isUploading();
+//    }
+//
+//    public BooleanProperty uploadingProperty() {
+//        return this.sftpUploadManager.uploadingProperty();
+//    }
 
     public BooleanProperty deletingProperty() {
         return this.sftpDeleteManager.deletingProperty();
     }
 
-    public BooleanProperty downloadingProperty() {
-        return this.sftpDownloadManager.downloadingProperty();
-    }
+//    public BooleanProperty downloadingProperty() {
+//        return this.sftpDownloadManager.downloadingProperty();
+//    }
 
     public void delete(SftpFile file) {
         this.sftpDeleteManager.deleteFile(file, this.openSftp());

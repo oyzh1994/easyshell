@@ -132,7 +132,7 @@ public class SftpUploadTask {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
-                this.updateStatus(SftpUploadStatus.FAILED);
+                this.uploadFailed(monitor, ex);
             }
             ThreadUtil.sleep(5);
         }
@@ -177,7 +177,6 @@ public class SftpUploadTask {
             totalSize += monitor.getLocalFileLength();
         }
         this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
-
         JulLog.debug("total size:{}", this.totalSizeProperty.get());
         JulLog.debug("total count:{}", this.totalCountProperty.get());
     }

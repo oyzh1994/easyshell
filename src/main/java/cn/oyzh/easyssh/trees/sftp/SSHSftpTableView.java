@@ -282,9 +282,9 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 MessageBox.exception(ex);
             }
         });
-        if (this.client.isDownloading()) {
-            downloadFile.disable();
-        }
+//        if (this.client.isDownloading()) {
+//            downloadFile.disable();
+//        }
         menuItems.add(downloadFile);
 
         if (files.size() == 1) {
@@ -464,6 +464,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                     MessageBox.exception(ex);
                 }
             }
+            MessageBox.okToast(SSHI18nHelper.fileTip16());
             return true;
         }
         return false;
@@ -480,10 +481,10 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         if (CollectionUtil.isEmpty(files)) {
             return false;
         }
-        if (this.client.isUploading()) {
-            MessageBox.info(SSHI18nHelper.fileTip9());
-            return false;
-        }
+//        if (this.client.isUploading()) {
+//            MessageBox.info(SSHI18nHelper.fileTip9());
+//            return false;
+//        }
         // 检查要上传的文件是否存在
         for (File file : files) {
             if (this.existFile(file.getName())) {
@@ -504,72 +505,72 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         return true;
     }
 
-    public void fileUploaded(String fileName, String dest) throws SftpException {
-        String currPath = this.getCurrPath();
-        if (StringUtil.equalsAny(currPath, dest)) {
-            Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
-            String filePath = SftpUtil.concat(dest, fileName);
-            if (sftpFile.isPresent()) {
-                SftpATTRS attrs = this.sftp().stat(filePath);
-                sftpFile.get().setAttrs(attrs);
-            } else {
-                SftpATTRS attrs = this.sftp().stat(filePath);
-                SftpFile file = new SftpFile(currPath, fileName, attrs);
-                file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
-                file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
-                this.files.add(file);
-            }
-            this.refreshFile();
-        }
-    }
+//    public void fileUploaded(String fileName, String dest) throws SftpException {
+//        String currPath = this.getCurrPath();
+//        if (StringUtil.equalsAny(currPath, dest)) {
+//            Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
+//            String filePath = SftpUtil.concat(dest, fileName);
+//            if (sftpFile.isPresent()) {
+//                SftpATTRS attrs = this.sftp().stat(filePath);
+//                sftpFile.get().setAttrs(attrs);
+//            } else {
+//                SftpATTRS attrs = this.sftp().stat(filePath);
+//                SftpFile file = new SftpFile(currPath, fileName, attrs);
+//                file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+//                file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+//                this.files.add(file);
+//            }
+//            this.refreshFile();
+//        }
+//    }
 
-    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
-        this.client.setUploadEndedCallback(callback);
-    }
-
-    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
-        this.client.setUploadFailedCallback(callback);
-    }
-
-    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
-        this.client.setUploadCanceledCallback(callback);
-    }
-
-    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
-        this.client.setUploadChangedCallback(callback);
-    }
-
-    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
-        this.client.setUploadInPreparationCallback(callback);
-    }
-
-    public void cancelUpload() {
-        this.client.cancelUpload();
-    }
-
-    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
-        this.client.setDownloadEndedCallback(callback);
-    }
-
-    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
-        this.client.setDownloadFailedCallback(callback);
-    }
-
-    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
-        this.client.setDownloadCanceledCallback(callback);
-    }
-
-    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
-        this.client.setDownloadChangedCallback(callback);
-    }
-
-    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
-        this.client.setDownloadInPreparationCallback(callback);
-    }
-
-    public void cancelDownload() {
-        this.client.cancelDownload();
-    }
+//    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
+//        this.client.setUploadEndedCallback(callback);
+//    }
+//
+//    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
+//        this.client.setUploadFailedCallback(callback);
+//    }
+//
+//    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
+//        this.client.setUploadCanceledCallback(callback);
+//    }
+//
+//    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
+//        this.client.setUploadChangedCallback(callback);
+//    }
+//
+//    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
+//        this.client.setUploadInPreparationCallback(callback);
+//    }
+//
+//    public void cancelUpload() {
+//        this.client.cancelUpload();
+//    }
+//
+//    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
+//        this.client.setDownloadEndedCallback(callback);
+//    }
+//
+//    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
+//        this.client.setDownloadFailedCallback(callback);
+//    }
+//
+//    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
+//        this.client.setDownloadCanceledCallback(callback);
+//    }
+//
+//    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
+//        this.client.setDownloadChangedCallback(callback);
+//    }
+//
+//    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
+//        this.client.setDownloadInPreparationCallback(callback);
+//    }
+//
+//    public void cancelDownload() {
+//        this.client.cancelDownload();
+//    }
 
     public boolean existFile(String fileName) {
         Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();

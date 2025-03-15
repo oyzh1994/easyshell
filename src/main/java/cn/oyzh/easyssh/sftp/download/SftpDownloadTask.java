@@ -61,8 +61,8 @@ public class SftpDownloadTask {
             try {
                 sftp.setHolding(true);
                 this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
-                this.updateStatus(SftpDownloadStatus.DOWNLOADING);
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
+                this.updateStatus(SftpDownloadStatus.DOWNLOADING);
                 this.updateTotal();
                 this.doDownload();
             } catch (Exception ex) {

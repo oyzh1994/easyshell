@@ -62,23 +62,29 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private FXLabel filePath;
 
-    @FXML
-    private FXLabel fileUpload;
+//    @FXML
+//    private FXLabel fileUpload;
+//
+//    @FXML
+//    private FXLabel uploadProgressInfo;
+//
+//    @FXML
+//    private FXProgressBar uploadProgress;
+//
+//    @FXML
+//    private FXLabel fileDownload;
+//
+//    @FXML
+//    private FXLabel downloadProgressInfo;
+//
+//    @FXML
+//    private FXProgressBar downloadProgress;
 
-    @FXML
-    private FXLabel uploadProgressInfo;
-
-    @FXML
-    private FXProgressBar uploadProgress;
-
-    @FXML
-    private FXLabel fileDownload;
-
-    @FXML
-    private FXLabel downloadProgressInfo;
-
-    @FXML
-    private FXProgressBar downloadProgress;
+//    @FXML
+//    private FXHBox downloadBox;
+//
+//    @FXML
+//    private FXHBox uploadBox;
 
     @FXML
     private SVGGlyph copyFilePath;
@@ -86,18 +92,11 @@ public class SSHSftpTabController extends SubTabController {
     @FXML
     private FXToggleSwitch hiddenFile;
 
-
     @FXML
     private SSHSftpTableView fileTable;
 
     @FXML
     private ClearableTextField filterFile;
-
-    @FXML
-    private FXHBox downloadBox;
-
-    @FXML
-    private FXHBox uploadBox;
 
     @FXML
     private FXLabel fileDelete;
@@ -126,19 +125,19 @@ public class SSHSftpTabController extends SubTabController {
         }
         this.initialized = true;
         this.fileTable.setClient(this.client());
-        // 下载
-        this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
-        this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
-        this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
-        this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
-        this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
+//        // 下载
+//        this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
 
-        // 上传
-        this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
-        this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
-        this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
-        this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
-        this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
+//        // 上传
+//        this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
 
         // 删除
         this.fileTable.setDeleteEndedCallback(this::updateDeleteInfo);
@@ -147,14 +146,14 @@ public class SSHSftpTabController extends SubTabController {
         // 显示动画
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
         this.fileTable.loadFile();
-        // 监听上传中属性
-        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                this.uploadFile.disable();
-            } else {
-                this.uploadFile.enable();
-            }
-        });
+//        // 监听上传中属性
+//        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                this.uploadFile.disable();
+//            } else {
+//                this.uploadFile.enable();
+//            }
+//        });
         // 监听删除中属性
         this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -299,6 +298,7 @@ public class SSHSftpTabController extends SubTabController {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
             this.fileTable.uploadFile(files);
+            MessageBox.okToast(SSHI18nHelper.fileTip15());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -310,230 +310,231 @@ public class SSHSftpTabController extends SubTabController {
         try {
             File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
             this.fileTable.uploadFile(file);
+            MessageBox.okToast(SSHI18nHelper.fileTip15());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
     }
 
-    @FXML
-    private void cancelUpload() {
-        try {
-            this.fileTable.cancelUpload();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    @FXML
+//    private void cancelUpload() {
+//        try {
+//            this.fileTable.cancelUpload();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    @FXML
+//    private void cancelDownload() {
+//        try {
+//            this.fileTable.cancelDownload();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
-    @FXML
-    private void cancelDownload() {
-        try {
-            this.fileTable.cancelDownload();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateUploadInfo(SftpUploadEnded ended) {
-        try {
-            JulLog.info("updateUploadInfo:{}", ended);
-            this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
-            if (ended.getFileCount() == 0) {
-                this.fileUpload.clear();
-                this.uploadProgressInfo.clear();
-                this.uploadBox.disappear();
-                this.updateLayout();
-                // 重新载入一次文件
-                this.fileTable.loadFile();
-                // 提示消息
-                if (!StageManager.hasFocusedWindow()) {
-                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFinished());
-                }
-            }
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateUploadInfo(SftpUploadFailed failed) {
-        try {
-            JulLog.info("updateUploadInfo:{}", failed);
-            if (failed.getFileCount() == 0) {
-                this.fileUpload.clear();
-                this.uploadProgressInfo.clear();
-                this.uploadBox.disappear();
-                this.updateLayout();
-                // 重新载入一次文件
-                this.fileTable.loadFile();
-                // 提示消息
-                if (!StageManager.hasFocusedWindow()) {
-                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFailed());
-                }
-            }
-            MessageBox.warn(failed.getLocalFileName() + " " + I18nHelper.uploadFailed());
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateUploadInfo(SftpUploadCanceled canceled) {
-        try {
-            JulLog.info("updateUploadInfo:{}", canceled);
-            this.fileUpload.clear();
-            this.uploadProgressInfo.clear();
-            this.uploadBox.disappear();
-            this.updateLayout();
-            this.fileTable.loadFile();
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateUploadInfo(SftpUploadChanged changed) {
-        if (!this.uploadBox.isVisible()) {
-            this.uploadBox.display();
-            this.updateLayout();
-        }
-        if (changed.getFileCount() > 1) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Count: ").append(changed.getFileCount());
-            builder.append(" Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
-            this.fileUpload.text(builder.toString());
-
-            StringBuilder progress = new StringBuilder();
-            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-                    .append("/")
-                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
-                    .append("/")
-                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            this.uploadProgressInfo.text(progress.toString());
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
-            this.fileUpload.text(builder.toString());
-
-            StringBuilder progress = new StringBuilder();
-            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-                    .append("/")
-                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
-            this.uploadProgressInfo.text(progress.toString());
-        }
-        this.uploadProgress.progress(changed.progress());
-    }
-
-    private void updateUploadInfo(SftpUploadInPreparation inPreparation) {
-        if (!this.uploadBox.isVisible()) {
-            this.uploadBox.display();
-            this.updateLayout();
-        }
-        if (inPreparation.getFileName() != null) {
-            this.fileUpload.text(SSHI18nHelper.fileTip7() + ": " + inPreparation.getFileName());
-        } else {
-            this.fileUpload.text(SSHI18nHelper.fileTip7());
-        }
-    }
-
-    private void updateDownloadInfo(SftpDownloadEnded ended) {
-        try {
-            JulLog.info("updateDownloadInfo:{}", ended);
-            if (ended.getFileCount() == 0) {
-                this.fileDownload.clear();
-                this.downloadProgressInfo.clear();
-                this.downloadBox.disappear();
-                this.updateLayout();
-                // 提示消息
-                if (!StageManager.hasFocusedWindow()) {
-                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFinished());
-                }
-            }
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateDownloadInfo(SftpDownloadFailed failed) {
-        try {
-            JulLog.info("updateDownloadInfo:{}", failed);
-            if (failed.getFileCount() == 0) {
-                this.fileDownload.clear();
-                this.downloadProgressInfo.clear();
-                this.downloadBox.disappear();
-                this.updateLayout();
-                // 提示消息
-                if (!StageManager.hasFocusedWindow()) {
-                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFailed());
-                }
-            }
-            Exception exception = failed.getException();
-            // 如果异常里面包含文件不存在等信息，则尝试刷新文件列表
-            if (exception != null && StringUtil.containsAny(exception.getMessage(), "No such file")) {
-                this.fileTable.loadFile();
-            }
-            MessageBox.warn(failed.getRemoteFile() + " " + I18nHelper.downloadFailed());
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateDownloadInfo(SftpDownloadCanceled canceled) {
-        try {
-            JulLog.info("updateDownloadInfo:{}", canceled);
-            this.fileDownload.clear();
-            this.downloadProgressInfo.clear();
-            this.downloadBox.disappear();
-            this.updateLayout();
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
-    private void updateDownloadInfo(SftpDownloadChanged changed) {
-        if (!this.downloadBox.isVisible()) {
-            this.downloadBox.display();
-            this.updateLayout();
-        }
-        if (changed.getFileCount() > 1) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Count: ").append(changed.getFileCount());
-            builder.append(" File: ").append(changed.getLocalFileName());
-            builder.append(" Remote: ").append(changed.getRemoteFile());
-            this.fileDownload.text(builder.toString());
-
-            StringBuilder progress = new StringBuilder();
-            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-                    .append("/")
-                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
-                    .append("/")
-                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
-            this.downloadProgressInfo.text(progress.toString());
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append("File: ").append(changed.getLocalFileName());
-            builder.append(" Remote: ").append(changed.getRemoteFile());
-            this.fileDownload.text(builder.toString());
-
-            StringBuilder progress = new StringBuilder();
-            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-                    .append("/")
-                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
-            this.downloadProgressInfo.text(progress.toString());
-        }
-        this.downloadProgress.progress(changed.progress());
-    }
-
-    private void updateDownloadInfo(SftpDownloadInPreparation inPreparation) {
-        if (!this.downloadBox.isVisible()) {
-            this.downloadBox.display();
-            this.updateLayout();
-        }
-        if (inPreparation.getFileName() != null) {
-            this.fileDownload.text(SSHI18nHelper.fileTip8() + ": " + inPreparation.getFileName());
-        } else {
-            this.fileDownload.text(SSHI18nHelper.fileTip8());
-        }
-    }
+//    private void updateUploadInfo(SftpUploadEnded ended) {
+//        try {
+//            JulLog.info("updateUploadInfo:{}", ended);
+//            this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
+//            if (ended.getFileCount() == 0) {
+//                this.fileUpload.clear();
+//                this.uploadProgressInfo.clear();
+//                this.uploadBox.disappear();
+//                this.updateLayout();
+//                // 重新载入一次文件
+//                this.fileTable.loadFile();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFinished());
+//                }
+//            }
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateUploadInfo(SftpUploadFailed failed) {
+//        try {
+//            JulLog.info("updateUploadInfo:{}", failed);
+//            if (failed.getFileCount() == 0) {
+//                this.fileUpload.clear();
+//                this.uploadProgressInfo.clear();
+//                this.uploadBox.disappear();
+//                this.updateLayout();
+//                // 重新载入一次文件
+//                this.fileTable.loadFile();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFailed());
+//                }
+//            }
+//            MessageBox.warn(failed.getLocalFileName() + " " + I18nHelper.uploadFailed());
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateUploadInfo(SftpUploadCanceled canceled) {
+//        try {
+//            JulLog.info("updateUploadInfo:{}", canceled);
+//            this.fileUpload.clear();
+//            this.uploadProgressInfo.clear();
+//            this.uploadBox.disappear();
+//            this.updateLayout();
+//            this.fileTable.loadFile();
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateUploadInfo(SftpUploadChanged changed) {
+//        if (!this.uploadBox.isVisible()) {
+//            this.uploadBox.display();
+//            this.updateLayout();
+//        }
+//        if (changed.getFileCount() > 1) {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("Count: ").append(changed.getFileCount());
+//            builder.append(" Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
+//            this.fileUpload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
+//            this.uploadProgressInfo.text(progress.toString());
+//        } else {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
+//            this.fileUpload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
+//            this.uploadProgressInfo.text(progress.toString());
+//        }
+//        this.uploadProgress.progress(changed.progress());
+//    }
+//
+//    private void updateUploadInfo(SftpUploadInPreparation inPreparation) {
+//        if (!this.uploadBox.isVisible()) {
+//            this.uploadBox.display();
+//            this.updateLayout();
+//        }
+//        if (inPreparation.getFileName() != null) {
+//            this.fileUpload.text(SSHI18nHelper.fileTip7() + ": " + inPreparation.getFileName());
+//        } else {
+//            this.fileUpload.text(SSHI18nHelper.fileTip7());
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadEnded ended) {
+//        try {
+//            JulLog.info("updateDownloadInfo:{}", ended);
+//            if (ended.getFileCount() == 0) {
+//                this.fileDownload.clear();
+//                this.downloadProgressInfo.clear();
+//                this.downloadBox.disappear();
+//                this.updateLayout();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFinished());
+//                }
+//            }
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadFailed failed) {
+//        try {
+//            JulLog.info("updateDownloadInfo:{}", failed);
+//            if (failed.getFileCount() == 0) {
+//                this.fileDownload.clear();
+//                this.downloadProgressInfo.clear();
+//                this.downloadBox.disappear();
+//                this.updateLayout();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFailed());
+//                }
+//            }
+//            Exception exception = failed.getException();
+//            // 如果异常里面包含文件不存在等信息，则尝试刷新文件列表
+//            if (exception != null && StringUtil.containsAny(exception.getMessage(), "No such file")) {
+//                this.fileTable.loadFile();
+//            }
+//            MessageBox.warn(failed.getRemoteFile() + " " + I18nHelper.downloadFailed());
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadCanceled canceled) {
+//        try {
+//            JulLog.info("updateDownloadInfo:{}", canceled);
+//            this.fileDownload.clear();
+//            this.downloadProgressInfo.clear();
+//            this.downloadBox.disappear();
+//            this.updateLayout();
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadChanged changed) {
+//        if (!this.downloadBox.isVisible()) {
+//            this.downloadBox.display();
+//            this.updateLayout();
+//        }
+//        if (changed.getFileCount() > 1) {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("Count: ").append(changed.getFileCount());
+//            builder.append(" File: ").append(changed.getLocalFileName());
+//            builder.append(" Remote: ").append(changed.getRemoteFile());
+//            this.fileDownload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
+//            this.downloadProgressInfo.text(progress.toString());
+//        } else {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("File: ").append(changed.getLocalFileName());
+//            builder.append(" Remote: ").append(changed.getRemoteFile());
+//            this.fileDownload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
+//            this.downloadProgressInfo.text(progress.toString());
+//        }
+//        this.downloadProgress.progress(changed.progress());
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadInPreparation inPreparation) {
+//        if (!this.downloadBox.isVisible()) {
+//            this.downloadBox.display();
+//            this.updateLayout();
+//        }
+//        if (inPreparation.getFileName() != null) {
+//            this.fileDownload.text(SSHI18nHelper.fileTip8() + ": " + inPreparation.getFileName());
+//        } else {
+//            this.fileDownload.text(SSHI18nHelper.fileTip8());
+//        }
+//    }
 
     private void updateDeleteInfo(SftpDeleteEnded ended) {
         this.deleteBox.disappear();
@@ -554,12 +555,12 @@ public class SSHSftpTabController extends SubTabController {
         if (this.deleteBox.isVisible()) {
             ++showNum;
         }
-        if (this.uploadBox.isVisible()) {
-            ++showNum;
-        }
-        if (this.downloadBox.isVisible()) {
-            ++showNum;
-        }
+//        if (this.uploadBox.isVisible()) {
+//            ++showNum;
+//        }
+//        if (this.downloadBox.isVisible()) {
+//            ++showNum;
+//        }
         this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
         this.fileTable.parentAutosize();
     }

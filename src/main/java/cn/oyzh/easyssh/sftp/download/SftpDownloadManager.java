@@ -30,20 +30,20 @@ public class SftpDownloadManager {
 //    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
     private final List<SftpDownloadTask> tasks = new CopyOnWriteArrayList<>();
 
-    @Setter
-    private Consumer<SftpDownloadEnded> downloadEndedCallback;
-
-    @Setter
-    private Consumer<SftpDownloadFailed> downloadFailedCallback;
-
-    @Setter
-    private Consumer<SftpDownloadChanged> downloadChangedCallback;
-
-    @Setter
-    private Consumer<SftpDownloadCanceled> downloadCanceledCallback;
-
-    @Setter
-    private Consumer<SftpDownloadInPreparation> downloadInPreparationCallback;
+//    @Setter
+//    private Consumer<SftpDownloadEnded> downloadEndedCallback;
+//
+//    @Setter
+//    private Consumer<SftpDownloadFailed> downloadFailedCallback;
+//
+//    @Setter
+//    private Consumer<SftpDownloadChanged> downloadChangedCallback;
+//
+//    @Setter
+//    private Consumer<SftpDownloadCanceled> downloadCanceledCallback;
+//
+//    @Setter
+//    private Consumer<SftpDownloadInPreparation> downloadInPreparationCallback;
 
 //    /**
 //     * 执行线程
@@ -228,19 +228,19 @@ public class SftpDownloadManager {
 //        }
 //    }
 
-    private final BooleanProperty downloadingProperty= new SimpleBooleanProperty(false);
-
-    public BooleanProperty downloadingProperty() {
-        return this.downloadingProperty;
-    }
-
-    public void setDownloading(boolean downloading) {
-        this.downloadingProperty.set(downloading);
-    }
-
-    public boolean isDownloading() {
-        return this.downloadingProperty.get();
-    }
+//    private final BooleanProperty downloadingProperty= new SimpleBooleanProperty(false);
+//
+//    public BooleanProperty downloadingProperty() {
+//        return this.downloadingProperty;
+//    }
+//
+//    public void setDownloading(boolean downloading) {
+//        this.downloadingProperty.set(downloading);
+//    }
+//
+//    public boolean isDownloading() {
+//        return this.downloadingProperty.get();
+//    }
 
     public List<SftpDownloadTask> getTasks() {
         return tasks;

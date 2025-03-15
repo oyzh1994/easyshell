@@ -28,20 +28,20 @@ public class SftpUploadManager {
     //    private final Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
     private final List<SftpUploadTask> tasks = new CopyOnWriteArrayList<>();
 
-    @Setter
-    private Consumer<SftpUploadEnded> uploadEndedCallback;
-
-    @Setter
-    private Consumer<SftpUploadFailed> uploadFailedCallback;
-
-    @Setter
-    private Consumer<SftpUploadChanged> uploadChangedCallback;
-
-    @Setter
-    private Consumer<SftpUploadCanceled> uploadCanceledCallback;
-
-    @Setter
-    private Consumer<SftpUploadInPreparation> uploadInPreparationCallback;
+//    @Setter
+//    private Consumer<SftpUploadEnded> uploadEndedCallback;
+//
+//    @Setter
+//    private Consumer<SftpUploadFailed> uploadFailedCallback;
+//
+//    @Setter
+//    private Consumer<SftpUploadChanged> uploadChangedCallback;
+//
+//    @Setter
+//    private Consumer<SftpUploadCanceled> uploadCanceledCallback;
+//
+//    @Setter
+//    private Consumer<SftpUploadInPreparation> uploadInPreparationCallback;
 
 //    /**
 //     * 执行线程
@@ -228,19 +228,19 @@ public class SftpUploadManager {
 //        }
 //    }
 
-    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
-
-    public BooleanProperty uploadingProperty() {
-        return this.uploadingProperty;
-    }
-
-    public void setUploading(boolean uploading) {
-        this.uploadingProperty.set(uploading);
-    }
-
-    public boolean isUploading() {
-        return this.uploadingProperty.get();
-    }
+//    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
+//
+//    public BooleanProperty uploadingProperty() {
+//        return this.uploadingProperty;
+//    }
+//
+//    public void setUploading(boolean uploading) {
+//        this.uploadingProperty.set(uploading);
+//    }
+//
+//    public boolean isUploading() {
+//        return this.uploadingProperty.get();
+//    }
 
     public List<SftpUploadTask> getTasks() {
         return tasks;
