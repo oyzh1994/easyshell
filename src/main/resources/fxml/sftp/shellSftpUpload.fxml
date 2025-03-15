@@ -26,7 +26,7 @@
     </FXHBox>
     <SftpUploadTableView fx:id="uploadTable" flexHeight="100% - 30" flexWidth="100% - 20">
         <columns>
-            <FXTableColumn prefWidth="360" valueName="currentFile" text="%base.currentFile"/>
+            <FXTableColumn flexWidth="100% - 440" valueName="currentFile" text="%base.currentFile"/>
             <FXTableColumn prefWidth="140" valueName="currentProgress" text="%base.currentProgress"/>
             <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>
             <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>

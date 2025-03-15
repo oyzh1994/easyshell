@@ -7,6 +7,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.SftpUtil;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadTask;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.BooleanProperty;
@@ -27,7 +28,7 @@ import java.util.function.Consumer;
  */
 public class SftpDownloadManager {
 
-//    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
+    //    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
     private final List<SftpDownloadTask> tasks = new CopyOnWriteArrayList<>();
 
 //    @Setter
@@ -66,7 +67,7 @@ public class SftpDownloadManager {
 //                this.setDownloading(false);
 //            }
 //        });
-        this.tasks.add(new SftpDownloadTask(localFile, remoteFile, sftp));
+        this.tasks.add(new SftpDownloadTask(this, localFile, remoteFile, sftp));
     }
 
 //    protected void addMonitorRecursive(File localFile, SftpFile remoteFile, SSHSftp sftp) throws SftpException {
@@ -228,11 +229,21 @@ public class SftpDownloadManager {
 //        }
 //    }
 
-//    private final BooleanProperty downloadingProperty= new SimpleBooleanProperty(false);
-//
-//    public BooleanProperty downloadingProperty() {
-//        return this.downloadingProperty;
-//    }
+    private final BooleanProperty downloadingProperty = new SimpleBooleanProperty(false);
+
+    public BooleanProperty downloadingProperty() {
+        return this.downloadingProperty;
+    }
+
+    public void updateDownloading() {
+        for (SftpDownloadTask task : this.tasks) {
+            if (task.isDownloading()) {
+                this.downloadingProperty.set(true);
+                return;
+            }
+        }
+        this.downloadingProperty.set(false);
+    }
 //
 //    public void setDownloading(boolean downloading) {
 //        this.downloadingProperty.set(downloading);

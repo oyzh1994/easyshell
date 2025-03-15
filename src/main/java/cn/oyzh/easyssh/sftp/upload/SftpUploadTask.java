@@ -43,7 +43,6 @@ public class SftpUploadTask {
         this.updateTotal();
     }
 
-
     public boolean isEmpty() {
         return this.monitors.isEmpty();
     }
@@ -78,7 +77,10 @@ public class SftpUploadTask {
         }
     }
 
-    public SftpUploadTask(File localFile, String remoteFile, SSHSftp sftp) {
+    private final SftpUploadManager manager;
+
+    public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, SSHSftp sftp) {
+        this.manager = manager;
         this.executeThread = ThreadUtil.start(() -> {
             try {
                 sftp.setHolding(true);
@@ -92,6 +94,7 @@ public class SftpUploadTask {
             } finally {
                 sftp.setHolding(false);
                 this.updateStatus(SftpUploadStatus.FINISHED);
+                this.updateTotal();
             }
         });
     }
@@ -228,6 +231,7 @@ public class SftpUploadTask {
         this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
         JulLog.debug("total size:{}", this.totalSizeProperty.get());
         JulLog.debug("total count:{}", this.totalCountProperty.get());
+        this.manager.updateUploading();
     }
 
     /**
@@ -273,5 +277,14 @@ public class SftpUploadTask {
      */
     public boolean isFinished() {
         return this.status == SftpUploadStatus.FINISHED;
+    }
+
+    /**
+     * 是否上传中
+     *
+     * @return 结果
+     */
+    public boolean isUploading() {
+        return this.status == SftpUploadStatus.UPLOADING;
     }
 }

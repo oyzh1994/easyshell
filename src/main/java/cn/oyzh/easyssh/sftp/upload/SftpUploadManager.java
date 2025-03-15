@@ -63,7 +63,7 @@ public class SftpUploadManager {
 //                this.setUploading(false);
 //            }
 //        });
-        this.tasks.add(new SftpUploadTask(localFile, remoteFile, sftp));
+        this.tasks.add(new SftpUploadTask(this, localFile, remoteFile, sftp));
     }
 
 //    protected void addMonitorRecursive(File localFile, String remoteFile, SSHSftp sftp) throws SftpException {
@@ -219,12 +219,22 @@ public class SftpUploadManager {
 //        }
 //    }
 
-//    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
-//
-//    public BooleanProperty uploadingProperty() {
-//        return this.uploadingProperty;
-//    }
-//
+    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
+
+    public BooleanProperty uploadingProperty() {
+        return this.uploadingProperty;
+    }
+
+    public void updateUploading() {
+        for (SftpUploadTask task : this.tasks) {
+            if (task.isUploading()) {
+                this.uploadingProperty.set(true);
+                return;
+            }
+        }
+        this.uploadingProperty.set(false);
+    }
+
 //    public void setUploading(boolean uploading) {
 //        this.uploadingProperty.set(uploading);
 //    }

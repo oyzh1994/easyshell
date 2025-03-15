@@ -143,7 +143,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
         });
     }
 
-    public void _loadFile() throws SftpException {
+    public synchronized void _loadFile() throws SftpException {
         SSHSftp sftp = this.sftp();
         try {
             String currPath = this.getCurrPath();
@@ -529,6 +529,7 @@ public class SSHSftpTableView extends FXTableView<SftpFile> {
                 MessageBox.exception(ex);
             }
         }
+        MessageBox.okToast(SSHI18nHelper.fileTip15());
         return true;
     }
 

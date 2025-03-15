@@ -26,6 +26,12 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.List;
@@ -70,6 +76,12 @@ public class SSHSftpTabController extends SubTabController {
 //
 //    @FXML
 //    private FXHBox uploadBox;
+
+    @FXML
+    private SVGGlyph uploadBox;
+
+    @FXML
+    private SVGGlyph downloadBox;
 
     @FXML
     private SVGGlyph copyFilePath;
@@ -131,22 +143,32 @@ public class SSHSftpTabController extends SubTabController {
         // 显示动画
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
         this.fileTable.loadFile();
-//        // 监听上传中属性
-//        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue) {
-//                this.uploadFile.disable();
-//            } else {
-//                this.uploadFile.enable();
-//            }
-//        });
-//        // 监听删除中属性
-//        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue) {
-//                this.refreshFile.disable();
-//            } else {
-//                this.refreshFile.enable();
-//            }
-//        });
+        // 监听上传中属性
+        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setHue(0.5);
+                colorAdjust.setContrast(0.5);
+                colorAdjust.setBrightness(0.5);
+                colorAdjust.setSaturation(0.5);
+                this.uploadBox.setEffect(colorAdjust);
+            } else {
+                this.uploadBox.setEffect(null);
+            }
+        });
+        // 监听删除中属性
+        this.client().downloadingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setHue(0.5);
+                colorAdjust.setContrast(0.5);
+                colorAdjust.setBrightness(0.5);
+                colorAdjust.setSaturation(0.5);
+                this.downloadBox.setEffect(colorAdjust);
+            } else {
+                this.downloadBox.setEffect(null);
+            }
+        });
 //        // 监听下载中属性
 //        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
 //            if (newValue) {
@@ -283,7 +305,6 @@ public class SSHSftpTabController extends SubTabController {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
             this.fileTable.uploadFile(files);
-            MessageBox.okToast(SSHI18nHelper.fileTip15());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -295,7 +316,6 @@ public class SSHSftpTabController extends SubTabController {
         try {
             File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
             this.fileTable.uploadFile(file);
-            MessageBox.okToast(SSHI18nHelper.fileTip15());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -551,14 +571,14 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     @FXML
-    private void showUploadBox( ) {
+    private void showUploadBox() {
         StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class);
         adapter.setProp("client", this.client());
         adapter.display();
     }
 
     @FXML
-    private void showDownloadBox( ) {
+    private void showDownloadBox() {
         StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class);
         adapter.setProp("client", this.client());
         adapter.display();

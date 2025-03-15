@@ -476,17 +476,17 @@ public class SSHClient {
 //        return this.sftpUploadManager.isUploading();
 //    }
 //
-//    public BooleanProperty uploadingProperty() {
-//        return this.sftpUploadManager.uploadingProperty();
-//    }
+    public BooleanProperty uploadingProperty() {
+        return this.sftpUploadManager.uploadingProperty();
+    }
 
     public BooleanProperty deletingProperty() {
         return this.sftpDeleteManager.deletingProperty();
     }
 
-//    public BooleanProperty downloadingProperty() {
-//        return this.sftpDownloadManager.downloadingProperty();
-//    }
+    public BooleanProperty downloadingProperty() {
+        return this.sftpDownloadManager.downloadingProperty();
+    }
 
     public void delete(SftpFile file) {
         this.sftpDeleteManager.deleteFile(file, this.openSftp());

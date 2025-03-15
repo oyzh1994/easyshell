@@ -9,6 +9,7 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SftpFile;
 import cn.oyzh.easyssh.sftp.SftpUtil;
+import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadMonitor;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
@@ -45,6 +46,7 @@ public class SftpDownloadTask {
 
     public void removeMonitor(SftpDownloadMonitor monitor) {
         this.monitors.remove(monitor);
+        this.updateTotal();
     }
 
     public boolean isEmpty() {
@@ -81,7 +83,10 @@ public class SftpDownloadTask {
         }
     }
 
-    public SftpDownloadTask(File localFile, SftpFile remoteFile, SSHSftp sftp) {
+    private final SftpDownloadManager manager;
+
+    public SftpDownloadTask(SftpDownloadManager manager, File localFile, SftpFile remoteFile, SSHSftp sftp) {
+        this.manager = manager;
         // 执行线程
         this.executeThread = ThreadUtil.start(() -> {
             try {
@@ -96,6 +101,7 @@ public class SftpDownloadTask {
             } finally {
                 sftp.setHolding(false);
                 this.updateStatus(SftpDownloadStatus.FINISHED);
+                this.updateTotal();
             }
         });
     }
@@ -232,6 +238,7 @@ public class SftpDownloadTask {
         this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
         JulLog.debug("total size:{}", this.totalSizeProperty.get());
         JulLog.debug("total count:{}", this.totalCountProperty.get());
+        this.manager.updateDownloading();
     }
 
     /**
@@ -277,5 +284,14 @@ public class SftpDownloadTask {
      */
     public boolean isFinished() {
         return this.status == SftpDownloadStatus.FINISHED;
+    }
+
+    /**
+     * 是否下载中
+     *
+     * @return 结果
+     */
+    public boolean isDownloading() {
+        return this.status == SftpDownloadStatus.DOWNLOADING;
     }
 }
