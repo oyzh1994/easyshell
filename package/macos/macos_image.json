@@ -1,9 +1,9 @@
 {
     "packMode": "jpackage",
     "platform": "macos",
-    "dest": "/Volumes/Files/Package/EasySSH/${appVersion}/EasyRedis_${appVersion}.app",
-    "appIcon": "${projectPath}/resource/ssh.icns",
-    "mainJar": "${projectPath}/target/easyssh-${appVersion}.jar",
+    "dest": "/Volumes/Files/Package/EasyShell/${appVersion}/EasyRedis_${appVersion}.app",
+    "appIcon": "${projectPath}/resource/shell.icns",
+    "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
     "jdkPath": "$SYSTEM",
     "jpackage": {
         "verbose": true,

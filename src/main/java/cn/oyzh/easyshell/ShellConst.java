@@ -27,17 +27,17 @@ public class ShellConst {
     /**
      * icon地址
      */
-    public final static String ICON_PATH = "/image/ssh_no_bg.png";
+    public final static String ICON_PATH = "/image/shell_no_bg.png";
 
     /**
      * 托盘图标，windows专用
      */
-    public final static String ICON_24_PATH = "/image/ssh_24.png";
+    public final static String ICON_24_PATH = "/image/shell_24.png";
 
     /**
      * 任务栏图标，windows专用
      */
-    public final static String ICON_32_PATH = "/image/ssh_32.png";
+    public final static String ICON_32_PATH = "/image/shell_32.png";
 
     public static String getStorePath() {
         if (JarUtil.isInJar()) {

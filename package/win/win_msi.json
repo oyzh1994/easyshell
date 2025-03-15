@@ -1,9 +1,9 @@
 {
     "packMode": "jpackage",
     "platform": "windows",
-    "dest": "C:/Package/EasySSH/${appVersion}/",
-    "appIcon": "${projectPath}/resource/ssh.ico",
-    "mainJar": "${projectPath}/target/easyssh-${appVersion}.jar",
+    "dest": "C:/Package/EasyShell/${appVersion}/",
+    "appIcon": "${projectPath}/resource/shell.ico",
+    "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
     "jdkPath": "$SYSTEM",
     "jpackage": {
         "verbose": true,
