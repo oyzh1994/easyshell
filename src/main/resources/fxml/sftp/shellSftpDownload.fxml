@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.easyshell.trees.sftp.SftpDownloadTableView?>
+<FXVBox prefWidth="900" prefHeight="650" styleClass="root"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController">
+    <FXHBox prefHeight="30">
+        <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelTask">
+            <FXHBox.margin>
+                <Insets left="10" top="10"/>
+            </FXHBox.margin>
+        </CancelSVGGlyph>
+        <DeleteSVGGlyph sizeStr="15" onMousePrimaryClicked="#removeTask">
+            <FXHBox.margin>
+                <Insets left="10" top="8"/>
+            </FXHBox.margin>
+        </DeleteSVGGlyph>
+    </FXHBox>
+    <SftpDownloadTableView fx:id="downloadTable" flexHeight="100% - 30" flexWidth="100% - 20">
+        <columns>
+            <FXTableColumn prefWidth="360" valueName="currentFile" text="%base.currentFile"/>
+            <FXTableColumn prefWidth="140" valueName="currentProgress" text="%base.currentProgress"/>
+            <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>
+            <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>
+            <FXTableColumn prefWidth="100" valueName="status" text="%base.status"/>
+        </columns>
+        <FXVBox.margin>
+            <Insets left="10"/>
+        </FXVBox.margin>
+    </SftpDownloadTableView>
+</FXVBox>
+

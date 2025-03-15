@@ -6,18 +6,14 @@ import cn.oyzh.easyssh.sftp.upload.SftpUploadTask;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.util.SSHI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
-import cn.oyzh.fx.plus.window.PopupAttribute;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import static atlantafx.base.controls.Popover.ArrowLocation.TOP_CENTER;
-import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_BOTTOM_LEFT;
 
 /**
  * @author oyzh
@@ -26,9 +22,9 @@ import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_BOTTOM_LEFT;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "sftp/shellSftpManager.fxml"
+        value = FXConst.FXML_PATH + "sftp/shellSftpUpload.fxml"
 )
-public class ShellSftpManagerController extends StageController {
+public class ShellSftpUploadController extends StageController {
 
     @FXML
     private SftpUploadTableView uploadTable;
@@ -44,7 +40,7 @@ public class ShellSftpManagerController extends StageController {
     }
 
     @FXML
-    private void cancelDownload() {
+    private void cancelTask() {
         try {
             SftpUploadTask task = this.uploadTable.getSelectedItem();
             if (task != null) {
@@ -66,7 +62,7 @@ public class ShellSftpManagerController extends StageController {
     }
 
     @FXML
-    private void removeDownload() {
+    private void removeTask() {
         try {
             SftpUploadTask task = this.uploadTable.getSelectedItem();
             if (task != null && MessageBox.confirm(SSHI18nHelper.fileTip12())) {
@@ -77,5 +73,10 @@ public class ShellSftpManagerController extends StageController {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nHelper.uploadManage();
     }
 }

@@ -3,7 +3,8 @@ package cn.oyzh.easyssh.tabs.connect;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpManagerController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyssh.sftp.delete.SftpDeleteEnded;
@@ -35,8 +36,6 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.tray.TrayManager;
-import cn.oyzh.fx.plus.window.PopupAdapter;
-import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -80,9 +79,6 @@ public class SSHSftpTabController extends SubTabController {
 
     @FXML
     private FXProgressBar downloadProgress;
-
-    @FXML
-    private SVGGlyph fileBox;
 
     @FXML
     private SVGGlyph copyFilePath;
@@ -569,8 +565,15 @@ public class SSHSftpTabController extends SubTabController {
     }
 
     @FXML
-    private void showFileBox( ) {
-        StageAdapter adapter = StageManager.parseStage(ShellSftpManagerController.class);
+    private void showUploadBox( ) {
+        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class);
+        adapter.setProp("client", this.client());
+        adapter.display();
+    }
+
+    @FXML
+    private void showDownloadBox( ) {
+        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class);
         adapter.setProp("client", this.client());
         adapter.display();
     }

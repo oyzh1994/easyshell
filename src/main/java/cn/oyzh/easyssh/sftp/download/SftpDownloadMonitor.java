@@ -27,7 +27,8 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
     @Getter
     private final SftpFile remoteFile;
 
-    private final SftpDownloadManager manager;
+    private final SftpDownloadTask task;
+//    private final SftpDownloadManager manager;
 
     @Getter
     private transient boolean ended;
@@ -40,9 +41,9 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
     @Getter
     private final SSHSftp sftp;
 
-    public SftpDownloadMonitor(final File localFile, SftpFile remoteFile, SftpDownloadManager manager, SSHSftp sftp) {
+    public SftpDownloadMonitor(final File localFile, SftpFile remoteFile, SftpDownloadTask task, SSHSftp sftp) {
         this.sftp = sftp;
-        this.manager = manager;
+        this.task = task;
         this.localFile = localFile;
         this.remoteFile = remoteFile;
     }
@@ -56,7 +57,7 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
     @Override
     public boolean count(long current) {
         this.current += current;
-        this.manager.downloadChanged(this);
+        this.task.downloadChanged(this);
         return !this.cancelled;
     }
 
@@ -65,7 +66,7 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
         this.ended = true;
         if (this.cancelled) {
             JulLog.warn("file:{} download cancelled, download:{} total:{}", this.getRemoteFileName(), this.current, this.total);
-            this.manager.downloadCanceled(this);
+            this.task.downloadCanceled(this);
         } else {
             long endTime = System.currentTimeMillis();
             long duration = (endTime - this.startTime) / 1000;
@@ -73,7 +74,7 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
                 duration = 1;
             }
             JulLog.info("file:{} download finished, cost:{}" + I18nHelper.seconds(), this.getRemoteFileName(), duration);
-            this.manager.downloadEnded(this);
+            this.task.downloadEnded(this);
         }
     }
 
@@ -99,7 +100,7 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
 
     public synchronized void cancel() {
         if (this.ended) {
-            ThreadUtil.start(() -> this.manager.removeMonitor(this), 50);
+            ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
         } else {
             this.cancelled = true;
             ThreadUtil.start(this::end, 50);
