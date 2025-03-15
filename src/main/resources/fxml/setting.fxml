@@ -23,9 +23,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
-<?import cn.oyzh.easyssh.fx.SSHTerminalTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.SSHTerminalTypeComboBox?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-                 fx:controller="cn.oyzh.easyssh.controller.SettingController" realWidth="700" realHeight="450">
+                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="450">
     <left>
         <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
         </SettingLeftTreeView>

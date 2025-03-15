@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyssh.tabs.connect.SSHTermTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.SSHTermTabController"
        text="%base.connect" fx:id="root">
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>

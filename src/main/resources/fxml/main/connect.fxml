@@ -11,9 +11,9 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyssh.trees.connect.SSHConnectTreeView?>
+<?import cn.oyzh.easyshell.trees.connect.SSHConnectTreeView?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyssh.controller.main.ConnectController" text="%base.connection">
+       fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
     <graphic>
         <ConnectionSVGGlyph cursorType="DEFAULT" size="12"/>
     </graphic>

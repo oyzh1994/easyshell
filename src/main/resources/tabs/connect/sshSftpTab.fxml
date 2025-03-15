@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.FileAddSVGGlyph?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.FileUploadSVGGlyph?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.FolderAddSVGGlyph?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.FolderUploadSVGGlyph?>
-<?import cn.oyzh.easyssh.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.easyssh.trees.sftp.SSHSftpTableView?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.FileAddSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.FileUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.FolderAddSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.FolderUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.easyshell.trees.sftp.SSHSftpTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadBoxSVGGlyph?>
@@ -21,7 +21,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyssh.tabs.connect.SSHSftpTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.SSHSftpTabController"
        text="%base.file" fx:id="root">
     <graphic>
         <FileSVGGlyph sizeStr="11"/>

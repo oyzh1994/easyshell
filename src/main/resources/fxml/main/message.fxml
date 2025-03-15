@@ -8,7 +8,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyssh.controller.main.MessageController" text="%base.msg">
+       fx:controller="cn.oyzh.easyshell.controller.main.MessageController" text="%base.msg">
     <graphic>
         <MessageSVGGlyph cursorType="DEFAULT" size="13"/>
     </graphic>

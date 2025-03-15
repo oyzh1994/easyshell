@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyssh.controller.docker.DockerInfoController" prefWidth="850" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.docker.DockerInfoController" prefWidth="850" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyInfo">
             <FXHBox.margin>

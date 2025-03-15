@@ -8,7 +8,7 @@
 <?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <?import cn.oyzh.fx.rich.richtextfx.control.RichTextAreaPane?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyssh.controller.docker.DockerLogsController" prefWidth="850" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.docker.DockerLogsController" prefWidth="850" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyLogs">
             <FXHBox.margin>

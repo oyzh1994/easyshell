@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyssh.tabs.home.SSHHomeTabController">
+        fx:controller="cn.oyzh.easyshell.tabs.home.SSHHomeTabController">
     <ImageView fitWidth="190" fitHeight="190" layoutX="50" layoutY="100">
         <Image url="/image/ssh_no_bg.png"/>
     </ImageView>

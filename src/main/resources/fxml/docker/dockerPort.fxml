@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyssh.trees.docker.DockerPortTableView?>
+<?import cn.oyzh.easyshell.trees.docker.DockerPortTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <FXVBox prefWidth="600" prefHeight="480" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyssh.controller.docker.DockerPortController">
+        fx:controller="cn.oyzh.easyshell.controller.docker.DockerPortController">
     <DockerPortTableView flexWidth="100%" flexHeight="100%" fx:id="portTable">
         <columns>
             <FXTableColumn flexWidth="45%" valueName="outerPort" text="%base.outerPort"/>

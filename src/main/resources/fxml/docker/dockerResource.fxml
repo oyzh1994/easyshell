@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.DecimalTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyssh.controller.docker.DockerResourceController" prefWidth="650" realHeight="550">
+        fx:controller="cn.oyzh.easyshell.controller.docker.DockerResourceController" prefWidth="650" realHeight="550">
     <InfoLabel text="%base.memory">
         <VBox.margin>
             <Insets left="30" top="10"/>

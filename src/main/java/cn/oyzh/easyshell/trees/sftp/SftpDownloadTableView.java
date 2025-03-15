@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.trees.sftp;
 
-import cn.oyzh.easyssh.sftp.download.SftpDownloadTask;
+import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 /**

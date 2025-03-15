@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyssh.fx.SSHContainerStatusComboBox?>
-<?import cn.oyzh.easyssh.trees.docker.SSHContainerTableView?>
+<?import cn.oyzh.easyshell.fx.SSHContainerStatusComboBox?>
+<?import cn.oyzh.easyshell.trees.docker.SSHContainerTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
@@ -13,11 +13,11 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyssh.trees.docker.SSHImageTableView?>
+<?import cn.oyzh.easyshell.trees.docker.SSHImageTableView?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyssh.tabs.connect.SSHDockerTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.SSHDockerTabController"
        text="Docker" fx:id="root">
     <graphic>
         <FileSVGGlyph sizeStr="11"/>

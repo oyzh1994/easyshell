@@ -3,5 +3,5 @@
 <!--<SSHShellTerminalTextArea flexHeight="100%" fx:id="terminal" fontSize="12" editable="false" flexWidth="100%"-->
 <!--                            xmlns="http://javafx.com/javafx"-->
 <!--                            xmlns:fx="http://javafx.com/fxml"-->
-<!--                            fx:controller="cn.oyzh.easyssh.tabs.terminal.SSHTerminalTabContentController">-->
+<!--                            fx:controller="cn.oyzh.easyshell.tabs.terminal.SSHTerminalTabContentController">-->
 <!--</SSHShellTerminalTextArea>-->

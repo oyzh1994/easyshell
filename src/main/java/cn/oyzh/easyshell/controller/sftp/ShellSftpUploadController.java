@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView;
-import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
-import cn.oyzh.easyssh.sftp.upload.SftpUploadTask;
-import cn.oyzh.easyssh.ssh.SSHClient;
-import cn.oyzh.easyssh.util.SSHI18nHelper;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
+import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.util.SSHI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;

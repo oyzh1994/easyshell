@@ -6,7 +6,7 @@
 https://gitee.com/oyzh1994/easyssh/releases
 
 ###### 启动入口
-cn.oyzh.easyssh.EasySSHBootstrap.main  
+cn.oyzh.easyshell.EasySSHBootstrap.main  
 注意，如果要运行项目，最好切换到最新分支，不然可能启动不了，主分支master代码是定期合并进去  
 ide建议idea社区版或者专业版，另外需要安装lombok插件(后续考虑去掉)
 

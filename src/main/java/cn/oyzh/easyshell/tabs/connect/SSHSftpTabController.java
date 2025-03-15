@@ -1,0 +1,580 @@
+package cn.oyzh.easyshell.tabs.connect;
+
+import cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
+import cn.oyzh.easyshell.domain.SSHSetting;
+import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
+import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
+import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.store.SSHSettingStore;
+import cn.oyzh.easyshell.trees.sftp.SSHSftpTableView;
+import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.scene.effect.ColorAdjust;
+
+import java.io.File;
+import java.util.List;
+
+/**
+ * ssh命令行tab内容组件
+ *
+ * @author oyzh
+ * @since 2023/07/21
+ */
+public class SSHSftpTabController extends SubTabController {
+
+    /**
+     * ssh命令行文本域
+     */
+    @FXML
+    private FXTab root;
+
+    @FXML
+    private FXLabel filePath;
+
+//    @FXML
+//    private FXLabel fileUpload;
+//
+//    @FXML
+//    private FXLabel uploadProgressInfo;
+//
+//    @FXML
+//    private FXProgressBar uploadProgress;
+//
+//    @FXML
+//    private FXLabel fileDownload;
+//
+//    @FXML
+//    private FXLabel downloadProgressInfo;
+//
+//    @FXML
+//    private FXProgressBar downloadProgress;
+
+//    @FXML
+//    private FXHBox downloadBox;
+//
+//    @FXML
+//    private FXHBox uploadBox;
+
+    @FXML
+    private SVGGlyph uploadBox;
+
+    @FXML
+    private SVGGlyph downloadBox;
+
+    @FXML
+    private SVGGlyph copyFilePath;
+
+    @FXML
+    private FXToggleSwitch hiddenFile;
+
+    @FXML
+    private SSHSftpTableView fileTable;
+
+    @FXML
+    private ClearableTextField filterFile;
+
+    @FXML
+    private FXLabel fileDelete;
+
+    @FXML
+    private FXHBox deleteBox;
+
+    @FXML
+    private SVGGlyph uploadFile;
+
+    @FXML
+    private SVGGlyph refreshFile;
+
+    @FXML
+    private SVGGlyph uploadDir;
+
+    private final SSHSetting setting = SSHSettingStore.SETTING;
+
+    private final SSHSettingStore settingStore = SSHSettingStore.INSTANCE;
+
+    private boolean initialized = false;
+
+    private void init() {
+        if (this.initialized) {
+            return;
+        }
+        this.initialized = true;
+        this.fileTable.setClient(this.client());
+//        // 下载
+//        this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadChangedCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadCanceledCallback(this::updateUploadInfo);
+//        this.fileTable.setUploadInPreparationCallback(this::updateUploadInfo);
+
+//        // 上传
+//        this.fileTable.setDownloadEndedCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadFailedCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadCanceledCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadChangedCallback(this::updateDownloadInfo);
+//        this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
+
+        // 删除
+        this.fileTable.setDeleteEndedCallback(this::updateDeleteInfo);
+        this.fileTable.setDeleteDeletedCallback(this::updateDeleteInfo);
+
+        // 显示动画
+        this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
+        this.fileTable.loadFile();
+        // 监听上传中属性
+        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setHue(0.5);
+                colorAdjust.setContrast(0.5);
+                colorAdjust.setBrightness(0.5);
+                colorAdjust.setSaturation(0.5);
+                this.uploadBox.setEffect(colorAdjust);
+            } else {
+                this.uploadBox.setEffect(null);
+            }
+        });
+        // 监听删除中属性
+        this.client().downloadingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setHue(0.5);
+                colorAdjust.setContrast(0.5);
+                colorAdjust.setBrightness(0.5);
+                colorAdjust.setSaturation(0.5);
+                this.downloadBox.setEffect(colorAdjust);
+            } else {
+                this.downloadBox.setEffect(null);
+            }
+        });
+//        // 监听下载中属性
+//        this.client().deletingProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                this.refreshFile.disable();
+//            } else {
+//                this.refreshFile.enable();
+//            }
+//        });
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.client().close();
+    }
+
+    @Override
+    public void onTabInit(RichTab tab) {
+        try {
+            super.onTabInit(tab);
+            this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1) {
+                    this.init();
+                }
+            });
+            // 绑定属性
+            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
+            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
+            this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1 == null) {
+                    this.filePath.clear();
+                    this.copyFilePath.disable();
+                } else {
+                    this.filePath.text(t1);
+                    this.copyFilePath.enable();
+                }
+            });
+            this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
+                try {
+                    this.fileTable.setShowHiddenFile(t1);
+                    this.setting.setShowHiddenFile(t1);
+                    this.settingStore.update(this.setting);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+            this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+                try {
+                    this.fileTable.setFilterText(t1);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @Override
+    public SSHConnectTabController parent() {
+        return (SSHConnectTabController) super.parent();
+    }
+
+    public SSHClient client() {
+        return this.parent().client();
+    }
+
+    @FXML
+    private void refreshFile() {
+        try {
+            this.fileTable.loadFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void deleteFile() {
+        try {
+            this.fileTable.deleteFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void returnDir() {
+        try {
+            this.fileTable.returnDir();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void copyFilePath() {
+        try {
+            this.fileTable.copyFilePath();
+            MessageBox.okToast(I18nHelper.copySuccess());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void mkdir() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
+            this.fileTable.mkDir(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void touchFile() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
+            this.fileTable.touchFile(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void uploadFile() {
+        try {
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+            this.fileTable.uploadFile(files);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @FXML
+    private void uploadFolder() {
+        try {
+            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+            this.fileTable.uploadFile(file);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+//    @FXML
+//    private void cancelUpload() {
+//        try {
+//            this.fileTable.cancelUpload();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    @FXML
+//    private void cancelDownload() {
+//        try {
+//            this.fileTable.cancelDownload();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+
+//    private void updateUploadInfo(SftpUploadEnded ended) {
+//        try {
+//            JulLog.info("updateUploadInfo:{}", ended);
+//            this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
+//            if (ended.getFileCount() == 0) {
+//                this.fileUpload.clear();
+//                this.uploadProgressInfo.clear();
+//                this.uploadBox.disappear();
+//                this.updateLayout();
+//                // 重新载入一次文件
+//                this.fileTable.loadFile();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFinished());
+//                }
+//            }
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateUploadInfo(SftpUploadFailed failed) {
+//        try {
+//            JulLog.info("updateUploadInfo:{}", failed);
+//            if (failed.getFileCount() == 0) {
+//                this.fileUpload.clear();
+//                this.uploadProgressInfo.clear();
+//                this.uploadBox.disappear();
+//                this.updateLayout();
+//                // 重新载入一次文件
+//                this.fileTable.loadFile();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFailed());
+//                }
+//            }
+//            MessageBox.warn(failed.getLocalFileName() + " " + I18nHelper.uploadFailed());
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateUploadInfo(SftpUploadCanceled canceled) {
+//        try {
+//            JulLog.info("updateUploadInfo:{}", canceled);
+//            this.fileUpload.clear();
+//            this.uploadProgressInfo.clear();
+//            this.uploadBox.disappear();
+//            this.updateLayout();
+//            this.fileTable.loadFile();
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateUploadInfo(SftpUploadChanged changed) {
+//        if (!this.uploadBox.isVisible()) {
+//            this.uploadBox.display();
+//            this.updateLayout();
+//        }
+//        if (changed.getFileCount() > 1) {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("Count: ").append(changed.getFileCount());
+//            builder.append(" Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
+//            this.fileUpload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
+//            this.uploadProgressInfo.text(progress.toString());
+//        } else {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
+//            this.fileUpload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
+//            this.uploadProgressInfo.text(progress.toString());
+//        }
+//        this.uploadProgress.progress(changed.progress());
+//    }
+//
+//    private void updateUploadInfo(SftpUploadInPreparation inPreparation) {
+//        if (!this.uploadBox.isVisible()) {
+//            this.uploadBox.display();
+//            this.updateLayout();
+//        }
+//        if (inPreparation.getFileName() != null) {
+//            this.fileUpload.text(SSHI18nHelper.fileTip7() + ": " + inPreparation.getFileName());
+//        } else {
+//            this.fileUpload.text(SSHI18nHelper.fileTip7());
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadEnded ended) {
+//        try {
+//            JulLog.info("updateDownloadInfo:{}", ended);
+//            if (ended.getFileCount() == 0) {
+//                this.fileDownload.clear();
+//                this.downloadProgressInfo.clear();
+//                this.downloadBox.disappear();
+//                this.updateLayout();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFinished());
+//                }
+//            }
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadFailed failed) {
+//        try {
+//            JulLog.info("updateDownloadInfo:{}", failed);
+//            if (failed.getFileCount() == 0) {
+//                this.fileDownload.clear();
+//                this.downloadProgressInfo.clear();
+//                this.downloadBox.disappear();
+//                this.updateLayout();
+//                // 提示消息
+//                if (!StageManager.hasFocusedWindow()) {
+//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileDownloadFailed());
+//                }
+//            }
+//            Exception exception = failed.getException();
+//            // 如果异常里面包含文件不存在等信息，则尝试刷新文件列表
+//            if (exception != null && StringUtil.containsAny(exception.getMessage(), "No such file")) {
+//                this.fileTable.loadFile();
+//            }
+//            MessageBox.warn(failed.getRemoteFile() + " " + I18nHelper.downloadFailed());
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadCanceled canceled) {
+//        try {
+//            JulLog.info("updateDownloadInfo:{}", canceled);
+//            this.fileDownload.clear();
+//            this.downloadProgressInfo.clear();
+//            this.downloadBox.disappear();
+//            this.updateLayout();
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadChanged changed) {
+//        if (!this.downloadBox.isVisible()) {
+//            this.downloadBox.display();
+//            this.updateLayout();
+//        }
+//        if (changed.getFileCount() > 1) {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("Count: ").append(changed.getFileCount());
+//            builder.append(" File: ").append(changed.getLocalFileName());
+//            builder.append(" Remote: ").append(changed.getRemoteFile());
+//            this.fileDownload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
+//            this.downloadProgressInfo.text(progress.toString());
+//        } else {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("File: ").append(changed.getLocalFileName());
+//            builder.append(" Remote: ").append(changed.getRemoteFile());
+//            this.fileDownload.text(builder.toString());
+//
+//            StringBuilder progress = new StringBuilder();
+//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
+//                    .append("/")
+//                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
+//            this.downloadProgressInfo.text(progress.toString());
+//        }
+//        this.downloadProgress.progress(changed.progress());
+//    }
+//
+//    private void updateDownloadInfo(SftpDownloadInPreparation inPreparation) {
+//        if (!this.downloadBox.isVisible()) {
+//            this.downloadBox.display();
+//            this.updateLayout();
+//        }
+//        if (inPreparation.getFileName() != null) {
+//            this.fileDownload.text(SSHI18nHelper.fileTip8() + ": " + inPreparation.getFileName());
+//        } else {
+//            this.fileDownload.text(SSHI18nHelper.fileTip8());
+//        }
+//    }
+
+    private void updateDeleteInfo(SftpDeleteEnded ended) {
+        this.deleteBox.disappear();
+        this.updateLayout();
+    }
+
+    private void updateDeleteInfo(SftpDeleteDeleted deleted) {
+        if (!this.deleteBox.isVisible()) {
+            this.deleteBox.display();
+            this.updateLayout();
+        }
+        this.fileTable.fileDeleted(deleted.getRemoteFile());
+        this.fileDelete.text(I18nHelper.fileDeleteIng() + ": " + deleted.getRemoteFile());
+    }
+
+    private synchronized void updateLayout() {
+        int showNum = 0;
+        if (this.deleteBox.isVisible()) {
+            ++showNum;
+        }
+//        if (this.uploadBox.isVisible()) {
+//            ++showNum;
+//        }
+//        if (this.downloadBox.isVisible()) {
+//            ++showNum;
+//        }
+        this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
+        this.fileTable.parentAutosize();
+    }
+
+    @FXML
+    private void showUploadBox() {
+        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class);
+        adapter.setProp("client", this.client());
+        adapter.display();
+    }
+
+    @FXML
+    private void showDownloadBox() {
+        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class);
+        adapter.setProp("client", this.client());
+        adapter.display();
+    }
+}

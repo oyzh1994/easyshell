@@ -191,7 +191,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.7.18</version>
                 <configuration>
-                    <mainClass>cn.oyzh.easyssh.EasySSHBootstrap</mainClass>
+                    <mainClass>cn.oyzh.easyshell.EasySSHBootstrap</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

@@ -7,7 +7,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyssh.controller.HeaderController" flexHeight="100%" realWidth="30">
+        fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30">
     <ToolsSVGGlyph onMousePrimaryClicked="#tool" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>

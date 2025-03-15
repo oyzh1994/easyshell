@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.test;
 
-import cn.oyzh.easyssh.x11.X11Manager;
+import cn.oyzh.easyshell.x11.X11Manager;
 import org.junit.Test;
 
 public class XServerTest {
