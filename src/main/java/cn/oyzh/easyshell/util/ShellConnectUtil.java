@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.ShellConnectInfo;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -66,7 +66,7 @@ public class ShellConnectUtil {
      * @param client ssh客户端
      * @param async  是否异步
      */
-    public static void close(SSHClient client, boolean async) {
+    public static void close(ShellClient client, boolean async) {
         try {
             if (client != null && client.isConnected()) {
                 Runnable func = client::close;
@@ -106,7 +106,7 @@ public class ShellConnectUtil {
                 if (shellConnect.getName() == null) {
                     shellConnect.setName(I18nHelper.testConnection());
                 }
-                SSHClient client = new SSHClient(shellConnect);
+                ShellClient client = new ShellClient(shellConnect);
                 // 开始连接
                 client.start(3_000);
                 if (client.isConnected()) {

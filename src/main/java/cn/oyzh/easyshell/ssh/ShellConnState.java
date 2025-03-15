@@ -6,7 +6,7 @@ package cn.oyzh.easyshell.ssh;
  * @author oyzh
  * @since 2023/07/1
  */
-public enum SSHConnState {
+public enum ShellConnState {
 
     /**
      * 未初始化

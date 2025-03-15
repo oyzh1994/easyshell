@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.controller.docker.DockerInfoController;
 import cn.oyzh.easyshell.controller.docker.DockerVersionController;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
 import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -111,7 +111,7 @@ public class ShellDockerTabController extends SubTabController {
         return (ShellConnectTabController) super.parent();
     }
 
-    public SSHClient client() {
+    public ShellClient client() {
         return this.parent().client();
     }
 

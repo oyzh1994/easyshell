@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -79,7 +79,7 @@ public class ShellConnectTab extends RichTab {
      *
      * @return ssh客户端
      */
-    public SSHClient client() {
+    public ShellClient client() {
         return this.controller().client();
     }
 }

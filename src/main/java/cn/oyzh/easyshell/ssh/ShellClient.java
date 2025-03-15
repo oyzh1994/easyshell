@@ -48,7 +48,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2023/08/16
  */
-public class SSHClient {
+public class ShellClient {
 
     /**
      * JSch对象
@@ -88,7 +88,7 @@ public class SSHClient {
      */
     private boolean closeQuietly;
 
-    public SSHClient(@NonNull ShellConnect shellConnect) {
+    public ShellClient(@NonNull ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {
@@ -110,14 +110,14 @@ public class SSHClient {
      * 连接状态
      */
     @Getter
-    private final ReadOnlyObjectWrapper<SSHConnState> state = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
 
     /**
      * 获取连接状态
      *
      * @return 连接状态
      */
-    public SSHConnState state() {
+    public ShellConnState state() {
         return this.stateProperty().get();
     }
 
@@ -126,7 +126,7 @@ public class SSHClient {
      *
      * @return 连接状态属性
      */
-    public ReadOnlyObjectProperty<SSHConnState> stateProperty() {
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
         return this.state.getReadOnlyProperty();
     }
 
@@ -135,7 +135,7 @@ public class SSHClient {
      *
      * @param stateListener 监听器
      */
-    public void addStateListener(ChangeListener<SSHConnState> stateListener) {
+    public void addStateListener(ChangeListener<ShellConnState> stateListener) {
         if (stateListener != null) {
             this.stateProperty().addListener(stateListener);
         }
@@ -248,7 +248,7 @@ public class SSHClient {
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;
-                this.state.set(SSHConnState.CLOSED);
+                this.state.set(ShellConnState.CLOSED);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -292,21 +292,21 @@ public class SSHClient {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 初始化连接池
-            this.state.set(SSHConnState.CONNECTING);
+            this.state.set(ShellConnState.CONNECTING);
             // 执行连接
             this.session.connect(timeout);
             // 判断连接结果
             if (this.session.isConnected()) {
-                this.state.set(SSHConnState.CONNECTED);
-            } else if (this.state.get() == SSHConnState.FAILED) {
+                this.state.set(ShellConnState.CONNECTED);
+            } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
-                this.state.set(SSHConnState.FAILED);
+                this.state.set(ShellConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
             JulLog.info("sshClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            this.state.set(SSHConnState.FAILED);
+            this.state.set(ShellConnState.FAILED);
             throw ex;
         }
     }
@@ -318,7 +318,7 @@ public class SSHClient {
      */
     public boolean isConnecting() {
         if (!this.isClosed()) {
-            return this.state.get() == SSHConnState.CONNECTING;
+            return this.state.get() == ShellConnState.CONNECTING;
         }
 //        this.state.set(SSHConnState.CLOSED);
         return false;

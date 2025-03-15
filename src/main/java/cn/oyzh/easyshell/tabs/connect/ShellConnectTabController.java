@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -29,7 +29,7 @@ public class ShellConnectTabController extends ParentTabController {
      */
     @Getter
     @Accessors(chain = true, fluent = true)
-    private SSHClient client;
+    private ShellClient client;
 
     @Getter
     @Accessors(chain = true, fluent = true)
@@ -64,7 +64,7 @@ public class ShellConnectTabController extends ParentTabController {
      */
     public void init(@NonNull ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
-        this.client = new SSHClient(treeItem.value());
+        this.client = new ShellClient(treeItem.value());
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {

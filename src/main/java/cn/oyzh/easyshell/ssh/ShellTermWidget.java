@@ -29,14 +29,14 @@ import java.util.function.IntConsumer;
  * @author oyzh
  * @since 2025-03-04
  */
-public class SSHTermWidget extends JediTermFxWidget {
+public class ShellTermWidget extends JediTermFxWidget {
 
     /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
-    public SSHTermWidget() {
+    public ShellTermWidget() {
         super(new SSHSettingsProvider());
     }
 
@@ -94,7 +94,7 @@ public class SSHTermWidget extends JediTermFxWidget {
     public TtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new SSHTtyConnector(process, charset, Arrays.asList(command));
+        return new ShellTtyConnector(process, charset, Arrays.asList(command));
     }
 
     protected Map<String, String> getEnvironments() {
@@ -117,7 +117,7 @@ public class SSHTermWidget extends JediTermFxWidget {
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
             JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-            if (ttyConnector instanceof SSHTtyConnector loggingConnector) {
+            if (ttyConnector instanceof ShellTtyConnector loggingConnector) {
                 loggingConnector.setWidget(session);
             }
             session.start();
@@ -131,8 +131,8 @@ public class SSHTermWidget extends JediTermFxWidget {
     }
 
     @Override
-    public SSHTtyConnector getTtyConnector() {
-        return (SSHTtyConnector) super.getTtyConnector();
+    public ShellTtyConnector getTtyConnector() {
+        return (ShellTtyConnector) super.getTtyConnector();
     }
 
     public double getWidth() {

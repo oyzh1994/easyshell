@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -34,7 +34,7 @@ public class ShellSftpUploadController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        SSHClient client = this.getWindowProp("client");
+        ShellClient client = this.getWindowProp("client");
         this.uploadManager = client.getSftpUploadManager();
         this.uploadTable.setItem(uploadManager.getTasks());
     }

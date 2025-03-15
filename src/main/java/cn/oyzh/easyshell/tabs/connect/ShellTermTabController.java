@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.tabs.connect;
 
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.ssh.SSHShell;
-import cn.oyzh.easyshell.ssh.SSHTermWidget;
-import cn.oyzh.easyshell.ssh.SSHTtyConnector;
+import cn.oyzh.easyshell.ssh.ShellTermWidget;
+import cn.oyzh.easyshell.ssh.ShellTtyConnector;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -33,11 +33,11 @@ public class ShellTermTabController extends SubTabController {
     /**
      * 终端组件
      */
-    private SSHTermWidget widget;
+    private ShellTermWidget widget;
 
     private void initWidget(SSHShell shell) throws IOException {
-        this.widget = new SSHTermWidget();
-        SSHTtyConnector connector = (SSHTtyConnector) this.widget.createTtyConnector();
+        this.widget = new ShellTermWidget();
+        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector();
         connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
@@ -55,7 +55,7 @@ public class ShellTermTabController extends SubTabController {
     }
 
     public void init() throws IOException, JSchException {
-        SSHClient client = this.client();
+        ShellClient client = this.client();
         SSHShell shell = client.openShell();
         this.initWidget(shell);
         shell.connect(client.connectTimeout());
@@ -75,7 +75,7 @@ public class ShellTermTabController extends SubTabController {
         return (ShellConnectTabController) super.parent();
     }
 
-    public SSHClient client() {
+    public ShellClient client() {
         return this.parent().client();
     }
 }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -21,7 +21,7 @@ public class SftpUtil {
         return src + name;
     }
 
-    public static String getOwner(int uid, SSHClient client) {
+    public static String getOwner(int uid, ShellClient client) {
         SftpAttr attr = client.getAttr();
         String ownerName = attr.getOwner(uid);
         if (ownerName == null) {
@@ -31,7 +31,7 @@ public class SftpUtil {
         return ownerName;
     }
 
-    public static String getGroup(int gid, SSHClient client) {
+    public static String getGroup(int gid, ShellClient client) {
         SftpAttr attr = client.getAttr();
         String groupName = attr.getGroup(gid);
         if (groupName == null) {

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
@@ -139,7 +139,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    private ShellConnectTab getConnectTab(SSHClient client) {
+    private ShellConnectTab getConnectTab(ShellClient client) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellConnectTab tab1 && tab1.client() == client) {
                 return tab1;

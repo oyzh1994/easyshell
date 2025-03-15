@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.SSHChannel;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellChannel;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SSHSftp extends SSHChannel {
+public class SSHSftp extends ShellChannel {
 
     public SSHSftp(ChannelSftp channel) {
         super(channel);
@@ -68,7 +68,7 @@ public class SSHSftp extends SSHChannel {
         return this.lsFile(path, null);
     }
 
-    public List<SftpFile> lsFile(String path, SSHClient client) throws SftpException {
+    public List<SftpFile> lsFile(String path, ShellClient client) throws SftpException {
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {

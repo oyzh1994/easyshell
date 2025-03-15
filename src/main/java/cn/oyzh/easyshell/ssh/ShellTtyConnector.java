@@ -27,7 +27,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
+public class ShellTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
     @Setter
     private int MAX_LOG_SIZE = 200;
@@ -52,7 +52,7 @@ public class SSHTtyConnector extends PtyProcessTtyConnector implements LoggingTt
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-    public SSHTtyConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
+    public ShellTtyConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

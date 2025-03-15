@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.docker;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 
 /**
  * @author oyzh
@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.ssh.SSHClient;
  */
 public class DockerExec {
 
-    private SSHClient client;
+    private ShellClient client;
 
     private final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
 
@@ -19,7 +19,7 @@ public class DockerExec {
 
     //private final String resource_format = "{{.HostConfig.Memory}}\t{{.HostConfig.MemorySwap}}\t{{.HostConfig.CpuShares}}\t{{.HostConfig.NanoCpus}}\t{{.HostConfig.CpuPeriod}}\t{{.HostConfig.CpuQuota}}";
 
-    public DockerExec(SSHClient client) {
+    public DockerExec(ShellClient client) {
         this.client = client;
     }
 
