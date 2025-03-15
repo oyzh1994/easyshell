@@ -31,7 +31,7 @@ public class SSHX11Config implements Serializable {
     /**
      * 连接id
      *
-     * @see SSHConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

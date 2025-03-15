@@ -3,8 +3,9 @@ package cn.oyzh.easyssh.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.docker.DockerExec;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHX11Config;
+import cn.oyzh.easyssh.domain.ShellSSHConfig;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.sftp.SSHSftp;
 import cn.oyzh.easyssh.sftp.SSHSftpManager;
@@ -16,7 +17,11 @@ import cn.oyzh.easyssh.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyssh.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyssh.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyssh.store.SSHX11ConfigStore;
+import cn.oyzh.easyssh.store.ShellSSHConfigStore;
 import cn.oyzh.easyssh.x11.X11Manager;
+import cn.oyzh.ssh.SSHException;
+import cn.oyzh.ssh.SSHForwardConfig;
+import cn.oyzh.ssh.SSHForwarder;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
@@ -55,7 +60,7 @@ public class SSHClient {
      */
     @Getter
     @Accessors(chain = true, fluent = true)
-    private final SSHConnect sshConnect;
+    private final ShellConnect shellConnect;
 
     /**
      * ssh会话
@@ -64,17 +69,27 @@ public class SSHClient {
     private Session session;
 
     /**
+     * ssh端口转发器
+     */
+    private SSHForwarder sshForwarder;
+
+    /**
      * x11配置存储
      */
     private final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
+
+    /**
+     * ssh配置存储
+     */
+    private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 
     /**
      * 静默关闭标志位
      */
     private boolean closeQuietly;
 
-    public SSHClient(@NonNull SSHConnect sshConnect) {
-        this.sshConnect = sshConnect;
+    public SSHClient(@NonNull ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
@@ -126,18 +141,57 @@ public class SSHClient {
         }
     }
 
+    private String initHost() {
+        // 连接地址
+        String host;
+        // 初始化ssh端口转发
+        if (this.shellConnect.isSSHForward()) {
+            // 初始化ssh转发器
+            ShellSSHConfig sshConfig = this.shellConnect.getSshConfig();
+            // 从数据库获取
+            if (sshConfig == null) {
+                sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
+            }
+            if (sshConfig != null) {
+                if (this.sshForwarder == null) {
+                    this.sshForwarder = new SSHForwarder(sshConfig);
+                }
+                // ssh配置
+                SSHForwardConfig forwardConfig = new SSHForwardConfig();
+                forwardConfig.setHost(this.shellConnect.hostIp());
+                forwardConfig.setPort(this.shellConnect.hostPort());
+                // 执行连接
+                int localPort = this.sshForwarder.forward(forwardConfig);
+                // 连接信息
+                host = "127.0.0.1:" + localPort;
+            } else {
+                JulLog.warn("ssh forward is enable but ssh config is null");
+                throw new SSHException("ssh forward is enable but ssh config is null");
+            }
+        } else {// 直连
+            // 连接信息
+            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
+        }
+        return host;
+    }
+
     /**
      * 初始化客户端
      */
     private void initClient() throws JSchException {
         if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.sshConnect.getUser(), this.sshConnect.getPassword(), this.sshConnect.getHost());
+            JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
         }
+        // 连接信息
+        String host = this.initHost();
+        String hostIp = host.split(":")[0];
+        int port = Integer.parseInt(host.split(":")[1]);
         // 创建会话
-        this.session = JSCH.getSession(this.sshConnect.getUser(), this.sshConnect.hostIp(), this.sshConnect.hostPort());
+        this.session = JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+//        this.session = JSCH.getSession(this.shellConnect.getUser(), this.shellConnect.hostIp(), this.shellConnect.hostPort());
         // 主机密码
-        if (StringUtil.isNotBlank(this.sshConnect.getPassword())) {
-            this.session.setPassword(this.sshConnect.getPassword());
+        if (StringUtil.isNotBlank(this.shellConnect.getPassword())) {
+            this.session.setPassword(this.shellConnect.getPassword());
         }
         // 配置参数
         Properties config = new Properties();
@@ -148,12 +202,12 @@ public class SSHClient {
         // 设置配置
         this.session.setConfig(config);
         // 启用X11转发
-        if (this.sshConnect.isX11forwarding()) {
+        if (this.shellConnect.isX11forwarding()) {
             // x11配置
-            SSHX11Config x11Config = this.sshConnect.getX11Config();
+            SSHX11Config x11Config = this.shellConnect.getX11Config();
             // 获取x11配置
             if (x11Config == null) {
-                x11Config = this.x11ConfigStore.getByIid(this.sshConnect.getId());
+                x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());
             }
             if (x11Config != null) {
                 // x11配置
@@ -170,7 +224,7 @@ public class SSHClient {
             }
         }
         // 超时连接
-        this.session.setTimeout(this.sshConnect.connectTimeOutMs());
+        this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
 
     /**
@@ -293,7 +347,7 @@ public class SSHClient {
     }
 
     public Object connectName() {
-        return this.sshConnect.getName();
+        return this.shellConnect.getName();
     }
 
     @Getter
@@ -303,7 +357,7 @@ public class SSHClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
-                if (this.sshConnect.isX11forwarding()) {
+                if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
                 channel.setInputStream(System.in);
@@ -353,7 +407,7 @@ public class SSHClient {
         ChannelExec channel = null;
         try {
             channel = (ChannelExec) this.session.openChannel("exec");
-            if (this.sshConnect.isX11forwarding()) {
+            if (this.shellConnect.isX11forwarding()) {
                 channel.setXForwarding(true);
             }
             channel.setCommand(command);
@@ -383,7 +437,7 @@ public class SSHClient {
     }
 
     public int connectTimeout() {
-        return this.sshConnect.connectTimeOutMs();
+        return this.shellConnect.connectTimeOutMs();
     }
 
     private SftpAttr attr;
@@ -468,7 +522,7 @@ public class SSHClient {
         return this.dockerExec;
     }
 
-//    public boolean isDownloading() {
+    //    public boolean isDownloading() {
 //        return this.sftpDownloadManager.isDownloading();
 //    }
 //

@@ -3,7 +3,7 @@ package cn.oyzh.easyssh.trees.connect;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.connect.SSHAddConnectController;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
@@ -158,8 +158,8 @@ public class SSHGroupTreeItem extends RichTreeItem<SSHGroupTreeItemValue> implem
     }
 
     @Override
-    public void addConnect(@NonNull SSHConnect sshConnect) {
-        this.addConnectItem(new SSHConnectTreeItem(sshConnect, this.getTreeView()));
+    public void addConnect(@NonNull ShellConnect shellConnect) {
+        this.addConnectItem(new SSHConnectTreeItem(shellConnect, this.getTreeView()));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.event;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import cn.oyzh.easyssh.event.connect.SSHConnectAddedEvent;
 import cn.oyzh.easyssh.event.connect.SSHConnectDeletedEvent;
@@ -87,33 +87,33 @@ public class SSHEventUtil {
     /**
      * 连接已新增事件
      *
-     * @param sshConnect ssh连接
+     * @param shellConnect ssh连接
      */
-    public static void connectAdded(SSHConnect sshConnect) {
+    public static void connectAdded(ShellConnect shellConnect) {
         SSHConnectAddedEvent event = new SSHConnectAddedEvent();
-        event.data(sshConnect);
+        event.data(shellConnect);
         EventUtil.post(event);
     }
 
     /**
      * 连接已修改事件
      *
-     * @param sshConnect ssh连接
+     * @param shellConnect ssh连接
      */
-    public static void connectUpdated(SSHConnect sshConnect) {
+    public static void connectUpdated(ShellConnect shellConnect) {
         SSHConnectUpdatedEvent event = new SSHConnectUpdatedEvent();
-        event.data(sshConnect);
+        event.data(shellConnect);
         EventUtil.post(event);
     }
 
     /**
      * 连接已删除事件
      *
-     * @param sshConnect ssh连接
+     * @param shellConnect ssh连接
      */
-    public static void connectDeleted(SSHConnect sshConnect) {
+    public static void connectDeleted(ShellConnect shellConnect) {
         SSHConnectDeletedEvent event = new SSHConnectDeletedEvent();
-        event.data(sshConnect);
+        event.data(shellConnect);
         EventUtil.post(event);
     }
 
@@ -228,7 +228,7 @@ public class SSHEventUtil {
      *
      * @param connect ssh连接
      */
-    public static void showUpdateConnect(SSHConnect connect) {
+    public static void showUpdateConnect(ShellConnect connect) {
         SSHShowUpdateConnectEvent event = new SSHShowUpdateConnectEvent();
         event.data(connect);
         EventUtil.post(event);

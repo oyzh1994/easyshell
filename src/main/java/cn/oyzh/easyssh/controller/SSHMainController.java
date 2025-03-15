@@ -2,7 +2,7 @@ package cn.oyzh.easyssh.controller;
 
 import cn.oyzh.easyssh.controller.main.ConnectController;
 import cn.oyzh.easyssh.controller.main.MessageController;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHSetting;
 import cn.oyzh.easyssh.event.tree.SSHTreeItemChangedEvent;
 import cn.oyzh.easyssh.store.SSHSettingStore;
@@ -64,7 +64,7 @@ public class SSHMainController extends ParentStageController {
      *
      * @param connect ssh连接
      */
-    private void flushViewTitle(SSHConnect connect) {
+    private void flushViewTitle(ShellConnect connect) {
         if (connect != null) {
             this.stage.appendTitle(" (" + connect.getName() + ")");
         } else {

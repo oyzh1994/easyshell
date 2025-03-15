@@ -2,9 +2,10 @@ package cn.oyzh.easyssh.controller.connect;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import cn.oyzh.easyssh.domain.SSHX11Config;
+import cn.oyzh.easyssh.domain.ShellSSHConfig;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.easyssh.store.SSHX11ConfigStore;
@@ -14,10 +15,12 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -106,6 +109,49 @@ public class SSHAddConnectController extends StageController {
     @FXML
     private PortTextField x11Port;
 
+
+    /**
+     * ssh面板
+     */
+    @FXML
+    private FXTab sshTab;
+
+    /**
+     * 开启ssh
+     */
+    @FXML
+    private FXToggleSwitch sshForward;
+
+    /**
+     * ssh主机地址
+     */
+    @FXML
+    private ClearableTextField sshHost;
+
+    /**
+     * ssh主机端口
+     */
+    @FXML
+    private PortTextField sshPort;
+
+    /**
+     * ssh主机端口
+     */
+    @FXML
+    private NumberTextField sshTimeout;
+
+    /**
+     * ssh主机用户
+     */
+    @FXML
+    private ClearableTextField sshUser;
+
+    /**
+     * ssh主机密码
+     */
+    @FXML
+    private ClearableTextField sshPassword;
+
     /**
      * 分组
      */
@@ -143,6 +189,21 @@ public class SSHAddConnectController extends StageController {
     }
 
     /**
+     * 获取ssh信息
+     *
+     * @return ssh连接信息
+     */
+    private ShellSSHConfig getSSHConfig() {
+        ShellSSHConfig sshConfig = new ShellSSHConfig();
+        sshConfig.setHost(this.sshHost.getText());
+        sshConfig.setUser(this.sshUser.getText());
+        sshConfig.setPort(this.sshPort.getIntValue());
+        sshConfig.setPassword(this.sshPassword.getText());
+        sshConfig.setTimeout(this.sshTimeout.getIntValue());
+        return sshConfig;
+    }
+
+    /**
      * 获取x11配置信息
      *
      * @return x11配置信息
@@ -165,12 +226,16 @@ public class SSHAddConnectController extends StageController {
             MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             // 创建ssh连接
-            SSHConnect sshConnect = new SSHConnect();
-            sshConnect.setHost(host);
-            sshConnect.setConnectTimeOut(3);
-            sshConnect.setUser(this.userName.getTextTrim());
-            sshConnect.setPassword(this.password.getTextTrim());
-            SSHConnectUtil.testConnect(this.stage, sshConnect);
+            ShellConnect shellConnect = new ShellConnect();
+            shellConnect.setHost(host);
+            shellConnect.setConnectTimeOut(3);
+            shellConnect.setUser(this.userName.getTextTrim());
+            shellConnect.setPassword(this.password.getTextTrim());
+            shellConnect.setSshForward(this.sshForward.isSelected());
+            if (shellConnect.isSSHForward()) {
+                shellConnect.setSshConfig(this.getSSHConfig());
+            }
+            SSHConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
 
@@ -199,22 +264,25 @@ public class SSHAddConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            SSHConnect sshConnect = new SSHConnect();
-            sshConnect.setName(name);
+            ShellConnect shellConnect = new ShellConnect();
+            shellConnect.setName(name);
             Number connectTimeOut = this.connectTimeOut.getValue();
 
-            sshConnect.setHost(host.trim());
-            sshConnect.setUser(userName.trim());
-            sshConnect.setPassword(password.trim());
-            sshConnect.setRemark(this.remark.getTextTrim());
-            sshConnect.setConnectTimeOut(connectTimeOut.intValue());
+            shellConnect.setHost(host.trim());
+            shellConnect.setUser(userName.trim());
+            shellConnect.setPassword(password.trim());
+            shellConnect.setRemark(this.remark.getTextTrim());
+            shellConnect.setConnectTimeOut(connectTimeOut.intValue());
+            // ssh配置
+            shellConnect.setSshConfig(this.getSSHConfig());
+            shellConnect.setSshForward(this.sshForward.isSelected());
             // x11配置
-            sshConnect.setX11Config(this.getX11Config());
-            sshConnect.setX11forwarding(this.x11forwarding.isSelected());
-            sshConnect.setGroupId(this.group == null ? null : this.group.getGid());
+            shellConnect.setX11Config(this.getX11Config());
+            shellConnect.setX11forwarding(this.x11forwarding.isSelected());
+            shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(sshConnect)) {
-                SSHEventUtil.connectAdded(sshConnect);
+            if (this.connectStore.replace(shellConnect)) {
+                SSHEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
@@ -238,6 +306,14 @@ public class SSHAddConnectController extends StageController {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            }
+        });
+        // ssh配置
+        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.sshTab, "ssh");
+            } else {
+                NodeGroupUtil.disable(this.sshTab, "ssh");
             }
         });
     }

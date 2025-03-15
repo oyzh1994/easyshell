@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.event.connect;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.event.Event;
 
@@ -14,7 +14,7 @@ public class SSHConnectOpenedEvent extends Event<SSHConnectTreeItem>  {
 //        return this.data().client();
 //    }
 
-    public SSHConnect connect() {
+    public ShellConnect connect() {
         return this.data().value();
     }
 }

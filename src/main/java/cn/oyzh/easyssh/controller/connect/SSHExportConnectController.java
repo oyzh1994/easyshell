@@ -2,7 +2,7 @@ package cn.oyzh.easyssh.controller.connect;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.dto.SSHConnectExport;
 import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.easyssh.store.SSHGroupStore;
@@ -69,7 +69,7 @@ public class SSHExportConnectController extends StageController {
      */
     @FXML
     private void doExport() {
-        List<SSHConnect> connects = this.connectStore.loadFull();
+        List<ShellConnect> connects = this.connectStore.loadFull();
         if (CollectionUtil.isEmpty(connects)) {
             MessageBox.warn(I18nHelper.connectionIsEmpty());
             return;

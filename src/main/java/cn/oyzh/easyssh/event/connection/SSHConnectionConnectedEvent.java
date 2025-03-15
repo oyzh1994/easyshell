@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.event.connection;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
@@ -17,7 +17,7 @@ public class SSHConnectionConnectedEvent extends Event<SSHClient> implements Eve
         return String.format("[%s:%s connected] " , I18nHelper.connect(), this.data().connectName());
     }
 
-    public SSHConnect connect() {
-        return this.data().sshConnect();
+    public ShellConnect connect() {
+        return this.data().shellConnect();
     }
 }

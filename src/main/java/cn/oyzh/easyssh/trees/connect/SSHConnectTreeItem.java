@@ -2,7 +2,7 @@ package cn.oyzh.easyssh.trees.connect;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.connect.SSHUpdateConnectController;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -35,7 +35,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      */
     @Getter
     @Accessors(chain = true, fluent = true)
-    private SSHConnect value;
+    private ShellConnect value;
 
 //    /**
 //     * ssh客户端
@@ -54,7 +54,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
 
-    public SSHConnectTreeItem(@NonNull SSHConnect value, @NonNull RichTreeView treeView) {
+    public SSHConnectTreeItem(@NonNull ShellConnect value, @NonNull RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         this.value(value);
@@ -183,11 +183,11 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      * 克隆连接
      */
     private void cloneConnect() {
-        SSHConnect sshConnect = new SSHConnect();
-        sshConnect.copy(this.value);
-        sshConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
-        if (this.connectStore.insert(sshConnect)) {
-            this.connectManager().addConnect(sshConnect);
+        ShellConnect shellConnect = new ShellConnect();
+        shellConnect.copy(this.value);
+        shellConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
+        if (this.connectStore.insert(shellConnect)) {
+            this.connectManager().addConnect(shellConnect);
         } else {
             MessageBox.warn(I18nHelper.operationFail());
         }
@@ -231,7 +231,7 @@ public class SSHConnectTreeItem extends RichTreeItem<SSHConnectTreeItemValue> {
      *
      * @param value ssh信息
      */
-    public void value(@NonNull SSHConnect value) {
+    public void value(@NonNull ShellConnect value) {
         this.value = value;
 //        this.client = new SSHClient(value);
 //        this.client.addStateListener((observable, o, n) -> this.refresh());

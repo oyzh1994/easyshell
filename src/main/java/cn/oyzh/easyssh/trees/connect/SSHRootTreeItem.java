@@ -5,7 +5,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyssh.controller.connect.SSHAddConnectController;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import cn.oyzh.easyssh.dto.SSHConnectExport;
 import cn.oyzh.easyssh.event.SSHEventUtil;
@@ -78,7 +78,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
      * 导出连接
      */
     public void exportConnect() {
-        List<SSHConnect> infos = this.connectStore.load();
+        List<ShellConnect> infos = this.connectStore.load();
         if (infos.isEmpty()) {
             MessageBox.warn(I18nHelper.connectionIsEmpty());
             return;
@@ -152,9 +152,9 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
         try {
             String text = FileUtil.readUtf8String(file);
             SSHConnectExport export = SSHConnectExport.fromJSON(text);
-            List<SSHConnect> connects = export.getConnects();
+            List<ShellConnect> connects = export.getConnects();
             if (CollectionUtil.isNotEmpty(connects)) {
-                for (SSHConnect connect : connects) {
+                for (ShellConnect connect : connects) {
                     if (!this.connectStore.replace(connect)) {
                         MessageBox.warn(I18nHelper.connect() + " : " + connect.getName() + " " + I18nHelper.importFail());
                     }
@@ -238,29 +238,29 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     /**
      * 连接新增事件
      *
-     * @param sshConnect ssh连接
+     * @param shellConnect ssh连接
      */
-    public void connectAdded(SSHConnect sshConnect) {
-        this.addConnect(sshConnect);
+    public void connectAdded(ShellConnect shellConnect) {
+        this.addConnect(shellConnect);
     }
 
     /**
      * 连接变更事件
      *
-     * @param sshConnect ssh连接
+     * @param shellConnect ssh连接
      */
-    public void connectUpdated(SSHConnect sshConnect) {
+    public void connectUpdated(ShellConnect shellConnect) {
         f1:
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof SSHConnectTreeItem connectTreeItem) {
-                if (connectTreeItem.value() == sshConnect) {
-                    connectTreeItem.value(sshConnect);
+                if (connectTreeItem.value() == shellConnect) {
+                    connectTreeItem.value(shellConnect);
                     break;
                 }
             } else if (item instanceof SSHGroupTreeItem groupTreeItem) {
                 for (SSHConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
-                    if (connectTreeItem.value() == sshConnect) {
-                        connectTreeItem.value(sshConnect);
+                    if (connectTreeItem.value() == shellConnect) {
+                        connectTreeItem.value(shellConnect);
                         break f1;
                     }
                 }
@@ -269,7 +269,7 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
     }
 
     @Override
-    public void addConnect(@NonNull SSHConnect info) {
+    public void addConnect(@NonNull ShellConnect info) {
         SSHGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
         if (groupItem == null) {
             super.addChild(new SSHConnectTreeItem(info, this.getTreeView()));
@@ -375,13 +375,13 @@ public class SSHRootTreeItem extends RichTreeItem<SSHRootTreeItemValue> implemen
             this.addChild(list);
         }
         // 初始化连接
-        List<SSHConnect> connects = this.connectStore.load();
+        List<ShellConnect> connects = this.connectStore.load();
         List<SSHGroupTreeItem> groupItems = this.getGroupItems();
         if (CollectionUtil.isNotEmpty(connects)) {
             List<SSHConnectTreeItem> connectItems = this.getConnectItems();
             // List<SSHConnect> list = new ArrayList<>();
             f1:
-            for (SSHConnect connect : connects) {
+            for (ShellConnect connect : connects) {
                 for (SSHConnectTreeItem connectItem : connectItems) {
                     if (StringUtil.equals(connectItem.getId(), connect.getId())) {
                         continue f1;

@@ -2,20 +2,24 @@ package cn.oyzh.easyssh.controller.connect;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHX11Config;
+import cn.oyzh.easyssh.domain.ShellSSHConfig;
 import cn.oyzh.easyssh.event.SSHEventUtil;
 import cn.oyzh.easyssh.store.SSHConnectStore;
+import cn.oyzh.easyssh.store.ShellSSHConfigStore;
 import cn.oyzh.easyssh.util.SSHConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -60,7 +64,7 @@ public class SSHUpdateConnectController extends StageController {
     /**
      * ssh信息
      */
-    private SSHConnect sshConnect;
+    private ShellConnect shellConnect;
 
     /**
      * 名称
@@ -111,9 +115,56 @@ public class SSHUpdateConnectController extends StageController {
     private PortTextField x11Port;
 
     /**
+     * ssh面板
+     */
+    @FXML
+    private FXTab sshTab;
+
+    /**
+     * 开启ssh
+     */
+    @FXML
+    private FXToggleSwitch sshForward;
+
+    /**
+     * ssh主机地址
+     */
+    @FXML
+    private ClearableTextField sshHost;
+
+    /**
+     * ssh主机端口
+     */
+    @FXML
+    private PortTextField sshPort;
+
+    /**
+     * ssh主机端口
+     */
+    @FXML
+    private NumberTextField sshTimeout;
+
+    /**
+     * ssh主机用户
+     */
+    @FXML
+    private ClearableTextField sshUser;
+
+    /**
+     * ssh主机密码
+     */
+    @FXML
+    private ClearableTextField sshPassword;
+
+    /**
      * ssh连接储存对象
      */
     private final SSHConnectStore connectStore = SSHConnectStore.INSTANCE;
+
+    /**
+     * ssh连接储存对象
+     */
+    private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -137,13 +188,29 @@ public class SSHUpdateConnectController extends StageController {
     }
 
     /**
+     * 获取ssh信息
+     *
+     * @return ssh连接信息
+     */
+    private ShellSSHConfig getSSHConfig() {
+        ShellSSHConfig sshConfig = new ShellSSHConfig();
+        sshConfig.setIid(this.shellConnect.getId());
+        sshConfig.setHost(this.sshHost.getText());
+        sshConfig.setUser(this.sshUser.getText());
+        sshConfig.setPort(this.sshPort.getIntValue());
+        sshConfig.setPassword(this.sshPassword.getText());
+        sshConfig.setTimeout(this.sshTimeout.getIntValue());
+        return sshConfig;
+    }
+
+    /**
      * 获取x11配置信息
      *
      * @return x11配置信息
      */
     private SSHX11Config getX11Config() {
         SSHX11Config sshConfig = new SSHX11Config();
-        sshConfig.setIid(this.sshConnect.getId());
+        sshConfig.setIid(this.shellConnect.getId());
         sshConfig.setHost(this.x11Host.getText());
         sshConfig.setPort(this.x11Port.getIntValue());
         return sshConfig;
@@ -160,13 +227,17 @@ public class SSHUpdateConnectController extends StageController {
             MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             // 创建ssh信息
-            SSHConnect sshConnect = new SSHConnect();
-            sshConnect.setHost(host);
-            sshConnect.setConnectTimeOut(3);
-            sshConnect.setId(this.sshConnect.getId());
-            sshConnect.setUser(this.userName.getTextTrim());
-            sshConnect.setPassword(this.password.getTextTrim());
-            SSHConnectUtil.testConnect(this.stage, sshConnect);
+            ShellConnect shellConnect = new ShellConnect();
+            shellConnect.setHost(host);
+            shellConnect.setConnectTimeOut(3);
+            shellConnect.setId(this.shellConnect.getId());
+            shellConnect.setUser(this.userName.getTextTrim());
+            shellConnect.setPassword(this.password.getTextTrim());
+            shellConnect.setSshForward(this.sshForward.isSelected());
+            if (shellConnect.isSSHForward()) {
+                shellConnect.setSshConfig(this.getSSHConfig());
+            }
+            SSHConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
 
@@ -195,20 +266,23 @@ public class SSHUpdateConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            this.sshConnect.setName(name);
+            this.shellConnect.setName(name);
             Number connectTimeOut = this.connectTimeOut.getValue();
 
-            this.sshConnect.setHost(host.trim());
-            this.sshConnect.setUser(userName.trim());
-            this.sshConnect.setPassword(password.trim());
-            this.sshConnect.setRemark(this.remark.getTextTrim());
-            this.sshConnect.setConnectTimeOut(connectTimeOut.intValue());
+            this.shellConnect.setHost(host.trim());
+            this.shellConnect.setUser(userName.trim());
+            this.shellConnect.setPassword(password.trim());
+            this.shellConnect.setRemark(this.remark.getTextTrim());
+            this.shellConnect.setConnectTimeOut(connectTimeOut.intValue());
+            // ssh配置
+            this.shellConnect.setSshConfig(this.getSSHConfig());
+            this.shellConnect.setSshForward(this.sshForward.isSelected());
             // x11配置
-            this.sshConnect.setX11Config(this.getX11Config());
-            this.sshConnect.setX11forwarding(this.x11forwarding.isSelected());
+            this.shellConnect.setX11Config(this.getX11Config());
+            this.shellConnect.setX11forwarding(this.x11forwarding.isSelected());
             // 保存数据
-            if (this.connectStore.replace(this.sshConnect)) {
-                SSHEventUtil.connectUpdated(this.sshConnect);
+            if (this.connectStore.replace(this.shellConnect)) {
+                SSHEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
@@ -234,28 +308,44 @@ public class SSHUpdateConnectController extends StageController {
                 }
             }
         });
+        // ssh配置
+        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.sshTab, "ssh");
+            } else {
+                NodeGroupUtil.disable(this.sshTab, "ssh");
+            }
+        });
     }
 
     @Override
     public void onWindowShown(@NonNull WindowEvent event) {
         super.onWindowShown(event);
-        this.sshConnect = this.getWindowProp("sshConnect");
-        this.name.setText(this.sshConnect.getName());
-        this.hostIp.setText(this.sshConnect.hostIp());
-        this.remark.setText(this.sshConnect.getRemark());
-        this.userName.setText(this.sshConnect.getUser());
-        this.hostPort.setValue(this.sshConnect.hostPort());
-        this.password.setText(this.sshConnect.getPassword());
-        this.connectTimeOut.setValue(this.sshConnect.getConnectTimeOut());
-        this.x11forwarding.setSelected(this.sshConnect.isX11forwarding());
-
+        this.shellConnect = this.getWindowProp("sshConnect");
+        this.name.setText(this.shellConnect.getName());
+        this.hostIp.setText(this.shellConnect.hostIp());
+        this.remark.setText(this.shellConnect.getRemark());
+        this.userName.setText(this.shellConnect.getUser());
+        this.hostPort.setValue(this.shellConnect.hostPort());
+        this.password.setText(this.shellConnect.getPassword());
+        this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
+        this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
+        // ssh配置
+        this.sshForward.setSelected(this.shellConnect.isSSHForward());
+        ShellSSHConfig sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
+        if (sshConfig != null) {
+            this.sshHost.setText(sshConfig.getHost());
+            this.sshUser.setText(sshConfig.getUser());
+            this.sshPort.setValue(sshConfig.getPort());
+            this.sshTimeout.setValue(sshConfig.getTimeout());
+            this.sshPassword.setText(sshConfig.getPassword());
+        }
         // x11配置
-        SSHX11Config x11Config = this.sshConnect.getX11Config();
+        SSHX11Config x11Config = this.shellConnect.getX11Config();
         if (x11Config != null) {
             this.x11Host.setValue(x11Config.getHost());
             this.x11Port.setValue(x11Config.getPort());
         }
-
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

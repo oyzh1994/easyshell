@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -95,7 +95,7 @@ public class SSHConnectTabController extends ParentTabController {
      *
      * @return 当前ssh信息
      */
-    protected SSHConnect sshConnect() {
+    protected ShellConnect sshConnect() {
         return this.treeItem.value();
     }
 

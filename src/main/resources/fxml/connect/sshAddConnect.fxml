@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyssh.controller.connect.SSHAddConnectController" realWidth="750" realHeight="400">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
@@ -103,6 +104,69 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.sshSpringboard" fx:id="sshTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableSSHChannel">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="sshForward">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox disable="true" groupId="ssh">
+                    <ClearableTextField fx:id="sshHost" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="100% - 285" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField realWidth="100" fx:id="sshPort" realHeight="30" value="22">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.connectTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <NumberTextField disable="true" groupId="ssh" flexWidth="100% - 180" fx:id="sshTimeout"
+                                 tipText="%base.sshTimeoutTip"
+                                 realHeight="30" value="3000">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </NumberTextField>
+                <InfoLabel text="%base.sshInfo">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox disable="true" groupId="ssh">
+                    <ClearableTextField fx:id="sshUser" tipText="%base.sshUserTip" require="true" realHeight="30"
+                                        flexWidth="50% - 93" text="root">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <ClearableTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
+                                        flexWidth="50% - 92">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
             </FXVBox>
         </FXTab>
         <FXTab text="X11">

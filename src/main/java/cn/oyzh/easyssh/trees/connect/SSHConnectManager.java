@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.trees.connect;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import lombok.NonNull;
 
 import java.util.List;
@@ -16,9 +16,9 @@ public interface SSHConnectManager {
     /**
      * 添加连接
      *
-     * @param sshConnect 连接信息
+     * @param shellConnect 连接信息
      */
-    void addConnect(@NonNull SSHConnect sshConnect);
+    void addConnect(@NonNull ShellConnect shellConnect);
 
     /**
      * 添加连接节点

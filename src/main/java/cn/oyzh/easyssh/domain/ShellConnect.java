@@ -1,5 +1,6 @@
 package cn.oyzh.easyssh.domain;
 
+import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
@@ -18,7 +19,7 @@ import java.io.Serializable;
 @Setter
 @ToString
 @Table("t_connect")
-public class SSHConnect implements Comparable<SSHConnect>, Serializable {
+public class ShellConnect implements Comparable<ShellConnect>, Serializable {
 
     /**
      * 数据id
@@ -81,6 +82,19 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
     private Integer connectTimeOut;
 
     /**
+     * 是否开启ssh转发
+     */
+    @Getter
+    @Column
+    private Boolean sshForward;
+
+    /**
+     * ssh信息
+     */
+    @Getter
+    private ShellSSHConfig sshConfig;
+
+    /**
      * x11转发
      */
     @Getter
@@ -96,21 +110,34 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
     /**
      * 复制对象
      *
-     * @param sshConnect ssh信息
+     * @param shellConnect ssh信息
      * @return 当前对象
      */
-    public SSHConnect copy(@NonNull SSHConnect sshConnect) {
+    public ShellConnect copy(@NonNull ShellConnect shellConnect) {
 //        this.id = sshConnect.id;
-        this.name = sshConnect.name;
-        this.host = sshConnect.host;
-        this.user = sshConnect.user;
-        this.remark = sshConnect.remark;
-        this.groupId = sshConnect.groupId;
-        this.password = sshConnect.password;
-        this.x11Config = sshConnect.x11Config;
-        this.x11forwarding = sshConnect.x11forwarding;
-        this.connectTimeOut = sshConnect.connectTimeOut;
+        this.name = shellConnect.name;
+        this.host = shellConnect.host;
+        this.user = shellConnect.user;
+        this.remark = shellConnect.remark;
+        this.groupId = shellConnect.groupId;
+        this.password = shellConnect.password;
+        // ssh
+        this.sshConfig = shellConnect.sshConfig;
+        this.sshForward = shellConnect.sshForward;
+        // x11
+        this.x11Config = shellConnect.x11Config;
+        this.x11forwarding = shellConnect.x11forwarding;
+        this.connectTimeOut = shellConnect.connectTimeOut;
         return this;
+    }
+
+    /**
+     * 是否开启ssh转发
+     *
+     * @return 结果
+     */
+    public boolean isSSHForward() {
+        return BooleanUtil.isTrue(this.sshForward);
     }
 
     public  boolean isX11forwarding(){
@@ -136,7 +163,7 @@ public class SSHConnect implements Comparable<SSHConnect>, Serializable {
     }
 
     @Override
-    public int compareTo(SSHConnect o) {
+    public int compareTo(ShellConnect o) {
         if (o == null) {
             return 1;
         }

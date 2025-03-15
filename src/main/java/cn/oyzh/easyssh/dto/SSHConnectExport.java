@@ -4,7 +4,7 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.json.JSONObject;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import lombok.Getter;
 import lombok.NonNull;
@@ -41,19 +41,19 @@ public class SSHConnectExport {
     /**
      * 连接
      */
-    private List<SSHConnect> connects;
+    private List<ShellConnect> connects;
 
     /**
      * 从ssh连接数据生成
      *
-     * @param sshConnects 连接列表
+     * @param shellConnects 连接列表
      * @return SSHConnectExport
      */
-    public static SSHConnectExport fromConnects(@NonNull List<SSHConnect> sshConnects) {
+    public static SSHConnectExport fromConnects(@NonNull List<ShellConnect> shellConnects) {
         SSHConnectExport export = new SSHConnectExport();
         Project project = Project.load();
         export.version = project.getVersion();
-        export.connects = sshConnects;
+        export.connects = shellConnects;
         export.platform = System.getProperty("os.name");
         return export;
     }
@@ -72,7 +72,7 @@ public class SSHConnectExport {
         export.version = object.getString("version");
         export.platform = object.getString("platform");
         export.groups = object.getBeanList("groups", SSHGroup.class);
-        export.connects = object.getBeanList("connects", SSHConnect.class);
+        export.connects = object.getBeanList("connects", ShellConnect.class);
         return export;
     }
 

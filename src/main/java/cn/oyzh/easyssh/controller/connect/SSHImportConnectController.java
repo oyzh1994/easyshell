@@ -3,7 +3,7 @@ package cn.oyzh.easyssh.controller.connect;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHGroup;
 import cn.oyzh.easyssh.dto.SSHConnectExport;
 import cn.oyzh.easyssh.event.SSHEventUtil;
@@ -83,10 +83,10 @@ public class SSHImportConnectController extends StageController {
         try {
             String text = FileUtil.readUtf8String(this.importFile);
             SSHConnectExport export = SSHConnectExport.fromJSON(text);
-            List<SSHConnect> connects = export.getConnects();
+            List<ShellConnect> connects = export.getConnects();
             boolean success = true;
             if (CollectionUtil.isNotEmpty(connects)) {
-                for (SSHConnect connect : connects) {
+                for (ShellConnect connect : connects) {
                     if (!this.connectStore.replace(connect)) {
                         success = false;
                     }

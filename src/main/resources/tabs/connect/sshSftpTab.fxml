@@ -35,56 +35,56 @@
             </ClearableTextField>
             <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </ReturnFolderSVGGlyph>
             <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
-            <CopySVGGlyph disable="true" onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">
+            <CopySVGGlyph onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
             <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false" onMousePrimaryClicked="#uploadFile">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FileUploadSVGGlyph>
             <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false" onMousePrimaryClicked="#uploadFolder">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FolderUploadSVGGlyph>
             <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FolderAddSVGGlyph>
             <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FileAddSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
             <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"
                             unselectedText="%base.doNotShowHiddenFiles">
                 <FXHBox.margin>
-                    <Insets left="10" top="8"/>
+                    <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </FXToggleSwitch>
-            <UploadBoxSVGGlyph fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox" tipText="%ssh.file.tip10">
+            <UploadBoxSVGGlyph sizeStr="15" fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox" tipText="%ssh.file.tip10">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="30" top="10"/>
                 </FXHBox.margin>
             </UploadBoxSVGGlyph>
-            <DownloadBoxSVGGlyph fx:id="downloadBox" onMousePrimaryClicked="#showDownloadBox" tipText="%ssh.file.tip14">
+            <DownloadBoxSVGGlyph sizeStr="15" fx:id="downloadBox" onMousePrimaryClicked="#showDownloadBox" tipText="%ssh.file.tip14">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>

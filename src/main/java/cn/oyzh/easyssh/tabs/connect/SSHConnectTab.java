@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.tabs.connect;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.easyssh.trees.connect.SSHConnectTreeItem;
@@ -70,7 +70,7 @@ public class SSHConnectTab extends RichTab {
      *
      * @return 当前ssh信息
      */
-    public SSHConnect sshConnect() {
+    public ShellConnect sshConnect() {
         return this.controller().sshConnect();
     }
 

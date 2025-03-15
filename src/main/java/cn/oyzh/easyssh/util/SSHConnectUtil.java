@@ -1,7 +1,7 @@
 package cn.oyzh.easyssh.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.dto.SSHConnectInfo;
 import cn.oyzh.easyssh.ssh.SSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -95,18 +95,18 @@ public class SSHConnectUtil {
      * 测试连接
      *
      * @param adapter    页面
-     * @param sshConnect 连接信息
+     * @param shellConnect 连接信息
      */
-    public static void testConnect(StageAdapter adapter, SSHConnect sshConnect) {
+    public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
         StageManager.showMask(() -> {
             try {
 //                adapter.disable();
 //                adapter.waitCursor();
 //                adapter.appendTitle("==" + I18nHelper.connectTesting());
-                if (sshConnect.getName() == null) {
-                    sshConnect.setName(I18nHelper.testConnection());
+                if (shellConnect.getName() == null) {
+                    shellConnect.setName(I18nHelper.testConnection());
                 }
-                SSHClient client = new SSHClient(sshConnect);
+                SSHClient client = new SSHClient(shellConnect);
                 // 开始连接
                 client.start(3_000);
                 if (client.isConnected()) {

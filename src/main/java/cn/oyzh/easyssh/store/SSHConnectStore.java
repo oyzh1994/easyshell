@@ -1,7 +1,8 @@
 package cn.oyzh.easyssh.store;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.domain.SSHX11Config;
+import cn.oyzh.easyssh.domain.ShellSSHConfig;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 
 import java.util.List;
@@ -12,25 +13,27 @@ import java.util.List;
  * @author oyzh
  * @since 2023/6/23
  */
-public class SSHConnectStore extends JdbcStandardStore<SSHConnect> {
+public class SSHConnectStore extends JdbcStandardStore<ShellConnect> {
 
     /**
      * 当前实例
      */
     public static final SSHConnectStore INSTANCE = new SSHConnectStore();
 
-    public final SSHX11ConfigStore x11ConfigStore =SSHX11ConfigStore.INSTANCE;
+    public final SSHX11ConfigStore x11ConfigStore = SSHX11ConfigStore.INSTANCE;
 
-    public synchronized List<SSHConnect> load() {
+    public final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+
+    public synchronized List<ShellConnect> load() {
         return super.selectList();
     }
 
     @Override
-    protected Class<SSHConnect> modelClass() {
-        return SSHConnect.class;
+    protected Class<ShellConnect> modelClass() {
+        return ShellConnect.class;
     }
 
-    public List<SSHConnect> loadFull() {
+    public List<ShellConnect> loadFull() {
         return this.load();
     }
 
@@ -40,13 +43,22 @@ public class SSHConnectStore extends JdbcStandardStore<SSHConnect> {
      * @param model 模型
      * @return 结果
      */
-    public boolean replace(SSHConnect model) {
+    public boolean replace(ShellConnect model) {
         boolean result = false;
         if (model != null) {
             if (super.exist(model.getId())) {
                 result = this.update(model);
             } else {
                 result = this.insert(model);
+            }
+
+            // ssh处理
+            ShellSSHConfig sshConfig = model.getSshConfig();
+            if (sshConfig != null) {
+                sshConfig.setIid(model.getId());
+                this.sshConfigStore.replace(sshConfig);
+            } else {
+                this.sshConfigStore.deleteByIid(model.getId());
             }
 
             // x11处理

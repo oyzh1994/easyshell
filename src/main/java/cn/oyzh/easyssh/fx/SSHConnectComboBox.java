@@ -1,6 +1,6 @@
 package cn.oyzh.easyssh.fx;
 
-import cn.oyzh.easyssh.domain.SSHConnect;
+import cn.oyzh.easyssh.domain.ShellConnect;
 import cn.oyzh.easyssh.store.SSHConnectStore;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
@@ -11,12 +11,12 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
  * @author oyzh
  * @since 2023/07/20
  */
-public class SSHConnectComboBox extends FXComboBox<SSHConnect> {
+public class SSHConnectComboBox extends FXComboBox<ShellConnect> {
 
     {
         this.setConverter(new SimpleStringConverter<>() {
             @Override
-            public String toString(SSHConnect o) {
+            public String toString(ShellConnect o) {
                 if (o == null) {
                     return "";
                 }
