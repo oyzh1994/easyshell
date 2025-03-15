@@ -14,16 +14,6 @@ import java.io.File;
 @UtilityClass
 public class ShellConst {
 
-//    /**
-//     * 数据保存路径
-//     */
-//    public static final String STORE_PATH = System.getProperty("user.home") + File.separator + ".easyssh_dev" + File.separator;
-
-//    /**
-//     * 缓存保存路径
-//     */
-//    public static final String CACHE_PATH = STORE_PATH + "cache" + File.separator;
-
     /**
      * icon地址
      */
@@ -41,9 +31,9 @@ public class ShellConst {
 
     public static String getStorePath() {
         if (JarUtil.isInJar()) {
-            return System.getProperty("user.home") + File.separator + ".easyssh_dev" + File.separator;
+            return System.getProperty("user.home") + File.separator + ".easyshell_dev" + File.separator;
         }
-        return System.getProperty("user.home") + File.separator + ".easyssh" + File.separator;
+        return System.getProperty("user.home") + File.separator + ".easyshell" + File.separator;
     }
 
     public static String getCachePath() {

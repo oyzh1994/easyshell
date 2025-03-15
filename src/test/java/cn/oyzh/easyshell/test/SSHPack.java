@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.test;
+package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.fx.pkg.Packer;

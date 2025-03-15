@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.test;
+package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.x11.X11Manager;
 import org.junit.Test;

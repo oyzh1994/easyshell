@@ -1,4 +1,4 @@
-package cn.oyzh.easyssh.test;
+package cn.oyzh.easyshell.test;
 
 import com.jcraft.jsch.*;
 import javafx.application.Application;
