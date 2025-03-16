@@ -96,7 +96,10 @@ public class SftpDownloadTask {
                 ex.printStackTrace();
             } finally {
                 sftp.setHolding(false);
-                this.updateStatus(SftpDownloadStatus.FINISHED);
+                // 如果是非取消，则设置为结束
+                if (this.status != SftpDownloadStatus.CANCELED) {
+                    this.updateStatus(SftpDownloadStatus.FINISHED);
+                }
                 this.updateTotal();
             }
         });

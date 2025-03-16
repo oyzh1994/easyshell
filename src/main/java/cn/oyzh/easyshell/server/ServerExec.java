@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.server;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
 
 /**
@@ -24,8 +25,9 @@ public class ServerExec {
     public ServerMonitor monitor() {
         ServerMonitor monitor = new ServerMonitor();
         String arch = this.arch();
-        String uname = this.uname();
         int ulimit = this.ulimit();
+        String uname = this.uname();
+        double[] disk = this.vmstat_d();
         double cpuUsage = this.cpuUsage();
         double memoryUsage = this.memoryUsage();
         double totalMemory = this.totalMemory();
@@ -33,6 +35,8 @@ public class ServerExec {
         monitor.setUname(uname);
         monitor.setUlimit(ulimit);
         monitor.setCpuUsage(cpuUsage);
+        monitor.setReadSpeed(disk[0]);
+        monitor.setWriteSpeed(disk[1]);
         monitor.setTotalMemory(ulimit);
         monitor.setMemoryUsage(memoryUsage);
         monitor.setTotalMemory(totalMemory);
@@ -41,9 +45,12 @@ public class ServerExec {
 
     public ServerMonitor monitorSimple() {
         ServerMonitor monitor = new ServerMonitor();
+        double[] disk = this.vmstat_d();
         double cpuUsage = this.cpuUsage();
         double memoryUsage = this.memoryUsage();
         monitor.setCpuUsage(cpuUsage);
+        monitor.setReadSpeed(disk[0]);
+        monitor.setWriteSpeed(disk[1]);
         monitor.setMemoryUsage(memoryUsage);
         return monitor;
     }
@@ -122,5 +129,42 @@ public class ServerExec {
             ee.printStackTrace();
         }
         return -1;
+    }
+
+    public double[] iostat_d() {
+        try {
+            String iostat = this.client.exec("/usr/bin/iostat -dkx 1 2 | /usr/bin/awk 'NR>3 && $1!=\"loop*\"'");
+            if (StringUtil.isNotBlank(iostat)) {
+                double readSpeed = 0;
+                double writeSpeed = 0;
+                int lineCount = 0;
+                for (String line : iostat.split("\n")) {
+                    if (!line.contains(".")) {
+                        continue;
+                    }
+                    lineCount++;
+                    String[] cols = line.split("\\s+");
+                    readSpeed += Double.parseDouble(cols[3]);
+                    writeSpeed += Double.parseDouble(cols[4]);
+                }
+                return new double[]{readSpeed / lineCount, writeSpeed / lineCount};
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return new double[]{-1L, -1L};
+    }
+
+    public double[] vmstat_d() {
+        try {
+            String vmstat = this.client.exec("/usr/bin/vmstat 1 2 | /usr/bin/awk 'NR==3 {print \"R:\", $6*0.5\",\", \"W:\", $7*0.5}'");
+            String[] cols = vmstat.split(",");
+            double readSpeed = Double.parseDouble(cols[0].split(":")[1].trim());
+            double writeSpeed = Double.parseDouble(cols[1].split(":")[1].trim());
+            return new double[]{readSpeed, writeSpeed};
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return new double[]{-1L, -1L};
     }
 }

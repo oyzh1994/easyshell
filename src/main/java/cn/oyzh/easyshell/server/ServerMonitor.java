@@ -18,6 +18,26 @@ public class ServerMonitor {
 
     private double totalMemory;
 
+    private double readSpeed;
+
+    private double writeSpeed;
+
+    public double getReadSpeed() {
+        return readSpeed;
+    }
+
+    public void setReadSpeed(double readSpeed) {
+        this.readSpeed = readSpeed;
+    }
+
+    public double getWriteSpeed() {
+        return writeSpeed;
+    }
+
+    public void setWriteSpeed(double writeSpeed) {
+        this.writeSpeed = writeSpeed;
+    }
+
     public int getUlimit() {
         return ulimit;
     }
@@ -63,7 +83,7 @@ public class ServerMonitor {
     }
 
     public String getTotalMemoryInfo() {
-        return totalMemory+"MB";
+        return totalMemory + "MB";
     }
 
     public void setTotalMemory(double totalMemory) {

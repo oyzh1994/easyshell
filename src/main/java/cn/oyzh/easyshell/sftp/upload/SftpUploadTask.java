@@ -93,7 +93,10 @@ public class SftpUploadTask {
                 ex.printStackTrace();
             } finally {
                 sftp.setHolding(false);
-                this.updateStatus(SftpUploadStatus.FINISHED);
+                // 如果是非取消，则设置为结束
+                if (this.status != SftpUploadStatus.CANCELED) {
+                    this.updateStatus(SftpUploadStatus.FINISHED);
+                }
                 this.updateTotal();
             }
         });

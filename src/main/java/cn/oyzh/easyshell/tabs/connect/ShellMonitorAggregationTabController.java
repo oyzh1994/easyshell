@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.XYChart;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * 服务器监控汇总
@@ -22,13 +23,19 @@ public class ShellMonitorAggregationTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private FXLineChart<String, Double> cpuUsageChart;
+    private FXLineChart<String, Double> cpuChart;
 
     /**
      * 内存图表
      */
     @FXML
-    private FXLineChart<String, Double> memoryUsageChart;
+    private FXLineChart<String, Double> memoryChart;
+
+    /**
+     * 磁盘图表
+     */
+    @FXML
+    private FXLineChart<String, Double> diskChart;
 
     /**
      * 日期格式化
@@ -38,11 +45,12 @@ public class ShellMonitorAggregationTabController extends SubTabController {
     /**
      * 执行初始化
      *
-     * @param serverInfo 服务信息
+     * @param monitor 监控信息
      */
-    public void init(ServerMonitor serverInfo) {
-        this.initCpuChart(serverInfo);
-        this.initMemoryChart(serverInfo);
+    public void init(ServerMonitor monitor) {
+        this.initCpuChart(monitor);
+        this.initMemoryChart(monitor);
+        this.initDiskChart(monitor);
     }
 
     /**
@@ -51,11 +59,11 @@ public class ShellMonitorAggregationTabController extends SubTabController {
      * @param monitor 监控信息
      */
     private void initCpuChart(ServerMonitor monitor) {
-        XYChart.Series<String, Double> data = this.cpuUsageChart.getChartData(0);
+        XYChart.Series<String, Double> data = this.cpuChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
             data.setName(I18nHelper.cpuUsage());
-            this.cpuUsageChart.addChartData(data);
+            this.cpuChart.addChartData(data);
         }
         double cpuUsage = monitor.getCpuUsage();
         String time = this.dateFormat.format(System.currentTimeMillis());
@@ -68,14 +76,36 @@ public class ShellMonitorAggregationTabController extends SubTabController {
      * @param monitor 监控信息
      */
     private void initMemoryChart(ServerMonitor monitor) {
-        XYChart.Series<String, Double> data = this.memoryUsageChart.getChartData(0);
+        XYChart.Series<String, Double> data = this.memoryChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
             data.setName(I18nHelper.memoryUsage());
-            this.memoryUsageChart.addChartData(data);
+            this.memoryChart.addChartData(data);
         }
         double memoryUsage = monitor.getMemoryUsage();
         String time = this.dateFormat.format(System.currentTimeMillis());
         ChartHelper.addOrUpdateData(data, time, memoryUsage, 10);
+    }
+
+    /**
+     * 初始化磁盘图表
+     *
+     * @param monitor 监控信息
+     */
+    private void initDiskChart(ServerMonitor monitor) {
+        XYChart.Series<String, Double> readSpeed = this.diskChart.getChartData(0);
+        XYChart.Series<String, Double> writeSpeed = this.diskChart.getChartData(1);
+        if (readSpeed == null) {
+            readSpeed = new XYChart.Series<>();
+            readSpeed.setName(I18nHelper.diskReadSpeed());
+            writeSpeed = new XYChart.Series<>();
+            writeSpeed.setName(I18nHelper.diskWriteSpeed());
+            this.diskChart.setChartData(List.of(readSpeed, writeSpeed));
+        }
+        double  read= monitor.getReadSpeed();
+        double  write= monitor.getWriteSpeed();
+        String time = this.dateFormat.format(System.currentTimeMillis());
+        ChartHelper.addOrUpdateData(readSpeed, time, read, 10);
+        ChartHelper.addOrUpdateData(writeSpeed, time, write, 10);
     }
 }
