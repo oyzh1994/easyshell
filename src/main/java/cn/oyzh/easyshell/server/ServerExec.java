@@ -5,6 +5,9 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author oyzh
  * @since 2025-03-15
@@ -23,6 +26,11 @@ public class ServerExec {
 //        info.setTotalMemory(totalMemory);
 //        return info;
 //    }
+
+    /**
+     * 服务器磁盘对象
+     */
+    private final ServerDisk disk = new ServerDisk();
 
     /**
      * 服务器网络对象
@@ -49,16 +57,6 @@ public class ServerExec {
 
         ThreadUtil.startVirtual(() -> {
             try {
-                double[] disk = this.vmstat_d();
-                monitor.setDiskReadSpeed(disk[0]);
-                monitor.setDiskWriteSpeed(disk[1]);
-            } finally {
-                latch.countDown();
-            }
-        });
-
-        ThreadUtil.startVirtual(() -> {
-            try {
                 double cpuUsage = this.cpuUsage();
                 monitor.setCpuUsage(cpuUsage);
             } finally {
@@ -70,6 +68,17 @@ public class ServerExec {
             try {
                 double memoryUsage = this.memoryUsage();
                 monitor.setMemoryUsage(memoryUsage);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        ThreadUtil.startVirtual(() -> {
+            try {
+                double[] data = this.disk();
+                double[] speed = this.disk.calcSpeed(data);
+                monitor.setDiskReadSpeed(speed[0]);
+                monitor.setDiskWriteSpeed(speed[1]);
             } finally {
                 latch.countDown();
             }
@@ -206,12 +215,38 @@ public class ServerExec {
         return new double[]{-1L, -1L};
     }
 
+    public double[] disk() {
+        try {
+            String output = this.client.exec("/bin/cat /proc/diskstats");
+            String[] lines = output.split("\n");
+            double read = 0;
+            double write = 0;
+            List<String> handleIds = new ArrayList<>();
+            for (String line : lines) {
+                String[] cols = line.trim().split("\\s+");
+                String mainId = cols[0];
+                if (handleIds.contains(mainId)) {
+                    continue;
+                }
+                String readTotal = cols[5];
+                String writeTotal = cols[9];
+                read += Double.parseDouble(readTotal);
+                write += Double.parseDouble(writeTotal);
+                handleIds.add(mainId);
+            }
+            return new double[]{read, write};
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return new double[]{-1L, -1L};
+    }
+
     public double[] network() {
         try {
             String output = this.client.exec("/bin/cat /proc/net/dev | /bin/grep -vE 'lo|^[ ]*$' | /usr/bin/awk -F: '{print $2 \" \" $10}' | /usr/bin/awk '{print $1 \" \" $2}'\n");
             String[] lines = output.split("\n");
-            double receive = 0;
             double send = 0;
+            double receive = 0;
             for (String line : lines) {
                 if (line.isBlank()) {
                     continue;

@@ -33,7 +33,7 @@
                     <CategoryAxis/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="KB"/>
+                    <NumberAxis label="MB/s"/>
                 </yAxis>
             </FXLineChart>
             <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="networkChart">

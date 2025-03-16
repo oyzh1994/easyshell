@@ -112,8 +112,12 @@ public class ShellMonitorAggregationTabController extends SubTabController {
         double readSpeed = monitor.getDiskReadSpeed();
         double writeSpeed = monitor.getDiskWriteSpeed();
         String time = this.dateFormat.format(System.currentTimeMillis());
-        ChartHelper.addOrUpdateData(read, time, readSpeed, 10);
-        ChartHelper.addOrUpdateData(write, time, writeSpeed, 10);
+        if (readSpeed != -1) {
+            ChartHelper.addOrUpdateData(read, time, readSpeed, 10);
+        }
+        if (writeSpeed != -1) {
+            ChartHelper.addOrUpdateData(write, time, writeSpeed, 10);
+        }
     }
 
     /**
