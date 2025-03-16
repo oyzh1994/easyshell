@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SSHSftpManager;
 import cn.oyzh.easyshell.sftp.SftpAttr;
@@ -520,6 +521,15 @@ public class ShellClient {
             this.dockerExec = new DockerExec(this);
         }
         return this.dockerExec;
+    }
+
+    private ServerExec serverExec;
+
+    public ServerExec serverExec() {
+        if (this.serverExec == null) {
+            this.serverExec = new ServerExec(this);
+        }
+        return this.serverExec;
     }
 
     //    public boolean isDownloading() {

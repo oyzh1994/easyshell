@@ -25,12 +25,12 @@ public class ServerExec {
     }
 
     public double cpuUsage() {
-        String cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
+        String cpuUsage = this.client.exec("/bin/ps -aux | /usr/bin/awk '{sum+=$3} END {print sum}'");
         return Double.parseDouble(cpuUsage);
     }
 
     public double[] memoryUsage() {
-        String memoryUsage = this.client.exec("free -m | awk 'NR==2{printf \"Total Memory: %d, Memory Usage: %.2f%\\n\", $2, ($3/$2)*100}'");
+        String memoryUsage = this.client.exec("/usr/bin/free -m | /usr/bin/awk 'NR==2{printf \"Total Memory: %d, Memory Usage: %.2f%\\n\", $2, ($3/$2)*100}'");
         String[] arr = memoryUsage.split(",");
         double[] result = new double[arr.length];
         result[0] = Double.parseDouble(arr[0].split(":")[1].trim());

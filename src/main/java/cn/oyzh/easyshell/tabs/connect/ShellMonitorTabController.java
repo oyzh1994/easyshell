@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerInfo;
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -70,20 +71,20 @@ public class ShellMonitorTabController extends ParentTabController {
      */
     public void init(ShellClient client) {
         this.client = client;
-        // 设置信息
-        String command = this.command.getText() + "(" + I18nHelper.received() + "/" + I18nHelper.sent() + "/" + I18nHelper.outstanding() + ")";
-        this.command.setText(command);
-        String latency = this.latency.getText() + "(" + I18nHelper.min() + "/" + I18nHelper.avg() + "/" + I18nHelper.max() + ")" + I18nHelper.millisecond();
-        this.latency.setText(latency);
-        // 服务信息
-        ServerInfo serverInfo;
-        // 初始化
-        if (this.serverTable.isItemEmpty()) {
-            serverInfo = new ServerInfo();
-            this.serverTable.setItem(serverInfo);
-        } else {// 获取
-            serverInfo = (ServerInfo) this.serverTable.getItem(0);
-        }
+//        // 设置信息
+//        String command = this.command.getText() + "(" + I18nHelper.received() + "/" + I18nHelper.sent() + "/" + I18nHelper.outstanding() + ")";
+//        this.command.setText(command);
+//        String latency = this.latency.getText() + "(" + I18nHelper.min() + "/" + I18nHelper.avg() + "/" + I18nHelper.max() + ")" + I18nHelper.millisecond();
+//        this.latency.setText(latency);
+//        // 服务信息
+//        ServerInfo serverInfo;
+//        // 初始化
+//        if (this.serverTable.isItemEmpty()) {
+//            serverInfo = new ServerInfo();
+//            this.serverTable.setItem(serverInfo);
+//        } else {// 获取
+//            serverInfo = (ServerInfo) this.serverTable.getItem(0);
+//        }
     }
 
     /**
@@ -119,8 +120,10 @@ public class ShellMonitorTabController extends ParentTabController {
         try {
             JulLog.info("renderPane started.");
             if (this.client != null) {
-//                // 初始化图表
-//                this.aggregationController.init(serverInfo);
+                ServerExec exec = this.client.serverExec();
+                ServerMonitor monitor = exec.monitor();
+                // 初始化图表
+                this.aggregationController.init(monitor);
             }
             JulLog.info("renderPane finished.");
         } catch (Exception ex) {
