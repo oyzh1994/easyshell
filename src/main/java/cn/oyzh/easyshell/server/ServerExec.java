@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.server;
 
+import cn.oyzh.common.thread.DownLatch;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
 
@@ -23,35 +25,52 @@ public class ServerExec {
     }
 
     public ServerMonitor monitor() {
-        ServerMonitor monitor = new ServerMonitor();
+        ServerMonitor monitor = this.monitorSimple();
         String arch = this.arch();
         int ulimit = this.ulimit();
         String uname = this.uname();
-        double[] disk = this.vmstat_d();
-        double cpuUsage = this.cpuUsage();
-        double memoryUsage = this.memoryUsage();
         double totalMemory = this.totalMemory();
         monitor.setArch(arch);
         monitor.setUname(uname);
         monitor.setUlimit(ulimit);
-        monitor.setCpuUsage(cpuUsage);
-        monitor.setReadSpeed(disk[0]);
-        monitor.setWriteSpeed(disk[1]);
         monitor.setTotalMemory(ulimit);
-        monitor.setMemoryUsage(memoryUsage);
         monitor.setTotalMemory(totalMemory);
         return monitor;
     }
 
     public ServerMonitor monitorSimple() {
         ServerMonitor monitor = new ServerMonitor();
-        double[] disk = this.vmstat_d();
-        double cpuUsage = this.cpuUsage();
-        double memoryUsage = this.memoryUsage();
-        monitor.setCpuUsage(cpuUsage);
-        monitor.setReadSpeed(disk[0]);
-        monitor.setWriteSpeed(disk[1]);
-        monitor.setMemoryUsage(memoryUsage);
+        DownLatch latch = new DownLatch(3);
+
+        ThreadUtil.startVirtual(() -> {
+            try {
+                double[] disk = this.vmstat_d();
+                monitor.setReadSpeed(disk[0]);
+                monitor.setWriteSpeed(disk[1]);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        ThreadUtil.startVirtual(() -> {
+            try {
+                double cpuUsage = this.cpuUsage();
+                monitor.setCpuUsage(cpuUsage);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        ThreadUtil.startVirtual(() -> {
+            try {
+                double memoryUsage = this.memoryUsage();
+                monitor.setMemoryUsage(memoryUsage);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        latch.await();
         return monitor;
     }
 
@@ -68,6 +87,9 @@ public class ServerExec {
     public double memoryUsage() {
         try {
             String memoryUsage = this.client.exec("/usr/bin/free | /usr/bin/awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
+            if (memoryUsage.contains("%")) {
+                memoryUsage = memoryUsage.replace("%", "");
+            }
             return Double.parseDouble(memoryUsage);
         } catch (Exception ee) {
             ee.printStackTrace();

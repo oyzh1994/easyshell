@@ -15,6 +15,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -31,6 +32,10 @@ import java.util.stream.Collectors;
  * @since 2025-03-12
  */
 public class DockerContainerTableView extends FXTableView<DockerContainer> {
+
+    {
+        TableViewUtil.copyCellDataOnDoubleClicked(this);
+    }
 
     private DockerExec exec;
 

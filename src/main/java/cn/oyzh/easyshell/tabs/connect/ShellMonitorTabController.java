@@ -54,7 +54,6 @@ public class ShellMonitorTabController extends ParentTabController {
      * 刷新任务
      */
     private Future<?> refreshTask;
-//    private Thread refreshTask;
 
     /**
      *
@@ -66,34 +65,12 @@ public class ShellMonitorTabController extends ParentTabController {
         this.serverExec = this.client.serverExec();
     }
 
-//    private boolean initialized = false;
-//
-//    /**
-//     * 设置zk客户端
-//     */
-//    public void init() {
-//        if (this.initialized) {
-//            return;
-//        }
-//        this.initialized = true;
-//        // 服务信息
-//        ServerInfo serverInfo = this.serverExec.info();
-//        // 初始化
-//        this.serverTable.setItem(serverInfo);
-//    }
-
     /**
      * 初始化自动刷新任务
      */
     private void initRefreshTask() {
         try {
-//            this.refreshTask = ThreadUtil.start(() -> {
-//                while (!Thread.currentThread().isInterrupted()) {
-//                    this.renderPane();
-//                    ThreadUtil.sleep(3000);
-//                }
-//            });
-            this.refreshTask = ExecutorUtil.start(this::renderPane, 1000, 3_000);
+            this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
             JulLog.debug("RefreshTask started.");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -106,7 +83,6 @@ public class ShellMonitorTabController extends ParentTabController {
      */
     public void closeRefreshTask() {
         try {
-//            ThreadUtil.interrupt(this.refreshTask);
             ExecutorUtil.cancel(this.refreshTask);
             JulLog.debug("RefreshTask closed.");
         } catch (Exception ex) {
@@ -131,7 +107,6 @@ public class ShellMonitorTabController extends ParentTabController {
                 } else {
                     monitor = this.serverExec.monitorSimple();
                     ServerMonitor monitor1 = (ServerMonitor) this.serverTable.getItem(0);
-//                    this.serverTable.clearItems();
                     this.serverTable.setItem(monitor1);
                 }
                 // 初始化图表
@@ -149,7 +124,6 @@ public class ShellMonitorTabController extends ParentTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-//                this.init();
                 this.initRefreshTask();
             } else {
                 this.closeRefreshTask();
