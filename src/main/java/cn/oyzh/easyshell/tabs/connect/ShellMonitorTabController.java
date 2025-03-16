@@ -46,7 +46,7 @@ public class ShellMonitorTabController extends ParentTabController {
      * 汇总信息
      */
     @FXML
-    private ShellMonitorAggregationTabController aggregationController;
+    private ShellAggregationTabController aggregationController;
 
     /**
      * 刷新任务
@@ -123,8 +123,8 @@ public class ShellMonitorTabController extends ParentTabController {
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.initRefreshTask();
-            } else {
-                this.closeRefreshTask();
+//            } else {
+//                this.closeRefreshTask();
             }
         });
     }

@@ -20,7 +20,7 @@
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">
-            <fx:include fx:id="aggregation" source="shellMonitorAggregationTab.fxml"/>
+            <fx:include fx:id="aggregation" source="shellAggregationTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

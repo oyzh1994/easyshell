@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/03/15
  */
-public class ShellMonitorAggregationTabController extends SubTabController {
+public class ShellAggregationTabController extends SubTabController {
 
     /**
      * cpu图表
