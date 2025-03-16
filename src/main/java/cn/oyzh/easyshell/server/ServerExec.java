@@ -17,12 +17,17 @@ public class ServerExec {
         this.client = client;
     }
 
-    public ServerInfo info() {
-        ServerInfo info = new ServerInfo();
-        long totalMemory = this.totalMemory();
-        info.setTotalMemory(totalMemory);
-        return info;
-    }
+//    public ServerInfo info() {
+//        ServerInfo info = new ServerInfo();
+//        long totalMemory = this.totalMemory();
+//        info.setTotalMemory(totalMemory);
+//        return info;
+//    }
+
+    /**
+     * 服务器网络对象
+     */
+    private final ServerNetwork network = new ServerNetwork();
 
     public ServerMonitor monitor() {
         ServerMonitor monitor = this.monitorSimple();
@@ -40,13 +45,13 @@ public class ServerExec {
 
     public ServerMonitor monitorSimple() {
         ServerMonitor monitor = new ServerMonitor();
-        DownLatch latch = new DownLatch(3);
+        DownLatch latch = new DownLatch(4);
 
         ThreadUtil.startVirtual(() -> {
             try {
                 double[] disk = this.vmstat_d();
-                monitor.setReadSpeed(disk[0]);
-                monitor.setWriteSpeed(disk[1]);
+                monitor.setDiskReadSpeed(disk[0]);
+                monitor.setDiskWriteSpeed(disk[1]);
             } finally {
                 latch.countDown();
             }
@@ -65,6 +70,17 @@ public class ServerExec {
             try {
                 double memoryUsage = this.memoryUsage();
                 monitor.setMemoryUsage(memoryUsage);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        ThreadUtil.startVirtual(() -> {
+            try {
+                double[] data = this.network();
+                double[] speed = this.network.calcSpeed(data);
+                monitor.setNetworkSendSpeed(speed[0]);
+                monitor.setNetworkReceiveSpeed(speed[1]);
             } finally {
                 latch.countDown();
             }
@@ -184,6 +200,27 @@ public class ServerExec {
             double readSpeed = Double.parseDouble(cols[0].split(":")[1].trim());
             double writeSpeed = Double.parseDouble(cols[1].split(":")[1].trim());
             return new double[]{readSpeed, writeSpeed};
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return new double[]{-1L, -1L};
+    }
+
+    public double[] network() {
+        try {
+            String output = this.client.exec("/bin/cat /proc/net/dev | /bin/grep -vE 'lo|^[ ]*$' | /usr/bin/awk -F: '{print $2 \" \" $10}' | /usr/bin/awk '{print $1 \" \" $2}'\n");
+            String[] lines = output.split("\n");
+            double receive = 0;
+            double send = 0;
+            for (String line : lines) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] cols = line.split("\\s+");
+                receive += Double.parseDouble(cols[0]);
+                send += Double.parseDouble(cols[1]);
+            }
+            return new double[]{send, receive};
         } catch (Exception ee) {
             ee.printStackTrace();
         }

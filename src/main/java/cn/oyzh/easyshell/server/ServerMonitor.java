@@ -18,24 +18,44 @@ public class ServerMonitor {
 
     private double totalMemory;
 
-    private double readSpeed;
+    private double diskReadSpeed;
 
-    private double writeSpeed;
+    private double diskWriteSpeed;
 
-    public double getReadSpeed() {
-        return readSpeed;
+    private double networkSendSpeed;
+
+    private double networkReceiveSpeed;
+
+    public double getDiskReadSpeed() {
+        return diskReadSpeed;
     }
 
-    public void setReadSpeed(double readSpeed) {
-        this.readSpeed = readSpeed;
+    public void setDiskReadSpeed(double diskReadSpeed) {
+        this.diskReadSpeed = diskReadSpeed;
     }
 
-    public double getWriteSpeed() {
-        return writeSpeed;
+    public double getDiskWriteSpeed() {
+        return diskWriteSpeed;
     }
 
-    public void setWriteSpeed(double writeSpeed) {
-        this.writeSpeed = writeSpeed;
+    public void setDiskWriteSpeed(double diskWriteSpeed) {
+        this.diskWriteSpeed = diskWriteSpeed;
+    }
+
+    public double getNetworkSendSpeed() {
+        return networkSendSpeed;
+    }
+
+    public void setNetworkSendSpeed(double networkSendSpeed) {
+        this.networkSendSpeed = networkSendSpeed;
+    }
+
+    public double getNetworkReceiveSpeed() {
+        return networkReceiveSpeed;
+    }
+
+    public void setNetworkReceiveSpeed(double networkReceiveSpeed) {
+        this.networkReceiveSpeed = networkReceiveSpeed;
     }
 
     public int getUlimit() {

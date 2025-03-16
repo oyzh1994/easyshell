@@ -2,9 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.server.ServerExec;
-import cn.oyzh.easyshell.server.ServerInfo;
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.gui.tabs.ParentTabController;

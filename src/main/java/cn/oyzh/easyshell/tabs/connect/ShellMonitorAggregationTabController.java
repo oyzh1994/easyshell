@@ -38,6 +38,12 @@ public class ShellMonitorAggregationTabController extends SubTabController {
     private FXLineChart<String, Double> diskChart;
 
     /**
+     * 网络图表
+     */
+    @FXML
+    private FXLineChart<String, Double> networkChart;
+
+    /**
      * 日期格式化
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -51,6 +57,7 @@ public class ShellMonitorAggregationTabController extends SubTabController {
         this.initCpuChart(monitor);
         this.initMemoryChart(monitor);
         this.initDiskChart(monitor);
+        this.initNetworkChart(monitor);
     }
 
     /**
@@ -93,19 +100,45 @@ public class ShellMonitorAggregationTabController extends SubTabController {
      * @param monitor 监控信息
      */
     private void initDiskChart(ServerMonitor monitor) {
-        XYChart.Series<String, Double> readSpeed = this.diskChart.getChartData(0);
-        XYChart.Series<String, Double> writeSpeed = this.diskChart.getChartData(1);
-        if (readSpeed == null) {
-            readSpeed = new XYChart.Series<>();
-            readSpeed.setName(I18nHelper.diskReadSpeed());
-            writeSpeed = new XYChart.Series<>();
-            writeSpeed.setName(I18nHelper.diskWriteSpeed());
-            this.diskChart.setChartData(List.of(readSpeed, writeSpeed));
+        XYChart.Series<String, Double> read = this.diskChart.getChartData(0);
+        XYChart.Series<String, Double> write = this.diskChart.getChartData(1);
+        if (read == null) {
+            read = new XYChart.Series<>();
+            read.setName(I18nHelper.diskReadSpeed());
+            write = new XYChart.Series<>();
+            write.setName(I18nHelper.diskWriteSpeed());
+            this.diskChart.setChartData(List.of(read, write));
         }
-        double  read= monitor.getReadSpeed();
-        double  write= monitor.getWriteSpeed();
+        double readSpeed = monitor.getDiskReadSpeed();
+        double writeSpeed = monitor.getDiskWriteSpeed();
         String time = this.dateFormat.format(System.currentTimeMillis());
-        ChartHelper.addOrUpdateData(readSpeed, time, read, 10);
-        ChartHelper.addOrUpdateData(writeSpeed, time, write, 10);
+        ChartHelper.addOrUpdateData(read, time, readSpeed, 10);
+        ChartHelper.addOrUpdateData(write, time, writeSpeed, 10);
+    }
+
+    /**
+     * 初始化网络图表
+     *
+     * @param monitor 监控信息
+     */
+    private void initNetworkChart(ServerMonitor monitor) {
+        XYChart.Series<String, Double> out = this.networkChart.getChartData(0);
+        XYChart.Series<String, Double> in = this.networkChart.getChartData(1);
+        if (out == null) {
+            out = new XYChart.Series<>();
+            out.setName(I18nHelper.networkBandwidthOutflow());
+            in = new XYChart.Series<>();
+            in.setName(I18nHelper.networkBandwidthInflow());
+            this.networkChart.setChartData(List.of(out, in));
+        }
+        double sendSpeed = monitor.getNetworkSendSpeed();
+        double receiveSpeed = monitor.getNetworkReceiveSpeed();
+        String time = this.dateFormat.format(System.currentTimeMillis());
+        if (sendSpeed != -1) {
+            ChartHelper.addOrUpdateData(out, time, sendSpeed, 10);
+        }
+        if (receiveSpeed != -1) {
+            ChartHelper.addOrUpdateData(in, time, receiveSpeed, 10);
+        }
     }
 }

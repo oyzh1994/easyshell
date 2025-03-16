@@ -36,12 +36,12 @@
                     <NumberAxis label="KB"/>
                 </yAxis>
             </FXLineChart>
-            <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="commandChart">
+            <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="networkChart">
                 <xAxis>
                     <CategoryAxis/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="%base.cmd"/>
+                    <NumberAxis label="KB/s"/>
                 </yAxis>
             </FXLineChart>
         </FXHBox>
