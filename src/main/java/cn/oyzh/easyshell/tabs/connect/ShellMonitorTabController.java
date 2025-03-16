@@ -122,9 +122,18 @@ public class ShellMonitorTabController extends ParentTabController {
         try {
             JulLog.info("renderPane started.");
             if (this.client != null) {
-                ServerMonitor monitor = this.serverExec.monitor();
-                // 初始化
-                this.serverTable.setItem(monitor);
+                // 获取数据
+                ServerMonitor monitor;
+                if (this.serverTable.isItemEmpty()) {
+                    monitor = this.serverExec.monitor();
+                    // 初始化表格
+                    this.serverTable.setItem(monitor);
+                } else {
+                    monitor = this.serverExec.monitorSimple();
+                    ServerMonitor monitor1 = (ServerMonitor) this.serverTable.getItem(0);
+//                    this.serverTable.clearItems();
+                    this.serverTable.setItem(monitor1);
+                }
                 // 初始化图表
                 this.aggregationController.init(monitor);
             }

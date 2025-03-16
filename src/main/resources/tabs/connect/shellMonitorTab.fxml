@@ -14,6 +14,9 @@
         <FXTableView flexWidth="100%" realHeight="80" fx:id="serverTable">
             <columns>
                 <FXTableColumn sortable="false" valueName="totalMemoryInfo" text="%base.totalMemory" flexWidth="8%"/>
+                <FXTableColumn sortable="false" valueName="uname" text="%base.systemInfo" flexWidth="15%"/>
+                <FXTableColumn sortable="false" valueName="arch" text="%base.arch" flexWidth="5%"/>
+                <FXTableColumn sortable="false" valueName="ulimit" text="ulimit" flexWidth="5%"/>
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">

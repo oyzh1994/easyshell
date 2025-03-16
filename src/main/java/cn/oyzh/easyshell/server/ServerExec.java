@@ -23,12 +23,28 @@ public class ServerExec {
 
     public ServerMonitor monitor() {
         ServerMonitor monitor = new ServerMonitor();
+        String arch = this.arch();
+        String uname = this.uname();
+        int ulimit = this.ulimit();
         double cpuUsage = this.cpuUsage();
         double memoryUsage = this.memoryUsage();
         double totalMemory = this.totalMemory();
+        monitor.setArch(arch);
+        monitor.setUname(uname);
+        monitor.setUlimit(ulimit);
         monitor.setCpuUsage(cpuUsage);
+        monitor.setTotalMemory(ulimit);
         monitor.setMemoryUsage(memoryUsage);
         monitor.setTotalMemory(totalMemory);
+        return monitor;
+    }
+
+    public ServerMonitor monitorSimple() {
+        ServerMonitor monitor = new ServerMonitor();
+        double cpuUsage = this.cpuUsage();
+        double memoryUsage = this.memoryUsage();
+        monitor.setCpuUsage(cpuUsage);
+        monitor.setMemoryUsage(memoryUsage);
         return monitor;
     }
 
@@ -50,6 +66,37 @@ public class ServerExec {
             ee.printStackTrace();
         }
         return -1;
+    }
+
+    public int ulimit() {
+        try {
+            String ulimit = this.client.exec("ulimit -n");
+            if (ulimit.endsWith("\n")) {
+                ulimit = ulimit.replace("\n", "");
+            }
+            return Integer.parseInt(ulimit);
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return -1;
+    }
+
+    public String uname() {
+        try {
+            return this.client.exec("/bin/uname -rs");
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return "N/A";
+    }
+
+    public String arch() {
+        try {
+            return this.client.exec("/bin/uname -m");
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return "N/A";
     }
 
 //    public double[] memoryUsage() {
