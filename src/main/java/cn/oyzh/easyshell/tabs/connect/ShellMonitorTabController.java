@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerInfo;
 import cn.oyzh.easyshell.server.ServerMonitor;
@@ -9,9 +10,8 @@ import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.table.FXTableColumn;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import lombok.Getter;
@@ -28,6 +28,9 @@ import java.util.concurrent.Future;
  */
 public class ShellMonitorTabController extends ParentTabController {
 
+    @FXML
+    private FXTab root;
+
     /**
      * zk客户端
      */
@@ -39,19 +42,7 @@ public class ShellMonitorTabController extends ParentTabController {
      * 服务信息
      */
     @FXML
-    private FXTableView<ServerInfo> serverTable;
-
-    /**
-     * 延迟信息
-     */
-    @FXML
-    private FXTableColumn<ServerMonitor, String> latency;
-
-    /**
-     * 命令信息
-     */
-    @FXML
-    private FXTableColumn<ServerMonitor, String> command;
+    private FXTableView<ServerMonitor> serverTable;
 
     /**
      * 汇总信息
@@ -63,36 +54,46 @@ public class ShellMonitorTabController extends ParentTabController {
      * 刷新任务
      */
     private Future<?> refreshTask;
+//    private Thread refreshTask;
 
     /**
-     * 设置zk客户端
      *
-     * @param client zk客户端
      */
-    public void init(ShellClient client) {
+    private ServerExec serverExec;
+
+    public void setClient(ShellClient client) {
         this.client = client;
-//        // 设置信息
-//        String command = this.command.getText() + "(" + I18nHelper.received() + "/" + I18nHelper.sent() + "/" + I18nHelper.outstanding() + ")";
-//        this.command.setText(command);
-//        String latency = this.latency.getText() + "(" + I18nHelper.min() + "/" + I18nHelper.avg() + "/" + I18nHelper.max() + ")" + I18nHelper.millisecond();
-//        this.latency.setText(latency);
-//        // 服务信息
-//        ServerInfo serverInfo;
-//        // 初始化
-//        if (this.serverTable.isItemEmpty()) {
-//            serverInfo = new ServerInfo();
-//            this.serverTable.setItem(serverInfo);
-//        } else {// 获取
-//            serverInfo = (ServerInfo) this.serverTable.getItem(0);
-//        }
+        this.serverExec = this.client.serverExec();
     }
+
+//    private boolean initialized = false;
+//
+//    /**
+//     * 设置zk客户端
+//     */
+//    public void init() {
+//        if (this.initialized) {
+//            return;
+//        }
+//        this.initialized = true;
+//        // 服务信息
+//        ServerInfo serverInfo = this.serverExec.info();
+//        // 初始化
+//        this.serverTable.setItem(serverInfo);
+//    }
 
     /**
      * 初始化自动刷新任务
      */
     private void initRefreshTask() {
         try {
-            this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
+//            this.refreshTask = ThreadUtil.start(() -> {
+//                while (!Thread.currentThread().isInterrupted()) {
+//                    this.renderPane();
+//                    ThreadUtil.sleep(3000);
+//                }
+//            });
+            this.refreshTask = ExecutorUtil.start(this::renderPane, 1000, 3_000);
             JulLog.debug("RefreshTask started.");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -105,6 +106,7 @@ public class ShellMonitorTabController extends ParentTabController {
      */
     public void closeRefreshTask() {
         try {
+//            ThreadUtil.interrupt(this.refreshTask);
             ExecutorUtil.cancel(this.refreshTask);
             JulLog.debug("RefreshTask closed.");
         } catch (Exception ex) {
@@ -120,8 +122,9 @@ public class ShellMonitorTabController extends ParentTabController {
         try {
             JulLog.info("renderPane started.");
             if (this.client != null) {
-                ServerExec exec = this.client.serverExec();
-                ServerMonitor monitor = exec.monitor();
+                ServerMonitor monitor = this.serverExec.monitor();
+                // 初始化
+                this.serverTable.setItem(monitor);
                 // 初始化图表
                 this.aggregationController.init(monitor);
             }
@@ -135,8 +138,14 @@ public class ShellMonitorTabController extends ParentTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        // 初始化刷新任务
-        this.initRefreshTask();
+        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1) {
+//                this.init();
+                this.initRefreshTask();
+            } else {
+                this.closeRefreshTask();
+            }
+        });
     }
 
     @Override

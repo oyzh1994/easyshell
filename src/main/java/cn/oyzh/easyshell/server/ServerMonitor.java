@@ -32,6 +32,10 @@ public class ServerMonitor {
         return totalMemory;
     }
 
+    public String getTotalMemoryInfo() {
+        return totalMemory+"MB";
+    }
+
     public void setTotalMemory(double totalMemory) {
         this.totalMemory = totalMemory;
     }

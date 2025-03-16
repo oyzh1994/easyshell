@@ -78,7 +78,7 @@ public class ShellConnectTabController extends ParentTabController {
                     return;
                 }
                 this.termTabController.init();
-                this.monitorTabController.init(this.client);
+                this.monitorTabController.setClient(this.client);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
