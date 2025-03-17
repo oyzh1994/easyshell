@@ -31,15 +31,15 @@ import java.io.File;
 import java.util.List;
 
 /**
- * shell命令行tab内容组件
+ * sftp组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2025/03/11
  */
 public class ShellSftpTabController extends SubTabController {
 
     /**
-     * shell命令行文本域
+     * tab
      */
     @FXML
     private FXTab root;
@@ -147,6 +147,7 @@ public class ShellSftpTabController extends SubTabController {
                 colorAdjust.setSaturation(0.5);
                 this.uploadBox.setEffect(colorAdjust);
             } else {
+                this.fileTable.loadFile();
                 this.uploadBox.setEffect(null);
             }
         });

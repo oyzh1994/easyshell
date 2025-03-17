@@ -79,10 +79,17 @@ public class SftpDownloadTask {
         }
     }
 
+    private final String destPath;
+
+    public String getDestPath() {
+        return destPath;
+    }
+
     private final SftpDownloadManager manager;
 
     public SftpDownloadTask(SftpDownloadManager manager, File localFile, SftpFile remoteFile, ShellSftp sftp) {
         this.manager = manager;
+        this.destPath = localFile.getPath();
         // 执行线程
         this.executeThread = ThreadUtil.start(() -> {
             try {

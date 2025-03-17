@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox prefWidth="900" prefHeight="650" styleClass="root"
+<FXVBox prefWidth="1200" prefHeight="650" styleClass="root"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController">
     <FXHBox prefHeight="30">
@@ -26,7 +26,8 @@
     </FXHBox>
     <SftpDownloadTableView fx:id="downloadTable" flexHeight="100% - 30" flexWidth="100% - 20">
         <columns>
-            <FXTableColumn flexWidth="100% - 440" valueName="currentFile" text="%base.currentFile"/>
+            <FXTableColumn prefWidth="160" valueName="destPath" text="%base.destPath"/>
+            <FXTableColumn flexWidth="100% - 610" valueName="currentFile" text="%base.currentFile"/>
             <FXTableColumn prefWidth="140" valueName="currentProgress" text="%base.currentProgress"/>
             <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>
             <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>

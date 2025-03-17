@@ -19,13 +19,16 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * ssh命令行tab内容组件
+ * 服务器监控tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2025/03/16
  */
 public class ShellMonitorTabController extends ParentTabController {
 
+    /**
+     * tab
+     */
     @FXML
     private FXTab root;
 
@@ -58,6 +61,11 @@ public class ShellMonitorTabController extends ParentTabController {
      */
     private ServerExec serverExec;
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellClient client) {
         this.client = client;
         this.serverExec = this.client.serverExec();
@@ -67,6 +75,9 @@ public class ShellMonitorTabController extends ParentTabController {
      * 初始化自动刷新任务
      */
     private void initRefreshTask() {
+        if (this.refreshTask != null) {
+            return;
+        }
         try {
             this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
             JulLog.debug("RefreshTask started.");
@@ -82,6 +93,7 @@ public class ShellMonitorTabController extends ParentTabController {
     public void closeRefreshTask() {
         try {
             ExecutorUtil.cancel(this.refreshTask);
+            this.refreshTask = null;
             JulLog.debug("RefreshTask closed.");
         } catch (Exception ex) {
             ex.printStackTrace();

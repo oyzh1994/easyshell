@@ -77,10 +77,17 @@ public class SftpUploadTask {
         }
     }
 
+    private final String destPath;
+
+    public String getDestPath() {
+        return destPath;
+    }
+
     private final SftpUploadManager manager;
 
     public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, ShellSftp sftp) {
         this.manager = manager;
+        this.destPath = remoteFile;
         this.executeThread = ThreadUtil.start(() -> {
             try {
                 sftp.setHolding(true);
