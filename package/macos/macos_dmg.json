@@ -1,7 +1,7 @@
 {
     "packMode": "jpackage",
     "platform": "macos",
-    "dest": "/Volumes/Files/Package/EasyShell/${appVersion}",
+    "dest": "/Users/oyzh/Desktop/Files/Package/EasyShell/${appVersion}",
     "appIcon": "${projectPath}/resource/shell.icns",
     "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
     "jdkPath": "$SYSTEM",
