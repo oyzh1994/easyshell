@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.sftp;
 
+import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.UUIDUtil;
@@ -14,6 +15,7 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
+import cn.oyzh.fx.rich.richtextfx.data.RichDataType;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
@@ -92,15 +94,30 @@ public class ShellSftpFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 sftp.get(this.file.getFilePath(), this.destPath);
-                byte[] content = FileUtil.readBytes(this.destPath);
-                if (content != null) {
-                    this.data.setText(new String(content));
+                this.data.setText(this.getData());
+                String extName = FileNameUtil.extName(this.file.getFilePath());
+                if (FileNameUtil.isJsonType(extName)) {
+                    this.format.select(RichDataType.JSON);
+                } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
+                    this.format.select(RichDataType.HTML);
+                } else if (FileNameUtil.isXmlType(extName)) {
+                    this.format.select(RichDataType.XML);
+                } else {
+                    this.format.select(RichDataType.RAW);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }
         });
+    }
+
+    private String getData() {
+        byte[] content = FileUtil.readBytes(this.destPath);
+        if (content != null) {
+            return new String(content);
+        }
+        return "";
     }
 
     @Override
@@ -118,7 +135,17 @@ public class ShellSftpFileEditController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.format.selectedItemChanged((observableValue, number, t1) -> {
-            this.data.setDataType(t1);
+            if (this.format.isJsonFormat()) {
+                this.data.showJsonData(this.getData());
+            } else if (this.format.isXmlFormat()) {
+                this.data.showXmlData(this.getData());
+            } else if (this.format.isHtmlFormat()) {
+                this.data.showHtmlData(this.getData());
+            } else if (this.format.isStringFormat()) {
+                this.data.showStringData(this.getData());
+            } else {
+                this.data.showRawData(this.getData());
+            }
         });
     }
 
