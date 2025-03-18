@@ -18,8 +18,12 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
+<?import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750" realHeight="400">
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
+        realHeight="420">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -34,24 +38,45 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.authInfo">
+                <InfoLabel text="%base.userName">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024" text="root">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.auth">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                        flexWidth="50% - 90" maxLen="1024" text="root">
-                        <HBox.margin>
+                    <ShellAuthMethodCombobox initIndex="0" fx:id="authMethod" prefWidth="150">
+                        <FXHBox.margin>
                             <Insets left="30" top="5"/>
-                        </HBox.margin>
+                        </FXHBox.margin>
+                    </ShellAuthMethodCombobox>
+                    <ClearableTextField groupId="password" fx:id="password" tipText="%base.passwordTip" require="true"
+                                        realHeight="30"
+                                        flexWidth="100% - 340" maxLen="1024">
+                        <FXHBox.margin>
+                            <Insets left="10" top="5"/>
+                        </FXHBox.margin>
                     </ClearableTextField>
-                    <ClearableTextField fx:id="password" tipText="%base.passwordTip" require="true" realHeight="30"
-                                        flexWidth="50% - 100" maxLen="1024">
+                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="certificate" fx:id="certificate" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
-                    </ClearableTextField>
+                    </ReadOnlyTextField>
+                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate" onMousePrimaryClicked="#chooseCertificate">
+                        <HBox.margin>
+                            <Insets left="5" top="12"/>
+                        </HBox.margin>
+                    </ChooseSVGGlyph>
                 </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>

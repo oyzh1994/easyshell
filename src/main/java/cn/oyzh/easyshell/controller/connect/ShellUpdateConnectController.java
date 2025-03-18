@@ -6,13 +6,17 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -29,6 +33,8 @@ import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import lombok.NonNull;
+
+import java.io.File;
 
 /**
  * ssh连接修改业务
@@ -54,6 +60,12 @@ public class ShellUpdateConnectController extends StageController {
      */
     @FXML
     private ClearableTextField password;
+
+    /**
+     * 证书
+     */
+    @FXML
+    private ReadOnlyTextField certificate;
 
     /**
      * tab组件
@@ -157,6 +169,12 @@ public class ShellUpdateConnectController extends StageController {
     private ClearableTextField sshPassword;
 
     /**
+     * 认证方式
+     */
+    @FXML
+    private ShellAuthMethodCombobox authMethod;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -232,7 +250,11 @@ public class ShellUpdateConnectController extends StageController {
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
             shellConnect.setUser(this.userName.getTextTrim());
+            // 认证信息
             shellConnect.setPassword(this.password.getTextTrim());
+            shellConnect.setAuthMethod(this.authMethod.getAuthType());
+            shellConnect.setCertificatePath(this.certificate.getTextTrim());
+            // ssh转发
             shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
                 shellConnect.setSshConfig(this.getSSHConfig());
@@ -256,8 +278,13 @@ public class ShellUpdateConnectController extends StageController {
             return;
         }
         String password = this.password.getTextTrim();
-        if (StringUtil.isBlank(password)) {
+        if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
             this.password.requestFocus();
+            return;
+        }
+        String certificate = this.certificate.getTextTrim();
+        if (this.authMethod.isCertificateAuth() && StringUtil.isBlank(certificate)) {
+            this.certificate.requestFocus();
             return;
         }
         // 名称未填，则直接以host为名称
@@ -271,9 +298,12 @@ public class ShellUpdateConnectController extends StageController {
 
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setUser(userName.trim());
-            this.shellConnect.setPassword(password.trim());
             this.shellConnect.setRemark(this.remark.getTextTrim());
             this.shellConnect.setConnectTimeOut(connectTimeOut.intValue());
+            // 认证信息
+            this.shellConnect.setPassword(password.trim());
+            this.shellConnect.setCertificatePath(certificate);
+            this.shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // ssh配置
             this.shellConnect.setSshConfig(this.getSSHConfig());
             this.shellConnect.setSshForward(this.sshForward.isSelected());
@@ -316,6 +346,16 @@ public class ShellUpdateConnectController extends StageController {
                 NodeGroupUtil.disable(this.sshTab, "ssh");
             }
         });
+        // 认证方式
+        this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.authMethod.isPasswordAuth()) {
+                NodeGroupUtil.display(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
+            } else {
+                NodeGroupUtil.display(this.tabPane, "certificate");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+            }
+        });
     }
 
     @Override
@@ -327,9 +367,16 @@ public class ShellUpdateConnectController extends StageController {
         this.remark.setText(this.shellConnect.getRemark());
         this.userName.setText(this.shellConnect.getUser());
         this.hostPort.setValue(this.shellConnect.hostPort());
-        this.password.setText(this.shellConnect.getPassword());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
+        // 认证处理
+        this.password.setText(this.shellConnect.getPassword());
+        this.certificate.setText(this.shellConnect.getCertificatePath());
+        if (this.shellConnect.isPasswordAuth()) {
+            this.authMethod.selectFirst();
+        } else {
+            this.authMethod.select(1);
+        }
         // ssh配置
         this.sshForward.setSelected(this.shellConnect.isSSHForward());
         ShellSSHConfig sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
@@ -371,5 +418,16 @@ public class ShellUpdateConnectController extends StageController {
             url = "https://www.xquartz.org/";
         }
         FXUtil.showDocument(url);
+    }
+
+    /**
+     * 选择证书
+     */
+    @FXML
+    private void chooseCertificate() {
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+        if (file != null) {
+            this.certificate.setText(file.getPath());
+        }
     }
 }

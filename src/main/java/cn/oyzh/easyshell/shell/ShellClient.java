@@ -188,13 +188,20 @@ public class ShellClient {
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
-        // 创建会话
-        this.session = JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
 //        this.session = JSCH.getSession(this.shellConnect.getUser(), this.shellConnect.hostIp(), this.shellConnect.hostPort());
-        // 主机密码
-        if (StringUtil.isNotBlank(this.shellConnect.getPassword())) {
+        // 密码
+        if (this.shellConnect.isPasswordAuth()) {
+            // 创建会话
+            this.session = JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setPassword(this.shellConnect.getPassword());
+        } else {// 证书
+            JSCH.addIdentity(this.shellConnect.getCertificatePath());
+            // 创建会话
+            this.session = JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         }
+//        if (StringUtil.isNotBlank(this.shellConnect.getPassword())) {
+//            this.session.setPassword(this.shellConnect.getPassword());
+//        }
         // 配置参数
         Properties config = new Properties();
         // 设置终端类型

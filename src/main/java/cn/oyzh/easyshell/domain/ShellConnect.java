@@ -108,6 +108,36 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
     private ShellX11Config x11Config;
 
     /**
+     * 认证方式
+     */
+    private String authMethod;
+
+    /**
+     * 证书路径
+     */
+    private String certificatePath;
+
+    public String getAuthMethod() {
+        return authMethod;
+    }
+
+    public void setAuthMethod(String authMethod) {
+        this.authMethod = authMethod;
+    }
+
+    public String getCertificatePath() {
+        return certificatePath;
+    }
+
+    public void setCertificatePath(String certificatePath) {
+        this.certificatePath = certificatePath;
+    }
+
+    public boolean isPasswordAuth() {
+        return StringUtil.isBlank(this.authMethod) || StringUtil.equalsAnyIgnoreCase(this.authMethod, "password");
+    }
+
+    /**
      * 复制对象
      *
      * @param shellConnect shell信息
@@ -139,7 +169,7 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
         return BooleanUtil.isTrue(this.sshForward);
     }
 
-    public  boolean isX11forwarding(){
+    public boolean isX11forwarding() {
         return this.x11forwarding != null && this.x11forwarding;
     }
 
