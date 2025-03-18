@@ -1,15 +1,16 @@
 package cn.oyzh.easyshell.tabs.connect;
 
+import cn.oyzh.easyshell.exec.DiskInfo;
+import cn.oyzh.easyshell.exec.ShellExecParser;
+import cn.oyzh.easyshell.fx.DiskInfoTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+
+import java.util.List;
 
 /**
  * 服务器cpu信息
@@ -17,7 +18,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellCpuTabController extends SubTabController {
+public class ShellDiskTabController extends SubTabController {
 
     /**
      * 根节点
@@ -26,23 +27,17 @@ public class ShellCpuTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * cpu图表
+     * 磁盘信息
      */
     @FXML
-    private ReadOnlyTextArea cpuInfo;
-
-    private void init() {
-        if (this.cpuInfo.isEmpty()) {
-            ShellExec exec = this.client().shellExec();
-            String cpuInfo = exec.lscpu();
-            this.cpuInfo.text(cpuInfo);
-        }
-    }
+    private DiskInfoTableView diskTable;
 
     @FXML
-    private void copyInfo() {
-        ClipboardUtil.copy(this.cpuInfo.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+    private void refresh() {
+        ShellExec exec = this.client().shellExec();
+        String output = exec.df_h();
+        List<DiskInfo> diskInfos = ShellExecParser.disk(output);
+        this.diskTable.setItem(diskInfos);
     }
 
     @Override
@@ -50,7 +45,7 @@ public class ShellCpuTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.init();
+                this.refresh();
             }
         });
     }

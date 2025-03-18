@@ -22,6 +22,7 @@
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">
             <fx:include fx:id="aggregation" source="shellAggregationTab.fxml"/>
             <fx:include fx:id="cpu" source="shellCpuTab.fxml"/>
+            <fx:include fx:id="disk" source="shellDiskTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

@@ -14,13 +14,13 @@
         <FXHBox flexWidth="100%" prefHeight="30">
             <CopySVGGlyph onMousePrimaryClicked="#copyInfo">
                 <FXHBox.margin>
-                    <Insets left="30" top="10"/>
+                    <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
         </FXHBox>
-        <ReadOnlyTextArea fx:id="cpuInfo" flexWidth="100% - 50" flexHeight="100% - 30">
+        <ReadOnlyTextArea fx:id="cpuInfo" flexWidth="100% - 20" flexHeight="100% - 30">
             <FXVBox.margin>
-                <Insets left="30" top="5"/>
+                <Insets left="10" top="5"/>
             </FXVBox.margin>
         </ReadOnlyTextArea>
     </FXVBox>

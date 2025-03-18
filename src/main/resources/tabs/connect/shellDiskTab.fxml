@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.DiskInfoTableView?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDiskTabController" text="%base.disk">
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <FXHBox prefHeight="30">
+            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <DiskInfoTableView flexWidth="100% - 20" flexHeight="100% - 30" fx:id="diskTable">
+            <columns>
+                <FXTableColumn prefWidth="125" valueName="fileSystem" text="%base.fileSystem"/>
+                <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
+                <FXTableColumn prefWidth="100" valueName="used" text="%base.used"/>
+                <FXTableColumn prefWidth="100" valueName="avail" text="%base.avail"/>
+                <FXTableColumn prefWidth="75" valueName="use" text="%base.usageRate"/>
+                <FXTableColumn flexWidth="100% - 510" valueName="mountedOn" text="%base.mountedOn"/>
+            </columns>
+            <FXVBox.margin>
+                <Insets left="10" top="5"/>
+            </FXVBox.margin>
+        </DiskInfoTableView>
+    </FXVBox>
+</FXTab>

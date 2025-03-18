@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpManager;

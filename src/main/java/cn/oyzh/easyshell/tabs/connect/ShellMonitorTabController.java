@@ -58,6 +58,12 @@ public class ShellMonitorTabController extends ParentTabController {
     private ShellCpuTabController cpuController;
 
     /**
+     * 磁盘信息
+     */
+    @FXML
+    private ShellDiskTabController diskController;
+
+    /**
      * 刷新任务
      */
     private Future<?> refreshTask;
@@ -155,6 +161,6 @@ public class ShellMonitorTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.aggregationController, this.cpuController);
+        return List.of(this.aggregationController, this.cpuController, this.diskController);
     }
 }
