@@ -76,6 +76,12 @@ public class ShellMonitorTabController extends ParentTabController {
     private ShellMemoryTabController memoryController;
 
     /**
+     * 显卡信息
+     */
+    @FXML
+    private ShellGpuTabController gpuController;
+
+    /**
      * 刷新任务
      */
     private Future<?> refreshTask;
@@ -173,6 +179,7 @@ public class ShellMonitorTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.aggregationController, this.cpuController, this.diskController, this.networkController, this.memoryController);
+        return List.of(this.aggregationController, this.cpuController, this.diskController,
+                this.networkController, this.memoryController, this.gpuController);
     }
 }

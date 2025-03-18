@@ -25,6 +25,7 @@
             <fx:include fx:id="disk" source="shellDiskTab.fxml"/>
             <fx:include fx:id="network" source="shellNetworkTab.fxml"/>
             <fx:include fx:id="memory" source="shellMemoryTab.fxml"/>
+            <fx:include fx:id="gpu" source="shellGpuTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

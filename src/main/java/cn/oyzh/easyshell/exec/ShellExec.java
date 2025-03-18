@@ -43,4 +43,15 @@ public class ShellExec {
         }
         return output;
     }
+
+    public String gpu() {
+        String output = this.client.exec("/usr/bin/nvidia-smi");
+        if (StringUtil.isBlank(output)) {
+            output = this.client.exec("/usr/sbin/lspci | /usr/bin/grep -i '3d'");
+        }
+        if (StringUtil.isBlank(output)) {
+            output = this.client.exec("/usr/sbin/lspci | /usr/bin/grep -i vga");
+        }
+        return output;
+    }
 }
