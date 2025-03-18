@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.tabs.connect;
 
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.sftp.ShelSftpFileSavedEvent;
+import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
+import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -188,7 +190,10 @@ public class ShellSftpTabController extends SubTabController {
             super.onTabInit(tab);
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
+                    System.setProperty(ShellConst.SFTP_VISIBLE, "1");
                     this.init();
+                } else {
+                    System.clearProperty(ShellConst.SFTP_VISIBLE);
                 }
             });
             // 绑定属性
@@ -313,6 +318,17 @@ public class ShellSftpTabController extends SubTabController {
         try {
             File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
             this.fileTable.uploadFile(file);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @EventSubscribe
+    private void draggedFile(ShellSftpFileDraggedEvent event) {
+        try {
+            List<File> files = event.data();
+            this.fileTable.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -582,7 +598,7 @@ public class ShellSftpTabController extends SubTabController {
     }
 
     @EventSubscribe
-    private void onFileSaved(ShelSftpFileSavedEvent event) {
+    private void onFileSaved(ShellSftpFileSavedEvent event) {
         this.fileTable.refresh();
     }
 }

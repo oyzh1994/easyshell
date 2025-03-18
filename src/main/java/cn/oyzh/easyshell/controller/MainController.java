@@ -147,21 +147,6 @@ public class MainController extends ParentStageController {
     }
 
     @Override
-    public void onWindowShown(WindowEvent event) {
-        try {
-            super.onWindowShown(event);
-            TitleBar titleBar = this.stage.getTitleBar();
-            // 加载标题
-            if (titleBar != null && !titleBar.isHasContent()) {
-                titleBar.loadContent("/fxml/header2.fxml");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JulLog.warn("onStageInitialize error", ex);
-        }
-    }
-
-    @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.title.main");
     }

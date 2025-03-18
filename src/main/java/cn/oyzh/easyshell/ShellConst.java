@@ -15,6 +15,11 @@ import java.io.File;
 public class ShellConst {
 
     /**
+     * sftp组件是否可见
+     */
+    public final static String SFTP_VISIBLE = "sftp:visible";
+
+    /**
      * icon地址
      */
     public final static String ICON_PATH = "/image/shell_no_bg.png";
@@ -38,6 +43,10 @@ public class ShellConst {
 
     public static String getCachePath() {
         return getStorePath() + "cache" + File.separator;
+    }
+
+    public static boolean isSftpVisible() {
+        return System.getProperty(SFTP_VISIBLE) != null;
     }
 
 }

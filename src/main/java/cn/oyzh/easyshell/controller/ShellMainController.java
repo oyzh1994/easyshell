@@ -26,7 +26,7 @@ import java.util.List;
  * shell主页
  *
  * @author oyzh
- * @since 2020/9/16
+ * @since 2025/03/06
  */
 public class ShellMainController extends ParentStageController {
 
@@ -86,7 +86,6 @@ public class ShellMainController extends ParentStageController {
         super.onWindowHidden(event);
         // 保存页面拉伸
         this.savePageResize();
-        // KeyListener.unListenReleased(this.tabPane, KeyCode.F5);
     }
 
     /**

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.main;
 
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
@@ -8,6 +9,9 @@ import cn.oyzh.fx.plus.keyboard.KeyListener;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.stage.WindowEvent;
+
+import java.io.File;
+import java.util.List;
 
 
 /**
@@ -53,9 +57,17 @@ public class ConnectController extends SubStageController {
         // ssh树变化事件
         this.tree.selectItemChanged(ShellEventUtil::treeItemChanged);
         // 文件拖拽初始化
-        this.stage.initDragFile(this.tree.getDragContent(), this.tree.root()::dragFile);
+        this.stage.initDragFile(this.tree.getDragContent(), this::dragFile);
         // 刷新触发事件
         KeyListener.listenReleased(this.tree, KeyCode.F5, keyEvent -> this.tree.reload());
+    }
+
+    private void dragFile(List<File> files) {
+        if (ShellConst.isSftpVisible()) {
+            ShellEventUtil.fileDragged(files);
+        } else {
+            this.tree.root().dragFile(files);
+        }
     }
 
     @FXML

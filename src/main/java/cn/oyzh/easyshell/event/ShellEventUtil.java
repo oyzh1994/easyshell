@@ -13,7 +13,8 @@ import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
-import cn.oyzh.easyshell.event.sftp.ShelSftpFileSavedEvent;
+import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
+import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
@@ -34,6 +35,7 @@ import javafx.scene.control.TreeItem;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author oyzh
@@ -274,8 +276,19 @@ public class ShellEventUtil {
      * @param file 文件
      */
     public static void fileSaved(SftpFile file) {
-        ShelSftpFileSavedEvent event = new ShelSftpFileSavedEvent();
+        ShellSftpFileSavedEvent event = new ShellSftpFileSavedEvent();
         event.data(file);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 文件已拖拽事件
+     *
+     * @param files 文件
+     */
+    public static void fileDragged(List<File> files) {
+        ShellSftpFileDraggedEvent event = new ShellSftpFileDraggedEvent();
+        event.data(files);
         EventUtil.post(event);
     }
 }
