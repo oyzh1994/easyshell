@@ -6,15 +6,20 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.File7zSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileBatSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileBmpSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileCompressSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileConfSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileCssSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileDmgSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileExcelSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileExeSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileGifSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileGzSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileHtmlSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileIcoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileImageSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileIniSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileJarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileJpgSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileJsSVGGlyph;
@@ -26,18 +31,22 @@ import cn.oyzh.easyshell.fx.svg.glyph.FileMp3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileMp4SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FilePdfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FilePptSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FilePySVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileRarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileRmvbSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileShSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileSwfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileTarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileTerminalSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileTextSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileTsSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileTtfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileUnknownSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileWordSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileXlsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileXmlSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileYamlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileZipSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
@@ -174,6 +183,24 @@ public class SftpFile implements ObjectCopier<SftpFile> {
                 glyph = new FileJsonSVGGlyph("12");
             } else if (FileNameUtil.isMarkdownType(extName)) {
                 glyph = new FileMarkdownSVGGlyph("12");
+            } else if (FileNameUtil.isCssType(extName)) {
+                glyph = new FileCssSVGGlyph("12");
+            } else if (FileNameUtil.isConfType(extName)) {
+                glyph = new FileConfSVGGlyph("12");
+            } else if (FileNameUtil.isBatType(extName)) {
+                glyph = new FileBatSVGGlyph("12");
+            } else if (FileNameUtil.isYamlType(extName)) {
+                glyph = new FileYamlSVGGlyph("12");
+            } else if (FileNameUtil.isIniType(extName)) {
+                glyph = new FileIniSVGGlyph("12");
+            } else if (FileNameUtil.isIcoType(extName)) {
+                glyph = new FileIcoSVGGlyph("12");
+            } else if (FileNameUtil.isTtfType(extName)) {
+                glyph = new FileTtfSVGGlyph("12");
+            } else if (FileNameUtil.isShType(extName)) {
+                glyph = new FileShSVGGlyph("12");
+            } else if (FileNameUtil.isPyType(extName)) {
+                glyph = new FilePySVGGlyph("12");
             } else if (FileNameUtil.isTxtType(extName) || FileNameUtil.isTextType(extName)
                     || FileNameUtil.isLogType(extName)) {
                 glyph = new FileTextSVGGlyph("12");
