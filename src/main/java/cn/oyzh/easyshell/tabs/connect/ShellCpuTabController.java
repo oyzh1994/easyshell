@@ -8,6 +8,7 @@ import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -31,12 +32,13 @@ public class ShellCpuTabController extends SubTabController {
     @FXML
     private ReadOnlyTextArea cpuInfo;
 
-    private void init() {
-        if (this.cpuInfo.isEmpty()) {
-            ShellExec exec = this.client().shellExec();
-            String cpuInfo = exec.lscpu();
-            this.cpuInfo.text(cpuInfo);
-        }
+    @FXML
+    private void refresh() {
+        ShellExec exec = this.client().shellExec();
+        StageManager.showMask(() -> {
+            String output = exec.lscpu();
+            this.cpuInfo.text(output);
+        });
     }
 
     @FXML
@@ -50,7 +52,7 @@ public class ShellCpuTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.init();
+                this.refresh();
             }
         });
     }

@@ -13,12 +13,12 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
- * 服务器网卡信息
+ * 服务器内存信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellNetworkTabController extends SubTabController {
+public class ShellMemoryTabController extends SubTabController {
 
     /**
      * 根节点
@@ -30,20 +30,20 @@ public class ShellNetworkTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private ReadOnlyTextArea networkCardInfo;
+    private ReadOnlyTextArea memoryInfo;
 
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.ifconfig();
-            this.networkCardInfo.text(output);
+            String output = exec.dmidecode_t_memory();
+            this.memoryInfo.text(output);
         });
     }
 
     @FXML
     private void copyInfo() {
-        ClipboardUtil.copy(this.networkCardInfo.getText());
+        ClipboardUtil.copy(this.memoryInfo.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
 

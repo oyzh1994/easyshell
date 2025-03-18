@@ -14,7 +14,7 @@
         <FXTableView flexWidth="100%" realHeight="80" fx:id="serverTable">
             <columns>
                 <FXTableColumn sortable="false" valueName="totalMemoryInfo" text="%base.totalMemory" prefWidth="100"/>
-                <FXTableColumn sortable="false" valueName="uname" text="%base.systemInfo" prefWidth="150"/>
+                <FXTableColumn sortable="false" valueName="uname" text="%base.systemInfo" prefWidth="180"/>
                 <FXTableColumn sortable="false" valueName="arch" text="%base.arch" prefWidth="85"/>
                 <FXTableColumn sortable="false" valueName="ulimit" text="ulimit" prefWidth="70"/>
             </columns>
@@ -24,6 +24,7 @@
             <fx:include fx:id="cpu" source="shellCpuTab.fxml"/>
             <fx:include fx:id="disk" source="shellDiskTab.fxml"/>
             <fx:include fx:id="network" source="shellNetworkTab.fxml"/>
+            <fx:include fx:id="memory" source="shellMemoryTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

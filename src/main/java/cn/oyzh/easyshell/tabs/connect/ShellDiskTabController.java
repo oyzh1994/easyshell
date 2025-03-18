@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -35,9 +36,11 @@ public class ShellDiskTabController extends SubTabController {
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
-        String output = exec.df_h();
-        List<DiskInfo> diskInfos = ShellExecParser.disk(output);
-        this.diskTable.setItem(diskInfos);
+        StageManager.showMask(() -> {
+            String output = exec.df_h();
+            List<DiskInfo> diskInfos = ShellExecParser.disk(output);
+            this.diskTable.setItem(diskInfos);
+        });
     }
 
     @Override

@@ -35,4 +35,12 @@ public class ShellExec {
         }
         return output;
     }
+
+    public String dmidecode_t_memory() {
+        String output = this.client.exec("/sbin/dmidecode -t memory");
+        if (StringUtil.isBlank(output)) {
+            output = this.client.exec("/usr/sbin/dmidecode -t memory");
+        }
+        return output;
+    }
 }
