@@ -58,16 +58,16 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FolderUploadSVGGlyph>
-            <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
-                <FXHBox.margin>
-                    <Insets left="5" top="10"/>
-                </FXHBox.margin>
-            </FolderAddSVGGlyph>
             <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FileAddSVGGlyph>
+            <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </FolderAddSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
                     <Insets left="5" top="10"/>

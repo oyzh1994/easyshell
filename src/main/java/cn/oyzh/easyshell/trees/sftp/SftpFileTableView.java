@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.trees.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
@@ -21,6 +23,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
@@ -360,23 +363,44 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
     protected void onMouseClicked(MouseEvent event) {
         try {
             List<SftpFile> files = this.getSelectedItems();
+            if (files == null) {
+                return;
+            }
+            if (files.size() != 1) {
+                return;
+            }
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                if (files == null) {
-                    return;
-                }
-                if (files.size() != 1) {
-                    return;
-                }
                 SftpFile file = files.getFirst();
-                if (!file.isDir()) {
-                    return;
+                if (file.isDir()) {
+                    this.intoDir(file);
+                } else {
+                    this.editFile(file);
                 }
-                this.intoDir(file);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    public void editFile(SftpFile file) {
+        if (!file.isFile()) {
+            return;
+        }
+        if (file.size() > 500 * 1024) {
+            return;
+        }
+        // 检查类型
+        String extName = FileNameUtil.extName(file.getFileName());
+        if (!StringUtil.equalsAnyIgnoreCase(extName, "txt", "text", "log", "yaml", "java", "xml", "json", "htm",
+                "html", "xhtml", "php", "css", "c", "cpp", "rs", "js", "csv", "sql", "md", "ini", "cfg", "sh", "bat", "py", "asp",
+                "aspx", "env", "tsv")) {
+            return;
+        }
+        StageAdapter adapter = StageManager.parseStage(ShellSftpFileEditController.class);
+        adapter.setProp("file", file);
+        adapter.setProp("client", this.client);
+        adapter.display();
     }
 
     public boolean currentIsRootDirectory() {

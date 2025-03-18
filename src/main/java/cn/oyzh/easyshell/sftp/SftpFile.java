@@ -321,7 +321,10 @@ public class SftpFile implements ObjectCopier<SftpFile> {
             this.group = t1.group;
         }
         this.fileName = t1.fileName;
-        this.fileName = t1.fileName;
         this.parentPath = t1.parentPath;
+    }
+
+    public boolean canWrite() {
+        return this.getPermissions().contains("w");
     }
 }

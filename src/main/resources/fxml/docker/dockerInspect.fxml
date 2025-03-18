@@ -7,17 +7,17 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.docker.DockerInspectController" prefWidth="850" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.docker.DockerInspectController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyInspect">
             <FXHBox.margin>
-                <Insets left="30" top="10"/>
+                <Insets left="20" top="10"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <RichJsonTextAreaPane editable="false" fx:id="inspect" flexHeight="100% - 30" flexWidth="100% - 50">
+    <RichJsonTextAreaPane editable="false" fx:id="inspect" flexHeight="100% - 30" flexWidth="100% - 20">
         <VBox.margin>
-            <Insets left="30" top="5"/>
+            <Insets left="30"/>
         </VBox.margin>
     </RichJsonTextAreaPane>
 </FXVBox>

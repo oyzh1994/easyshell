@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
+import cn.oyzh.easyshell.event.sftp.ShelSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
@@ -123,13 +124,6 @@ public class ShellEventUtil {
     public static void addGroup() {
         EventUtil.post(new ShellAddGroupEvent());
     }
-
-//    /**
-//     * 添加连接
-//     */
-//    public static void addConnect() {
-//        EventUtil.post(new SSHAddConnectEvent());
-//    }
 
     /**
      * 更新日志事件
@@ -270,6 +264,17 @@ public class ShellEventUtil {
      */
     public static void showFileInfo(SftpFile file) {
         ShellShowFileInfoEvent event = new ShellShowFileInfoEvent();
+        event.data(file);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 文件已保存事件
+     *
+     * @param file 文件
+     */
+    public static void fileSaved(SftpFile file) {
+        ShelSftpFileSavedEvent event = new ShelSftpFileSavedEvent();
         event.data(file);
         EventUtil.post(event);
     }

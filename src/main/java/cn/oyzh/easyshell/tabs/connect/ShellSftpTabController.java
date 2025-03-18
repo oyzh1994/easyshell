@@ -3,11 +3,13 @@ package cn.oyzh.easyshell.tabs.connect;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.sftp.ShelSftpFileSavedEvent;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.sftp.SftpFileTableView;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -577,5 +579,10 @@ public class ShellSftpTabController extends SubTabController {
         StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class);
         adapter.setProp("client", this.client());
         adapter.display();
+    }
+
+    @EventSubscribe
+    private void onFileSaved(ShelSftpFileSavedEvent event) {
+        this.fileTable.refresh();
     }
 }
