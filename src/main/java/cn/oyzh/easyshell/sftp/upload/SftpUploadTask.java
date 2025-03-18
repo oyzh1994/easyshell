@@ -139,6 +139,7 @@ public class SftpUploadTask {
                 }
             }
         } else {// 文件
+            this.updateTotal();
             this.monitors.add(new SftpUploadMonitor(localFile, remoteFile, this, sftp));
         }
     }
@@ -223,7 +224,7 @@ public class SftpUploadTask {
     /**
      * 总数量属性
      */
-    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty(0);
+    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
 
     public StringProperty totalSizeProperty() {
         return totalSizeProperty;
@@ -296,5 +297,14 @@ public class SftpUploadTask {
      */
     public boolean isUploading() {
         return this.status == SftpUploadStatus.UPLOADING;
+    }
+
+    /**
+     * 是否准备中
+     *
+     * @return 结果
+     */
+    public boolean isInPreparation() {
+        return this.status == SftpUploadStatus.IN_PREPARATION;
     }
 }

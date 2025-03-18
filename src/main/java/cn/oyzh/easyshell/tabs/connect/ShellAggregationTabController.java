@@ -73,8 +73,10 @@ public class ShellAggregationTabController extends SubTabController {
             this.cpuChart.addChartData(data);
         }
         double cpuUsage = monitor.getCpuUsage();
-        String time = this.dateFormat.format(System.currentTimeMillis());
-        ChartHelper.addOrUpdateData(data, time, cpuUsage, 10);
+        if (cpuUsage != -1) {
+            String time = this.dateFormat.format(System.currentTimeMillis());
+            ChartHelper.addOrUpdateData(data, time, cpuUsage, 10);
+        }
     }
 
     /**
@@ -90,8 +92,10 @@ public class ShellAggregationTabController extends SubTabController {
             this.memoryChart.addChartData(data);
         }
         double memoryUsage = monitor.getMemoryUsage();
-        String time = this.dateFormat.format(System.currentTimeMillis());
-        ChartHelper.addOrUpdateData(data, time, memoryUsage, 10);
+        if (memoryUsage != -1) {
+            String time = this.dateFormat.format(System.currentTimeMillis());
+            ChartHelper.addOrUpdateData(data, time, memoryUsage, 10);
+        }
     }
 
     /**

@@ -225,7 +225,7 @@ public class SftpDownloadManager {
 
     public void updateDownloading() {
         for (SftpDownloadTask task : this.tasks) {
-            if (task.isDownloading()) {
+            if (task.isDownloading() || task.isInPreparation()) {
                 this.downloadingProperty.set(true);
                 return;
             }

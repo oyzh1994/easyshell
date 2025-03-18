@@ -26,8 +26,8 @@
     </FXHBox>
     <SftpDownloadTableView fx:id="downloadTable" flexHeight="100% - 30" flexWidth="100% - 20">
         <columns>
-            <FXTableColumn prefWidth="160" valueName="destPath" text="%base.destPath"/>
-            <FXTableColumn flexWidth="100% - 610" valueName="currentFile" text="%base.currentFile"/>
+            <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
+            <FXTableColumn flexWidth="100% - 650" valueName="currentFile" text="%base.currentFile"/>
             <FXTableColumn prefWidth="140" valueName="currentProgress" text="%base.currentProgress"/>
             <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>
             <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>

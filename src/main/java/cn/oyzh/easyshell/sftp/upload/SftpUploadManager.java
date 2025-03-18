@@ -217,7 +217,7 @@ public class SftpUploadManager {
 
     public void updateUploading() {
         for (SftpUploadTask task : this.tasks) {
-            if (task.isUploading()) {
+            if (task.isUploading() || task.isInPreparation()) {
                 this.uploadingProperty.set(true);
                 return;
             }

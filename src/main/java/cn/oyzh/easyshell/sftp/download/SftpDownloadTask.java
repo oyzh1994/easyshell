@@ -7,6 +7,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadStatus;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -142,6 +143,7 @@ public class SftpDownloadTask {
                 }
             }
         } else {// 文件
+            this.updateTotal();
             this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
         }
     }
@@ -226,7 +228,7 @@ public class SftpDownloadTask {
     /**
      * 总数量属性
      */
-    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty(0);
+    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
 
     public StringProperty totalSizeProperty() {
         return totalSizeProperty;
@@ -299,5 +301,14 @@ public class SftpDownloadTask {
      */
     public boolean isDownloading() {
         return this.status == SftpDownloadStatus.DOWNLOADING;
+    }
+
+    /**
+     * 是否准备中
+     *
+     * @return 结果
+     */
+    public boolean isInPreparation() {
+        return this.status == SftpDownloadStatus.IN_PREPARATION;
     }
 }

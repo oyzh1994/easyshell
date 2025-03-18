@@ -111,11 +111,14 @@ public class ServerExec {
 
     public double memoryUsage() {
         try {
-            String memoryUsage = this.client.exec("/usr/bin/free | /usr/bin/awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
-            if (memoryUsage.contains("%")) {
-                memoryUsage = memoryUsage.replace("%", "");
+            String output = this.client.exec("/usr/bin/free | /usr/bin/awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
+            if (StringUtil.isBlank(output)) {
+                return -1;
             }
-            return Double.parseDouble(memoryUsage);
+            if (output.contains("%")) {
+                output = output.replace("%", "");
+            }
+            return Double.parseDouble(output);
         } catch (Exception ee) {
             ee.printStackTrace();
         }
@@ -178,46 +181,49 @@ public class ServerExec {
         return -1;
     }
 
-    public double[] iostat_d() {
-        try {
-            String iostat = this.client.exec("/usr/bin/iostat -dkx 1 2 | /usr/bin/awk 'NR>3 && $1!=\"loop*\"'");
-            if (StringUtil.isNotBlank(iostat)) {
-                double readSpeed = 0;
-                double writeSpeed = 0;
-                int lineCount = 0;
-                for (String line : iostat.split("\n")) {
-                    if (!line.contains(".")) {
-                        continue;
-                    }
-                    lineCount++;
-                    String[] cols = line.split("\\s+");
-                    readSpeed += Double.parseDouble(cols[3]);
-                    writeSpeed += Double.parseDouble(cols[4]);
-                }
-                return new double[]{readSpeed / lineCount, writeSpeed / lineCount};
-            }
-        } catch (Exception ee) {
-            ee.printStackTrace();
-        }
-        return new double[]{-1L, -1L};
-    }
-
-    public double[] vmstat_d() {
-        try {
-            String vmstat = this.client.exec("/usr/bin/vmstat 1 2 | /usr/bin/awk 'NR==3 {print \"R:\", $6*0.5\",\", \"W:\", $7*0.5}'");
-            String[] cols = vmstat.split(",");
-            double readSpeed = Double.parseDouble(cols[0].split(":")[1].trim());
-            double writeSpeed = Double.parseDouble(cols[1].split(":")[1].trim());
-            return new double[]{readSpeed, writeSpeed};
-        } catch (Exception ee) {
-            ee.printStackTrace();
-        }
-        return new double[]{-1L, -1L};
-    }
+//    public double[] iostat_d() {
+//        try {
+//            String iostat = this.client.exec("/usr/bin/iostat -dkx 1 2 | /usr/bin/awk 'NR>3 && $1!=\"loop*\"'");
+//            if (StringUtil.isNotBlank(iostat)) {
+//                double readSpeed = 0;
+//                double writeSpeed = 0;
+//                int lineCount = 0;
+//                for (String line : iostat.split("\n")) {
+//                    if (!line.contains(".")) {
+//                        continue;
+//                    }
+//                    lineCount++;
+//                    String[] cols = line.split("\\s+");
+//                    readSpeed += Double.parseDouble(cols[3]);
+//                    writeSpeed += Double.parseDouble(cols[4]);
+//                }
+//                return new double[]{readSpeed / lineCount, writeSpeed / lineCount};
+//            }
+//        } catch (Exception ee) {
+//            ee.printStackTrace();
+//        }
+//        return new double[]{-1L, -1L};
+//    }
+//
+//    public double[] vmstat_d() {
+//        try {
+//            String vmstat = this.client.exec("/usr/bin/vmstat 1 2 | /usr/bin/awk 'NR==3 {print \"R:\", $6*0.5\",\", \"W:\", $7*0.5}'");
+//            String[] cols = vmstat.split(",");
+//            double readSpeed = Double.parseDouble(cols[0].split(":")[1].trim());
+//            double writeSpeed = Double.parseDouble(cols[1].split(":")[1].trim());
+//            return new double[]{readSpeed, writeSpeed};
+//        } catch (Exception ee) {
+//            ee.printStackTrace();
+//        }
+//        return new double[]{-1L, -1L};
+//    }
 
     public double[] disk() {
         try {
             String output = this.client.exec("/bin/cat /proc/diskstats");
+            if (StringUtil.isBlank(output)) {
+                return new double[]{-1L, -1L};
+            }
             String[] lines = output.split("\n");
             double read = 0;
             double write = 0;
@@ -244,6 +250,9 @@ public class ServerExec {
     public double[] network() {
         try {
             String output = this.client.exec("/bin/cat /proc/net/dev | /bin/grep -vE 'lo|^[ ]*$' | /usr/bin/awk -F: '{print $2 \" \" $10}' | /usr/bin/awk '{print $1 \" \" $2}'\n");
+            if (StringUtil.isBlank(output)) {
+                return new double[]{-1L, -1L};
+            }
             String[] lines = output.split("\n");
             double send = 0;
             double receive = 0;
