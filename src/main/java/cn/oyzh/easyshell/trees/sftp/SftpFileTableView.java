@@ -198,7 +198,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
 //                }
 //            }
         } catch (SftpException ex) {
-            if (ExceptionUtil.hasMessage(ex, "inputstream is closed")) {
+            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4:")) {
                 sftp.close();
                 this._loadFile();
             } else {

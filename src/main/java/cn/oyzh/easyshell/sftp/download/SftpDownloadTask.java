@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp.download;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author oyzh
@@ -35,7 +37,7 @@ public class SftpDownloadTask {
     /**
      * 下载监控列表
      */
-    private final Queue<SftpDownloadMonitor> monitors = new ArrayDeque<>();
+    private final Queue<SftpDownloadMonitor> monitors = new ConcurrentLinkedQueue<>();
 
     public SftpDownloadMonitor takeMonitor() {
         return this.monitors.peek();
@@ -165,9 +167,13 @@ public class SftpDownloadTask {
             try {
                 sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {
-                ex.printStackTrace();
-                JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
-                this.downloadFailed(monitor, ex);
+                if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
+                    JulLog.warn("download canceled");
+                } else {
+                    ex.printStackTrace();
+                    JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
+                    this.downloadFailed(monitor, ex);
+                }
             }
             ThreadUtil.sleep(5);
         }

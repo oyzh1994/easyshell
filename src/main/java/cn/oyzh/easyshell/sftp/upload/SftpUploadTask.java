@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp.upload;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
@@ -17,6 +18,7 @@ import javafx.beans.property.StringProperty;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author oyzh
@@ -32,7 +34,7 @@ public class SftpUploadTask {
     /**
      * 上传监听器
      */
-    private final Queue<SftpUploadMonitor> monitors = new ArrayDeque<>();
+    private final Queue<SftpUploadMonitor> monitors = new ConcurrentLinkedQueue<>();
 
     public SftpUploadMonitor takeMonitor() {
         return this.monitors.peek();
@@ -161,9 +163,13 @@ public class SftpUploadTask {
             try {
                 sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {
-                ex.printStackTrace();
-                JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
-                this.uploadFailed(monitor, ex);
+                if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
+                    JulLog.warn("upload canceled");
+                } else {
+                    ex.printStackTrace();
+                    JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
+                    this.uploadFailed(monitor, ex);
+                }
             }
             ThreadUtil.sleep(5);
         }

@@ -14,10 +14,7 @@ public class SSHSftpManager {
 
     public boolean hasAvailable() {
         for (ShellSftp shellSftp : this.sftpList) {
-            if (shellSftp.isClosed()) {
-                continue;
-            }
-            if (shellSftp.isUsing()) {
+            if (shellSftp.isClosed() || !shellSftp.isConnected() || shellSftp.isUsing() || shellSftp.isHolding()) {
                 continue;
             }
             return true;
@@ -47,7 +44,7 @@ public class SSHSftpManager {
     public void push(ShellSftp sftp) {
         List<ShellSftp> removes = new ArrayList<>();
         for (ShellSftp shellSftp : this.sftpList) {
-            if (shellSftp.isClosed()) {
+            if (shellSftp.isClosed() || !shellSftp.isConnected()) {
                 removes.add(shellSftp);
             }
         }
