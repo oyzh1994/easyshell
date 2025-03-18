@@ -7,6 +7,7 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.File7zSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileBatSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileBinSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileBmpSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileCompressSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileConfSVGGlyph;
@@ -31,6 +32,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.FileMp3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileMp4SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FilePdfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FilePptSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FilePsdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FilePySVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileRarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileRmvbSVGGlyph;
@@ -47,6 +49,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.FileWordSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileXlsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileXmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileYamlSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FileYmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FileZipSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
@@ -201,6 +204,12 @@ public class SftpFile implements ObjectCopier<SftpFile> {
                 glyph = new FileShSVGGlyph("12");
             } else if (FileNameUtil.isPyType(extName)) {
                 glyph = new FilePySVGGlyph("12");
+            } else if (FileNameUtil.isYmlType(extName)) {
+                glyph = new FileYmlSVGGlyph("12");
+            } else if (FileNameUtil.isBinType(extName)) {
+                glyph = new FileBinSVGGlyph("12");
+            } else if (FileNameUtil.isPsdType(extName)) {
+                glyph = new FilePsdSVGGlyph("12");
             } else if (FileNameUtil.isTxtType(extName) || FileNameUtil.isTextType(extName)
                     || FileNameUtil.isLogType(extName)) {
                 glyph = new FileTextSVGGlyph("12");
