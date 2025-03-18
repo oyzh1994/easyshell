@@ -62,7 +62,7 @@ public class ShellConnectExport {
      * 从json对象数据生成
      *
      * @param json json字符串
-     * @return SSHInfoExport
+     * @return ShellConnectExport
      */
     public static ShellConnectExport fromJSON(@NonNull String json) {
         JulLog.info("json: {}", json);

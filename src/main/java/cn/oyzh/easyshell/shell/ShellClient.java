@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.sftp.SSHSftpManager;
+import cn.oyzh.easyshell.sftp.ShellSftpManager;
 import cn.oyzh.easyshell.sftp.SftpAttr;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
@@ -372,7 +372,7 @@ public class ShellClient {
         return this.shell;
     }
 
-    private final SSHSftpManager sftpManager = new SSHSftpManager();
+    private final ShellSftpManager sftpManager = new ShellSftpManager();
 
     private final SftpUploadManager sftpUploadManager = new SftpUploadManager();
 
@@ -530,6 +530,15 @@ public class ShellClient {
             this.serverExec = new ServerExec(this);
         }
         return this.serverExec;
+    }
+
+    private ShellExec shellExec;
+
+    public ShellExec shellExec() {
+        if (this.shellExec == null) {
+            this.shellExec = new ShellExec(this);
+        }
+        return this.shellExec;
     }
 
     //    public boolean isDownloading() {
