@@ -17,6 +17,7 @@
                 <FXTableColumn sortable="false" valueName="uname" text="%base.systemInfo" prefWidth="180"/>
                 <FXTableColumn sortable="false" valueName="arch" text="%base.arch" prefWidth="85"/>
                 <FXTableColumn sortable="false" valueName="ulimit" text="ulimit" prefWidth="70"/>
+                <FXTableColumn sortable="false" valueName="uptime" text="%base.uptime" prefWidth="120"/>
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">

@@ -20,13 +20,6 @@ public class ServerExec {
         this.client = client;
     }
 
-//    public ServerInfo info() {
-//        ServerInfo info = new ServerInfo();
-//        long totalMemory = this.totalMemory();
-//        info.setTotalMemory(totalMemory);
-//        return info;
-//    }
-
     /**
      * 服务器磁盘对象
      */
@@ -43,10 +36,11 @@ public class ServerExec {
         int ulimit = this.ulimit();
         String uname = this.uname();
         double totalMemory = this.totalMemory();
+        String uptime = this.uptime();
         monitor.setArch(arch);
         monitor.setUname(uname);
         monitor.setUlimit(ulimit);
-        monitor.setTotalMemory(ulimit);
+        monitor.setUptime(uptime);
         monitor.setTotalMemory(totalMemory);
         return monitor;
     }
@@ -269,5 +263,19 @@ public class ServerExec {
             ee.printStackTrace();
         }
         return new double[]{-1L, -1L};
+    }
+
+    public String uptime() {
+        try {
+            String output = this.client.exec("/usr/bin/uptime");
+            if (StringUtil.isNotBlank(output)) {
+                output = output.substring(output.indexOf("up"));
+                output = output.substring(0, output.indexOf(","));
+                return output.trim();
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return "N/A";
     }
 }

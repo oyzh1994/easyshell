@@ -336,7 +336,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
             });
             menuItems.add(copyFilePath);
 
-            if (file.isFile()) {
+//            if (file.isFile()) {
                 FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> {
                     try {
                         String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
@@ -346,7 +346,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
                     }
                 });
                 menuItems.add(renameFile);
-            }
+//            }
         }
 
         FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> {
@@ -477,7 +477,7 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
         this.refreshFile();
     }
 
-    public void renameFile(SftpFile file, String newName) throws SftpException, JSchException, IOException {
+    public void renameFile(SftpFile file, String newName) throws SftpException {
         String name = file.getFileName();
         if (newName == null || StringUtil.equals(name, newName)) {
             return;

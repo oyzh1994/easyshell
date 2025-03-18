@@ -12,6 +12,8 @@ public class ServerMonitor {
 
     private String uname;
 
+    private String uptime;
+
     private double cpuUsage;
 
     private double memoryUsage;
@@ -25,6 +27,14 @@ public class ServerMonitor {
     private double networkSendSpeed;
 
     private double networkReceiveSpeed;
+
+    public String getUptime() {
+        return uptime;
+    }
+
+    public void setUptime(String uptime) {
+        this.uptime = uptime;
+    }
 
     public double getDiskReadSpeed() {
         return diskReadSpeed;
