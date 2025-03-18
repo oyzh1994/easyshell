@@ -23,6 +23,7 @@
             <fx:include fx:id="aggregation" source="shellAggregationTab.fxml"/>
             <fx:include fx:id="cpu" source="shellCpuTab.fxml"/>
             <fx:include fx:id="disk" source="shellDiskTab.fxml"/>
+            <fx:include fx:id="network" source="shellNetworkTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

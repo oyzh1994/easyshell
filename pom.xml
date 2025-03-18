@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyshell</artifactId>
-    <version>0.0.3</version>
+    <version>1.0.3</version>
     <description>ssh连接，sftp文件管理，x11转发支持，本地终端增强能力</description>
 
     <properties>

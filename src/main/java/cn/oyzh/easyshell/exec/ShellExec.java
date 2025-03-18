@@ -27,4 +27,12 @@ public class ShellExec {
         }
         return output;
     }
+
+    public String ifconfig() {
+        String output = this.client.exec("/sbin/ifconfig");
+        if (StringUtil.isBlank(output)) {
+            output = this.client.exec("/usr/sbin/ifconfig");
+        }
+        return output;
+    }
 }
