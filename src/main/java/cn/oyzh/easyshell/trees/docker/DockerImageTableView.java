@@ -43,19 +43,19 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
     public DockerExec getExec() {
         return exec;
     }
-
-    private byte status;
-
-    public byte getStatus() {
-        return status;
-    }
-
-    public void setStatus(byte status) {
-        if (status != this.status) {
-            this.status = status;
-            this.loadImage();
-        }
-    }
+//
+//    private byte status;
+//
+//    public byte getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(byte status) {
+//        if (status != this.status) {
+//            this.status = status;
+//            this.loadImage();
+//        }
+//    }
 
     private List<DockerImage> images;
 

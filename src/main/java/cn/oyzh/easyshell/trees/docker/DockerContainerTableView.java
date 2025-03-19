@@ -56,7 +56,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     public void setStatus(byte status) {
         if (status != this.status) {
             this.status = status;
-            this.loadContainer();
+            StageManager.showMask(this::loadContainer);
         }
     }
 

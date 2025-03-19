@@ -132,7 +132,7 @@ public class ShellDockerTabController extends SubTabController {
 
     @FXML
     private void refreshImage() {
-        this.imageTable.loadImage();
+        StageManager.showMask(() -> this.imageTable.loadImage());
     }
 
     @FXML
