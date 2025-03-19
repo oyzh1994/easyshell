@@ -39,12 +39,12 @@
             <version>${h2.version}</version>
         </dependency>
 
-        <!-- java 辅助工具包 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>compile</scope>
-        </dependency>
+<!--        &lt;!&ndash; java 辅助工具包 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>cn.oyzh</groupId>
