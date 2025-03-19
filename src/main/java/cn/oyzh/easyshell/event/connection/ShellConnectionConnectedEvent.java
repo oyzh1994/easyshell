@@ -18,6 +18,6 @@ public class ShellConnectionConnectedEvent extends Event<ShellClient> implements
     }
 
     public ShellConnect connect() {
-        return this.data().shellConnect();
+        return this.data().getShellConnect();
     }
 }

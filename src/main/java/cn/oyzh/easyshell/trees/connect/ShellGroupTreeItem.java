@@ -20,8 +20,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +36,11 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     /**
      * 分组对象
      */
-    @Getter
-    @Accessors(chain = true, fluent = true)
     private final ShellGroup value;
+
+    public ShellGroup value(){
+        return value;
+    }
 
     /**
      * shell分组储存

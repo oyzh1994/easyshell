@@ -34,8 +34,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,8 +92,14 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
         }
     }
 
-    @Setter
-    @Getter
+    public ShellClient getClient() {
+        return client;
+    }
+
+    public void setClient(ShellClient client) {
+        this.client = client;
+    }
+
     private ShellClient client;
 
     /**

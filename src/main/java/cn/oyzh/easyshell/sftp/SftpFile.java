@@ -56,8 +56,6 @@ import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
@@ -69,22 +67,62 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     private ChannelSftp.LsEntry entry;
 
-    @Setter
     private SftpATTRS attrs;
 
-    @Setter
-    @Getter
     private String owner;
 
-    @Setter
-    @Getter
     private String group;
 
-    @Setter
     private String fileName;
 
-    @Setter
-    @Getter
+    public ChannelSftp.LsEntry getEntry() {
+        return entry;
+    }
+
+    public void setEntry(ChannelSftp.LsEntry entry) {
+        this.entry = entry;
+    }
+
+    public SftpATTRS getAttrs() {
+        return attrs;
+    }
+
+    public void setAttrs(SftpATTRS attrs) {
+        this.attrs = attrs;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getParentPath() {
+        return parentPath;
+    }
+
+    public void setParentPath(String parentPath) {
+        this.parentPath = parentPath;
+    }
+
+    public void setIcon(SVGGlyph icon) {
+        this.icon = icon;
+    }
+
     private String parentPath;
 
     public SftpFile(String parentPath, ChannelSftp.LsEntry entry) {

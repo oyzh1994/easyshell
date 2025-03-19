@@ -4,7 +4,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
-import lombok.Data;
 
 import java.io.Serializable;
 
@@ -12,7 +11,6 @@ import java.io.Serializable;
  * @author oyzh
  * @since 2025/03/08
  */
-@Data
 @Table("t_x11_config")
 public class ShellX11Config implements Serializable {
 
@@ -49,5 +47,37 @@ public class ShellX11Config implements Serializable {
      */
     public boolean isLocal() {
         return StringUtil.equalsAnyIgnoreCase(this.host, "localhost", "127.0.0.1");
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getIid() {
+        return iid;
+    }
+
+    public void setIid(String iid) {
+        this.iid = iid;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }

@@ -11,7 +11,6 @@ import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import kotlin.collections.ArraysKt;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +28,6 @@ import java.util.List;
  */
 public class ShellTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
-    @Setter
     private int MAX_LOG_SIZE = 200;
 
     @NotNull

@@ -5,9 +5,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -15,15 +12,12 @@ import java.io.Serializable;
  * @author oyzh
  * @since 2023/6/16
  */
-@Setter
-@ToString
 @Table("t_connect")
 public class ShellConnect implements Comparable<ShellConnect>, Serializable {
 
     /**
      * 数据id
      */
-    @Getter
     @Column
     @PrimaryKey
     private String id;
@@ -31,79 +25,65 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
     /**
      * 连接地址
      */
-    @Getter
     @Column
     private String host;
 
     /**
      * 名称
      */
-    @Getter
     @Column
     private String name;
 
     /**
      * 备注信息
      */
-    @Getter
     @Column
     private String remark;
 
     /**
      * 分组id
      */
-    @Getter
-    @Setter
     @Column
     private String groupId;
 
     /**
      * 认证用户
      */
-    @Getter
-    @Setter
     @Column
     private String user;
 
     /**
      * 认证密码
      */
-    @Getter
-    @Setter
     @Column
     private String password;
 
     /**
      * 连接超时时间
      */
-    @Setter
     @Column
     private Integer connectTimeOut;
 
     /**
      * 是否开启ssh转发
      */
-    @Getter
     @Column
     private Boolean sshForward;
 
     /**
      * ssh信息
      */
-    @Getter
     private ShellSSHConfig sshConfig;
 
     /**
      * x11转发
      */
-    @Getter
     @Column
     private Boolean x11forwarding;
 
     /**
      * x11配置
      */
-    @Getter
     private ShellX11Config x11Config;
 
     /**
@@ -188,6 +168,98 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
      */
     public int connectTimeOutMs() {
         return this.getConnectTimeOut() * 1000;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setConnectTimeOut(Integer connectTimeOut) {
+        this.connectTimeOut = connectTimeOut;
+    }
+
+    public Boolean getSshForward() {
+        return sshForward;
+    }
+
+    public void setSshForward(Boolean sshForward) {
+        this.sshForward = sshForward;
+    }
+
+    public ShellSSHConfig getSshConfig() {
+        return sshConfig;
+    }
+
+    public void setSshConfig(ShellSSHConfig sshConfig) {
+        this.sshConfig = sshConfig;
+    }
+
+    public Boolean getX11forwarding() {
+        return x11forwarding;
+    }
+
+    public void setX11forwarding(Boolean x11forwarding) {
+        this.x11forwarding = x11forwarding;
+    }
+
+    public ShellX11Config getX11Config() {
+        return x11Config;
+    }
+
+    public void setX11Config(ShellX11Config x11Config) {
+        this.x11Config = x11Config;
     }
 
     @Override

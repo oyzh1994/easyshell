@@ -14,8 +14,6 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +30,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     /**
      * shell信息
      */
-    @Getter
-    @Accessors(chain = true, fluent = true)
     private ShellConnect value;
+
+    public ShellConnect value() {
+        return value;
+    }
 
 //    /**
 //     * shell客户端
@@ -53,7 +53,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public ShellConnectTreeItem( ShellConnect value,  RichTreeView treeView) {
+    public ShellConnectTreeItem(ShellConnect value, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         this.value(value);
@@ -229,7 +229,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      *
      * @param value ssh信息
      */
-    public void value( ShellConnect value) {
+    public void value(ShellConnect value) {
         this.value = value;
 //        this.client = new SSHClient(value);
 //        this.client.addStateListener((observable, o, n) -> this.refresh());

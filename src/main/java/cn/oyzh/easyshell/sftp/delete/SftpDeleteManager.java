@@ -8,7 +8,6 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import lombok.Setter;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -23,10 +22,24 @@ public class SftpDeleteManager {
 
     private final Queue<DeleteFile> files = new ArrayDeque<>();
 
-    @Setter
     private Consumer<SftpDeleteEnded> deleteEndedCallback;
 
-    @Setter
+    public Consumer<SftpDeleteEnded> getDeleteEndedCallback() {
+        return deleteEndedCallback;
+    }
+
+    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> deleteEndedCallback) {
+        this.deleteEndedCallback = deleteEndedCallback;
+    }
+
+    public Consumer<SftpDeleteDeleted> getDeleteDeletedCallback() {
+        return deleteDeletedCallback;
+    }
+
+    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> deleteDeletedCallback) {
+        this.deleteDeletedCallback = deleteDeletedCallback;
+    }
+
     private Consumer<SftpDeleteDeleted> deleteDeletedCallback;
 
     public void deleteFile(SftpFile file, ShellSftp sftp) {

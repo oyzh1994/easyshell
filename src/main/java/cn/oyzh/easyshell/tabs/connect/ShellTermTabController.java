@@ -76,6 +76,6 @@ public class ShellTermTabController extends SubTabController {
     }
 
     public ShellClient client() {
-        return this.parent().client();
+        return this.parent().getClient();
     }
 }

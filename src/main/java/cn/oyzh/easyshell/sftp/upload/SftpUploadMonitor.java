@@ -5,7 +5,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpProgressMonitor;
-import lombok.Getter;
 
 import java.io.File;
 
@@ -15,29 +14,70 @@ import java.io.File;
  */
 public class SftpUploadMonitor implements SftpProgressMonitor {
 
-    @Getter
     private long total;
 
-    @Getter
     private long current;
 
     private final File localFile;
 
-    @Getter
     private final String remoteFile;
 
-//    private final SftpUploadManager manager;
+    public String getRemoteFile() {
+        return remoteFile;
+    }
+
     private final SftpUploadTask task;
 
-    @Getter
     private transient boolean ended;
 
-    @Getter
     private transient boolean cancelled;
 
     private long startTime;
 
-    @Getter
+    public long getTotal() {
+        return total;
+    }
+
+    public ShellSftp getSftp() {
+        return sftp;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    public long getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(long current) {
+        this.current = current;
+    }
+
+    public boolean isEnded() {
+        return ended;
+    }
+
+    public void setEnded(boolean ended) {
+        this.ended = ended;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
     private final ShellSftp sftp;
 
     public SftpUploadMonitor(final File localFile, String remoteFile, SftpUploadTask task, ShellSftp sftp) {

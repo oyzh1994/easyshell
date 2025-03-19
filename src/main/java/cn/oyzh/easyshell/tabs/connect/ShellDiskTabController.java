@@ -54,7 +54,7 @@ public class ShellDiskTabController extends SubTabController {
     }
 
     public ShellClient client() {
-        return this.parent().client();
+        return this.parent().getClient();
     }
 
     @Override

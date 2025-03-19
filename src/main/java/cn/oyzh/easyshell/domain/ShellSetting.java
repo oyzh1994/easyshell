@@ -7,8 +7,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * shell设置
@@ -16,9 +14,7 @@ import lombok.EqualsAndHashCode;
  * @author oyzh
  * @since 2023/6/16
  */
-@Data
 @Table("t_setting")
-@EqualsAndHashCode(callSuper = true)
 public class ShellSetting extends AppSetting {
 
     /**
@@ -64,6 +60,30 @@ public class ShellSetting extends AppSetting {
             return new String[]{"vcxsrv.exe", "XWin_MobaX.exe","XWin.exe"};
         }
         return null;
+    }
+
+    public String getX11Path() {
+        return x11Path;
+    }
+
+    public void setX11Path(String x11Path) {
+        this.x11Path = x11Path;
+    }
+
+    public String getTerminalType() {
+        return terminalType;
+    }
+
+    public void setTerminalType(String terminalType) {
+        this.terminalType = terminalType;
+    }
+
+    public Boolean getShowHiddenFile() {
+        return showHiddenFile;
+    }
+
+    public void setShowHiddenFile(Boolean showHiddenFile) {
+        this.showHiddenFile = showHiddenFile;
     }
 
     public String x11WorkDir() {

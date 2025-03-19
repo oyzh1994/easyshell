@@ -12,8 +12,6 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -32,11 +30,13 @@ public class ShellMonitorTabController extends ParentTabController {
     @FXML
     private FXTab root;
 
+    public ShellClient getClient() {
+        return client;
+    }
+
     /**
      * zk客户端
      */
-    @Getter
-    @Accessors(chain = true, fluent = true)
     private ShellClient client;
 
     /**

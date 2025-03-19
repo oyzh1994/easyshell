@@ -34,8 +34,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,15 +56,20 @@ public class ShellClient {
     /**
      * shell信息
      */
-    @Getter
-    @Accessors(chain = true, fluent = true)
     private final ShellConnect shellConnect;
+
+    public ShellConnect getShellConnect() {
+        return shellConnect;
+    }
 
     /**
      * shell会话
      */
-    @Getter
     private Session session;
+
+    public Session getSession() {
+        return session;
+    }
 
     /**
      * ssh端口转发器
@@ -109,8 +112,11 @@ public class ShellClient {
     /**
      * 连接状态
      */
-    @Getter
     private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    public ShellConnState getState() {
+        return state.get();
+    }
 
     /**
      * 获取连接状态
@@ -357,8 +363,11 @@ public class ShellClient {
         return this.shellConnect.getName();
     }
 
-    @Getter
     private ShellShell shell;
+
+    public ShellShell getShell() {
+        return shell;
+    }
 
     public ShellShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
@@ -386,8 +395,11 @@ public class ShellClient {
         return sftpUploadManager;
     }
 
-    @Getter
     private final SftpDeleteManager sftpDeleteManager = new SftpDeleteManager();
+
+    public SftpDeleteManager getSftpDeleteManager() {
+        return sftpDeleteManager;
+    }
 
     private final SftpDownloadManager sftpDownloadManager = new SftpDownloadManager();
 

@@ -6,8 +6,6 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.List;
  * @author oyzh
  * @since 2023/2/22
  */
-@Getter
 public class ShellConnectExport {
 
     /**
@@ -34,7 +31,6 @@ public class ShellConnectExport {
     /**
      * 连接
      */
-    @Setter
     private List<ShellGroup> groups;
 
     /**
@@ -55,6 +51,38 @@ public class ShellConnectExport {
         export.connects = shellConnects;
         export.platform = System.getProperty("os.name");
         return export;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public List<ShellGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<ShellGroup> groups) {
+        this.groups = groups;
+    }
+
+    public List<ShellConnect> getConnects() {
+        return connects;
+    }
+
+    public void setConnects(List<ShellConnect> connects) {
+        this.connects = connects;
     }
 
     /**

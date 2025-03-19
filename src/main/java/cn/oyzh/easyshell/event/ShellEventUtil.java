@@ -182,7 +182,7 @@ public class ShellEventUtil {
     public static void groupRenamed(String group, String oldName) {
         ShellGroupRenamedEvent event = new ShellGroupRenamedEvent();
         event.data(group);
-        event.oldName(oldName);
+        event.setOldName(oldName);
         EventUtil.post(event);
     }
 

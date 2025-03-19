@@ -3,8 +3,6 @@ package cn.oyzh.easyshell.event.group;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * @author oyzh
@@ -12,8 +10,14 @@ import lombok.experimental.Accessors;
  */
 public class ShellGroupRenamedEvent extends Event<String> implements EventFormatter {
 
-    @Setter
-    @Accessors(chain = false, fluent = true)
+    public String getOldName() {
+        return oldName;
+    }
+
+    public void setOldName(String oldName) {
+        this.oldName = oldName;
+    }
+
     private String oldName;
 
     @Override

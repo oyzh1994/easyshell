@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.dto;
 
-import lombok.Data;
 
 /**
  * shell连接
@@ -8,7 +7,6 @@ import lombok.Data;
  * @author oyzh
  * @since 2023/8/10
  */
-@Data
 public class ShellConnectInfo {
 
     /**
@@ -20,6 +18,38 @@ public class ShellConnectInfo {
      * 端口
      */
     private int port = 22;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     /**
      * 用户

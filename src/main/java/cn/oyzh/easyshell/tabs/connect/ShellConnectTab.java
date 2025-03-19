@@ -80,6 +80,6 @@ public class ShellConnectTab extends RichTab {
      * @return shell客户端
      */
     public ShellClient client() {
-        return this.controller().client();
+        return this.controller().getClient();
     }
 }

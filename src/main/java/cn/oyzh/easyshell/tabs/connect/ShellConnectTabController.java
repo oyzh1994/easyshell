@@ -10,8 +10,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -26,12 +24,24 @@ public class ShellConnectTabController extends ParentTabController {
     /**
      * shell客户端
      */
-    @Getter
-    @Accessors(chain = true, fluent = true)
     private ShellClient client;
 
-    @Getter
-    @Accessors(chain = true, fluent = true)
+    public ShellClient getClient() {
+        return client;
+    }
+
+    public void setClient(ShellClient client) {
+        this.client = client;
+    }
+
+    public ShellConnectTreeItem getTreeItem() {
+        return treeItem;
+    }
+
+    public void setTreeItem(ShellConnectTreeItem treeItem) {
+        this.treeItem = treeItem;
+    }
+
     private ShellConnectTreeItem treeItem;
 
     /**
@@ -89,7 +99,7 @@ public class ShellConnectTabController extends ParentTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.client().close();
+        this.getClient().close();
     }
 
     /**
