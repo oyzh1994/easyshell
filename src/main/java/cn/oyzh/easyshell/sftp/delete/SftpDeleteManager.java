@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.sftp.delete;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.BooleanProperty;

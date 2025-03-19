@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
     <graphic>

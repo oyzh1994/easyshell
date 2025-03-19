@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.connect;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -32,7 +32,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-import lombok.NonNull;
 
 import java.io.File;
 
@@ -359,7 +358,7 @@ public class ShellUpdateConnectController extends StageController {
     }
 
     @Override
-    public void onWindowShown(@NonNull WindowEvent event) {
+    public void onWindowShown( WindowEvent event) {
         super.onWindowShown(event);
         this.shellConnect = this.getWindowProp("shellConnect");
         this.name.setText(this.shellConnect.getName());

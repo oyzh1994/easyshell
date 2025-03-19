@@ -1,25 +1,24 @@
 package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.server.ServerExec;
-import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.sftp.ShellSftpManager;
 import cn.oyzh.easyshell.sftp.SftpAttr;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpManager;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
-import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
+import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.SSHForwardConfig;
@@ -36,7 +35,6 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.io.ByteArrayOutputStream;
@@ -90,7 +88,7 @@ public class ShellClient {
      */
     private boolean closeQuietly;
 
-    public ShellClient(@NonNull ShellConnect shellConnect) {
+    public ShellClient( ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {

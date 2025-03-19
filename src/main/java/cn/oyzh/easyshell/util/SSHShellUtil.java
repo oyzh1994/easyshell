@@ -13,7 +13,7 @@
 // * @author oyzh
 // * @since 2023/08/17
 // */
-//@UtilityClass
+//
 //public class SSHShellUtil {
 //
 //    /**

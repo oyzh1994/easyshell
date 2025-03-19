@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell;
 
 import cn.oyzh.common.util.JarUtil;
-import lombok.experimental.UtilityClass;
 
 import java.io.File;
 
@@ -11,7 +10,7 @@ import java.io.File;
  * @author oyzh
  * @since 2023/08/16
  */
-@UtilityClass
+
 public class ShellConst {
 
     /**

@@ -6,7 +6,6 @@ import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -143,7 +142,7 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
      * @param shellConnect shell信息
      * @return 当前对象
      */
-    public ShellConnect copy(@NonNull ShellConnect shellConnect) {
+    public ShellConnect copy( ShellConnect shellConnect) {
         this.name = shellConnect.name;
         this.host = shellConnect.host;
         this.user = shellConnect.user;

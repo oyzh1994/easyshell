@@ -1,13 +1,12 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
-import lombok.experimental.UtilityClass;
 
 /**
  * @author oyzh
  * @since 2025/03/06
  */
-@UtilityClass
+
 public class ShellI18nHelper {
 
     public static String fileTip1() {

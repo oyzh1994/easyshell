@@ -11,7 +11,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public class ShellConnectTabController extends ParentTabController {
      *
      * @param treeItem shell客户端
      */
-    public void init(@NonNull ShellConnectTreeItem treeItem) {
+    public void init( ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
         this.client = new ShellClient(treeItem.value());
         StageManager.showMask(() -> {

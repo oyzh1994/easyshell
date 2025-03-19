@@ -7,7 +7,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class ShellConnectExport {
      * @param shellConnects 连接列表
      * @return ShellConnectExport
      */
-    public static ShellConnectExport fromConnects(@NonNull List<ShellConnect> shellConnects) {
+    public static ShellConnectExport fromConnects( List<ShellConnect> shellConnects) {
         ShellConnectExport export = new ShellConnectExport();
         Project project = Project.load();
         export.version = project.getVersion();
@@ -64,7 +63,7 @@ public class ShellConnectExport {
      * @param json json字符串
      * @return ShellConnectExport
      */
-    public static ShellConnectExport fromJSON(@NonNull String json) {
+    public static ShellConnectExport fromJSON( String json) {
         JulLog.info("json: {}", json);
         JSONObject object = JSONUtil.parseObject(json);
         ShellConnectExport export = new ShellConnectExport();

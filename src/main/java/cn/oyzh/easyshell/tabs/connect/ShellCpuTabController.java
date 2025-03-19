@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect;
 
-import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;

@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.x11;
 
 import cn.oyzh.common.file.FileUtil;
-import lombok.experimental.UtilityClass;
 
 /**
  * x11工具类
@@ -9,7 +8,7 @@ import lombok.experimental.UtilityClass;
  * @author oyzh
  * @since 2025/03/09
  */
-@UtilityClass
+
 public class X11Util {
 
     public static String findExist(String workdir, String[] x11Binary) {

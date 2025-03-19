@@ -2,13 +2,12 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
-import lombok.experimental.UtilityClass;
 
 /**
  * @author oyzh
  * @since 2025-03-06
  */
-@UtilityClass
+
 public class SftpUtil {
 
     public static String concat(String src, String name) {

@@ -24,7 +24,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
-import lombok.NonNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public ShellRootTreeItem(@NonNull ShellConnectTreeView treeView) {
+    public ShellRootTreeItem( ShellConnectTreeView treeView) {
         super(treeView);
         this.setValue(new ShellRootTreeItemValue());
         // 加载子节点
@@ -269,7 +268,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void addConnect(@NonNull ShellConnect info) {
+    public void addConnect( ShellConnect info) {
         ShellGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
         if (groupItem == null) {
             super.addChild(new ShellConnectTreeItem(info, this.getTreeView()));
@@ -280,7 +279,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void addConnectItem(@NonNull ShellConnectTreeItem item) {
+    public void addConnectItem( ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
             if (item.value().getGroupId() != null) {
                 item.value().setGroupId(null);
@@ -292,7 +291,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void addConnectItems(@NonNull List<ShellConnectTreeItem> items) {
+    public void addConnectItems( List<ShellConnectTreeItem> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             this.addChild((List) items);
             this.expend();
@@ -300,7 +299,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public boolean delConnectItem(@NonNull ShellConnectTreeItem item) {
+    public boolean delConnectItem( ShellConnectTreeItem item) {
         // 删除连接
         if (this.connectStore.delete(item.value())) {
             this.removeChild(item);

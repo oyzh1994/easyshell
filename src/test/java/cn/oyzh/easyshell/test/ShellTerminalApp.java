@@ -1,6 +1,10 @@
 package cn.oyzh.easyshell.test;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;

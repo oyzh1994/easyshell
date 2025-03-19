@@ -21,7 +21,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public ShellGroupTreeItem(@NonNull ShellGroup group, @NonNull RichTreeView treeView) {
+    public ShellGroupTreeItem( ShellGroup group,  RichTreeView treeView) {
         super(treeView);
         this.value = group;
         this.setValue(new ShellGroupTreeItemValue(this));
@@ -158,12 +157,12 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     }
 
     @Override
-    public void addConnect(@NonNull ShellConnect shellConnect) {
+    public void addConnect( ShellConnect shellConnect) {
         this.addConnectItem(new ShellConnectTreeItem(shellConnect, this.getTreeView()));
     }
 
     @Override
-    public void addConnectItem(@NonNull ShellConnectTreeItem item) {
+    public void addConnectItem( ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
             if (!Objects.equals(item.value().getGroupId(), this.value.getGid())) {
                 item.value().setGroupId(this.value.getGid());
@@ -174,14 +173,14 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     }
 
     @Override
-    public void addConnectItems(@NonNull List<ShellConnectTreeItem> items) {
+    public void addConnectItems( List<ShellConnectTreeItem> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             this.addChild((List) items);
         }
     }
 
     @Override
-    public boolean delConnectItem(@NonNull ShellConnectTreeItem item) {
+    public boolean delConnectItem( ShellConnectTreeItem item) {
         // 删除连接
         if (this.connectStore.delete(item.value())) {
             this.removeChild(item);

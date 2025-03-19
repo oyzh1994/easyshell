@@ -7,13 +7,12 @@ import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.store.jdbc.JdbcConst;
 import cn.oyzh.store.jdbc.JdbcDialect;
 import cn.oyzh.store.jdbc.JdbcManager;
-import lombok.experimental.UtilityClass;
 
 /**
  * @author oyzh
  * @since 2025-02-14
  */
-@UtilityClass
+
 public class ShellStoreUtil {
 
     /**

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 

@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.trees.sftp.SftpUploadTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;

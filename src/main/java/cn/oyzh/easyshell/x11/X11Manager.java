@@ -8,7 +8,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.information.MessageBox;
-import lombok.experimental.UtilityClass;
 
 import java.io.File;
 
@@ -18,7 +17,7 @@ import java.io.File;
  * @author oyzh
  * @since 2025/03/08
  */
-@UtilityClass
+
 public class X11Manager {
 
     /**

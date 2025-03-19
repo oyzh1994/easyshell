@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import lombok.NonNull;
 
 import java.util.List;
 
@@ -18,21 +17,21 @@ public interface ShellConnectManager {
      *
      * @param shellConnect 连接信息
      */
-    void addConnect(@NonNull ShellConnect shellConnect);
+    void addConnect( ShellConnect shellConnect);
 
     /**
      * 添加连接节点
      *
      * @param item 连接节点
      */
-    void addConnectItem(@NonNull ShellConnectTreeItem item);
+    void addConnectItem( ShellConnectTreeItem item);
 
     /**
      * 添加多个连接节点
      *
      * @param items 连接节点列表
      */
-    void addConnectItems(@NonNull List<ShellConnectTreeItem> items);
+    void addConnectItems( List<ShellConnectTreeItem> items);
 
     /**
      * 删除连接节点
@@ -40,7 +39,7 @@ public interface ShellConnectManager {
      * @param item 连接节点
      * @return 结果
      */
-    boolean delConnectItem(@NonNull ShellConnectTreeItem item);
+    boolean delConnectItem( ShellConnectTreeItem item);
 
     /**
      * 获取连接节点

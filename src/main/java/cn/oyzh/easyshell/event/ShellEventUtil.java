@@ -4,11 +4,11 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
@@ -32,7 +32,6 @@ import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import javafx.scene.control.TreeItem;
-import lombok.experimental.UtilityClass;
 
 import java.io.File;
 import java.util.List;
@@ -41,7 +40,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-02-14
  */
-@UtilityClass
+
 public class ShellEventUtil {
     /**
      * 连接丢失事件
