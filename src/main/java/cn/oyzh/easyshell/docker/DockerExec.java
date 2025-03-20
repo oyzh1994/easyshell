@@ -24,67 +24,67 @@ public class DockerExec {
     }
 
     public String docker_ps() {
-        return this.client.exec("/usr/bin/docker ps --format " + this.container_format);
+        return this.client.exec("docker ps --format " + this.container_format);
     }
 
     public String docker_ps_a() {
-        return this.client.exec("/usr/bin/docker ps -a --format " + this.container_format);
+        return this.client.exec("docker ps -a --format " + this.container_format);
     }
 
     public String docker_ps_exited() {
-        return this.client.exec("/usr/bin/docker ps -f \"status=exited\" --format " + this.container_format);
+        return this.client.exec("docker ps -f \"status=exited\" --format " + this.container_format);
     }
 
     public String docker_rm(String containerId) {
-        return this.client.exec("/usr/bin/docker rm " + containerId);
+        return this.client.exec("docker rm " + containerId);
     }
 
     public String docker_logs(String containerId) {
-        return this.client.exec("/usr/bin/docker logs " + containerId);
+        return this.client.exec("docker logs " + containerId);
     }
 
     public String docker_rename(String containerId, String newName) {
-        return this.client.exec("/usr/bin/docker rename " + containerId + " " + newName);
+        return this.client.exec("docker rename " + containerId + " " + newName);
     }
 
     public String docker_port(String containerId) {
-        return this.client.exec("/usr/bin/docker port " + containerId);
+        return this.client.exec("docker port " + containerId);
     }
 
     public String docker_rm_f(String containerId) {
-        return this.client.exec("/usr/bin/docker rm -f " + containerId);
+        return this.client.exec("docker rm -f " + containerId);
     }
 
     public String docker_start(String containerId) {
-        return this.client.exec("/usr/bin/docker start " + containerId);
+        return this.client.exec("docker start " + containerId);
     }
 
     public String docker_restart(String containerId) {
-        return this.client.exec("/usr/bin/docker restart " + containerId);
+        return this.client.exec("docker restart " + containerId);
     }
 
     public String docker_pause(String containerId) {
-        return this.client.exec("/usr/bin/docker pause " + containerId);
+        return this.client.exec("docker pause " + containerId);
     }
 
     public String docker_unpause(String containerId) {
-        return this.client.exec("/usr/bin/docker unpause " + containerId);
+        return this.client.exec("docker unpause " + containerId);
     }
 
     public String docker_stop(String containerId) {
-        return this.client.exec("/usr/bin/docker stop " + containerId);
+        return this.client.exec("docker stop " + containerId);
     }
 
     public String docker_kill(String containerId) {
-        return this.client.exec("/usr/bin/docker kill " + containerId);
+        return this.client.exec("docker kill " + containerId);
     }
 
     public String docker_rmi(String imageId) {
-        return this.client.exec("/usr/bin/docker rmi " + imageId);
+        return this.client.exec("docker rmi " + imageId);
     }
 
     public String docker_rmi_f(String imageId) {
-        return this.client.exec("/usr/bin/docker rmi -f " + imageId);
+        return this.client.exec("docker rmi -f " + imageId);
     }
 
     public String docker_inspect(String id) {
@@ -93,13 +93,13 @@ public class DockerExec {
 
     public String docker_inspect(String id, String format) {
         if (format == null) {
-            return this.client.exec("/usr/bin/docker inspect " + id);
+            return this.client.exec("docker inspect " + id);
         }
-        return this.client.exec("/usr/bin/docker inspect --format=" + format + " " + id);
+        return this.client.exec("docker inspect --format=" + format + " " + id);
     }
 
     public String docker_images() {
-        return this.client.exec("/usr/bin/docker images --format " + this.image_format);
+        return this.client.exec("docker images --format " + this.image_format);
     }
 
     public String docker_resource(String id) {
@@ -115,7 +115,7 @@ public class DockerExec {
     }
 
     public String docker_update(DockerResource resource, String id) {
-        StringBuilder builder = new StringBuilder("/usr/bin/docker update");
+        StringBuilder builder = new StringBuilder("docker update");
         if (resource.getMemory() > 0) {
             builder.append(" --memory ").append(resource.getMemory()).append("m");
         }
@@ -140,30 +140,34 @@ public class DockerExec {
     }
 
     public String docker_info() {
-        return this.client.exec("/usr/bin/docker info");
+        return this.client.exec("docker info");
     }
 
     public String docker_version() {
-        return this.client.exec("/usr/bin/docker version");
+        return this.client.exec("docker version");
+    }
+
+    public String docker_v() {
+        return this.client.exec("docker --version");
     }
 
     public String docker_history(String imageId) {
-        return this.client.exec("/usr/bin/docker history " + imageId + " --format " + this.history_format);
+        return this.client.exec("docker history " + imageId + " --format " + this.history_format);
     }
 
     public String docker_container_prune_f() {
-        return this.client.exec("/usr/bin/docker container prune -f");
+        return this.client.exec("docker container prune -f");
     }
 
     public String docker_image_prune_f() {
-        return this.client.exec("/usr/bin/docker image prune -f");
+        return this.client.exec("docker image prune -f");
     }
 
     public String docker_network_prune_f() {
-        return this.client.exec("/usr/bin/docker network prune -f");
+        return this.client.exec("docker network prune -f");
     }
 
     public String docker_volume_prune_f() {
-        return this.client.exec("/usr/bin/docker volume prune -f");
+        return this.client.exec("docker volume prune -f");
     }
 }

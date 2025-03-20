@@ -95,12 +95,12 @@ public class ServerExec {
 
     public double cpuUsage() {
         try {
-            String cpuUsage = this.client.exec("/usr/bin/top -bn1 | /usr/bin/grep \"Cpu(s)\" | /usr/bin/awk '{print $2 + $4}'");
+            String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
             if (StringUtil.isBlank(cpuUsage)) {
-                cpuUsage = this.client.exec("/usr/bin/top -bn1 | /bin/grep \"Cpu(s)\" | /usr/bin/awk '{print $2 + $4}'");
+                cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
             }
             if (StringUtil.isBlank(cpuUsage)) {
-                cpuUsage = this.client.exec("/bin/ps -aux | /usr/bin/awk '{sum+=$3} END {print sum}'");
+                cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
             }
             return Double.parseDouble(cpuUsage);
         } catch (Exception ee) {
@@ -111,7 +111,7 @@ public class ServerExec {
 
     public double memoryUsage() {
         try {
-            String output = this.client.exec("/usr/bin/free | /usr/bin/awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
+            String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
             if (StringUtil.isBlank(output)) {
                 return -1;
             }
@@ -140,7 +140,7 @@ public class ServerExec {
 
     public String uname() {
         try {
-            return this.client.exec("/bin/uname -rs");
+            return this.client.exec("uname -rs");
         } catch (Exception ee) {
             ee.printStackTrace();
         }
@@ -149,7 +149,7 @@ public class ServerExec {
 
     public String arch() {
         try {
-            return this.client.exec("/bin/uname -m");
+            return this.client.exec("uname -m");
         } catch (Exception ee) {
             ee.printStackTrace();
         }
@@ -157,7 +157,7 @@ public class ServerExec {
     }
 
 //    public double[] memoryUsage() {
-//        String memoryUsage = this.client.exec("/usr/bin/free -m | /usr/bin/awk 'NR==2{printf \"Total Memory: %d, Memory Usage: %.2f%\\n\", $2, ($3/$2)*100}'");
+//        String memoryUsage = this.client.exec("free -m | awk 'NR==2{printf \"Total Memory: %d, Memory Usage: %.2f%\\n\", $2, ($3/$2)*100}'");
 //        String[] arr = memoryUsage.split(",");
 //        double[] result = new double[arr.length];
 //        result[0] = Double.parseDouble(arr[0].split(":")[1].trim());
@@ -167,7 +167,7 @@ public class ServerExec {
 
     public long totalMemory() {
         try {
-            String totalMemory = this.client.exec("/bin/cat /proc/meminfo | /usr/bin/awk '/MemTotal/ {print int($2/1024)}'");
+            String totalMemory = this.client.exec("cat /proc/meminfo | awk '/MemTotal/ {print int($2/1024)}'");
             if (totalMemory.startsWith("\"")) {
                 totalMemory = totalMemory.substring(1);
             }
@@ -183,7 +183,7 @@ public class ServerExec {
 
 //    public double[] iostat_d() {
 //        try {
-//            String iostat = this.client.exec("/usr/bin/iostat -dkx 1 2 | /usr/bin/awk 'NR>3 && $1!=\"loop*\"'");
+//            String iostat = this.client.exec("/iostat -dkx 1 2 | awk 'NR>3 && $1!=\"loop*\"'");
 //            if (StringUtil.isNotBlank(iostat)) {
 //                double readSpeed = 0;
 //                double writeSpeed = 0;
@@ -207,7 +207,7 @@ public class ServerExec {
 //
 //    public double[] vmstat_d() {
 //        try {
-//            String vmstat = this.client.exec("/usr/bin/vmstat 1 2 | /usr/bin/awk 'NR==3 {print \"R:\", $6*0.5\",\", \"W:\", $7*0.5}'");
+//            String vmstat = this.client.exec("/vmstat 1 2 | awk 'NR==3 {print \"R:\", $6*0.5\",\", \"W:\", $7*0.5}'");
 //            String[] cols = vmstat.split(",");
 //            double readSpeed = Double.parseDouble(cols[0].split(":")[1].trim());
 //            double writeSpeed = Double.parseDouble(cols[1].split(":")[1].trim());
@@ -220,7 +220,7 @@ public class ServerExec {
 
     public double[] disk() {
         try {
-            String output = this.client.exec("/bin/cat /proc/diskstats");
+            String output = this.client.exec("cat /proc/diskstats");
             if (StringUtil.isBlank(output)) {
                 return new double[]{-1L, -1L};
             }
@@ -249,7 +249,7 @@ public class ServerExec {
 
     public double[] network() {
         try {
-            String output = this.client.exec("/bin/cat /proc/net/dev | /bin/grep -vE 'lo|^[ ]*$' | /usr/bin/awk -F: '{print $2 \" \" $10}' | /usr/bin/awk '{print $1 \" \" $2}'\n");
+            String output = this.client.exec("cat /proc/net/dev | grep -vE 'lo|^[ ]*$' | awk -F: '{print $2 \" \" $10}' | awk '{print $1 \" \" $2}'\n");
             if (StringUtil.isBlank(output)) {
                 return new double[]{-1L, -1L};
             }
@@ -273,7 +273,7 @@ public class ServerExec {
 
     public String uptime() {
         try {
-            String output = this.client.exec("/usr/bin/uptime");
+            String output = this.client.exec("uptime");
             if (StringUtil.isNotBlank(output)) {
                 output = output.substring(output.indexOf("up"));
                 output = output.substring(0, output.indexOf(","));

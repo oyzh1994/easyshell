@@ -58,12 +58,17 @@ public class ShellDockerTabController extends SubTabController {
         }
         this.initialized = true;
         try {
-            boolean exist = this.client().openSftp().exist("/usr/bin/docker");
-            if (!exist) {
+            DockerExec exec = this.client().dockerExec();
+            String output = exec.docker_v();
+            if (StringUtil.isBlank(output)) {
                 MessageBox.info(ShellI18nHelper.connectTip5());
                 return;
             }
-            DockerExec exec = this.client().dockerExec();
+//            boolean exist = this.client().openSftp().exist("/usr/bin/docker");
+//            if (!exist) {
+//                MessageBox.info(ShellI18nHelper.connectTip5());
+//                return;
+//            }
             this.containerTable.setExec(exec);
             this.imageTable.setExec(exec);
             StageManager.showMask(() -> {

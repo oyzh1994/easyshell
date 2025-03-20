@@ -425,11 +425,12 @@ public class ShellClient {
     public String exec(String command) {
         ChannelExec channel = null;
         try {
+            String extCommand = "export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin && " + command;
             channel = (ChannelExec) this.session.openChannel("exec");
             if (this.shellConnect.isX11forwarding()) {
                 channel.setXForwarding(true);
             }
-            channel.setCommand(command);
+            channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);
             channel.connect();
@@ -448,11 +449,11 @@ public class ShellClient {
     }
 
     public String exec_id_un(int uid) {
-        return this.exec("/usr/bin/id -un " + uid);
+        return this.exec("id -un " + uid);
     }
 
     public String exec_id_gn(int gid) {
-        return this.exec("/usr/bin/id -gn " + gid);
+        return this.exec("id -gn " + gid);
     }
 
     public int connectTimeout() {
