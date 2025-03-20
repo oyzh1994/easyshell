@@ -118,6 +118,8 @@ public class ShellSftpFileEditController extends StageController {
                     this.format.select(RichDataType.HTML);
                 } else if (FileNameUtil.isXmlType(extName)) {
                     this.format.select(RichDataType.XML);
+                } else if (FileNameUtil.isYamlType(extName)|| FileNameUtil.isYmlType(extName)) {
+                    this.format.select(RichDataType.YAML);
                 } else {
                     this.format.select(RichDataType.RAW);
                 }
@@ -158,6 +160,8 @@ public class ShellSftpFileEditController extends StageController {
                 this.data.showXmlData(this.getData());
             } else if (this.format.isHtmlFormat()) {
                 this.data.showHtmlData(this.getData());
+            } else if (this.format.isYamlFormat()) {
+                this.data.showYamlData(this.getData());
             } else if (this.format.isStringFormat()) {
                 this.data.showStringData(this.getData());
             } else {
