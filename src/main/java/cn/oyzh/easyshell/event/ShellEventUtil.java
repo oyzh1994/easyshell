@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
@@ -292,6 +293,15 @@ public class ShellEventUtil {
     public static void fileDragged(List<File> files) {
         ShellSftpFileDraggedEvent event = new ShellSftpFileDraggedEvent();
         event.data(files);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 打开终端页面
+     *
+     */
+    public static void showTerminal( ) {
+        ShellShowTerminalEvent event = new ShellShowTerminalEvent();
         EventUtil.post(event);
     }
 }

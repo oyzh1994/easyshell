@@ -66,6 +66,14 @@ public class ShellHomeTabController extends RichTabController {
     }
 
     /**
+     * 打开终端
+     */
+    @FXML
+    private void openTerminal() {
+        ShellEventUtil.showTerminal();
+    }
+
+    /**
      * 更新日志
      */
     @FXML

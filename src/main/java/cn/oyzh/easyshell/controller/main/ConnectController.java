@@ -35,6 +35,14 @@ public class ConnectController extends SubStageController {
     private SortSVGPane sortPane;
 
     /**
+     * 打开终端
+     */
+    @FXML
+    private void openTerminal() {
+        ShellEventUtil.showTerminal();
+    }
+
+    /**
      * 定位节点
      */
     @FXML

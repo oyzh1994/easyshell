@@ -11,6 +11,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
     <graphic>
@@ -23,6 +24,11 @@
                     <Insets left="5" top="10"/>
                 </HBox.margin>
             </AddSVGGlyph>
+            <TerminalSVGGlyph size="15" onMousePrimaryClicked="#openTerminal">
+                <HBox.margin>
+                    <Insets left="5" top="10"/>
+                </HBox.margin>
+            </TerminalSVGGlyph>
             <ImportSVGGlyph size="15" onMousePrimaryClicked="#importConnect" tipText="%base.importConnect">
                 <HBox.margin>
                     <Insets left="5" top="10"/>

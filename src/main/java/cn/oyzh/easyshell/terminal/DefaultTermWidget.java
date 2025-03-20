@@ -1,11 +1,10 @@
-package cn.oyzh.easyshell.shell;
+package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.terminal.ThemeSettingsProvider;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
@@ -15,7 +14,6 @@ import com.techsenger.jeditermfx.core.util.Platform;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import kotlin.text.Charsets;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -30,14 +28,14 @@ import java.util.function.IntConsumer;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTermWidget extends JediTermFxWidget {
+public class DefaultTermWidget extends JediTermFxWidget {
 
     /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
-    public ShellTermWidget() {
+    public DefaultTermWidget() {
         super(new ThemeSettingsProvider());
     }
 
@@ -53,8 +51,8 @@ public class ShellTermWidget extends JediTermFxWidget {
         String[] command = new String[]{"/bin/bash"};
         Map<String, String> envs = this.getEnvironments();
         if (OSUtil.isWindows()) {
-//                command = new String[]{"cmd.exe"};
-            command = new String[]{"powershell.exe"};
+            command = new String[]{"cmd.exe"};
+//            command = new String[]{"powershell.exe"};
         } else if (OSUtil.isLinux()) {
             String shell = envs.get("SHELL");
             if (shell == null) {
@@ -95,7 +93,7 @@ public class ShellTermWidget extends JediTermFxWidget {
     public TtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new ShellTtyConnector(process, charset, Arrays.asList(command));
+        return new DefaultTtyConnector(process, charset, Arrays.asList(command));
     }
 
     protected Map<String, String> getEnvironments() {
@@ -118,22 +116,22 @@ public class ShellTermWidget extends JediTermFxWidget {
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
             JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-            if (ttyConnector instanceof ShellTtyConnector loggingConnector) {
+            if (ttyConnector instanceof DefaultTtyConnector loggingConnector) {
                 loggingConnector.setWidget(session);
             }
             session.start();
         }
     }
 
-    public void onTermination(@NotNull IntConsumer terminationCallback) {
+    public void onTermination(IntConsumer terminationCallback) {
         new TtyConnectorWaitFor(this.getTtyConnector(),
                 this.getExecutorServiceManager().getUnboundedExecutorService(),
                 terminationCallback);
     }
 
     @Override
-    public ShellTtyConnector getTtyConnector() {
-        return (ShellTtyConnector) super.getTtyConnector();
+    public DefaultTtyConnector getTtyConnector() {
+        return (DefaultTtyConnector) super.getTtyConnector();
     }
 
     public double getWidth() {

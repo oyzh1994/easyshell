@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.shell;
+package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXColorUtil;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-08
  */
-public class ShellSettingsProvider extends DefaultSettingsProvider {
+public class ThemeSettingsProvider extends DefaultSettingsProvider {
 
     /**
      * 寻找最接近的配色

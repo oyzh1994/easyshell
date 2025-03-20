@@ -5,10 +5,12 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
+import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
+import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
@@ -197,5 +199,19 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             }
         }
         this.removeTab(closeTabs);
+    }
+
+    /**
+     * 终端打开事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void terminalOpen(ShellShowTerminalEvent event) {
+        ShellTerminalTab terminalTab = new ShellTerminalTab();
+        super.addTab(terminalTab);
+        if (!terminalTab.isSelected()) {
+            this.select(terminalTab);
+        }
     }
 }
