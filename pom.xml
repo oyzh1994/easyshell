@@ -23,32 +23,12 @@
 
     <dependencies>
 
-        <!-- ssh类库 -->
-        <!-- https://mvnrepository.com/artifact/com.github.mwiede/jsch -->
-        <dependency>
-            <groupId>com.github.mwiede</groupId>
-            <artifactId>jsch</artifactId>
-            <version>${jsch.version}</version>
-        </dependency>
-
         <!-- 内存数据库 -->
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
-        </dependency>
-
-<!--        &lt;!&ndash; java 辅助工具包 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>cn.oyzh</groupId>
-            <artifactId>event</artifactId>
         </dependency>
 
         <dependency>
