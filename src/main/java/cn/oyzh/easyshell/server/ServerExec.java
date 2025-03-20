@@ -95,7 +95,8 @@ public class ServerExec {
 
     public double cpuUsage() {
         try {
-            String cpuUsage = this.client.exec("/bin/ps -aux | /usr/bin/awk '{sum+=$3} END {print sum}'");
+            String cpuUsage = this.client.exec("/usr/bin/top -bn1 | /usr/bin/grep \"Cpu(s)\" | /usr/bin/awk '{print $2 + $4}'");
+//            String cpuUsage = this.client.exec("/bin/ps -aux | /usr/bin/awk '{sum+=$3} END {print sum}'");
             return Double.parseDouble(cpuUsage);
         } catch (Exception ee) {
             ee.printStackTrace();
