@@ -50,7 +50,13 @@ public class ShellExec {
             output = this.client.exec("/usr/sbin/lspci | /usr/bin/grep -i '3d'");
         }
         if (StringUtil.isBlank(output)) {
+            output = this.client.exec("/usr/sbin/lspci | /bin/grep -i '3d'");
+        }
+        if (StringUtil.isBlank(output)) {
             output = this.client.exec("/usr/sbin/lspci | /usr/bin/grep -i vga");
+        }
+        if (StringUtil.isBlank(output)) {
+            output = this.client.exec("/usr/sbin/lspci | /bin/grep -i vga");
         }
         return output;
     }

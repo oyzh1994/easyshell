@@ -5,10 +5,12 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -81,6 +83,16 @@ public class ShellSftpFileEditController extends StageController {
     private ClearableTextField filter;
 
     /**
+     * 设置
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
+     * 设置存储
+     */
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
+    /**
      * 保存文件
      */
     @FXML
@@ -105,7 +117,7 @@ public class ShellSftpFileEditController extends StageController {
      * 初始化文件
      */
     private void init() {
-        this.fontSize.selectSize((byte) 12);
+//        this.fontSize.selectSize((byte) 12);
         ShellSftp sftp = this.client.openSftp();
         StageManager.showMask(() -> {
             try {
@@ -118,7 +130,7 @@ public class ShellSftpFileEditController extends StageController {
                     this.format.select(RichDataType.HTML);
                 } else if (FileNameUtil.isXmlType(extName)) {
                     this.format.select(RichDataType.XML);
-                } else if (FileNameUtil.isYamlType(extName)|| FileNameUtil.isYmlType(extName)) {
+                } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
                     this.format.select(RichDataType.YAML);
                 } else {
                     this.format.select(RichDataType.RAW);
@@ -147,6 +159,11 @@ public class ShellSftpFileEditController extends StageController {
         this.client = this.getWindowProp("client");
         this.destPath = SystemUtil.tmpdir() + "/" + UUIDUtil.uuidSimple();
         this.init();
+
+        // 初始化字体设置
+        this.data.setFontSize(this.setting.getEditorFontSize());
+        this.data.setFontFamily(this.setting.getEditorFontFamily());
+        this.data.setFontWeight2(this.setting.getEditorFontWeight());
     }
 
     @Override
@@ -169,9 +186,13 @@ public class ShellSftpFileEditController extends StageController {
             }
         });
         // 字体大小
+        this.fontSize.selectSize(this.setting.getEditorFontSize());
         this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
             if (t1 != null) {
                 this.data.setFontSize(t1);
+                // 记录字体大小
+                this.setting.setEditorFontSize(t1.byteValue());
+                this.settingStore.update(this.setting);
             }
         });
         // 内容高亮
@@ -185,8 +206,14 @@ public class ShellSftpFileEditController extends StageController {
         return I18nHelper.editFile();
     }
 
-    private int searchIndex = 0;
+    /**
+     * 搜索索引
+     */
+    private int searchIndex;
 
+    /**
+     * 搜索下一个
+     */
     @FXML
     private void searchNext() {
         try {
