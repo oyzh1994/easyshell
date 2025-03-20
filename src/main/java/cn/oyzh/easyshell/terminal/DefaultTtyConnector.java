@@ -11,8 +11,6 @@ import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import kotlin.collections.ArraysKt;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -26,7 +24,7 @@ import java.util.List;
  */
 public class DefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
-    private int maxLogSize = 200;
+    protected int maxLogSize = 200;
 
     public void setMaxLogSize(int maxLogSize) {
         this.maxLogSize = maxLogSize;
@@ -36,49 +34,55 @@ public class DefaultTtyConnector extends PtyProcessTtyConnector implements Loggi
         return maxLogSize;
     }
 
-    @NotNull
-    private final LinkedList<char[]> myDataChunks = new LinkedList<>();
+    protected final LinkedList<char[]> myDataChunks = new LinkedList<>();
 
-    @NotNull
-    private final LinkedList<TerminalState> myStates = new LinkedList<>();
+    protected final LinkedList<TerminalState> myStates = new LinkedList<>();
 
-    @Nullable
-    private TerminalTextBuffer textBuffer;
+    protected TerminalTextBuffer textBuffer;
 
-    private int logStart;
+    protected int logStart;
 
-    public DefaultTtyConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
+    public DefaultTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 
     @Override
-    public int read(char @NotNull [] buf, int offset, int length) throws IOException {
-        int len= super.read(buf, offset, length);
+    public int read(char[] buf, int offset, int length) throws IOException {
+        int len = super.read(buf, offset, length);
         if (len > 0) {
-            char[] arr = ArraysKt.copyOfRange(buf, offset, len);
-            JulLog.debug("shell read: {}", new String(arr));
-            this.myDataChunks.add(arr);
-            String lines = this.textBuffer.getScreenLines();
-            TerminalState terminalState =
-                    new TerminalState(lines, TerminalDebugUtil.getStyleLines(textBuffer),
-                            this.textBuffer.getHistoryBuffer().getLines());
-            this.myStates.add(terminalState);
-            if (this.myDataChunks.size() > this.maxLogSize) {
-                this.myDataChunks.removeFirst();
-                this.myStates.removeFirst();
-                this.logStart++;
-            }
+            this.doRead(buf, offset, len);
         }
         return len;
     }
 
-    @NotNull
+    protected void doRead(char[] buf, int offset, int len) throws IOException {
+//        char[] arr = ArraysKt.copyOfRange(buf, offset, len);
+        char[] arr;
+        if (len != buf.length) {
+            arr = ArraysKt.copyOfRange(buf, offset, len);
+        } else {
+            arr = buf;
+        }
+        JulLog.debug("shell read: {}", new String(arr));
+        this.myDataChunks.add(arr);
+        String lines = this.textBuffer.getScreenLines();
+        TerminalState terminalState =
+                new TerminalState(lines, TerminalDebugUtil.getStyleLines(this.textBuffer),
+                        this.textBuffer.getHistoryBuffer().getLines());
+        this.myStates.add(terminalState);
+        if (this.myDataChunks.size() > this.maxLogSize) {
+            this.myDataChunks.removeFirst();
+            this.myStates.removeFirst();
+            this.logStart++;
+        }
+
+    }
+
     @Override
     public List<char[]> getChunks() {
         return new ArrayList<>(this.myDataChunks);
     }
 
-    @NotNull
     @Override
     public List<TerminalState> getStates() {
         return new ArrayList<>(this.myStates);
@@ -90,19 +94,19 @@ public class DefaultTtyConnector extends PtyProcessTtyConnector implements Loggi
     }
 
     @Override
-    public void write(@NotNull String str) throws IOException {
+    public void write(String str) throws IOException {
         JulLog.debug("shell write : {}", str);
         super.write(str);
     }
 
     @Override
-    public void write(byte @NotNull [] bytes) throws IOException {
+    public void write(byte[] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
         JulLog.debug("shell write : {}", str);
         super.write(bytes);
     }
 
-    public void setWidget(@NotNull JediTermFxWidget widget) {
+    public void setWidget(JediTermFxWidget widget) {
         this.textBuffer = widget.getTerminalTextBuffer();
     }
 
@@ -116,7 +120,7 @@ public class DefaultTtyConnector extends PtyProcessTtyConnector implements Loggi
     }
 
     @Override
-    public void resize(@NotNull TermSize termSize) {
+    public void resize(TermSize termSize) {
         super.resize(termSize);
         if (this.terminalSizeProperty != null) {
             this.terminalSizeProperty.set(termSize);
@@ -141,7 +145,7 @@ public class DefaultTtyConnector extends PtyProcessTtyConnector implements Loggi
     }
 
     @Override
-    public @NotNull PtyProcess getProcess() {
+    public PtyProcess getProcess() {
         return (PtyProcess) super.getProcess();
     }
 }

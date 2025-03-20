@@ -13,7 +13,9 @@ import com.techsenger.jeditermfx.core.TtyConnector;
 import com.techsenger.jeditermfx.core.util.Platform;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import com.techsenger.jeditermfx.ui.JediTermFxWidget;
+import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
 import kotlin.text.Charsets;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -37,6 +39,10 @@ public class DefaultTermWidget extends JediTermFxWidget {
 
     public DefaultTermWidget() {
         super(new ThemeSettingsProvider());
+    }
+
+    public DefaultTermWidget(SettingsProvider provider) {
+        super(provider);
     }
 
     protected String[] getProcessCommand() {

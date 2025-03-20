@@ -28,10 +28,12 @@ public class ShellTerminalTabController extends RichTabController {
 
     private void initWidget() throws IOException {
         DefaultTermWidget widget = new DefaultTermWidget();
-        widget.onTermination(exitCode -> widget.close());
-        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
         DefaultTtyConnector connector = (DefaultTtyConnector) widget.createTtyConnector();
         widget.openSession(connector);
+        widget.onTermination(exitCode -> widget.close());
+        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
+        widget.getPane().prefWidthProperty().bind(this.root.widthProperty());
+        widget.getPane().prefHeightProperty().bind(this.root.heightProperty());
         this.root.setChild(widget.getPane());
     }
 

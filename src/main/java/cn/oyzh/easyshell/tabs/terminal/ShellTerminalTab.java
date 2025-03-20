@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
-import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;

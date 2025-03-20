@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.button.AddConnectButton?>
-<?import cn.oyzh.fx.gui.button.AddGroupButton?>
-<?import cn.oyzh.fx.gui.button.ChangelogButton?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
-<?import cn.oyzh.fx.plus.controls.text.FXText?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.OpenTerminalButton?>
 <FXVBox fx:id="root" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.terminal.ShellTerminalTabController">
