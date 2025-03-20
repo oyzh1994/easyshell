@@ -8,8 +8,10 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -66,6 +68,18 @@ public class ShellSftpFileEditController extends StageController {
     private RichDataTypeComboBox format;
 
     /**
+     * 字体大小
+     */
+    @FXML
+    private FontSizeComboBox fontSize;
+
+    /**
+     * 过滤
+     */
+    @FXML
+    private ClearableTextField filter;
+
+    /**
      * 保存文件
      */
     @FXML
@@ -90,6 +104,7 @@ public class ShellSftpFileEditController extends StageController {
      * 初始化文件
      */
     private void init() {
+        this.fontSize.selectSize((byte) 12);
         ShellSftp sftp = this.client.openSftp();
         StageManager.showMask(() -> {
             try {
@@ -134,6 +149,7 @@ public class ShellSftpFileEditController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 内容格式
         this.format.selectedItemChanged((observableValue, number, t1) -> {
             if (this.format.isJsonFormat()) {
                 this.data.showJsonData(this.getData());
@@ -146,6 +162,16 @@ public class ShellSftpFileEditController extends StageController {
             } else {
                 this.data.showRawData(this.getData());
             }
+        });
+        // 字体大小
+        this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
+            if (number != null) {
+                this.data.setFontSize(number);
+            }
+        });
+        // 内容高亮
+        this.filter.addTextChangeListener((observableValue, s, t1) -> {
+            this.data.setHighlightText(t1);
         });
     }
 

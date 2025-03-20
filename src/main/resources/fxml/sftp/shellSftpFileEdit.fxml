@@ -7,21 +7,33 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" prefWidth="1200" realHeight="650">
-    <FXHBox prefHeight="30">
-        <SaveSVGGlyph onMousePrimaryClicked="#save">
+        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" realWidth="1200" realHeight="650">
+    <FXHBox realHeight="40" flexWidth="100%">
+        <ClearableTextField  tipText="%base.searchKWTip" fx:id="filter" realHeight="24" prefWidth="150">
+            <FXHBox.margin>
+                <Insets left="10" top="8"/>
+            </FXHBox.margin>
+        </ClearableTextField>
+        <SaveSVGGlyph sizeStr="20" onMousePrimaryClicked="#save">
             <FXHBox.margin>
                 <Insets left="10" top="10"/>
             </FXHBox.margin>
         </SaveSVGGlyph>
-        <RichDataTypeComboBox realHeight="22" fx:id="format">
+        <RichDataTypeComboBox realHeight="30" fx:id="format">
             <FXHBox.margin>
-                <Insets left="10" top="4"/>
+                <Insets left="10" top="5"/>
             </FXHBox.margin>
         </RichDataTypeComboBox>
+        <FontSizeComboBox realHeight="30" fx:id="fontSize">
+            <FXHBox.margin>
+                <Insets left="10" top="5"/>
+            </FXHBox.margin>
+        </FontSizeComboBox>
     </FXHBox>
-    <RichDataTextAreaPane fx:id="data" flexHeight="100% - 30" flexWidth="100% - 20">
+    <RichDataTextAreaPane fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
