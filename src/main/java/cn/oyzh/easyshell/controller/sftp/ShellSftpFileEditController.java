@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
@@ -165,8 +166,8 @@ public class ShellSftpFileEditController extends StageController {
         });
         // 字体大小
         this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
-            if (number != null) {
-                this.data.setFontSize(number);
+            if (t1 != null) {
+                this.data.setFontSize(t1);
             }
         });
         // 内容高亮
@@ -178,5 +179,30 @@ public class ShellSftpFileEditController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.editFile();
+    }
+
+    private int searchIndex = 0;
+
+    @FXML
+    private void searchNext() {
+        try {
+            String filterText = this.filter.getText();
+            if (StringUtil.isBlank(filterText)) {
+                return;
+            }
+            String text = this.data.getText();
+            if (this.searchIndex >= text.length()) {
+                this.searchIndex = 0;
+            }
+            int index = text.indexOf(filterText, this.searchIndex);
+            if (index == -1) {
+                this.searchIndex = 0;
+                return;
+            }
+            this.searchIndex = index + filterText.length();
+            this.data.selectRangeAndGoto(index, index + filterText.length());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

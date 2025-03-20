@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
 <?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <?import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" realWidth="1200" realHeight="650">
-    <FXHBox realHeight="40" flexWidth="100%">
-        <ClearableTextField  tipText="%base.searchKWTip" fx:id="filter" realHeight="24" prefWidth="150">
+        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" prefWidth="1200" realHeight="650">
+    <FXHBox prefHeight="40" flexWidth="100%">
+        <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="30" prefWidth="150">
             <FXHBox.margin>
-                <Insets left="10" top="8"/>
+                <Insets left="10" top="5"/>
             </FXHBox.margin>
         </ClearableTextField>
-        <SaveSVGGlyph sizeStr="20" onMousePrimaryClicked="#save">
+        <NextSVGGlyph sizeStr="20" onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="5" top="10"/>
             </FXHBox.margin>
-        </SaveSVGGlyph>
+        </NextSVGGlyph>
         <RichDataTypeComboBox realHeight="30" fx:id="format">
             <FXHBox.margin>
                 <Insets left="10" top="5"/>
@@ -32,6 +33,11 @@
                 <Insets left="10" top="5"/>
             </FXHBox.margin>
         </FontSizeComboBox>
+        <SaveSVGGlyph sizeStr="20" onMousePrimaryClicked="#save">
+            <FXHBox.margin>
+                <Insets left="10" top="10"/>
+            </FXHBox.margin>
+        </SaveSVGGlyph>
     </FXHBox>
     <RichDataTextAreaPane fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
