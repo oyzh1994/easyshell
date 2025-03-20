@@ -96,9 +96,9 @@ public class ServerExec {
     public double cpuUsage() {
         try {
             String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
-            if (StringUtil.isBlank(cpuUsage)) {
-                cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
-            }
+//            if (StringUtil.isBlank(cpuUsage)) {
+//                cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
+//            }
             if (StringUtil.isBlank(cpuUsage)) {
                 cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
             }

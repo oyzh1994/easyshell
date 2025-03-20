@@ -49,15 +49,15 @@ public class ShellExec {
         if (StringUtil.isBlank(output)) {
             output = this.client.exec("lspci | grep -i '3d'");
         }
-        if (StringUtil.isBlank(output)) {
-            output = this.client.exec("lspci | grep -i '3d'");
-        }
-        if (StringUtil.isBlank(output)) {
-            output = this.client.exec("lspci | grep -i vga");
-        }
+//        if (StringUtil.isBlank(output)) {
+//            output = this.client.exec("lspci | grep -i '3d'");
+//        }
         if (StringUtil.isBlank(output)) {
             output = this.client.exec("lspci | grep -i vga");
         }
+//        if (StringUtil.isBlank(output)) {
+//            output = this.client.exec("lspci | grep -i vga");
+//        }
         return output;
     }
 }
