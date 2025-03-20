@@ -22,7 +22,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
 
     public final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
-    public final ShellSSHConfigStore shellConfigStore = ShellSSHConfigStore.INSTANCE;
+    public final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 
     public synchronized List<ShellConnect> load() {
         return super.selectList();
@@ -34,7 +34,12 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     public List<ShellConnect> loadFull() {
-        return this.load();
+        List<ShellConnect> connects = this.load();
+        for (ShellConnect connect : connects) {
+            connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
+            connect.setSshConfig(this.sshConfigStore.getByIid(connect.getId()));
+        }
+        return connects;
     }
 
     /**
@@ -56,9 +61,9 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             ShellSSHConfig sshConfig = model.getSshConfig();
             if (sshConfig != null) {
                 sshConfig.setIid(model.getId());
-                this.shellConfigStore.replace(sshConfig);
+                this.sshConfigStore.replace(sshConfig);
             } else {
-                this.shellConfigStore.deleteByIid(model.getId());
+                this.sshConfigStore.deleteByIid(model.getId());
             }
 
             // x11处理

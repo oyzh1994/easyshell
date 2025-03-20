@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
@@ -254,8 +255,11 @@ public class ShellEventUtil {
         EventUtil.post(new ShellShowAboutEvent());
     }
 
+    /**
+     * 连接已导入事件
+     */
     public static void connectImported() {
-
+        EventUtil.post(new ShellConnectImportedEvent());
     }
 
     /**

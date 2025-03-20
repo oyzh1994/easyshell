@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
+import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.event.EventSubscribe;
@@ -118,5 +119,13 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
     @EventSubscribe
     private void connectUpdated(ShellConnectUpdatedEvent event) {
         this.root().connectUpdated(event.data());
+    }
+
+    /**
+     * 连接已导入事件
+     */
+    @EventSubscribe
+    private void connectImported(ShellConnectImportedEvent event) {
+        this.root().reloadChild();
     }
 }

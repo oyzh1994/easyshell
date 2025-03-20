@@ -1,26 +1,17 @@
 package cn.oyzh.easyshell.trees.connect;
 
-import cn.oyzh.common.file.FileNameUtil;
-import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
-import cn.oyzh.easyshell.dto.ShellConnectExport;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.drag.DragNodeItem;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -49,7 +40,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public ShellRootTreeItem( ShellConnectTreeView treeView) {
+    public ShellRootTreeItem(ShellConnectTreeView treeView) {
         super(treeView);
         this.setValue(new ShellRootTreeItemValue());
         // 加载子节点
@@ -76,23 +67,24 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     /**
      * 导出连接
      */
-    public void exportConnect() {
-        List<ShellConnect> infos = this.connectStore.load();
-        if (infos.isEmpty()) {
-            MessageBox.warn(I18nHelper.connectionIsEmpty());
-            return;
-        }
-        ShellConnectExport export = ShellConnectExport.fromConnects(infos);
-        FileExtensionFilter extensionFilter = FXChooser.jsonExtensionFilter();
-        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.shell", "base.connect", "base._json"), extensionFilter);
-        if (file != null) {
-            try {
-                FileUtil.writeUtf8String(export.toJSONString(), file);
-                MessageBox.okToast(I18nHelper.exportConnectionSuccess());
-            } catch (Exception ex) {
-                MessageBox.exception(ex, I18nHelper.exportConnectionFail());
-            }
-        }
+    private void exportConnect() {
+//        List<ZKConnect> infos = this.connectStore.load();
+//        if (infos.isEmpty()) {
+//            MessageBox.warn(I18nHelper.connectionIsEmpty());
+//            return;
+//        }
+//        ZKConnectExport export = ZKConnectExport.fromConnects(infos);
+//        FileExtensionFilter extensionFilter = FileChooserHelper.jsonExtensionFilter();
+//        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.zk", "base.connect", "base._json"), extensionFilter);
+//        if (file != null) {
+//            try {
+//                FileUtil.writeUtf8String(export.toJSONString(), file);
+//                MessageBox.okToast(I18nHelper.exportConnectionSuccess());
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex, I18nHelper.exportConnectionFail());
+//            }
+//        }
+        ShellEventUtil.showExportConnect();
     }
 
     /**
@@ -109,71 +101,74 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
             return;
         }
         File file = CollectionUtil.getFirst(files);
-        // 解析文件
-        this.parseConnect(file);
+//        // 解析文件
+//        this.parseConnect(file);
+        ShellEventUtil.showImportConnect(file);
     }
 
     /**
      * 导入连接
      */
-    public void importConnect() {
-        FileExtensionFilter filter1 = FXChooser.jsonExtensionFilter();
-        File file = FileChooserHelper.choose(I18nHelper.chooseFile(), filter1);
-        // 解析文件
-        this.parseConnect(file);
+    private void importConnect() {
+//        FileExtensionFilter filter1 = FileChooserHelper.jsonExtensionFilter();
+//        File file = FileChooserHelper.choose(I18nHelper.chooseFile(), filter1);
+//        // 解析文件
+//        this.parseConnect(file);
+        ShellEventUtil.showImportConnect(null);
     }
 
-    /**
-     * 解析连接文件
-     *
-     * @param file 文件
-     */
-    private void parseConnect(File file) {
-        if (file == null) {
-            return;
-        }
-        if (!file.exists()) {
-            MessageBox.warn(I18nHelper.fileNotExists());
-            return;
-        }
-        if (file.isDirectory()) {
-            MessageBox.warn(I18nHelper.notSupportFolder());
-            return;
-        }
-        if (!FileNameUtil.isJsonType(FileNameUtil.extName(file.getName()))) {
-            MessageBox.warn(I18nHelper.invalidFormat());
-            return;
-        }
-        if (file.length() == 0) {
-            MessageBox.warn(I18nHelper.contentCanNotEmpty());
-            return;
-        }
-        try {
-            String text = FileUtil.readUtf8String(file);
-            ShellConnectExport export = ShellConnectExport.fromJSON(text);
-            List<ShellConnect> connects = export.getConnects();
-            if (CollectionUtil.isNotEmpty(connects)) {
-                for (ShellConnect connect : connects) {
-                    if (!this.connectStore.replace(connect)) {
-                        MessageBox.warn(I18nHelper.connect() + " : " + connect.getName() + " " + I18nHelper.importFail());
-                    }
-                }
-                // 重新加载节点
-                this.loadChild();
-                // 提示成功
-                MessageBox.okToast(I18nHelper.importConnectionSuccess());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex, I18nHelper.importConnectionFail());
-        }
-    }
+//    /**
+//     * 解析连接文件
+//     *
+//     * @param file 文件
+//     */
+//    private void parseConnect(File file) {
+//        if (file == null) {
+//            return;
+//        }
+//        if (!file.exists()) {
+//            MessageBox.warn(I18nHelper.fileNotExists());
+//            return;
+//        }
+//        if (file.isDirectory()) {
+//            MessageBox.warn(I18nHelper.notSupportFolder());
+//            return;
+//        }
+//        if (!FileNameUtil.isJsonType(FileNameUtil.extName(file.getName()))) {
+//            MessageBox.warn(I18nHelper.invalidFormat());
+//            return;
+//        }
+//        if (file.length() == 0) {
+//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+//            return;
+//        }
+//        try {
+//            String text = FileUtil.readUtf8String(file);
+//            ZKConnectExport export = ZKConnectExport.fromJSON(text);
+//            List<ZKConnect> connects = export.getConnects();
+//            if (CollectionUtil.isNotEmpty(connects)) {
+//                for (ZKConnect connect : connects) {
+//                    if (!this.connectStore.replace(connect)) {
+//                        MessageBox.warn(I18nHelper.connect() + " : " + connect.getName() + " " + I18nHelper.importFail());
+//                    }
+//                }
+//                // 重新加载节点
+//                this.reloadChild();
+//                // 提示成功
+//                MessageBox.okToast(I18nHelper.importConnectionSuccess());
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex, I18nHelper.importConnectionFail());
+//        }
+//    }
 
     /**
      * 添加连接
      */
     private void addConnect() {
-        StageManager.showStage(ShellAddConnectController.class, this.window());
+//        StageManager.showStage(ZKConnectAddController.class, this.window());
+        ShellEventUtil.showAddConnect();
     }
 
     /**
@@ -268,7 +263,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void addConnect( ShellConnect info) {
+    public void addConnect(ShellConnect info) {
         ShellGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
         if (groupItem == null) {
             super.addChild(new ShellConnectTreeItem(info, this.getTreeView()));
@@ -279,7 +274,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void addConnectItem( ShellConnectTreeItem item) {
+    public void addConnectItem(ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
             if (item.value().getGroupId() != null) {
                 item.value().setGroupId(null);
@@ -291,7 +286,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void addConnectItems( List<ShellConnectTreeItem> items) {
+    public void addConnectItems(List<ShellConnectTreeItem> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             this.addChild((List) items);
             this.expend();
@@ -299,7 +294,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public boolean delConnectItem( ShellConnectTreeItem item) {
+    public boolean delConnectItem(ShellConnectTreeItem item) {
         // 删除连接
         if (this.connectStore.delete(item.value())) {
             this.removeChild(item);
@@ -327,7 +322,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof ShellConnectTreeItem connectTreeItem) {
 //                if (connectTreeItem.isConnected()) {
-                    items.add(connectTreeItem);
+                items.add(connectTreeItem);
 //                }
             } else if (item instanceof ShellGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectedItems());
@@ -355,45 +350,35 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public void loadChild() {
+    public void reloadChild() {
+        super.reloadChild();
         this.clearChild();
+        this.loadChild();
+    }
+
+    @Override
+    public void loadChild() {
+        // 关闭连接
+        List<ShellConnectTreeItem> connectedItems = this.getConnectedItems();
+        for (ShellConnectTreeItem item : connectedItems) {
+            item.closeConnect();
+        }
         // 初始化分组
         List<ShellGroup> groups = this.groupStore.load();
-        // List<SSHGroupTreeItem> groupItems = this.getGroupItems();
         if (CollectionUtil.isNotEmpty(groups)) {
             List<TreeItem<?>> list = new ArrayList<>();
-            // f1:
             for (ShellGroup group : groups) {
-                // for (SSHGroupTreeItem groupItem : groupItems) {
-                //     if (StringUtil.equals(groupItem.getGid(), group.getGid())) {
-                //         continue f1;
-                //     }
-                // }
                 list.add(new ShellGroupTreeItem(group, this.getTreeView()));
             }
             this.addChild(list);
         }
         // 初始化连接
         List<ShellConnect> connects = this.connectStore.load();
-        List<ShellGroupTreeItem> groupItems = this.getGroupItems();
         if (CollectionUtil.isNotEmpty(connects)) {
-            List<ShellConnectTreeItem> connectItems = this.getConnectItems();
-            f1:
             for (ShellConnect connect : connects) {
-                for (ShellConnectTreeItem connectItem : connectItems) {
-                    if (StringUtil.equals(connectItem.getId(), connect.getId())) {
-                        continue f1;
-                    }
-                }
-                Optional<ShellGroupTreeItem> optional = groupItems.parallelStream().filter(g -> StringUtil.equals(g.getGid(), connect.getGroupId())).findAny();
-                if (optional.isPresent()) {
-                    optional.get().addConnect(connect);
-                } else {
-                    this.addConnect(connect);
-                    // list.add(connect);
-                }
+                this.addConnect(connect);
             }
-            // this.addConnects(list);
         }
+        this.refresh();
     }
 }

@@ -85,8 +85,8 @@ public class ShellExportConnectController extends StageController {
         }
         try {
             FileUtil.writeUtf8String(export.toJSONString(), this.exportFile);
-            MessageBox.okToast(I18nHelper.exportConnectionSuccess());
             this.closeWindow();
+            MessageBox.okToast(I18nHelper.exportConnectionSuccess());
         } catch (Exception ex) {
             MessageBox.exception(ex, I18nHelper.exportConnectionFail());
         }
@@ -103,7 +103,7 @@ public class ShellExportConnectController extends StageController {
     @FXML
     private void selectFile() {
         FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
-        String fileName = "Zookeeper-" + I18nHelper.connect() + ".json";
+        String fileName = "SSH-" + I18nHelper.connect() + ".json";
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
         if (this.exportFile != null) {
             this.fileName.setText(this.exportFile.getPath());

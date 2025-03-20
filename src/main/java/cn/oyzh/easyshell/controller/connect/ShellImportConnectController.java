@@ -101,9 +101,9 @@ public class ShellImportConnectController extends StageController {
                 }
             }
             if (success) {
-                MessageBox.okToast(I18nHelper.importConnectionSuccess());
                 ShellEventUtil.connectImported();
                 this.closeWindow();
+                MessageBox.okToast(I18nHelper.importConnectionSuccess());
             } else {
                 MessageBox.warn(I18nHelper.importConnectionFail());
             }

@@ -145,9 +145,10 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      * 添加连接
      */
     private void addConnect() {
-        StageAdapter fxView = StageManager.parseStage(ShellAddConnectController.class, this.window());
-        fxView.setProp("group", this.value);
-        fxView.display();
+//        StageAdapter fxView = StageManager.parseStage(ZKConnectAddController.class, this.window());
+//        fxView.setProp("group", this.value);
+//        fxView.display();
+        ShellEventUtil.showAddConnect(this.value);
     }
 
     @Override
