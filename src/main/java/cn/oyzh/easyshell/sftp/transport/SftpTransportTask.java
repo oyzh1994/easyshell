@@ -131,6 +131,8 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                 }
                 IOUtil.close(input);
                 IOUtil.close(output);
+                localSftp.close();
+                remoteSftp.close();
             } catch (Exception ex) {
                 if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     JulLog.warn("transport canceled");

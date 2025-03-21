@@ -184,15 +184,16 @@
             <FXHBox flexWidth="100%" flexHeight="70%">
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
-                        <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterSourceFile" tipText="%base.searchKWTip">
+                        <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterSourceFile"
+                                            tipText="%base.searchKWTip">
                             <FXHBox.margin>
-                                <Insets left="5" />
+                                <Insets left="5"/>
                             </FXHBox.margin>
                         </ClearableTextField>
-                        <FXToggleSwitch realHeight="30" selected="true" fx:id="hiddenSourceFile" selectedText="%base.showHiddenFiles"
+                        <FXToggleSwitch realHeight="30" fx:id="hiddenSourceFile" selectedText="%base.showHiddenFiles"
                                         unselectedText="%base.doNotShowHiddenFiles">
                             <FXHBox.margin>
-                                <Insets left="5" />
+                                <Insets left="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
                         <RefreshSVGGlyph sizeStr="20" onMousePrimaryClicked="#refreshSourceFile">
@@ -233,18 +234,20 @@
                 </FXVBox>
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
-                        <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterTargetFile" tipText="%base.searchKWTip">
+                        <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterTargetFile"
+                                            tipText="%base.searchKWTip">
                             <FXHBox.margin>
-                                <Insets left="5" />
+                                <Insets left="5"/>
                             </FXHBox.margin>
                         </ClearableTextField>
-                        <FXToggleSwitch realHeight="30" selected="true" fx:id="hiddenTargetFile" selectedText="%base.showHiddenFiles"
+                        <FXToggleSwitch realHeight="30" fx:id="hiddenTargetFile" selectedText="%base.showHiddenFiles"
                                         unselectedText="%base.doNotShowHiddenFiles">
                             <FXHBox.margin>
-                                <Insets left="5" />
+                                <Insets left="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
-                        <RefreshSVGGlyph sizeStr="20" fx:id="refreshTargetFile" onMousePrimaryClicked="#refreshTargetFile">
+                        <RefreshSVGGlyph sizeStr="20" fx:id="refreshTargetFile"
+                                         onMousePrimaryClicked="#refreshTargetFile">
                             <FXHBox.margin>
                                 <Insets left="5" top="5"/>
                             </FXHBox.margin>

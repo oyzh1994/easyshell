@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
+import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -181,10 +182,7 @@ public class ShellSftpTransportController extends StageController {
                 return;
             }
             String remotePath = this.targetFile.getCurrPath();
-            for (SftpFile file : files) {
-                String remoteFile = SftpUtil.concat(remotePath, file.getName());
-                this.sourceClient.transport(file, remoteFile, this.targetClient.openSftp());
-            }
+            this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -202,13 +200,29 @@ public class ShellSftpTransportController extends StageController {
                 return;
             }
             String remotePath = this.sourceFile.getCurrPath();
-            for (SftpFile file : files) {
-                String remoteFile = SftpUtil.concat(remotePath, file.getName());
-                this.targetClient.transport(file, remoteFile, this.sourceClient.openSftp());
-            }
+            this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 执行传输
+     *
+     * @param files        文件
+     * @param remotePath   远程路径
+     * @param sourceClient 源连接
+     * @param targetClient 目标连接
+     */
+    private void doTransport(List<SftpFile> files, String remotePath, ShellClient sourceClient, ShellClient targetClient) {
+        for (SftpFile file : files) {
+            if (file.isDirectory()) {
+                sourceClient.transport(file, remotePath, targetClient.openSftp());
+            } else {
+                String remoteFile = SftpUtil.concat(remotePath, file.getName());
+                sourceClient.transport(file, remoteFile, targetClient.openSftp());
+            }
         }
     }
 
@@ -220,7 +234,7 @@ public class ShellSftpTransportController extends StageController {
         SftpTransportManager manager2 = this.targetClient.getTransportManager();
         List<SftpTransportTask> tasks = new ArrayList<>(manager1.getTasks());
         tasks.addAll(manager2.getTasks());
-        this.transportTable.setItem(tasks);
+        this.transportTable.setItem(tasks.reversed());
     }
 
     @Override
@@ -390,21 +404,27 @@ public class ShellSftpTransportController extends StageController {
         this.sourceFile.setClient(this.sourceClient);
         this.targetFile.setClient(this.targetClient);
         // 传输处理器
-        SftpTransportManager manager1 = this.sourceClient.getTransportManager();
-        SftpTransportManager manager2 = this.targetClient.getTransportManager();
+        SftpTransportManager transportManager1 = this.sourceClient.getTransportManager();
+        SftpTransportManager transportManager2 = this.targetClient.getTransportManager();
         // 注册监听器
-        manager1.setTaskChangedCallback(this::initTransportTable);
-        manager1.setMonitorEndedCallback(e -> {
-            if (manager1.isCompleted()) {
+        transportManager1.setTaskChangedCallback(this::initTransportTable);
+        transportManager1.setMonitorEndedCallback(e -> {
+            if (transportManager1.isCompleted()) {
                 this.refreshTargetFile();
             }
         });
-        manager2.setTaskChangedCallback(this::initTransportTable);
-        manager2.setMonitorEndedCallback(e -> {
-            if (manager2.isCompleted()) {
+        transportManager2.setTaskChangedCallback(this::initTransportTable);
+        transportManager2.setMonitorEndedCallback(e -> {
+            if (transportManager2.isCompleted()) {
                 this.refreshSourceFile();
             }
         });
+        // 删除处理器
+        SftpDeleteManager deleteManager1 = this.sourceClient.getSftpDeleteManager();
+        SftpDeleteManager deleteManager2 = this.targetClient.getSftpDeleteManager();
+        // 注册监听器
+        deleteManager1.setDeleteDeletedCallback(f-> this.sourceFile.fileDeleted(f.getRemoteFile()));
+        deleteManager2.setDeleteDeletedCallback(f-> this.targetFile.fileDeleted(f.getRemoteFile()));
         // 初始化文件树
         StageManager.showMask(() -> {
             try {

@@ -83,7 +83,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         }
     }
 
-    private boolean showHiddenFile = true;
+    private boolean showHiddenFile = false;
 
     public void setShowHiddenFile(boolean showHiddenFile) {
         if (showHiddenFile != this.showHiddenFile) {
@@ -189,7 +189,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             // 新增数据
             this.addItem(addList);
         } catch (Throwable ex) {
-            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4:", "0: Success")) {
+            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4: ", "0: Success")) {
                 sftp.close();
                 this.loadFileInner();
             } else {
@@ -237,14 +237,28 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         if (CollectionUtil.isEmpty(files)) {
             return Collections.emptyList();
         }
+        // 发现操作中的文件，则跳过
+        for (SftpFile file : files) {
+            if (file.isWaiting()) {
+                return Collections.emptyList();
+            }
+        }
         List<FXMenuItem> menuItems = new ArrayList<>();
         if (files.size() == 1) {
             SftpFile file = files.getFirst();
+            // 文件信息
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
             menuItems.add(fileInfo);
+            // 复制路径
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
             menuItems.add(copyFilePath);
+            // 重命名文件
+            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
+            menuItems.add(renameFile);
         }
+        // 删除文件
+        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+        menuItems.add(deleteFile);
         return menuItems;
     }
 
@@ -307,5 +321,69 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     public boolean existFile(String fileName) {
         Optional<SftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
         return sftpFile.isPresent();
+    }
+
+    public void deleteFile(List<SftpFile> files) {
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
+        if (files.size() == 1) {
+            SftpFile file = files.getFirst();
+            if (file.isDir() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
+                return;
+            }
+            if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
+                return;
+            }
+        } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
+            return;
+        }
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SftpFile> sftpFiles = new CopyOnWriteArrayList<>(files);
+                for (SftpFile file : sftpFiles) {
+                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
+                        continue;
+                    }
+                    file.startWaiting();
+                    this.client.delete(file);
+                }
+                this.refreshFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    public void renameFile(SftpFile file) {
+        try {
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
+            String name = file.getFileName();
+            if (newName == null || StringUtil.equals(name, newName)) {
+                return;
+            }
+            String filePath = SftpUtil.concat(this.getCurrPath(), name);
+            String newPath = SftpUtil.concat(this.getCurrPath(), newName);
+            this.sftp().rename(filePath, newPath);
+            file.setFileName(newName);
+            this.refreshFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public void fileDeleted(String remoteFile) {
+        Optional<SftpFile> optional = this.files.parallelStream()
+                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
+                .findAny();
+        if (optional.isPresent()) {
+            this.files.remove(optional.get());
+            this.refreshFile();
+        }
     }
 }

@@ -49,41 +49,6 @@ public class SftpFileTableView extends SftpFileBaseTableView {
         });
     }
 
-    public void deleteFile(List<SftpFile> files) {
-        if (CollectionUtil.isEmpty(files)) {
-            return;
-        }
-        if (files.size() == 1) {
-            SftpFile file = files.getFirst();
-            if (file.isDir() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
-                return;
-            }
-            if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
-                return;
-            }
-        } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
-            return;
-        }
-        if (CollectionUtil.isEmpty(files)) {
-            return;
-        }
-        ThreadUtil.start(() -> {
-            try {
-                List<SftpFile> sftpFiles = new CopyOnWriteArrayList<>(files);
-                for (SftpFile file : sftpFiles) {
-                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
-                        continue;
-                    }
-                    file.startWaiting();
-                    this.client.delete(file);
-                }
-                this.refreshFile();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
 
     @Override
     public List<FXMenuItem> getMenuItems() {
@@ -97,22 +62,11 @@ public class SftpFileTableView extends SftpFileBaseTableView {
                 return Collections.emptyList();
             }
         }
+        // 获取父级菜单
         List<FXMenuItem> menuItems = super.getMenuItems();
-
         // 下载文件
         FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
         menuItems.add(downloadFile);
-
-        if (files.size() == 1) {
-            SftpFile file = files.getFirst();
-            // 重命名文件
-            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
-            menuItems.add(renameFile);
-        }
-
-        // 删除文件
-        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-        menuItems.add(deleteFile);
         return menuItems;
     }
 
@@ -212,24 +166,6 @@ public class SftpFileTableView extends SftpFileBaseTableView {
         this.refreshFile();
     }
 
-    public void renameFile(SftpFile file) {
-        try {
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
-            String name = file.getFileName();
-            if (newName == null || StringUtil.equals(name, newName)) {
-                return;
-            }
-            String filePath = SftpUtil.concat(this.getCurrPath(), name);
-            String newPath = SftpUtil.concat(this.getCurrPath(), newName);
-            this.sftp().rename(filePath, newPath);
-            file.setFileName(newName);
-            this.refreshFile();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
     public boolean downloadFile(List<SftpFile> files) {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
@@ -299,15 +235,5 @@ public class SftpFileTableView extends SftpFileBaseTableView {
 
     public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
         this.client.setDeleteDeletedCallback(callback);
-    }
-
-    public void fileDeleted(String remoteFile) {
-        Optional<SftpFile> optional = this.files.parallelStream()
-                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
-                .findAny();
-        if (optional.isPresent()) {
-            this.files.remove(optional.get());
-            this.refreshFile();
-        }
     }
 }
