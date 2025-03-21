@@ -252,7 +252,7 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private void deleteFile() {
         try {
-            this.fileTable.deleteFile();
+            this.fileTable.deleteFile(this.fileTable.getSelectedItems());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
