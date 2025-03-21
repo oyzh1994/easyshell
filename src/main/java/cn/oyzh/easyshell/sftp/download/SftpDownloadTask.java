@@ -7,6 +7,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
@@ -25,44 +26,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author oyzh
  * @since 2025-03-15
  */
-public class SftpDownloadTask {
-
-    /**
-     * 执行线程
-     */
-    private final Thread executeThread;
-
-    /**
-     * 下载监控列表
-     */
-    private final Queue<SftpDownloadMonitor> monitors = new ConcurrentLinkedQueue<>();
-
-    public SftpDownloadMonitor takeMonitor() {
-        return this.monitors.peek();
-    }
-
-    public void removeMonitor(SftpDownloadMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    public boolean isEmpty() {
-        return this.monitors.isEmpty();
-    }
+public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 
     /**
      * 下载状态
      */
     private SftpDownloadStatus status;
-
-    /**
-     * 状态属性
-     */
-    private final StringProperty statusProperty = new SimpleStringProperty();
-
-    public StringProperty statusProperty() {
-        return statusProperty;
-    }
 
     /**
      * 更新状态
@@ -78,12 +47,6 @@ public class SftpDownloadTask {
             case DOWNLOADING -> this.statusProperty.set(I18nHelper.downloadIng());
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
-    }
-
-    private final String destPath;
-
-    public String getDestPath() {
-        return destPath;
     }
 
     private final SftpDownloadManager manager;
@@ -170,132 +133,38 @@ public class SftpDownloadTask {
                 } else {
                     ex.printStackTrace();
                     JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
-                    this.downloadFailed(monitor, ex);
+                    this.failed(monitor, ex);
                 }
             }
             ThreadUtil.sleep(5);
         }
     }
 
-    /**
-     * 下载完成
-     *
-     * @param monitor 监听器
-     */
-    public void downloadEnded(SftpDownloadMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    /**
-     * 下载失败
-     *
-     * @param monitor   监听器
-     * @param exception 异常
-     */
-    public void downloadFailed(SftpDownloadMonitor monitor, Exception exception) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    /**
-     * 下载取消
-     *
-     * @param monitor 监听器
-     */
-    public void downloadCanceled(SftpDownloadMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    /**
-     * 下载变化
-     *
-     * @param monitor 监听器
-     */
-    public void downloadChanged(SftpDownloadMonitor monitor) {
-        this.currentFileProperty.set(monitor.getRemoteFilePath());
-        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
-        JulLog.debug("current file:{}", this.currentFileProperty.get());
-        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
-    }
-
-    /**
-     * 总大小属性
-     */
-    private final StringProperty totalSizeProperty = new SimpleStringProperty();
-
-    public IntegerProperty totalCountProperty() {
-        return totalCountProperty;
-    }
-
-    /**
-     * 总数量属性
-     */
-    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
-
-    public StringProperty totalSizeProperty() {
-        return totalSizeProperty;
-    }
-
-    /**
-     * 更新总信息
-     */
-    private void updateTotal() {
-        this.totalCountProperty.set(this.monitors.size());
-        long totalSize = 0;
-        for (SftpDownloadMonitor monitor : this.monitors) {
-            totalSize += monitor.getRemoteLength();
-        }
-        this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
-        JulLog.debug("total size:{}", this.totalSizeProperty.get());
-        JulLog.debug("total count:{}", this.totalCountProperty.get());
+    @Override
+    protected void updateTotal() {
+        super.updateTotal();
         this.manager.updateDownloading();
     }
 
-    /**
-     * 当前文件属性
-     */
-    private final StringProperty currentFileProperty = new SimpleStringProperty();
-
-    public StringProperty currentFileProperty() {
-        return currentFileProperty;
-    }
-
-    /**
-     * 当前进度属性
-     */
-    private final StringProperty currentProgressProperty = new SimpleStringProperty();
-
-    public StringProperty currentProgressProperty() {
-        return currentProgressProperty;
-    }
-
-    /**
-     * 取消
-     */
+    @Override
     public void cancel() {
-        // 停止线程
-        ThreadUtil.interrupt(this.executeThread);
-        // 取消业务
-        for (SftpDownloadMonitor monitor : this.monitors) {
-            try {
-                monitor.cancel();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        ThreadUtil.start(this.monitors::clear, 500);
+        super.cancel();
         this.updateStatus(SftpDownloadStatus.CANCELED);
     }
 
-    /**
-     * 是否结束
-     *
-     * @return 结果
-     */
+    @Override
+    public void remove() {
+        this.manager.remove(this);
+    }
+
+    @Override
     public boolean isFinished() {
         return this.status == SftpDownloadStatus.FINISHED;
+    }
+
+    @Override
+    public boolean isInPreparation() {
+        return this.status == SftpDownloadStatus.IN_PREPARATION;
     }
 
     /**
@@ -305,14 +174,5 @@ public class SftpDownloadTask {
      */
     public boolean isDownloading() {
         return this.status == SftpDownloadStatus.DOWNLOADING;
-    }
-
-    /**
-     * 是否准备中
-     *
-     * @return 结果
-     */
-    public boolean isInPreparation() {
-        return this.status == SftpDownloadStatus.IN_PREPARATION;
     }
 }

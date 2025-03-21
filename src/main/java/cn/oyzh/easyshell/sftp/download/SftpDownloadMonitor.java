@@ -38,7 +38,7 @@ public class SftpDownloadMonitor extends SftpMonitor {
     @Override
     public boolean count(long current) {
         this.current += current;
-        this.task.downloadChanged(this);
+        this.task.changed(this);
         return !this.cancelled;
     }
 
@@ -47,7 +47,7 @@ public class SftpDownloadMonitor extends SftpMonitor {
         this.ended = true;
         if (this.cancelled) {
             JulLog.warn("file:{} download cancelled, download:{} total:{}", this.getRemoteFileName(), this.current, this.total);
-            this.task.downloadCanceled(this);
+            this.task.canceled(this);
         } else {
             long endTime = System.currentTimeMillis();
             long duration = (endTime - this.startTime) / 1000;
@@ -55,7 +55,7 @@ public class SftpDownloadMonitor extends SftpMonitor {
                 duration = 1;
             }
             JulLog.info("file:{} download finished, cost:{}" + I18nHelper.seconds(), this.getRemoteFileName(), duration);
-            this.task.downloadEnded(this);
+            this.task.ended(this);
         }
     }
 
@@ -73,6 +73,11 @@ public class SftpDownloadMonitor extends SftpMonitor {
 
     public String getLocalFilePath() {
         return this.localFile.getPath();
+    }
+
+    @Override
+    public long getLocalFileLength() {
+        return this.localFile.length();
     }
 
     public long getRemoteLength() {

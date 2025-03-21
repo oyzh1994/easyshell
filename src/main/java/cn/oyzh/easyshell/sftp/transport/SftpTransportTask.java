@@ -8,6 +8,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
@@ -29,44 +30,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author oyzh
  * @since 2025-03-15
  */
-public class SftpTransportTask {
-
-    /**
-     * 执行线程
-     */
-    private final Thread executeThread;
-
-    /**
-     * 传输监听器
-     */
-    private final Queue<SftpTransportMonitor> monitors = new ConcurrentLinkedQueue<>();
-
-    public SftpTransportMonitor takeMonitor() {
-        return this.monitors.peek();
-    }
-
-    public void removeMonitor(SftpTransportMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    public boolean isEmpty() {
-        return this.monitors.isEmpty();
-    }
+public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
 
     /**
      * 传输状态
      */
     private SftpTransportStatus status;
-
-    /**
-     * 状态属性
-     */
-    private final StringProperty statusProperty = new SimpleStringProperty();
-
-    public StringProperty statusProperty() {
-        return statusProperty;
-    }
 
     /**
      * 更新状态
@@ -82,12 +51,6 @@ public class SftpTransportTask {
             case TRANSPORT_ING -> this.statusProperty.set(I18nHelper.transportIng());
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
-    }
-
-    private final String destPath;
-
-    public String getDestPath() {
-        return destPath;
     }
 
     private final SftpTransportManager manager;
@@ -184,156 +147,29 @@ public class SftpTransportTask {
                 } else {
                     ex.printStackTrace();
                     JulLog.warn("file:{} transport failed", monitor.getLocalFileName(), ex);
-                    this.transportFailed(monitor, ex);
+                    this.failed(monitor, ex);
                 }
             }
             ThreadUtil.sleep(5);
         }
     }
 
-    /**
-     * 传输完成
-     *
-     * @param monitor 监听器
-     */
-    public void transportEnded(SftpTransportMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    /**
-     * 传输失败
-     *
-     * @param monitor   监听器
-     * @param exception 异常
-     */
-    public void transportFailed(SftpTransportMonitor monitor, Exception exception) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    /**
-     * 传输取消
-     *
-     * @param monitor 监听器
-     */
-    public void transportCanceled(SftpTransportMonitor monitor) {
-        this.monitors.remove(monitor);
-        this.updateTotal();
-    }
-
-    /**
-     * 传输变化
-     *
-     * @param monitor 监听器
-     */
-    public void transportChanged(SftpTransportMonitor monitor) {
-        this.currentFileProperty.set(monitor.getLocalFilePath());
-        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
-        JulLog.debug("current file:{}", this.currentFileProperty.get());
-        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
-    }
-
-    /**
-     * 总大小属性
-     */
-    private final StringProperty totalSizeProperty = new SimpleStringProperty();
-
-    public IntegerProperty totalCountProperty() {
-        return totalCountProperty;
-    }
-
-    /**
-     * 总数量属性
-     */
-    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
-
-    public StringProperty totalSizeProperty() {
-        return totalSizeProperty;
-    }
-
-    /**
-     * 更新总信息
-     */
-    private void updateTotal() {
-        this.totalCountProperty.set(this.monitors.size());
-        long totalSize = 0;
-        for (SftpTransportMonitor monitor : this.monitors) {
-            totalSize += monitor.getLocalFileLength();
-        }
-        this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
-        JulLog.debug("total size:{}", this.totalSizeProperty.get());
-        JulLog.debug("total count:{}", this.totalCountProperty.get());
-//        this.manager.updateUploading();
-    }
-
-    /**
-     * 当前文件属性
-     */
-    private final StringProperty currentFileProperty = new SimpleStringProperty();
-
-    public StringProperty currentFileProperty() {
-        return currentFileProperty;
-    }
-
-    /**
-     * 当前进度属性
-     */
-    private final StringProperty currentProgressProperty = new SimpleStringProperty();
-
-    public StringProperty currentProgressProperty() {
-        return currentProgressProperty;
-    }
-
-    /**
-     * 取消
-     */
-    public void cancel() {
-        // 停止线程
-        ThreadUtil.interrupt(this.executeThread);
-        // 取消业务
-        for (SftpTransportMonitor monitor : this.monitors) {
-            try {
-                monitor.cancel();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        ThreadUtil.start(this.monitors::clear, 500);
-        this.updateStatus(SftpTransportStatus.CANCELED);
-    }
-
-    /**
-     * 移除
-     */
+    @Override
     public void remove() {
         this.manager.remove(this);
     }
 
-    /**
-     * 是否已完成
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isFinished() {
         return this.status == SftpTransportStatus.FINISHED;
     }
 
-    /**
-     * 是否传输中
-     *
-     * @return 结果
-     */
-    public boolean isTransporting() {
-        return this.status == SftpTransportStatus.TRANSPORT_ING;
-    }
-
-    /**
-     * 是否准备中
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isInPreparation() {
         return this.status == SftpTransportStatus.IN_PREPARATION;
+    }
+
+    public boolean isTransporting() {
+        return this.status == SftpTransportStatus.TRANSPORT_ING;
     }
 }

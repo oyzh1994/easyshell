@@ -41,7 +41,7 @@ public class SftpUploadMonitor extends SftpMonitor {
     @Override
     public boolean count(long current) {
         this.current += current;
-        this.task.uploadChanged(this);
+        this.task.changed(this);
         return !this.cancelled;
     }
 
@@ -50,7 +50,7 @@ public class SftpUploadMonitor extends SftpMonitor {
         this.ended = true;
         if (this.cancelled) {
             JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
-            this.task.uploadCanceled(this);
+            this.task.canceled(this);
         } else {
             long endTime = System.currentTimeMillis();
             long duration = (endTime - this.startTime) / 1000;
@@ -58,7 +58,7 @@ public class SftpUploadMonitor extends SftpMonitor {
                 duration = 1;
             }
             JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
-            this.task.uploadEnded(this);
+            this.task.ended(this);
         }
     }
 

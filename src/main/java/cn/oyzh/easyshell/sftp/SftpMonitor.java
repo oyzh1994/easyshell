@@ -47,4 +47,8 @@ public abstract class SftpMonitor implements SftpProgressMonitor {
     public synchronized boolean isFinished() {
         return this.ended || this.cancelled;
     }
+
+    public abstract String getLocalFilePath() ;
+
+    public abstract long getLocalFileLength() ;
 }
