@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.SftpFileTransportTableView?>
+<?import cn.oyzh.easyshell.fx.SftpTransportTableView?>
+<?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
-<?import cn.oyzh.fx.gui.button.PrevStepButton?>
-<?import cn.oyzh.fx.gui.button.StopButton?>
-<?import cn.oyzh.fx.gui.button.TransportButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
-<?import cn.oyzh.easyshell.fx.SftpFileTransportTableView?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1200" realHeight="750">
     <FXHBox flexWidth="100%" realHeight="80">
@@ -212,7 +205,9 @@
                     </columns>
                 </SftpFileTransportTableView>
             </FXHBox>
-
         </FXVBox>
+        <SftpTransportTableView fx:id="transportTable" flexHeight="30%">
+
+        </SftpTransportTableView>
     </FXVBox>
 </FXVBox>

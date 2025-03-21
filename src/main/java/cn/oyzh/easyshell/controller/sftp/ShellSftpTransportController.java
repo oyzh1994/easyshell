@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.SftpFileTransportTableView;
+import cn.oyzh.easyshell.fx.SftpTransportTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
@@ -118,6 +119,9 @@ public class ShellSftpTransportController extends StageController {
 
     @FXML
     private SftpFileTransportTableView targetFile;
+
+    @FXML
+    private SftpTransportTableView transportTable;
 
     /**
      * 来源客户端

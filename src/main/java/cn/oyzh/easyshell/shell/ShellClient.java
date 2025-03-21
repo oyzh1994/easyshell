@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
+import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
@@ -409,6 +410,12 @@ public class ShellClient {
         return sftpDownloadManager;
     }
 
+    private final SftpTransportManager transportManager = new SftpTransportManager();
+
+    public SftpTransportManager getTransportManager() {
+        return transportManager;
+    }
+
     public ShellSftp openSftp() {
         if (!this.sftpManager.hasAvailable()) {
             try {
@@ -475,57 +482,13 @@ public class ShellClient {
         this.sftpUploadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
-//    public void cancelUpload() {
-//        this.sftpUploadManager.cancel();
-//    }
-//
-//    public void setUploadEndedCallback(Consumer<SftpUploadEnded> callback) {
-//        this.sftpUploadManager.setUploadEndedCallback(callback);
-//    }
-//
-//    public void setUploadFailedCallback(Consumer<SftpUploadFailed> callback) {
-//        this.sftpUploadManager.setUploadFailedCallback(callback);
-//    }
-//
-//    public void setUploadCanceledCallback(Consumer<SftpUploadCanceled> callback) {
-//        this.sftpUploadManager.setUploadCanceledCallback(callback);
-//    }
-//
-//    public void setUploadInPreparationCallback(Consumer<SftpUploadInPreparation> callback) {
-//        this.sftpUploadManager.setUploadInPreparationCallback(callback);
-//    }
-//
-//    public void setUploadChangedCallback(Consumer<SftpUploadChanged> callback) {
-//        this.sftpUploadManager.setUploadChangedCallback(callback);
-//    }
-
     public void download(File localFile, SftpFile remoteFile) throws SftpException {
         this.sftpDownloadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
-//    public void cancelDownload() {
-//        this.sftpDownloadManager.cancel();
-//    }
-
-//    public void setDownloadEndedCallback(Consumer<SftpDownloadEnded> callback) {
-//        this.sftpDownloadManager.setDownloadEndedCallback(callback);
-//    }
-//
-//    public void setDownloadFailedCallback(Consumer<SftpDownloadFailed> callback) {
-//        this.sftpDownloadManager.setDownloadFailedCallback(callback);
-//    }
-//
-//    public void setDownloadCanceledCallback(Consumer<SftpDownloadCanceled> callback) {
-//        this.sftpDownloadManager.setDownloadCanceledCallback(callback);
-//    }
-//
-//    public void setDownloadChangedCallback(Consumer<SftpDownloadChanged> callback) {
-//        this.sftpDownloadManager.setDownloadChangedCallback(callback);
-//    }
-//
-//    public void setDownloadInPreparationCallback(Consumer<SftpDownloadInPreparation> callback) {
-//        this.sftpDownloadManager.setDownloadInPreparationCallback(callback);
-//    }
+    public void transport(SftpFile localFile, SftpFile remoteFile,ShellSftp remoteSftp) throws SftpException {
+        this.transportManager.createMonitor(localFile, remoteFile, this.openSftp());
+    }
 
     public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
         this.sftpDeleteManager.setDeleteEndedCallback(callback);
@@ -562,14 +525,6 @@ public class ShellClient {
         return this.shellExec;
     }
 
-    //    public boolean isDownloading() {
-//        return this.sftpDownloadManager.isDownloading();
-//    }
-//
-//    public boolean isUploading() {
-//        return this.sftpUploadManager.isUploading();
-//    }
-//
     public BooleanProperty uploadingProperty() {
         return this.sftpUploadManager.uploadingProperty();
     }

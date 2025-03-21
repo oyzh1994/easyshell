@@ -401,4 +401,16 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     public boolean canWrite() {
         return this.getPermissions().contains("w");
     }
+
+    public boolean isDirectory() {
+        return this.isDir();
+    }
+
+    public String getPath() {
+        return this.getFilePath();
+    }
+
+    public long length() {
+        return this.size();
+    }
 }

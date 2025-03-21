@@ -2,11 +2,10 @@ package cn.oyzh.easyshell.sftp.transport;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpProgressMonitor;
-
-import java.io.File;
 
 /**
  * @author oyzh
@@ -18,7 +17,7 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
 
     private long current;
 
-    private final File localFile;
+    private final SftpFile localFile;
 
     private final String remoteFile;
 
@@ -36,10 +35,6 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
 
     public long getTotal() {
         return total;
-    }
-
-    public ShellSftp getSftp() {
-        return sftp;
     }
 
     public void setTotal(long total) {
@@ -78,12 +73,27 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
         this.startTime = startTime;
     }
 
-    private final ShellSftp sftp;
+    private final ShellSftp localSftp;
 
-    public SftpTransportMonitor(final File localFile, String remoteFile, SftpTransportTask task, ShellSftp sftp) {
+    public ShellSftp getLocalSftp() {
+        return localSftp;
+    }
+
+    private final ShellSftp remoteSftp;
+
+    public ShellSftp getRemoteSftp() {
+        return remoteSftp;
+    }
+
+    public SftpTransportMonitor(final SftpFile localFile,
+                                String remoteFile,
+                                SftpTransportTask task,
+                                ShellSftp localSftp,
+                                ShellSftp remoteSftp) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
-        this.sftp = sftp;
+        this.localSftp = localSftp;
+        this.remoteSftp = remoteSftp;
         this.task = task;
     }
 
@@ -96,7 +106,6 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
     @Override
     public boolean count(long current) {
         this.current += current;
-//        this.manager.uploadChanged(this);
         this.task.uploadChanged(this);
         return !this.cancelled;
     }
@@ -107,7 +116,6 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
         if (this.cancelled) {
             JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
             this.task.uploadCanceled(this);
-//            this.manager.uploadCanceled(this);
         } else {
             long endTime = System.currentTimeMillis();
             long duration = (endTime - this.startTime) / 1000;
@@ -116,7 +124,6 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
             }
             JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
             this.task.uploadEnded(this);
-//            this.manager.uploadEnded(this);
         }
     }
 
@@ -135,7 +142,6 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
     public synchronized void cancel() {
         if (this.ended) {
             ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
-//            ThreadUtil.start(() -> this.manager.removeMonitor(this), 50);
         } else {
             this.cancelled = true;
             ThreadUtil.start(this::end, 50);
@@ -145,6 +151,4 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
     public synchronized boolean isFinished() {
         return this.ended || this.cancelled;
     }
-
-
 }

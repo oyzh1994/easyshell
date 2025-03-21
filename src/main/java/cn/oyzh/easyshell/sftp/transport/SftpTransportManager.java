@@ -1,7 +1,9 @@
 package cn.oyzh.easyshell.sftp.transport;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import com.jcraft.jsch.SftpException;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -17,8 +19,8 @@ public class SftpTransportManager {
 
     private final List<SftpTransportTask> tasks = new CopyOnWriteArrayList<>();
 
-    public void createMonitor(File localFile, String remoteFile, ShellSftp sftp) {
-        this.tasks.add(new SftpTransportTask(this, localFile, remoteFile, sftp));
+    public void createMonitor(SftpFile localFile, String remoteFile, ShellSftp localSftp,ShellSftp remoteSftp)   {
+        this.tasks.add(new SftpTransportTask(this, localFile, remoteFile, localSftp,remoteSftp));
     }
 
     /**

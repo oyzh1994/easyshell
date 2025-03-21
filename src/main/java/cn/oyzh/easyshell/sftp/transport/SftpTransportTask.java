@@ -4,7 +4,9 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
@@ -16,6 +18,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.File;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -86,21 +89,21 @@ public class SftpTransportTask {
 
     private final SftpTransportManager manager;
 
-    public SftpTransportTask(SftpTransportManager manager, File localFile, String remoteFile, ShellSftp sftp) {
+    public SftpTransportTask(SftpTransportManager manager, SftpFile localFile, SftpFile remoteFile, ShellSftp localSftp, ShellSftp remoteSftp) {
         this.manager = manager;
-        this.destPath = remoteFile;
+        this.destPath = remoteFile.getPath();
         this.executeThread = ThreadUtil.start(() -> {
             try {
-                sftp.setHolding(true);
+                localSftp.setHolding(true);
                 this.updateStatus(SftpTransportStatus.IN_PREPARATION);
-                this.addMonitorRecursive(localFile, remoteFile, sftp);
+                this.addMonitorRecursive(localFile, remoteFile.getPath(), localSftp, remoteSftp);
                 this.updateStatus(SftpTransportStatus.TRANSPORT_ING);
                 this.updateTotal();
                 this.doUpload();
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
-                sftp.setHolding(false);
+                localSftp.setHolding(false);
                 // 如果是非取消，则设置为结束
                 if (this.status != SftpTransportStatus.CANCELED) {
                     this.updateStatus(SftpTransportStatus.FINISHED);
@@ -115,33 +118,33 @@ public class SftpTransportTask {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @param sftp       sftp操作器
+     * @param localSftp  sftp操作器
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, String remoteFile, ShellSftp sftp) throws SftpException {
+    protected void addMonitorRecursive(SftpFile localFile, String remoteFile, ShellSftp localSftp, ShellSftp remoteSftp) throws SftpException {
         // 文件夹
         if (localFile.isDirectory()) {
             // 列举文件
-            File[] files = localFile.listFiles();
+            List<SftpFile> files = localSftp.lsFileNormal(localFile.getFilePath());
             // 处理文件
-            if (ArrayUtil.isNotEmpty(files)) {
+            if (CollectionUtil.isNotEmpty(files)) {
                 // 远程文件夹
                 String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                sftp.mkdirRecursive(remoteDir);
+                localSftp.mkdirRecursive(remoteDir);
                 // 添加文件
-                for (File file : files) {
+                for (SftpFile file : files) {
                     if (file.isDirectory()) {
-                        this.addMonitorRecursive(file, remoteDir, sftp);
+                        this.addMonitorRecursive(file, remoteDir, localSftp, remoteSftp);
                     } else {
                         String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
-                        this.addMonitorRecursive(file, remoteFile1, sftp);
+                        this.addMonitorRecursive(file, remoteFile1, localSftp, remoteSftp);
                     }
                 }
             }
         } else {// 文件
             this.updateTotal();
-            this.monitors.add(new SftpTransportMonitor(localFile, remoteFile, this, sftp));
+            this.monitors.add(new SftpTransportMonitor(localFile, remoteFile, this, localSftp, remoteSftp));
         }
     }
 
@@ -158,7 +161,7 @@ public class SftpTransportTask {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp sftp = monitor.getSftp();
+            ShellSftp sftp = monitor.getLocalSftp();
             try {
                 sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {
