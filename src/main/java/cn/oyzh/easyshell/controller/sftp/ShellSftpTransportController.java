@@ -21,13 +21,10 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
@@ -35,14 +32,12 @@ import java.util.List;
 
 
 /**
- * db数据传输业务
+ * shell文件传输业务
  *
  * @author oyzh
- * @since 2024/09/05
+ * @since 2025/03/21
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
-        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "sftp/shellSftpTransport.fxml"
 )
 public class ShellSftpTransportController extends StageController {
@@ -423,8 +418,8 @@ public class ShellSftpTransportController extends StageController {
         SftpDeleteManager deleteManager1 = this.sourceClient.getSftpDeleteManager();
         SftpDeleteManager deleteManager2 = this.targetClient.getSftpDeleteManager();
         // 注册监听器
-        deleteManager1.setDeleteDeletedCallback(f-> this.sourceFile.fileDeleted(f.getRemoteFile()));
-        deleteManager2.setDeleteDeletedCallback(f-> this.targetFile.fileDeleted(f.getRemoteFile()));
+        deleteManager1.setDeleteDeletedCallback(f -> this.sourceFile.fileDeleted(f.getRemoteFile()));
+        deleteManager2.setDeleteDeletedCallback(f -> this.targetFile.fileDeleted(f.getRemoteFile()));
         // 初始化文件树
         StageManager.showMask(() -> {
             try {

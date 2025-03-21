@@ -358,7 +358,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
     private void transportData(ShellShowTransportFileEvent event) {
         FXUtil.runLater(() -> {
             try {
-                StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class);
+                StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class, null);
                 adapter.setProp("sourceConnect", event.data());
                 adapter.display();
             } catch (Exception ex) {

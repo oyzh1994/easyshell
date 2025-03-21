@@ -18,169 +18,170 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1200"
         realHeight="750">
-    <FXHBox flexWidth="100%" realHeight="80">
-        <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
-            <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox flexWidth="100%" realHeight="80">
+            <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
+                <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </LinuxSVGGlyph>
+                <FXLabel realHeight="25" fx:id="sourceInfoName" fontSize="15">
+                    <HBox.margin>
+                        <Insets left="15" top="28"/>
+                    </HBox.margin>
+                </FXLabel>
+            </FXHBox>
+            <RightSideSVGGlyph sizeStr="30,20">
                 <HBox.margin>
-                    <Insets left="10" top="20"/>
+                    <Insets top="30"/>
                 </HBox.margin>
-            </LinuxSVGGlyph>
-            <FXLabel realHeight="25" fx:id="sourceInfoName" fontSize="15">
-                <HBox.margin>
-                    <Insets left="15" top="28"/>
-                </HBox.margin>
-            </FXLabel>
+            </RightSideSVGGlyph>
+            <FXHBox flexHeight="100%" flexWidth="50% - 20">
+                <LinuxSVGGlyph sizeStr="40,40" color="mediumturquoise">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </LinuxSVGGlyph>
+                <FXLabel realHeight="25" fx:id="targetInfoName" fontSize="15">
+                    <HBox.margin>
+                        <Insets left="15" top="28"/>
+                    </HBox.margin>
+                </FXLabel>
+            </FXHBox>
         </FXHBox>
-        <RightSideSVGGlyph sizeStr="30,20">
-            <HBox.margin>
-                <Insets top="30"/>
-            </HBox.margin>
-        </RightSideSVGGlyph>
-        <FXHBox flexHeight="100%" flexWidth="50% - 20">
-            <LinuxSVGGlyph sizeStr="40,40" color="mediumturquoise">
-                <HBox.margin>
-                    <Insets left="10" top="20"/>
-                </HBox.margin>
-            </LinuxSVGGlyph>
-            <FXLabel realHeight="25" fx:id="targetInfoName" fontSize="15">
-                <HBox.margin>
-                    <Insets left="15" top="28"/>
-                </HBox.margin>
-            </FXLabel>
-        </FXHBox>
-    </FXHBox>
-    <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
-        <FXHBox flexHeight="100% - 60" flexWidth="100%">
-            <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
-                <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
-                         style="-fx-text-fill: yellowgreen">
-                    <VBox.margin>
+        <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
+            <FXHBox flexHeight="100% - 60" flexWidth="100%">
+                <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
+                    <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: yellowgreen">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXLabel text="%base.connect" realHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="15"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <ShellConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellConnectComboBox>
+                    <FXLabel text="%base.charset" realHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="15"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <CharsetComboBox fx:id="sourceCharset" realHeight="30" flexWidth="100% - 50">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </CharsetComboBox>
+                    <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: yellowgreen">
+                        <VBox.margin>
+                            <Insets left="30" top="30"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXHBox realHeight="25" flexWidth="100%">
+                        <FXLabel text="%base.host" realWidth="80">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                        <FXLabel fx:id="sourceHost" flexWidth="100% - 100">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                    <FXHBox realHeight="25" flexWidth="100%">
+                        <FXLabel text="%base.charset" realWidth="80">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                        <FXLabel fx:id="sourceCharsetName" flexWidth="100% - 100">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                </FXVBox>
+                <FXVBox flexHeight="100%" flexWidth="50% -5">
+                    <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: mediumturquoise">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXLabel text="%base.connect" realHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="15"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <ShellConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellConnectComboBox>
+                    <FXLabel text="%base.charset" realHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="15"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <CharsetComboBox fx:id="targetCharset" realHeight="30" flexWidth="100% - 50">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </CharsetComboBox>
+                    <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: mediumturquoise">
+                        <VBox.margin>
+                            <Insets left="30" top="30"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXHBox realHeight="25" flexWidth="100%">
+                        <FXLabel text="%base.host" realWidth="80">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                        <FXLabel fx:id="targetHost" flexWidth="100% - 100">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                    <FXHBox realHeight="25" flexWidth="100%">
+                        <FXLabel text="%base.charset" realWidth="80">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                        <FXLabel fx:id="targetCharsetName" flexWidth="100% - 100">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                </FXVBox>
+            </FXHBox>
+            <FXHBox flexWidth="100%" realHeight="50">
+                <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+                    <HBox.margin>
                         <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </FXLabel>
-                <FXLabel text="%base.connect" realHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="15"/>
-                    </VBox.margin>
-                </FXLabel>
-                <ShellConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellConnectComboBox>
-                <FXLabel text="%base.charset" realHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="15"/>
-                    </VBox.margin>
-                </FXLabel>
-                <CharsetComboBox fx:id="sourceCharset" realHeight="30" flexWidth="100% - 50">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
-                         style="-fx-text-fill: yellowgreen">
-                    <VBox.margin>
-                        <Insets left="30" top="30"/>
-                    </VBox.margin>
-                </FXLabel>
-                <FXHBox realHeight="25" flexWidth="100%">
-                    <FXLabel text="%base.host" realWidth="80">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <FXLabel fx:id="sourceHost" flexWidth="100% - 100">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FXHBox>
-                <FXHBox realHeight="25" flexWidth="100%">
-                    <FXLabel text="%base.charset" realWidth="80">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <FXLabel fx:id="sourceCharsetName" flexWidth="100% - 100">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FXHBox>
-            </FXVBox>
-            <FXVBox flexHeight="100%" flexWidth="50% -5">
-                <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
-                         style="-fx-text-fill: mediumturquoise">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </FXLabel>
-                <FXLabel text="%base.connect" realHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="15"/>
-                    </VBox.margin>
-                </FXLabel>
-                <ShellConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellConnectComboBox>
-                <FXLabel text="%base.charset" realHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="15"/>
-                    </VBox.margin>
-                </FXLabel>
-                <CharsetComboBox fx:id="targetCharset" realHeight="30" flexWidth="100% - 50">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
-                         style="-fx-text-fill: mediumturquoise">
-                    <VBox.margin>
-                        <Insets left="30" top="30"/>
-                    </VBox.margin>
-                </FXLabel>
-                <FXHBox realHeight="25" flexWidth="100%">
-                    <FXLabel text="%base.host" realWidth="80">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <FXLabel fx:id="targetHost" flexWidth="100% - 100">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FXHBox>
-                <FXHBox realHeight="25" flexWidth="100%">
-                    <FXLabel text="%base.charset" realWidth="80">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                    <FXLabel fx:id="targetCharsetName" flexWidth="100% - 100">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FXHBox>
-            </FXVBox>
-        </FXHBox>
-        <FXHBox flexWidth="100%" realHeight="50">
-            <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
-                <HBox.margin>
-                    <Insets left="30" top="10"/>
-                </HBox.margin>
-            </NextStepButton>
-        </FXHBox>
-    </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
-        <FXVBox flexHeight="100%" flexWidth="100%">
+                    </HBox.margin>
+                </NextStepButton>
+            </FXHBox>
+        </FXVBox>
+        <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
             <FXHBox flexWidth="100%" flexHeight="70%">
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
@@ -190,7 +191,8 @@
                                 <Insets left="5"/>
                             </FXHBox.margin>
                         </ClearableTextField>
-                        <FXToggleSwitch realHeight="30" fx:id="hiddenSourceFile" selectedText="%base.showHiddenFiles"
+                        <FXToggleSwitch realHeight="30" fx:id="hiddenSourceFile"
+                                        selectedText="%base.showHiddenFiles"
                                         unselectedText="%base.doNotShowHiddenFiles">
                             <FXHBox.margin>
                                 <Insets left="5"/>
@@ -240,7 +242,8 @@
                                 <Insets left="5"/>
                             </FXHBox.margin>
                         </ClearableTextField>
-                        <FXToggleSwitch realHeight="30" fx:id="hiddenTargetFile" selectedText="%base.showHiddenFiles"
+                        <FXToggleSwitch realHeight="30" fx:id="hiddenTargetFile"
+                                        selectedText="%base.showHiddenFiles"
                                         unselectedText="%base.doNotShowHiddenFiles">
                             <FXHBox.margin>
                                 <Insets left="5"/>
@@ -284,4 +287,4 @@
             </SftpTransportTaskTableView>
         </FXVBox>
     </FXVBox>
-</FXVBox>
+</FXPane>
