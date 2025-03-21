@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.trees.sftp.SftpDownloadTableView;
+import cn.oyzh.easyshell.fx.sftp.SftpDownloadTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;

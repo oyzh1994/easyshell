@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.sftp;
+package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileNameUtil;
