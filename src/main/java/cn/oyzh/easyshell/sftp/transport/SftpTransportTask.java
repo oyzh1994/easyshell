@@ -5,6 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
@@ -18,6 +19,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -89,21 +92,23 @@ public class SftpTransportTask {
 
     private final SftpTransportManager manager;
 
-    public SftpTransportTask(SftpTransportManager manager, SftpFile localFile, SftpFile remoteFile, ShellSftp localSftp, ShellSftp remoteSftp) {
+    public SftpTransportTask(SftpTransportManager manager, SftpFile localFile, String remoteFile, ShellSftp localSftp, ShellSftp remoteSftp) {
         this.manager = manager;
-        this.destPath = remoteFile.getPath();
+        this.destPath = remoteFile;
         this.executeThread = ThreadUtil.start(() -> {
             try {
                 localSftp.setHolding(true);
+                remoteSftp.setHolding(true);
                 this.updateStatus(SftpTransportStatus.IN_PREPARATION);
-                this.addMonitorRecursive(localFile, remoteFile.getPath(), localSftp, remoteSftp);
+                this.addMonitorRecursive(localFile, remoteFile, localSftp, remoteSftp);
                 this.updateStatus(SftpTransportStatus.TRANSPORT_ING);
                 this.updateTotal();
-                this.doUpload();
+                this.doTransport();
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
                 localSftp.setHolding(false);
+                remoteSftp.setHolding(false);
                 // 如果是非取消，则设置为结束
                 if (this.status != SftpTransportStatus.CANCELED) {
                     this.updateStatus(SftpTransportStatus.FINISHED);
@@ -125,7 +130,7 @@ public class SftpTransportTask {
         // 文件夹
         if (localFile.isDirectory()) {
             // 列举文件
-            List<SftpFile> files = localSftp.lsFileNormal(localFile.getFilePath());
+            List<SftpFile> files = localSftp.lsFileNormal(localFile.getPath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 远程文件夹
@@ -151,7 +156,7 @@ public class SftpTransportTask {
     /**
      * 执行上传
      */
-    private void doUpload() {
+    private void doTransport() {
         while (!this.isEmpty()) {
             SftpTransportMonitor monitor = this.takeMonitor();
             if (monitor == null) {
@@ -161,15 +166,24 @@ public class SftpTransportTask {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp sftp = monitor.getLocalSftp();
+            ShellSftp localSftp = monitor.getLocalSftp();
+            ShellSftp remoteSftp = monitor.getRemoteSftp();
             try {
-                sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
+                InputStream input = localSftp.get(monitor.getLocalFilePath());
+                OutputStream output = remoteSftp.put(monitor.getRemoteFile(), monitor);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+                IOUtil.close(input);
+                IOUtil.close(output);
             } catch (Exception ex) {
                 if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
-                    JulLog.warn("upload canceled");
+                    JulLog.warn("transport canceled");
                 } else {
                     ex.printStackTrace();
-                    JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
+                    JulLog.warn("file:{} transport failed", monitor.getLocalFileName(), ex);
                     this.uploadFailed(monitor, ex);
                 }
             }

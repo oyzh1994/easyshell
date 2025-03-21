@@ -2,10 +2,14 @@ package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.SftpFileTransportTableView;
 import cn.oyzh.easyshell.fx.SftpTransportTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
+import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.SftpUtil;
+import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -27,6 +31,8 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.util.List;
 
 
 /**
@@ -134,31 +140,55 @@ public class ShellSftpTransportController extends StageController {
     private ShellClient targetClient;
 
     /**
-     * 传输操作任务
-     */
-    private Thread execTask;
-
-    /**
-     * 计数器
-     */
-    private final Counter counter = new Counter();
-
-    /**
-     * 执行传输
+     * 执行传输1
      */
     @FXML
-    private void doTransport() {
-        // 重置参数
-        this.counter.reset();
+    private void doTransport1() {
+        try {
+            List<SftpFile> files = this.sourceFile.getSelectedItems();
+            if (CollectionUtil.isEmpty(files)) {
+                return;
+            }
+            String remotePath = this.targetFile.getCurrPath();
+            for (SftpFile file : files) {
+                String remoteFile = SftpUtil.concat(remotePath, file.getName());
+                this.sourceClient.transport(file, remoteFile, this.targetClient.openSftp());
+            }
+            this.initTransportTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     /**
-     * 结束传输
+     * 执行传输2
      */
     @FXML
-    private void stopTransport() {
-        ThreadUtil.interrupt(this.execTask);
-        this.execTask = null;
+    private void doTransport2() {
+        try {
+            List<SftpFile> files = this.targetFile.getSelectedItems();
+            if (CollectionUtil.isEmpty(files)) {
+                return;
+            }
+            String remotePath = this.sourceFile.getCurrPath();
+            for (SftpFile file : files) {
+                String remoteFile = SftpUtil.concat(remotePath, file.getName());
+                this.targetClient.transport(file, remoteFile, this.sourceClient.openSftp());
+            }
+            this.initTransportTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void initTransportTable() {
+        SftpTransportManager manager1 = this.sourceClient.getTransportManager();
+        SftpTransportManager manager2 = this.targetClient.getTransportManager();
+        this.transportTable.addItem(manager1.getTasks());
+        this.transportTable.addItem(manager2.getTasks());
+        this.transportTable.refresh();
     }
 
     @Override
@@ -219,21 +249,8 @@ public class ShellSftpTransportController extends StageController {
     }
 
     @Override
-    public void onWindowHidden(WindowEvent event) {
-        super.onWindowHidden(event);
-        this.stopTransport();
-    }
-
-
-    @Override
     public String getViewTitle() {
-        return I18nHelper.transportTitle();
-    }
-
-    @FXML
-    private void showStep1() {
-        this.step2.disappear();
-        this.step1.display();
+        return I18nHelper.transportFile();
     }
 
     @FXML
@@ -302,7 +319,7 @@ public class ShellSftpTransportController extends StageController {
             }
             // 初始化文件树
             this.sourceFile.setClient(this.sourceClient);
-            this.targetFile.setClient(this.sourceClient);
+            this.targetFile.setClient(this.targetClient);
             StageManager.showMask(() -> {
                 try {
                     this.sourceFile._loadFile();

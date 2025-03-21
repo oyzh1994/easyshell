@@ -10,6 +10,7 @@ import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -232,6 +233,28 @@ public class ShellSftp extends ShellChannel {
         try {
             this.setUsing(true);
             this.getChannel().get(src, dest, monitor, mode);
+        } finally {
+            this.setUsing(false);
+        }
+    }
+
+    public InputStream get(String src) throws SftpException {
+        try {
+            this.setUsing(true);
+            return this.getChannel().get(src);
+        } finally {
+            this.setUsing(false);
+        }
+    }
+
+    public OutputStream put(String dest, SftpProgressMonitor monitor) throws SftpException {
+        return this.put(dest, monitor, ChannelSftp.OVERWRITE);
+    }
+
+    public OutputStream put(String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
+        try {
+            this.setUsing(true);
+            return this.getChannel().put(dest, monitor, mode);
         } finally {
             this.setUsing(false);
         }

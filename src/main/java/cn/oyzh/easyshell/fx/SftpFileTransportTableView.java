@@ -84,11 +84,18 @@ public class SftpFileTransportTableView extends FXTableView<SftpFile> {
         return client;
     }
 
+
+    private ShellClient client;
+
     public void setClient(ShellClient client) {
         this.client = client;
     }
 
-    private ShellClient client;
+    private ShellClient targetClient;
+
+    public void setTargetClient(ShellClient targetClient) {
+        this.targetClient = targetClient;
+    }
 
     /**
      * 当前路径
@@ -179,7 +186,7 @@ public class SftpFileTransportTableView extends FXTableView<SftpFile> {
             // 新增数据
             this.addItem(addList);
         } catch (Throwable ex) {
-            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4:","0: Success")) {
+            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4:", "0: Success")) {
                 sftp.close();
                 this._loadFile();
             } else {
@@ -226,12 +233,6 @@ public class SftpFileTransportTableView extends FXTableView<SftpFile> {
         List<SftpFile> files = this.getSelectedItems();
         if (CollectionUtil.isEmpty(files)) {
             return Collections.emptyList();
-        }
-        // 发现操作中的文件，则跳过
-        for (SftpFile file : files) {
-            if (file.isWaiting()) {
-                return Collections.emptyList();
-            }
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
 

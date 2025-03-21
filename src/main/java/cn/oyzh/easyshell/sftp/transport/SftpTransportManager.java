@@ -33,20 +33,20 @@ public class SftpTransportManager {
         ThreadUtil.start(this.tasks::clear, 500);
     }
 
-    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty transportingProperty = new SimpleBooleanProperty(false);
 
-    public BooleanProperty uploadingProperty() {
-        return this.uploadingProperty;
+    public BooleanProperty transportingProperty() {
+        return this.transportingProperty;
     }
 
     public void updateUploading() {
         for (SftpTransportTask task : this.tasks) {
             if (task.isTransporting() || task.isInPreparation()) {
-                this.uploadingProperty.set(true);
+                this.transportingProperty.set(true);
                 return;
             }
         }
-        this.uploadingProperty.set(false);
+        this.transportingProperty.set(false);
     }
 
     public List<SftpTransportTask> getTasks() {

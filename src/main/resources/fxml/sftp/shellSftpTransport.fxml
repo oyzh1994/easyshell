@@ -13,8 +13,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportLeftSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportRightSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1200" realHeight="750">
+        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1200"
+        realHeight="750">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
             <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
@@ -176,7 +179,7 @@
     <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexHeight="100%" flexWidth="100%">
             <FXHBox flexWidth="100%" flexHeight="70%">
-                <SftpFileTransportTableView fx:id="sourceFile" flexWidth="50%" flexHeight="100%">
+                <SftpFileTransportTableView fx:id="sourceFile" flexWidth="50% - 30" flexHeight="100%">
                     <columns>
                         <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                        valueName="icon"/>
@@ -190,7 +193,19 @@
                         <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                     </columns>
                 </SftpFileTransportTableView>
-                <SftpFileTransportTableView fx:id="targetFile" flexWidth="50%" flexHeight="100%">
+                <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">
+                    <TransportRightSVGGlyph onMousePrimaryClicked="#doTransport1">
+                        <FXVBox.margin>
+                            <Insets left="3"/>
+                        </FXVBox.margin>
+                    </TransportRightSVGGlyph>
+                    <TransportLeftSVGGlyph onMousePrimaryClicked="#doTransport2">
+                        <FXVBox.margin>
+                            <Insets left="3" top="20"/>
+                        </FXVBox.margin>
+                    </TransportLeftSVGGlyph>
+                </FXVBox>
+                <SftpFileTransportTableView fx:id="targetFile" flexWidth="50% - 30" flexHeight="100%">
                     <columns>
                         <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                        valueName="icon"/>
@@ -205,9 +220,16 @@
                     </columns>
                 </SftpFileTransportTableView>
             </FXHBox>
+            <SftpTransportTableView flexWidth="100%" fx:id="transportTable" flexHeight="30%">
+                <columns>
+                    <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 650" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="140" valueName="currentProgress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>
+                    <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="100" valueName="status" text="%base.status"/>
+                </columns>
+            </SftpTransportTableView>
         </FXVBox>
-        <SftpTransportTableView fx:id="transportTable" flexHeight="30%">
-
-        </SftpTransportTableView>
     </FXVBox>
 </FXVBox>
