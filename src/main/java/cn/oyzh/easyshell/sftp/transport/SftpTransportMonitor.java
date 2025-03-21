@@ -3,19 +3,15 @@ package cn.oyzh.easyshell.sftp.transport;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.SftpMonitor;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.SftpProgressMonitor;
 
 /**
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpTransportMonitor implements SftpProgressMonitor {
-
-    private long total;
-
-    private long current;
+public class SftpTransportMonitor extends SftpMonitor {
 
     private final SftpFile localFile;
 
@@ -26,52 +22,6 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
     }
 
     private final SftpTransportTask task;
-
-    private transient boolean ended;
-
-    private transient boolean cancelled;
-
-    private long startTime;
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public long getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(long current) {
-        this.current = current;
-    }
-
-    public boolean isEnded() {
-        return ended;
-    }
-
-    public void setEnded(boolean ended) {
-        this.ended = ended;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
 
     private final ShellSftp localSftp;
 
@@ -85,22 +35,12 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
         return remoteSftp;
     }
 
-    public SftpTransportMonitor(final SftpFile localFile,
-                                String remoteFile,
-                                SftpTransportTask task,
-                                ShellSftp localSftp,
-                                ShellSftp remoteSftp) {
+    public SftpTransportMonitor(final SftpFile localFile, String remoteFile, SftpTransportTask task, ShellSftp localSftp, ShellSftp remoteSftp) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
         this.localSftp = localSftp;
         this.remoteSftp = remoteSftp;
         this.task = task;
-    }
-
-    @Override
-    public void init(int current, String s, String s1, long total) {
-        this.total = total;
-        this.startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -114,7 +54,7 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
     public void end() {
         this.ended = true;
         if (this.cancelled) {
-            JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
+            JulLog.warn("file:{} transport cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
             this.task.uploadCanceled(this);
         } else {
             long endTime = System.currentTimeMillis();
@@ -122,7 +62,7 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
             if (duration == 0) {
                 duration = 1;
             }
-            JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
+            JulLog.info("file:{} transport finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
             this.task.uploadEnded(this);
         }
     }
@@ -139,6 +79,7 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
         return this.localFile.length();
     }
 
+    @Override
     public synchronized void cancel() {
         if (this.ended) {
             ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
@@ -146,9 +87,5 @@ public class SftpTransportMonitor implements SftpProgressMonitor {
             this.cancelled = true;
             ThreadUtil.start(this::end, 50);
         }
-    }
-
-    public synchronized boolean isFinished() {
-        return this.ended || this.cancelled;
     }
 }

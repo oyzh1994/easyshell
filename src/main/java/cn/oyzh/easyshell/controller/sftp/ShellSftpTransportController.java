@@ -315,8 +315,8 @@ public class ShellSftpTransportController extends StageController {
             this.targetFile.setClient(this.targetClient);
             StageManager.showMask(() -> {
                 try {
-                    this.sourceFile._loadFile();
-                    this.targetFile._loadFile();
+                    this.sourceFile.loadFile();
+                    this.targetFile.loadFile();
                     this.step1.disappear();
                     this.step2.display();
                 } catch (Exception ex) {

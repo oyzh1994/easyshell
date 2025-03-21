@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.sftp.download;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.SftpMonitor;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpProgressMonitor;
@@ -13,63 +14,13 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpDownloadMonitor implements SftpProgressMonitor {
-
-    private long total;
-
-    private long current;
+public class SftpDownloadMonitor extends SftpMonitor {
 
     private final File localFile;
 
     private final SftpFile remoteFile;
 
     private final SftpDownloadTask task;
-
-    private transient boolean ended;
-
-    private transient boolean cancelled;
-
-    private long startTime;
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public long getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(long current) {
-        this.current = current;
-    }
-
-    public boolean isEnded() {
-        return ended;
-    }
-
-    public void setEnded(boolean ended) {
-        this.ended = ended;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
 
     private final ShellSftp sftp;
 
@@ -82,12 +33,6 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
         this.task = task;
         this.localFile = localFile;
         this.remoteFile = remoteFile;
-    }
-
-    @Override
-    public void init(int current, String s, String s1, long total) {
-        this.total = total;
-        this.startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -134,6 +79,7 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
         return this.remoteFile.size();
     }
 
+    @Override
     public synchronized void cancel() {
         if (this.ended) {
             ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
@@ -141,9 +87,5 @@ public class SftpDownloadMonitor implements SftpProgressMonitor {
             this.cancelled = true;
             ThreadUtil.start(this::end, 50);
         }
-    }
-
-    public synchronized boolean isFinished() {
-        return this.ended || this.cancelled;
     }
 }

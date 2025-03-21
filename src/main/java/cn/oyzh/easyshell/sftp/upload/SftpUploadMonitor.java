@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.sftp.SftpMonitor;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpProgressMonitor;
@@ -12,11 +13,7 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpUploadMonitor implements SftpProgressMonitor {
-
-    private long total;
-
-    private long current;
+public class SftpUploadMonitor extends SftpMonitor {
 
     private final File localFile;
 
@@ -28,57 +25,11 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
 
     private final SftpUploadTask task;
 
-    private transient boolean ended;
-
-    private transient boolean cancelled;
-
-    private long startTime;
-
-    public long getTotal() {
-        return total;
-    }
+    private final ShellSftp sftp;
 
     public ShellSftp getSftp() {
         return sftp;
     }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public long getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(long current) {
-        this.current = current;
-    }
-
-    public boolean isEnded() {
-        return ended;
-    }
-
-    public void setEnded(boolean ended) {
-        this.ended = ended;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    private final ShellSftp sftp;
 
     public SftpUploadMonitor(final File localFile, String remoteFile, SftpUploadTask task, ShellSftp sftp) {
         this.localFile = localFile;
@@ -88,15 +39,8 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
     }
 
     @Override
-    public void init(int current, String s, String s1, long total) {
-        this.total = total;
-        this.startTime = System.currentTimeMillis();
-    }
-
-    @Override
     public boolean count(long current) {
         this.current += current;
-//        this.manager.uploadChanged(this);
         this.task.uploadChanged(this);
         return !this.cancelled;
     }
@@ -107,7 +51,6 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
         if (this.cancelled) {
             JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
             this.task.uploadCanceled(this);
-//            this.manager.uploadCanceled(this);
         } else {
             long endTime = System.currentTimeMillis();
             long duration = (endTime - this.startTime) / 1000;
@@ -116,7 +59,6 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
             }
             JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
             this.task.uploadEnded(this);
-//            this.manager.uploadEnded(this);
         }
     }
 
@@ -132,19 +74,13 @@ public class SftpUploadMonitor implements SftpProgressMonitor {
         return this.localFile.length();
     }
 
+    @Override
     public synchronized void cancel() {
         if (this.ended) {
             ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
-//            ThreadUtil.start(() -> this.manager.removeMonitor(this), 50);
         } else {
             this.cancelled = true;
             ThreadUtil.start(this::end, 50);
         }
     }
-
-    public synchronized boolean isFinished() {
-        return this.ended || this.cancelled;
-    }
-
-
 }
