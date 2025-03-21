@@ -46,6 +46,14 @@ public class HeaderController extends StageController {
     }
 
     /**
+     * 传输数据
+     */
+    @FXML
+    private void transport() {
+        ShellEventUtil.showTransportFile();
+    }
+
+    /**
      * 工具箱
      */
     @FXML

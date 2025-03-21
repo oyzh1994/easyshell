@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
+import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -33,6 +34,7 @@ import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
+import cn.oyzh.ssh.SSHConnect;
 import javafx.scene.control.TreeItem;
 
 import java.io.File;
@@ -302,6 +304,24 @@ public class ShellEventUtil {
      */
     public static void showTerminal( ) {
         ShellShowTerminalEvent event = new ShellShowTerminalEvent();
+        EventUtil.post(event);
+    }
+
+    /**
+     * 显示传输文件页面
+     */
+    public static void showTransportFile() {
+        showTransportFile(null);
+    }
+
+    /**
+     * 显示传输数据页面
+     *
+     * @param connect shell连接
+     */
+    public static void showTransportFile(ShellConnect connect) {
+        ShellShowTransportFileEvent event = new ShellShowTransportFileEvent();
+        event.data(connect);
         EventUtil.post(event);
     }
 }

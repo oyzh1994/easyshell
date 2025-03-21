@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.parser;
+package cn.oyzh.easyshell.exception;
 
 import java.util.function.Function;
 

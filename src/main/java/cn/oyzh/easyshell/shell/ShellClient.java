@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.sftp.SftpAttr;
@@ -91,7 +92,7 @@ public class ShellClient {
      */
     private boolean closeQuietly;
 
-    public ShellClient( ShellConnect shellConnect) {
+    public ShellClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {
@@ -295,13 +296,13 @@ public class ShellClient {
      *
      * @param timeout 超时时间
      */
-    public void start(int timeout) throws Exception {
+    public void start(int timeout) {
         if (this.isConnected() || this.isConnecting()) {
             return;
         }
-        // 初始化客户端
-        this.initClient();
         try {
+            // 初始化客户端
+            this.initClient();
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 初始化连接池
@@ -317,10 +318,11 @@ public class ShellClient {
                 this.state.set(ShellConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
-            JulLog.info("sshClient connected used:{}ms.", (endTime - starTime));
+            JulLog.info("shellClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
-            throw ex;
+            JulLog.warn("shellClient start error", ex);
+            throw new ShellException(ex);
         }
     }
 

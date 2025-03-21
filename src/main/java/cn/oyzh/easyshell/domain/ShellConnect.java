@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * @since 2023/6/16
  */
 @Table("t_connect")
-public class ShellConnect implements Comparable<ShellConnect>, Serializable {
+public class ShellConnect implements Comparable<ShellConnect>, Serializable, ObjectComparator<ShellConnect> {
 
     /**
      * 数据id
@@ -297,5 +298,13 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable {
             ex.printStackTrace();
         }
         return -1;
+    }
+
+    @Override
+    public boolean compare(ShellConnect t1) {
+        if (t1 == null) {
+            return false;
+        }
+        return StringUtil.equals(this.name, t1.name);
     }
 }

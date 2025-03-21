@@ -9,8 +9,14 @@
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30">
+    <TransportSVGGlyph onMousePrimaryClicked="#transport" size="12">
+        <VBox.margin>
+            <Insets left="10" top="60"/>
+        </VBox.margin>
+    </TransportSVGGlyph>
     <ToolsSVGGlyph onMousePrimaryClicked="#tool" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>

@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
@@ -21,8 +22,9 @@ import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
 import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
+import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
-import cn.oyzh.easyshell.parser.ShellExceptionParser;
+import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
@@ -341,6 +343,23 @@ public class EasyShellApp extends FXApplication implements EventListener {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellSftpFileInfoController.class, StageManager.getPrimaryStage());
                 adapter.setProp("file", event.data());
+                adapter.display();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 显示传输数据
+     */
+    @EventSubscribe
+    private void transportData(ShellShowTransportFileEvent event) {
+        FXUtil.runLater(() -> {
+            try {
+                StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class);
+                adapter.setProp("sourceConnect", event.data());
                 adapter.display();
             } catch (Exception ex) {
                 ex.printStackTrace();
