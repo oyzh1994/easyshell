@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.sftp.upload;
 public enum SftpUploadStatus {
 
     IN_PREPARATION,
-    UPLOADING,
+    UPLOAD_ING,
     FINISHED,
     FAILED,
     CANCELED

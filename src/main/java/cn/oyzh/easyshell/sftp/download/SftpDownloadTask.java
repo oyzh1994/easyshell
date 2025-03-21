@@ -37,7 +37,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
             case FAILED -> this.statusProperty.set(I18nHelper.failed());
             case FINISHED -> this.statusProperty.set(I18nHelper.finished());
             case CANCELED -> this.statusProperty.set(I18nHelper.canceled());
-            case DOWNLOADING -> this.statusProperty.set(I18nHelper.downloadIng());
+            case DOWNLOAD_ING -> this.statusProperty.set(I18nHelper.downloadIng());
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
     }
@@ -53,7 +53,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                 sftp.setHolding(true);
                 this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
-                this.updateStatus(SftpDownloadStatus.DOWNLOADING);
+                this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
                 this.calcTotalSize();
                 this.updateTotal();
                 this.doDownload();
@@ -61,11 +61,11 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                 ex.printStackTrace();
             } finally {
                 sftp.setHolding(false);
-                // 如果是非取消，则设置为结束
-                if (this.status != SftpDownloadStatus.CANCELED) {
+                this.updateTotal();
+                // 如果是非取消和失败，则设置为结束
+                if (!this.isCancelled() && !this.isFailed()) {
                     this.updateStatus(SftpDownloadStatus.FINISHED);
                 }
-                this.updateTotal();
             }
         });
     }
@@ -136,9 +136,9 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 
     @Override
     protected void updateTotal() {
-        if (this.monitors.isEmpty()) {
-            this.updateStatus(SftpDownloadStatus.FINISHED);
-        }
+//        if (this.monitors.isEmpty() && !this.isInPreparation()) {
+//            this.updateStatus(SftpDownloadStatus.FINISHED);
+//        }
         super.updateTotal();
         this.manager.updateDownloading();
     }
@@ -180,13 +180,16 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      * @return 结果
      */
     public boolean isDownloading() {
-        return this.status == SftpDownloadStatus.DOWNLOADING;
+        return this.status == SftpDownloadStatus.DOWNLOAD_ING;
     }
 
     @Override
     public void ended(SftpDownloadMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor);
+        if (this.monitors.isEmpty()) {
+            this.updateStatus(SftpDownloadStatus.FINISHED);
+        }
     }
 
     @Override

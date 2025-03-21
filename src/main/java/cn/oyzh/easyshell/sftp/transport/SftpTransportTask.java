@@ -50,6 +50,10 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
 
     private final ShellClient remoteClient;
 
+    public String getRemoteName() {
+        return this.remoteClient.connectName();
+    }
+
     public SftpTransportTask(SftpTransportManager manager, SftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
         this.manager = manager;
         this.destPath = remoteFile;
@@ -66,11 +70,11 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
-                // 如果是非取消，则设置为结束
-                if (this.status != SftpTransportStatus.CANCELED) {
+                this.updateTotal();
+                // 如果是非取消和失败，则设置为结束
+                if (!this.isCancelled() && !this.isFailed()) {
                     this.updateStatus(SftpTransportStatus.FINISHED);
                 }
-                this.updateTotal();
             }
         });
     }
@@ -133,7 +137,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
             try {
                 InputStream input = localSftp.get(monitor.getLocalFilePath());
                 OutputStream output = remoteSftp.put(monitor.getRemoteFile(), monitor);
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[8192];
                 int bytesRead;
                 while ((bytesRead = input.read(buffer)) != -1) {
                     output.write(buffer, 0, bytesRead);
@@ -158,13 +162,13 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
         }
     }
 
-    @Override
-    protected void updateTotal() {
-        if (this.monitors.isEmpty()) {
-            this.updateStatus(SftpTransportStatus.FINISHED);
-        }
-        super.updateTotal();
-    }
+//    @Override
+//    protected void updateTotal() {
+//        if (this.monitors.isEmpty() && !this.isInPreparation()) {
+//            this.updateStatus(SftpTransportStatus.FINISHED);
+//        }
+//        super.updateTotal();
+//    }
 
     @Override
     public void cancel() {
@@ -205,6 +209,9 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     public void ended(SftpTransportMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor);
+        if (this.monitors.isEmpty()) {
+            this.updateStatus(SftpTransportStatus.FINISHED);
+        }
     }
 
     @Override

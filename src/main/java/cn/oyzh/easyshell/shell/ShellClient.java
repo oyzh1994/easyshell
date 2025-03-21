@@ -362,7 +362,7 @@ public class ShellClient {
         return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
     }
 
-    public Object connectName() {
+    public String connectName() {
         return this.shellConnect.getName();
     }
 

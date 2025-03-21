@@ -207,7 +207,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
      * @return 结果
      */
     public boolean isCompleted() {
-        return this.isCancelled() || this.isFailed() || this.isFinished();
+        return this.isCancelled() || this.isFailed() || this.isFinished() || this.monitors.isEmpty();
     }
 
     protected void calcTotalSize() {

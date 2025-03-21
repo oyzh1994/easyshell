@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.sftp.download;
 public enum SftpDownloadStatus {
 
     IN_PREPARATION,
-    DOWNLOADING,
+    DOWNLOAD_ING,
     FINISHED,
     FAILED,
     CANCELED

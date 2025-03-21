@@ -80,7 +80,7 @@ public class ShellSftp extends ShellChannel {
     }
 
     public List<SftpFile> lsFile(String path, ShellClient client) throws SftpException {
-        this.cd(path);
+//        this.cd(path);
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {

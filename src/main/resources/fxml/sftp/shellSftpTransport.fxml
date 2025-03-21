@@ -277,8 +277,9 @@
             </FXHBox>
             <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" flexHeight="30%">
                 <columns>
-                    <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
-                    <FXTableColumn flexWidth="100% - 650" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="100" valueName="remoteName" text="%base.targetConnect"/>
+                    <FXTableColumn prefWidth="300" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 750" valueName="currentFile" text="%base.currentFile"/>
                     <FXTableColumn prefWidth="140" valueName="progress" text="%base.currentProgress"/>
 <!--                    <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>-->
                     <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>

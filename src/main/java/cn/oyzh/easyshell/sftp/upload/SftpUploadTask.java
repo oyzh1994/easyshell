@@ -4,21 +4,14 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 import java.io.File;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author oyzh
@@ -42,7 +35,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
             case FAILED -> this.statusProperty.set(I18nHelper.failed());
             case FINISHED -> this.statusProperty.set(I18nHelper.finished());
             case CANCELED -> this.statusProperty.set(I18nHelper.canceled());
-            case UPLOADING -> this.statusProperty.set(I18nHelper.uploadIng());
+            case UPLOAD_ING -> this.statusProperty.set(I18nHelper.uploadIng());
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
     }
@@ -57,7 +50,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                 sftp.setHolding(true);
                 this.updateStatus(SftpUploadStatus.IN_PREPARATION);
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
-                this.updateStatus(SftpUploadStatus.UPLOADING);
+                this.updateStatus(SftpUploadStatus.UPLOAD_ING);
                 this.calcTotalSize();
                 this.updateTotal();
                 this.doUpload();
@@ -65,11 +58,11 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                 ex.printStackTrace();
             } finally {
                 sftp.setHolding(false);
-                // 如果是非取消，则设置为结束
-                if (this.status != SftpUploadStatus.CANCELED) {
+                this.updateTotal();
+                // 如果是非取消和失败，则设置为结束
+                if (!this.isCancelled() && !this.isFailed()) {
                     this.updateStatus(SftpUploadStatus.FINISHED);
                 }
-                this.updateTotal();
             }
         });
     }
@@ -140,9 +133,9 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
 
     @Override
     protected void updateTotal() {
-        if (this.monitors.isEmpty()) {
-            this.updateStatus(SftpUploadStatus.FINISHED);
-        }
+//        if (this.monitors.isEmpty() && !this.isInPreparation()) {
+//            this.updateStatus(SftpUploadStatus.FINISHED);
+//        }
         super.updateTotal();
         this.manager.updateUploading();
     }
@@ -184,13 +177,16 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
      * @return 结果
      */
     public boolean isUploading() {
-        return this.status == SftpUploadStatus.UPLOADING;
+        return this.status == SftpUploadStatus.UPLOAD_ING;
     }
 
     @Override
     public void ended(SftpUploadMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor);
+        if (this.monitors.isEmpty()) {
+            this.updateStatus(SftpUploadStatus.FINISHED);
+        }
     }
 
     @Override
