@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx;
+package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.fx.plus.controls.table.FXTableView;

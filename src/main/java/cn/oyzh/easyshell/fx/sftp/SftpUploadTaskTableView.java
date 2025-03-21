@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 /**
  * @author oyzh
  * @since 2025-03-05
  */
-public class SftpDownloadTableView extends FXTableView<SftpDownloadTask> {
+public class SftpUploadTaskTableView extends FXTableView<SftpUploadTask> {
 
     @Override
     protected void initTableView() {

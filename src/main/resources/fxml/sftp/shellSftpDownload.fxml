@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.sftp.SftpDownloadTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -24,7 +24,7 @@
             </FXHBox.margin>
         </DeleteSVGGlyph>
     </FXHBox>
-    <SftpDownloadTableView fx:id="downloadTable" flexHeight="100% - 30" flexWidth="100% - 20">
+    <SftpDownloadTaskTableView fx:id="downloadTable" flexHeight="100% - 30" flexWidth="100% - 20">
         <columns>
             <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
             <FXTableColumn flexWidth="100% - 650" valueName="currentFile" text="%base.currentFile"/>
@@ -36,6 +36,6 @@
         <FXVBox.margin>
             <Insets left="10"/>
         </FXVBox.margin>
-    </SftpDownloadTableView>
+    </SftpDownloadTaskTableView>
 </FXVBox>
 

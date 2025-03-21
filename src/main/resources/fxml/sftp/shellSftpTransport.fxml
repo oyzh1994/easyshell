@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.SftpTransportFileTableView?>
-<?import cn.oyzh.easyshell.fx.SftpTransportTaskTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView?>
 <?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
