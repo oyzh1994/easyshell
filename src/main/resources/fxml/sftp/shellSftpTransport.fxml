@@ -21,7 +21,7 @@
 <?import cn.oyzh.easyshell.fx.SftpFileTransportTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="800" realHeight="600">
+        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1200" realHeight="750">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
             <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
@@ -57,7 +57,7 @@
         <FXHBox flexHeight="100% - 60" flexWidth="100%">
             <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
                 <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
-                           style="-fx-text-fill: yellowgreen">
+                         style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -83,7 +83,7 @@
                     </VBox.margin>
                 </CharsetComboBox>
                 <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
-                           style="-fx-text-fill: yellowgreen">
+                         style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
                         <Insets left="30" top="30"/>
                     </VBox.margin>
@@ -115,7 +115,7 @@
             </FXVBox>
             <FXVBox flexHeight="100%" flexWidth="50% -5">
                 <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
-                           style="-fx-text-fill: mediumturquoise">
+                         style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -141,7 +141,7 @@
                     </VBox.margin>
                 </CharsetComboBox>
                 <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
-                           style="-fx-text-fill: mediumturquoise">
+                         style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>
                         <Insets left="30" top="30"/>
                     </VBox.margin>
@@ -185,8 +185,10 @@
             <FXHBox flexWidth="100%" flexHeight="70%">
                 <SftpFileTransportTableView fx:id="sourceFile" flexWidth="50%" flexHeight="100%">
                     <columns>
-                        <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                        <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName" text="%base.name"/>
+                        <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
+                                       valueName="icon"/>
+                        <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName"
+                                       text="%base.name"/>
                         <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
                         <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
                         <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>
@@ -197,8 +199,10 @@
                 </SftpFileTransportTableView>
                 <SftpFileTransportTableView fx:id="targetFile" flexWidth="50%" flexHeight="100%">
                     <columns>
-                        <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                        <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName" text="%base.name"/>
+                        <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
+                                       valueName="icon"/>
+                        <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName"
+                                       text="%base.name"/>
                         <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
                         <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
                         <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>

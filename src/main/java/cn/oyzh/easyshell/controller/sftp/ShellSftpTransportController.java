@@ -297,28 +297,22 @@ public class ShellSftpTransportController extends StageController {
                 }
             }
             // 初始化文件树
-            this.initFileTableView();
-            this.step1.disappear();
-            this.step2.display();
+            this.sourceFile.setClient(this.sourceClient);
+            this.targetFile.setClient(this.sourceClient);
+            StageManager.showMask(() -> {
+                try {
+                    this.sourceFile._loadFile();
+                    this.targetFile._loadFile();
+                    this.step1.disappear();
+                    this.step2.display();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
     }
-
-    private void initFileTableView() {
-        StageManager.showMask(() -> {
-            try {
-                this.sourceFile.setClient(this.sourceClient);
-                this.targetFile.setClient(this.sourceClient);
-                this.sourceFile._loadFile();
-                this.targetFile._loadFile();
-            }catch (Exception ex){
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-
-    }
-
 }
