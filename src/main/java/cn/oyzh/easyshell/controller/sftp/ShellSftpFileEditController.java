@@ -5,6 +5,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
@@ -24,6 +25,7 @@ import cn.oyzh.fx.rich.richtextfx.data.RichDataType;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
+import com.sun.javafx.reflect.FieldUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -157,13 +159,20 @@ public class ShellSftpFileEditController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getWindowProp("file");
         this.client = this.getWindowProp("client");
-        this.destPath = SystemUtil.tmpdir() + "/" + UUIDUtil.uuidSimple();
+        // 目标路径
+        this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "_" + this.file.getFileName();
         this.init();
 
         // 初始化字体设置
         this.data.setFontSize(this.setting.getEditorFontSize());
         this.data.setFontFamily(this.setting.getEditorFontFamily());
         this.data.setFontWeight2(this.setting.getEditorFontWeight());
+    }
+
+    @Override
+    public void onWindowHiding(WindowEvent event) {
+        super.onWindowHiding(event);
+        FileUtil.del(this.destPath);
     }
 
     @Override
