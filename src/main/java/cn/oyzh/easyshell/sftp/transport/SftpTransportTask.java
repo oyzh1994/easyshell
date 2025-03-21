@@ -37,7 +37,7 @@ public class SftpTransportTask {
     private final Thread executeThread;
 
     /**
-     * 上传监听器
+     * 传输监听器
      */
     private final Queue<SftpTransportMonitor> monitors = new ConcurrentLinkedQueue<>();
 
@@ -55,7 +55,7 @@ public class SftpTransportTask {
     }
 
     /**
-     * 上传状态
+     * 传输状态
      */
     private SftpTransportStatus status;
 
@@ -154,7 +154,7 @@ public class SftpTransportTask {
     }
 
     /**
-     * 执行上传
+     * 执行传输
      */
     private void doTransport() {
         while (!this.isEmpty()) {
@@ -184,7 +184,7 @@ public class SftpTransportTask {
                 } else {
                     ex.printStackTrace();
                     JulLog.warn("file:{} transport failed", monitor.getLocalFileName(), ex);
-                    this.uploadFailed(monitor, ex);
+                    this.transportFailed(monitor, ex);
                 }
             }
             ThreadUtil.sleep(5);
@@ -192,42 +192,42 @@ public class SftpTransportTask {
     }
 
     /**
-     * 上传完成
+     * 传输完成
      *
      * @param monitor 监听器
      */
-    public void uploadEnded(SftpTransportMonitor monitor) {
+    public void transportEnded(SftpTransportMonitor monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
     /**
-     * 上传失败
+     * 传输失败
      *
      * @param monitor   监听器
      * @param exception 异常
      */
-    public void uploadFailed(SftpTransportMonitor monitor, Exception exception) {
+    public void transportFailed(SftpTransportMonitor monitor, Exception exception) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
     /**
-     * 上传取消
+     * 传输取消
      *
      * @param monitor 监听器
      */
-    public void uploadCanceled(SftpTransportMonitor monitor) {
+    public void transportCanceled(SftpTransportMonitor monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
     /**
-     * 上传变化
+     * 传输变化
      *
      * @param monitor 监听器
      */
-    public void uploadChanged(SftpTransportMonitor monitor) {
+    public void transportChanged(SftpTransportMonitor monitor) {
         this.currentFileProperty.set(monitor.getLocalFilePath());
         this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
         JulLog.debug("current file:{}", this.currentFileProperty.get());
@@ -264,7 +264,7 @@ public class SftpTransportTask {
         this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
         JulLog.debug("total size:{}", this.totalSizeProperty.get());
         JulLog.debug("total count:{}", this.totalCountProperty.get());
-        this.manager.updateUploading();
+//        this.manager.updateUploading();
     }
 
     /**
@@ -304,6 +304,13 @@ public class SftpTransportTask {
     }
 
     /**
+     * 移除
+     */
+    public void remove() {
+        this.manager.remove(this);
+    }
+
+    /**
      * 是否已完成
      *
      * @return 结果
@@ -313,7 +320,7 @@ public class SftpTransportTask {
     }
 
     /**
-     * 是否上传中
+     * 是否传输中
      *
      * @return 结果
      */

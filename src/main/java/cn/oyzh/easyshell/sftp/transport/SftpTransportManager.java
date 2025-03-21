@@ -19,8 +19,9 @@ public class SftpTransportManager {
 
     private final List<SftpTransportTask> tasks = new CopyOnWriteArrayList<>();
 
-    public void createMonitor(SftpFile localFile, String remoteFile, ShellSftp localSftp,ShellSftp remoteSftp)   {
-        this.tasks.add(new SftpTransportTask(this, localFile, remoteFile, localSftp,remoteSftp));
+    public void createMonitor(SftpFile localFile, String remoteFile, ShellSftp localSftp, ShellSftp remoteSftp) {
+        this.tasks.add(new SftpTransportTask(this, localFile, remoteFile, localSftp, remoteSftp));
+        this.callback();
     }
 
     /**
@@ -30,23 +31,12 @@ public class SftpTransportManager {
         for (SftpTransportTask task : this.tasks) {
             task.cancel();
         }
-        ThreadUtil.start(this.tasks::clear, 500);
     }
 
-    private final BooleanProperty transportingProperty = new SimpleBooleanProperty(false);
+    private Runnable taskChangedCallback;
 
-    public BooleanProperty transportingProperty() {
-        return this.transportingProperty;
-    }
-
-    public void updateUploading() {
-        for (SftpTransportTask task : this.tasks) {
-            if (task.isTransporting() || task.isInPreparation()) {
-                this.transportingProperty.set(true);
-                return;
-            }
-        }
-        this.transportingProperty.set(false);
+    public void setTaskChangedCallback(Runnable taskChangedCallback) {
+        this.taskChangedCallback = taskChangedCallback;
     }
 
     public List<SftpTransportTask> getTasks() {
@@ -56,9 +46,16 @@ public class SftpTransportManager {
     public void remove(SftpTransportTask task) {
         task.cancel();
         this.tasks.remove(task);
+        this.callback();
     }
 
     public void cancel(SftpTransportTask task) {
         task.cancel();
+    }
+
+    protected void callback() {
+        if (this.taskChangedCallback != null) {
+            this.taskChangedCallback.run();
+        }
     }
 }

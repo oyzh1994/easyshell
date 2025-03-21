@@ -9,22 +9,27 @@ import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
+import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -113,14 +118,36 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private FXLabel targetHost;
 
+    /**
+     * 来源文件
+     */
     @FXML
     private SftpTransportFileTableView sourceFile;
 
+    /**
+     * 目标文件
+     */
     @FXML
     private SftpTransportFileTableView targetFile;
 
+    /**
+     * 文件传输表
+     */
     @FXML
     private SftpTransportTaskTableView transportTable;
+
+    @FXML
+    private ClearableTextField filterSourceFile;
+
+    @FXML
+    private ClearableTextField filterTargetFile;
+
+    @FXML
+    private FXToggleSwitch hiddenSourceFile;
+
+    @FXML
+    private FXToggleSwitch hiddenTargetFile;
+
 
     /**
      * 来源客户端
@@ -147,7 +174,7 @@ public class ShellSftpTransportController extends StageController {
                 String remoteFile = SftpUtil.concat(remotePath, file.getName());
                 this.sourceClient.transport(file, remoteFile, this.targetClient.openSftp());
             }
-            this.initTransportTable();
+//            this.initTransportTable();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -169,19 +196,22 @@ public class ShellSftpTransportController extends StageController {
                 String remoteFile = SftpUtil.concat(remotePath, file.getName());
                 this.targetClient.transport(file, remoteFile, this.sourceClient.openSftp());
             }
-            this.initTransportTable();
+//            this.initTransportTable();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
     }
 
+    /**
+     * 初始化传输表
+     */
     private void initTransportTable() {
         SftpTransportManager manager1 = this.sourceClient.getTransportManager();
         SftpTransportManager manager2 = this.targetClient.getTransportManager();
-        this.transportTable.addItem(manager1.getTasks());
-        this.transportTable.addItem(manager2.getTasks());
-        this.transportTable.refresh();
+        List<SftpTransportTask> tasks = new ArrayList<>(manager1.getTasks());
+        tasks.addAll(manager2.getTasks());
+        this.transportTable.setItem(tasks);
     }
 
     @Override
@@ -225,6 +255,28 @@ public class ShellSftpTransportController extends StageController {
                 this.targetCharsetName.setText(newValue);
             } else {
                 this.targetCharsetName.clear();
+            }
+        });
+        // 隐藏文件处理
+        this.hiddenSourceFile.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.sourceFile.setShowHiddenFile(newValue);
+            }
+        });
+        this.hiddenTargetFile.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.targetFile.setShowHiddenFile(newValue);
+            }
+        });
+        // 过滤内容处理
+        this.filterSourceFile.addTextChangeListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.sourceFile.setFilterText(newValue);
+            }
+        });
+        this.filterTargetFile.addTextChangeListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.targetFile.setFilterText(newValue);
             }
         });
     }
@@ -310,23 +362,45 @@ public class ShellSftpTransportController extends StageController {
                     return;
                 }
             }
-            // 初始化文件树
-            this.sourceFile.setClient(this.sourceClient);
-            this.targetFile.setClient(this.targetClient);
-            StageManager.showMask(() -> {
-                try {
-                    this.sourceFile.loadFile();
-                    this.targetFile.loadFile();
-                    this.step1.disappear();
-                    this.step2.display();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
-                }
-            });
+            // 显示页面
+            this.step1.disappear();
+            this.step2.display();
+            // 初始化表格
+            this.initFileTable();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
     }
+
+    protected void initFileTable() {
+        // 设置客户端
+        this.sourceFile.setClient(this.sourceClient);
+        this.targetFile.setClient(this.targetClient);
+        // 注册监听器
+        this.targetClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
+        this.sourceClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
+        // 初始化文件树
+        StageManager.showMask(() -> {
+            try {
+                this.sourceFile.loadFile();
+                this.targetFile.loadFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void refreshSourceFile() {
+        this.sourceFile.loadFile();
+    }
+
+    @FXML
+    private void refreshTargetFile() {
+        this.targetFile.loadFile();
+    }
+
+
 }
