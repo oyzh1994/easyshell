@@ -26,6 +26,22 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
     }
 
     /**
+     * 是否已完成
+     *
+     * @return 结果
+     */
+    public boolean isCompleted() {
+        if (!this.tasks.isEmpty()) {
+            for (T task : tasks) {
+                if (!task.isCompleted()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * 移除单个任务
      *
      * @param task 任务

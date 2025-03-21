@@ -61,6 +61,15 @@ public class ShellSftp extends ShellChannel {
         }
     }
 
+    public void cd(String path) throws SftpException {
+        try {
+            this.setUsing(true);
+            this.getChannel().cd(path);
+        } finally {
+            this.setUsing(false);
+        }
+    }
+
     public List<SftpFile> lsFileNormal(String path) throws SftpException {
         List<SftpFile> files = this.lsFile(path);
         return files.stream().filter(SftpFile::isNormal).collect(Collectors.toList());
@@ -71,6 +80,7 @@ public class ShellSftp extends ShellChannel {
     }
 
     public List<SftpFile> lsFile(String path, ShellClient client) throws SftpException {
+        this.cd(path);
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
@@ -90,7 +100,6 @@ public class ShellSftp extends ShellChannel {
         try {
             this.setUsing(true);
             this.getChannel().rm(path);
-//            this.deleteManager.deleteDeleted(path);
         } finally {
             this.setUsing(false);
         }
@@ -100,7 +109,6 @@ public class ShellSftp extends ShellChannel {
         try {
             this.setUsing(true);
             this.getChannel().rmdir(path);
-//            this.deleteManager.deleteDeleted(path);
         } finally {
             this.setUsing(false);
         }

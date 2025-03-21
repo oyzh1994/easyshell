@@ -139,6 +139,9 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
 
     @Override
     protected void updateTotal() {
+        if (this.monitors.isEmpty()) {
+            this.updateStatus(SftpUploadStatus.FINISHED);
+        }
         super.updateTotal();
         this.manager.updateUploading();
     }
@@ -155,8 +158,18 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
     }
 
     @Override
+    public boolean isFailed() {
+        return this.status == SftpUploadStatus.FAILED;
+    }
+
+    @Override
     public boolean isFinished() {
         return this.status == SftpUploadStatus.FINISHED;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.status == SftpUploadStatus.CANCELED;
     }
 
     @Override

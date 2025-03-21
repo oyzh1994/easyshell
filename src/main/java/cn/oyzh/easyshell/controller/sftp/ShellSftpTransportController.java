@@ -136,18 +136,29 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private SftpTransportTaskTableView transportTable;
 
+    /**
+     * 过滤来源文件
+     */
     @FXML
     private ClearableTextField filterSourceFile;
 
+    /**
+     * 过滤目标文件
+     */
     @FXML
     private ClearableTextField filterTargetFile;
 
+    /**
+     * 隐藏来源文件
+     */
     @FXML
     private FXToggleSwitch hiddenSourceFile;
 
+    /**
+     * 隐藏目标文件
+     */
     @FXML
     private FXToggleSwitch hiddenTargetFile;
-
 
     /**
      * 来源客户端
@@ -174,7 +185,6 @@ public class ShellSftpTransportController extends StageController {
                 String remoteFile = SftpUtil.concat(remotePath, file.getName());
                 this.sourceClient.transport(file, remoteFile, this.targetClient.openSftp());
             }
-//            this.initTransportTable();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -379,11 +389,22 @@ public class ShellSftpTransportController extends StageController {
         // 设置客户端
         this.sourceFile.setClient(this.sourceClient);
         this.targetFile.setClient(this.targetClient);
+        // 传输处理器
+        SftpTransportManager manager1 = this.sourceClient.getTransportManager();
+        SftpTransportManager manager2 = this.targetClient.getTransportManager();
         // 注册监听器
-        this.sourceClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
-        this.sourceClient.getTransportManager().setMonitorEndedCallback(e -> this.refreshTargetFile());
-        this.targetClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
-        this.targetClient.getTransportManager().setMonitorEndedCallback(e -> this.refreshSourceFile());
+        manager1.setTaskChangedCallback(this::initTransportTable);
+        manager1.setMonitorEndedCallback(e -> {
+            if (manager1.isCompleted()) {
+                this.refreshTargetFile();
+            }
+        });
+        manager2.setTaskChangedCallback(this::initTransportTable);
+        manager2.setMonitorEndedCallback(e -> {
+            if (manager2.isCompleted()) {
+                this.refreshSourceFile();
+            }
+        });
         // 初始化文件树
         StageManager.showMask(() -> {
             try {

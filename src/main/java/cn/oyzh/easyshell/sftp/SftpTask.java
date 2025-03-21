@@ -157,11 +157,25 @@ public abstract class SftpTask<M extends SftpMonitor> {
     public abstract void remove();
 
     /**
-     * 是否已完成
+     * 是否已失败
+     *
+     * @return 结果
+     */
+    public abstract boolean isFailed();
+
+    /**
+     * 是否已结束
      *
      * @return 结果
      */
     public abstract boolean isFinished();
+
+    /**
+     * 是否已取消
+     *
+     * @return 结果
+     */
+    public abstract boolean isCancelled();
 
     /**
      * 是否准备中
@@ -169,6 +183,15 @@ public abstract class SftpTask<M extends SftpMonitor> {
      * @return 结果
      */
     public abstract boolean isInPreparation();
+
+    /**
+     * 是否已完成
+     *
+     * @return 结果
+     */
+    public boolean isCompleted() {
+        return this.isCancelled() || this.isFailed() || this.isFinished();
+    }
 
     /**
      * 更新总信息

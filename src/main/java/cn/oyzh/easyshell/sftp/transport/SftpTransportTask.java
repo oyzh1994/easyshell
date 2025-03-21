@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadStatus;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 
@@ -90,7 +89,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                 // 远程文件夹
                 String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                localSftp.mkdirRecursive(remoteDir);
+                remoteSftp.mkdirRecursive(remoteDir);
                 // 添加文件
                 for (SftpFile file : files) {
                     if (file.isDirectory()) {
@@ -146,6 +145,14 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     }
 
     @Override
+    protected void updateTotal() {
+        if (this.monitors.isEmpty()) {
+            this.updateStatus(SftpTransportStatus.FINISHED);
+        }
+        super.updateTotal();
+    }
+
+    @Override
     public void cancel() {
         super.cancel();
         this.updateStatus(SftpTransportStatus.CANCELED);
@@ -157,8 +164,18 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     }
 
     @Override
+    public boolean isFailed() {
+        return this.status == SftpTransportStatus.FAILED;
+    }
+
+    @Override
     public boolean isFinished() {
         return this.status == SftpTransportStatus.FINISHED;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.status == SftpTransportStatus.CANCELED;
     }
 
     @Override

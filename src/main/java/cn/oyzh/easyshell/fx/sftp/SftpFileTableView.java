@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -68,7 +69,8 @@ public class SftpFileTableView extends SftpFileBaseTableView {
         }
         ThreadUtil.start(() -> {
             try {
-                for (SftpFile file : files) {
+                List<SftpFile> sftpFiles = new CopyOnWriteArrayList<>(files);
+                for (SftpFile file : sftpFiles) {
                     if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
                         continue;
                     }

@@ -5,23 +5,15 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadMonitor;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 import java.io.File;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author oyzh
@@ -143,6 +135,9 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 
     @Override
     protected void updateTotal() {
+        if (this.monitors.isEmpty()) {
+            this.updateStatus(SftpDownloadStatus.FINISHED);
+        }
         super.updateTotal();
         this.manager.updateDownloading();
     }
@@ -159,8 +154,18 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     }
 
     @Override
+    public boolean isFailed() {
+        return this.status == SftpDownloadStatus.FAILED;
+    }
+
+    @Override
     public boolean isFinished() {
         return this.status == SftpDownloadStatus.FINISHED;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.status == SftpDownloadStatus.CANCELED;
     }
 
     @Override
