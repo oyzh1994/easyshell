@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.SftpFileTransportTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
@@ -20,6 +21,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -50,12 +52,6 @@ public class ShellSftpTransportController extends StageController {
      */
     @FXML
     private FXVBox step2;
-
-    /**
-     * 第三步
-     */
-    @FXML
-    private FXVBox step3;
 
     /**
      * 来源信息名称
@@ -117,6 +113,12 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private FXLabel targetHost;
 
+    @FXML
+    private SftpFileTransportTableView sourceFile;
+
+    @FXML
+    private SftpFileTransportTableView targetFile;
+
     /**
      * 来源客户端
      */
@@ -126,36 +128,6 @@ public class ShellSftpTransportController extends StageController {
      * 目标客户端
      */
     private ShellClient targetClient;
-
-    /**
-     * 结束传输按钮
-     */
-    @FXML
-    private FXButton stopTransportBtn;
-
-    /**
-     * 传输状态
-     */
-    @FXML
-    private FXLabel transportStatus;
-
-    /**
-     * 传输消息
-     */
-    @FXML
-    private MsgTextArea transportMsg;
-
-    /**
-     * 节点存在时处理策略
-     */
-    @FXML
-    private FXToggleGroup existsPolicy;
-
-    /**
-     * 适用过滤配置
-     */
-    @FXML
-    private FXCheckBox applyFilter;
 
     /**
      * 传输操作任务
@@ -174,9 +146,6 @@ public class ShellSftpTransportController extends StageController {
     private void doTransport() {
         // 重置参数
         this.counter.reset();
-        // 清理信息
-        this.transportMsg.clear();
-        this.transportStatus.clear();
     }
 
     /**
@@ -251,30 +220,11 @@ public class ShellSftpTransportController extends StageController {
         this.stopTransport();
     }
 
-    /**
-     * 更新状态
-     *
-     * @param extraMsg 额外信息
-     */
-    private void updateStatus(String extraMsg) {
-        if (extraMsg != null) {
-            this.counter.setExtraMsg(extraMsg);
-        }
-        FXUtil.runLater(() -> this.transportStatus.setText(this.counter.unknownFormat()));
-    }
 
     @Override
     public String getViewTitle() {
         return I18nHelper.transportTitle();
     }
-
-    // @Override
-    // public void onStageInitialize(StageAdapter stage) {
-    //     super.onStageInitialize(stage);
-    //     this.step1.managedBindVisible();
-    //     this.step2.managedBindVisible();
-    //     this.step3.managedBindVisible();
-    // }
 
     @FXML
     private void showStep1() {
@@ -287,29 +237,30 @@ public class ShellSftpTransportController extends StageController {
         try {
             ShellConnect sourceInfo = this.sourceInfo.getSelectedItem();
             ShellConnect targetInfo = this.targetInfo.getSelectedItem();
+            // 检查来源连接
             if (sourceInfo == null) {
                 this.sourceInfo.requestFocus();
                 MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
                 return;
             }
+            // 检查目标连接
             if (targetInfo == null) {
                 this.targetInfo.requestFocus();
                 MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
                 return;
             }
 
+            // 检查连接是否一样
             if (sourceInfo.compare(targetInfo)) {
                 this.sourceInfo.requestFocus();
                 MessageBox.warn(I18nHelper.connectionsCannotBeTheSame());
                 return;
             }
 
-            this.getStage().appendTitle("===" + I18nHelper.connectIng() + "===");
-            this.getStage().disable();
-
+            // 来源连接初始化
             if (this.sourceClient == null || this.sourceClient.isClosed()) {
                 DownLatch latch = DownLatch.of();
-                ThreadUtil.start(() -> {
+                StageManager.showMask(() -> {
                     try {
                         this.sourceClient = ShellClientUtil.newClient(sourceInfo);
                         this.sourceClient.start(2500);
@@ -326,17 +277,18 @@ public class ShellSftpTransportController extends StageController {
                 }
             }
 
+            // 目标连接初始化
             if (this.targetClient == null || this.targetClient.isClosed()) {
                 DownLatch latch = DownLatch.of();
-                ThreadUtil.start(() -> {
+                StageManager.showMask(() -> {
                     try {
                         this.targetClient = ShellClientUtil.newClient(targetInfo);
-                        this.targetClient.start(2500);
+                        this.targetClient.start();
                     } finally {
                         latch.countDown();
                     }
                 });
-                if (!latch.await(3000) || !this.targetClient.isConnected()) {
+                if (!latch.await(5000) || !this.targetClient.isConnected()) {
                     this.targetClient.close();
                     this.targetClient = null;
                     this.targetInfo.requestFocus();
@@ -344,19 +296,29 @@ public class ShellSftpTransportController extends StageController {
                     return;
                 }
             }
-
+            // 初始化文件树
+            this.initFileTableView();
             this.step1.disappear();
-            this.step3.disappear();
             this.step2.display();
-        } finally {
-            this.getStage().restoreTitle();
-            this.getStage().enable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 
-    @FXML
-    private void showStep3() {
-        this.step2.disappear();
-        this.step3.display();
+    private void initFileTableView() {
+        StageManager.showMask(() -> {
+            try {
+                this.sourceFile.setClient(this.sourceClient);
+                this.targetFile.setClient(this.sourceClient);
+                this.sourceFile._loadFile();
+                this.targetFile._loadFile();
+            }catch (Exception ex){
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+
     }
+
 }

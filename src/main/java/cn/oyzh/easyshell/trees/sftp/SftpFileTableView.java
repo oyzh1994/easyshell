@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -241,8 +242,8 @@ public class SftpFileTableView extends FXTableView<SftpFile> {
                     .sorted(Comparator.comparingInt(SftpFile::getOrder))
                     .collect(Collectors.toList());
         }
-        return files;
-//        return new CopyOnWriteArrayList<>(files);
+//        return files;
+        return new CopyOnWriteArrayList<>(files);
     }
 
     public void deleteFile() {

@@ -287,7 +287,7 @@ public class ShellClient {
     /**
      * 开始连接客户端
      */
-    public void start() throws Exception {
+    public void start() {
         this.start(this.connectTimeout());
     }
 
