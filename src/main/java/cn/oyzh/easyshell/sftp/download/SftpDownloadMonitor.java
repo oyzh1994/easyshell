@@ -80,6 +80,11 @@ public class SftpDownloadMonitor extends SftpMonitor {
         return this.localFile.length();
     }
 
+    @Override
+    public String getFilePath() {
+        return this.remoteFile.getFilePath();
+    }
+
     public long getRemoteLength() {
         return this.remoteFile.size();
     }
@@ -92,5 +97,10 @@ public class SftpDownloadMonitor extends SftpMonitor {
             this.cancelled = true;
             ThreadUtil.start(this::end, 50);
         }
+    }
+
+    @Override
+    public long getTotal() {
+        return this.getRemoteLength();
     }
 }

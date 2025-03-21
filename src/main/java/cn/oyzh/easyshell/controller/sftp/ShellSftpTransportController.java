@@ -213,10 +213,10 @@ public class ShellSftpTransportController extends StageController {
     private void doTransport(List<SftpFile> files, String remotePath, ShellClient sourceClient, ShellClient targetClient) {
         for (SftpFile file : files) {
             if (file.isDirectory()) {
-                sourceClient.transport(file, remotePath, targetClient.openSftp());
+                sourceClient.transport(file, remotePath, targetClient);
             } else {
                 String remoteFile = SftpUtil.concat(remotePath, file.getName());
-                sourceClient.transport(file, remoteFile, targetClient.openSftp());
+                sourceClient.transport(file, remoteFile, targetClient);
             }
         }
     }

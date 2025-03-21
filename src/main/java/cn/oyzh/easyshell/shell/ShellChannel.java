@@ -17,29 +17,25 @@ public class ShellChannel implements AutoCloseable {
 
     private Channel channel;
 
-    public ShellChannel(Channel channel) {
-        this.channel = channel;
-    }
-
     public Channel getChannel() {
         return this.channel;
     }
 
-    public void run() {
-
+    public ShellChannel(Channel channel) {
+        this.channel = channel;
     }
 
     @Override
     public void close() {
         if (this.channel != null) {
-            TaskManager.startTimeout(() -> {
+//            TaskManager.startTimeout(() -> {
                 try {
                     this.channel.disconnect();
                     this.channel = null;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }, 1000);
+//            }, 1000);
         }
     }
 
@@ -53,7 +49,6 @@ public class ShellChannel implements AutoCloseable {
 
     public void connect() throws JSchException {
         if (!this.isConnected()) {
-
             this.channel.connect();
         }
     }

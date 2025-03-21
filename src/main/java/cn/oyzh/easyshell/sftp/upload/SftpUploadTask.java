@@ -58,6 +58,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                 this.updateStatus(SftpUploadStatus.IN_PREPARATION);
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
                 this.updateStatus(SftpUploadStatus.UPLOADING);
+                this.calcTotalSize();
                 this.updateTotal();
                 this.doUpload();
             } catch (Exception ex) {

@@ -2,8 +2,7 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
+import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -84,10 +83,24 @@ public abstract class SftpTask<M extends SftpMonitor> {
      * @param monitor 监听器
      */
     public void changed(M monitor) {
-        this.currentFileProperty.set(monitor.getLocalFilePath());
-        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
+//        this.updateTotal();
+        this.currentFileProperty.set(monitor.getFilePath());
+        if (this.progress != null) {
+            this.calcCurrentSize();
+            this.progress.setValue(this.currentSize, this.totalSize);
+        }
+//        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
         JulLog.debug("current file:{}", this.currentFileProperty.get());
-        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
+//        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
+    }
+
+    protected FXProgressTextBar progress;
+
+    public FXProgressTextBar getProgress() {
+        if (this.progress == null) {
+            this.progress = new FXProgressTextBar();
+        }
+        return progress;
     }
 
     /**
@@ -99,10 +112,18 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return statusProperty;
     }
 
-    /**
-     * 总大小属性
-     */
-    private final StringProperty totalSizeProperty = new SimpleStringProperty();
+//    /**
+//     * 总大小属性
+//     */
+//    private final StringProperty totalSizeProperty = new SimpleStringProperty();
+//
+//    public StringProperty totalSizeProperty() {
+//        return totalSizeProperty;
+//    }
+
+    private long totalSize;
+
+    private long currentSize;
 
     public IntegerProperty totalCountProperty() {
         return totalCountProperty;
@@ -113,10 +134,6 @@ public abstract class SftpTask<M extends SftpMonitor> {
      */
     private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
 
-    public StringProperty totalSizeProperty() {
-        return totalSizeProperty;
-    }
-
     /**
      * 当前文件属性
      */
@@ -125,15 +142,15 @@ public abstract class SftpTask<M extends SftpMonitor> {
     public StringProperty currentFileProperty() {
         return currentFileProperty;
     }
-
-    /**
-     * 当前进度属性
-     */
-    private final StringProperty currentProgressProperty = new SimpleStringProperty();
-
-    public StringProperty currentProgressProperty() {
-        return currentProgressProperty;
-    }
+//
+//    /**
+//     * 当前进度属性
+//     */
+//    private final StringProperty currentProgressProperty = new SimpleStringProperty();
+//
+//    public StringProperty currentProgressProperty() {
+//        return currentProgressProperty;
+//    }
 
     /**
      * 取消
@@ -193,17 +210,29 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return this.isCancelled() || this.isFailed() || this.isFinished();
     }
 
+    protected void calcTotalSize() {
+        long totalSize = 0;
+        for (M monitor : this.monitors) {
+            totalSize += monitor.getTotal();
+        }
+        this.totalSize = totalSize;
+    }
+
+    protected void calcCurrentSize() {
+        long currentSize = 0;
+        for (M monitor : this.monitors) {
+            currentSize += monitor.getTotal() - monitor.getCurrent();
+        }
+        this.currentSize = this.totalSize - currentSize;
+    }
+
     /**
      * 更新总信息
      */
     protected void updateTotal() {
         this.totalCountProperty.set(this.monitors.size());
-        long totalSize = 0;
-        for (M monitor : this.monitors) {
-            totalSize += monitor.getLocalFileLength();
-        }
-        this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
-        JulLog.debug("total size:{}", this.totalSizeProperty.get());
+//        this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
+//        JulLog.debug("total size:{}", this.totalSizeProperty.get());
         JulLog.debug("total count:{}", this.totalCountProperty.get());
     }
 }

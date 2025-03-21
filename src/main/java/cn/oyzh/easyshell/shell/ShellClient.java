@@ -486,8 +486,8 @@ public class ShellClient {
         this.sftpDownloadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
-    public void transport(SftpFile localFile, String remoteFile, ShellSftp remoteSftp) {
-        this.transportManager.createMonitor(localFile, remoteFile, this.openSftp(), remoteSftp);
+    public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {
+        this.transportManager.createMonitor(localFile, remoteFile, this, remoteClient);
     }
 
     public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {

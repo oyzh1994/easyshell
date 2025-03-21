@@ -54,6 +54,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                 this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
                 this.addMonitorRecursive(localFile, remoteFile, sftp);
                 this.updateStatus(SftpDownloadStatus.DOWNLOADING);
+                this.calcTotalSize();
                 this.updateTotal();
                 this.doDownload();
             } catch (Exception ex) {

@@ -83,4 +83,14 @@ public class SftpUploadMonitor extends SftpMonitor {
             ThreadUtil.start(this::end, 50);
         }
     }
+
+    @Override
+    public long getTotal() {
+        return this.getLocalFileLength();
+    }
+
+    @Override
+    public String getFilePath() {
+        return this.getLocalFilePath();
+    }
 }

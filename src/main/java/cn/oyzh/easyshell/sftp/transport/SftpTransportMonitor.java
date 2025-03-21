@@ -93,4 +93,9 @@ public class SftpTransportMonitor extends SftpMonitor {
     public long getTotal() {
         return this.getLocalFileLength();
     }
+
+    @Override
+    public String getFilePath() {
+        return this.localFile.getFilePath();
+    }
 }

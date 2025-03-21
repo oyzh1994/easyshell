@@ -51,4 +51,6 @@ public abstract class SftpMonitor implements SftpProgressMonitor {
     public abstract String getLocalFilePath() ;
 
     public abstract long getLocalFileLength() ;
+
+    public abstract String getFilePath() ;
 }
