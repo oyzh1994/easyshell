@@ -9,33 +9,36 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox prefWidth="1200" prefHeight="650" styleClass="root"
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<FXPane prefWidth="1200" prefHeight="650" styleClass="root"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController">
-    <FXHBox prefHeight="30">
-        <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelTask">
-            <FXHBox.margin>
-                <Insets left="10" top="10"/>
-            </FXHBox.margin>
-        </CancelSVGGlyph>
-        <DeleteSVGGlyph sizeStr="15" onMousePrimaryClicked="#removeTask">
-            <FXHBox.margin>
-                <Insets left="10" top="8"/>
-            </FXHBox.margin>
-        </DeleteSVGGlyph>
-    </FXHBox>
-    <SftpDownloadTaskTableView fx:id="downloadTable" flexHeight="100% - 30" flexWidth="100% - 20">
+    <!--    <FXVBox flexWidth="100%" flexHeight="100%">-->
+    <!--        <FXHBox prefHeight="30">-->
+    <!--            <CancelSVGGlyph sizeStr="12" onMousePrimaryClicked="#cancelTask">-->
+    <!--                <FXHBox.margin>-->
+    <!--                    <Insets left="10" top="10"/>-->
+    <!--                </FXHBox.margin>-->
+    <!--            </CancelSVGGlyph>-->
+    <!--            <DeleteSVGGlyph sizeStr="15" onMousePrimaryClicked="#removeTask">-->
+    <!--                <FXHBox.margin>-->
+    <!--                    <Insets left="10" top="8"/>-->
+    <!--                </FXHBox.margin>-->
+    <!--            </DeleteSVGGlyph>-->
+    <!--        </FXHBox>-->
+    <SftpDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100% - 20">
         <columns>
-            <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
+            <FXTableColumn prefWidth="300" valueName="destPath" text="%base.destPath"/>
             <FXTableColumn flexWidth="100% - 650" valueName="currentFile" text="%base.currentFile"/>
             <FXTableColumn prefWidth="140" valueName="progress" text="%base.currentProgress"/>
-<!--            <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>-->
+            <!--            <FXTableColumn prefWidth="100" valueName="totalSize" text="%base.remainingSize"/>-->
             <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>
             <FXTableColumn prefWidth="100" valueName="status" text="%base.status"/>
         </columns>
-        <FXVBox.margin>
-            <Insets left="10"/>
-        </FXVBox.margin>
+<!--        <FXVBox.margin>-->
+<!--            <Insets left="10"/>-->
+<!--        </FXVBox.margin>-->
     </SftpDownloadTaskTableView>
-</FXVBox>
+    <!--    </FXVBox>-->
 
+</FXPane>

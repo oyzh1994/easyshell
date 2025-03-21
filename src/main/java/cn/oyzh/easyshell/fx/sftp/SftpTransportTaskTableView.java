@@ -1,15 +1,12 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
-import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +17,12 @@ import java.util.List;
  * @since 2025-03-21
  */
 public class SftpTransportTaskTableView extends FXTableView<SftpTransportTask> {
+
+    @Override
+    protected void initTableView() {
+        super.initTableView();
+        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
 
     @Override
     protected void initEvenListener() {
@@ -33,17 +36,29 @@ public class SftpTransportTaskTableView extends FXTableView<SftpTransportTask> {
                 this.clearContextMenu();
             }
         });
+        // 初始化鼠标多选辅助类
+        TableViewMouseSelectHelper.install(this);
     }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        SftpTransportTask task = this.getSelectedItem();
-        if (task == null) {
+        List<SftpTransportTask> tasks = this.getSelectedItems();
+        if (CollectionUtil.isEmpty(tasks)) {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem cancelTransport = MenuItemHelper.cancelTransport("12", task::cancel);
-        MenuItem removeTransport = MenuItemHelper.removeTransport("12", task::remove);
+        MenuItem cancelTransport = MenuItemHelper.cancelTransport("12", ()->{
+            for (SftpTransportTask task : tasks) {
+                task.cancel();
+            }
+            this.removeItem(tasks);
+        });
+        MenuItem removeTransport = MenuItemHelper.removeTransport("12", ()->{
+            for (SftpTransportTask task : tasks) {
+                task.remove();
+            }
+            this.removeItem(tasks);
+        });
         menuItems.add(cancelTransport);
         menuItems.add(removeTransport);
         return menuItems;

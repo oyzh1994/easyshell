@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.fx.sftp.SftpFileTableView;
+import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -88,7 +88,7 @@ public class ShellSftpTabController extends SubTabController {
     private FXToggleSwitch hiddenFile;
 
     @FXML
-    private SftpFileTableView fileTable;
+    private SftpFileConnectTableView fileTable;
 
     @FXML
     private ClearableTextField filterFile;

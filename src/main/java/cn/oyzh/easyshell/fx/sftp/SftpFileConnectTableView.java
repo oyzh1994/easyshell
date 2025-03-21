@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.file.FileNameUtil;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -28,14 +27,13 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 /**
  * @author oyzh
  * @since 2025-03-05
  */
-public class SftpFileTableView extends SftpFileBaseTableView {
+public class SftpFileConnectTableView extends SftpFileBaseTableView {
 
     @Override
     public void loadFile() {
@@ -49,18 +47,21 @@ public class SftpFileTableView extends SftpFileBaseTableView {
         });
     }
 
-
     @Override
     public List<FXMenuItem> getMenuItems() {
         List<SftpFile> files = this.getSelectedItems();
         if (CollectionUtil.isEmpty(files)) {
             return Collections.emptyList();
         }
-        // 发现操作中的文件，则跳过
-        for (SftpFile file : files) {
-            if (file.isWaiting()) {
-                return Collections.emptyList();
-            }
+//        // 发现操作中的文件，则跳过
+//        for (SftpFile file : files) {
+//            if (file.isWaiting()) {
+//                return Collections.emptyList();
+//            }
+//        }
+        // 检查是否包含无效文件
+        if (this.checkInvalid(files)) {
+            return Collections.emptyList();
         }
         // 获取父级菜单
         List<FXMenuItem> menuItems = super.getMenuItems();
@@ -100,6 +101,9 @@ public class SftpFileTableView extends SftpFileBaseTableView {
      * @param file 文件
      */
     public void editFile(SftpFile file) {
+        if (super.checkInvalid(file)) {
+            return;
+        }
         if (!file.isFile()) {
             return;
         }

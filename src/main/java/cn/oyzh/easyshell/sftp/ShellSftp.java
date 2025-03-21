@@ -271,4 +271,11 @@ public class ShellSftp extends ShellChannel {
     public void get(String src, String dest) throws SftpException {
         this.get(src, dest, null, ChannelSftp.OVERWRITE);
     }
+
+    @Override
+    public void close() {
+        this.setHolding(true);
+        super.close();
+        this.setHolding(false);
+    }
 }

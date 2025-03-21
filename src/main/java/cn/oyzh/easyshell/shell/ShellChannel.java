@@ -28,14 +28,15 @@ public class ShellChannel implements AutoCloseable {
     @Override
     public void close() {
         if (this.channel != null) {
-//            TaskManager.startTimeout(() -> {
+            Channel channelTemp = this.channel;
+            this.channel = null;
+            TaskManager.startTimeout(() -> {
                 try {
-                    this.channel.disconnect();
-                    this.channel = null;
+                    channelTemp.disconnect();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-//            }, 1000);
+            }, 100);
         }
     }
 

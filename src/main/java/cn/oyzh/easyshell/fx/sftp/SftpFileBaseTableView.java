@@ -160,12 +160,10 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             List<SftpFile> files = this.doFilter(this.files);
             // 当前在显示的列表
             List<SftpFile> items = this.getItems();
-
             // 删除列表
             List<SftpFile> delList = new ArrayList<>();
             // 新增列表
             List<SftpFile> addList = new ArrayList<>();
-
             // 遍历已有集合，如果不在待显示列表，则删除，否则更新
             for (SftpFile file : items) {
                 Optional<SftpFile> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
@@ -231,17 +229,34 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         return new CopyOnWriteArrayList<>(files);
     }
 
+    protected boolean checkInvalid(List<SftpFile> files) {
+        for (SftpFile file : files) {
+            if (this.checkInvalid(file)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean checkInvalid(SftpFile file) {
+        return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
+    }
+
     @Override
     public List<FXMenuItem> getMenuItems() {
         List<SftpFile> files = this.getSelectedItems();
         if (CollectionUtil.isEmpty(files)) {
             return Collections.emptyList();
         }
-        // 发现操作中的文件，则跳过
-        for (SftpFile file : files) {
-            if (file.isWaiting()) {
-                return Collections.emptyList();
-            }
+//        // 发现操作中的文件，则跳过
+//        for (SftpFile file : files) {
+//            if (file.isWaiting()) {
+//                return Collections.emptyList();
+//            }
+//        }
+        // 检查是否包含无效文件
+        if (this.checkInvalid(files)) {
+            return Collections.emptyList();
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
         if (files.size() == 1) {
@@ -295,7 +310,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         return "/".equals(this.currPath());
     }
 
-    public void intoDir(SftpFile file)   {
+    public void intoDir(SftpFile file) {
         if (file.isReturnDirectory()) {
             this.returnDir();
             return;
@@ -324,7 +339,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     }
 
     public void deleteFile(List<SftpFile> files) {
-        if (CollectionUtil.isEmpty(files)) {
+        if (CollectionUtil.isEmpty(files) || this.checkInvalid(files)) {
             return;
         }
         if (files.size() == 1) {
@@ -361,6 +376,9 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
 
     public void renameFile(SftpFile file) {
         try {
+            if (this.checkInvalid(file)) {
+                return;
+            }
             String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
             String name = file.getFileName();
             if (newName == null || StringUtil.equals(name, newName)) {

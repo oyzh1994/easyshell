@@ -85,8 +85,8 @@ public abstract class SftpTask<M extends SftpMonitor> {
     public void changed(M monitor) {
 //        this.updateTotal();
         this.currentFileProperty.set(monitor.getFilePath());
+        this.calcCurrentSize();
         if (this.progress != null) {
-            this.calcCurrentSize();
             this.progress.setValue(this.currentSize, this.totalSize);
         }
 //        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
@@ -99,6 +99,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
     public FXProgressTextBar getProgress() {
         if (this.progress == null) {
             this.progress = new FXProgressTextBar();
+            this.progress.setValue(this.currentSize, this.totalSize);
         }
         return progress;
     }
