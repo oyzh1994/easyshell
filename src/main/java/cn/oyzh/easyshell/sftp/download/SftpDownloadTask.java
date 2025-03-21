@@ -9,6 +9,7 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadMonitor;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -174,5 +175,29 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      */
     public boolean isDownloading() {
         return this.status == SftpDownloadStatus.DOWNLOADING;
+    }
+
+    @Override
+    public void ended(SftpDownloadMonitor monitor) {
+        super.ended(monitor);
+        this.manager.monitorEnded(monitor);
+    }
+
+    @Override
+    public void failed(SftpDownloadMonitor monitor, Throwable exception) {
+        super.failed(monitor, exception);
+        this.manager.monitorFailed(monitor, exception);
+    }
+
+    @Override
+    public void canceled(SftpDownloadMonitor monitor) {
+        super.canceled(monitor);
+        this.manager.monitorCanceled(monitor);
+    }
+
+    @Override
+    public void changed(SftpDownloadMonitor monitor) {
+        super.changed(monitor);
+        this.manager.monitorChanged(monitor);
     }
 }

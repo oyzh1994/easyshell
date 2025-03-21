@@ -3,28 +3,18 @@ package cn.oyzh.easyshell.sftp.transport;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author oyzh
@@ -171,5 +161,29 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
 
     public boolean isTransporting() {
         return this.status == SftpTransportStatus.TRANSPORT_ING;
+    }
+
+    @Override
+    public void ended(SftpTransportMonitor monitor) {
+        super.ended(monitor);
+        this.manager.monitorEnded(monitor);
+    }
+
+    @Override
+    public void failed(SftpTransportMonitor monitor, Throwable exception) {
+        super.failed(monitor, exception);
+        this.manager.monitorFailed(monitor,exception);
+    }
+
+    @Override
+    public void canceled(SftpTransportMonitor monitor) {
+        super.canceled(monitor);
+        this.manager.monitorCanceled(monitor);
+    }
+
+    @Override
+    public void changed(SftpTransportMonitor monitor) {
+        super.changed(monitor);
+        this.manager.monitorChanged(monitor);
     }
 }

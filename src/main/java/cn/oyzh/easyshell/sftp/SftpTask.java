@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.sftp;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -57,18 +58,18 @@ public abstract class SftpTask<M extends SftpMonitor> {
     }
 
     /**
-     * 传输失败
+     * 执行失败
      *
      * @param monitor   监听器
      * @param exception 异常
      */
-    public void failed(M monitor, Exception exception) {
+    public void failed(M monitor, Throwable exception) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
 
     /**
-     * 传输取消
+     * 执行取消
      *
      * @param monitor 监听器
      */
@@ -78,7 +79,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
     }
 
     /**
-     * 传输变化
+     * 执行变化
      *
      * @param monitor 监听器
      */

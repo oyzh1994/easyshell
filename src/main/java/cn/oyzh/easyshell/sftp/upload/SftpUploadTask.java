@@ -172,4 +172,28 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
     public boolean isUploading() {
         return this.status == SftpUploadStatus.UPLOADING;
     }
+
+    @Override
+    public void ended(SftpUploadMonitor monitor) {
+        super.ended(monitor);
+        this.manager.monitorEnded(monitor);
+    }
+
+    @Override
+    public void failed(SftpUploadMonitor monitor, Throwable exception) {
+        super.failed(monitor, exception);
+        this.manager.monitorFailed(monitor, exception);
+    }
+
+    @Override
+    public void canceled(SftpUploadMonitor monitor) {
+        super.canceled(monitor);
+        this.manager.monitorCanceled(monitor);
+    }
+
+    @Override
+    public void changed(SftpUploadMonitor monitor) {
+        super.changed(monitor);
+        this.manager.monitorChanged(monitor);
+    }
 }
