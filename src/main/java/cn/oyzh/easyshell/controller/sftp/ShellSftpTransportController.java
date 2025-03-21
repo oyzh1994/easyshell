@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.common.thread.DownLatch;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.SftpFileTransportTableView;
-import cn.oyzh.easyshell.fx.SftpTransportTableView;
+import cn.oyzh.easyshell.fx.SftpTransportFileTableView;
+import cn.oyzh.easyshell.fx.SftpTransportTaskTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
@@ -13,17 +12,11 @@ import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
-import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
-import cn.oyzh.fx.plus.controls.button.FXButton;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -121,13 +114,13 @@ public class ShellSftpTransportController extends StageController {
     private FXLabel targetHost;
 
     @FXML
-    private SftpFileTransportTableView sourceFile;
+    private SftpTransportFileTableView sourceFile;
 
     @FXML
-    private SftpFileTransportTableView targetFile;
+    private SftpTransportFileTableView targetFile;
 
     @FXML
-    private SftpTransportTableView transportTable;
+    private SftpTransportTaskTableView transportTable;
 
     /**
      * 来源客户端

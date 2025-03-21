@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.SftpFileTransportTableView?>
-<?import cn.oyzh.easyshell.fx.SftpTransportTableView?>
+<?import cn.oyzh.easyshell.fx.SftpTransportFileTableView?>
+<?import cn.oyzh.easyshell.fx.SftpTransportTaskTableView?>
 <?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -179,7 +179,7 @@
     <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexHeight="100%" flexWidth="100%">
             <FXHBox flexWidth="100%" flexHeight="70%">
-                <SftpFileTransportTableView fx:id="sourceFile" flexWidth="50% - 30" flexHeight="100%">
+                <SftpTransportFileTableView fx:id="sourceFile" flexWidth="50% - 30" flexHeight="100%">
                     <columns>
                         <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                        valueName="icon"/>
@@ -192,7 +192,7 @@
                         <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
                         <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                     </columns>
-                </SftpFileTransportTableView>
+                </SftpTransportFileTableView>
                 <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">
                     <TransportRightSVGGlyph onMousePrimaryClicked="#doTransport1">
                         <FXVBox.margin>
@@ -205,7 +205,7 @@
                         </FXVBox.margin>
                     </TransportLeftSVGGlyph>
                 </FXVBox>
-                <SftpFileTransportTableView fx:id="targetFile" flexWidth="50% - 30" flexHeight="100%">
+                <SftpTransportFileTableView fx:id="targetFile" flexWidth="50% - 30" flexHeight="100%">
                     <columns>
                         <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                        valueName="icon"/>
@@ -218,9 +218,9 @@
                         <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
                         <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                     </columns>
-                </SftpFileTransportTableView>
+                </SftpTransportFileTableView>
             </FXHBox>
-            <SftpTransportTableView flexWidth="100%" fx:id="transportTable" flexHeight="30%">
+            <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" flexHeight="30%">
                 <columns>
                     <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
                     <FXTableColumn flexWidth="100% - 650" valueName="currentFile" text="%base.currentFile"/>
@@ -229,7 +229,7 @@
                     <FXTableColumn prefWidth="100" valueName="totalCount" text="%base.remainingCount"/>
                     <FXTableColumn prefWidth="100" valueName="status" text="%base.status"/>
                 </columns>
-            </SftpTransportTableView>
+            </SftpTransportTaskTableView>
         </FXVBox>
     </FXVBox>
 </FXVBox>
