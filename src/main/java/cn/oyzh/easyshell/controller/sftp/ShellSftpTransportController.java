@@ -196,7 +196,6 @@ public class ShellSftpTransportController extends StageController {
                 String remoteFile = SftpUtil.concat(remotePath, file.getName());
                 this.targetClient.transport(file, remoteFile, this.sourceClient.openSftp());
             }
-//            this.initTransportTable();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -373,13 +372,18 @@ public class ShellSftpTransportController extends StageController {
         }
     }
 
+    /**
+     * 初始化文件表格
+     */
     protected void initFileTable() {
         // 设置客户端
         this.sourceFile.setClient(this.sourceClient);
         this.targetFile.setClient(this.targetClient);
         // 注册监听器
-        this.targetClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
         this.sourceClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
+        this.sourceClient.getTransportManager().setMonitorEndedCallback(e -> this.refreshTargetFile());
+        this.targetClient.getTransportManager().setTaskChangedCallback(this::initTransportTable);
+        this.targetClient.getTransportManager().setMonitorEndedCallback(e -> this.refreshSourceFile());
         // 初始化文件树
         StageManager.showMask(() -> {
             try {
@@ -394,13 +398,11 @@ public class ShellSftpTransportController extends StageController {
 
     @FXML
     private void refreshSourceFile() {
-        this.sourceFile.loadFile();
+        StageManager.showMask(() -> this.sourceFile.loadFile());
     }
 
     @FXML
     private void refreshTargetFile() {
-        this.targetFile.loadFile();
+        StageManager.showMask(() -> this.targetFile.loadFile());
     }
-
-
 }

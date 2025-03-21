@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadStatus;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 
@@ -142,6 +143,12 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
             }
             ThreadUtil.sleep(5);
         }
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        this.updateStatus(SftpTransportStatus.CANCELED);
     }
 
     @Override
