@@ -235,11 +235,11 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         return true;
     }
 
-    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
-        this.client.setDeleteEndedCallback(callback);
-    }
-
-    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
-        this.client.setDeleteDeletedCallback(callback);
-    }
+//    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
+//        this.client.setDeleteEndedCallback(callback);
+//    }
+//
+//    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
+//        this.client.setDeleteDeletedCallback(callback);
+//    }
 }

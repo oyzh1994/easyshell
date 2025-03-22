@@ -1,21 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
 
-<?import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<FXPane prefWidth="1200" prefHeight="650" styleClass="root"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController">
-    <SftpUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100% - 20">
-        <columns>
-            <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>
-            <FXTableColumn flexWidth="100% - 750" valueName="currentFile" text="%base.currentFile"/>
-            <FXTableColumn prefWidth="140" valueName="progress" text="%base.currentProgress"/>
-            <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
-            <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>
-            <FXTableColumn prefWidth="90" valueName="fileSize" text="%base.fileSize"/>
-            <FXTableColumn prefWidth="90" valueName="status" text="%base.status"/>
-        </columns>
-    </SftpUploadTaskTableView>
-</FXPane>
+<!--<?import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView?>-->
+<!--<?import cn.oyzh.fx.plus.controls.pane.FXPane?>-->
+<!--<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>-->
+<!--<FXPane prefWidth="1200" prefHeight="650" styleClass="root"-->
+<!--        xmlns:fx="http://javafx.com/fxml/1"-->
+<!--        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController">-->
+<!--    <SftpUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100% - 20">-->
+<!--        <columns>-->
+<!--            <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>-->
+<!--            <FXTableColumn flexWidth="100% - 750" valueName="currentFile" text="%base.currentFile"/>-->
+<!--            <FXTableColumn prefWidth="140" valueName="progress" text="%base.currentProgress"/>-->
+<!--            <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>-->
+<!--            <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>-->
+<!--            <FXTableColumn prefWidth="90" valueName="fileSize" text="%base.fileSize"/>-->
+<!--            <FXTableColumn prefWidth="90" valueName="status" text="%base.status"/>-->
+<!--        </columns>-->
+<!--    </SftpUploadTaskTableView>-->
+<!--</FXPane>-->
 

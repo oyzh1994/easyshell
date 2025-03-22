@@ -50,6 +50,7 @@ import cn.oyzh.i18n.I18nManager;
 import javafx.stage.Stage;
 
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 
 /**
@@ -356,6 +357,14 @@ public class EasyShellApp extends FXApplication implements EventListener {
      */
     @EventSubscribe
     private void transportData(ShellShowTransportFileEvent event) {
+        // 判断窗口是否存在
+        List<StageAdapter> list = StageManager.listStage(ShellSftpTransportController.class);
+        for (StageAdapter adapter : list) {
+            if (adapter.getProp("sourceConnect") == event.data()) {
+                adapter.toFront();
+                return;
+            }
+        }
         FXUtil.runLater(() -> {
             try {
                 StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class, null);

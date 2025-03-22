@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.ShellConst;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpDownloadController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpUploadController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpManageController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
@@ -75,11 +75,17 @@ public class ShellSftpTabController extends SubTabController {
 //    @FXML
 //    private FXHBox uploadBox;
 
-    @FXML
-    private SVGGlyph uploadBox;
+//    @FXML
+//    private SVGGlyph uploadBox;
+//
+//    @FXML
+//    private SVGGlyph downloadBox;
 
+    /**
+     * 文件管理组件
+     */
     @FXML
-    private SVGGlyph downloadBox;
+    private SVGGlyph sftpBox;
 
     @FXML
     private SVGGlyph copyFilePath;
@@ -102,8 +108,8 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private SVGGlyph uploadFile;
 
-    @FXML
-    private SVGGlyph refreshFile;
+//    @FXML
+//    private SVGGlyph refreshFile;
 
     @FXML
     private SVGGlyph uploadDir;
@@ -114,12 +120,48 @@ public class ShellSftpTabController extends SubTabController {
 
     private boolean initialized = false;
 
+//    /**
+//     * 上传表
+//     */
+//    @FXML
+//    private SftpUploadTaskTableView uploadTable;
+//
+//    /**
+//     * 下载表
+//     */
+//    @FXML
+//    private SftpDownloadTaskTableView downloadTable;
+//
+//    /**
+//     * 上传管理器
+//     */
+//    private SftpUploadManager uploadManager;
+//
+//    /**
+//     * 下载管理器
+//     */
+//    private SftpDownloadManager downloadManager;
+//
+//    protected void initUploadTable() {
+//        this.uploadTable.setItem(this.uploadManager.getTasks());
+//        this.uploadTable.display();
+//    }
+//
+//    protected void initDownloadTable() {
+//        this.downloadTable.setItem(this.downloadManager.getTasks());
+//        this.downloadTable.display();
+//    }
+
     private void init() {
         if (this.initialized) {
             return;
         }
         this.initialized = true;
         this.fileTable.setClient(this.client());
+//        this.uploadManager = this.client().getSftpUploadManager();
+//        this.downloadManager = this.client().getSftpDownloadManager();
+//        this.uploadManager.setTaskChangedCallback(() -> this.initUploadTable());
+//        this.downloadManager.setTaskChangedCallback(() -> this.initDownloadTable());
 //        // 下载
 //        this.fileTable.setUploadEndedCallback(this::updateUploadInfo);
 //        this.fileTable.setUploadFailedCallback(this::updateUploadInfo);
@@ -135,37 +177,37 @@ public class ShellSftpTabController extends SubTabController {
 //        this.fileTable.setDownloadInPreparationCallback(this::updateDownloadInfo);
 
         // 删除
-        this.fileTable.setDeleteEndedCallback(this::updateDeleteInfo);
-        this.fileTable.setDeleteDeletedCallback(this::updateDeleteInfo);
+        this.client().getDeleteManager().setDeleteEndedCallback(this::updateDeleteInfo);
+        this.client().getDeleteManager().setDeleteDeletedCallback(this::updateDeleteInfo);
 
         // 显示动画
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
         this.fileTable.loadFile();
         // 监听上传中属性
-        this.client().uploadingProperty().addListener((observable, oldValue, newValue) -> {
+        this.client().getUploadManager().uploadingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 ColorAdjust colorAdjust = new ColorAdjust();
                 colorAdjust.setHue(0.5);
                 colorAdjust.setContrast(0.5);
                 colorAdjust.setBrightness(0.5);
                 colorAdjust.setSaturation(0.5);
-                this.uploadBox.setEffect(colorAdjust);
+                this.sftpBox.setEffect(colorAdjust);
             } else {
                 this.fileTable.loadFile();
-                this.uploadBox.setEffect(null);
+                this.sftpBox.setEffect(null);
             }
         });
         // 监听删除中属性
-        this.client().downloadingProperty().addListener((observable, oldValue, newValue) -> {
+        this.client().getDownloadManager().downloadingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 ColorAdjust colorAdjust = new ColorAdjust();
                 colorAdjust.setHue(0.5);
                 colorAdjust.setContrast(0.5);
                 colorAdjust.setBrightness(0.5);
                 colorAdjust.setSaturation(0.5);
-                this.downloadBox.setEffect(colorAdjust);
+                this.sftpBox.setEffect(colorAdjust);
             } else {
-                this.downloadBox.setEffect(null);
+                this.sftpBox.setEffect(null);
             }
         });
 //        // 监听下载中属性
@@ -224,6 +266,7 @@ public class ShellSftpTabController extends SubTabController {
                     MessageBox.exception(ex);
                 }
             });
+
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -583,22 +626,37 @@ public class ShellSftpTabController extends SubTabController {
         this.fileTable.parentAutosize();
     }
 
-    @FXML
-    private void showUploadBox() {
-        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class, null);
-        adapter.setProp("client", this.client());
-        adapter.display();
-    }
-
-    @FXML
-    private void showDownloadBox() {
-        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class, null);
-        adapter.setProp("client", this.client());
-        adapter.display();
-    }
+//    @FXML
+//    private void showUploadBox() {
+//        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class, null);
+//        adapter.setProp("client", this.client());
+//        adapter.display();
+//    }
+//
+//    @FXML
+//    private void showDownloadBox() {
+//        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class, null);
+//        adapter.setProp("client", this.client());
+//        adapter.display();
+//    }
 
     @EventSubscribe
     private void onFileSaved(ShellSftpFileSavedEvent event) {
         this.fileTable.refresh();
+    }
+
+    @FXML
+    public void showSftpBox() {
+        // 判断窗口是否存在
+        List<StageAdapter> list = StageManager.listStage(ShellSftpManageController.class);
+        for (StageAdapter adapter : list) {
+            if (adapter.getProp("client") == this.client()) {
+                adapter.toFront();
+                return;
+            }
+        }
+        StageAdapter adapter = StageManager.parseStage(ShellSftpManageController.class, null);
+        adapter.setProp("client", this.client());
+        adapter.display();
     }
 }

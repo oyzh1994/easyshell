@@ -26,6 +26,15 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
     }
 
     /**
+     * 是否为空
+     *
+     * @return 结果
+     */
+    public boolean isEmpty() {
+        return this.tasks.isEmpty();
+    }
+
+    /**
      * 是否已完成
      *
      * @return 结果

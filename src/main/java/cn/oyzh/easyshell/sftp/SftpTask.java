@@ -127,10 +127,13 @@ public abstract class SftpTask<M extends SftpMonitor> {
     /**
      * 文件大小、显示用
      */
-    private String fileSize;
+    private StringProperty fileSizeProperty;
 
-    public String getFileSize() {
-        return fileSize;
+    public StringProperty fileSizeProperty() {
+        if (this.fileSizeProperty == null) {
+            this.fileSizeProperty = new SimpleStringProperty(NumberUtil.formatSize(this.totalSize, 2));
+        }
+        return this.fileSizeProperty;
     }
 
     /**
@@ -234,7 +237,9 @@ public abstract class SftpTask<M extends SftpMonitor> {
         // 开始时间
         this.startTime = System.currentTimeMillis();
         // 文件大小
-        this.fileSize = NumberUtil.formatSize(totalSize, 2);
+        if (this.fileSizeProperty != null) {
+            this.fileSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
+        }
     }
 
     protected void calcCurrentSize() {

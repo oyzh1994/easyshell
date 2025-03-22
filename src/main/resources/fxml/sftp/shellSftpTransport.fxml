@@ -73,16 +73,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellConnectComboBox>
-                    <FXLabel text="%base.charset" realHeight="30">
-                        <VBox.margin>
-                            <Insets left="30" top="15"/>
-                        </VBox.margin>
-                    </FXLabel>
-                    <CharsetComboBox fx:id="sourceCharset" realHeight="30" flexWidth="100% - 50">
-                        <VBox.margin>
-                            <Insets left="30" top="5"/>
-                        </VBox.margin>
-                    </CharsetComboBox>
+<!--                    <FXLabel text="%base.charset" realHeight="30">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30" top="15"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <CharsetComboBox fx:id="sourceCharset" realHeight="30" flexWidth="100% - 50">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30" top="5"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </CharsetComboBox>-->
                     <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                              style="-fx-text-fill: yellowgreen">
                         <VBox.margin>
@@ -101,18 +101,18 @@
                             </HBox.margin>
                         </FXLabel>
                     </FXHBox>
-                    <FXHBox realHeight="25" flexWidth="100%">
-                        <FXLabel text="%base.charset" realWidth="80">
-                            <HBox.margin>
-                                <Insets left="30" top="5"/>
-                            </HBox.margin>
-                        </FXLabel>
-                        <FXLabel fx:id="sourceCharsetName" flexWidth="100% - 100">
-                            <HBox.margin>
-                                <Insets left="10" top="5"/>
-                            </HBox.margin>
-                        </FXLabel>
-                    </FXHBox>
+<!--                    <FXHBox realHeight="25" flexWidth="100%">-->
+<!--                        <FXLabel text="%base.charset" realWidth="80">-->
+<!--                            <HBox.margin>-->
+<!--                                <Insets left="30" top="5"/>-->
+<!--                            </HBox.margin>-->
+<!--                        </FXLabel>-->
+<!--                        <FXLabel fx:id="sourceCharsetName" flexWidth="100% - 100">-->
+<!--                            <HBox.margin>-->
+<!--                                <Insets left="10" top="5"/>-->
+<!--                            </HBox.margin>-->
+<!--                        </FXLabel>-->
+<!--                    </FXHBox>-->
                 </FXVBox>
                 <FXVBox flexHeight="100%" flexWidth="50% -5">
                     <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
@@ -131,16 +131,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellConnectComboBox>
-                    <FXLabel text="%base.charset" realHeight="30">
-                        <VBox.margin>
-                            <Insets left="30" top="15"/>
-                        </VBox.margin>
-                    </FXLabel>
-                    <CharsetComboBox fx:id="targetCharset" realHeight="30" flexWidth="100% - 50">
-                        <VBox.margin>
-                            <Insets left="30" top="5"/>
-                        </VBox.margin>
-                    </CharsetComboBox>
+<!--                    <FXLabel text="%base.charset" realHeight="30">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30" top="15"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </FXLabel>-->
+<!--                    <CharsetComboBox fx:id="targetCharset" realHeight="30" flexWidth="100% - 50">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30" top="5"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </CharsetComboBox>-->
                     <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                              style="-fx-text-fill: mediumturquoise">
                         <VBox.margin>
@@ -159,18 +159,18 @@
                             </HBox.margin>
                         </FXLabel>
                     </FXHBox>
-                    <FXHBox realHeight="25" flexWidth="100%">
-                        <FXLabel text="%base.charset" realWidth="80">
-                            <HBox.margin>
-                                <Insets left="30" top="5"/>
-                            </HBox.margin>
-                        </FXLabel>
-                        <FXLabel fx:id="targetCharsetName" flexWidth="100% - 100">
-                            <HBox.margin>
-                                <Insets left="10" top="5"/>
-                            </HBox.margin>
-                        </FXLabel>
-                    </FXHBox>
+<!--                    <FXHBox realHeight="25" flexWidth="100%">-->
+<!--                        <FXLabel text="%base.charset" realWidth="80">-->
+<!--                            <HBox.margin>-->
+<!--                                <Insets left="30" top="5"/>-->
+<!--                            </HBox.margin>-->
+<!--                        </FXLabel>-->
+<!--                        <FXLabel fx:id="targetCharsetName" flexWidth="100% - 100">-->
+<!--                            <HBox.margin>-->
+<!--                                <Insets left="10" top="5"/>-->
+<!--                            </HBox.margin>-->
+<!--                        </FXLabel>-->
+<!--                    </FXHBox>-->
                 </FXVBox>
             </FXHBox>
             <FXHBox flexWidth="100%" realHeight="50">
@@ -198,9 +198,9 @@
                                 <Insets left="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
-                        <RefreshSVGGlyph sizeStr="20" onMousePrimaryClicked="#refreshSourceFile">
+                        <RefreshSVGGlyph sizeStr="16" onMousePrimaryClicked="#refreshSourceFile">
                             <FXHBox.margin>
-                                <Insets left="5" top="5"/>
+                                <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
                     </FXHBox>
@@ -249,10 +249,10 @@
                                 <Insets left="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
-                        <RefreshSVGGlyph sizeStr="20" fx:id="refreshTargetFile"
+                        <RefreshSVGGlyph sizeStr="16" fx:id="refreshTargetFile"
                                          onMousePrimaryClicked="#refreshTargetFile">
                             <FXHBox.margin>
-                                <Insets left="5" top="5"/>
+                                <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
                     </FXHBox>
@@ -279,7 +279,7 @@
                 <columns>
                     <FXTableColumn prefWidth="100" valueName="remoteName" text="%base.targetConnect"/>
                     <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>
-                    <FXTableColumn flexWidth="100% - 850" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn flexWidth="100% - 852" valueName="currentFile" text="%base.currentFile"/>
                     <FXTableColumn prefWidth="140" valueName="progress" text="%base.currentProgress"/>
                     <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                     <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>

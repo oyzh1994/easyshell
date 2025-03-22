@@ -14,7 +14,6 @@ import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -76,17 +75,17 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private ShellConnectComboBox sourceInfo;
 
-    /**
-     * 来源字符集
-     */
-    @FXML
-    private CharsetComboBox sourceCharset;
-
-    /**
-     * 来源字符集名称
-     */
-    @FXML
-    private FXLabel sourceCharsetName;
+//    /**
+//     * 来源字符集
+//     */
+//    @FXML
+//    private CharsetComboBox sourceCharset;
+//
+//    /**
+//     * 来源字符集名称
+//     */
+//    @FXML
+//    private FXLabel sourceCharsetName;
 
     /**
      * 目标信息
@@ -94,17 +93,17 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private ShellConnectComboBox targetInfo;
 
-    /**
-     * 目标字符集
-     */
-    @FXML
-    private CharsetComboBox targetCharset;
-
-    /**
-     * 目标字符集名称
-     */
-    @FXML
-    private FXLabel targetCharsetName;
+//    /**
+//     * 目标字符集
+//     */
+//    @FXML
+//    private CharsetComboBox targetCharset;
+//
+//    /**
+//     * 目标字符集名称
+//     */
+//    @FXML
+//    private FXLabel targetCharsetName;
 
     /**
      * 来源主机
@@ -277,20 +276,20 @@ public class ShellSftpTransportController extends StageController {
                 this.targetClient = null;
             }
         });
-        this.sourceCharset.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.sourceCharsetName.setText(newValue);
-            } else {
-                this.sourceCharsetName.clear();
-            }
-        });
-        this.targetCharset.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.targetCharsetName.setText(newValue);
-            } else {
-                this.targetCharsetName.clear();
-            }
-        });
+//        this.sourceCharset.selectedItemChanged((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                this.sourceCharsetName.setText(newValue);
+//            } else {
+//                this.sourceCharsetName.clear();
+//            }
+//        });
+//        this.targetCharset.selectedItemChanged((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                this.targetCharsetName.setText(newValue);
+//            } else {
+//                this.targetCharsetName.clear();
+//            }
+//        });
         // 隐藏文件处理
         this.hiddenSourceFile.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -450,8 +449,8 @@ public class ShellSftpTransportController extends StageController {
             }
         });
         // 删除处理器
-        SftpDeleteManager deleteManager1 = this.sourceClient.getSftpDeleteManager();
-        SftpDeleteManager deleteManager2 = this.targetClient.getSftpDeleteManager();
+        SftpDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
+        SftpDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
         // 注册监听器
         deleteManager1.setDeleteDeletedCallback(f -> this.sourceFile.fileDeleted(f.getRemoteFile()));
         deleteManager2.setDeleteDeletedCallback(f -> this.targetFile.fileDeleted(f.getRemoteFile()));
@@ -475,5 +474,40 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private void refreshTargetFile() {
         StageManager.showMask(() -> this.targetFile.loadFile());
+    }
+
+    @Override
+    public void onWindowCloseRequest(WindowEvent event) {
+        // 检查任务是否执行中
+        SftpTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
+        if (manager1 != null
+                && !manager1.isCompleted()
+                && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
+            event.consume();
+            return;
+        }
+        // 检查任务是否执行中
+        SftpTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
+        if (manager2 != null
+                && !manager2.isCompleted()
+                && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
+            event.consume();
+            return;
+        }
+        // 取消任务
+        if (manager1 != null) {
+            manager1.cancel();
+        }
+        if (manager2 != null) {
+            manager2.cancel();
+        }
+        // 关闭连接
+        if (this.sourceClient != null) {
+            this.sourceClient.close();
+        }
+        if (this.targetClient != null) {
+            this.targetClient.close();
+        }
+        super.onWindowCloseRequest(event);
     }
 }

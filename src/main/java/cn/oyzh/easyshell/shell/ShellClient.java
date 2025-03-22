@@ -392,22 +392,22 @@ public class ShellClient {
 
     private final ShellSftpManager sftpManager = new ShellSftpManager();
 
-    private final SftpUploadManager sftpUploadManager = new SftpUploadManager();
+    private final SftpUploadManager uploadManager = new SftpUploadManager();
 
-    public SftpUploadManager getSftpUploadManager() {
-        return sftpUploadManager;
+    public SftpUploadManager getUploadManager() {
+        return uploadManager;
     }
 
-    private final SftpDeleteManager sftpDeleteManager = new SftpDeleteManager();
+    private final SftpDeleteManager deleteManager = new SftpDeleteManager();
 
-    public SftpDeleteManager getSftpDeleteManager() {
-        return sftpDeleteManager;
+    public SftpDeleteManager getDeleteManager() {
+        return deleteManager;
     }
 
-    private final SftpDownloadManager sftpDownloadManager = new SftpDownloadManager();
+    private final SftpDownloadManager downloadManager = new SftpDownloadManager();
 
-    public SftpDownloadManager getSftpDownloadManager() {
-        return sftpDownloadManager;
+    public SftpDownloadManager getDownloadManager() {
+        return downloadManager;
     }
 
     private final SftpTransportManager transportManager = new SftpTransportManager();
@@ -479,24 +479,24 @@ public class ShellClient {
     }
 
     public void upload(File localFile, String remoteFile) throws SftpException {
-        this.sftpUploadManager.createMonitor(localFile, remoteFile, this.openSftp());
+        this.uploadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
     public void download(File localFile, SftpFile remoteFile) throws SftpException {
-        this.sftpDownloadManager.createMonitor(localFile, remoteFile, this.openSftp());
+        this.downloadManager.createMonitor(localFile, remoteFile, this.openSftp());
     }
 
     public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {
         this.transportManager.createMonitor(localFile, remoteFile, this, remoteClient);
     }
-
-    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
-        this.sftpDeleteManager.setDeleteEndedCallback(callback);
-    }
-
-    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
-        this.sftpDeleteManager.setDeleteDeletedCallback(callback);
-    }
+//
+//    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
+//        this.deleteManager.setDeleteEndedCallback(callback);
+//    }
+//
+//    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
+//        this.deleteManager.setDeleteDeletedCallback(callback);
+//    }
 
     private DockerExec dockerExec;
 
@@ -525,19 +525,19 @@ public class ShellClient {
         return this.shellExec;
     }
 
-    public BooleanProperty uploadingProperty() {
-        return this.sftpUploadManager.uploadingProperty();
-    }
-
-    public BooleanProperty deletingProperty() {
-        return this.sftpDeleteManager.deletingProperty();
-    }
-
-    public BooleanProperty downloadingProperty() {
-        return this.sftpDownloadManager.downloadingProperty();
-    }
+//    public BooleanProperty uploadingProperty() {
+//        return this.sftpUploadManager.uploadingProperty();
+//    }
+//
+//    public BooleanProperty deletingProperty() {
+//        return this.sftpDeleteManager.deletingProperty();
+//    }
+//
+//    public BooleanProperty downloadingProperty() {
+//        return this.sftpDownloadManager.downloadingProperty();
+//    }
 
     public void delete(SftpFile file) {
-        this.sftpDeleteManager.deleteFile(file, this.openSftp());
+        this.deleteManager.deleteFile(file, this.openSftp());
     }
 }
