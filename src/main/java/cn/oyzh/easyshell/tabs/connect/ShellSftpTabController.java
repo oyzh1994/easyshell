@@ -2,10 +2,11 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpManageController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.fx.svg.glyph.FileSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -24,6 +25,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -182,7 +184,7 @@ public class ShellSftpTabController extends SubTabController {
 
         // 显示动画
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
-        this.fileTable.loadFile();
+//        this.fileTable.loadFile();
         // 监听上传中属性
         this.client().getUploadManager().uploadingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -267,6 +269,10 @@ public class ShellSftpTabController extends SubTabController {
                 }
             });
 
+            // 文件下载回调
+            this.fileTable.setDownloadFileCallback((files) -> {
+                AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -349,7 +355,9 @@ public class ShellSftpTabController extends SubTabController {
     private void uploadFile() {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-            this.fileTable.uploadFile(files);
+            if (this.fileTable.uploadFile(files)) {
+                AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -360,7 +368,9 @@ public class ShellSftpTabController extends SubTabController {
     private void uploadFolder() {
         try {
             File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
-            this.fileTable.uploadFile(file);
+            if (this.fileTable.uploadFile(file)) {
+                AnimationUtil.move(new FolderSVGGlyph("150"), this.fileTable, this.sftpBox);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

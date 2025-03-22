@@ -172,6 +172,19 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         this.refreshFile();
     }
 
+    /**
+     * 下载回调
+     */
+    private Consumer<List<SftpFile>> downloadFileCallback;
+
+    public Consumer<List<SftpFile>> getDownloadFileCallback() {
+        return downloadFileCallback;
+    }
+
+    public void setDownloadFileCallback(Consumer<List<SftpFile>> downloadFileCallback) {
+        this.downloadFileCallback = downloadFileCallback;
+    }
+
     public boolean downloadFile(List<SftpFile> files) {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
@@ -197,7 +210,11 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
                     MessageBox.exception(ex);
                 }
             }
-            MessageBox.okToast(ShellI18nHelper.fileTip16());
+//            MessageBox.okToast(ShellI18nHelper.fileTip16());
+            // 下载回调触发
+            if (this.downloadFileCallback != null) {
+                this.downloadFileCallback.accept(files);
+            }
             return true;
         }
         return false;
@@ -231,7 +248,7 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
                 MessageBox.exception(ex);
             }
         }
-        MessageBox.okToast(ShellI18nHelper.fileTip15());
+//        MessageBox.okToast(ShellI18nHelper.fileTip15());
         return true;
     }
 

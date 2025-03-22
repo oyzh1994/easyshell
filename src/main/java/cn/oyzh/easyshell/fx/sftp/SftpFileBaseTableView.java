@@ -86,10 +86,10 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     private boolean showHiddenFile = false;
 
     public void setShowHiddenFile(boolean showHiddenFile) {
-        if (showHiddenFile != this.showHiddenFile) {
+//        if (showHiddenFile != this.showHiddenFile) {
             this.showHiddenFile = showHiddenFile;
             this.refreshFile();
-        }
+//        }
     }
 
     public ShellClient getClient() {

@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
+import cn.oyzh.easyshell.fx.svg.glyph.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
@@ -23,6 +24,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeHeightResizer;
+import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -193,6 +195,7 @@ public class ShellSftpTransportController extends StageController {
             }
             String remotePath = this.targetFile.getCurrPath();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
+            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.targetFile);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -209,8 +212,15 @@ public class ShellSftpTransportController extends StageController {
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
+            // 检查文件是否存在
+            for (SftpFile file : files) {
+                if (this.sourceFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
+                    return;
+                }
+            }
             String remotePath = this.sourceFile.getCurrPath();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
+            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.sourceFile);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -401,12 +411,12 @@ public class ShellSftpTransportController extends StageController {
                 StageManager.showMask(() -> {
                     try {
                         this.targetClient = ShellClientUtil.newClient(targetInfo);
-                        this.targetClient.start();
+                        this.targetClient.start(2500);
                     } finally {
                         latch.countDown();
                     }
                 });
-                if (!latch.await(5000) || !this.targetClient.isConnected()) {
+                if (!latch.await(3000) || !this.targetClient.isConnected()) {
                     this.targetClient.close();
                     this.targetClient = null;
                     this.targetInfo.requestFocus();

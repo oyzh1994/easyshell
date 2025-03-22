@@ -77,7 +77,7 @@ public class ShellSftpManageController extends StageController {
             this.tabPane.select(0);
         } else if (!this.downloadManager.isCompleted()) {
             this.tabPane.select(1);
-        } else if (!this.downloadManager.isEmpty() && !this.uploadManager.isEmpty()) {
+        } else if (!this.downloadManager.isEmpty() && this.uploadManager.isEmpty()) {
             this.tabPane.select(1);
         }
         super.onWindowShown(event);
