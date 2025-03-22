@@ -13,18 +13,22 @@ import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeHeightResizer;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
@@ -157,6 +161,12 @@ public class ShellSftpTransportController extends StageController {
     private FXToggleSwitch hiddenTargetFile;
 
     /**
+     * 文件组件盒子
+     */
+    @FXML
+    private FXHBox fileBox;
+
+    /**
      * 来源客户端
      */
     private ShellClient sourceClient;
@@ -175,6 +185,12 @@ public class ShellSftpTransportController extends StageController {
             List<SftpFile> files = this.sourceFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
+            }
+            // 检查文件是否存在
+            for (SftpFile file : files) {
+                if (this.targetFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
+                    return;
+                }
             }
             String remotePath = this.targetFile.getCurrPath();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
@@ -297,6 +313,25 @@ public class ShellSftpTransportController extends StageController {
                 this.targetFile.setFilterText(newValue);
             }
         });
+
+        // 高度拉伸处理器
+        NodeHeightResizer resizer = new NodeHeightResizer(this.transportTable, Cursor.DEFAULT, this::resizeBottom);
+        resizer.widthLimit(200f, 450f);
+        resizer.initResizeEvent();
+    }
+
+    /**
+     * 底部组件重新布局
+     *
+     * @param newHeight 新宽度
+     */
+    private void resizeBottom(Float newHeight) {
+        if (newHeight != null && !Float.isNaN(newHeight)) {
+            // 设置组件宽
+            this.transportTable.setRealHeight(newHeight);
+            this.fileBox.setFlexHeight("100% - " + newHeight);
+            this.transportTable.parentAutosize();
+        }
     }
 
     @Override

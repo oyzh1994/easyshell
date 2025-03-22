@@ -42,11 +42,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //    @Getter
 //    @Accessors(chain = true, fluent = true)
 //    private SSHClient client;
-
-    /**
-     * 已取消操作标志位
-     */
-    private boolean canceled;
+//
+//    /**
+//     * 已取消操作标志位
+//     */
+//    private boolean canceled;
 
     /**
      * shell连接存储
@@ -77,12 +77,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //            FXMenuItem connect = MenuItemHelper.startConnect("12", this::onPrimaryDoubleClick);
         FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
         FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
+        FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
 //            items.add(connect);
         items.add(editConnect);
         items.add(renameConnect);
+        items.add(transportFile);
         items.add(cloneConnect);
         items.add(deleteConnect);
 //        }
@@ -175,6 +177,13 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         StageAdapter fxView = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
         fxView.setProp("shellConnect", this.value());
         fxView.display();
+    }
+
+    /**
+     * 传输文件
+     */
+    private void transportFile() {
+        ShellEventUtil.showTransportFile(this.value);
     }
 
     /**

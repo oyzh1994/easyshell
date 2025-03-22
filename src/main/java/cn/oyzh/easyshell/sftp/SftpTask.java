@@ -2,7 +2,9 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -113,27 +115,47 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return statusProperty;
     }
 
-//    /**
-//     * 总大小属性
-//     */
-//    private final StringProperty totalSizeProperty = new SimpleStringProperty();
-//
-//    public StringProperty totalSizeProperty() {
-//        return totalSizeProperty;
-//    }
+    private StringProperty speedProperty;
 
+    public StringProperty speedProperty() {
+        if (this.speedProperty == null) {
+            this.speedProperty = new SimpleStringProperty();
+        }
+        return this.speedProperty;
+    }
+
+    /**
+     * 文件大小、显示用
+     */
+    private String fileSize;
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    /**
+     * 文件总大小
+     */
     private long totalSize;
 
-    private long currentSize;
+    /**
+     * 开始时间
+     */
+    private long startTime;
 
-    public IntegerProperty totalCountProperty() {
-        return totalCountProperty;
-    }
+    /**
+     * 当前大小
+     */
+    private long currentSize;
 
     /**
      * 总数量属性
      */
     private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
+
+    public IntegerProperty totalCountProperty() {
+        return totalCountProperty;
+    }
 
     /**
      * 当前文件属性
@@ -143,15 +165,6 @@ public abstract class SftpTask<M extends SftpMonitor> {
     public StringProperty currentFileProperty() {
         return currentFileProperty;
     }
-//
-//    /**
-//     * 当前进度属性
-//     */
-//    private final StringProperty currentProgressProperty = new SimpleStringProperty();
-//
-//    public StringProperty currentProgressProperty() {
-//        return currentProgressProperty;
-//    }
 
     /**
      * 取消
@@ -216,7 +229,12 @@ public abstract class SftpTask<M extends SftpMonitor> {
         for (M monitor : this.monitors) {
             totalSize += monitor.getTotal();
         }
+        // 总大小
         this.totalSize = totalSize;
+        // 开始时间
+        this.startTime = System.currentTimeMillis();
+        // 文件大小
+        this.fileSize = NumberUtil.formatSize(totalSize, 2);
     }
 
     protected void calcCurrentSize() {
@@ -225,6 +243,12 @@ public abstract class SftpTask<M extends SftpMonitor> {
             currentSize += monitor.getTotal() - monitor.getCurrent();
         }
         this.currentSize = this.totalSize - currentSize;
+        // 处理耗时
+        long costTime = System.currentTimeMillis() - this.startTime;
+        // 当前速度
+        long speed = this.currentSize / costTime * 1000;
+        // 速度属性
+        this.speedProperty().set(NumberUtil.formatSize(speed, 2) + "/" + I18nHelper.second());
     }
 
     /**
@@ -232,8 +256,6 @@ public abstract class SftpTask<M extends SftpMonitor> {
      */
     protected void updateTotal() {
         this.totalCountProperty.set(this.monitors.size());
-//        this.totalSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
-//        JulLog.debug("total size:{}", this.totalSizeProperty.get());
         JulLog.debug("total count:{}", this.totalCountProperty.get());
     }
 }
