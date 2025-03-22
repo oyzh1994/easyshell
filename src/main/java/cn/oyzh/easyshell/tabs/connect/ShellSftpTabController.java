@@ -585,14 +585,14 @@ public class ShellSftpTabController extends SubTabController {
 
     @FXML
     private void showUploadBox() {
-        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class);
+        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class, null);
         adapter.setProp("client", this.client());
         adapter.display();
     }
 
     @FXML
     private void showDownloadBox() {
-        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class);
+        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class, null);
         adapter.setProp("client", this.client());
         adapter.display();
     }

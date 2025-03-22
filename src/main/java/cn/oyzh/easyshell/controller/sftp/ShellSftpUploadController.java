@@ -20,60 +20,74 @@ import javafx.stage.WindowEvent;
  * @since 2025-03-15
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
-        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "sftp/shellSftpUpload.fxml"
 )
 public class ShellSftpUploadController extends StageController {
 
+    /**
+     * 上传表
+     */
     @FXML
     private SftpUploadTaskTableView uploadTable;
 
+    /**
+     * 上传管理器
+     */
     private SftpUploadManager uploadManager;
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.uploadManager.setTaskChangedCallback(() -> this.initUploadTable());
+    }
+
+    protected void initUploadTable() {
+        this.uploadTable.setItem(this.uploadManager.getTasks());
+    }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         ShellClient client = this.getWindowProp("client");
         this.uploadManager = client.getSftpUploadManager();
-        this.uploadTable.setItem(uploadManager.getTasks());
+        this.initUploadTable();
     }
 
-    @FXML
-    private void cancelTask() {
-        try {
-            SftpUploadTask task = this.uploadTable.getSelectedItem();
-            if (task != null) {
-                if (task.isFinished()) {
-                    if (MessageBox.confirm(ShellI18nHelper.fileTip13())) {
-                        this.uploadManager.remove(task);
-                        this.uploadTable.removeItem(task);
-                    }
-                    return;
-                }
-                if (MessageBox.confirm(ShellI18nHelper.fileTip11())) {
-                    this.uploadManager.cancel(task);
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    @FXML
-    private void removeTask() {
-        try {
-            SftpUploadTask task = this.uploadTable.getSelectedItem();
-            if (task != null && MessageBox.confirm(ShellI18nHelper.fileTip12())) {
-                this.uploadManager.remove(task);
-                this.uploadTable.removeItem(task);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    @FXML
+//    private void cancelTask() {
+//        try {
+//            SftpUploadTask task = this.uploadTable.getSelectedItem();
+//            if (task != null) {
+//                if (task.isFinished()) {
+//                    if (MessageBox.confirm(ShellI18nHelper.fileTip13())) {
+//                        this.uploadManager.remove(task);
+//                        this.uploadTable.removeItem(task);
+//                    }
+//                    return;
+//                }
+//                if (MessageBox.confirm(ShellI18nHelper.fileTip11())) {
+//                    this.uploadManager.cancel(task);
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    @FXML
+//    private void removeTask() {
+//        try {
+//            SftpUploadTask task = this.uploadTable.getSelectedItem();
+//            if (task != null && MessageBox.confirm(ShellI18nHelper.fileTip12())) {
+//                this.uploadManager.remove(task);
+//                this.uploadTable.removeItem(task);
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     @Override
     public String getViewTitle() {

@@ -47,6 +47,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     public SftpDownloadTask(SftpDownloadManager manager, File localFile, SftpFile remoteFile, ShellSftp sftp) {
         this.manager = manager;
         this.destPath = localFile.getPath();
+        this.currentFileProperty().set(remoteFile.getPath());
         // 执行线程
         this.executeThread = ThreadUtil.start(() -> {
             try {

@@ -59,6 +59,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
         this.destPath = remoteFile;
         this.localClient = localClient;
         this.remoteClient = remoteClient;
+        this.currentFileProperty().set(localFile.getPath());
         this.executeThread = ThreadUtil.start(() -> {
             try {
                 this.updateStatus(SftpTransportStatus.IN_PREPARATION);

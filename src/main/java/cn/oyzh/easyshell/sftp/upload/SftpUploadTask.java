@@ -45,6 +45,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
     public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, ShellSftp sftp) {
         this.manager = manager;
         this.destPath = remoteFile;
+        this.currentFileProperty().set(localFile.getPath());
         this.executeThread = ThreadUtil.start(() -> {
             try {
                 sftp.setHolding(true);

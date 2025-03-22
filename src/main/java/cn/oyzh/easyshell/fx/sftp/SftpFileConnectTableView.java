@@ -20,6 +20,8 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.skin.TableColumnHeader;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
