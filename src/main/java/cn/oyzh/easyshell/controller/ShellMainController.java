@@ -14,7 +14,7 @@ import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
-import cn.oyzh.fx.plus.node.NodeResizer;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.stage.WindowEvent;
@@ -122,7 +122,7 @@ public class ShellMainController extends ParentStageController {
     @Override
     protected void bindListeners() {
         // 大小调整增强
-        NodeResizer resizer = new NodeResizer(this.tabPaneLeft, Cursor.DEFAULT, this::resizeLeft);
+        NodeWidthResizer resizer = new NodeWidthResizer(this.tabPaneLeft, Cursor.DEFAULT, this::resizeLeft);
         resizer.widthLimit(240f, 650f);
         resizer.initResizeEvent();
     }
