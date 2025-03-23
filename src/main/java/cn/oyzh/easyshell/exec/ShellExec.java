@@ -60,4 +60,30 @@ public class ShellExec {
 //        }
         return output;
     }
+
+    public String cat_profile() {
+        return this.client.exec("cat /etc/profile");
+    }
+
+    public String cat_user_profile() {
+        return this.client.exec("cat ~/.profile");
+    }
+
+    public String source(String file) {
+        return this.client.exec("source " + file);
+    }
+
+    public String echo(String text) {
+        return this.client.exec("echo " + text);
+    }
+
+    public String echo(String text, String file) {
+//        String str = text.replaceAll("\"", "\"\"\"");
+//        str = str.replaceAll("'", "'\\''");
+        return this.client.exec("echo \"" + text + "\" > " + file);
+    }
+
+    public String whoami() {
+        return this.client.exec("whoami");
+    }
 }

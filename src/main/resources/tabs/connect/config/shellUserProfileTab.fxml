@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellProfileTabController" text="/etc/profile">
+       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellUserProfileTabController" text="~.profile">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
             <SaveSVGGlyph onMousePrimaryClicked="#save">
@@ -37,7 +37,8 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <RichDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 20" flexHeight="100% - 30">
+        <RichDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 20"
+                              flexHeight="100% - 30">
             <FXVBox.margin>
                 <Insets left="10" top="5"/>
             </FXVBox.margin>

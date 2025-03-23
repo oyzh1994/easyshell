@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
@@ -434,7 +435,12 @@ public class ShellClient {
     public String exec(String command) {
         ChannelExec channel = null;
         try {
-            String extCommand = "export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin && " + command;
+            String extCommand;
+            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which")) {
+                extCommand = command;
+            } else {
+                extCommand = "export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin && " + command;
+            }
             channel = (ChannelExec) this.session.openChannel("exec");
             if (this.shellConnect.isX11forwarding()) {
                 channel.setXForwarding(true);
@@ -442,11 +448,17 @@ public class ShellClient {
             channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);
+            channel.setErrStream(stream);
             channel.connect();
             while (channel.isConnected()) {
                 Thread.sleep(5);
             }
-            return stream.toString();
+            String result = stream.toString();
+            stream.close();
+            if (result.endsWith("\n")) {
+                result = result.substring(0, result.length() - 1);
+            }
+            return result;
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
