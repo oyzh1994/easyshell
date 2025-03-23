@@ -8,10 +8,13 @@
     <graphic>
         <ConfigurationSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXTabPane flexWidth="100%" flexHeight="100%">
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100%">
         <fx:include fx:id="profile" source="config/shellProfileTab.fxml"/>
         <fx:include fx:id="environment" source="config/shellEnvironmentTab.fxml"/>
         <fx:include fx:id="bash" source="config/shellBashTab.fxml"/>
         <fx:include fx:id="userProfile" source="config/shellUserProfileTab.fxml"/>
+        <fx:include fx:id="userBashProfile" source="config/shellUserBashProfileTab.fxml"/>
+        <fx:include fx:id="userBashrc" source="config/shellUserBashrcTab.fxml"/>
+        <fx:include fx:id="userZshrc" source="config/shellUserZshrcTab.fxml"/>
     </FXTabPane>
 </FXTab>

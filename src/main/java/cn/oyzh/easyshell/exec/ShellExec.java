@@ -77,6 +77,18 @@ public class ShellExec {
         return this.client.exec("cat ~/.profile");
     }
 
+    public String cat_user_bash_profile() {
+        return this.client.exec("cat ~/.bash_profile");
+    }
+
+    public String cat_user_bashrc() {
+        return this.client.exec("cat ~/.bashrc");
+    }
+
+    public String cat_user_zshrc() {
+        return this.client.exec("cat ~/.zshrc");
+    }
+
     public String source(String file) {
         return this.client.exec("source " + file);
     }

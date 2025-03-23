@@ -2,16 +2,22 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerMonitor;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.config.ShellBashTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashrcTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellUserZshrcTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -31,6 +37,12 @@ public class ShellConfigTabController extends ParentTabController {
     private FXTab root;
 
     /**
+     * FXTabPane
+     */
+    @FXML
+    private FXTabPane tabPane;
+
+    /**
      * shell客户端
      */
     private ShellClient client;
@@ -42,6 +54,21 @@ public class ShellConfigTabController extends ParentTabController {
      */
     public void setClient(ShellClient client) {
         this.client = client;
+        try {
+            ShellSftp sftp = this.client.openSftp();
+            String whoami = this.client.shellExec().whoami();
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist("/" + whoami + "/.zshrc")) {
+                tabPane.removeTab("userZshrc");
+            }
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist("/" + whoami + "/.bash_profile")) {
+                tabPane.removeTab("userBashProfile");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     public ShellClient getClient() {
@@ -73,6 +100,24 @@ public class ShellConfigTabController extends ParentTabController {
     private ShellUserProfileTabController userProfileController;
 
     /**
+     * 配置文件
+     */
+    @FXML
+    private ShellUserBashProfileTabController userBashProfileController;
+
+    /**
+     * 配置文件
+     */
+    @FXML
+    private ShellUserBashrcTabController userBashrcController;
+
+    /**
+     * 配置文件
+     */
+    @FXML
+    private ShellUserZshrcTabController userZshrcController;
+
+    /**
      * 初始化标志位
      */
     private boolean initialized = false;
@@ -91,7 +136,8 @@ public class ShellConfigTabController extends ParentTabController {
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.profileController, this.userProfileController, this.environmentController,
-                this.bashController
+                this.bashController, this.userBashProfileController, this.userBashrcController,
+                this.userZshrcController
         );
     }
 }
