@@ -38,7 +38,7 @@ public class ShellDockerContainerTabController extends SubTabController {
 
     private boolean initialized = false;
 
-    private void init() {
+    public void init() {
         if (this.initialized) {
             return;
         }
@@ -46,7 +46,7 @@ public class ShellDockerContainerTabController extends SubTabController {
         try {
             DockerExec exec = this.client().dockerExec();
             this.containerTable.setExec(exec);
-            StageManager.showMask(() -> this.containerTable.loadContainer());
+            this.refreshContainer();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

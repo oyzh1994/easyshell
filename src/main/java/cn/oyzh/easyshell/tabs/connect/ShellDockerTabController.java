@@ -9,7 +9,9 @@ import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerExtraTabController;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerImageTabController;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
+import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -23,6 +25,12 @@ import java.util.List;
  * @since 2023/07/21
  */
 public class ShellDockerTabController extends ParentTabController {
+
+    /**
+     * docker面板
+     */
+    @FXML
+    private FXTab docker;
 
     /**
      * 容器
@@ -66,8 +74,14 @@ public class ShellDockerTabController extends ParentTabController {
         this.client = client;
     }
 
-    private boolean initialized = false;
+    /**
+     * 初始化标志位
+     */
+    private boolean initialized;
 
+    /**
+     * 执行初始化
+     */
     private void init() {
         if (this.initialized) {
             return;
@@ -80,10 +94,21 @@ public class ShellDockerTabController extends ParentTabController {
                 MessageBox.info(ShellI18nHelper.connectTip5());
                 return;
             }
+            this.containerController.init();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    public void onTabInit(RichTab tab) {
+        super.onTabInit(tab);
+        this.docker.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1) {
+                this.init();
+            }
+        });
     }
 
     @Override

@@ -52,7 +52,7 @@ public class ShellDockerImageTabController extends SubTabController {
         try {
             DockerExec exec = this.client().dockerExec();
             this.imageTable.setExec(exec);
-            StageManager.showMask(() -> this.imageTable.loadImage());
+            this.refreshImage();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
