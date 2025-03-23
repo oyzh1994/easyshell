@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.config.ShellBashTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellResolvTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashProfileTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashrcTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserProfileTabController;
@@ -97,6 +98,12 @@ public class ShellConfigTabController extends ParentTabController {
      * 配置文件
      */
     @FXML
+    private ShellResolvTabController resolvController;
+
+    /**
+     * 配置文件
+     */
+    @FXML
     private ShellUserProfileTabController userProfileController;
 
     /**
@@ -137,7 +144,7 @@ public class ShellConfigTabController extends ParentTabController {
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.profileController, this.userProfileController, this.environmentController,
                 this.bashController, this.userBashProfileController, this.userBashrcController,
-                this.userZshrcController
+                this.userZshrcController, this.resolvController
         );
     }
 }

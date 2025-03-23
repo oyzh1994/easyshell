@@ -69,6 +69,10 @@ public class ShellExec {
         return this.client.exec("cat /etc/environment");
     }
 
+    public String cat_resolv() {
+        return this.client.exec("cat /etc/resolv.conf");
+    }
+
     public String cat_bash_bashrc() {
         return this.client.exec("cat /etc/bash.bashrc");
     }

@@ -20,12 +20,12 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * ~/.bash_profile信息
+ * environment信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellUserBashrcTabController extends SubTabController {
+public class ShellResolvTabController extends SubTabController {
 
     /**
      * 根节点
@@ -34,22 +34,16 @@ public class ShellUserBashrcTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * 当前用户
-     */
-    private String whoami;
-
-    /**
      * cpu图表
      */
     @FXML
     private RichDataTextAreaPane data;
 
     @FXML
-    private void refresh() {
+    public void refresh() {
         ShellExec exec = this.client().shellExec();
-        this.whoami = exec.whoami();
         StageManager.showMask(() -> {
-            String output = exec.cat_user_bashrc();
+            String output = exec.cat_resolv();
             this.data.setText(output);
         });
     }
@@ -74,34 +68,20 @@ public class ShellUserBashrcTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = "/" + this.whoami + "/.bashrc.temp";
+                String tempFile = "/etc/resolv.conf.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "~/.bashrc");
+                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 应用
-     */
-    @FXML
-    private void apply() {
-        ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.source("~/.bashrc");
-            if (!StringUtil.isBlank(output)) {
-                MessageBox.warn(output);
             }
         });
     }

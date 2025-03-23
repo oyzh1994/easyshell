@@ -99,7 +99,7 @@ public class ShellUserZshrcTabController extends SubTabController {
     private void apply() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.source("~/.profile");
+            String output = exec.source("~/.zshrc");
             if (!StringUtil.isBlank(output)) {
                 MessageBox.warn(output);
             }

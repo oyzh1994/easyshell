@@ -93,7 +93,7 @@ public class ShellBashTabController extends SubTabController {
     private void apply() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.source("/etc/profile");
+            String output = exec.source("/etc/bash.bashrc");
             if (!StringUtil.isBlank(output)) {
                 MessageBox.warn(output);
             }
