@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.connect;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.tabs.connect.config.ShellBashTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellProfileTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserProfileTabController;
@@ -48,19 +49,25 @@ public class ShellConfigTabController extends ParentTabController {
     }
 
     /**
-     * 配置文件1
+     * 配置文件
      */
     @FXML
     private ShellProfileTabController profileController;
 
     /**
-     * 配置文件2
+     * 配置文件
      */
     @FXML
     private ShellEnvironmentTabController environmentController;
 
     /**
-     * 配置文件3
+     * 配置文件
+     */
+    @FXML
+    private ShellBashTabController bashController;
+
+    /**
+     * 配置文件
      */
     @FXML
     private ShellUserProfileTabController userProfileController;
@@ -83,7 +90,8 @@ public class ShellConfigTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.profileController, this.userProfileController, this.environmentController
+        return List.of(this.profileController, this.userProfileController, this.environmentController,
+                this.bashController
         );
     }
 }

@@ -21,7 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 /**
- * 服务器cpu信息
+ * ~/.profile信息
  *
  * @author oyzh
  * @since 2025/03/18
