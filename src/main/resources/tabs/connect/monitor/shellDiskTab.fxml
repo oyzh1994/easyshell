@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDiskTabController" text="%base.disk">
+       fx:controller="cn.oyzh.easyshell.tabs.connect.monitor.ShellDiskTabController" text="%base.disk">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox prefHeight="30">
             <RefreshSVGGlyph onMousePrimaryClicked="#refresh">

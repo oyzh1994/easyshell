@@ -1,7 +1,8 @@
-package cn.oyzh.easyshell.tabs.connect;
+package cn.oyzh.easyshell.tabs.connect.config;
 
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -9,16 +10,17 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
- * 服务器gpu信息
+ * 服务器cpu信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellGpuTabController extends SubTabController {
+public class ShellProfileTabController extends SubTabController {
 
     /**
      * 根节点
@@ -30,20 +32,20 @@ public class ShellGpuTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private ReadOnlyTextArea gpuInfo;
+    private RichDataTextAreaPane data;
 
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.gpu();
-            this.gpuInfo.text(output);
+            String output = exec.lscpu();
+            this.data.setText(output);
         });
     }
 
     @FXML
     private void copyInfo() {
-        ClipboardUtil.copy(this.gpuInfo.getText());
+        ClipboardUtil.copy(this.data.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
 

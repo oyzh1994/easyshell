@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.tabs.connect;
+package cn.oyzh.easyshell.tabs.connect.monitor;
 
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.fx.gui.tabs.SubTabController;

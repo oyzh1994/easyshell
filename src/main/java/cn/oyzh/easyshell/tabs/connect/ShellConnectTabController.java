@@ -38,10 +38,6 @@ public class ShellConnectTabController extends ParentTabController {
         return treeItem;
     }
 
-    public void setTreeItem(ShellConnectTreeItem treeItem) {
-        this.treeItem = treeItem;
-    }
-
     private ShellConnectTreeItem treeItem;
 
     /**
@@ -57,23 +53,29 @@ public class ShellConnectTabController extends ParentTabController {
     private ShellSftpTabController sftpTabController;
 
     /**
-     * 文件
+     * docker
      */
     @FXML
     private ShellDockerTabController dockerTabController;
 
     /**
-     * 文件
+     * 监控
      */
     @FXML
     private ShellMonitorTabController monitorTabController;
+
+    /**
+     * 配置
+     */
+    @FXML
+    private ShellConfigTabController configTabController;
 
     /**
      * 设置shell客户端
      *
      * @param treeItem shell客户端
      */
-    public void init( ShellConnectTreeItem treeItem) {
+    public void init(ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
         this.client = new ShellClient(treeItem.value());
         StageManager.showMask(() -> {
@@ -113,6 +115,7 @@ public class ShellConnectTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.termTabController, this.sftpTabController, this.dockerTabController, this.monitorTabController);
+        return List.of(this.termTabController, this.sftpTabController, this.dockerTabController,
+                this.monitorTabController, this.configTabController);
     }
 }

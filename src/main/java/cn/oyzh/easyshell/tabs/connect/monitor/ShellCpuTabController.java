@@ -1,7 +1,8 @@
-package cn.oyzh.easyshell.tabs.connect;
+package cn.oyzh.easyshell.tabs.connect.monitor;
 
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -13,12 +14,12 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
- * 服务器内存信息
+ * 服务器cpu信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellMemoryTabController extends SubTabController {
+public class ShellCpuTabController extends SubTabController {
 
     /**
      * 根节点
@@ -30,20 +31,20 @@ public class ShellMemoryTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private ReadOnlyTextArea memoryInfo;
+    private ReadOnlyTextArea cpuInfo;
 
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.dmidecode_t_memory();
-            this.memoryInfo.text(output);
+            String output = exec.lscpu();
+            this.cpuInfo.text(output);
         });
     }
 
     @FXML
     private void copyInfo() {
-        ClipboardUtil.copy(this.memoryInfo.getText());
+        ClipboardUtil.copy(this.cpuInfo.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
 

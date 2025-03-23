@@ -7,4 +7,5 @@
     <fx:include fx:id="sftpTab" source="shellSftpTab.fxml"/>
     <fx:include fx:id="dockerTab" source="shellDockerTab.fxml"/>
     <fx:include fx:id="monitorTab" source="shellMonitorTab.fxml"/>
+    <fx:include fx:id="configTab" source="shellConfigTab.fxml"/>
 </FXTabPane>

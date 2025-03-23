@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.ConfigurationSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellConfigTabController" text="%base.config">
+    <graphic>
+        <ConfigurationSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXTabPane flexWidth="100%" flexHeight="100% - 120">
+            <fx:include fx:id="profile" source="config/shellProfileTab.fxml"/>
+        </FXTabPane>
+    </FXVBox>
+</FXTab>
