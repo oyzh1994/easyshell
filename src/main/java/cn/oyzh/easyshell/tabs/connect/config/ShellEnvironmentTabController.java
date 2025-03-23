@@ -17,7 +17,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 /**
@@ -26,7 +25,7 @@ import java.io.ByteArrayInputStream;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellUserProfileTabController extends SubTabController {
+public class ShellEnvironmentTabController extends SubTabController {
 
     /**
      * 根节点
@@ -35,22 +34,16 @@ public class ShellUserProfileTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * 当前用户
-     */
-    private String whoami;
-
-    /**
      * cpu图表
      */
     @FXML
     private RichDataTextAreaPane data;
 
     @FXML
-    private void refresh() {
+    public void refresh() {
         ShellExec exec = this.client().shellExec();
-        this.whoami = exec.whoami();
         StageManager.showMask(() -> {
-            String output = exec.cat_user_profile();
+            String output = exec.cat_environment();
             this.data.setText(output);
         });
     }
@@ -75,17 +68,14 @@ public class ShellUserProfileTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = "/" + this.whoami + "/.profile.temp";
+                String tempFile = "/etc/environment.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
-//                this.client().openSftp().touch(tempFile);
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "~/.profile");
-//                // 删除临时文件
-//                this.client().openSftp().rm(tempFile);
+                String output = exec.echo("$(cat " + tempFile + ")", "/etc/environment");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 }
@@ -103,7 +93,7 @@ public class ShellUserProfileTabController extends SubTabController {
     private void apply() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.source("~/.profile");
+            String output = exec.source("/etc/profile");
             if (!StringUtil.isBlank(output)) {
                 MessageBox.warn(output);
             }

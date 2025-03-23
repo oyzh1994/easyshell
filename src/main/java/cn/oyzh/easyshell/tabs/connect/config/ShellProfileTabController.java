@@ -71,13 +71,15 @@ public class ShellProfileTabController extends SubTabController {
                 sftp.setUsing(true);
                 // 创建临时文件
                 String tempFile = "/etc/profile.temp";
-                this.client().openSftp().touch(tempFile);
+                if (!sftp.exist(tempFile)) {
+                    sftp.touch(tempFile);
+                }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
                 String output = exec.echo("$(cat " + tempFile + ")", "/etc/profile");
-                // 删除临时文件
-                this.client().openSftp().rm(tempFile);
+//                // 删除临时文件
+//                this.client().openSftp().rm(tempFile);
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 }

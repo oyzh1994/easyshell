@@ -65,6 +65,10 @@ public class ShellExec {
         return this.client.exec("cat /etc/profile");
     }
 
+    public String cat_environment() {
+        return this.client.exec("cat /etc/environment");
+    }
+
     public String cat_user_profile() {
         return this.client.exec("cat ~/.profile");
     }
