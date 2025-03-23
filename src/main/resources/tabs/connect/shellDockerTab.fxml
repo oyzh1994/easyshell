@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox?>
-<?import cn.oyzh.easyshell.trees.docker.DockerContainerTableView?>
-<?import cn.oyzh.easyshell.trees.docker.DockerImageTableView?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DockerSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDockerTabController"
        text="Docker" fx:id="root">
@@ -24,131 +9,8 @@
         <DockerSVGGlyph sizeStr="11"/>
     </graphic>
     <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM">
-        <FXTab text="%base.container">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <FXHBox prefHeight="30" flexWidth="100%">
-                    <ClearableTextField realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
-                        <FXHBox.margin>
-                            <Insets left="5" top="3"/>
-                        </FXHBox.margin>
-                    </ClearableTextField>
-                    <RefreshSVGGlyph onMousePrimaryClicked="#refreshContainer">
-                        <FXHBox.margin>
-                            <Insets left="5" top="10"/>
-                        </FXHBox.margin>
-                    </RefreshSVGGlyph>
-                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteContainer">
-                        <FXHBox.margin>
-                            <Insets left="5" top="10"/>
-                        </FXHBox.margin>
-                    </DeleteSVGGlyph>
-                    <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteContainerForce">
-                        <FXHBox.margin>
-                            <Insets left="5" top="10"/>
-                        </FXHBox.margin>
-                    </DeleteForceSVGGlyph>
-                    <ShellContainerStatusComboBox initIndex="0" fx:id="containerStatus">
-                        <FXHBox.margin>
-                            <Insets left="5" top="5"/>
-                        </FXHBox.margin>
-                    </ShellContainerStatusComboBox>
-                </FXHBox>
-                <DockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
-                    <columns>
-                        <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
-                        <FXTableColumn prefWidth="150" valueName="image" text="%base.image"/>
-                        <FXTableColumn prefWidth="150" valueName="command" text="%base.cmd"/>
-                        <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
-                        <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
-                        <FXTableColumn prefWidth="150" valueName="ports" text="%base.port"/>
-                        <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
-                    </columns>
-                </DockerContainerTableView>
-            </FXVBox>
-        </FXTab>
-        <FXTab text="%base.image">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <FXHBox prefHeight="30" flexWidth="100%">
-                    <ClearableTextField realHeight="24" fx:id="filterImage" tipText="%base.searchKWTip">
-                        <FXHBox.margin>
-                            <Insets left="5" top="3"/>
-                        </FXHBox.margin>
-                    </ClearableTextField>
-                    <RefreshSVGGlyph onMousePrimaryClicked="#refreshImage">
-                        <FXHBox.margin>
-                            <Insets left="5" top="10"/>
-                        </FXHBox.margin>
-                    </RefreshSVGGlyph>
-                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteImage">
-                        <FXHBox.margin>
-                            <Insets left="5" top="10"/>
-                        </FXHBox.margin>
-                    </DeleteSVGGlyph>
-                    <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteImageForce">
-                        <FXHBox.margin>
-                            <Insets left="5" top="10"/>
-                        </FXHBox.margin>
-                    </DeleteForceSVGGlyph>
-                </FXHBox>
-                <DockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
-                    <columns>
-                        <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
-                        <FXTableColumn prefWidth="320" valueName="repository" text="%base.repository"/>
-                        <FXTableColumn prefWidth="120" valueName="tag" text="%base.tag"/>
-                        <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
-                        <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
-                    </columns>
-                </DockerImageTableView>
-            </FXVBox>
-        </FXTab>
-        <FXTab text="%base.extra">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.base">
-                    <FXVBox.margin>
-                        <Insets left="30" top="10"/>
-                    </FXVBox.margin>
-                </InfoLabel>
-                <FXHBox flexWidth="100%">
-                    <FXButton onMousePrimaryClicked="#dockerInfo" text="Docker Info">
-                        <FXHBox.margin>
-                            <Insets left="30" top="5"/>
-                        </FXHBox.margin>
-                    </FXButton>
-                    <FXButton onMousePrimaryClicked="#dockerVersion" text="Docker Version">
-                        <FXHBox.margin>
-                            <Insets left="10" top="5"/>
-                        </FXHBox.margin>
-                    </FXButton>
-                </FXHBox>
-                <InfoLabel text="%base.clear">
-                    <FXVBox.margin>
-                        <Insets left="30" top="10"/>
-                    </FXVBox.margin>
-                </InfoLabel>
-                <FXHBox flexWidth="100%">
-                    <FXButton onMousePrimaryClicked="#dockerPruneContainer" text="%base.container">
-                        <FXHBox.margin>
-                            <Insets left="30" top="5"/>
-                        </FXHBox.margin>
-                    </FXButton>
-                    <FXButton onMousePrimaryClicked="#dockerPruneImage" text="%base.image">
-                        <FXHBox.margin>
-                            <Insets left="10" top="5"/>
-                        </FXHBox.margin>
-                    </FXButton>
-                    <FXButton onMousePrimaryClicked="#dockerPruneVolume" text="%base.volume">
-                        <FXHBox.margin>
-                            <Insets left="10" top="5"/>
-                        </FXHBox.margin>
-                    </FXButton>
-                    <FXButton onMousePrimaryClicked="#dockerPruneNetwork" text="%base.network">
-                        <FXHBox.margin>
-                            <Insets left="10" top="5"/>
-                        </FXHBox.margin>
-                    </FXButton>
-                </FXHBox>
-            </FXVBox>
-        </FXTab>
-
+        <fx:include fx:id="container" source="docker/shellDockerContainerTab.fxml"/>
+        <fx:include fx:id="image" source="docker/shellDockerImageTab.fxml"/>
+        <fx:include fx:id="extra" source="docker/shellDockerExtraTab.fxml"/>
     </FXTabPane>
 </FXTab>

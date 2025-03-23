@@ -36,14 +36,24 @@ public class ShellMonitorTabController extends ParentTabController {
     @FXML
     private FXTab root;
 
+    /**
+     * zk客户端
+     */
+    private ShellClient client;
+
     public ShellClient getClient() {
         return client;
     }
 
     /**
-     * zk客户端
+     * 设置客户端
+     *
+     * @param client 客户端
      */
-    private ShellClient client;
+    public void setClient(ShellClient client) {
+        this.client = client;
+        this.serverExec = this.client.serverExec();
+    }
 
     /**
      * 服务信息
@@ -96,16 +106,6 @@ public class ShellMonitorTabController extends ParentTabController {
      *
      */
     private ServerExec serverExec;
-
-    /**
-     * 设置客户端
-     *
-     * @param client 客户端
-     */
-    public void setClient(ShellClient client) {
-        this.client = client;
-        this.serverExec = this.client.serverExec();
-    }
 
     /**
      * 初始化自动刷新任务

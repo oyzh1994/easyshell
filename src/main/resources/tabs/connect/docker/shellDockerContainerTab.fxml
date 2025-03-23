@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox?>
+<?import cn.oyzh.easyshell.trees.docker.DockerContainerTableView?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerContainerTabController" text="%base.container">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <ClearableTextField realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="3"/>
+                </FXHBox.margin>
+            </ClearableTextField>
+            <RefreshSVGGlyph onMousePrimaryClicked="#refreshContainer">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
+            <DeleteSVGGlyph onMousePrimaryClicked="#deleteContainer">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
+            <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteContainerForce">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </DeleteForceSVGGlyph>
+            <ShellContainerStatusComboBox initIndex="0" fx:id="containerStatus">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </ShellContainerStatusComboBox>
+        </FXHBox>
+        <DockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
+            <columns>
+                <FXTableColumn prefWidth="100" valueName="containerId" text="%base.id"/>
+                <FXTableColumn prefWidth="150" valueName="image" text="%base.image"/>
+                <FXTableColumn prefWidth="150" valueName="command" text="%base.cmd"/>
+                <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
+                <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
+                <FXTableColumn prefWidth="150" valueName="ports" text="%base.port"/>
+                <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
+            </columns>
+        </DockerContainerTableView>
+    </FXVBox>
+</FXTab>
