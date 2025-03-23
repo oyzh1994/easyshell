@@ -1,26 +1,23 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.DockerInfoController;
-import cn.oyzh.easyshell.controller.docker.DockerVersionController;
-import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
+import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.ShellConnectTabController;
-import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
-import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyEvent;
+
+import java.io.ByteArrayInputStream;
 
 /**
  * ssh命令行tab内容组件
@@ -31,233 +28,100 @@ import javafx.fxml.FXML;
 public class ShellDockerDaemonTabController extends SubTabController {
 
     /**
-     * ssh命令行文本域
+     * 根节点
      */
     @FXML
     private FXTab root;
 
+    /**
+     * cpu图表
+     */
     @FXML
-    private ClearableTextField filterContainer;
-
-    @FXML
-    private DockerContainerTableView containerTable;
-
-    @FXML
-    private ShellContainerStatusComboBox containerStatus;
+    private RichJsonTextAreaPane data;
 
     @FXML
-    private ClearableTextField filterImage;
-
-    @FXML
-    private DockerImageTableView imageTable;
-
-    private boolean initialized = false;
-
-    private void init() {
-        if (this.initialized) {
-            return;
-        }
-        this.initialized = true;
-        try {
-            DockerExec exec = this.client().dockerExec();
-            String output = exec.docker_v();
-            if (StringUtil.isBlank(output)) {
-                MessageBox.info(ShellI18nHelper.connectTip5());
-                return;
+    private void refresh() {
+        StageManager.showMask(() -> {
+            try {
+                ShellExec exec = this.client().shellExec();
+                ShellSftp sftp = this.client().openSftp();
+                if (sftp.exist("/etc/docker/daemon.json")) {
+                    String output = exec.cat_docker_daemon();
+                    this.data.setText(output);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
-//            boolean exist = this.client().openSftp().exist("/usr/bin/docker");
-//            if (!exist) {
-//                MessageBox.info(ShellI18nHelper.connectTip5());
-//                return;
-//            }
-            this.containerTable.setExec(exec);
-            this.imageTable.setExec(exec);
-            StageManager.showMask(() -> {
-                this.containerTable.loadContainer();
-                this.imageTable.loadImage();
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        });
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.client().close();
+    /**
+     * 复制
+     */
+    @FXML
+    private void copy() {
+        ClipboardUtil.copy(this.data.getText());
+        MessageBox.okToast(I18nHelper.operationSuccess());
+    }
+
+    /**
+     * 保存
+     */
+    @FXML
+    private void save() {
+        String text = this.data.getText();
+        StageManager.showMask(() -> {
+            ShellExec exec = this.client().shellExec();
+            try (ShellSftp sftp = this.client().openSftp()) {
+                sftp.setUsing(true);
+                // 创建json文件
+                String jsonFile = "/etc/docker/daemon.json";
+                if (!sftp.exist(jsonFile)) {
+                    sftp.touch(jsonFile);
+                }
+                // 创建临时文件
+                String tempFile = "/etc/docker/daemon.json.temp";
+                if (!sftp.exist(tempFile)) {
+                    sftp.touch(tempFile);
+                }
+                // 上传内容
+                sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
+                // 把临时文件内容copy到真实文件
+                String output = exec.echo("$(cat " + tempFile + ")", jsonFile);
+                if (!StringUtil.isBlank(output)) {
+                    MessageBox.warn(output);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void onDataKeyPressed(KeyEvent event) {
+        if (KeyboardUtil.isCtrlS(event)) {
+            this.save();
+        }
     }
 
     @Override
     public void onTabInit(RichTab tab) {
-        try {
-            super.onTabInit(tab);
-            this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1) {
-                    this.init();
-                }
-            });
-            this.filterContainer.addTextChangeListener((observableValue, aBoolean, t1) -> {
-                this.containerTable.setFilterText(t1);
-            });
-            this.containerStatus.selectedIndexChanged((observableValue, aBoolean, t1) -> {
-                this.containerTable.setStatus(t1.byteValue());
-            });
-            this.filterImage.addTextChangeListener((observableValue, aBoolean, t1) -> {
-                this.imageTable.setFilterText(t1);
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    @Override
-    public ShellConnectTabController parent() {
-        return (ShellConnectTabController) super.parent();
+        super.onTabInit(tab);
+        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1) {
+                this.refresh();
+            }
+        });
     }
 
     public ShellClient client() {
         return this.parent().getClient();
     }
 
-    @FXML
-    private void refreshContainer() {
-        this.containerTable.loadContainer();
-    }
-
-    @FXML
-    private void deleteContainer() {
-        this.containerTable.deleteContainer(false);
-    }
-
-    @FXML
-    private void deleteContainerForce() {
-        this.containerTable.deleteContainer(true);
-    }
-
-    @FXML
-    private void refreshImage() {
-        StageManager.showMask(() -> this.imageTable.loadImage());
-    }
-
-    @FXML
-    private void deleteImage() {
-        this.imageTable.deleteImage(false);
-    }
-
-    @FXML
-    private void deleteImageForce() {
-        this.imageTable.deleteImage(true);
-    }
-
-    @FXML
-    private void dockerInfo() {
-        DockerExec exec = this.client().dockerExec();
-        StageManager.showMask(() -> {
-            try {
-                String output = exec.docker_info();
-                if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
-                } else {
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(DockerInfoController.class);
-                        adapter.setProp("info", output);
-                        adapter.display();
-                    });
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    @FXML
-    private void dockerVersion() {
-        DockerExec exec = this.client().dockerExec();
-        StageManager.showMask(() -> {
-            try {
-                String output = exec.docker_version();
-                if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
-                } else {
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(DockerVersionController.class);
-                        adapter.setProp("version", output);
-                        adapter.display();
-                    });
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    @FXML
-    private void dockerPruneContainer() {
-        DockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                exec.docker_container_prune_f();
-                this.containerTable.loadContainer();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    @FXML
-    private void dockerPruneImage() {
-        DockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                exec.docker_image_prune_f();
-                this.imageTable.loadImage();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    @FXML
-    private void dockerPruneNetwork() {
-        DockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                exec.docker_network_prune_f();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    @FXML
-    private void dockerPruneVolume() {
-        DockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                exec.docker_volume_prune_f();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
+    @Override
+    public ShellDockerTabController parent() {
+        return (ShellDockerTabController) super.parent();
     }
 }

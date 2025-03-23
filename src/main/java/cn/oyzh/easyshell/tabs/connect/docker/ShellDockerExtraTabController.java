@@ -76,6 +76,36 @@ public class ShellDockerExtraTabController extends SubTabController {
     }
 
     @FXML
+    private void dockerComposeVersion() {
+        DockerExec exec = this.client().dockerExec();
+        StageManager.showMask(() -> {
+            try {
+                String output = exec.docker_compose_version();
+                MessageBox.info(output);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
+    private void dockerRestart() {
+        DockerExec exec = this.client().dockerExec();
+        StageManager.showMask(() -> {
+            try {
+                String output = exec.docker_restart();
+                if (StringUtil.isNotBlank(output)) {
+                    MessageBox.warn(output);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @FXML
     private void dockerPruneContainer() {
         DockerExec exec = this.client().dockerExec();
         if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {

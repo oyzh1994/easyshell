@@ -55,5 +55,22 @@
                 </FXHBox.margin>
             </FXButton>
         </FXHBox>
+        <InfoLabel text="%base.extra">
+            <FXVBox.margin>
+                <Insets left="30" top="10"/>
+            </FXVBox.margin>
+        </InfoLabel>
+        <FXHBox flexWidth="100%">
+            <FXButton onMousePrimaryClicked="#dockerComposeVersion" text="Docker Compose Version">
+                <FXHBox.margin>
+                    <Insets left="30" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+            <FXButton onMousePrimaryClicked="#dockerRestart" text="Docker Restart">
+                <FXHBox.margin>
+                    <Insets left="10" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+        </FXHBox>
     </FXVBox>
 </FXTab>

@@ -147,6 +147,14 @@ public class DockerExec {
         return this.client.exec("docker version");
     }
 
+    public String docker_compose_version() {
+        return this.client.exec("docker-compose version");
+    }
+
+    public String docker_restart() {
+        return this.client.exec("systemctl restart docker");
+    }
+
     public String docker_v() {
         return this.client.exec("docker --version");
     }

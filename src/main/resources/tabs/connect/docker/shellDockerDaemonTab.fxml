@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane?>
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerDaemonTabController" text="%base.config">
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <FXHBox flexWidth="100%" prefHeight="30">
+            <SaveSVGGlyph onMousePrimaryClicked="#save">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </SaveSVGGlyph>
+            <CopySVGGlyph onMousePrimaryClicked="#copy">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </CopySVGGlyph>
+            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <RichJsonTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 20"
+                              flexHeight="100% - 30">
+            <FXVBox.margin>
+                <Insets left="10" top="5"/>
+            </FXVBox.margin>
+        </RichJsonTextAreaPane>
+    </FXVBox>
+</FXTab>

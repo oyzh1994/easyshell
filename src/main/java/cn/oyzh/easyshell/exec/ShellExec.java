@@ -97,6 +97,10 @@ public class ShellExec {
         return this.client.exec("source " + file);
     }
 
+    public String cat_docker_daemon() {
+        return this.client.exec("cat /etc/docker/daemon.json");
+    }
+
     public String echo(String text) {
         return this.client.exec("echo " + text);
     }

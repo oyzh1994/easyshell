@@ -4,13 +4,14 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDockerTabController"
-       text="Docker" fx:id="root">
+       text="Docker">
     <graphic>
         <DockerSVGGlyph sizeStr="11"/>
     </graphic>
     <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM">
         <fx:include fx:id="container" source="docker/shellDockerContainerTab.fxml"/>
         <fx:include fx:id="image" source="docker/shellDockerImageTab.fxml"/>
+        <fx:include fx:id="daemon" source="docker/shellDockerDaemonTab.fxml"/>
         <fx:include fx:id="extra" source="docker/shellDockerExtraTab.fxml"/>
     </FXTabPane>
 </FXTab>

@@ -1,35 +1,23 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.DockerInfoController;
-import cn.oyzh.easyshell.controller.docker.DockerVersionController;
 import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerContainerTabController;
+import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerDaemonTabController;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerExtraTabController;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerImageTabController;
-import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
-import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
 
 /**
- * ssh命令行tab内容组件
+ * docker tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -37,17 +25,26 @@ import java.util.List;
 public class ShellDockerTabController extends ParentTabController {
 
     /**
-     * ssh命令行文本域
+     * 容器
      */
-    @FXML
-    private FXTab root;
-
     @FXML
     private ShellDockerContainerTabController containerController;
 
+    /**
+     * 镜像
+     */
     @FXML
     private ShellDockerImageTabController imageController;
 
+    /**
+     * 配置文件
+     */
+    @FXML
+    private ShellDockerDaemonTabController daemonController;
+
+    /**
+     * 额外
+     */
     @FXML
     private ShellDockerExtraTabController extraController;
 
@@ -105,6 +102,6 @@ public class ShellDockerTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.containerController, this.imageController, this.extraController);
+        return List.of(this.containerController, this.imageController, this.daemonController, this.extraController);
     }
 }
