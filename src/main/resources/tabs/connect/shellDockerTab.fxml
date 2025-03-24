@@ -8,7 +8,7 @@
     <graphic>
         <DockerSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM">
+    <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM" tabMinHeight="25">
         <fx:include fx:id="container" source="docker/shellDockerContainerTab.fxml"/>
         <fx:include fx:id="image" source="docker/shellDockerImageTab.fxml"/>
         <fx:include fx:id="daemon" source="docker/shellDockerDaemonTab.fxml"/>

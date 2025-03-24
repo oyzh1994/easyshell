@@ -37,9 +37,9 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <RichDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 20" flexHeight="100% - 30">
+        <RichDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100%" flexHeight="100% - 30">
             <FXVBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="10"/>
             </FXVBox.margin>
         </RichDataTextAreaPane>
     </FXVBox>
