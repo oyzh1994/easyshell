@@ -60,6 +60,12 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
     private String password;
 
     /**
+     * 字符集
+     */
+    @Column
+    private String charset;
+
+    /**
      * 连接超时时间
      */
     @Column
@@ -123,20 +129,21 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
      * @param shellConnect shell信息
      * @return 当前对象
      */
-    public ShellConnect copy( ShellConnect shellConnect) {
+    public ShellConnect copy(ShellConnect shellConnect) {
         this.name = shellConnect.name;
         this.host = shellConnect.host;
         this.user = shellConnect.user;
         this.remark = shellConnect.remark;
         this.groupId = shellConnect.groupId;
         this.password = shellConnect.password;
+        this.charset = shellConnect.charset;
+        this.connectTimeOut = shellConnect.connectTimeOut;
         // ssh
         this.sshConfig = shellConnect.sshConfig;
         this.sshForward = shellConnect.sshForward;
         // x11
         this.x11Config = shellConnect.x11Config;
         this.x11forwarding = shellConnect.x11forwarding;
-        this.connectTimeOut = shellConnect.connectTimeOut;
         return this;
     }
 
@@ -261,6 +268,14 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
 
     public void setX11Config(ShellX11Config x11Config) {
         this.x11Config = x11Config;
+    }
+
+    public String getCharset() {
+        return StringUtil.isBlank(this.charset) ? "uft-8" : charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ShellTtyConnector extends DefaultTtyConnector {
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-    public ShellTtyConnector(@NotNull PtyProcess process, @NotNull Charset charset, @NotNull List<String> commandLines) {
+    public ShellTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

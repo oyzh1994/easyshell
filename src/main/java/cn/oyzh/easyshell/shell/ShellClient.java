@@ -215,8 +215,8 @@ public class ShellClient {
         config.put("term", "xterm-256color");
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
-        // 设置配置
-        this.session.setConfig(config);
+        // 字符集
+        config.put("charset", this.shellConnect.getCharset());
         // 启用X11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
@@ -227,8 +227,8 @@ public class ShellClient {
             }
             if (x11Config != null) {
                 // x11配置
-                this.session.setConfig("ForwardX11", "yes");
-                this.session.setConfig("ForwardX11Trusted", "yes");
+                config.put("ForwardX11", "yes");
+                config.put("ForwardX11Trusted", "yes");
                 this.session.setX11Host(x11Config.getHost());
                 this.session.setX11Port(x11Config.getPort());
                 // 本地转发，启动x11服务
@@ -239,6 +239,8 @@ public class ShellClient {
                 throw new RuntimeException("X11forwarding is enable but x11config is null");
             }
         }
+        // 设置配置
+        this.session.setConfig(config);
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
@@ -377,6 +379,11 @@ public class ShellClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+                // 客户端转发
+                if (this.shellConnect.isSSHForward()) {
+                    channel.setAgentForwarding(true);
+                }
+                // x11转发
                 if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
@@ -442,6 +449,11 @@ public class ShellClient {
                 extCommand = "export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin && " + command;
             }
             channel = (ChannelExec) this.session.openChannel("exec");
+            // 客户端转发
+            if (this.shellConnect.isSSHForward()) {
+                channel.setAgentForwarding(true);
+            }
+            // x11转发
             if (this.shellConnect.isX11forwarding()) {
                 channel.setXForwarding(true);
             }

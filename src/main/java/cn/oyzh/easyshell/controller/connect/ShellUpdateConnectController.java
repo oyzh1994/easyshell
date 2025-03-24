@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
@@ -100,6 +101,12 @@ public class ShellUpdateConnectController extends StageController {
      */
     @FXML
     private PortTextField hostPort;
+
+    /**
+     * 字符集
+     */
+    @FXML
+    private CharsetComboBox charset;
 
     /**
      * 连接超时时间
@@ -248,8 +255,8 @@ public class ShellUpdateConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
-            shellConnect.setUser(this.userName.getTextTrim());
             // 认证信息
+            shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getTextTrim());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificatePath(this.certificate.getTextTrim());
@@ -292,14 +299,17 @@ public class ShellUpdateConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            this.shellConnect.setName(name);
-            Number connectTimeOut = this.connectTimeOut.getValue();
+            String remark = this.remark.getTextTrim();
+            String charset = this.charset.getCharsetName();
+            int connectTimeOut = this.connectTimeOut.getIntValue();
 
+            this.shellConnect.setName(name);
+            this.shellConnect.setRemark(remark);
+            this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
-            this.shellConnect.setUser(userName.trim());
-            this.shellConnect.setRemark(this.remark.getTextTrim());
-            this.shellConnect.setConnectTimeOut(connectTimeOut.intValue());
+            this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
+            this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
             this.shellConnect.setCertificatePath(certificate);
             this.shellConnect.setAuthMethod(this.authMethod.getAuthType());
@@ -364,11 +374,11 @@ public class ShellUpdateConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
-        this.userName.setText(this.shellConnect.getUser());
         this.hostPort.setValue(this.shellConnect.hostPort());
+        this.charset.setValue(this.shellConnect.getCharset());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
-        this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
         // 认证处理
+        this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
         this.certificate.setText(this.shellConnect.getCertificatePath());
         if (this.shellConnect.isPasswordAuth()) {
@@ -387,6 +397,7 @@ public class ShellUpdateConnectController extends StageController {
             this.sshPassword.setText(sshConfig.getPassword());
         }
         // x11配置
+        this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
         ShellX11Config x11Config = this.shellConnect.getX11Config();
         if (x11Config != null) {
             this.x11Host.setValue(x11Config.getHost());

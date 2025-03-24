@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
@@ -96,6 +97,12 @@ public class ShellAddConnectController extends StageController {
      */
     @FXML
     private PortTextField hostPort;
+
+    /**
+     * 字符集
+     */
+    @FXML
+    private CharsetComboBox charset;
 
     /**
      * 连接超时时间
@@ -242,16 +249,17 @@ public class ShellAddConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
             MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
-            // 创建ssh连接
+            // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
-            shellConnect.setUser(this.userName.getTextTrim());
-            shellConnect.setSshForward(this.sshForward.isSelected());
             // 认证信息
+            shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getTextTrim());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificatePath(this.certificate.getTextTrim());
+            // ssh转发
+            shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
                 shellConnect.setSshConfig(this.getSSHConfig());
             }
@@ -288,16 +296,19 @@ public class ShellAddConnectController extends StageController {
             this.name.setText(host.replace(":", "_"));
         }
         try {
-            String name = this.name.getTextTrim();
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setName(name);
-            Number connectTimeOut = this.connectTimeOut.getValue();
+            String name = this.name.getTextTrim();
+            String remark = this.remark.getTextTrim();
+            String charset = this.charset.getCharsetName();
+            int connectTimeOut = this.connectTimeOut.getIntValue();
 
+            shellConnect.setName(name);
+            shellConnect.setRemark(remark);
+            shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
-            shellConnect.setUser(userName.trim());
-            shellConnect.setRemark(this.remark.getTextTrim());
-            shellConnect.setConnectTimeOut(connectTimeOut.intValue());
+            shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
+            shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             shellConnect.setCertificatePath(certificate);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());

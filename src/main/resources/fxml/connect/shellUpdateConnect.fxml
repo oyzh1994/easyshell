@@ -21,6 +21,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="420">
@@ -100,6 +101,16 @@
         </FXTab>
         <FXTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
                 <InfoLabel text="%base.connectTimeout">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
