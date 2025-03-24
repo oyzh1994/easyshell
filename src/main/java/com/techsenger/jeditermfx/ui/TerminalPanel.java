@@ -705,8 +705,8 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                         JulLog.error("Error while terminal panel redraw", ex);
                     }
                 }
-            } else { // terminalPanel was garbage collected
-                Timeline timeline = (Timeline) e.getSource();
+            } else if (e.getSource() instanceof Timeline timeline) { // terminalPanel was garbage collected
+//                Timeline timeline = (Timeline) e.getSource();
                 //TODO???
                 //timeline.removeActionListener(this);
                 timeline.stop();
