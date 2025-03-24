@@ -218,7 +218,7 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
-                    <FXButton text="%shell.connect.tip3" onMousePrimaryClicked="#downloadX11">
+                    <FXButton groupId="x11" text="%shell.connect.tip3" onMousePrimaryClicked="#downloadX11">
                         <FXHBox.margin>
                             <Insets left="10"/>
                         </FXHBox.margin>

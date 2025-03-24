@@ -371,6 +371,10 @@ public class ShellAddConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getWindowProp("group");
+        // linux隐藏x11
+        if (OSUtil.isLinux()) {
+            NodeGroupUtil.disappear(this.getStage(), "x11");
+        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

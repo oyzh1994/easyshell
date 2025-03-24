@@ -403,6 +403,10 @@ public class ShellUpdateConnectController extends StageController {
             this.x11Host.setValue(x11Config.getHost());
             this.x11Port.setValue(x11Config.getPort());
         }
+        // linux隐藏x11
+        if (OSUtil.isLinux()) {
+            NodeGroupUtil.disappear(this.getStage(), "x11");
+        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

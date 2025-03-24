@@ -32,6 +32,7 @@ import cn.oyzh.fx.plus.font.FontWeightComboBox;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.i18n.LocaleComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
@@ -412,6 +413,10 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftItem.of(I18nHelper.theme(), "theme_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.locale(), "locale_box"));
         treeView.selectItem("ssh_box");
+        // linux隐藏x11
+        if (OSUtil.isLinux()) {
+            NodeGroupUtil.disappear(this.getStage(), "x11");
+        }
         super.onWindowShown(event);
         this.stage.hideOnEscape();
     }
