@@ -82,8 +82,8 @@ public class DefaultTermWidget extends JediTermFxWidget {
         JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
         return new PtyProcessBuilder()
                 .setDirectory(workingDirectory)
-                .setInitialColumns(120)
-                .setInitialRows(20)
+                .setInitialColumns(80)
+                .setInitialRows(24)
                 .setCommand(command)
                 .setEnvironment(envs)
                 .setConsole(false)

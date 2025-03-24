@@ -399,7 +399,8 @@ public class ShellClient {
 //                channel.setOutputStream(new ShellOutputStream());
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
-//                channel.setPtyType("xterm");
+                // todo: 必须设置为这个，不然htop鼠标交互不了
+                channel.setPtyType("xterm-color");
                 this.shell = new ShellShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();
