@@ -76,6 +76,10 @@ public class ShellExec {
         return this.client.exec("cat /etc/resolv.conf");
     }
 
+    public String cat_sshd_config() {
+        return this.client.exec("cat /etc/ssh/sshd_config");
+    }
+
     public String cat_bash_bashrc() {
         return this.client.exec("cat /etc/bash.bashrc");
     }

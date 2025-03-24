@@ -13,6 +13,7 @@
         <fx:include fx:id="environment" source="config/shellEnvironmentTab.fxml"/>
         <fx:include fx:id="bash" source="config/shellBashTab.fxml"/>
         <fx:include fx:id="resolv" source="config/shellResolvTab.fxml"/>
+        <fx:include fx:id="sshd" source="config/shellSshdTab.fxml"/>
         <fx:include fx:id="userProfile" source="config/shellUserProfileTab.fxml"/>
         <fx:include fx:id="userBashProfile" source="config/shellUserBashProfileTab.fxml"/>
         <fx:include fx:id="userBashrc" source="config/shellUserBashrcTab.fxml"/>

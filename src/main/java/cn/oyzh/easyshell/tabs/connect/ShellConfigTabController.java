@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.tabs.connect.config.ShellBashTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellProfileTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellResolvTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellSshdTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashProfileTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashrcTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellUserProfileTabController;
@@ -65,6 +66,10 @@ public class ShellConfigTabController extends ParentTabController {
             if (!sftp.exist("/etc/bash.bashrc")) {
                 tabPane.removeTab("bash");
             }
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist("/etc/ssh/sshd_config")) {
+                tabPane.removeTab("sshd");
+            }
             String userBase = this.client.getUserBase();
             // 如果配置文件不存在，则移除此配置
             if (!sftp.exist(userBase + ".profile")) {
@@ -89,49 +94,55 @@ public class ShellConfigTabController extends ParentTabController {
     }
 
     /**
-     * 配置文件
+     * 全局配置文件
      */
     @FXML
     private ShellProfileTabController profileController;
 
     /**
-     * 配置文件
+     * 全局环境配置文件
      */
     @FXML
     private ShellEnvironmentTabController environmentController;
 
     /**
-     * 配置文件
+     * 全局bash配置文件
      */
     @FXML
     private ShellBashTabController bashController;
 
     /**
-     * 配置文件
+     * 网络解析配置文件
      */
     @FXML
     private ShellResolvTabController resolvController;
 
     /**
-     * 配置文件
+     * ssh配置文件
+     */
+    @FXML
+    private ShellSshdTabController sshdController;
+
+    /**
+     * 用户配置文件
      */
     @FXML
     private ShellUserProfileTabController userProfileController;
 
     /**
-     * 配置文件
+     * 用户bash配置文件
      */
     @FXML
     private ShellUserBashProfileTabController userBashProfileController;
 
     /**
-     * 配置文件
+     * 用户bashrc配置文件
      */
     @FXML
     private ShellUserBashrcTabController userBashrcController;
 
     /**
-     * 配置文件
+     * 用户zshrc配置文件
      */
     @FXML
     private ShellUserZshrcTabController userZshrcController;
@@ -156,7 +167,7 @@ public class ShellConfigTabController extends ParentTabController {
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.profileController, this.userProfileController, this.environmentController,
                 this.bashController, this.userBashProfileController, this.userBashrcController,
-                this.userZshrcController, this.resolvController
+                this.userZshrcController, this.resolvController, this.sshdController
         );
     }
 }

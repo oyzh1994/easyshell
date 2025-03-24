@@ -34,11 +34,14 @@ public class ShellBashTabController extends SubTabController {
     private FXTab bash;
 
     /**
-     * cpu图表
+     * 数据
      */
     @FXML
     private RichDataTextAreaPane data;
 
+    /**
+     * 刷新
+     */
     @FXML
     public void refresh() {
         ShellExec exec = this.client().shellExec();

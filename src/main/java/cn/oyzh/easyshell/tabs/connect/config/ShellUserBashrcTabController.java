@@ -34,20 +34,17 @@ public class ShellUserBashrcTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * 当前用户
-     */
-    private String whoami;
-
-    /**
-     * cpu图表
+     * 数据
      */
     @FXML
     private RichDataTextAreaPane data;
 
+    /**
+     * 刷新
+     */
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
-        this.whoami = exec.whoami();
         StageManager.showMask(() -> {
             String output = exec.cat_user_bashrc();
             this.data.setText(output);

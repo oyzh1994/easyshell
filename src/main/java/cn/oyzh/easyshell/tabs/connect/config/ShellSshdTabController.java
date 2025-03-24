@@ -17,25 +17,24 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 /**
- * ~/.profile信息
+ * environment信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellUserProfileTabController extends SubTabController {
+public class ShellSshdTabController extends SubTabController {
 
     /**
      * 根节点
      */
     @FXML
-    private FXTab userProfile;
+    private FXTab sshd;
 
     /**
-     * 数据
+     * cpu图表
      */
     @FXML
     private RichDataTextAreaPane data;
@@ -44,10 +43,10 @@ public class ShellUserProfileTabController extends SubTabController {
      * 刷新
      */
     @FXML
-    private void refresh() {
+    public void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.cat_user_profile();
+            String output = exec.cat_sshd_config();
             this.data.setText(output);
         });
     }
@@ -72,37 +71,20 @@ public class ShellUserProfileTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = this.client().getUserBase() + ".profile.temp";
+                String tempFile = "/etc/resolv.conf.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
-//                this.client().openSftp().touch(tempFile);
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "~/.profile");
-//                // 删除临时文件
-//                this.client().openSftp().rm(tempFile);
+                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 应用
-     */
-    @FXML
-    private void apply() {
-        ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.source("~/.profile");
-            if (!StringUtil.isBlank(output)) {
-                MessageBox.warn(output);
             }
         });
     }
@@ -117,7 +99,7 @@ public class ShellUserProfileTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.userProfile.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.sshd.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

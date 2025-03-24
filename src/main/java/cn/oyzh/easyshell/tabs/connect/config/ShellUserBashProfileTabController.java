@@ -34,11 +34,14 @@ public class ShellUserBashProfileTabController extends SubTabController {
     private FXTab userBashProfile;
 
     /**
-     * cpu图表
+     * 数据
      */
     @FXML
     private RichDataTextAreaPane data;
 
+    /**
+     * 刷新
+     */
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
