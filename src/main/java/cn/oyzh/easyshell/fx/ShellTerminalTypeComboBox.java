@@ -15,7 +15,7 @@ public class ShellTerminalTypeComboBox extends FXComboBox<String> {
 
     {
         if (OSUtil.isLinux()) {
-            this.setItem("/bin/bash");
+            this.setItem(List.of("/bin/bash", "/bin/zsh"));
         } else if (OSUtil.isWindows()) {
             this.setItem(List.of("powershell.exe", "cmd.exe"));
         } else if (OSUtil.isMacOS()) {

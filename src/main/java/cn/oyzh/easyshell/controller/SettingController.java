@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellTerminalTypeComboBox;
@@ -545,6 +546,26 @@ public class SettingController extends StageController {
         }
         if (dir != null && dir.isDirectory() && dir.exists()) {
             this.x11Path.setText(dir.getPath());
+        }
+    }
+
+    @FXML
+    private void testBashPath() {
+        String bash = this.terminalType.getSelectedItem();
+        if (OSUtil.isWindows()) {
+            String result = RuntimeUtil.execForStr("where " + bash);
+            if (StringUtil.isNotBlank(result)) {
+                MessageBox.info(I18nHelper.testSuccess());
+            } else {
+                MessageBox.warn(I18nHelper.testFailed());
+            }
+        } else {
+            String result = RuntimeUtil.execForStr("which " + bash);
+            if (StringUtil.isNotBlank(result) && !StringUtil.containsAnyIgnoreCase(result, "not found")) {
+                MessageBox.info(I18nHelper.testSuccess());
+            } else {
+                MessageBox.warn(I18nHelper.testFailed());
+            }
         }
     }
 

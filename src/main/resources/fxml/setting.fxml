@@ -39,11 +39,18 @@
                         <Insets left="30"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellTerminalTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellTerminalTypeComboBox>
+                <FXHBox>
+                    <ShellTerminalTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ShellTerminalTypeComboBox>
+                    <FXButton text="%base.test" onMousePrimaryClicked="#testBashPath">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
                 <InfoLabel text="%shell.connect.tip2">
                     <VBox.margin>
                         <Insets left="30"/>
