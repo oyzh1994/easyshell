@@ -37,7 +37,7 @@ public class ShellCpuTabController extends SubTabController {
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.lscpu();
+            String output = exec.cpu_info();
             this.cpuInfo.text(output);
         });
     }

@@ -37,7 +37,7 @@ public class ShellGpuTabController extends SubTabController {
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.gpu();
+            String output = exec.gpu_info();
             this.gpuInfo.text(output);
         });
     }

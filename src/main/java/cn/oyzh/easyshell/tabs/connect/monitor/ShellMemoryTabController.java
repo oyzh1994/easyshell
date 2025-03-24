@@ -37,7 +37,7 @@ public class ShellMemoryTabController extends SubTabController {
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.dmidecode_t_memory();
+            String output = exec.memory_info();
             this.memoryInfo.text(output);
         });
     }

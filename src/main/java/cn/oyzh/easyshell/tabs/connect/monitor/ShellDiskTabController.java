@@ -39,7 +39,7 @@ public class ShellDiskTabController extends SubTabController {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
             String output = exec.df_h();
-            List<DiskInfo> diskInfos = ShellExecParser.disk(output);
+            List<DiskInfo> diskInfos = ShellExecParser.disk(output, this.client().isMacos());
             this.diskTable.setItem(diskInfos);
         });
     }

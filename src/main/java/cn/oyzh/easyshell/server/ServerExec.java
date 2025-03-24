@@ -95,10 +95,12 @@ public class ServerExec {
 
     public double cpuUsage() {
         try {
+            if (this.client.isMacos()) {
+                String cpuUsage = this.client.exec("top -l 1 -s 0 | sed -n '4p'");
+                cpuUsage = cpuUsage.substring(cpuUsage.lastIndexOf(",") + 1, cpuUsage.lastIndexOf("%")).trim();
+                return 100 - Double.parseDouble(cpuUsage);
+            }
             String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
-//            if (StringUtil.isBlank(cpuUsage)) {
-//                cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
-//            }
             if (StringUtil.isBlank(cpuUsage)) {
                 cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
             }
@@ -111,6 +113,16 @@ public class ServerExec {
 
     public double memoryUsage() {
         try {
+            if (this.client.isMacos()) {
+                String output = this.client.exec("vm_stat | awk '/Pages active/ {active = $3} /Pages inactive/ {inactive = $3} /Pages speculative/ {speculative = $3} /Pages wired down/ {wired = $3} END {total = active + inactive + speculative + wired; used = active + wired; printf \"%.2f%%\\n\", (used / total) * 100}'");
+                if (StringUtil.isBlank(output)) {
+                    return -1;
+                }
+                if (output.contains("%")) {
+                    output = output.replace("%", "");
+                }
+                return Double.parseDouble(output);
+            }
             String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
             if (StringUtil.isBlank(output)) {
                 return -1;
@@ -167,6 +179,10 @@ public class ServerExec {
 
     public long totalMemory() {
         try {
+            if (this.client.isMacos()) {
+                String totalMemory = this.client.exec("sysctl -n hw.memsize");
+                return Long.parseLong(totalMemory) / 1024 / 1024;
+            }
             String totalMemory = this.client.exec("cat /proc/meminfo | awk '/MemTotal/ {print int($2/1024)}'");
             if (totalMemory.startsWith("\"")) {
                 totalMemory = totalMemory.substring(1);
@@ -220,6 +236,17 @@ public class ServerExec {
 
     public double[] disk() {
         try {
+            if (this.client.isMacos()) {
+                String output = this.client.exec("top -l 1 -s 0 | grep -E '^Disks'");
+                if (StringUtil.isBlank(output)) {
+                    return new double[]{-1L, -1L};
+                }
+                String r = output.substring(output.indexOf(":") + 1, output.indexOf("/")).trim();
+                String w = output.substring(output.indexOf(",") + 1, output.lastIndexOf("/")).trim();
+                double read = Double.parseDouble(r);
+                double write = Double.parseDouble(w);
+                return new double[]{read, write};
+            }
             String output = this.client.exec("cat /proc/diskstats");
             if (StringUtil.isBlank(output)) {
                 return new double[]{-1L, -1L};
@@ -249,6 +276,18 @@ public class ServerExec {
 
     public double[] network() {
         try {
+            if (this.client.isMacos()) {
+                String output = this.client.exec("top -l 1 -s 0 | grep -E '^Networks'");
+                if (StringUtil.isBlank(output)) {
+                    return new double[]{-1L, -1L};
+                }
+                int fIndex = output.indexOf(":");
+                String in = output.substring(output.indexOf(":", fIndex + 1) + 1, output.indexOf("/")).trim();
+                String out = output.substring(output.indexOf(",") + 1, output.lastIndexOf("/")).trim();
+                double send = Double.parseDouble(out);
+                double receive = Double.parseDouble(in);
+                return new double[]{send, receive};
+            }
             String output = this.client.exec("cat /proc/net/dev | grep -vE 'lo|^[ ]*$' | awk -F: '{print $2 \" \" $10}' | awk '{print $1 \" \" $2}'\n");
             if (StringUtil.isBlank(output)) {
                 return new double[]{-1L, -1L};

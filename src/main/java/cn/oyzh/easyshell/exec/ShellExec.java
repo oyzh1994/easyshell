@@ -16,7 +16,10 @@ public class ShellExec {
         this.client = client;
     }
 
-    public String lscpu() {
+    public String cpu_info() {
+        if (this.client.isMacos()) {
+            return this.client.exec("sysctl machdep.cpu");
+        }
         return this.client.exec("lscpu");
     }
 
@@ -36,28 +39,28 @@ public class ShellExec {
         return output;
     }
 
-    public String dmidecode_t_memory() {
+    public String memory_info() {
+        if (this.client.isMacos()) {
+            return this.client.exec("system_profiler SPMemoryDataType");
+        }
         String output = this.client.exec("lshw -C memory");
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.containsAnyIgnoreCase("not found")) {
             output = this.client.exec("dmidecode -t memory");
         }
         return output;
     }
 
-    public String gpu() {
+    public String gpu_info() {
+        if (this.client.isMacos()) {
+            return this.client.exec("system_profiler SPDisplaysDataType");
+        }
         String output = this.client.exec("nvidia-smi");
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.containsIgnoreCase(output, "not found")) {
             output = this.client.exec("lspci | grep -i '3d'");
         }
-//        if (StringUtil.isBlank(output)) {
-//            output = this.client.exec("lspci | grep -i '3d'");
-//        }
         if (StringUtil.isBlank(output)) {
             output = this.client.exec("lspci | grep -i vga");
         }
-//        if (StringUtil.isBlank(output)) {
-//            output = this.client.exec("lspci | grep -i vga");
-//        }
         return output;
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ShellExecParser {
 
-    public static List<DiskInfo> disk(String output) {
+    public static List<DiskInfo> disk(String output, boolean isMacos) {
         try {
             String[] lines = output.split("\n");
             List<DiskInfo> list = new ArrayList<>();
@@ -22,8 +22,13 @@ public class ShellExecParser {
                 info.setSize(cols[1]);
                 info.setUsed(cols[2]);
                 info.setAvail(cols[3]);
-                info.setUse(cols[4]);
-                info.setMountedOn(cols[5]);
+                if (isMacos) {
+                    info.setUse(cols[7]);
+                    info.setMountedOn(cols[8]);
+                } else {
+                    info.setUse(cols[4]);
+                    info.setMountedOn(cols[5]);
+                }
                 list.add(info);
             }
             return list;
