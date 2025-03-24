@@ -89,9 +89,13 @@ public class ShellDockerTabController extends ParentTabController {
         this.initialized = true;
         try {
             DockerExec exec = this.getClient().dockerExec();
-            String output = exec.docker_v();
-            if (StringUtil.isBlank(output)) {
+            String output = exec.docker_ps();
+            if (StringUtil.containsAnyIgnoreCase(output, "not found")) {
                 MessageBox.info(ShellI18nHelper.connectTip5());
+                return;
+            }
+            if (StringUtil.containsAnyIgnoreCase(output, "daemon running")) {
+                MessageBox.warn(ShellI18nHelper.connectTip6());
                 return;
             }
             this.containerController.init();

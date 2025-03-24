@@ -40,9 +40,9 @@ import javafx.beans.value.ChangeListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -456,7 +456,8 @@ public class ShellClient {
             if (StringUtil.startWithAnyIgnoreCase(command, "source", "which")) {
                 extCommand = command;
             } else {
-                extCommand = "export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin && " + command;
+                String exportPath = this.getExportPath();
+                extCommand = "export PATH=$PATH" + exportPath + " && " + command;
             }
             channel = (ChannelExec) this.session.openChannel("exec");
             // 客户端转发
@@ -469,7 +470,6 @@ public class ShellClient {
             }
             channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//            OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
             channel.setOutputStream(stream);
             channel.setErrStream(stream);
             channel.connect();
@@ -491,6 +491,19 @@ public class ShellClient {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取path变量
+     *
+     * @return 结果
+     */
+    public String getExportPath() {
+        StringBuilder builder = new StringBuilder();
+        for (String string : this.environment) {
+            builder.append(":").append(string);
+        }
+        return builder.toString();
     }
 
     public String exec_id_un(int uid) {
@@ -525,20 +538,42 @@ public class ShellClient {
     public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {
         this.transportManager.createMonitor(localFile, remoteFile, this, remoteClient);
     }
-//
-//    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
-//        this.deleteManager.setDeleteEndedCallback(callback);
-//    }
-//
-//    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
-//        this.deleteManager.setDeleteDeletedCallback(callback);
-//    }
+
+    /**
+     * 环境变量
+     */
+    private final List<String> environment = new ArrayList<>();
+
+    {
+        this.environment.add("/bin");
+        this.environment.add("/sbin");
+        this.environment.add("/usr/bin");
+        this.environment.add("/usr/sbin");
+        this.environment.add("/usr/local/bin");
+        this.environment.add("/usr/local/sbin");
+    }
 
     private DockerExec dockerExec;
 
     public DockerExec dockerExec() {
         if (this.dockerExec == null) {
             this.dockerExec = new DockerExec(this);
+            if (this.isMacos()) {
+                String output = this.exec("which docker");
+                if (StringUtil.isNotBlank(output) && !StringUtil.containsAnyIgnoreCase(output, "not found")) {
+                    String env = output.substring(0, output.lastIndexOf("/"));
+                    this.environment.add(env);
+                } else {
+                    try {
+                        ShellSftp sftp = this.openSftp();
+                        if (sftp.exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                            this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         }
         return this.dockerExec;
     }
@@ -560,18 +595,6 @@ public class ShellClient {
         }
         return this.shellExec;
     }
-
-//    public BooleanProperty uploadingProperty() {
-//        return this.sftpUploadManager.uploadingProperty();
-//    }
-//
-//    public BooleanProperty deletingProperty() {
-//        return this.sftpDeleteManager.deletingProperty();
-//    }
-//
-//    public BooleanProperty downloadingProperty() {
-//        return this.sftpDownloadManager.downloadingProperty();
-//    }
 
     public void delete(SftpFile file) {
         this.deleteManager.deleteFile(file, this.openSftp());
@@ -606,5 +629,4 @@ public class ShellClient {
         }
         return "/" + this.whoami() + "/";
     }
-
 }

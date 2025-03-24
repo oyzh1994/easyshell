@@ -76,4 +76,9 @@ public class ShellI18nHelper {
     public static String connectTip5() {
         return I18nResourceBundle.i18nString("shell.connect.tip5");
     }
+
+    public static String connectTip6() {
+        return I18nResourceBundle.i18nString("shell.connect.tip6");
+    }
+
 }
