@@ -31,7 +31,7 @@ public class ShellEnvironmentTabController extends SubTabController {
      * 根节点
      */
     @FXML
-    private FXTab root;
+    private FXTab environment;
 
     /**
      * cpu图表
@@ -110,7 +110,7 @@ public class ShellEnvironmentTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.environment.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

@@ -74,7 +74,7 @@ public class ShellUserZshrcTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = "/" + this.whoami + "/.zshrc.temp";
+                String tempFile = this.client().getUserBase() + ".zshrc.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }

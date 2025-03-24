@@ -11,7 +11,7 @@
 <?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+<FXTab fx:id="bash" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellBashTabController" text="/etc/bash.bashrc">
     <FXVBox flexHeight="100%" flexWidth="100%">

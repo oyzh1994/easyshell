@@ -271,7 +271,7 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
     }
 
     public String getCharset() {
-        return StringUtil.isBlank(this.charset) ? "uft-8" : charset;
+        return StringUtil.isBlank(this.charset) ? "utf-8" : charset;
     }
 
     public void setCharset(String charset) {

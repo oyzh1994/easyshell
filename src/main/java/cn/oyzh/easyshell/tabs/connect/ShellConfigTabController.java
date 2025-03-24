@@ -57,13 +57,25 @@ public class ShellConfigTabController extends ParentTabController {
         this.client = client;
         try {
             ShellSftp sftp = this.client.openSftp();
-            String whoami = this.client.shellExec().whoami();
             // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/" + whoami + "/.zshrc")) {
+            if (!sftp.exist("/etc/environment")) {
+                tabPane.removeTab("environment");
+            }
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist("/etc/bash.bashrc")) {
+                tabPane.removeTab("bash");
+            }
+            String userBase = this.client.getUserBase();
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist(userBase + ".profile")) {
+                tabPane.removeTab("userProfile");
+            }
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist(userBase + ".zshrc")) {
                 tabPane.removeTab("userZshrc");
             }
             // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/" + whoami + "/.bash_profile")) {
+            if (!sftp.exist(userBase + ".bash_profile")) {
                 tabPane.removeTab("userBashProfile");
             }
         } catch (Exception ex) {

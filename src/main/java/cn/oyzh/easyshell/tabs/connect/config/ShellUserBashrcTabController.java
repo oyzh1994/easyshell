@@ -74,7 +74,7 @@ public class ShellUserBashrcTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = "/" + this.whoami + "/.bashrc.temp";
+                String tempFile = this.client().getUserBase() + ".bashrc.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }

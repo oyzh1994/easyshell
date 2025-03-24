@@ -34,11 +34,6 @@ public class ShellUserBashProfileTabController extends SubTabController {
     private FXTab userBashProfile;
 
     /**
-     * 当前用户
-     */
-    private String whoami;
-
-    /**
      * cpu图表
      */
     @FXML
@@ -47,7 +42,6 @@ public class ShellUserBashProfileTabController extends SubTabController {
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
-        this.whoami = exec.whoami();
         StageManager.showMask(() -> {
             String output = exec.cat_user_bash_profile();
             this.data.setText(output);
@@ -74,7 +68,7 @@ public class ShellUserBashProfileTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = "/" + this.whoami + "/.bash_profile.temp";
+                String tempFile = this.client().getUserBase() + ".bash_profile.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }

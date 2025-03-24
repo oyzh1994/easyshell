@@ -32,7 +32,7 @@ public class ShellUserProfileTabController extends SubTabController {
      * 根节点
      */
     @FXML
-    private FXTab root;
+    private FXTab userProfile;
 
     /**
      * 当前用户
@@ -75,7 +75,7 @@ public class ShellUserProfileTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建临时文件
-                String tempFile = "/" + this.whoami + "/.profile.temp";
+                String tempFile = this.client().getUserBase() + ".profile.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
@@ -120,7 +120,7 @@ public class ShellUserProfileTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.userProfile.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

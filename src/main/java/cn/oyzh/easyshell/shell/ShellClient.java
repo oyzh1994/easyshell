@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -577,6 +578,33 @@ public class ShellClient {
     }
 
     public Charset getCharset() {
-        return Charset.forName(this.shellConnect.getCharset());
+        return CharsetUtil.fromName(this.shellConnect.getCharset());
     }
+
+    private Boolean isMacos;
+
+    public boolean isMacos() {
+        if (this.isMacos == null) {
+            String output = this.exec("uname");
+            this.isMacos = StringUtil.containsIgnoreCase(output, "darwin");
+        }
+        return this.isMacos;
+    }
+
+    private String whoami;
+
+    public String whoami() {
+        if (this.whoami == null) {
+            this.whoami = this.exec("whoami");
+        }
+        return this.whoami;
+    }
+
+    public String getUserBase() {
+        if (this.isMacos()) {
+            return "/Users/" + this.whoami() + "/";
+        }
+        return "/" + this.whoami() + "/";
+    }
+
 }
