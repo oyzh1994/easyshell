@@ -12,7 +12,7 @@
         "description": "这是一个SSH管理工具，提供ssh连接、sftp文件管理，x11转发等功能."
     },
     "jdeps": {
-        "multi-release": 23,
+        "multi-release": 24,
         "summary": true,
         "skips": [
             "javafx-.*.jar"
