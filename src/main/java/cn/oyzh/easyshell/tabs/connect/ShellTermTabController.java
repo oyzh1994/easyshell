@@ -37,7 +37,7 @@ public class ShellTermTabController extends SubTabController {
 
     private void initWidget(ShellShell shell) throws IOException {
         this.widget = new ShellTermWidget();
-        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector();
+        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector(this.client().getCharset());
         connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());

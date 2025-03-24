@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.terminal.DefaultTtyConnector;
 import com.pty4j.PtyProcess;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -57,5 +58,18 @@ public class ShellTtyConnector extends DefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (this.shellReader != null) {
+            try {
+                this.shellReader.close();
+                this.shellWriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

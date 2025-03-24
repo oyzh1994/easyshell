@@ -33,15 +33,16 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-import java.util.function.Consumer;
 
 /**
  * shell终端
@@ -215,8 +216,8 @@ public class ShellClient {
         config.put("term", "xterm-256color");
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
-        // 字符集
-        config.put("charset", this.shellConnect.getCharset());
+//        // 字符集
+//        config.put("charset", this.shellConnect.getCharset());
         // 启用X11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
@@ -241,6 +242,8 @@ public class ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
+//        this.session.setConfig("charset", "UTF-8");
+//        session.setConfig("PreferredAuthentications", "password");
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
@@ -387,9 +390,15 @@ public class ShellClient {
                 if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
+//                InputStreamReader reader = new InputStreamReader(System.in, StandardCharsets.UTF_8);
+//                PrintStream stream = new PrintStream(System.out,true, StandardCharsets.UTF_8);
+//                channel.setEnv("charset", this.shellConnect.getCharset());
+//                channel.setInputStream(reader);
+//                channel.setInputStream(new ShellInputStream());
+//                channel.setOutputStream(new ShellOutputStream());
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
-                channel.setPtyType("xterm");
+//                channel.setPtyType("xterm");
                 this.shell = new ShellShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -459,6 +468,7 @@ public class ShellClient {
             }
             channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
             channel.setOutputStream(stream);
             channel.setErrStream(stream);
             channel.connect();
@@ -467,6 +477,7 @@ public class ShellClient {
             }
             String result = stream.toString();
             stream.close();
+//            writer.close();
             if (result.endsWith("\n")) {
                 result = result.substring(0, result.length() - 1);
             }
@@ -563,5 +574,9 @@ public class ShellClient {
 
     public void delete(SftpFile file) {
         this.deleteManager.deleteFile(file, this.openSftp());
+    }
+
+    public Charset getCharset() {
+        return Charset.forName(this.shellConnect.getCharset());
     }
 }
