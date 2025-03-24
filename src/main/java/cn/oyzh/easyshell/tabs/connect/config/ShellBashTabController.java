@@ -81,6 +81,9 @@ public class ShellBashTabController extends SubTabController {
                 String output = exec.echo("$(cat " + tempFile + ")", "/etc/bash.bashrc");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
+                } else {
+                    // 删除临时文件
+                    this.client().openSftp().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

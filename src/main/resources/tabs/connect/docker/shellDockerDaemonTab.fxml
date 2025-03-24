@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerDaemonTabController" text="%base.config">
@@ -29,6 +30,11 @@
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
+            <FXLabel fx:id="filePath">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FXLabel>
         </FXHBox>
         <RichJsonTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 20"
                               flexHeight="100% - 30">

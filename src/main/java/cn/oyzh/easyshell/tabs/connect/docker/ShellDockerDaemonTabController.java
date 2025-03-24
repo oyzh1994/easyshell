@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -34,6 +35,12 @@ public class ShellDockerDaemonTabController extends SubTabController {
     private FXTab root;
 
     /**
+     * 文件路径
+     */
+    @FXML
+    private FXLabel filePath;
+
+    /**
      * cpu图表
      */
     @FXML
@@ -41,12 +48,20 @@ public class ShellDockerDaemonTabController extends SubTabController {
 
     @FXML
     private void refresh() {
+        // 设置文件路径
+        if (this.filePath.isEmpty()) {
+            if (this.client().isMacos()) {
+                this.filePath.setText(this.client().getUserBase() + ".docker/daemon.json");
+            } else {
+                this.filePath.setText("/etc/docker/daemon.json");
+            }
+        }
         StageManager.showMask(() -> {
             try {
                 ShellExec exec = this.client().shellExec();
                 ShellSftp sftp = this.client().openSftp();
-                if (sftp.exist("/etc/docker/daemon.json")) {
-                    String output = exec.cat_docker_daemon();
+                if (sftp.exist(this.filePath.getText())) {
+                    String output = exec.cat_docker_daemon(this.filePath.getText());
                     this.data.setText(output);
                 }
             } catch (Exception ex) {
@@ -76,12 +91,12 @@ public class ShellDockerDaemonTabController extends SubTabController {
             try (ShellSftp sftp = this.client().openSftp()) {
                 sftp.setUsing(true);
                 // 创建json文件
-                String jsonFile = "/etc/docker/daemon.json";
+                String jsonFile = this.filePath.getText();
                 if (!sftp.exist(jsonFile)) {
                     sftp.touch(jsonFile);
                 }
                 // 创建临时文件
-                String tempFile = "/etc/docker/daemon.json.temp";
+                String tempFile = this.filePath.getText() + ".temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
@@ -91,6 +106,9 @@ public class ShellDockerDaemonTabController extends SubTabController {
                 String output = exec.echo("$(cat " + tempFile + ")", jsonFile);
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
+                } else {
+                    // 删除临时文件
+                    this.client().openSftp().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

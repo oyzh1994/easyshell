@@ -85,6 +85,9 @@ public class ShellProfileTabController extends SubTabController {
 //                this.client().openSftp().rm(tempFile);
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
+                } else {
+                    // 删除临时文件
+                    this.client().openSftp().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

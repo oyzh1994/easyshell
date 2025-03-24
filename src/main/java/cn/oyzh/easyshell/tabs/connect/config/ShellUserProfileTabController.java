@@ -81,10 +81,11 @@ public class ShellUserProfileTabController extends SubTabController {
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
                 String output = exec.echo("$(cat " + tempFile + ")", "~/.profile");
-//                // 删除临时文件
-//                this.client().openSftp().rm(tempFile);
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
+                } else {
+                    // 删除临时文件
+                    this.client().openSftp().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
