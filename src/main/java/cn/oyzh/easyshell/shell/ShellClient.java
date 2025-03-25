@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.SSHForwardConfig;
 import cn.oyzh.ssh.SSHForwarder;
+import cn.oyzh.ssh.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
@@ -53,10 +54,10 @@ import java.util.Properties;
  */
 public class ShellClient {
 
-    /**
-     * JSch对象
-     */
-    private static final JSch JSCH = new JSch();
+//    /**
+//     * JSch对象
+//     */
+//    private static final JSch JSCH = new JSch();
 
     /**
      * shell信息
@@ -201,12 +202,12 @@ public class ShellClient {
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
-            this.session = JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+            this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setPassword(this.shellConnect.getPassword());
         } else {// 证书
-            JSCH.addIdentity(this.shellConnect.getCertificatePath());
+            SSHHolder.JSCH.addIdentity(this.shellConnect.getCertificatePath());
             // 创建会话
-            this.session = JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+            this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         }
 //        if (StringUtil.isNotBlank(this.shellConnect.getPassword())) {
 //            this.session.setPassword(this.shellConnect.getPassword());

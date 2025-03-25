@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox;
+import cn.oyzh.fx.gui.combobox.SSHAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -175,10 +175,22 @@ public class ShellUpdateConnectController extends StageController {
     private ClearableTextField sshPassword;
 
     /**
+     * ssh认证方式
+     */
+    @FXML
+    private SSHAuthMethodCombobox sshAuthMethod;
+
+    /**
+     * ssh证书
+     */
+    @FXML
+    private ReadOnlyTextField sshCertificate;
+
+    /**
      * 认证方式
      */
     @FXML
-    private ShellAuthMethodCombobox authMethod;
+    private SSHAuthMethodCombobox authMethod;
 
     /**
      * ssh连接储存对象
@@ -223,7 +235,9 @@ public class ShellUpdateConnectController extends StageController {
         sshConfig.setUser(this.sshUser.getText());
         sshConfig.setPort(this.sshPort.getIntValue());
         sshConfig.setPassword(this.sshPassword.getText());
-        sshConfig.setTimeout(this.sshTimeout.getIntValue());
+        sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
+        sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
+        sshConfig.setCertificatePath(this.sshCertificate.getText());
         return sshConfig;
     }
 
@@ -358,17 +372,27 @@ public class ShellUpdateConnectController extends StageController {
         // 认证方式
         this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.authMethod.isPasswordAuth()) {
-                NodeGroupUtil.display(this.tabPane, "password");
+                this.password.display();
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
             } else {
+                this.password.disappear();
                 NodeGroupUtil.display(this.tabPane, "certificate");
-                NodeGroupUtil.disappear(this.tabPane, "password");
+            }
+        });
+        // ssh认证方式
+        this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.sshAuthMethod.isPasswordAuth()) {
+                this.sshPassword.display();
+                NodeGroupUtil.disappear(this.tabPane, "sshCertificate");
+            } else {
+                this.sshPassword.disappear();
+                NodeGroupUtil.display(this.tabPane, "sshCertificate");
             }
         });
     }
 
     @Override
-    public void onWindowShown( WindowEvent event) {
+    public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.shellConnect = this.getWindowProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
@@ -393,8 +417,14 @@ public class ShellUpdateConnectController extends StageController {
             this.sshHost.setText(sshConfig.getHost());
             this.sshUser.setText(sshConfig.getUser());
             this.sshPort.setValue(sshConfig.getPort());
-            this.sshTimeout.setValue(sshConfig.getTimeout());
             this.sshPassword.setText(sshConfig.getPassword());
+            this.sshTimeout.setValue(sshConfig.getTimeoutSecond());
+            this.sshCertificate.setText(sshConfig.getCertificatePath());
+            if (sshConfig.isPasswordAuth()) {
+                this.sshAuthMethod.selectFirst();
+            } else {
+                this.sshAuthMethod.select(1);
+            }
         }
         // x11配置
         this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
@@ -442,6 +472,17 @@ public class ShellUpdateConnectController extends StageController {
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
         if (file != null) {
             this.certificate.setText(file.getPath());
+        }
+    }
+
+    /**
+     * 选择ssh证书
+     */
+    @FXML
+    private void chooseSSHCertificate() {
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+        if (file != null) {
+            this.sshCertificate.setText(file.getPath());
         }
     }
 }

@@ -17,7 +17,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerImageTabController" text="%base.image">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField realHeight="24" fx:id="filterImage" tipText="%base.searchKWTip">
+            <ClearableTextField prefWidth="300" realHeight="24" fx:id="filterImage" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>

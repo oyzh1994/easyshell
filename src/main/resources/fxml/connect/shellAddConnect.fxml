@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellAuthMethodCombobox?>
+<?import cn.oyzh.fx.gui.combobox.SSHAuthMethodCombobox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -24,7 +24,7 @@
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectController" realWidth="750"
-        realHeight="420">
+        realHeight="480">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -56,24 +56,26 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ShellAuthMethodCombobox initIndex="0" fx:id="authMethod" prefWidth="150">
+                    <SSHAuthMethodCombobox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
                         <FXHBox.margin>
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
-                    </ShellAuthMethodCombobox>
-                    <ClearableTextField groupId="password" fx:id="password" tipText="%base.passwordTip" require="true"
+                    </SSHAuthMethodCombobox>
+                    <ClearableTextField fx:id="password" tipText="%base.passwordTip" require="true"
                                         realHeight="30"
                                         flexWidth="100% - 340" maxLen="1024">
                         <FXHBox.margin>
                             <Insets left="10" top="5"/>
                         </FXHBox.margin>
                     </ClearableTextField>
-                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="certificate" fx:id="certificate" flexWidth="100% - 340">
+                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="certificate"
+                                       fx:id="certificate" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </ReadOnlyTextField>
-                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate" onMousePrimaryClicked="#chooseCertificate">
+                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate"
+                                    onMousePrimaryClicked="#chooseCertificate">
                         <HBox.margin>
                             <Insets left="5" top="12"/>
                         </HBox.margin>
@@ -142,9 +144,9 @@
                 </FXTextArea>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.sshSpringboard" fx:id="sshTab">
+        <FXTab text="%base.sshForwarding" fx:id="sshTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.enableSSHChannel">
+                <InfoLabel text="%base.enableSSHForwarding">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -177,31 +179,61 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <NumberTextField disable="true" groupId="ssh" flexWidth="100% - 180" fx:id="sshTimeout"
-                                 tipText="%base.sshTimeoutTip"
-                                 realHeight="30" value="3000">
+                <FXHBox disable="true" groupId="ssh">
+                    <NumberTextField disable="true" groupId="ssh" flexWidth="100% - 180" fx:id="sshTimeout"
+                                     tipText="%base.sshTimeoutTip"
+                                     realHeight="30" value="3">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.sshUser">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField disable="true" groupId="ssh" fx:id="sshUser" tipText="%base.sshUserTip"
+                                    require="true" realHeight="30"
+                                    flexWidth="100% - 180" text="root">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </NumberTextField>
-                <InfoLabel text="%base.sshInfo">
+                </ClearableTextField>
+                <InfoLabel text="%base.auth">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox disable="true" groupId="ssh">
-                    <ClearableTextField fx:id="sshUser" tipText="%base.sshUserTip" require="true" realHeight="30"
-                                        flexWidth="50% - 93" text="root">
-                        <HBox.margin>
+                    <SSHAuthMethodCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
+                        <FXHBox.margin>
                             <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ClearableTextField>
+                        </FXHBox.margin>
+                    </SSHAuthMethodCombobox>
                     <ClearableTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
-                                        flexWidth="50% - 92">
+                                        flexWidth="100% - 340">
                         <HBox.margin>
-                            <Insets left="5" top="5"/>
+                            <Insets left="10" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
+                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="sshCertificate"
+                                       fx:id="sshCertificate" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ReadOnlyTextField>
+                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="sshCertificate"
+                                    onMousePrimaryClicked="#chooseSSHCertificate">
+                        <HBox.margin>
+                            <Insets left="5" top="12"/>
+                        </HBox.margin>
+                    </ChooseSVGGlyph>
                 </FXHBox>
             </FXVBox>
         </FXTab>

@@ -149,7 +149,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
         FXMenuItem containerPorts = MenuItemHelper.containerPorts("12", this::containerPorts);
         menuItems.add(containerPorts);
         if (container.isExited()) {
-            FXMenuItem startContainer = MenuItemHelper.startContainer("12", this::startContainer);
+            FXMenuItem startContainer = MenuItemHelper.start1Container("12", this::startContainer);
             menuItems.add(startContainer);
         } else {
             FXMenuItem stopContainer = MenuItemHelper.stopContainer("12", this::stopContainer);
@@ -179,7 +179,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
 
     public void startContainer() {
         DockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(I18nHelper.startContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames())) {
             return;
         }
         StageManager.showMask(() -> {
