@@ -57,7 +57,7 @@ public class ShellDockerTabController extends ParentTabController {
     private ShellDockerExtraTabController extraController;
 
     /**
-     * zk客户端
+     * shell客户端
      */
     private ShellClient client;
 

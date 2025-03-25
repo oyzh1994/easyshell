@@ -37,7 +37,7 @@ public class ShellMonitorTabController extends ParentTabController {
     private FXTab root;
 
     /**
-     * zk客户端
+     * shell客户端
      */
     private ShellClient client;
 

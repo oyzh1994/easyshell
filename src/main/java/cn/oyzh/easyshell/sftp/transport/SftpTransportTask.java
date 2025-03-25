@@ -61,9 +61,13 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
         this.remoteClient = remoteClient;
         this.currentFileProperty().set(localFile.getPath());
         this.executeThread = ThreadUtil.start(() -> {
+            ShellSftp localSftp = localClient.newSftp();
+            ShellSftp remoteSftp = remoteClient.newSftp();
             try {
+                localSftp.setHolding(true);
+                remoteSftp.setHolding(true);
                 this.updateStatus(SftpTransportStatus.IN_PREPARATION);
-                this.addMonitorRecursive(localFile, remoteFile, localClient, remoteClient);
+                this.addMonitorRecursive(localFile, remoteFile, localSftp, remoteSftp);
                 this.updateStatus(SftpTransportStatus.TRANSPORT_ING);
                 this.calcTotalSize();
                 this.updateTotal();
@@ -71,6 +75,10 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
+                localSftp.setHolding(false);
+                remoteSftp.setHolding(false);
+//                IOUtil.close(localSftp);
+//                IOUtil.close(remoteSftp);
                 this.updateTotal();
                 // 如果是非取消和失败，则设置为结束
                 if (!this.isCancelled() && !this.isFailed()) {
@@ -83,15 +91,13 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     /**
      * 递归添加监听器
      *
-     * @param localFile    本地文件
-     * @param remoteFile   远程文件
-     * @param localClient  本地sftp操作器
-     * @param remoteClient 远程sftp操作器
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @param localSftp  本地sftp操作器
+     * @param remoteSftp 远程sftp操作器
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(SftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) throws SftpException {
-        ShellSftp localSftp = localClient.openSftp();
-        ShellSftp remoteSftp = remoteClient.openSftp();
+    protected void addMonitorRecursive(SftpFile localFile, String remoteFile, ShellSftp localSftp, ShellSftp remoteSftp) throws SftpException {
         // 文件夹
         if (localFile.isDirectory()) {
             // 列举文件
@@ -105,10 +111,10 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                 // 添加文件
                 for (SftpFile file : files) {
                     if (file.isDirectory()) {
-                        this.addMonitorRecursive(file, remoteDir, localClient, remoteClient);
+                        this.addMonitorRecursive(file, remoteDir, localSftp, remoteSftp);
                     } else {
                         String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
-                        this.addMonitorRecursive(file, remoteFile1, localClient, remoteClient);
+                        this.addMonitorRecursive(file, remoteFile1, localSftp, remoteSftp);
                     }
                 }
             }
@@ -131,18 +137,19 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp localSftp = this.localClient.openSftp();
-            ShellSftp remoteSftp = this.remoteClient.openSftp();
-            localSftp.setUsing(true);
-            remoteSftp.setUsing(true);
+            ShellSftp localSftp = this.localClient.newSftp();
+            ShellSftp remoteSftp = this.remoteClient.newSftp();
             try {
+//                localSftp.setUsing(true);
+//                remoteSftp.setUsing(true);
                 InputStream input = localSftp.get(monitor.getLocalFilePath());
                 OutputStream output = remoteSftp.put(monitor.getRemoteFile(), monitor);
-                byte[] buffer = new byte[8192];
-                int bytesRead;
-                while ((bytesRead = input.read(buffer)) != -1) {
-                    output.write(buffer, 0, bytesRead);
-                }
+//                byte[] buffer = new byte[8192];
+//                int bytesRead;
+//                while ((bytesRead = input.read(buffer)) != -1) {
+//                    output.write(buffer, 0, bytesRead);
+//                }
+                input.transferTo(output);
                 IOUtil.close(input);
                 IOUtil.close(output);
             } catch (Exception ex) {
@@ -154,8 +161,8 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                     this.failed(monitor, ex);
                 }
             } finally {
-                localSftp.setUsing(false);
-                remoteSftp.setUsing(false);
+//                localSftp.setUsing(false);
+//                remoteSftp.setUsing(false);
                 IOUtil.close(localSftp);
                 IOUtil.close(remoteSftp);
             }

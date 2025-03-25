@@ -34,9 +34,9 @@ public class ShellX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
     }
 
     /**
-     * 根据zk连接id获取配置
+     * 根据shell连接id获取配置
      *
-     * @param iid zk连接id
+     * @param iid shell连接id
      * @return sasl配置
      */
     public ShellX11Config getByIid(String iid) {
@@ -49,7 +49,7 @@ public class ShellX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
     /**
      * 根据iid删除
      *
-     * @param iid zk连接id
+     * @param iid shell连接id
      * @return 结果
      */
     public boolean deleteByIid(String iid) {

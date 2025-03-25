@@ -68,22 +68,6 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      * 导出连接
      */
     private void exportConnect() {
-//        List<ZKConnect> infos = this.connectStore.load();
-//        if (infos.isEmpty()) {
-//            MessageBox.warn(I18nHelper.connectionIsEmpty());
-//            return;
-//        }
-//        ZKConnectExport export = ZKConnectExport.fromConnects(infos);
-//        FileExtensionFilter extensionFilter = FileChooserHelper.jsonExtensionFilter();
-//        File file = FileChooserHelper.save(I18nHelper.saveConnection(), I18nResourceBundle.i18nString("base.zk", "base.connect", "base._json"), extensionFilter);
-//        if (file != null) {
-//            try {
-//                FileUtil.writeUtf8String(export.toJSONString(), file);
-//                MessageBox.okToast(I18nHelper.exportConnectionSuccess());
-//            } catch (Exception ex) {
-//                MessageBox.exception(ex, I18nHelper.exportConnectionFail());
-//            }
-//        }
         ShellEventUtil.showExportConnect();
     }
 
@@ -101,8 +85,6 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
             return;
         }
         File file = CollectionUtil.getFirst(files);
-//        // 解析文件
-//        this.parseConnect(file);
         ShellEventUtil.showImportConnect(file);
     }
 
@@ -110,64 +92,13 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      * 导入连接
      */
     private void importConnect() {
-//        FileExtensionFilter filter1 = FileChooserHelper.jsonExtensionFilter();
-//        File file = FileChooserHelper.choose(I18nHelper.chooseFile(), filter1);
-//        // 解析文件
-//        this.parseConnect(file);
         ShellEventUtil.showImportConnect(null);
     }
-
-//    /**
-//     * 解析连接文件
-//     *
-//     * @param file 文件
-//     */
-//    private void parseConnect(File file) {
-//        if (file == null) {
-//            return;
-//        }
-//        if (!file.exists()) {
-//            MessageBox.warn(I18nHelper.fileNotExists());
-//            return;
-//        }
-//        if (file.isDirectory()) {
-//            MessageBox.warn(I18nHelper.notSupportFolder());
-//            return;
-//        }
-//        if (!FileNameUtil.isJsonType(FileNameUtil.extName(file.getName()))) {
-//            MessageBox.warn(I18nHelper.invalidFormat());
-//            return;
-//        }
-//        if (file.length() == 0) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
-//            return;
-//        }
-//        try {
-//            String text = FileUtil.readUtf8String(file);
-//            ZKConnectExport export = ZKConnectExport.fromJSON(text);
-//            List<ZKConnect> connects = export.getConnects();
-//            if (CollectionUtil.isNotEmpty(connects)) {
-//                for (ZKConnect connect : connects) {
-//                    if (!this.connectStore.replace(connect)) {
-//                        MessageBox.warn(I18nHelper.connect() + " : " + connect.getName() + " " + I18nHelper.importFail());
-//                    }
-//                }
-//                // 重新加载节点
-//                this.reloadChild();
-//                // 提示成功
-//                MessageBox.okToast(I18nHelper.importConnectionSuccess());
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex, I18nHelper.importConnectionFail());
-//        }
-//    }
 
     /**
      * 添加连接
      */
     private void addConnect() {
-//        StageManager.showStage(ZKConnectAddController.class, this.window());
         ShellEventUtil.showAddConnect();
     }
 

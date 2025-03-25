@@ -352,7 +352,7 @@ public class ShellSftpTransportController extends StageController {
             this.sourceInfo.select(sourceInfo);
             this.sourceInfo.disable();
         }
-        this.stage.hideOnEscape();
+//        this.stage.hideOnEscape();
     }
 
     @Override

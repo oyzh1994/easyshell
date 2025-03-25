@@ -438,17 +438,25 @@ public class ShellClient {
 
     public ShellSftp openSftp() {
         if (!this.sftpManager.hasAvailable()) {
-            try {
-                ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-                ShellSftp sftp = new ShellSftp(channel);
-                sftp.connect(this.connectTimeout());
+            ShellSftp sftp = this.newSftp();
+            if (sftp != null) {
                 this.sftpManager.push(sftp);
-                return sftp;
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
+            return sftp;
         }
         return this.sftpManager.take();
+    }
+
+    public ShellSftp newSftp() {
+        try {
+            ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
+            ShellSftp sftp = new ShellSftp(channel);
+            sftp.connect(this.connectTimeout());
+            return sftp;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     public String exec(String command) {

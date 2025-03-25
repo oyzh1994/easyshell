@@ -161,10 +161,10 @@ public class ShellSftp extends ShellChannel {
             if (dir.isEmpty()) continue;
             currentPath.append("/").append(dir);
             try {
-                this.stat(currentPath.toString());  // 检查目录是否存在‌:ml-citation{ref="1,7" data="citationList"}
+                this.stat(currentPath.toString());  // 检查目录是否存在
             } catch (SftpException e) {
                 if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
-                    this.mkdir(currentPath.toString());  // 创建缺失目录‌:ml-citation{ref="1,6" data="citationList"}
+                    this.mkdir(currentPath.toString());  // 创建缺失目录
                 } else {
                     throw e;
                 }

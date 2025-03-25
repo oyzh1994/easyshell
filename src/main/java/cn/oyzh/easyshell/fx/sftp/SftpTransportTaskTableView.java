@@ -47,15 +47,15 @@ public class SftpTransportTaskTableView extends FXTableView<SftpTransportTask> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem cancelTransport = MenuItemHelper.cancelTransport("12", ()->{
-            for (SftpTransportTask task : tasks) {
-                task.cancel();
+        MenuItem cancelTransport = MenuItemHelper.cancelTransport("12", () -> {
+            for (SftpTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
+                sftpTransportTask.cancel();
             }
             this.removeItem(tasks);
         });
-        MenuItem removeTransport = MenuItemHelper.removeTransport("12", ()->{
-            for (SftpTransportTask task : tasks) {
-                task.remove();
+        MenuItem removeTransport = MenuItemHelper.removeTransport("12", () -> {
+            for (SftpTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
+                sftpTransportTask.remove();
             }
             this.removeItem(tasks);
         });
