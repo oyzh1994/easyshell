@@ -38,15 +38,13 @@ public class ShellDockerContainerTabController extends SubTabController {
 
     private boolean initialized = false;
 
-    public void init() {
+    public void init(DockerExec exec) {
         if (this.initialized) {
             return;
         }
         this.initialized = true;
         try {
-            DockerExec exec = this.client().dockerExec();
             this.containerTable.setExec(exec);
-            this.refreshContainer();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -59,7 +57,7 @@ public class ShellDockerContainerTabController extends SubTabController {
             super.onTabInit(tab);
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
-                    this.init();
+                    this.init(this.client().dockerExec());
                 }
             });
             this.filterContainer.addTextChangeListener((observableValue, aBoolean, t1) -> {
@@ -85,6 +83,10 @@ public class ShellDockerContainerTabController extends SubTabController {
 
     @FXML
     public void refreshContainer() {
+//        // 设置执行对象
+//        if (this.containerTable.getExec() == null) {
+//            this.containerTable.setExec(this.client().dockerExec());
+//        }
         StageManager.showMask(() -> this.containerTable.loadContainer());
     }
 

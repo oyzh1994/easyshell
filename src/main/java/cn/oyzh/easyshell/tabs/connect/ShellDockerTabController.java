@@ -89,6 +89,7 @@ public class ShellDockerTabController extends ParentTabController {
         this.initialized = true;
         try {
             DockerExec exec = this.getClient().dockerExec();
+            this.containerController.init(exec);
             String output = exec.docker_ps();
             if (StringUtil.containsAnyIgnoreCase(output, "not found")) {
                 MessageBox.info(ShellI18nHelper.connectTip5());
@@ -98,7 +99,7 @@ public class ShellDockerTabController extends ParentTabController {
                 MessageBox.warn(ShellI18nHelper.connectTip6());
                 return;
             }
-            this.containerController.init();
+            this.containerController.refreshContainer();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

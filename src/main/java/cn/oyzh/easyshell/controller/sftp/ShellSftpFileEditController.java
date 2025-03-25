@@ -119,10 +119,10 @@ public class ShellSftpFileEditController extends StageController {
      * 初始化文件
      */
     private void init() {
-//        this.fontSize.selectSize((byte) 12);
-        ShellSftp sftp = this.client.openSftp();
         StageManager.showMask(() -> {
             try {
+                FileUtil.touch(this.destPath);
+                ShellSftp sftp = this.client.openSftp();
                 sftp.get(this.file.getFilePath(), this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
