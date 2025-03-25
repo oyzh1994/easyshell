@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyshell</artifactId>
-    <version>1.0.3</version>
-    <description>ssh连接，sftp文件管理，x11转发支持，本地终端增强能力</description>
+    <version>1.0.4</version>
+    <description>这是一个使用javafx编写的ssh客户端，支持基本的连接管理，分组管理、ssh连接、sftp文件管理、docker管理、x11转发(需要安装第三方x-server)、服务监控、本地终端等功能，支持linux和macos远程，还支持暗色主题、系统主题跟随等能力</description>
 
     <properties>
         <jna.version>5.17.0</jna.version>
