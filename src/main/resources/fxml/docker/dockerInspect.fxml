@@ -11,13 +11,13 @@
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyInspect">
             <FXHBox.margin>
-                <Insets left="20" top="10"/>
+                <Insets left="10" top="10"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
     <RichJsonTextAreaPane editable="false" fx:id="inspect" flexHeight="100% - 30" flexWidth="100% - 20">
         <VBox.margin>
-            <Insets left="30"/>
+            <Insets left="10"/>
         </VBox.margin>
     </RichJsonTextAreaPane>
 </FXVBox>
