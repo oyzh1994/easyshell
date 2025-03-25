@@ -1,7 +1,6 @@
 package com.techsenger.jeditermfx.ui.settings;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.i18n.I18nHelper;
 import com.techsenger.jeditermfx.core.HyperlinkStyle;
 import com.techsenger.jeditermfx.core.TerminalColor;
 import com.techsenger.jeditermfx.core.TextStyle;
@@ -26,8 +25,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getOpenUrlActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.openAsUrl(), Collections.emptyList());
-//        return new TerminalActionPresentation("Open as URL", Collections.emptyList());
+        return new TerminalActionPresentation("Open as URL", Collections.emptyList());
     }
 
     @Override
@@ -36,8 +34,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
                 ? new KeyCodeCombination(KeyCode.C, KeyCombination.META_DOWN)
                 // CTRL + C is used for signal; use CTRL + SHIFT + C instead
                 : new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new TerminalActionPresentation(I18nHelper.copy(), keyCombination);
-//        return new TerminalActionPresentation("Copy", keyCombination);
+        return new TerminalActionPresentation("Copy", keyCombination);
     }
 
     @Override
@@ -46,70 +43,52 @@ public class DefaultSettingsProvider implements SettingsProvider {
                 ? new KeyCodeCombination(KeyCode.V, KeyCombination.META_DOWN)
                 // CTRL + V is used for signal; use CTRL + SHIFT + V instead
                 : new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new TerminalActionPresentation(I18nHelper.paste(), keyCombination);
-//        return new TerminalActionPresentation("Paste", keyCombination);
+        return new TerminalActionPresentation("Paste", keyCombination);
     }
 
     @Override
     public @NotNull TerminalActionPresentation getClearBufferActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.clearBuffer(), isMacOS()
+        return new TerminalActionPresentation("Clear Buffer", isMacOS()
                 ? new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
-//        return new TerminalActionPresentation("Clear Buffer", isMacOS()
-//                ? new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN)
-//                : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getPageUpActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.pageUp(),
+        return new TerminalActionPresentation("Page Up",
                 new KeyCodeCombination(KeyCode.PAGE_UP, KeyCombination.SHIFT_DOWN));
-//        return new TerminalActionPresentation("Page Up",
-//                new KeyCodeCombination(KeyCode.PAGE_UP, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getPageDownActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.pageDown(),
+        return new TerminalActionPresentation("Page Down",
                 new KeyCodeCombination(KeyCode.PAGE_DOWN, KeyCombination.SHIFT_DOWN));
-//        return new TerminalActionPresentation("Page Down",
-//                new KeyCodeCombination(KeyCode.PAGE_DOWN, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getLineUpActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.lineUp(), isMacOS()
+        return new TerminalActionPresentation("Line Up", isMacOS()
                 ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN));
-//        return new TerminalActionPresentation("Line Up", isMacOS()
-//                ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
-//                : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getLineDownActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.lineDown(), isMacOS()
+        return new TerminalActionPresentation("Line Down", isMacOS()
                 ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN));
-//        return new TerminalActionPresentation("Line Down", isMacOS()
-//                ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
-//                : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getFindActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.find(), isMacOS()
+        return new TerminalActionPresentation("Find", isMacOS()
                 ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
-//        return new TerminalActionPresentation("Find", isMacOS()
-//                ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
-//                : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getSelectAllActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.selectAll(), Collections.emptyList());
-//        return new TerminalActionPresentation("Select All", Collections.emptyList());
+        return new TerminalActionPresentation("Select All", Collections.emptyList());
     }
 
     @Override

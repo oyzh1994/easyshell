@@ -35,6 +35,16 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean showHiddenFile;
 
+    @Override
+    public void copy(Object o) {
+        super.copy(o);
+        if (o instanceof ShellSetting setting) {
+            this.x11Path = setting.x11Path;
+            this.terminalType = setting.terminalType;
+            this.showHiddenFile = setting.showHiddenFile;
+        }
+    }
+
     public boolean isShowHiddenFile() {
         return this.showHiddenFile == null || BooleanUtil.isTrue(this.showHiddenFile);
     }
@@ -57,7 +67,7 @@ public class ShellSetting extends AppSetting {
             return new String[]{"startx"};
         }
         if (OSUtil.isWindows()) {
-            return new String[]{"vcxsrv.exe", "XWin_MobaX.exe","XWin.exe"};
+            return new String[]{"vcxsrv.exe", "XWin_MobaX.exe", "XWin.exe"};
         }
         return null;
     }
