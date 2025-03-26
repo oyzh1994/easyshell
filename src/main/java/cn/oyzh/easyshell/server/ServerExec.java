@@ -123,7 +123,8 @@ public class ServerExec {
                 }
                 return Double.parseDouble(output);
             }
-            String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
+            String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%%\\n\", $3/$2 * 100.0}'");
+//            String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
             if (StringUtil.isBlank(output)) {
                 return -1;
             }

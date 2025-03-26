@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.BooleanProperty;
@@ -88,6 +89,7 @@ public class SftpDeleteManager {
                 }
                 ShellSftp sftp = deleteFile.getSftp();
                 try {
+                    deleteFile.file.startWaiting();
                     if (deleteFile.isDir()) {
                         this.rmdirRecursive(deleteFile.getPath(), sftp);
                     } else {
@@ -96,6 +98,9 @@ public class SftpDeleteManager {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JulLog.warn("file:{} delete failed", deleteFile.getPath(), ex);
+                    MessageBox.exception(ex);
+                } finally {
+                    deleteFile.file.stopWaiting();
                 }
             }
         } finally {

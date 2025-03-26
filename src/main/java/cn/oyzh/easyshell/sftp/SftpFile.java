@@ -273,6 +273,12 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         }
     }
 
+    public void stopWaiting() {
+        if (this.icon != null) {
+            this.icon.stopWaiting();
+        }
+    }
+
     public boolean isWaiting() {
         if (this.icon != null) {
             return this.icon.isWaiting();

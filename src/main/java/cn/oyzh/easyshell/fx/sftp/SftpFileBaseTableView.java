@@ -363,7 +363,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
                     if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
                         continue;
                     }
-                    file.startWaiting();
+//                    file.startWaiting();
                     this.client.delete(file);
                 }
                 this.refreshFile();
