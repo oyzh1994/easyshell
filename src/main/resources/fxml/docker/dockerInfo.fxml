@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane?>
+<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.controller.docker.DockerInfoController" prefWidth="900" realHeight="650">
@@ -16,9 +16,9 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellJsonTextAreaPane editable="false" fx:id="info" flexHeight="100% - 30" flexWidth="100% - 20">
+    <ShellDataTextAreaPane editable="false" fx:id="data" flexHeight="100% - 30" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
-    </ShellJsonTextAreaPane>
+    </ShellDataTextAreaPane>
 </FXVBox>

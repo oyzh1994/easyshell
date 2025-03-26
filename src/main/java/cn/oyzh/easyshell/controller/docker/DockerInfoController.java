@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
+import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -29,11 +30,11 @@ public class DockerInfoController extends StageController {
      * 信息
      */
     @FXML
-    private ShellJsonTextAreaPane info;
+    private ShellDataTextAreaPane data;
 
     @FXML
     private void copyInfo() {
-        ClipboardUtil.copy(this.info.getText());
+        ClipboardUtil.copy(this.data.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
 
@@ -41,7 +42,7 @@ public class DockerInfoController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         String inspect = this.getWindowProp("info");
-        this.info.setText(inspect);
+        this.data.setText(inspect);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
