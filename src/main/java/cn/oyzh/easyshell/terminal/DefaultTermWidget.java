@@ -51,7 +51,7 @@ public class DefaultTermWidget extends JediTermFxWidget {
             if (OSUtil.isMacOS()) {
                 return new String[]{terminalType, "--login"};
             }
-            return new String[]{terminalType};
+            return new String[]{terminalType, "-l"};
         }
         String[] command = new String[]{"/bin/bash"};
         Map<String, String> envs = this.getEnvironments();
@@ -63,7 +63,7 @@ public class DefaultTermWidget extends JediTermFxWidget {
             if (shell == null) {
                 shell = "/bin/bash";
             }
-            command = new String[]{shell};
+            command = new String[]{shell, "-l"};
         } else if (OSUtil.isMacOS()) {
             String shell = envs.get("SHELL");
             if (shell == null) {
@@ -87,6 +87,7 @@ public class DefaultTermWidget extends JediTermFxWidget {
                 .setEnvironment(envs)
                 .setConsole(false)
                 .setUseWinConPty(false)
+                .setRedirectErrorStream(true)
                 .setWindowsAnsiColorEnabled(true)
                 .start();
     }
