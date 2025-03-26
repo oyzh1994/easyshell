@@ -34,7 +34,7 @@ public class ShellExec {
 
     public String ifconfig() {
         String output = this.client.exec("ifconfig");
-        if (StringUtil.isBlank(output)) {
+        if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("ip addr");
         }
         return output;
