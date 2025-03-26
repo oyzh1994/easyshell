@@ -2,10 +2,10 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.DockerLogsController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
@@ -15,9 +15,9 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <RichDataTextAreaPane editable="false" fx:id="logs" flexHeight="100% - 30" flexWidth="100% - 20">
+    <ShellDataTextAreaPane editable="false" fx:id="logs" flexHeight="100% - 30" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
-    </RichDataTextAreaPane>
+    </ShellDataTextAreaPane>
 </FXVBox>

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.exec;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.util.ShellUtil;
 
 /**
  * @author oyzh
@@ -44,7 +45,7 @@ public class ShellExec {
             return this.client.exec("system_profiler SPMemoryDataType");
         }
         String output = this.client.exec("lshw -C memory");
-        if (StringUtil.containsAnyIgnoreCase("not found")) {
+        if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("dmidecode -t memory");
         }
         return output;
@@ -55,7 +56,7 @@ public class ShellExec {
             return this.client.exec("system_profiler SPDisplaysDataType");
         }
         String output = this.client.exec("nvidia-smi");
-        if (StringUtil.containsIgnoreCase(output, "not found")) {
+        if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("lspci | grep -i '3d'");
         }
         if (StringUtil.isBlank(output)) {

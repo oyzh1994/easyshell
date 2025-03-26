@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.controller.docker;
 
+import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -29,7 +29,7 @@ public class DockerInfoController extends StageController {
      * 信息
      */
     @FXML
-    private RichJsonTextAreaPane info;
+    private ShellJsonTextAreaPane info;
 
     @FXML
     private void copyInfo() {

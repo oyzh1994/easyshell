@@ -23,6 +23,7 @@ import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.SSHForwardConfig;
@@ -153,6 +154,11 @@ public class ShellClient {
         }
     }
 
+    /**
+     * 初始化连接
+     *
+     * @return 连接
+     */
     private String initHost() {
         // 连接地址
         String host;
@@ -568,22 +574,22 @@ public class ShellClient {
     public DockerExec dockerExec() {
         if (this.dockerExec == null) {
             this.dockerExec = new DockerExec(this);
-            if (this.isMacos()) {
-                String output = this.exec("which docker");
-                if (StringUtil.isNotBlank(output) && !StringUtil.containsAnyIgnoreCase(output, "not found")) {
-                    String env = output.substring(0, output.lastIndexOf("/"));
-                    this.environment.add(env);
-                } else {
-                    try {
+//            if (this.isMacos()) {
+                try {
+                    String output = this.exec("which docker");
+                    if (!ShellUtil.isCommandNotFound(output)) {
+                        String env = output.substring(0, output.lastIndexOf("/"));
+                        this.environment.add(env);
+                    } else {
                         ShellSftp sftp = this.openSftp();
                         if (sftp.exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
                             this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            }
+//            }
         }
         return this.dockerExec;
     }

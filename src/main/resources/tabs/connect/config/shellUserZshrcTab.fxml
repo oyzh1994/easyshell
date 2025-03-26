@@ -7,9 +7,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
+<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXTab fx:id="userZshrc" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellUserZshrcTabController" text="~/.zshrc">
@@ -36,11 +36,11 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <RichDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100%"
-                              flexHeight="100% - 30">
+        <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100%"
+                               flexHeight="100% - 30">
             <FXVBox.margin>
                 <Insets left="10"/>
             </FXVBox.margin>
-        </RichDataTextAreaPane>
+        </ShellDataTextAreaPane>
     </FXVBox>
 </FXTab>

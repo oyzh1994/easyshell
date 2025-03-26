@@ -17,7 +17,6 @@ import java.io.File;
  * @author oyzh
  * @since 2025/03/08
  */
-
 public class X11Manager {
 
     /**

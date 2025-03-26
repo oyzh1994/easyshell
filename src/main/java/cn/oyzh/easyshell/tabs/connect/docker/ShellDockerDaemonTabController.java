@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.connect.docker;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
@@ -13,7 +14,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -44,7 +44,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private RichJsonTextAreaPane data;
+    private ShellJsonTextAreaPane data;
 
     @FXML
     private void refresh() {

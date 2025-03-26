@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerDaemonTabController;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerExtraTabController;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerImageTabController;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -91,7 +92,7 @@ public class ShellDockerTabController extends ParentTabController {
             DockerExec exec = this.getClient().dockerExec();
             this.containerController.init(exec);
             String output = exec.docker_ps();
-            if (StringUtil.containsAnyIgnoreCase(output, "not found")) {
+            if (ShellUtil.isCommandNotFound(output)) {
                 MessageBox.info(ShellI18nHelper.connectTip5());
                 return;
             }

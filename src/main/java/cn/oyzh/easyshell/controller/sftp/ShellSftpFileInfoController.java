@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -61,8 +62,12 @@ public class ShellSftpFileInfoController extends StageController {
         this.group.setText(file.getGroup());
         this.owner.setText(file.getOwner());
         this.name.setText(file.getName());
-        this.size.setText(file.getSize());
         this.permissions.setText(file.getPermissions());
+        if (file.isDir()) {
+            NodeGroupUtil.disappear(this.getStage(), "size");
+        } else {
+            this.size.setText(file.getSize());
+        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

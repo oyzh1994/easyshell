@@ -2,11 +2,10 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane?>
+<?import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.controller.docker.DockerInfoController" prefWidth="900" realHeight="650">
@@ -17,9 +16,9 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <RichJsonTextAreaPane editable="false" fx:id="info" flexHeight="100% - 30" flexWidth="100% - 20">
+    <ShellJsonTextAreaPane editable="false" fx:id="info" flexHeight="100% - 30" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
-    </RichJsonTextAreaPane>
+    </ShellJsonTextAreaPane>
 </FXVBox>

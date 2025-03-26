@@ -16,12 +16,12 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ReadOnlyTextField>
-    <InfoLabel text="%base.size">
+    <InfoLabel text="%base.size" groupId="size">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ReadOnlyTextField fx:id="size" realHeight="30" flexWidth="100% - 140">
+    <ReadOnlyTextField groupId="size" fx:id="size" realHeight="30" flexWidth="100% - 140">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
