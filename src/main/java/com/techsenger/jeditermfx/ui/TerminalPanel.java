@@ -248,8 +248,8 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         this.pane.getStylesheets().add(css);
         setScrollBarRangeProperties(0, 80, 0, 80);
         updateScrolling(true);
-        terminalTextBuffer.addModelListener(() -> repaint());
-        terminalTextBuffer.addTypeAheadModelListener(() -> repaint());
+        terminalTextBuffer.addModelListener(this::repaint);
+        terminalTextBuffer.addTypeAheadModelListener(this::repaint);
         terminalTextBuffer.addHistoryBufferListener(() -> myHistoryBufferLineCountChanged.set(true));
         mySelection.addListener((ov, oldV, newV) -> updateSelectedText());
     }
@@ -313,6 +313,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         this.canvasPane.setPrefWidth(getPixelWidth());
         this.canvas.setFocusTraversable(true);
         this.canvas.setCache(true);
+        this.canvas.requestFocus();
         this.scrollBar.setOrientation(Orientation.VERTICAL);
         if (mySettingsProvider.useAntialiasing()) {
             //Important! FontSmoothingType.LCD is very slow

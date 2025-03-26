@@ -71,7 +71,6 @@ public class TerminalAction {
                 return a.isEnabled(e) && a.actionPerformed(e);
             }
         }
-//        System.out.println(actionProvider.getActions());
         if (actionProvider.getNextProvider() != null) {
             return processEvent(actionProvider.getNextProvider(), e);
         }

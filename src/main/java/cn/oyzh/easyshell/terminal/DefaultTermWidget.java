@@ -129,8 +129,8 @@ public class DefaultTermWidget extends JediTermFxWidget {
         }
     }
 
-    public void onTermination(IntConsumer terminationCallback) {
-        new TtyConnectorWaitFor(this.getTtyConnector(),
+    public TtyConnectorWaitFor onTermination(IntConsumer terminationCallback) {
+        return new TtyConnectorWaitFor(this.getTtyConnector(),
                 this.getExecutorServiceManager().getUnboundedExecutorService(),
                 terminationCallback);
     }

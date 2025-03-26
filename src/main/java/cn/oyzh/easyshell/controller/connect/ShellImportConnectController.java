@@ -135,19 +135,19 @@ public class ShellImportConnectController extends StageController {
         }
         this.fileName.setText(this.importFile.getPath());
         if (!this.importFile.exists()) {
-            MessageBox.warn(I18nHelper.fileNotExists());
+            MessageBox.warn(I18nHelper.fileNotExists(), this.getStage());
             return;
         }
         if (this.importFile.isDirectory()) {
-            MessageBox.warn(I18nHelper.notSupportFolder());
+            MessageBox.warn(I18nHelper.notSupportFolder(), this.getStage());
             return;
         }
         if (!FileNameUtil.isJsonType(FileNameUtil.extName(this.importFile.getName()))) {
-            MessageBox.warn(I18nHelper.invalidFormat());
+            MessageBox.warn(I18nHelper.invalidFormat(), this.getStage());
             return;
         }
         if (this.importFile.length() == 0) {
-            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            MessageBox.warn(I18nHelper.contentCanNotEmpty(), this.getStage());
         }
     }
 

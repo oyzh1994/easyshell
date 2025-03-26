@@ -127,6 +127,11 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
     }
 
     @Override
+    public int getBufferMaxLinesCount() {
+        return 10_000;
+    }
+
+    @Override
     public boolean ambiguousCharsAreDoubleWidth() {
         return true;
     }
