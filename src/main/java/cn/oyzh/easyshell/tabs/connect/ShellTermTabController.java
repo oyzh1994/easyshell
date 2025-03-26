@@ -61,6 +61,7 @@ public class ShellTermTabController extends SubTabController {
         shell.connect(client.connectTimeout());
         if (!shell.isConnected()) {
             MessageBox.warn(I18nHelper.connectFail());
+            this.closeTab();
         }
     }
 
