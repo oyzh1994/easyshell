@@ -6,16 +6,28 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.DockerLogsController" prefWidth="900" realHeight="650">
-    <FXHBox realHeight="30" flexWidth="100%">
-        <CopySVGGlyph onMousePrimaryClicked="#copyLogs">
+    <FXHBox realHeight="40" flexWidth="100%">
+        <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="30" prefWidth="300">
+            <FXHBox.margin>
+                <Insets left="10" top="5"/>
+            </FXHBox.margin>
+        </ClearableTextField>
+        <NextSVGGlyph sizeStr="20" onMousePrimaryClicked="#searchNext">
+            <FXHBox.margin>
+                <Insets left="5" top="10"/>
+            </FXHBox.margin>
+        </NextSVGGlyph>
+        <CopySVGGlyph sizeStr="20"  onMousePrimaryClicked="#copyLogs">
             <FXHBox.margin>
                 <Insets left="10" top="10"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellDataTextAreaPane editable="false" fx:id="logs" flexHeight="100% - 30" flexWidth="100% - 20">
+    <ShellDataTextAreaPane editable="false" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>

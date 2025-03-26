@@ -142,7 +142,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
         }
 
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem containerInfo = MenuItemHelper.containerInfo("12", this::containerInspect);
+        FXMenuItem containerInfo = MenuItemHelper.containerInspect("12", this::containerInspect);
         menuItems.add(containerInfo);
         FXMenuItem containerResource = MenuItemHelper.containerResource("12", this::containerResource);
         menuItems.add(containerResource);

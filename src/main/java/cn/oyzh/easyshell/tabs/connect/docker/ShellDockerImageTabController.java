@@ -1,25 +1,15 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.DockerInfoController;
-import cn.oyzh.easyshell.controller.docker.DockerVersionController;
 import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.ShellConnectTabController;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
-import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
 import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**

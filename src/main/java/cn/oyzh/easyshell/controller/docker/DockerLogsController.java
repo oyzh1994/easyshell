@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.controller.docker;
 
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -29,19 +31,34 @@ public class DockerLogsController extends StageController {
      * 日志
      */
     @FXML
-    private RichDataTextAreaPane logs;
+    private RichDataTextAreaPane data;
+
+    /**
+     * 过滤
+     */
+    @FXML
+    private ClearableTextField filter;
 
     @FXML
     private void copyLogs() {
-        ClipboardUtil.copy(this.logs.getText());
+        ClipboardUtil.copy(this.data.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 内容高亮
+        this.filter.addTextChangeListener((observableValue, s, t1) -> {
+            this.data.setHighlightText(t1);
+        });
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         String logs = this.getWindowProp("logs");
-        this.logs.setText(logs);
+        this.data.setText(logs);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -49,5 +66,36 @@ public class DockerLogsController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.logs();
+    }
+
+    /**
+     * 搜索索引
+     */
+    private int searchIndex;
+
+    /**
+     * 搜索下一个
+     */
+    @FXML
+    private void searchNext() {
+        try {
+            String filterText = this.filter.getText();
+            if (StringUtil.isBlank(filterText)) {
+                return;
+            }
+            String text = this.data.getText();
+            if (this.searchIndex >= text.length()) {
+                this.searchIndex = 0;
+            }
+            int index = text.indexOf(filterText, this.searchIndex);
+            if (index == -1) {
+                this.searchIndex = 0;
+                return;
+            }
+            this.searchIndex = index + filterText.length();
+            this.data.selectRangeAndGoto(index, index + filterText.length());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

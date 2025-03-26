@@ -135,6 +135,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
                     FXUtil.runLater(() -> {
                         StageAdapter adapter = StageManager.parseStage(DockerInspectController.class);
                         adapter.setProp("inspect", output);
+                        adapter.setProp("image", true);
                         adapter.display();
                     });
                 }
@@ -170,7 +171,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
             return Collections.emptyList();
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem imageInfo = MenuItemHelper.imageInfo("12", this::imageInspect);
+        FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", this::imageInspect);
         FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(false));
         FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(true));

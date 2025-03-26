@@ -35,7 +35,7 @@ public class ShellTerminalTab extends RichTab {
 
     @Override
     public String getTabTitle() {
-        return I18nHelper.terminal();
+        return I18nHelper.localTerminal();
     }
 
 }
