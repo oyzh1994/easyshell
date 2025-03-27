@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileYmlSVGGlyph extends SVGGlyph {
 
     public FileYmlSVGGlyph() {
-        super("/font/file-yml.svg");
+        super("/font/file/file-yml.svg");
     }
 
     public FileYmlSVGGlyph(String size) {

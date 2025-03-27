@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileTarSVGGlyph extends SVGGlyph {
 
     public FileTarSVGGlyph() {
-        super("/font/file-tar.svg");
+        super("/font/file/file-tar.svg");
     }
 
     public FileTarSVGGlyph(String size) {

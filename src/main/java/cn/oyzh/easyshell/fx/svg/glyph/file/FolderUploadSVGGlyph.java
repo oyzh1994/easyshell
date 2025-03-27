@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FolderUploadSVGGlyph extends SVGGlyph {
 
     public FolderUploadSVGGlyph() {
-        super("/font/folder-upload.svg");
+        super("/font/file/folder-upload.svg");
     }
 
     public FolderUploadSVGGlyph(String size) {

@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileUploadSVGGlyph extends SVGGlyph {
 
     public FileUploadSVGGlyph() {
-        super("/font/file-upload.svg");
+        super("/font/file/file-upload.svg");
     }
 
     public FileUploadSVGGlyph(String size) {

@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileMp3SVGGlyph extends SVGGlyph {
 
     public FileMp3SVGGlyph() {
-        super("/font/file-mp3.svg");
+        super("/font/file/file-mp3.svg");
     }
 
     public FileMp3SVGGlyph(String size) {

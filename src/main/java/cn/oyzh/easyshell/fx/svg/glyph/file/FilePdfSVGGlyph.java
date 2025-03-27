@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FilePdfSVGGlyph extends SVGGlyph {
 
     public FilePdfSVGGlyph() {
-        super("/font/file-pdf.svg");
+        super("/font/file/file-pdf.svg");
     }
 
     public FilePdfSVGGlyph(String size) {

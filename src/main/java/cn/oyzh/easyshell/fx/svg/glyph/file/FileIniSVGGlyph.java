@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileIniSVGGlyph extends SVGGlyph {
 
     public FileIniSVGGlyph() {
-        super("/font/file-ini.svg");
+        super("/font/file/file-ini.svg");
     }
 
     public FileIniSVGGlyph(String size) {

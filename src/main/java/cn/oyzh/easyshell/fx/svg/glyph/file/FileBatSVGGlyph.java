@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileBatSVGGlyph extends SVGGlyph {
 
     public FileBatSVGGlyph() {
-        super("/font/file-bat.svg");
+        super("/font/file/file-bat.svg");
     }
 
     public FileBatSVGGlyph(String size) {

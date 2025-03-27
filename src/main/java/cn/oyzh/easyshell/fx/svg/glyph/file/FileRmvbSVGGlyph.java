@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileRmvbSVGGlyph extends SVGGlyph {
 
     public FileRmvbSVGGlyph() {
-        super("/font/file-rmvb.svg");
+        super("/font/file/file-rmvb.svg");
     }
 
     public FileRmvbSVGGlyph(String size) {
