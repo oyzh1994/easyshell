@@ -87,8 +87,8 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
 
     public void setShowHiddenFile(boolean showHiddenFile) {
 //        if (showHiddenFile != this.showHiddenFile) {
-            this.showHiddenFile = showHiddenFile;
-            this.refreshFile();
+        this.showHiddenFile = showHiddenFile;
+        this.refreshFile();
 //        }
     }
 
@@ -402,6 +402,17 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         if (optional.isPresent()) {
             this.files.remove(optional.get());
             this.refreshFile();
+        }
+    }
+
+    public void cd(String path) {
+        try {
+            if (this.sftp().exist(path)) {
+                this.currPath(path);
+                this.loadFile();
+            }
+        } catch (SftpException ex) {
+            MessageBox.exception(ex);
         }
     }
 }

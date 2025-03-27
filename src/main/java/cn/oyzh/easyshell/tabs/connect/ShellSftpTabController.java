@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpManageController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.FileSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
@@ -51,7 +52,7 @@ public class ShellSftpTabController extends SubTabController {
     private FXTab root;
 
     @FXML
-    private FXLabel filePath;
+    private SftpLocationTextField filePath;
 
 //    @FXML
 //    private FXLabel fileUpload;
@@ -272,6 +273,10 @@ public class ShellSftpTabController extends SubTabController {
             // 文件下载回调
             this.fileTable.setDownloadFileCallback((files) -> {
                 AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
+            });
+            // 路径跳转
+            this.filePath.setOnJumpLocation(path -> {
+                this.fileTable.cd(path);
             });
         } catch (Exception ex) {
             ex.printStackTrace();

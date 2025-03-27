@@ -18,6 +18,7 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellSftpTabController"
        text="%base.file" fx:id="root">
@@ -135,12 +136,12 @@
         <!--            </columns>-->
         <!--        </SftpDownloadTaskTableView>-->
         <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
-            <FXLabel text="%base.delete">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </FXLabel>
-            <FXLabel fx:id="fileDelete" maxWidth="800">
+<!--            <FXLabel text="%base.delete">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="5"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FXLabel>-->
+            <FXLabel fx:id="fileDelete" flexWidth="100% - 10">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
@@ -201,16 +202,16 @@
         <!--            </FXLabel>-->
         <!--        </FXHBox>-->
         <FXHBox prefHeight="30" flexWidth="100%">
-            <FXLabel text="%base.location">
+<!--            <FXLabel text="%base.location" maxWidth="50">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="9"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FXLabel>-->
+            <SftpLocationTextField fx:id="filePath" flexWidth="100% - 10">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
-            </FXLabel>
-            <FXLabel fx:id="filePath">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </FXLabel>
+            </SftpLocationTextField>
         </FXHBox>
     </FXVBox>
 </FXTab>
