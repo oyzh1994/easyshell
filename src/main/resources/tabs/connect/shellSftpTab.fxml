@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.FileAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.FileUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.FolderAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.FolderUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>

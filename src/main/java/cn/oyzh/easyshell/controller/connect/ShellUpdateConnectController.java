@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.fx.gui.combobox.SSHAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
@@ -193,6 +194,12 @@ public class ShellUpdateConnectController extends StageController {
     private SSHAuthMethodCombobox authMethod;
 
     /**
+     * 系统类型
+     */
+    @FXML
+    private ShellOsTypeComboBox osType;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -314,10 +321,12 @@ public class ShellUpdateConnectController extends StageController {
         try {
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
             this.shellConnect.setName(name);
+            this.shellConnect.setOsType(osType);
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
@@ -398,6 +407,7 @@ public class ShellUpdateConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
+        this.osType.select(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());

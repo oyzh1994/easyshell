@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.fx.gui.combobox.SSHAuthMethodCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
@@ -189,6 +190,12 @@ public class ShellAddConnectController extends StageController {
     private SSHAuthMethodCombobox authMethod;
 
     /**
+     * 系统类型
+     */
+    @FXML
+    private ShellOsTypeComboBox osType;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -313,10 +320,12 @@ public class ShellAddConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
             shellConnect.setName(name);
+            shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());

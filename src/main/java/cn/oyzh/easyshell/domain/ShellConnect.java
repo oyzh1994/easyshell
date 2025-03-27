@@ -96,12 +96,28 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
     /**
      * 认证方式
      */
+    @Column
     private String authMethod;
 
     /**
      * 证书路径
      */
+    @Column
     private String certificatePath;
+
+    /**
+     * 系统类型
+     */
+    @Column
+    private String osType;
+
+    public String getOsType() {
+        return osType;
+    }
+
+    public void setOsType(String osType) {
+        this.osType = osType;
+    }
 
     public String getAuthMethod() {
         return authMethod;

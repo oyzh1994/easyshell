@@ -22,6 +22,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectController" realWidth="750"
         realHeight="480">
@@ -103,12 +104,22 @@
         </FXTab>
         <FXTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.osType">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellOsTypeComboBox fx:id="osType" prefWidth="200">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellOsTypeComboBox>
                 <InfoLabel text="%base.charset">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <CharsetComboBox fx:id="charset">
+                <CharsetComboBox fx:id="charset" prefWidth="200">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

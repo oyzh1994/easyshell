@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
-import cn.oyzh.easyshell.fx.svg.glyph.FileSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;

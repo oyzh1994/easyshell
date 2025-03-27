@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.trees.connect;
 
-import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 /**
@@ -11,7 +11,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  */
 public class ShellConnectTreeItemValue extends RichTreeItemValue {
 
-    public ShellConnectTreeItemValue( ShellConnectTreeItem item) {
+    public ShellConnectTreeItemValue(ShellConnectTreeItem item) {
         super(item);
     }
 
@@ -28,7 +28,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (this.graphic == null) {
-            this.graphic = new LinuxSVGGlyph("12");
+            this.graphic = ShellOsTypeComboBox.getGlyph(this.item().value().getOsType());
+            this.graphic.setSizeStr("12");
+//            this.graphic = new LinuxSVGGlyph("12");
         }
         return super.graphic();
     }

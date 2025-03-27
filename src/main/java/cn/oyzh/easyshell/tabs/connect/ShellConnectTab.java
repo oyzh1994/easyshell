@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -20,10 +21,6 @@ public class ShellConnectTab extends RichTab {
         this.init(item);
     }
 
-    public ShellConnectTab( ) {
-
-    }
-
     @Override
     protected String url() {
         return "/tabs/connect/shellConnectTab.fxml";
@@ -33,7 +30,9 @@ public class ShellConnectTab extends RichTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new LinuxSVGGlyph("13");
+            graphic = ShellOsTypeComboBox.getGlyph(this.shellConnect().getOsType());
+            graphic.setSizeStr("13");
+//            graphic = new LinuxSVGGlyph("13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }
