@@ -138,14 +138,22 @@ public class ServerExec implements AutoCloseable {
                 return Double.parseDouble(output);
             }
             if (this.client.isUnix()) {
-                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
+//                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
+//                if (StringUtil.isBlank(output)) {
+//                    return -1;
+//                }
+//                if (output.contains("%")) {
+//                    output = output.replace("%", "");
+//                }
+//                return Double.parseDouble(output);
+                String output = this.client.exec("sysctl -n hw.physmem vm.stats.vm.v_free_count");
                 if (StringUtil.isBlank(output)) {
                     return -1;
                 }
-                if (output.contains("%")) {
-                    output = output.replace("%", "");
-                }
-                return Double.parseDouble(output);
+                String[] array = output.lines().toArray(String[]::new);
+                Double used = Double.parseDouble(array[1]) * 4096;
+                Double total = Double.parseDouble(array[0]);
+                return (1 - used / total) * 100;
             }
             String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%%\\n\", $3/$2 * 100.0}'");
 //            String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
@@ -231,8 +239,26 @@ public class ServerExec implements AutoCloseable {
                 double write = Double.parseDouble(w);
                 return new double[]{read, write};
             }
+//            if (this.client.isUnix()) {
+//                String output = this.client.exec("iostat -d -x 1 1");
+//                if (StringUtil.isBlank(output)) {
+//                    return new double[]{-1L, -1L};
+//                }
+//                String[] lines = output.split("\n");
+//                double read = 0;
+//                double write = 0;
+//                for (int i = 2; i < lines.length; i++) {
+//                    String line = lines[i];
+//                    String[] cols = line.trim().split("\\s+");
+//                    String readTotal = cols[3];
+//                    String writeTotal = cols[4];
+//                    read += Double.parseDouble(readTotal);
+//                    write += Double.parseDouble(writeTotal);
+//                }
+//                return new double[]{read * 1024, write * 1024};
+//            }
             if (this.client.isUnix()) {
-                String output = this.client.exec("iostat -d -x 1 1");
+                String output = this.client.exec("timeout 2.5s gstat");
                 if (StringUtil.isBlank(output)) {
                     return new double[]{-1L, -1L};
                 }
@@ -242,12 +268,12 @@ public class ServerExec implements AutoCloseable {
                 for (int i = 2; i < lines.length; i++) {
                     String line = lines[i];
                     String[] cols = line.trim().split("\\s+");
-                    String readTotal = cols[3];
-                    String writeTotal = cols[4];
+                    String readTotal = cols[4];
+                    String writeTotal = cols[7];
                     read += Double.parseDouble(readTotal);
                     write += Double.parseDouble(writeTotal);
                 }
-                return new double[]{read / 1024, write / 1024};
+                return new double[]{read, write};
             }
             String output = this.client.exec("cat /proc/diskstats");
             if (StringUtil.isBlank(output)) {
