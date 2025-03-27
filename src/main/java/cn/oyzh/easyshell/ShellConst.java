@@ -33,6 +33,11 @@ public class ShellConst {
      */
     public final static String ICON_32_PATH = "/image/shell_32.png";
 
+    /**
+     * 获取存储路径
+     *
+     * @return 存储路径
+     */
     public static String getStorePath() {
         if (JarUtil.isInJar()) {
             return System.getProperty("user.home") + File.separator + ".easyshell_dev" + File.separator;
@@ -40,6 +45,11 @@ public class ShellConst {
         return System.getProperty("user.home") + File.separator + ".easyshell" + File.separator;
     }
 
+    /**
+     * 获取缓存路径
+     *
+     * @return 缓存路径
+     */
     public static String getCachePath() {
         return getStorePath() + "cache" + File.separator;
     }
