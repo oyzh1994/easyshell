@@ -64,7 +64,7 @@ public class ShellClientChecker {
                 if (closedList != null) {
                     CLIENTS.removeAll(closedList);
                 }
-            }, 3000, 3000);
+            }, 1500, 1500);
         }
     }
 }

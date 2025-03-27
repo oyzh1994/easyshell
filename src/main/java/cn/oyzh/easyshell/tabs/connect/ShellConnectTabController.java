@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.shell.ShellConnState;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -90,7 +91,7 @@ public class ShellConnectTabController extends ParentTabController {
                 }
                 // 监听连接状态
                 this.client.addStateListener((observableValue, shellConnState, t1) -> {
-                    if (t1 == null || !t1.isConnected()) {
+                    if (t1 == ShellConnState.INTERRUPT) {
                         MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
                         this.client.close();
                     }

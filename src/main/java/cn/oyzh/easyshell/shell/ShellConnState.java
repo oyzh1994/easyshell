@@ -47,6 +47,14 @@ public enum ShellConnState {
         public boolean isConnected() {
             return false;
         }
+    },
+    /**
+     * 中断
+     */
+    INTERRUPT {
+        public boolean isConnected() {
+            return false;
+        }
     };
 
     public abstract boolean isConnected();

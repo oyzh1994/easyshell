@@ -132,7 +132,7 @@ public class ShellClient {
         ShellConnState state = this.getState();
         if (state == ShellConnState.CONNECTED) {
             if (this.session == null || !this.session.isConnected()) {
-                this.state.set(ShellConnState.CLOSED);
+                this.state.set(ShellConnState.INTERRUPT);
             }
         }
     }
