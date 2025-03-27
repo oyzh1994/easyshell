@@ -575,20 +575,20 @@ public class ShellClient {
         if (this.dockerExec == null) {
             this.dockerExec = new DockerExec(this);
 //            if (this.isMacos()) {
-                try {
-                    String output = this.exec("which docker");
-                    if (!ShellUtil.isCommandNotFound(output)) {
-                        String env = output.substring(0, output.lastIndexOf("/"));
-                        this.environment.add(env);
-                    } else {
-                        ShellSftp sftp = this.openSftp();
-                        if (sftp.exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
-                            this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
-                        }
+            try {
+                String output = this.exec("which docker");
+                if (!ShellUtil.isCommandNotFound(output)) {
+                    String env = output.substring(0, output.lastIndexOf("/"));
+                    this.environment.add(env);
+                } else {
+                    ShellSftp sftp = this.openSftp();
+                    if (sftp.exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                        this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 //            }
         }
         return this.dockerExec;
@@ -639,10 +639,20 @@ public class ShellClient {
         return this.whoami;
     }
 
+    @Deprecated
     public String getUserBase() {
         if (this.isMacos()) {
             return "/Users/" + this.whoami() + "/";
         }
         return "/" + this.whoami() + "/";
+    }
+
+    private String userHome;
+
+    public String getUserHome() {
+        if (this.userHome == null) {
+            this.userHome = this.exec("echo $HOME");
+        }
+        return this.userHome + "/";
     }
 }

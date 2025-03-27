@@ -70,17 +70,17 @@ public class ShellConfigTabController extends ParentTabController {
             if (!sftp.exist("/etc/ssh/sshd_config")) {
                 tabPane.removeTab("sshd");
             }
-            String userBase = this.client.getUserBase();
+            String userHome = this.client.getUserHome();
             // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userBase + ".profile")) {
+            if (!sftp.exist(userHome + ".profile")) {
                 tabPane.removeTab("userProfile");
             }
             // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userBase + ".zshrc")) {
+            if (!sftp.exist(userHome + ".zshrc")) {
                 tabPane.removeTab("userZshrc");
             }
             // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userBase + ".bash_profile")) {
+            if (!sftp.exist(userHome + ".bash_profile")) {
                 tabPane.removeTab("userBashProfile");
             }
         } catch (Exception ex) {

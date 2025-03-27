@@ -68,10 +68,9 @@ public class ShellUserBashProfileTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSftp sftp = this.client().openSftp()) {
-                sftp.setUsing(true);
+            try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = this.client().getUserBase() + ".bash_profile.temp";
+                String tempFile = this.client().getUserHome() + ".bash_profile.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }

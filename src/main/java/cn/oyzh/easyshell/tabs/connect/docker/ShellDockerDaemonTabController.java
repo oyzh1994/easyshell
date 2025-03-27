@@ -51,7 +51,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
         // 设置文件路径
         if (this.filePath.isEmpty()) {
             if (this.client().isMacos()) {
-                this.filePath.setText(this.client().getUserBase() + ".docker/daemon.json");
+                this.filePath.setText(this.client().getUserHome() + ".docker/daemon.json");
             } else {
                 this.filePath.setText("/etc/docker/daemon.json");
             }

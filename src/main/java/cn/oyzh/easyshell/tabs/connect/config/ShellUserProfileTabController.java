@@ -69,14 +69,12 @@ public class ShellUserProfileTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSftp sftp = this.client().openSftp()) {
-                sftp.setUsing(true);
+            try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = this.client().getUserBase() + ".profile.temp";
+                String tempFile = this.client().getUserHome() + ".profile.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
-//                this.client().openSftp().touch(tempFile);
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
