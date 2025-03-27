@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
@@ -8,11 +9,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
-<FXTab fx:id="userZshrc" xmlns="http://javafx.com/javafx"
+<FXTab fx:id="sshd" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellUserZshrcTabController" text="~/.zshrc">
+       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigSshdTabController" text="/etc/ssh/sshd_config">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
             <SaveSVGGlyph onMousePrimaryClicked="#save">
@@ -20,11 +20,6 @@
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
-            <ApplySVGGlyph onMousePrimaryClicked="#apply">
-                <FXHBox.margin>
-                    <Insets left="10" top="10"/>
-                </FXHBox.margin>
-            </ApplySVGGlyph>
             <CopySVGGlyph onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>

@@ -1,24 +1,21 @@
 package cn.oyzh.easyshell.tabs.connect;
 
-import cn.oyzh.easyshell.server.ServerExec;
-import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.config.ShellBashTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellEnvironmentTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellProfileTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellResolvTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellSshdTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashProfileTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellUserBashrcTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellUserProfileTabController;
-import cn.oyzh.easyshell.tabs.connect.config.ShellUserZshrcTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigBashTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigEnvironmentTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigResolvTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigSshdTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserBashProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserBashrcTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserProfileTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserZshrcTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
-import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.fxml.FXML;
 
@@ -97,55 +94,55 @@ public class ShellConfigTabController extends ParentTabController {
      * 全局配置文件
      */
     @FXML
-    private ShellProfileTabController profileController;
+    private ShellConfigProfileTabController profileController;
 
     /**
      * 全局环境配置文件
      */
     @FXML
-    private ShellEnvironmentTabController environmentController;
+    private ShellConfigEnvironmentTabController environmentController;
 
     /**
      * 全局bash配置文件
      */
     @FXML
-    private ShellBashTabController bashController;
+    private ShellConfigBashTabController bashController;
 
     /**
      * 网络解析配置文件
      */
     @FXML
-    private ShellResolvTabController resolvController;
+    private ShellConfigResolvTabController resolvController;
 
     /**
      * ssh配置文件
      */
     @FXML
-    private ShellSshdTabController sshdController;
+    private ShellConfigSshdTabController sshdController;
 
     /**
      * 用户配置文件
      */
     @FXML
-    private ShellUserProfileTabController userProfileController;
+    private ShellConfigUserProfileTabController userProfileController;
 
     /**
      * 用户bash配置文件
      */
     @FXML
-    private ShellUserBashProfileTabController userBashProfileController;
+    private ShellConfigUserBashProfileTabController userBashProfileController;
 
     /**
      * 用户bashrc配置文件
      */
     @FXML
-    private ShellUserBashrcTabController userBashrcController;
+    private ShellConfigUserBashrcTabController userBashrcController;
 
     /**
      * 用户zshrc配置文件
      */
     @FXML
-    private ShellUserZshrcTabController userZshrcController;
+    private ShellConfigUserZshrcTabController userZshrcController;
 
     /**
      * 初始化标志位

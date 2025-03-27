@@ -21,12 +21,12 @@
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">
-            <fx:include fx:id="aggregation" source="monitor/shellAggregationTab.fxml"/>
-            <fx:include fx:id="cpu" source="monitor/shellCpuTab.fxml"/>
-            <fx:include fx:id="disk" source="monitor/shellDiskTab.fxml"/>
-            <fx:include fx:id="network" source="monitor/shellNetworkTab.fxml"/>
-            <fx:include fx:id="memory" source="monitor/shellMemoryTab.fxml"/>
-            <fx:include fx:id="gpu" source="monitor/shellGpuTab.fxml"/>
+            <fx:include fx:id="aggregation" source="monitor/shellMonitorAggregationTab.fxml"/>
+            <fx:include fx:id="cpu" source="monitor/shellMonitorCpuTab.fxml"/>
+            <fx:include fx:id="disk" source="monitor/shellMonitorDiskTab.fxml"/>
+            <fx:include fx:id="network" source="monitor/shellMonitorNetworkTab.fxml"/>
+            <fx:include fx:id="memory" source="monitor/shellMonitorMemoryTab.fxml"/>
+            <fx:include fx:id="gpu" source="monitor/shellMonitorGpuTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

@@ -1,25 +1,26 @@
 package cn.oyzh.easyshell.tabs.connect.monitor;
 
+import cn.oyzh.easyshell.exec.DiskInfo;
 import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.exec.ShellExecParser;
+import cn.oyzh.easyshell.fx.DiskInfoTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
+import java.util.List;
+
 /**
- * 服务器gpu信息
+ * 服务器cpu信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellGpuTabController extends SubTabController {
+public class ShellMonitorDiskTabController extends SubTabController {
 
     /**
      * 根节点
@@ -28,24 +29,19 @@ public class ShellGpuTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * cpu图表
+     * 磁盘信息
      */
     @FXML
-    private ReadOnlyTextArea gpuInfo;
+    private DiskInfoTableView diskTable;
 
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.gpu_info();
-            this.gpuInfo.text(output);
+            String output = exec.df_h();
+            List<DiskInfo> diskInfos = ShellExecParser.disk(output, this.client().isMacos());
+            this.diskTable.setItem(diskInfos);
         });
-    }
-
-    @FXML
-    private void copyInfo() {
-        ClipboardUtil.copy(this.gpuInfo.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
     }
 
     @Override

@@ -14,12 +14,12 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
- * 服务器内存信息
+ * 服务器cpu信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellMemoryTabController extends SubTabController {
+public class ShellMonitorCpuTabController extends SubTabController {
 
     /**
      * 根节点
@@ -31,20 +31,20 @@ public class ShellMemoryTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private ReadOnlyTextArea memoryInfo;
+    private ReadOnlyTextArea cpuInfo;
 
     @FXML
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.memory_info();
-            this.memoryInfo.text(output);
+            String output = exec.cpu_info();
+            this.cpuInfo.text(output);
         });
     }
 
     @FXML
     private void copyInfo() {
-        ClipboardUtil.copy(this.memoryInfo.getText());
+        ClipboardUtil.copy(this.cpuInfo.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
 

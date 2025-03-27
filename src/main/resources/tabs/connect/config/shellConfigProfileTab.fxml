@@ -9,10 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellResolvTabController" text="/etc/resolv.conf">
+       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigProfileTabController" text="/etc/profile">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
             <SaveSVGGlyph onMousePrimaryClicked="#save">
@@ -20,6 +21,11 @@
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
+            <ApplySVGGlyph onMousePrimaryClicked="#apply">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </ApplySVGGlyph>
             <CopySVGGlyph onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
@@ -31,8 +37,7 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100%"
-                               flexHeight="100% - 30">
+        <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100%" flexHeight="100% - 30">
             <FXVBox.margin>
                 <Insets left="10"/>
             </FXVBox.margin>

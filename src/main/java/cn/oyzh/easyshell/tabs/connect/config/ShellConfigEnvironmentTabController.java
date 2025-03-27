@@ -17,22 +17,21 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 
 /**
- * ~/.profile信息
+ * environment信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellUserProfileTabController extends SubTabController {
+public class ShellConfigEnvironmentTabController extends SubTabController {
 
     /**
      * 根节点
      */
     @FXML
-    private FXTab userProfile;
+    private FXTab environment;
 
     /**
      * 数据
@@ -44,10 +43,10 @@ public class ShellUserProfileTabController extends SubTabController {
      * 刷新
      */
     @FXML
-    private void refresh() {
+    public void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.cat_user_profile();
+            String output = exec.cat_environment();
             this.data.setText(output);
         });
     }
@@ -71,14 +70,14 @@ public class ShellUserProfileTabController extends SubTabController {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = this.client().getUserHome() + ".profile.temp";
+                String tempFile = "/etc/environment.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "~/.profile");
+                String output = exec.echo("$(cat " + tempFile + ")", "/etc/environment");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
@@ -99,7 +98,7 @@ public class ShellUserProfileTabController extends SubTabController {
     private void apply() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.source("~/.profile");
+            String output = exec.source("/etc/environment");
             if (!StringUtil.isBlank(output)) {
                 MessageBox.warn(output);
             }
@@ -116,7 +115,7 @@ public class ShellUserProfileTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.userProfile.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.environment.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

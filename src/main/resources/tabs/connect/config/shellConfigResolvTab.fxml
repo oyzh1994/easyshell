@@ -9,11 +9,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
-<FXTab fx:id="environment" xmlns="http://javafx.com/javafx"
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellEnvironmentTabController" text="/etc/environment">
+       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigResolvTabController" text="/etc/resolv.conf">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
             <SaveSVGGlyph onMousePrimaryClicked="#save">
@@ -21,11 +20,6 @@
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
-            <ApplySVGGlyph onMousePrimaryClicked="#apply">
-                <FXHBox.margin>
-                    <Insets left="10" top="10"/>
-                </FXHBox.margin>
-            </ApplySVGGlyph>
             <CopySVGGlyph onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>

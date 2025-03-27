@@ -20,12 +20,12 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * environment信息
+ * profile信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellResolvTabController extends SubTabController {
+public class ShellConfigProfileTabController extends SubTabController {
 
     /**
      * 根节点
@@ -46,7 +46,7 @@ public class ShellResolvTabController extends SubTabController {
     public void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.cat_resolv();
+            String output = exec.cat_profile();
             this.data.setText(output);
         });
     }
@@ -70,14 +70,16 @@ public class ShellResolvTabController extends SubTabController {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = "/etc/resolv.conf.temp";
+                String tempFile = "/etc/profile.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
+                String output = exec.echo("$(cat " + tempFile + ")", "/etc/profile");
+//                // 删除临时文件
+//                this.client().openSftp().rm(tempFile);
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
@@ -87,6 +89,20 @@ public class ShellResolvTabController extends SubTabController {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 应用
+     */
+    @FXML
+    private void apply() {
+        ShellExec exec = this.client().shellExec();
+        StageManager.showMask(() -> {
+            String output = exec.source("/etc/profile");
+            if (!StringUtil.isBlank(output)) {
+                MessageBox.warn(output);
             }
         });
     }

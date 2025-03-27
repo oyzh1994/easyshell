@@ -25,7 +25,7 @@ import java.io.ByteArrayInputStream;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellUserZshrcTabController extends SubTabController {
+public class ShellConfigUserZshrcTabController extends SubTabController {
 
     /**
      * 根节点

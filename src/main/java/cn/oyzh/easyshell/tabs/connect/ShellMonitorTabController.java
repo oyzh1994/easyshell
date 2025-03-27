@@ -5,12 +5,12 @@ import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellAggregationTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellCpuTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellDiskTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellGpuTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMemoryTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellNetworkTabController;
+import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorAggregationTabController;
+import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorCpuTabController;
+import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorDiskTabController;
+import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorGpuTabController;
+import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorMemoryTabController;
+import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorNetworkTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -65,37 +65,37 @@ public class ShellMonitorTabController extends ParentTabController {
      * 汇总信息
      */
     @FXML
-    private ShellAggregationTabController aggregationController;
+    private ShellMonitorAggregationTabController aggregationController;
 
     /**
      * cpu信息
      */
     @FXML
-    private ShellCpuTabController cpuController;
+    private ShellMonitorCpuTabController cpuController;
 
     /**
      * 磁盘信息
      */
     @FXML
-    private ShellDiskTabController diskController;
+    private ShellMonitorDiskTabController diskController;
 
     /**
      * 网络信息
      */
     @FXML
-    private ShellNetworkTabController networkController;
+    private ShellMonitorNetworkTabController networkController;
 
     /**
      * 内存信息
      */
     @FXML
-    private ShellMemoryTabController memoryController;
+    private ShellMonitorMemoryTabController memoryController;
 
     /**
      * 显卡信息
      */
     @FXML
-    private ShellGpuTabController gpuController;
+    private ShellMonitorGpuTabController gpuController;
 
     /**
      * 刷新任务

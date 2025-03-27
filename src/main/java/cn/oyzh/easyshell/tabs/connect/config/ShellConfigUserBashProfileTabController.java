@@ -5,10 +5,8 @@ import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellConfigTabController;
-import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -22,18 +20,18 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * profile信息
+ * ~/.bash_profile信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellProfileTabController extends SubTabController {
+public class ShellConfigUserBashProfileTabController extends SubTabController {
 
     /**
      * 根节点
      */
     @FXML
-    private FXTab root;
+    private FXTab userBashProfile;
 
     /**
      * 数据
@@ -45,10 +43,10 @@ public class ShellProfileTabController extends SubTabController {
      * 刷新
      */
     @FXML
-    public void refresh() {
+    private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.cat_profile();
+            String output = exec.cat_user_bash_profile();
             this.data.setText(output);
         });
     }
@@ -72,16 +70,14 @@ public class ShellProfileTabController extends SubTabController {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = "/etc/profile.temp";
+                String tempFile = this.client().getUserHome() + ".bash_profile.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "/etc/profile");
-//                // 删除临时文件
-//                this.client().openSftp().rm(tempFile);
+                String output = exec.echo("$(cat " + tempFile + ")", "~/.bash_profile");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
@@ -102,7 +98,7 @@ public class ShellProfileTabController extends SubTabController {
     private void apply() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.source("/etc/profile");
+            String output = exec.source("~/.bash_profile");
             if (!StringUtil.isBlank(output)) {
                 MessageBox.warn(output);
             }
@@ -119,7 +115,7 @@ public class ShellProfileTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.userBashProfile.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

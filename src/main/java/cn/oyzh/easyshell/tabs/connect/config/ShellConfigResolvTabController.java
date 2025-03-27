@@ -20,18 +20,18 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * bash.bashrc信息
+ * environment信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellBashTabController extends SubTabController {
+public class ShellConfigResolvTabController extends SubTabController {
 
     /**
      * 根节点
      */
     @FXML
-    private FXTab bash;
+    private FXTab root;
 
     /**
      * 数据
@@ -46,7 +46,7 @@ public class ShellBashTabController extends SubTabController {
     public void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.cat_bash_bashrc();
+            String output = exec.cat_resolv();
             this.data.setText(output);
         });
     }
@@ -70,14 +70,14 @@ public class ShellBashTabController extends SubTabController {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = "/etc/bash.bashrc.temp";
+                String tempFile = "/etc/resolv.conf.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "/etc/bash.bashrc");
+                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
@@ -87,20 +87,6 @@ public class ShellBashTabController extends SubTabController {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 应用
-     */
-    @FXML
-    private void apply() {
-        ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.source("/etc/bash.bashrc");
-            if (!StringUtil.isBlank(output)) {
-                MessageBox.warn(output);
             }
         });
     }
@@ -115,7 +101,7 @@ public class ShellBashTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.bash.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }
