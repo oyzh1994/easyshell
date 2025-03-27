@@ -20,7 +20,7 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * ~/.bash_profile信息
+ * ~/.bashrc信息
  *
  * @author oyzh
  * @since 2025/03/18

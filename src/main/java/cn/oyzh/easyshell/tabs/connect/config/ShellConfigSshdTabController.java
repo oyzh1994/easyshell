@@ -20,7 +20,7 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * environment信息
+ * ssd_config信息
  *
  * @author oyzh
  * @since 2025/03/18

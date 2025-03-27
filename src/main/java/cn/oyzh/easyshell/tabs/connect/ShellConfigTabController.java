@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigBashTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigEnvironmentTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigHostsTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigProfileTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigResolvTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigSshdTabController;
@@ -64,6 +65,14 @@ public class ShellConfigTabController extends ParentTabController {
                 tabPane.removeTab("bash");
             }
             // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist("/etc/hosts")) {
+                tabPane.removeTab("hosts");
+            }
+            // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist("/etc/resolv.conf")) {
+                tabPane.removeTab("resolv");
+            }
+            // 如果配置文件不存在，则移除此配置
             if (!sftp.exist("/etc/ssh/sshd_config")) {
                 tabPane.removeTab("sshd");
             }
@@ -107,6 +116,12 @@ public class ShellConfigTabController extends ParentTabController {
      */
     @FXML
     private ShellConfigBashTabController bashController;
+
+    /**
+     * 域名解析配置文件
+     */
+    @FXML
+    private ShellConfigHostsTabController hostsController;
 
     /**
      * 网络解析配置文件
@@ -164,7 +179,7 @@ public class ShellConfigTabController extends ParentTabController {
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.profileController, this.userProfileController, this.environmentController,
                 this.bashController, this.userBashProfileController, this.userBashrcController,
-                this.userZshrcController, this.resolvController, this.sshdController
+                this.userZshrcController, this.resolvController, this.sshdController, this.hostsController
         );
     }
 }

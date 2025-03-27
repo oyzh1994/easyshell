@@ -77,6 +77,10 @@ public class ShellExec implements AutoCloseable {
         return this.client.exec("cat /etc/resolv.conf");
     }
 
+    public String cat_hosts() {
+        return this.client.exec("cat /etc/hosts");
+    }
+
     public String cat_sshd_config() {
         return this.client.exec("cat /etc/ssh/sshd_config");
     }

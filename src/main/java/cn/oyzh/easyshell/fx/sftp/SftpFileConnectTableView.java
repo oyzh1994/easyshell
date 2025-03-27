@@ -116,7 +116,7 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         String extName = FileNameUtil.extName(file.getFileName());
         if (!StringUtil.equalsAnyIgnoreCase(extName, "txt", "text", "log", "yaml", "java", "xml", "json", "htm",
                 "html", "xhtml", "php", "css", "c", "cpp", "rs", "js", "csv", "sql", "md", "ini", "cfg", "sh", "bat", "py", "asp",
-                "aspx", "env", "tsv")) {
+                "aspx", "env", "tsv", "conf")) {
             return;
         }
         StageAdapter adapter = StageManager.parseStage(ShellSftpFileEditController.class);
