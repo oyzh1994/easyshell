@@ -77,7 +77,8 @@ public class ShellConfigHostsTabController extends SubTabController {
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "/etc/hosts");
+//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/hosts");
+                String output = exec.cat_file(tempFile, "/etc/hosts");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {

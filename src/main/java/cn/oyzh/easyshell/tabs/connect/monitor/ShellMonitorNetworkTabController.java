@@ -37,7 +37,7 @@ public class ShellMonitorNetworkTabController extends SubTabController {
     private void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.ifconfig();
+            String output = exec.network_interface_info();
             this.networkCardInfo.text(output);
         });
     }

@@ -77,7 +77,8 @@ public class ShellConfigUserProfileTabController extends SubTabController {
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "~/.profile");
+//                String output = exec.echo("$(cat " + tempFile + ")", "~/.profile");
+                String output = exec.cat_file(tempFile, "~/.profile");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {

@@ -77,7 +77,8 @@ public class ShellConfigBashTabController extends SubTabController {
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "/etc/bash.bashrc");
+//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/bash.bashrc");
+                String output = exec.cat_file(tempFile, "/etc/bash.bashrc");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {

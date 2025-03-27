@@ -75,9 +75,14 @@ public class ServerExec implements AutoCloseable {
         ThreadUtil.startVirtual(() -> {
             try {
                 double[] data = this.disk();
-                double[] speed = this.disk.calcSpeed(data);
-                monitor.setDiskReadSpeed(speed[0]);
-                monitor.setDiskWriteSpeed(speed[1]);
+                if (this.client.isUnix()) {
+                    monitor.setDiskReadSpeed(data[0]);
+                    monitor.setDiskWriteSpeed(data[1]);
+                } else {
+                    double[] speed = this.disk.calcSpeed(data);
+                    monitor.setDiskReadSpeed(speed[0]);
+                    monitor.setDiskWriteSpeed(speed[1]);
+                }
             } finally {
                 latch.countDown();
             }
@@ -105,6 +110,10 @@ public class ServerExec implements AutoCloseable {
                 cpuUsage = cpuUsage.substring(cpuUsage.lastIndexOf(",") + 1, cpuUsage.lastIndexOf("%")).trim();
                 return 100 - Double.parseDouble(cpuUsage);
             }
+            if (this.client.isUnix()) {
+                String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print 100 - $15}'");
+                return Double.parseDouble(cpuUsage);
+            }
             String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
             if (StringUtil.isBlank(cpuUsage)) {
                 cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
@@ -120,6 +129,16 @@ public class ServerExec implements AutoCloseable {
         try {
             if (this.client.isMacos()) {
                 String output = this.client.exec("vm_stat | awk '/Pages active/ {active = $3} /Pages inactive/ {inactive = $3} /Pages speculative/ {speculative = $3} /Pages wired down/ {wired = $3} END {total = active + inactive + speculative + wired; used = active + wired; printf \"%.2f%%\\n\", (used / total) * 100}'");
+                if (StringUtil.isBlank(output)) {
+                    return -1;
+                }
+                if (output.contains("%")) {
+                    output = output.replace("%", "");
+                }
+                return Double.parseDouble(output);
+            }
+            if (this.client.isUnix()) {
+                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
                 if (StringUtil.isBlank(output)) {
                     return -1;
                 }
@@ -174,19 +193,15 @@ public class ServerExec implements AutoCloseable {
         return "N/A";
     }
 
-//    public double[] memoryUsage() {
-//        String memoryUsage = this.client.exec("free -m | awk 'NR==2{printf \"Total Memory: %d, Memory Usage: %.2f%\\n\", $2, ($3/$2)*100}'");
-//        String[] arr = memoryUsage.split(",");
-//        double[] result = new double[arr.length];
-//        result[0] = Double.parseDouble(arr[0].split(":")[1].trim());
-//        result[1] = Double.parseDouble(arr[1].split(":")[1].trim());
-//        return result;
-//    }
-
     public long totalMemory() {
         try {
             if (this.client.isMacos()) {
                 String totalMemory = this.client.exec("sysctl -n hw.memsize");
+                return Long.parseLong(totalMemory) / 1024 / 1024;
+            }
+            if (this.client.isUnix()) {
+                String totalMemory = this.client.exec("sysctl hw.physmem");
+                totalMemory = totalMemory.split(":")[1].trim();
                 return Long.parseLong(totalMemory) / 1024 / 1024;
             }
             String totalMemory = this.client.exec("cat /proc/meminfo | awk '/MemTotal/ {print int($2/1024)}'");
@@ -203,43 +218,6 @@ public class ServerExec implements AutoCloseable {
         return -1;
     }
 
-//    public double[] iostat_d() {
-//        try {
-//            String iostat = this.client.exec("/iostat -dkx 1 2 | awk 'NR>3 && $1!=\"loop*\"'");
-//            if (StringUtil.isNotBlank(iostat)) {
-//                double readSpeed = 0;
-//                double writeSpeed = 0;
-//                int lineCount = 0;
-//                for (String line : iostat.split("\n")) {
-//                    if (!line.contains(".")) {
-//                        continue;
-//                    }
-//                    lineCount++;
-//                    String[] cols = line.split("\\s+");
-//                    readSpeed += Double.parseDouble(cols[3]);
-//                    writeSpeed += Double.parseDouble(cols[4]);
-//                }
-//                return new double[]{readSpeed / lineCount, writeSpeed / lineCount};
-//            }
-//        } catch (Exception ee) {
-//            ee.printStackTrace();
-//        }
-//        return new double[]{-1L, -1L};
-//    }
-//
-//    public double[] vmstat_d() {
-//        try {
-//            String vmstat = this.client.exec("/vmstat 1 2 | awk 'NR==3 {print \"R:\", $6*0.5\",\", \"W:\", $7*0.5}'");
-//            String[] cols = vmstat.split(",");
-//            double readSpeed = Double.parseDouble(cols[0].split(":")[1].trim());
-//            double writeSpeed = Double.parseDouble(cols[1].split(":")[1].trim());
-//            return new double[]{readSpeed, writeSpeed};
-//        } catch (Exception ee) {
-//            ee.printStackTrace();
-//        }
-//        return new double[]{-1L, -1L};
-//    }
-
     public double[] disk() {
         try {
             if (this.client.isMacos()) {
@@ -252,6 +230,24 @@ public class ServerExec implements AutoCloseable {
                 double read = Double.parseDouble(r);
                 double write = Double.parseDouble(w);
                 return new double[]{read, write};
+            }
+            if (this.client.isUnix()) {
+                String output = this.client.exec("iostat -d -x 1 1");
+                if (StringUtil.isBlank(output)) {
+                    return new double[]{-1L, -1L};
+                }
+                String[] lines = output.split("\n");
+                double read = 0;
+                double write = 0;
+                for (int i = 2; i < lines.length; i++) {
+                    String line = lines[i];
+                    String[] cols = line.trim().split("\\s+");
+                    String readTotal = cols[3];
+                    String writeTotal = cols[4];
+                    read += Double.parseDouble(readTotal);
+                    write += Double.parseDouble(writeTotal);
+                }
+                return new double[]{read / 1024, write / 1024};
             }
             String output = this.client.exec("cat /proc/diskstats");
             if (StringUtil.isBlank(output)) {
@@ -292,6 +288,22 @@ public class ServerExec implements AutoCloseable {
                 String out = output.substring(output.indexOf(",") + 1, output.lastIndexOf("/")).trim();
                 double send = Double.parseDouble(out);
                 double receive = Double.parseDouble(in);
+                return new double[]{send, receive};
+            }
+            if (this.client.isUnix()) {
+                String output = this.client.exec("netstat -i");
+                if (StringUtil.isBlank(output)) {
+                    return new double[]{-1L, -1L};
+                }
+                String[] lines = output.split("\n");
+                double send = 0;
+                double receive = 0;
+                for (int i = 1; i < lines.length; i++) {
+                    String line = lines[i];
+                    String[] cols = line.split("\\s+");
+                    receive += Double.parseDouble(cols[4]);
+                    send += Double.parseDouble(cols[7]);
+                }
                 return new double[]{send, receive};
             }
             String output = this.client.exec("cat /proc/net/dev | grep -vE 'lo|^[ ]*$' | awk -F: '{print $2 \" \" $10}' | awk '{print $1 \" \" $2}'\n");

@@ -21,18 +21,17 @@ public class ShellExec implements AutoCloseable {
         if (this.client.isMacos()) {
             return this.client.exec("sysctl machdep.cpu");
         }
+        if (this.client.isUnix()) {
+            return this.client.exec("sysctl hw.model hw.machine hw.ncpu hw.clockrate");
+        }
         return this.client.exec("lscpu");
     }
 
-    public String df_h() {
-        String output = this.client.exec("df -h");
-        if (StringUtil.isBlank(output)) {
-            output = this.client.exec("df -h");
-        }
-        return output;
+    public String disk_info() {
+        return this.client.exec("df -h");
     }
 
-    public String ifconfig() {
+    public String network_interface_info() {
         String output = this.client.exec("ifconfig");
         if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("ip addr");
@@ -44,6 +43,9 @@ public class ShellExec implements AutoCloseable {
         if (this.client.isMacos()) {
             return this.client.exec("system_profiler SPMemoryDataType");
         }
+        if (this.client.isUnix()) {
+            return this.client.exec("dmesg | grep -i memory");
+        }
         String output = this.client.exec("lshw -C memory");
         if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("dmidecode -t memory");
@@ -54,6 +56,9 @@ public class ShellExec implements AutoCloseable {
     public String gpu_info() {
         if (this.client.isMacos()) {
             return this.client.exec("system_profiler SPDisplaysDataType");
+        }
+        if (this.client.isUnix()) {
+            return this.client.exec("pciconf -lv | grep -i vga");
         }
         String output = this.client.exec("nvidia-smi");
         if (ShellUtil.isCommandNotFound(output)) {
@@ -121,6 +126,13 @@ public class ShellExec implements AutoCloseable {
 //        String str = text.replaceAll("\"", "\"\"\"");
 //        str = str.replaceAll("'", "'\\''");
         return this.client.exec("echo \"" + text + "\" > " + file);
+    }
+
+    public String cat_file(String sourceFile, String targetFile) {
+        if (this.client.isMacos() || this.client.isLinux()) {
+            return this.echo("$(cat " + sourceFile + ")", targetFile);
+        }
+        return this.client.exec("cat " + sourceFile + " > " + targetFile);
     }
 
     public String whoami() {

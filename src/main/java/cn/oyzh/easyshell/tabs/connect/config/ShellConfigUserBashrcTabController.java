@@ -31,7 +31,7 @@ public class ShellConfigUserBashrcTabController extends SubTabController {
      * 根节点
      */
     @FXML
-    private FXTab root;
+    private FXTab userBashrc;
 
     /**
      * 数据
@@ -77,7 +77,8 @@ public class ShellConfigUserBashrcTabController extends SubTabController {
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "~/.bashrc");
+//                String output = exec.echo("$(cat " + tempFile + ")", "~/.bashrc");
+                String output = exec.cat_file(tempFile, "~/.bashrc");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
@@ -115,7 +116,7 @@ public class ShellConfigUserBashrcTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.userBashrc.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

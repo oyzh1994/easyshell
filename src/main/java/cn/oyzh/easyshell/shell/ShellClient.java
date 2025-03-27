@@ -487,12 +487,16 @@ public class ShellClient {
     public String exec(String command) {
         ChannelExec channel = null;
         try {
-            String extCommand;
+            String extCommand = null;
             if (StringUtil.startWithAnyIgnoreCase(command, "source", "which")) {
                 extCommand = command;
-            } else {
+            } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
+                extCommand = "/usr/bin/" + command;
+            } else if (this.isLinux() || this.isMacos()) {
                 String exportPath = this.getExportPath();
                 extCommand = "export PATH=$PATH" + exportPath + " && " + command;
+            } else if (this.isUnix()) {
+                extCommand = command;
             }
             channel = (ChannelExec) this.session.openChannel("exec");
             // 客户端转发
@@ -638,14 +642,29 @@ public class ShellClient {
         return CharsetUtil.fromName(this.shellConnect.getCharset());
     }
 
-    private Boolean isMacos;
+    private String osType;
 
     public boolean isMacos() {
-        if (this.isMacos == null) {
-            String output = this.exec("uname");
-            this.isMacos = StringUtil.containsIgnoreCase(output, "darwin");
+        return StringUtil.containsIgnoreCase(this.osType(), "darwin");
+    }
+
+    public boolean isLinux() {
+        return StringUtil.containsIgnoreCase(this.osType(), "Linux");
+    }
+
+    public boolean isUnix() {
+        return !this.isMacos() && !this.isLinux();
+    }
+
+    public boolean isFreeBSD() {
+        return this.isUnix()&&StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
+    }
+
+    private String osType() {
+        if (this.osType == null) {
+            this.osType = this.exec("uname");
         }
-        return this.isMacos;
+        return this.osType;
     }
 
     private String whoami;

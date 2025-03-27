@@ -86,6 +86,10 @@ public class ShellConfigTabController extends ParentTabController {
                 tabPane.removeTab("userZshrc");
             }
             // 如果配置文件不存在，则移除此配置
+            if (!sftp.exist(userHome + ".bashrc")) {
+                tabPane.removeTab("userBashrc");
+            }
+            // 如果配置文件不存在，则移除此配置
             if (!sftp.exist(userHome + ".bash_profile")) {
                 tabPane.removeTab("userBashProfile");
             }

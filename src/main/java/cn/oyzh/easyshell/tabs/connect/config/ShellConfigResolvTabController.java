@@ -77,7 +77,8 @@ public class ShellConfigResolvTabController extends SubTabController {
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
+//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
+                String output = exec.cat_file(tempFile, "/etc/resolv.conf");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
