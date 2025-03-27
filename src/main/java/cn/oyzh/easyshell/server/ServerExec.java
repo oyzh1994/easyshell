@@ -12,23 +12,28 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-15
  */
-public class ServerExec {
+public class ServerExec implements AutoCloseable {
 
-    private final ShellClient client;
-
-    public ServerExec(ShellClient client) {
-        this.client = client;
-    }
+    /**
+     * shell客户端
+     */
+    private ShellClient client;
 
     /**
      * 服务器磁盘对象
      */
-    private final ServerDisk disk = new ServerDisk();
+    private ServerDisk disk;
 
     /**
      * 服务器网络对象
      */
-    private final ServerNetwork network = new ServerNetwork();
+    private ServerNetwork network;
+
+    public ServerExec(ShellClient client) {
+        this.client = client;
+        this.disk = new ServerDisk();
+        this.network = new ServerNetwork();
+    }
 
     public ServerMonitor monitor() {
         ServerMonitor monitor = this.monitorSimple();
@@ -323,5 +328,12 @@ public class ServerExec {
             ee.printStackTrace();
         }
         return "N/A";
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.disk = null;
+        this.client = null;
+        this.network = null;
     }
 }

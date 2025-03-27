@@ -55,11 +55,6 @@ import java.util.Properties;
  */
 public class ShellClient {
 
-//    /**
-//     * JSch对象
-//     */
-//    private static final JSch JSCH = new JSch();
-
     /**
      * shell信息
      */
@@ -121,8 +116,25 @@ public class ShellClient {
      */
     private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
 
+    /**
+     * 获取状态
+     *
+     * @return 状态
+     */
     public ShellConnState getState() {
-        return state.get();
+        return this.state.get();
+    }
+
+    /**
+     * 更新状态
+     */
+    public void updateState() {
+        ShellConnState state = this.getState();
+        if (state == ShellConnState.CONNECTED) {
+            if (this.session == null || !this.session.isConnected()) {
+                this.state.set(ShellConnState.CLOSED);
+            }
+        }
     }
 
     /**
@@ -204,7 +216,6 @@ public class ShellClient {
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
-//        this.session = JSCH.getSession(this.shellConnect.getUser(), this.shellConnect.hostIp(), this.shellConnect.hostPort());
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
@@ -215,17 +226,12 @@ public class ShellClient {
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         }
-//        if (StringUtil.isNotBlank(this.shellConnect.getPassword())) {
-//            this.session.setPassword(this.shellConnect.getPassword());
-//        }
         // 配置参数
         Properties config = new Properties();
         // 设置终端类型
         config.put("term", "xterm-256color");
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
-//        // 字符集
-//        config.put("charset", this.shellConnect.getCharset());
         // 启用X11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
@@ -250,8 +256,6 @@ public class ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
-//        this.session.setConfig("charset", "UTF-8");
-//        session.setConfig("PreferredAuthentications", "password");
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
@@ -269,35 +273,37 @@ public class ShellClient {
      */
     public void close() {
         try {
-            this.sftpManager.close();
             if (this.shell != null) {
                 this.shell.close();
                 this.shell = null;
+            }
+            if (this.shellExec != null) {
+                this.shellExec.close();
+                this.shellExec = null;
+            }
+            if (this.serverExec != null) {
+                this.serverExec.close();
+                this.serverExec = null;
+            }
+            if (this.dockerExec != null) {
+                this.dockerExec.close();
+                this.dockerExec = null;
+            }
+            if (this.sftpManager != null) {
+                this.sftpManager.close();
+                this.sftpManager = null;
             }
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;
                 this.state.set(ShellConnState.CLOSED);
             }
+            // 从监听器队列移除
+            ShellClientChecker.remove(this);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
-//    /**
-//     * 重置客户端
-//     */
-//    public void reset() {
-//        // 移除监听器
-//        if (!this.connStateListeners.isEmpty()) {
-//            for (ChangeListener<SSHConnState> listener : connStateListeners) {
-//                this.stateProperty().removeListener(listener);
-//            }
-//            this.connStateListeners.clear();
-//        }
-//        this.close();
-//        this.state.set(SSHConnState.NOT_INITIALIZED);
-//    }
 
     /**
      * 开始连接客户端
@@ -327,6 +333,8 @@ public class ShellClient {
             // 判断连接结果
             if (this.session.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
+                // 添加到状态监听器队列
+                ShellClientChecker.push(this);
             } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
@@ -350,7 +358,6 @@ public class ShellClient {
         if (!this.isClosed()) {
             return this.state.get() == ShellConnState.CONNECTING;
         }
-//        this.state.set(SSHConnState.CLOSED);
         return false;
     }
 
@@ -363,7 +370,6 @@ public class ShellClient {
         if (!this.isClosed()) {
             return this.state.get().isConnected();
         }
-//        this.state.set(SSHConnState.CLOSED);
         return false;
     }
 
@@ -398,12 +404,6 @@ public class ShellClient {
                 if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
-//                InputStreamReader reader = new InputStreamReader(System.in, StandardCharsets.UTF_8);
-//                PrintStream stream = new PrintStream(System.out,true, StandardCharsets.UTF_8);
-//                channel.setEnv("charset", this.shellConnect.getCharset());
-//                channel.setInputStream(reader);
-//                channel.setInputStream(new ShellInputStream());
-//                channel.setOutputStream(new ShellOutputStream());
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
                 // todo: 必须设置为这个，不然htop鼠标交互不了
@@ -416,41 +416,60 @@ public class ShellClient {
         return this.shell;
     }
 
-    private final ShellSftpManager sftpManager = new ShellSftpManager();
+    private ShellSftpManager sftpManager;
 
-    private final SftpUploadManager uploadManager = new SftpUploadManager();
+    public ShellSftpManager getSftpManager() {
+        if (this.sftpManager == null) {
+            this.sftpManager = new ShellSftpManager();
+        }
+        return this.sftpManager;
+    }
+
+    private SftpUploadManager uploadManager;
 
     public SftpUploadManager getUploadManager() {
+        if (this.uploadManager == null) {
+            this.uploadManager = new SftpUploadManager();
+        }
         return uploadManager;
     }
 
-    private final SftpDeleteManager deleteManager = new SftpDeleteManager();
+    private SftpDeleteManager deleteManager;
 
     public SftpDeleteManager getDeleteManager() {
+        if (this.deleteManager == null) {
+            this.deleteManager = new SftpDeleteManager();
+        }
         return deleteManager;
     }
 
-    private final SftpDownloadManager downloadManager = new SftpDownloadManager();
+    private SftpDownloadManager downloadManager;
 
     public SftpDownloadManager getDownloadManager() {
+        if (this.downloadManager == null) {
+            this.downloadManager = new SftpDownloadManager();
+        }
         return downloadManager;
     }
 
-    private final SftpTransportManager transportManager = new SftpTransportManager();
+    private SftpTransportManager transportManager;
 
     public SftpTransportManager getTransportManager() {
+        if (this.transportManager == null) {
+            this.transportManager = new SftpTransportManager();
+        }
         return transportManager;
     }
 
     public ShellSftp openSftp() {
-        if (!this.sftpManager.hasAvailable()) {
+        if (!this.getSftpManager().hasAvailable()) {
             ShellSftp sftp = this.newSftp();
             if (sftp != null) {
-                this.sftpManager.push(sftp);
+                this.getSftpManager().push(sftp);
+                return sftp;
             }
-            return sftp;
         }
-        return this.sftpManager.take();
+        return this.getSftpManager().take();
     }
 
     public ShellSftp newSftp() {
@@ -494,8 +513,7 @@ public class ShellClient {
             }
             String result = stream.toString();
             stream.close();
-//            writer.close();
-            if (result.endsWith("\n")) {
+            if (StringUtil.endsWith(result, "\n")) {
                 result = result.substring(0, result.length() - 1);
             }
             return result;
@@ -543,16 +561,20 @@ public class ShellClient {
         return this.attr;
     }
 
+    public void delete(SftpFile file) {
+        this.getDeleteManager().deleteFile(file, this.openSftp());
+    }
+
     public void upload(File localFile, String remoteFile) throws SftpException {
-        this.uploadManager.createMonitor(localFile, remoteFile, this.openSftp());
+        this.getUploadManager().createMonitor(localFile, remoteFile, this.openSftp());
     }
 
     public void download(File localFile, SftpFile remoteFile) throws SftpException {
-        this.downloadManager.createMonitor(localFile, remoteFile, this.openSftp());
+        this.getDownloadManager().createMonitor(localFile, remoteFile, this.openSftp());
     }
 
     public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {
-        this.transportManager.createMonitor(localFile, remoteFile, this, remoteClient);
+        this.getTransportManager().createMonitor(localFile, remoteFile, this, remoteClient);
     }
 
     /**
@@ -610,10 +632,6 @@ public class ShellClient {
             this.shellExec = new ShellExec(this);
         }
         return this.shellExec;
-    }
-
-    public void delete(SftpFile file) {
-        this.deleteManager.deleteFile(file, this.openSftp());
     }
 
     public Charset getCharset() {

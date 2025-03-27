@@ -9,9 +9,9 @@ import cn.oyzh.easyshell.util.ShellUtil;
  * @author oyzh
  * @since 2023/8/16
  */
-public class ShellExec {
+public class ShellExec implements AutoCloseable {
 
-    private final ShellClient client;
+    private ShellClient client;
 
     public ShellExec(ShellClient client) {
         this.client = client;
@@ -121,5 +121,10 @@ public class ShellExec {
 
     public String whoami() {
         return this.client.exec("whoami");
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.client = null;
     }
 }

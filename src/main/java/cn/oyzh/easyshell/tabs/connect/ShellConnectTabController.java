@@ -88,6 +88,13 @@ public class ShellConnectTabController extends ParentTabController {
                     this.closeTab();
                     return;
                 }
+                // 监听连接状态
+                this.client.addStateListener((observableValue, shellConnState, t1) -> {
+                    if (t1 == null || !t1.isConnected()) {
+                        MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+                        this.client.close();
+                    }
+                });
                 this.termTabController.init();
                 this.monitorTabController.setClient(this.client);
                 this.configTabController.setClient(this.client);

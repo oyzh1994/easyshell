@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.shell.ShellClient;
  * @author oyzh
  * @since 2025-03-13
  */
-public class DockerExec {
+public class DockerExec implements AutoCloseable {
 
-    private final ShellClient client;
+    private ShellClient client;
 
     private final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
 
@@ -177,5 +177,10 @@ public class DockerExec {
 
     public String docker_volume_prune_f() {
         return this.client.exec("docker volume prune -f");
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.client = null;
     }
 }
