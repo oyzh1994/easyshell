@@ -443,4 +443,36 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     public boolean hasOwnerReadPermission() {
         return ShellUtil.hasOwnerReadPermission(this.getPermissions());
     }
+
+    public boolean hasOwnerWritePermission() {
+        return ShellUtil.hasOwnerWritePermission(this.getPermissions());
+    }
+
+    public boolean hasOwnerExecutePermission() {
+        return ShellUtil.hasOwnerExecutePermission(this.getPermissions());
+    }
+
+    public boolean hasGroupsReadPermission() {
+        return ShellUtil.hasGroupsReadPermission(this.getPermissions());
+    }
+
+    public boolean hasGroupsWritePermission() {
+        return ShellUtil.hasGroupsWritePermission(this.getPermissions());
+    }
+
+    public boolean hasGroupsExecutePermission() {
+        return ShellUtil.hasGroupsExecutePermission(this.getPermissions());
+    }
+
+    public boolean hasOthersReadPermission() {
+        return ShellUtil.hasOthersReadPermission(this.getPermissions());
+    }
+
+    public boolean hasOthersWritePermission() {
+        return ShellUtil.hasOthersWritePermission(this.getPermissions());
+    }
+
+    public boolean hasOthersExecutePermission() {
+        return ShellUtil.hasOthersExecutePermission(this.getPermissions());
+    }
 }

@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -56,10 +57,22 @@ public class ShellSftpFilePermissionController extends StageController {
     private ShellClient client;
 
     /**
-     * 数据
+     * 文件名称
      */
     @FXML
     private ReadOnlyTextField fileName;
+
+    /**
+     * 拥有者名称
+     */
+    @FXML
+    private ReadOnlyTextField ownerName;
+
+    /**
+     * 分组名称
+     */
+    @FXML
+    private ReadOnlyTextField groupName;
 
     /**
      * 拥有者读取
@@ -122,7 +135,61 @@ public class ShellSftpFilePermissionController extends StageController {
     private void save() {
         StageManager.showMask(() -> {
             try {
-                ShellEventUtil.fileSaved(this.file);
+                StringBuilder perms = new StringBuilder();
+                if (this.ownerR.isSelected()) {
+                    perms.append("r");
+                } else {
+                    perms.append("-");
+                }
+                if (this.ownerW.isSelected()) {
+                    perms.append("w");
+                } else {
+                    perms.append("-");
+                }
+                if (this.ownerE.isSelected()) {
+                    perms.append("x");
+                } else {
+                    perms.append("-");
+                }
+                if (this.groupsR.isSelected()) {
+                    perms.append("r");
+                } else {
+                    perms.append("-");
+                }
+                if (this.groupsW.isSelected()) {
+                    perms.append("w");
+                } else {
+                    perms.append("-");
+                }
+                if (this.groupsE.isSelected()) {
+                    perms.append("x");
+                } else {
+                    perms.append("-");
+                }
+                if (this.othersR.isSelected()) {
+                    perms.append("r");
+                } else {
+                    perms.append("-");
+                }
+                if (this.othersW.isSelected()) {
+                    perms.append("w");
+                } else {
+                    perms.append("-");
+                }
+                if (this.othersE.isSelected()) {
+                    perms.append("x");
+                } else {
+                    perms.append("-");
+                }
+                String permission = ShellUtil.permissionToInt(perms.toString());
+                String output = this.client.shellExec().chmod(permission, this.file.getFilePath());
+                if (StringUtil.isNotEmpty(output)) {
+                    MessageBox.warn(output);
+                } else {
+                    SftpATTRS attrs = this.client.openSftp().stat(file.getFilePath());
+                    this.file.setAttrs(attrs);
+                    this.closeWindow();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -137,8 +204,35 @@ public class ShellSftpFilePermissionController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getWindowProp("file");
         this.client = this.getWindowProp("client");
+        this.fileName.setText(this.file.getName());
+        this.ownerName.setText(this.file.getOwner());
+        this.groupName.setText(this.file.getGroup());
         if (this.file.hasOwnerReadPermission()) {
             this.ownerR.setSelected(true);
+        }
+        if (this.file.hasOwnerWritePermission()) {
+            this.ownerW.setSelected(true);
+        }
+        if (this.file.hasOwnerExecutePermission()) {
+            this.ownerE.setSelected(true);
+        }
+        if (this.file.hasGroupsReadPermission()) {
+            this.groupsR.setSelected(true);
+        }
+        if (this.file.hasGroupsWritePermission()) {
+            this.groupsW.setSelected(true);
+        }
+        if (this.file.hasGroupsExecutePermission()) {
+            this.groupsE.setSelected(true);
+        }
+        if (this.file.hasOthersReadPermission()) {
+            this.othersR.setSelected(true);
+        }
+        if (this.file.hasOthersWritePermission()) {
+            this.othersW.setSelected(true);
+        }
+        if (this.file.hasOthersExecutePermission()) {
+            this.othersE.setSelected(true);
         }
     }
 
@@ -146,5 +240,4 @@ public class ShellSftpFilePermissionController extends StageController {
     public String getViewTitle() {
         return I18nHelper.filePermission();
     }
-
 }

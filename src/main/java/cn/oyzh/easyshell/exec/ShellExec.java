@@ -143,4 +143,8 @@ public class ShellExec implements AutoCloseable {
     public void close() throws Exception {
         this.client = null;
     }
+
+    public String chmod(String permission, String filePath) {
+       return this.client.exec("chmod " + permission + " " + filePath);
+    }
 }

@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
-<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController" prefWidth="1200" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController" prefWidth="800" realHeight="500">
     <InfoLabel text="%base.fileName">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -25,7 +21,27 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ReadOnlyTextField>
-    <InfoLabel text="%base.owner" groupId="size">
+    <InfoLabel text="%base.group">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextField fx:id="groupName" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextField>
+    <InfoLabel text="%base.owner">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextField fx:id="ownerName" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextField>
+    <InfoLabel text="%base.ownerPerms" groupId="size">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -47,7 +63,7 @@
             </FXHBox.margin>
         </FXCheckBox>
     </FXHBox>
-    <InfoLabel text="%base.groups">
+    <InfoLabel text="%base.groupsPerms">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -69,7 +85,7 @@
             </FXHBox.margin>
         </FXCheckBox>
     </FXHBox>
-    <InfoLabel text="%base.others">
+    <InfoLabel text="%base.othersPerms">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -90,5 +106,17 @@
                 <Insets left="10" top="5"/>
             </FXHBox.margin>
         </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#save">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
     </FXHBox>
 </FXVBox>
