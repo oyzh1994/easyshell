@@ -17,7 +17,7 @@ ide建议idea社区版或者专业版
  https://gitee.com/oyzh1994/fx-base  
 3. jdk版本要求24  
 注意，如果是linux的arm平台，建议使用aws的jdk，其他jdk可能缺失hsdis类库，其他情况下优先使用openjdk
-awsjdk https://docs.aws.amazon.com/corretto/latest/corretto-23-ug/downloads-list.html  
+awsjdk https://docs.aws.amazon.com/corretto/latest/corretto-24-ug/downloads-list.html  
 openjdk https://jdk.java.net/archive/
 
 ###### 结构说明 
