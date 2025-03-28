@@ -8,6 +8,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
@@ -270,6 +271,9 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             // 重命名文件
             FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
             menuItems.add(renameFile);
+            // 文件权限
+            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+            menuItems.add(filePermission);
         }
         // 删除文件
         FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
@@ -373,6 +377,22 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             }
         });
     }
+
+    public void filePermission(SftpFile file) {
+        try {
+            if (this.checkInvalid(file)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(ShellSftpFilePermissionController.class);
+            adapter.setProp("file", file);
+            adapter.setProp("client", this.client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 
     public void renameFile(SftpFile file) {
         try {

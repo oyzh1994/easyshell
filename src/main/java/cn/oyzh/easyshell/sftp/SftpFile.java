@@ -53,9 +53,12 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileYmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileZipSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.util.Date;
 
@@ -89,6 +92,7 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     public void setAttrs(SftpATTRS attrs) {
         this.attrs = attrs;
+        this.updatePermissions();
     }
 
     public String getOwner() {
@@ -128,12 +132,14 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     public SftpFile(String parentPath, ChannelSftp.LsEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
+        this.updatePermissions();
     }
 
     public SftpFile(String parentPath, String fileName, SftpATTRS attrs) {
         this.parentPath = parentPath;
         this.fileName = fileName;
         this.attrs = attrs;
+        this.updatePermissions();
     }
 
     protected SftpATTRS attrs() {
@@ -320,11 +326,25 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         return SftpUtil.concat(this.parentPath, fileName);
     }
 
+    private StringProperty permissionsProperty;
+
+    public StringProperty permissionsProperty() {
+        if (this.permissionsProperty ==                                                                       null) {
+            this.permissionsProperty = new SimpleStringProperty();
+        }
+        return this.permissionsProperty;
+    }
+
+    protected void updatePermissions() {
+        this.permissionsProperty().set(this.attrs().getPermissionsString());
+    }
+
     public String getPermissions() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
-        return this.attrs().getPermissionsString();
+        return permissionsProperty().get();
+//        return this.attrs().getPermissionsString();
     }
 
     public String getAddTime() {
@@ -418,5 +438,9 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     public long length() {
         return this.size();
+    }
+
+    public boolean hasOwnerReadPermission() {
+        return ShellUtil.hasOwnerReadPermission(this.getPermissions());
     }
 }
