@@ -155,6 +155,38 @@
                 </FXTextArea>
             </FXVBox>
         </FXTab>
+        <FXTab text="%base.background" fx:id="backgroundTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableBackground">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="enableBackground">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.image">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox groupId="background">
+                    <ClearableTextField realHeight="30" flexWidth="100% - 180"  fx:id="backgroundImage"
+                                     tipText="%base.contentTip1">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage">
+                        <HBox.margin>
+                            <Insets left="5" top="9"/>
+                        </HBox.margin>
+                    </ChooseSVGGlyph>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
         <FXTab text="%base.sshForwarding" fx:id="sshTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableSSHForwarding">

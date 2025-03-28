@@ -20,6 +20,7 @@ import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -196,6 +197,24 @@ public class ShellAddConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
+     * 开启背景
+     */
+    @FXML
+    private FXToggleSwitch enableBackground;
+
+    /**
+     * 背景面板
+     */
+    @FXML
+    private FXTab backgroundTab;
+
+    /**
+     * 背景图片
+     */
+    @FXML
+    private ClearableTextField backgroundImage;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -323,6 +342,8 @@ public class ShellAddConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
+            String backgroundImage = this.backgroundImage.getText();
+            boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -338,6 +359,9 @@ public class ShellAddConnectController extends StageController {
             // ssh配置
             shellConnect.setSshConfig(this.getSSHConfig());
             shellConnect.setSshForward(this.sshForward.isSelected());
+            // 背景配置
+            shellConnect.setBackgroundImage(backgroundImage);
+            shellConnect.setEnableBackground(enableBackground);
             // x11配置
             shellConnect.setX11Config(this.getX11Config());
             shellConnect.setX11forwarding(this.x11forwarding.isSelected());
@@ -398,6 +422,14 @@ public class ShellAddConnectController extends StageController {
                 NodeGroupUtil.display(this.tabPane, "sshCertificate");
             }
         });
+        // 背景配置
+        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.backgroundTab, "background");
+            } else {
+                NodeGroupUtil.disable(this.backgroundTab, "background");
+            }
+        });
     }
 
     @Override
@@ -454,6 +486,34 @@ public class ShellAddConnectController extends StageController {
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
         if (file != null) {
             this.sshCertificate.setText(file.getPath());
+        }
+    }
+
+    /**
+     * 选择背景图片
+     */
+    @FXML
+    private void chooseBackgroundImage() {
+//        SwingFileChooser chooser = new SwingFileChooser();
+//        chooser.setFileFilter(new FileFilter() {
+//            @Override
+//            public boolean accept(File f) {
+//                return f.isDirectory() || StringUtil.endWithAnyIgnoreCase(f.getName(), "jpg", "jpeg", "png", "gif");
+//            }
+//
+//            @Override
+//            public String getDescription() {
+//                return I18nHelper.pleaseSelectFile() + "(.jpg, .jpeg, .png, .gif)";
+//            }
+//        });
+//        chooser.showFileChooser(f -> {
+//            if (f != null && f.length != 0) {
+//                this.backgroundImage.setText(ArrayUtil.first(f).getPath());
+//            }
+//        });
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
+        if (file != null) {
+            this.backgroundImage.setText(file.getPath());
         }
     }
 }

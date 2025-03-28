@@ -1,7 +1,9 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.util.BooleanUtil;
+import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
@@ -110,6 +112,63 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
      */
     @Column
     private String osType;
+
+    /**
+     * 是否开启背景
+     */
+    @Column
+    private Boolean enableBackground;
+
+    /**
+     * 背景图片
+     */
+    @Column
+    private String backgroundImage;
+
+    public Boolean getEnableBackground() {
+        return enableBackground;
+    }
+
+    public Boolean isEnableBackground() {
+        return enableBackground != null && enableBackground;
+    }
+
+    public void setEnableBackground(Boolean enableBackground) {
+        this.enableBackground = enableBackground;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public String getBackgroundImageUrl() {
+        // 处理图片
+        if (!StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
+            return ResourceUtil.getLocalFileUrl(backgroundImage);
+        }
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
+    /**
+     * 背景图片是否失效
+     *
+     * @return 结果
+     */
+    public boolean isBackgroundImageInvalid() {
+        if (this.isEnableBackground()) {
+            if (StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
+                return false;
+            }
+            if (FileUtil.exists(this.backgroundImage)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String getOsType() {
         return osType;
