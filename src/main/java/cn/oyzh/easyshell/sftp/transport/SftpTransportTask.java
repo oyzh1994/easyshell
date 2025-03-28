@@ -159,6 +159,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                     ex.printStackTrace();
                     JulLog.warn("file:{} transport failed", monitor.getLocalFileName(), ex);
                     this.failed(monitor, ex);
+                    break;
                 }
             } finally {
 //                localSftp.setUsing(false);

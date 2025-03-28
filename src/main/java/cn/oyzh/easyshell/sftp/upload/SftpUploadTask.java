@@ -118,7 +118,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
             }
             ShellSftp sftp = monitor.getSftp();
             try {
-                sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor, ChannelSftp.OVERWRITE);
+                sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor);
             } catch (Exception ex) {
                 if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     JulLog.warn("upload canceled");
@@ -126,6 +126,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                     ex.printStackTrace();
                     JulLog.warn("file:{} upload failed", monitor.getLocalFileName(), ex);
                     this.failed(monitor, ex);
+                    break;
                 }
             }
             ThreadUtil.sleep(5);

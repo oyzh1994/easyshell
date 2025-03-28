@@ -27,7 +27,7 @@ public class ServerDisk {
             double writeSpeed = (write - this.lastWrite) * 512 / 1024 / 1024d / cost;
             this.lastRead = read;
             this.lastWrite = write;
-            this.lastUpdateTime = System.currentTimeMillis();
+            this.lastUpdateTime = now;
             return new double[]{readSpeed, writeSpeed};
         }
     }

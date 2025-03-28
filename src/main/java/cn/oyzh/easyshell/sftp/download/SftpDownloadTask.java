@@ -129,6 +129,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                     ex.printStackTrace();
                     JulLog.warn("file:{} download failed", monitor.getRemoteFileName(), ex);
                     this.failed(monitor, ex);
+                    break;
                 }
             }
             ThreadUtil.sleep(5);

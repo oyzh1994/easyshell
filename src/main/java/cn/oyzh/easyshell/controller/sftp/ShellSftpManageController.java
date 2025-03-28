@@ -55,7 +55,7 @@ public class ShellSftpManageController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.uploadManager.setTaskChangedCallback(this::initUploadTable);
-        this.downloadManager.setTaskChangedCallback(this::initUploadTable);
+        this.downloadManager.setTaskChangedCallback(this::initDownloadTable);
     }
 
     protected void initUploadTable() {

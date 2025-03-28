@@ -65,7 +65,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
      * @param exception 异常
      */
     public void failed(M monitor, Throwable exception) {
-        this.monitors.remove(monitor);
+//        this.monitors.remove(monitor);
         this.updateTotal();
     }
 

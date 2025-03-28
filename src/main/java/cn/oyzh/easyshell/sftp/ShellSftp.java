@@ -211,6 +211,10 @@ public class ShellSftp extends ShellChannel {
         }
     }
 
+    public void put(String src, String dest, SftpProgressMonitor monitor) throws SftpException {
+        this.put(src, dest, monitor, ChannelSftp.OVERWRITE);
+    }
+
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
