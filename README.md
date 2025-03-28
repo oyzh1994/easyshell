@@ -179,3 +179,9 @@ chmod -R 755 /路径/EasyShell.app(可拖入命令行窗口)
 ![img33.png](resource/md/img33.png)
 ###### 截图34
 ![img34.png](resource/md/img34.png)
+###### 截图35
+![img35.png](resource/md/img35.png)
+###### 截图36
+![img36.png](resource/md/img36.png)
+###### 截图35
+![img37.png](resource/md/img37.png)
