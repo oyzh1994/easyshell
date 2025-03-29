@@ -222,13 +222,14 @@ public class DockerExec implements AutoCloseable {
             return this.client.getUserHome() + ".docker/daemon.json";
         } else if (this.client.isWindows()) {
             try {
-                if (this.client.openSftp().exist(this.client.getUserHome() + ".docker/daemon.json")) {
-                    return this.client.getUserHome() + ".docker/daemon.json";
+                String daemonFile = this.client.getUserHome() + ".docker\\daemon.json";
+                if (this.client.openSftp().exist(daemonFile)) {
+                    return daemonFile;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return "C:/Users/Administrator/.docker/daemon.json";
+            return "C:\\Users\\Administrator\\.docker\\daemon.json";
         }
         return "/etc/docker/daemon.json";
     }

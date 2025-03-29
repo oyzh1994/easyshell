@@ -1,11 +1,15 @@
 package cn.oyzh.easyshell.server;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,10 +42,10 @@ public class ServerExec implements AutoCloseable {
     public ServerMonitor monitor() {
         ServerMonitor monitor = this.monitorSimple();
         String arch = this.arch();
-        int ulimit = this.ulimit();
         String uname = this.uname();
-        double totalMemory = this.totalMemory();
+        String ulimit = this.ulimit();
         String uptime = this.uptime();
+        double totalMemory = this.totalMemory();
         monitor.setArch(arch);
         monitor.setUname(uname);
         monitor.setUlimit(ulimit);
@@ -182,21 +186,27 @@ public class ServerExec implements AutoCloseable {
         return -1;
     }
 
-    public int ulimit() {
+    public String ulimit() {
         try {
-            String ulimit = this.client.exec("ulimit -n");
-            if (ulimit.endsWith("\n")) {
-                ulimit = ulimit.replace("\n", "");
+            if (!this.client.isWindows()) {
+                String ulimit = this.client.exec("ulimit -n");
+                if (ulimit.endsWith("\n")) {
+                    ulimit = ulimit.replace("\n", "");
+                }
+                return ulimit;
             }
-            return Integer.parseInt(ulimit);
         } catch (Exception ee) {
             ee.printStackTrace();
         }
-        return -1;
+        return "N/A";
     }
 
     public String uname() {
         try {
+            if (this.client.isWindows()) {
+                String output = this.client.exec("hostname");
+                return output == null ? "N/A" : output.trim();
+            }
             return this.client.exec("uname -rs");
         } catch (Exception ee) {
             ee.printStackTrace();
@@ -206,6 +216,11 @@ public class ServerExec implements AutoCloseable {
 
     public String arch() {
         try {
+            if (this.client.isWindows()) {
+                String output = this.client.exec("wmic os get osarchitecture");
+                String arch = ArrayUtil.indexOf(output.split("\n"), 1);
+                return arch == null ? "N/A" : arch.trim();
+            }
             return this.client.exec("uname -m");
         } catch (Exception ee) {
             ee.printStackTrace();
@@ -218,6 +233,14 @@ public class ServerExec implements AutoCloseable {
             if (this.client.isMacos()) {
                 String totalMemory = this.client.exec("sysctl -n hw.memsize");
                 return Long.parseLong(totalMemory) / 1024 / 1024;
+            }
+            if (this.client.isWindows()) {
+                String totalMemory = this.client.exec("wmic memorychip get capacity");
+                totalMemory = ArrayUtil.indexOf(totalMemory.split("\n"), 1);
+                if (totalMemory == null) {
+                    return -1;
+                }
+                return Long.parseLong(totalMemory.trim()) / 1024 / 1024;
             }
             if (this.client.isUnix()) {
                 String totalMemory = this.client.exec("sysctl hw.physmem");
@@ -368,11 +391,22 @@ public class ServerExec implements AutoCloseable {
 
     public String uptime() {
         try {
-            String output = this.client.exec("uptime");
-            if (StringUtil.isNotBlank(output)) {
-                output = output.substring(output.indexOf("up"));
-                output = output.substring(0, output.indexOf(","));
-                return output.trim();
+            if (this.client.isWindows()) {
+                String output = this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime");
+                if (StringUtil.isNotBlank(output)) {
+                    output = ArrayUtil.indexOf(output.split("\n"), 1);
+                    if (StringUtil.isNotBlank(output)) {
+                        Date date = new SimpleDateFormat("yyyyMMddHHmmss").parse(output.trim());
+                        return "up at " + DateHelper.formatTimeSimple(date);
+                    }
+                }
+            } else {
+                String output = this.client.exec("uptime");
+                if (StringUtil.isNotBlank(output)) {
+                    output = output.substring(output.indexOf("up"));
+                    output = output.substring(0, output.indexOf(","));
+                    return output.trim();
+                }
             }
         } catch (Exception ee) {
             ee.printStackTrace();

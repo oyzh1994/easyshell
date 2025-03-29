@@ -490,10 +490,10 @@ public class ShellClient {
             String extCommand = null;
             if (StringUtil.startWithAnyIgnoreCase(command, "source", "which", "where")) {
                 extCommand = command;
-            } else if (this.isWindows()) {
-                extCommand = command;
             } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
                 extCommand = "/usr/bin/" + command;
+            } else if (this.isWindows()) {
+                extCommand = command;
             } else if (this.isLinux() || this.isMacos()) {
                 String exportPath = this.getExportPath();
                 extCommand = "export PATH=$PATH" + exportPath + " && " + command;
@@ -687,7 +687,7 @@ public class ShellClient {
     private String osType() {
         if (this.osType == null) {
             String output = this.exec("which");
-            if (ShellUtil.isWindowsCommandNotFound(output, "which")) {
+            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "which")) {
                 this.osType = "Windows";
             } else {
                 this.osType = this.exec("uname");
@@ -739,11 +739,13 @@ public class ShellClient {
         if (this.userHome == null) {
             if (this.isWindows()) {
                 this.userHome = this.exec("echo %HOME%");
+                this.userHome += "\\";
             } else {
                 this.userHome = this.exec("echo $HOME");
+                this.userHome += "/";
             }
         }
-        return this.userHome + "/";
+        return this.userHome;
     }
 
     private String remoteCharset;

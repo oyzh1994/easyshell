@@ -6,7 +6,7 @@ package cn.oyzh.easyshell.server;
  */
 public class ServerMonitor {
 
-    private int ulimit;
+    private String ulimit;
 
     private String arch;
 
@@ -68,11 +68,11 @@ public class ServerMonitor {
         this.networkReceiveSpeed = networkReceiveSpeed;
     }
 
-    public int getUlimit() {
+    public String getUlimit() {
         return ulimit;
     }
 
-    public void setUlimit(int ulimit) {
+    public void setUlimit(String ulimit) {
         this.ulimit = ulimit;
     }
 
