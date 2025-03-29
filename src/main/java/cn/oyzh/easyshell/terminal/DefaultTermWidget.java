@@ -87,7 +87,8 @@ public class DefaultTermWidget extends JediTermFxWidget {
                 .setEnvironment(envs)
                 .setConsole(false)
                 .setUseWinConPty(false)
-                .setRedirectErrorStream(true)
+                // 这个会导致输出混乱，不要为true
+                .setRedirectErrorStream(false)
                 .setWindowsAnsiColorEnabled(true)
                 .start();
     }

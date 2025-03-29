@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
 import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox;
+import cn.oyzh.easyshell.fx.docker.DockerContainerStatusComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
@@ -34,7 +34,7 @@ public class ShellDockerContainerTabController extends SubTabController {
     private DockerContainerTableView containerTable;
 
     @FXML
-    private ShellContainerStatusComboBox containerStatus;
+    private DockerContainerStatusComboBox containerStatus;
 
     private boolean initialized = false;
 

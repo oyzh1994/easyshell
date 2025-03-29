@@ -8,7 +8,7 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.ShellContainerStatusComboBox?>
+<?import cn.oyzh.easyshell.fx.docker.DockerContainerStatusComboBox?>
 <?import cn.oyzh.easyshell.trees.docker.DockerContainerTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
@@ -36,11 +36,11 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteForceSVGGlyph>
-            <ShellContainerStatusComboBox initIndex="0" fx:id="containerStatus">
+            <DockerContainerStatusComboBox initIndex="0" fx:id="containerStatus">
                 <FXHBox.margin>
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
-            </ShellContainerStatusComboBox>
+            </DockerContainerStatusComboBox>
         </FXHBox>
         <DockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>

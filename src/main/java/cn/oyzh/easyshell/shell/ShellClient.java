@@ -10,13 +10,12 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.process.ProcessExec;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.sftp.SftpAttr;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpManager;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
@@ -32,7 +31,6 @@ import cn.oyzh.ssh.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
@@ -635,6 +633,15 @@ public class ShellClient {
             this.shellExec = new ShellExec(this);
         }
         return this.shellExec;
+    }
+
+    private ProcessExec processExec;
+
+    public ProcessExec processExec() {
+        if (this.processExec == null) {
+            this.processExec = new ProcessExec(this);
+        }
+        return this.processExec;
     }
 
     public Charset getCharset() {

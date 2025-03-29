@@ -60,6 +60,12 @@ public class ShellConnectTabController extends ParentTabController {
     private ShellDockerTabController dockerTabController;
 
     /**
+     * 进程
+     */
+    @FXML
+    private ShellProcessTabController processTabController;
+
+    /**
      * 监控
      */
     @FXML
@@ -97,9 +103,10 @@ public class ShellConnectTabController extends ParentTabController {
                     }
                 });
                 this.termTabController.init();
-                this.monitorTabController.setClient(this.client);
                 this.configTabController.setClient(this.client);
                 this.dockerTabController.setClient(this.client);
+                this.monitorTabController.setClient(this.client);
+                this.processTabController.setClient(this.client);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -126,6 +133,6 @@ public class ShellConnectTabController extends ParentTabController {
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.termTabController, this.sftpTabController, this.dockerTabController,
-                this.monitorTabController, this.configTabController);
+                this.monitorTabController, this.configTabController, this.processTabController);
     }
 }

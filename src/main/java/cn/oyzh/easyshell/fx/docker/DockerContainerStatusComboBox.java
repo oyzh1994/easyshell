@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx;
+package cn.oyzh.easyshell.fx.docker;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 25/03/13
  */
-public class ShellContainerStatusComboBox extends FXComboBox<String> {
+public class DockerContainerStatusComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.running());

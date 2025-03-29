@@ -1,0 +1,205 @@
+package cn.oyzh.easyshell.fx.process;
+
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.process.ProcessExec;
+import cn.oyzh.easyshell.process.ProcessInfo;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.control.MenuItem;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+
+/**
+ * @author oyzh
+ * @since 2025-03-29
+ */
+public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
+
+    /**
+     * 当前用户
+     */
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+        this.refreshData();
+    }
+
+    /**
+     * 过滤文本
+     */
+    private String filterText;
+
+    public String getFilterText() {
+        return filterText;
+    }
+
+    public void setFilterText(String filterText) {
+        this.filterText = filterText;
+        this.refreshData();
+    }
+
+    /**
+     * 数据列表
+     */
+    private List<ProcessInfo> dataList;
+
+    private ProcessExec exec;
+
+    public ProcessExec getExec() {
+        return exec;
+    }
+
+    public void setExec(ProcessExec exec) {
+        this.exec = exec;
+    }
+
+    @Override
+    protected void initTableView() {
+        super.initTableView();
+    }
+
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<? extends MenuItem> menuItems = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(menuItems)) {
+                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+        // 初始化鼠标多选辅助类
+        TableViewMouseSelectHelper.install(this);
+    }
+
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        ProcessInfo info = this.getSelectedItem();
+        if (info == null) {
+            return Collections.emptyList();
+        }
+        List<MenuItem> menuItems = new ArrayList<>();
+        MenuItem killProcess = MenuItemHelper.killProcess("12", () -> this.killProcess(info));
+        menuItems.add(killProcess);
+        return menuItems;
+    }
+
+    /**
+     * 刷新数据
+     */
+    public void refreshData() {
+        // 更新数据
+        this.setItem(this.doFilter(this.dataList));
+        // 更新排序
+        this.sort();
+        // 更新表格
+        this.refresh();
+    }
+
+    /**
+     * 杀死进程
+     *
+     * @param info 进程信息
+     */
+    protected void killProcess(ProcessInfo info) {
+        if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.killProcess() + "?")) {
+            String output = this.exec.kill(info.getPid());
+            if (StringUtil.isNotBlank(output)) {
+                MessageBox.warn(output);
+            } else {
+                this.dataList.remove(info);
+                this.refreshData();
+            }
+        }
+    }
+
+    /**
+     * 进行过滤
+     *
+     * @param infos 数据
+     * @return 过滤后的树
+     */
+    protected List<ProcessInfo> doFilter(List<ProcessInfo> infos) {
+        infos = infos.parallelStream()
+                .filter(f -> {
+                    // 用户
+                    if (StringUtil.isNotBlank(this.user) && !StringUtil.equalsIgnoreCase(f.getUser(), this.user)) {
+                        return false;
+                    }
+                    // 关键字
+                    if (StringUtil.isNotBlank(this.filterText) && !(
+                            StringUtil.containsIgnoreCase(f.getCommand(), this.filterText)
+                                    || StringUtil.contains(f.getPid() + "", this.filterText)
+                                    || StringUtil.contains(f.getStat(), this.filterText)
+                    )) {
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        return infos;
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param infos 数据列表
+     */
+    public void updateData(List<ProcessInfo> infos) {
+        if (this.isItemEmpty()) {
+            this.dataList = new CopyOnWriteArrayList<>(infos);
+        } else {
+            // 删除列表
+            List<ProcessInfo> delList = new ArrayList<>();
+            List<ProcessInfo> addList = new ArrayList<>();
+            // 寻找新增进程
+            for (ProcessInfo info : infos) {
+                Optional<ProcessInfo> p = this.dataList.parallelStream()
+                        .filter(f -> info.getPid() == f.getPid())
+                        .findAny();
+                if (p.isEmpty()) {
+                    addList.add(info);
+                }
+            }
+            List<ProcessInfo> list = this.getItems();
+            // 寻找删除进程，更新已有进程
+            for (ProcessInfo info : list) {
+                Optional<ProcessInfo> p = infos.parallelStream()
+                        .filter(f -> info.getPid() == f.getPid())
+                        .findAny();
+                if (p.isPresent()) {
+                    info.copy(p.get());
+                } else {
+                    delList.add(info);
+                }
+            }
+            // 删除
+            this.dataList.removeAll(delList);
+            // 新增
+            this.dataList.addAll(delList);
+        }
+        // 更新数据
+        this.setItem(this.doFilter(infos));
+        // 更新排序
+        this.sort();
+        // 更新表格
+        this.refresh();
+    }
+}

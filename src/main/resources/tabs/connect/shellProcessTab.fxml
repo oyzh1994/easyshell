@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.process.ProcessInfoTableView?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import javafx.geometry.Insets?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.easyshell.fx.process.ProcessTypeComboBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.ProcessSVGGlyph?>
+<FXTab fx:id="root" text="%base.process1" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellProcessTabController">
+    <graphic>
+        <ProcessSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <ClearableTextField prefWidth="300" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="3"/>
+                </FXHBox.margin>
+            </ClearableTextField>
+            <ProcessTypeComboBox initIndex="0" fx:id="processType">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </ProcessTypeComboBox>
+        </FXHBox>
+        <ProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="processTable">
+            <columns>
+                <FXTableColumn valueName="user" text="%base.user" prefWidth="100"/>
+                <FXTableColumn valueName="pid" text="pid" prefWidth="100"/>
+                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="100"/>
+                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="100"/>
+                <FXTableColumn valueName="stat" text="%base.stat" prefWidth="100"/>
+                <FXTableColumn valueName="start" text="%base.startAt" prefWidth="100"/>
+                <FXTableColumn valueName="time" text="%base.time" prefWidth="100"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 700"/>
+            </columns>
+        </ProcessInfoTableView>
+    </FXVBox>
+</FXTab>
