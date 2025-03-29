@@ -50,17 +50,13 @@ public class ShellDockerDaemonTabController extends SubTabController {
     private void refresh() {
         // 设置文件路径
         if (this.filePath.isEmpty()) {
-            if (this.client().isMacos()) {
-                this.filePath.setText(this.client().getUserHome() + ".docker/daemon.json");
-            } else {
-                this.filePath.setText("/etc/docker/daemon.json");
-            }
+            this.filePath.setText(this.client().dockerExec().getDaemonFilePath());
         }
         StageManager.showMask(() -> {
             try {
-                ShellExec exec = this.client().shellExec();
                 ShellSftp sftp = this.client().openSftp();
                 if (sftp.exist(this.filePath.getText())) {
+                    ShellExec exec = this.client().shellExec();
                     String output = exec.cat_docker_daemon(this.filePath.getText());
                     this.data.setText(output);
                 }

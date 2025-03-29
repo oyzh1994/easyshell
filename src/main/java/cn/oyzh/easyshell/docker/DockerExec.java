@@ -11,28 +11,56 @@ public class DockerExec implements AutoCloseable {
 
     private ShellClient client;
 
-    private final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
-
-    private final String container_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
-
-    private final String history_format = "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
-
-    //private final String resource_format = "{{.HostConfig.Memory}}\t{{.HostConfig.MemorySwap}}\t{{.HostConfig.CpuShares}}\t{{.HostConfig.NanoCpus}}\t{{.HostConfig.CpuPeriod}}\t{{.HostConfig.CpuQuota}}";
+//    private static final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
+//
+//    private static final String container_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
+//
+//    private static final String history_format = "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
 
     public DockerExec(ShellClient client) {
         this.client = client;
     }
 
+    protected String getContainerFormat() {
+        if (this.client.isWindows()) {
+            return "\"{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}\"";
+        }
+        return "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
+    }
+
+    protected String getImageFormat() {
+        if (this.client.isWindows()) {
+            return "\"{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}\"";
+        }
+        return "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
+    }
+
+    protected String getHistoryFormat() {
+        if (this.client.isWindows()) {
+            return "\"{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}\"";
+        }
+        return "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
+    }
+
     public String docker_ps() {
-        return this.client.exec("docker ps --format " + this.container_format);
+//        if (this.client.isWindows()) {
+//            return this.client.exec("docker ps --format  \"" + container_format.substring(1, container_format.length() - 1) + "\"");
+//        }
+        return this.client.exec("docker ps --format " + this.getContainerFormat());
     }
 
     public String docker_ps_a() {
-        return this.client.exec("docker ps -a --format " + this.container_format);
+//        if (this.client.isWindows()) {
+//            return this.client.exec("docker ps -a --format \"" + container_format + "\"");
+//        }
+        return this.client.exec("docker ps -a --format " + this.getContainerFormat());
     }
 
     public String docker_ps_exited() {
-        return this.client.exec("docker ps -f \"status=exited\" --format " + this.container_format);
+//        if (this.client.isWindows()) {
+//            return this.client.exec("docker ps -f \"status=exited\" --format \"" + container_format + "\"");
+//        }
+        return this.client.exec("docker ps -f \"status=exited\" --format " + this.getContainerFormat());
     }
 
     public String docker_rm(String containerId) {
@@ -99,7 +127,10 @@ public class DockerExec implements AutoCloseable {
     }
 
     public String docker_images() {
-        return this.client.exec("docker images --format " + this.image_format);
+//        if (this.client.isWindows()) {
+//            return this.client.exec("docker images --format \"" + image_format + "\"");
+//        }
+        return this.client.exec("docker images --format " + this.getImageFormat());
     }
 
     public String docker_resource(String id) {
@@ -110,7 +141,6 @@ public class DockerExec implements AutoCloseable {
         builder.append(this.docker_inspect(id, "{{.HostConfig.NanoCpus}}")).append("\t");
         builder.append(this.docker_inspect(id, "{{.HostConfig.CpuPeriod}}")).append("\t");
         builder.append(this.docker_inspect(id, "{{.HostConfig.CpuQuota}}"));
-//        return this.docker_inspect(id, this.resource_format);
         return builder.toString();
     }
 
@@ -160,7 +190,10 @@ public class DockerExec implements AutoCloseable {
     }
 
     public String docker_history(String imageId) {
-        return this.client.exec("docker history " + imageId + " --format " + this.history_format);
+//        if (this.client.isWindows()) {
+//            return this.client.exec("docker history " + imageId + " --format  \"" + history_format + "\"");
+//        }
+        return this.client.exec("docker history " + imageId + " --format " + this.getHistoryFormat());
     }
 
     public String docker_container_prune_f() {
@@ -182,5 +215,21 @@ public class DockerExec implements AutoCloseable {
     @Override
     public void close() throws Exception {
         this.client = null;
+    }
+
+    public String getDaemonFilePath() {
+        if (this.client.isMacos()) {
+            return this.client.getUserHome() + ".docker/daemon.json";
+        } else if (this.client.isWindows()) {
+            try {
+                if (this.client.openSftp().exist(this.client.getUserHome() + ".docker/daemon.json")) {
+                    return this.client.getUserHome() + ".docker/daemon.json";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "C:/Users/Administrator/.docker/daemon.json";
+        }
+        return "/etc/docker/daemon.json";
     }
 }

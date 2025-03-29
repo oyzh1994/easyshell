@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.os.MintSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.RaspberrypiSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.RedhatSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.UbuntuSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.os.WindowsSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
@@ -35,6 +36,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
 
         this.addItem("Ubuntu");
         this.addItem("Centos");
+        this.addItem("Windows");
         this.addItem("Debian");
         this.addItem("Apple");
         this.addItem("Arch");
@@ -46,7 +48,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Mint");
         this.addItem("Linux");
         // 设置单元格工厂
-        this.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        this.setCellFactory(new Callback<>() {
             @Override
             public ListCell<String> call(ListView<String> param) {
                 return new ListCell<>() {
@@ -76,6 +78,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "Apple" -> new AppleSVGGlyph();
             case "Ubuntu" -> new UbuntuSVGGlyph();
             case "Centos" -> new CentosSVGGlyph();
+            case "Windows" -> new WindowsSVGGlyph();
             case "Arch" -> new ArchSVGGlyph();
             case "Mint" -> new MintSVGGlyph();
             case "Raspberrypi" -> new RaspberrypiSVGGlyph();

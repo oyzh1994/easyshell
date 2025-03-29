@@ -258,13 +258,13 @@ public class ShellClient {
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
 
-    /**
-     * 关闭客户端，静默模式
-     */
-    public void closeQuiet() {
-        this.closeQuietly = true;
-        this.close();
-    }
+//    /**
+//     * 关闭客户端，静默模式
+//     */
+//    public void closeQuiet() {
+//        this.closeQuietly = true;
+//        this.close();
+//    }
 
     /**
      * 关闭客户端
@@ -333,6 +333,8 @@ public class ShellClient {
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
                 ShellClientChecker.push(this);
+                // 初始化环境
+                this.initEnvironment();
             } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
@@ -473,7 +475,7 @@ public class ShellClient {
     public ShellSftp newSftp() {
         try {
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-            ShellSftp sftp = new ShellSftp(channel);
+            ShellSftp sftp = new ShellSftp(channel, this);
             sftp.connect(this.connectTimeout());
             return sftp;
         } catch (Exception ex) {
@@ -486,7 +488,9 @@ public class ShellClient {
         ChannelExec channel = null;
         try {
             String extCommand = null;
-            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which")) {
+            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which", "where")) {
+                extCommand = command;
+            } else if (this.isWindows()) {
                 extCommand = command;
             } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
                 extCommand = "/usr/bin/" + command;
@@ -513,7 +517,13 @@ public class ShellClient {
             while (channel.isConnected()) {
                 Thread.sleep(5);
             }
-            String result = stream.toString();
+            String result;
+            // 如果远程是windows，则要检查下字符集是否要指定
+            if (this.remoteCharset != null) {
+                result = stream.toString(this.remoteCharset);
+            } else {
+                result = stream.toString();
+            }
             stream.close();
             if (StringUtil.endsWith(result, "\n")) {
                 result = result.substring(0, result.length() - 1);
@@ -536,8 +546,15 @@ public class ShellClient {
      */
     public String getExportPath() {
         StringBuilder builder = new StringBuilder();
-        for (String string : this.environment) {
-            builder.append(":").append(string);
+        if (this.isWindows()) {
+            for (String string : this.environment) {
+                builder.append(string).append(";");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+        } else {
+            for (String string : this.environment) {
+                builder.append(":").append(string);
+            }
         }
         return builder.toString();
     }
@@ -584,13 +601,22 @@ public class ShellClient {
      */
     private final List<String> environment = new ArrayList<>();
 
-    {
-        this.environment.add("/bin");
-        this.environment.add("/sbin");
-        this.environment.add("/usr/bin");
-        this.environment.add("/usr/sbin");
-        this.environment.add("/usr/local/bin");
-        this.environment.add("/usr/local/sbin");
+    private void initEnvironment() {
+        if (this.isWindows()) {
+            this.environment.add("C:/Windows/System");
+            this.environment.add("C:/Windows/System32");
+            this.environment.add("C:/Windows/SysWOW64");
+            this.environment.add("C:/Program Files");
+            this.environment.add("C:/Program Files (x86)");
+            JulLog.info("remote charset: {}", this.getRemoteCharset());
+        } else {
+            this.environment.add("/bin");
+            this.environment.add("/sbin");
+            this.environment.add("/usr/bin");
+            this.environment.add("/usr/sbin");
+            this.environment.add("/usr/local/bin");
+            this.environment.add("/usr/local/sbin");
+        }
     }
 
     private DockerExec dockerExec;
@@ -598,21 +624,29 @@ public class ShellClient {
     public DockerExec dockerExec() {
         if (this.dockerExec == null) {
             this.dockerExec = new DockerExec(this);
-//            if (this.isMacos()) {
             try {
-                String output = this.exec("which docker");
-                if (StringUtil.isBlank(output)) {
-                    JulLog.warn("docker is not available");
-                } else if (!ShellUtil.isCommandNotFound(output)) {
-                    String env = output.substring(0, output.lastIndexOf("/"));
-                    this.environment.add(env);
-                } else if (this.isMacos() && this.openSftp().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
-                    this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
+                if (this.isWindows()) {
+                    String output = this.exec("where docker.exe");
+                    if (StringUtil.isBlank(output)) {
+                        JulLog.warn("docker is not available");
+                    } else if (!ShellUtil.isWindowsCommandNotFound(output, "docker")) {
+                        String env = output.substring(0, output.lastIndexOf("\\"));
+                        this.environment.add(env);
+                    }
+                } else {
+                    String output = this.exec("which docker");
+                    if (StringUtil.isBlank(output)) {
+                        JulLog.warn("docker is not available");
+                    } else if (!ShellUtil.isCommandNotFound(output)) {
+                        String env = output.substring(0, output.lastIndexOf("/"));
+                        this.environment.add(env);
+                    } else if (this.isMacos() && this.openSftp().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                        this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-//            }
         }
         return this.dockerExec;
     }
@@ -650,8 +684,20 @@ public class ShellClient {
 
     private String osType;
 
+    private String osType() {
+        if (this.osType == null) {
+            String output = this.exec("which");
+            if (ShellUtil.isWindowsCommandNotFound(output, "which")) {
+                this.osType = "Windows";
+            } else {
+                this.osType = this.exec("uname");
+            }
+        }
+        return this.osType;
+    }
+
     public boolean isMacos() {
-        return StringUtil.containsIgnoreCase(this.osType(), "darwin");
+        return StringUtil.containsIgnoreCase(this.osType(), "Darwin");
     }
 
     public boolean isLinux() {
@@ -659,18 +705,15 @@ public class ShellClient {
     }
 
     public boolean isUnix() {
-        return !this.isMacos() && !this.isLinux();
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix");
     }
 
     public boolean isFreeBSD() {
-        return this.isUnix() && StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
+        return StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
     }
 
-    private String osType() {
-        if (this.osType == null) {
-            this.osType = this.exec("uname");
-        }
-        return this.osType;
+    public boolean isWindows() {
+        return StringUtil.equals(this.osType(), "Windows");
     }
 
     private String whoami;
@@ -682,20 +725,40 @@ public class ShellClient {
         return this.whoami;
     }
 
-    @Deprecated
-    public String getUserBase() {
-        if (this.isMacos()) {
-            return "/Users/" + this.whoami() + "/";
-        }
-        return "/" + this.whoami() + "/";
-    }
+//    @Deprecated
+//    public String getUserBase() {
+//        if (this.isMacos()) {
+//            return "/Users/" + this.whoami() + "/";
+//        }
+//        return "/" + this.whoami() + "/";
+//    }
 
     private String userHome;
 
     public String getUserHome() {
         if (this.userHome == null) {
-            this.userHome = this.exec("echo $HOME");
+            if (this.isWindows()) {
+                this.userHome = this.exec("echo %HOME%");
+            } else {
+                this.userHome = this.exec("echo $HOME");
+            }
         }
         return this.userHome + "/";
+    }
+
+    private String remoteCharset;
+
+    public String getRemoteCharset() {
+        if (this.remoteCharset == null) {
+            String output = this.exec("chcp");
+            if (output.contains("437")) {
+                this.remoteCharset = "iso-8859-1";
+            } else if (output.contains("936")) {
+                this.remoteCharset = "gbk";
+            } else if (output.contains("65001")) {
+                this.remoteCharset = "utf-8";
+            }
+        }
+        return this.remoteCharset;
     }
 }

@@ -23,8 +23,11 @@ import java.util.stream.Collectors;
  */
 public class ShellSftp extends ShellChannel {
 
-    public ShellSftp(ChannelSftp channel) {
+    private ShellClient client;
+
+    public ShellSftp(ChannelSftp channel, ShellClient client) {
         super(channel);
+        this.client = client;
     }
 
     private final AtomicBoolean using = new AtomicBoolean(false);
@@ -174,6 +177,9 @@ public class ShellSftp extends ShellChannel {
 
     public boolean exist(String path) throws SftpException {
         try {
+            if (this.client.isWindows() && !path.startsWith("/")) {
+                path = "/" + path;
+            }
             return this.stat(path) != null;
         } catch (SftpException ex) {
             if (StringUtil.contains(ex.getMessage(), "No such file")) {
@@ -281,5 +287,6 @@ public class ShellSftp extends ShellChannel {
         this.setHolding(true);
         super.close();
         this.setHolding(false);
+        this.client = null;
     }
 }

@@ -91,7 +91,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerRestart() {
-        if (this.client().isMacos()) {
+        if (this.client().isMacos() || this.client().isWindows()) {
             MessageBox.warn(I18nHelper.operationNotSupport());
             return;
         }

@@ -44,13 +44,13 @@
         </FXHBox>
         <DockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FXTableColumn prefWidth="120" valueName="containerId" text="%base.id"/>
-                <FXTableColumn prefWidth="120" valueName="image" text="%base.image"/>
-                <FXTableColumn flexWidth="100% - 895" valueName="command" text="%base.cmd"/>
-                <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
+                <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
+                <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
+                <FXTableColumn flexWidth="100% - 845" valueName="command" text="%base.cmd"/>
+                <FXTableColumn prefWidth="200" valueName="created" text="%base.createTime"/>
                 <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
-                <FXTableColumn prefWidth="180" valueName="ports" text="%base.port"/>
-                <FXTableColumn prefWidth="120" valueName="names" text="%base.name"/>
+                <FXTableColumn prefWidth="160" valueName="ports" text="%base.port"/>
+                <FXTableColumn prefWidth="100" valueName="names" text="%base.name"/>
             </columns>
         </DockerContainerTableView>
     </FXVBox>

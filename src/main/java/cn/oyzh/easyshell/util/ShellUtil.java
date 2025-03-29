@@ -12,6 +12,14 @@ public class ShellUtil {
         return StringUtil.containsAnyIgnoreCase(output, "not found", "未找到命令");
     }
 
+    public static boolean isWindowsCommandNotFound(String output, String cmd) {
+        return StringUtil.containsIgnoreCase(output, "'" + cmd + "'");
+    }
+
+    public static String fixToWindowsFilePath(String filePath) {
+        return StringUtil.replace(filePath, "/", "\\");
+    }
+
     public static boolean hasOwnerReadPermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 2 && chars[1] == 'r';
