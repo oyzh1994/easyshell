@@ -397,7 +397,7 @@ public class ServerExec implements AutoCloseable {
                     output = ArrayUtil.indexOf(output.split("\n"), 1);
                     if (StringUtil.isNotBlank(output)) {
                         Date date = new SimpleDateFormat("yyyyMMddHHmmss").parse(output.trim());
-                        return "up at " + DateHelper.formatTimeSimple(date);
+                        return "up at " + DateHelper.formatDateTimeSimple(date);
                     }
                 }
             } else {

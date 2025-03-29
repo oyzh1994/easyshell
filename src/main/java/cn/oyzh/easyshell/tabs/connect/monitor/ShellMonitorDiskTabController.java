@@ -45,8 +45,7 @@ public class ShellMonitorDiskTabController extends SubTabController {
         }
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            String output = exec.disk_info();
-            List<DiskInfo> diskInfos = ShellExecParser.disk(output, this.client().isMacos());
+            List<DiskInfo> diskInfos = exec.disk_info();
             this.diskTable.setItem(diskInfos);
         });
     }

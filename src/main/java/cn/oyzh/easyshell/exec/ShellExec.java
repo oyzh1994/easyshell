@@ -5,6 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
+import java.util.List;
+
 /**
  * @author oyzh
  * @since 2023/8/16
@@ -21,17 +23,40 @@ public class ShellExec implements AutoCloseable {
         if (this.client.isMacos()) {
             return this.client.exec("sysctl machdep.cpu");
         }
+        if (this.client.isWindows()) {
+            String output = this.client.exec("wmic cpu");
+            String[] lines = output.split("\n");
+            String[] cols1 = lines[0].split("\\s+");
+            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < cols1.length; i++) {
+                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            }
+            return sb.toString();
+        }
         if (this.client.isUnix()) {
             return this.client.exec("sysctl hw.model hw.machine hw.ncpu hw.clockrate");
         }
         return this.client.exec("lscpu");
     }
 
-    public String disk_info() {
-        return this.client.exec("df -h");
+    public List<DiskInfo> disk_info() {
+        if (this.client.isWindows()) {
+            String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
+            return ShellExecParser.diskForWindows(output);
+        } else {
+            String output = this.client.exec("df -h");
+            if (this.client.isMacos()) {
+                return ShellExecParser.diskForMacos(output);
+            }
+            return ShellExecParser.diskForLinux(output);
+        }
     }
 
     public String network_interface_info() {
+        if (this.client.isWindows()) {
+            return this.client.exec("ipconfig /all");
+        }
         String output = this.client.exec("ifconfig");
         if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("ip addr");
@@ -42,6 +67,17 @@ public class ShellExec implements AutoCloseable {
     public String memory_info() {
         if (this.client.isMacos()) {
             return this.client.exec("system_profiler SPMemoryDataType");
+        }
+        if (this.client.isWindows()) {
+            String output = this.client.exec("wmic memorychip");
+            String[] lines = output.split("\n");
+            String[] cols1 = lines[0].split("\\s+");
+            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < cols1.length; i++) {
+                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            }
+            return sb.toString();
         }
         if (this.client.isUnix()) {
             return this.client.exec("dmesg | grep -i memory");
@@ -56,6 +92,21 @@ public class ShellExec implements AutoCloseable {
     public String gpu_info() {
         if (this.client.isMacos()) {
             return this.client.exec("system_profiler SPDisplaysDataType");
+        }
+        if (this.client.isWindows()) {
+            String output = this.client.exec("nvidia-smi");
+            if (!ShellUtil.isCommandNotFound(output)) {
+                return output;
+            }
+            output = this.client.exec("wmic path win32_VideoController");
+            String[] lines = output.split("\n");
+            String[] cols1 = lines[0].split("\\s+");
+            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < cols1.length; i++) {
+                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            }
+            return sb.toString();
         }
         if (this.client.isUnix()) {
             return this.client.exec("pciconf -lv | grep -i vga");
@@ -126,8 +177,6 @@ public class ShellExec implements AutoCloseable {
     }
 
     public String echo(String text, String file) {
-//        String str = text.replaceAll("\"", "\"\"\"");
-//        str = str.replaceAll("'", "'\\''");
         return this.client.exec("echo \"" + text + "\" > " + file);
     }
 
