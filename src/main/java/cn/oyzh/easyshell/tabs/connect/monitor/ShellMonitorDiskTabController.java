@@ -36,8 +36,15 @@ public class ShellMonitorDiskTabController extends SubTabController {
 
     @FXML
     private void refresh() {
-        ShellExec exec = this.client().shellExec();
+        this.refresh(true);
+    }
+
+    private void refresh(boolean force) {
+        if (!force && !this.diskTable.isChildEmpty()) {
+            return;
+        }
         StageManager.showMask(() -> {
+            ShellExec exec = this.client().shellExec();
             String output = exec.disk_info();
             List<DiskInfo> diskInfos = ShellExecParser.disk(output, this.client().isMacos());
             this.diskTable.setItem(diskInfos);
@@ -49,7 +56,7 @@ public class ShellMonitorDiskTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.refresh();
+                this.refresh(false);
             }
         });
     }

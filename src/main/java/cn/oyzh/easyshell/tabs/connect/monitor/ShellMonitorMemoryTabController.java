@@ -35,8 +35,15 @@ public class ShellMonitorMemoryTabController extends SubTabController {
 
     @FXML
     private void refresh() {
-        ShellExec exec = this.client().shellExec();
+        this.refresh(true);
+    }
+
+    private void refresh(boolean force) {
+        if (!force && !this.memoryInfo.isEmpty()) {
+            return;
+        }
         StageManager.showMask(() -> {
+            ShellExec exec = this.client().shellExec();
             String output = exec.memory_info();
             this.memoryInfo.text(output);
         });
@@ -53,7 +60,7 @@ public class ShellMonitorMemoryTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.refresh();
+                this.refresh(false);
             }
         });
     }

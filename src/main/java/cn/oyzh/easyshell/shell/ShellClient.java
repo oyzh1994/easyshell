@@ -603,14 +603,13 @@ public class ShellClient {
 //            if (this.isMacos()) {
             try {
                 String output = this.exec("which docker");
-                if (!ShellUtil.isCommandNotFound(output)) {
+                if (StringUtil.isBlank(output)) {
+                    JulLog.warn("docker is not available");
+                } else if (!ShellUtil.isCommandNotFound(output)) {
                     String env = output.substring(0, output.lastIndexOf("/"));
                     this.environment.add(env);
-                } else {
-                    ShellSftp sftp = this.openSftp();
-                    if (sftp.exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
-                        this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
-                    }
+                } else if (this.isMacos() && this.openSftp().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                    this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -657,7 +656,7 @@ public class ShellClient {
     }
 
     public boolean isFreeBSD() {
-        return this.isUnix()&&StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
+        return this.isUnix() && StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
     }
 
     private String osType() {

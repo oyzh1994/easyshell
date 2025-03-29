@@ -35,10 +35,19 @@ public class ShellMonitorGpuTabController extends SubTabController {
 
     @FXML
     private void refresh() {
-        ShellExec exec = this.client().shellExec();
+       this.refresh(true);
+    }
+
+    private void refresh(boolean force) {
+        if (!force && !this.gpuInfo.isEmpty()) {
+            return;
+        }
         StageManager.showMask(() -> {
-            String output = exec.gpu_info();
-            this.gpuInfo.text(output);
+            ShellExec exec = this.client().shellExec();
+            StageManager.showMask(() -> {
+                String output = exec.gpu_info();
+                this.gpuInfo.text(output);
+            });
         });
     }
 
@@ -53,7 +62,7 @@ public class ShellMonitorGpuTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.refresh();
+                this.refresh(false);
             }
         });
     }

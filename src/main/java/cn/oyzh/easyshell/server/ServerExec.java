@@ -156,7 +156,19 @@ public class ServerExec implements AutoCloseable {
                 return (1 - used / total) * 100;
             }
             String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%%\\n\", $3/$2 * 100.0}'");
-//            String output = this.client.exec("free | awk '/^Mem:/ {printf \"%.2f%\\n\", $3/$2 * 100.0}'");
+            // TODO: 针对deepin可能失效问题
+            if (StringUtil.isBlank(output)) {
+                output = this.client.exec("free");
+                if (StringUtil.isNotBlank(output)) {
+                    String[] lines = output.lines().toArray(String[]::new);
+                    if (lines.length > 2) {
+                        String[] cols = lines[1].split("\\s+");
+                        double used = Double.parseDouble(cols[2]);
+                        double total = Double.parseDouble(cols[1]);
+                        return (used / total) * 100;
+                    }
+                }
+            }
             if (StringUtil.isBlank(output)) {
                 return -1;
             }
