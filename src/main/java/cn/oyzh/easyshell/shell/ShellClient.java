@@ -721,6 +721,9 @@ public class ShellClient {
     public String whoami() {
         if (this.whoami == null) {
             this.whoami = this.exec("whoami");
+            if (this.isWindows() && this.whoami.contains("\\")) {
+                this.whoami = this.whoami.substring(this.whoami.lastIndexOf("\\") + 1).trim();
+            }
         }
         return this.whoami;
     }

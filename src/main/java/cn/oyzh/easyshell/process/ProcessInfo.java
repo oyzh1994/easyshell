@@ -42,6 +42,16 @@ public class ProcessInfo implements ObjectCopier<ProcessInfo> {
 
     private String command;
 
+    private double rss;
+
+    public double getRss() {
+        return rss;
+    }
+
+    public void setRss(double rss) {
+        this.rss = rss;
+    }
+
     public String getUser() {
         return user;
     }
@@ -92,7 +102,9 @@ public class ProcessInfo implements ObjectCopier<ProcessInfo> {
 
     @Override
     public void copy(ProcessInfo t1) {
+        this.rss = t1.rss;
         this.time = t1.time;
+        this.user = t1.user;
         this.stat = t1.stat;
         this.start = t1.start;
         this.command = t1.command;

@@ -54,6 +54,12 @@ public class ShellProcessTabController extends SubTabController {
     @FXML
     private ProcessInfoTableView processTable;
 
+    /**
+     * 进程信息(windows)
+     */
+    @FXML
+    private ProcessInfoTableView winProcessTable;
+
     public ShellClient getClient() {
         return client;
     }
@@ -66,7 +72,11 @@ public class ShellProcessTabController extends SubTabController {
     public void setClient(ShellClient client) {
         this.client = client;
         this.processExec = this.client.processExec();
-        this.processTable.setExec(this.processExec);
+        if (this.client.isWindows()) {
+            this.processTable.disappear();
+            this.winProcessTable.display();
+        }
+        this.getProcessTable().setExec(this.processExec);
     }
 
     /**
@@ -118,8 +128,8 @@ public class ShellProcessTabController extends SubTabController {
             if (this.client != null) {
                 // 获取数据
                 List<ProcessInfo> processInfos = this.processExec.ps();
-                this.processTable.updateData(processInfos);
-                this.processTable.sort();
+                this.getProcessTable().updateData(processInfos);
+                this.getProcessTable().sort();
             }
             JulLog.info("renderPane finished.");
         } catch (Exception ex) {
@@ -139,15 +149,22 @@ public class ShellProcessTabController extends SubTabController {
         // 用户
         this.processType.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.intValue() == 0) {
-                this.processTable.setUser(null);
+                this.getProcessTable().setUser(null);
             } else {
-                this.processTable.setUser(this.client.whoami());
+                this.getProcessTable().setUser(this.client.whoami());
             }
         });
         // 过滤
         this.filterProcess.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.processTable.setFilterText(newValue);
+            this.getProcessTable().setFilterText(newValue);
         });
+    }
+
+    private ProcessInfoTableView getProcessTable() {
+        if (this.client.isWindows()) {
+            return this.winProcessTable;
+        }
+        return this.processTable;
     }
 
     @Override

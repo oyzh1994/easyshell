@@ -26,16 +26,30 @@
                 </FXHBox.margin>
             </ProcessTypeComboBox>
         </FXHBox>
-        <ProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="processTable">
+        <ProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="processTable" managedBindVisible="true">
             <columns>
                 <FXTableColumn valueName="user" text="%base.user" prefWidth="100"/>
-                <FXTableColumn valueName="pid" text="pid" prefWidth="100"/>
-                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="100"/>
-                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="100"/>
+                <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>
+                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="80"/>
+                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="80"/>
+                <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
+                <FXTableColumn valueName="stat" text="%base.stat" prefWidth="80"/>
+                <FXTableColumn valueName="start" text="%base.startAt" prefWidth="80"/>
+                <FXTableColumn valueName="time" text="%base.time" prefWidth="80"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 675"/>
+            </columns>
+        </ProcessInfoTableView>
+        <ProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="winProcessTable" visible="false"
+                              managedBindVisible="true">
+            <columns>
+                <FXTableColumn valueName="user" text="%base.user" prefWidth="150"/>
+                <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>
+                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="80"/>
+                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="80"/>
+                <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
                 <FXTableColumn valueName="stat" text="%base.stat" prefWidth="100"/>
-                <FXTableColumn valueName="start" text="%base.startAt" prefWidth="100"/>
-                <FXTableColumn valueName="time" text="%base.time" prefWidth="100"/>
-                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 700"/>
+                <FXTableColumn valueName="start" text="%base.startAt" prefWidth="150"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 735"/>
             </columns>
         </ProcessInfoTableView>
     </FXVBox>

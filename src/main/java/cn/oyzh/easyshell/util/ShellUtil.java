@@ -2,6 +2,10 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author oyzh
  * @since 2025-03-26
@@ -118,5 +122,27 @@ public class ShellUtil {
         }
         output = arr[1];
         return output.trim();
+    }
+
+    public static List<String> splitWindowsCommandResult(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyList();
+        }
+        List<String> result = new ArrayList<>();
+        StringBuilder currentValue = new StringBuilder();
+        boolean inQuotes = false;
+        for (int i = 0; i < output.length(); i++) {
+            char c = output.charAt(i);
+            if (c == '"') {
+                inQuotes = !inQuotes;
+            } else if (c == ',' && !inQuotes) {
+                result.add(currentValue.toString().trim());
+                currentValue.setLength(0);
+            } else {
+                currentValue.append(c);
+            }
+        }
+        result.add(currentValue.toString().trim());
+        return result;
     }
 }

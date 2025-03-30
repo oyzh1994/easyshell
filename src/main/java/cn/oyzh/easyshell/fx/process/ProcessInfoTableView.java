@@ -97,6 +97,8 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
         List<MenuItem> menuItems = new ArrayList<>();
         MenuItem killProcess = MenuItemHelper.killProcess("12", () -> this.killProcess(info));
         menuItems.add(killProcess);
+        MenuItem forceKillProcess = MenuItemHelper.forceKillProcess("12", () -> this.forceKillProcess(info));
+        menuItems.add(forceKillProcess);
         return menuItems;
     }
 
@@ -120,6 +122,23 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
     protected void killProcess(ProcessInfo info) {
         if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.killProcess() + "?")) {
             String output = this.exec.kill(info.getPid());
+            if (StringUtil.isNotBlank(output)) {
+                MessageBox.warn(output);
+            } else {
+                this.dataList.remove(info);
+                this.refreshData();
+            }
+        }
+    }
+
+    /**
+     * 强制杀死进程
+     *
+     * @param info 进程信息
+     */
+    protected void forceKillProcess(ProcessInfo info) {
+        if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.forceKillProcess() + "?")) {
+            String output = this.exec.forceKill(info.getPid());
             if (StringUtil.isNotBlank(output)) {
                 MessageBox.warn(output);
             } else {
@@ -178,9 +197,8 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
                     addList.add(info);
                 }
             }
-            List<ProcessInfo> list = this.getItems();
             // 寻找删除进程，更新已有进程
-            for (ProcessInfo info : list) {
+            for (ProcessInfo info : this.dataList) {
                 Optional<ProcessInfo> p = infos.parallelStream()
                         .filter(f -> info.getPid() == f.getPid())
                         .findAny();
@@ -193,7 +211,7 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
             // 删除
             this.dataList.removeAll(delList);
             // 新增
-            this.dataList.addAll(delList);
+            this.dataList.addAll(addList);
         }
         // 更新数据
         this.setItem(this.doFilter(infos));
