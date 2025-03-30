@@ -107,4 +107,16 @@ public class ShellUtil {
         String str = "0" + permissions[0] + permissions[1] + permissions[2];
         return Integer.parseInt(str, 8);
     }
+
+    public static String getWindowsCommandResult(String output) {
+        if (StringUtil.isBlank(output)) {
+            return "";
+        }
+        String[] arr = output.split("\n");
+        if (arr.length < 2) {
+            return "";
+        }
+        output = arr[1];
+        return output.trim();
+    }
 }

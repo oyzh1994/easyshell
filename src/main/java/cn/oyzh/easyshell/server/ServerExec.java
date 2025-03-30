@@ -6,6 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class ServerExec implements AutoCloseable {
         ThreadUtil.startVirtual(() -> {
             try {
                 double[] data = this.disk();
-                if (this.client.isUnix()) {
+                if (this.client.isUnix() || this.client.isWindows()) {
                     monitor.setDiskReadSpeed(data[0]);
                     monitor.setDiskWriteSpeed(data[1]);
                 } else {
@@ -95,9 +96,14 @@ public class ServerExec implements AutoCloseable {
         ThreadUtil.startVirtual(() -> {
             try {
                 double[] data = this.network();
-                double[] speed = this.network.calcSpeed(data);
-                monitor.setNetworkSendSpeed(speed[0]);
-                monitor.setNetworkReceiveSpeed(speed[1]);
+                if (this.client.isWindows()) {
+                    monitor.setNetworkSendSpeed(data[0]);
+                    monitor.setNetworkReceiveSpeed(data[1]);
+                } else {
+                    double[] speed = this.network.calcSpeed(data);
+                    monitor.setNetworkSendSpeed(speed[0]);
+                    monitor.setNetworkReceiveSpeed(speed[1]);
+                }
             } finally {
                 latch.countDown();
             }
@@ -113,6 +119,11 @@ public class ServerExec implements AutoCloseable {
                 String cpuUsage = this.client.exec("top -l 1 -s 0 | sed -n '4p'");
                 cpuUsage = cpuUsage.substring(cpuUsage.lastIndexOf(",") + 1, cpuUsage.lastIndexOf("%")).trim();
                 return 100 - Double.parseDouble(cpuUsage);
+            }
+            if (this.client.isWindows()) {
+                String cpuUsage = this.client.exec("wmic cpu get loadpercentage");
+                cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
+                return Double.parseDouble(cpuUsage);
             }
             if (this.client.isUnix()) {
                 String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print 100 - $15}'");
@@ -140,6 +151,26 @@ public class ServerExec implements AutoCloseable {
                     output = output.replace("%", "");
                 }
                 return Double.parseDouble(output);
+            }
+            if (this.client.isWindows()) {
+                String output = this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value");
+                if (StringUtil.isBlank(output)) {
+                    return -1;
+                }
+                String[] arr = output.split("\n");
+                long free = -1;
+                long total = -1;
+                for (String s : arr) {
+                    if (StringUtil.startWithAnyIgnoreCase(s, "FreePhysicalMemory")) {
+                        free = Long.parseLong(s.split("=")[1].trim());
+                    } else if (StringUtil.startWithAnyIgnoreCase(s, "TotalVisibleMemorySize")) {
+                        total = Long.parseLong(s.split("=")[1].trim());
+                    }
+                    if (free != -1 && total != -1) {
+                        break;
+                    }
+                }
+                return (total - free) * 100D / free;
             }
             if (this.client.isUnix()) {
 //                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
@@ -274,6 +305,30 @@ public class ServerExec implements AutoCloseable {
                 double write = Double.parseDouble(w);
                 return new double[]{read, write};
             }
+            if (this.client.isWindows()) {
+                String output = this.client.exec("typeperf \"\\PhysicalDisk(*)\\Disk Read Bytes/sec\" \"\\PhysicalDisk(*)\\Disk Write Bytes/sec\" -sc 1");
+                if (StringUtil.isBlank(output)) {
+                    return new double[]{-1L, -1L};
+                }
+                String[] arr = output.split("\n");
+                if (arr.length < 3) {
+                    return new double[]{-1L, -1L};
+                }
+                output = arr[2].trim();
+                arr = output.split(",");
+                double read = 0;
+                double write = 0;
+                int mid = (arr.length - 1) / 2;
+                for (int i = 1; i < arr.length; i++) {
+                    String col = arr[i].trim().substring(1, arr[i].trim().length() - 1);
+                    if (i <= mid) {
+                        read += Double.parseDouble(col);
+                    } else {
+                        write += Double.parseDouble(col);
+                    }
+                }
+                return new double[]{read / 1024 / 1024, write / 1024 / 1024};
+            }
 //            if (this.client.isUnix()) {
 //                String output = this.client.exec("iostat -d -x 1 1");
 //                if (StringUtil.isBlank(output)) {
@@ -350,6 +405,30 @@ public class ServerExec implements AutoCloseable {
                 double send = Double.parseDouble(out);
                 double receive = Double.parseDouble(in);
                 return new double[]{send, receive};
+            }
+            if (this.client.isWindows()) {
+                String output = this.client.exec("typeperf \"\\Network Interface(*)\\Bytes Received/sec\" \"\\Network Interface(*)\\Bytes Sent/sec\" -sc 1");
+                if (StringUtil.isBlank(output)) {
+                    return new double[]{-1L, -1L};
+                }
+                String[] arr = output.split("\n");
+                if (arr.length < 3) {
+                    return new double[]{-1L, -1L};
+                }
+                output = arr[2].trim();
+                arr = output.split(",");
+                double send = 0;
+                double receive = 0;
+                int mid = (arr.length - 1) / 2;
+                for (int i = 1; i < arr.length; i++) {
+                    String col = arr[i].trim().substring(1, arr[i].trim().length() - 1);
+                    if (i <= mid) {
+                        receive += Double.parseDouble(col);
+                    } else {
+                        send += Double.parseDouble(col);
+                    }
+                }
+                return new double[]{send / 1024, receive / 1024};
             }
             if (this.client.isUnix()) {
                 String output = this.client.exec("netstat -i");
