@@ -193,7 +193,7 @@ public class ShellSftpTransportController extends StageController {
                     return;
                 }
             }
-            String remotePath = this.targetFile.getCurrPath();
+            String remotePath = this.targetFile.getLocation();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
             AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.targetFile);
         } catch (Exception ex) {
@@ -218,7 +218,7 @@ public class ShellSftpTransportController extends StageController {
                     return;
                 }
             }
-            String remotePath = this.sourceFile.getCurrPath();
+            String remotePath = this.sourceFile.getLocation();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
             AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.sourceFile);
         } catch (Exception ex) {

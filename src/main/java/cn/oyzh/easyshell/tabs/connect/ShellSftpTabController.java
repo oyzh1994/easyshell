@@ -51,8 +51,11 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private FXTab root;
 
+    /**
+     * 当前位置
+     */
     @FXML
-    private SftpLocationTextField filePath;
+    private SftpLocationTextField location;
 
 //    @FXML
 //    private FXLabel fileUpload;
@@ -90,8 +93,8 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private SVGGlyph sftpBox;
 
-    @FXML
-    private SVGGlyph copyFilePath;
+//    @FXML
+//    private SVGGlyph copyFilePath;
 
     @FXML
     private FXToggleSwitch hiddenFile;
@@ -182,8 +185,7 @@ public class ShellSftpTabController extends SubTabController {
         // 删除
         this.client().getDeleteManager().setDeleteEndedCallback(this::updateDeleteInfo);
         this.client().getDeleteManager().setDeleteDeletedCallback(this::updateDeleteInfo);
-
-        // 显示动画
+        // 显示隐藏文件
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
 //        this.fileTable.loadFile();
         // 监听上传中属性
@@ -244,15 +246,17 @@ public class ShellSftpTabController extends SubTabController {
             // 绑定属性
             this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
             this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
-            this.fileTable.currPathProperty().addListener((observableValue, aBoolean, t1) -> {
+            // 监听位置
+            this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
-                    this.filePath.clear();
-                    this.copyFilePath.disable();
+                    this.location.clear();
+//                    this.copyFilePath.disable();
                 } else {
-                    this.filePath.text(t1);
-                    this.copyFilePath.enable();
+                    this.location.text(t1);
+//                    this.copyFilePath.enable();
                 }
             });
+            // 隐藏文件
             this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
                 try {
                     this.fileTable.setShowHiddenFile(t1);
@@ -262,6 +266,7 @@ public class ShellSftpTabController extends SubTabController {
                     MessageBox.exception(ex);
                 }
             });
+            // 文件过滤
             this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
                 try {
                     this.fileTable.setFilterText(t1);
@@ -269,13 +274,16 @@ public class ShellSftpTabController extends SubTabController {
                     MessageBox.exception(ex);
                 }
             });
-
             // 文件下载回调
             this.fileTable.setDownloadFileCallback((files) -> {
                 AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
             });
+            // 文件上传回调
+            this.fileTable.setUploadFileCallback((files) -> {
+                AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
+            });
             // 路径跳转
-            this.filePath.setOnJumpLocation(path -> {
+            this.location.setOnJumpLocation(path -> {
                 this.fileTable.cd(path);
             });
         } catch (Exception ex) {
@@ -323,63 +331,67 @@ public class ShellSftpTabController extends SubTabController {
         }
     }
 
-    @FXML
-    private void copyFilePath() {
-        try {
-            this.fileTable.copyFilePath();
-            MessageBox.okToast(I18nHelper.copySuccess());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    @FXML
+//    private void copyFilePath() {
+//        try {
+//            this.fileTable.copyFilePath();
+//            MessageBox.okToast(I18nHelper.copySuccess());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     @FXML
     private void mkdir() {
-        try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
-            this.fileTable.mkDir(name);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+//        try {
+//            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
+//            this.fileTable.mkdir(name);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+        this.fileTable.mkdir();
     }
 
     @FXML
     private void touchFile() {
-        try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
-            this.fileTable.touchFile(name);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+//        try {
+//            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
+//            this.fileTable.touch(name);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+        this.fileTable.touch();
     }
 
     @FXML
     private void uploadFile() {
-        try {
-            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-            if (this.fileTable.uploadFile(files)) {
-                AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+//        try {
+//            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+//            if (this.fileTable.uploadFile(files)) {
+//                AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.sftpBox);
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+        this.fileTable.uploadFile();
     }
 
     @FXML
     private void uploadFolder() {
-        try {
-            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
-            if (this.fileTable.uploadFile(file)) {
-                AnimationUtil.move(new FolderSVGGlyph("150"), this.fileTable, this.sftpBox);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+//        try {
+//            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+//            if (this.fileTable.uploadFile(file)) {
+//                AnimationUtil.move(new FolderSVGGlyph("150"), this.fileTable, this.sftpBox);
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+        this.fileTable.uploadFolder();
     }
 
     @EventSubscribe

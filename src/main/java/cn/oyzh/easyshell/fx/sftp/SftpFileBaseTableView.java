@@ -63,9 +63,9 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         super.initEvenListener();
         // 右键菜单事件
         this.setOnContextMenuRequested(e -> {
-            List<SftpFile> files = this.getSelectedItems();
-            if (CollectionUtil.isNotEmpty(files)) {
-                this.showContextMenu(this.getMenuItems(), e.getScreenX() - 10, e.getScreenY() - 10);
+            List<FXMenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
             } else {
                 this.clearContextMenu();
             }
@@ -104,32 +104,35 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     protected ShellClient client;
 
     /**
-     * 当前路径
+     * 位置属性
      */
-    private final StringProperty currPathProperty = new SimpleStringProperty();
+    private final StringProperty locationProperty = new SimpleStringProperty();
 
-    public String getCurrPath() {
-        return this.currPathProperty.get();
+    public String getLocation() {
+        return this.locationProperty.get();
     }
 
-    public StringProperty currPathProperty() {
-        return this.currPathProperty;
+    public StringProperty locationProperty() {
+        return this.locationProperty;
     }
 
-    protected void setCurrPath(String currPath) {
-        this.currPathProperty.set(currPath);
-    }
-
-    protected String currPath() {
-        return this.currPathProperty.get();
-    }
-
-    protected void currPath(String currPath) {
-        if (StringUtil.notEquals(this.currPath(), currPath)) {
+    protected void setLocation(String location) {
+        if (StringUtil.notEquals(this.getLocation(), location)) {
             this.clearItems();
         }
-        this.currPathProperty.set(currPath);
+        this.locationProperty.set(location);
     }
+
+//    protected String location() {
+//        return this.locationProperty.get();
+//    }
+//
+//    protected void location(String location) {
+//        if (StringUtil.notEquals(this.location(), location)) {
+//            this.clearItems();
+//        }
+//        this.locationProperty.set(location);
+//    }
 
     public ShellSftp sftp() {
         return this.client.openSftp();
@@ -149,10 +152,10 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     protected synchronized void loadFileInner() throws SftpException {
         ShellSftp sftp = this.sftp();
         try {
-            String currPath = this.getCurrPath();
+            String currPath = this.getLocation();
             if (currPath == null) {
-                this.setCurrPath(sftp.pwd());
-                currPath = this.getCurrPath();
+                this.setLocation(sftp.pwd());
+                currPath = this.getLocation();
             }
             JulLog.info("current path: {}", currPath);
             // 更新当前列表
@@ -311,7 +314,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     }
 
     public boolean currentIsRootDirectory() {
-        return "/".equals(this.currPath());
+        return "/".equals(this.getLocation());
     }
 
     public void intoDir(SftpFile file) {
@@ -319,8 +322,8 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             this.returnDir();
             return;
         }
-        String currPath = SftpUtil.concat(this.currPath(), file.getFileName());
-        this.currPath(currPath);
+        String currPath = SftpUtil.concat(this.getLocation(), file.getFileName());
+        this.setLocation(currPath);
         this.loadFile();
     }
 
@@ -328,12 +331,12 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         if (this.currentIsRootDirectory()) {
             return;
         }
-        String currPath = this.currPath();
+        String currPath = this.getLocation();
         if (currPath.endsWith("/")) {
             currPath = currPath.substring(0, currPath.length() - 1);
         }
         currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
-        this.currPath(currPath);
+        this.setLocation(currPath);
         this.loadFile();
     }
 
@@ -403,8 +406,8 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
             }
-            String filePath = SftpUtil.concat(this.getCurrPath(), name);
-            String newPath = SftpUtil.concat(this.getCurrPath(), newName);
+            String filePath = SftpUtil.concat(this.getLocation(), name);
+            String newPath = SftpUtil.concat(this.getLocation(), newName);
             this.sftp().rename(filePath, newPath);
             file.setFileName(newName);
             this.refreshFile();
@@ -427,7 +430,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     public void cd(String path) {
         try {
             if (this.sftp().exist(path)) {
-                this.currPath(path);
+                this.setLocation(path);
                 this.loadFile();
             }
         } catch (SftpException ex) {

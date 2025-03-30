@@ -5,27 +5,27 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.skin.TableColumnHeader;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +53,21 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
     public List<FXMenuItem> getMenuItems() {
         List<SftpFile> files = this.getSelectedItems();
         if (CollectionUtil.isEmpty(files)) {
-            return Collections.emptyList();
+            // 菜单列表
+            List<FXMenuItem> menuItems = new ArrayList<>();
+            // 创建文件
+            FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
+            // 创建文件夹
+            FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
+            // 上传文件
+            FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+            // 上传文件夹
+            FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+            menuItems.add(touch);
+            menuItems.add(mkdir);
+            menuItems.add(uploadFile);
+            menuItems.add(uploadFolder);
+            return menuItems;
         }
 //        // 发现操作中的文件，则跳过
 //        for (SftpFile file : files) {
@@ -114,8 +128,12 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         }
         // 检查类型
         String extName = FileNameUtil.extName(file.getFileName());
-        if (!StringUtil.equalsAnyIgnoreCase(extName, "txt", "text", "log", "yaml", "java", "xml", "json", "htm",
-                "html", "xhtml", "php", "css", "c", "cpp", "rs", "js", "csv", "sql", "md", "ini", "cfg", "sh", "bat", "py", "asp",
+        if (!StringUtil.equalsAnyIgnoreCase(extName,
+                "txt", "text", "log", "yaml", "java",
+                "xml", "json", "htm", "html", "xhtml",
+                "php", "css", "c", "cpp", "rs",
+                "js", "csv", "sql", "md", "ini",
+                "cfg", "sh", "bat", "py", "asp",
                 "aspx", "env", "tsv", "conf")) {
             return;
         }
@@ -125,18 +143,28 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         adapter.display();
     }
 
-    public void copyFilePath() {
-        List<SftpFile> files = this.getSelectedItems();
-        if (files.isEmpty()) {
-            ClipboardUtil.copy(this.getCurrPath());
-        } else if (files.size() == 1) {
-            ClipboardUtil.copy(SftpUtil.concat(this.getCurrPath(), files.getFirst().getFileName()));
-        } else {
-            MessageBox.warn(I18nHelper.tooManyFiles());
+//    public void copyFilePath() {
+//        List<SftpFile> files = this.getSelectedItems();
+//        if (files.isEmpty()) {
+//            ClipboardUtil.copy(this.getLocation());
+//        } else if (files.size() == 1) {
+//            ClipboardUtil.copy(SftpUtil.concat(this.getLocation(), files.getFirst().getFileName()));
+//        } else {
+//            MessageBox.warn(I18nHelper.tooManyFiles());
+//        }
+//    }
+
+    public void mkdir() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
+            this.mkdir(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 
-    public void mkDir(String name) throws SftpException {
+    public void mkdir(String name) throws SftpException {
         if (StringUtil.isEmpty(name)) {
             return;
         }
@@ -144,10 +172,10 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
             return;
         }
-        String filePath = SftpUtil.concat(this.getCurrPath(), name);
+        String filePath = SftpUtil.concat(this.getLocation(), name);
         this.sftp().mkdir(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
-        SftpFile file = new SftpFile(this.currPath(), name, attrs);
+        SftpFile file = new SftpFile(this.getLocation(), name, attrs);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");
@@ -159,7 +187,17 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         this.refreshFile();
     }
 
-    public void touchFile(String name) throws SftpException {
+    public void touch() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
+            this.touch(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public void touch(String name) throws SftpException {
         if (StringUtil.isEmpty(name)) {
             return;
         }
@@ -167,10 +205,11 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
             return;
         }
-        String filePath = SftpUtil.concat(this.getCurrPath(), name);
-        this.sftp().touch(filePath);
-        SftpATTRS attrs = this.sftp().stat(filePath);
-        SftpFile file = new SftpFile(this.currPath(), name, attrs);
+        String filePath = SftpUtil.concat(this.getLocation(), name);
+        ShellSftp sftp = this.sftp();
+        sftp.touch(filePath);
+        SftpATTRS attrs = sftp.stat(filePath);
+        SftpFile file = new SftpFile(this.getLocation(), name, attrs);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");
@@ -213,14 +252,13 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
             }
             for (SftpFile file : files) {
                 try {
-                    file.setParentPath(this.currPath());
+                    file.setParentPath(this.getLocation());
                     this.client.download(dir, file);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     MessageBox.exception(ex);
                 }
             }
-//            MessageBox.okToast(ShellI18nHelper.fileTip16());
             // 下载回调触发
             if (this.downloadFileCallback != null) {
                 this.downloadFileCallback.accept(files);
@@ -228,6 +266,49 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 上传回调
+     */
+    private Consumer<List<File>> uploadFileCallback;
+
+    public Consumer<List<File>> getUploadFileCallback() {
+        return uploadFileCallback;
+    }
+
+    public void setUploadFileCallback(Consumer<List<File>> uploadFileCallback) {
+        this.uploadFileCallback = uploadFileCallback;
+    }
+
+    public void uploadFile() {
+        try {
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+            if (this.uploadFile(files)) {
+                // 下载回调触发
+                if (this.uploadFileCallback != null) {
+                    this.uploadFileCallback.accept(files);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public void uploadFolder() {
+        try {
+            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+            if (this.uploadFile(file)) {
+                // 下载回调触发
+                if (this.uploadFileCallback != null) {
+                    this.uploadFileCallback.accept(List.of(file));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     public boolean uploadFile(File file) {
@@ -252,21 +333,12 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         }
         for (File file : files) {
             try {
-                this.client.upload(file, this.getCurrPath());
+                this.client.upload(file, this.getLocation());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }
         }
-//        MessageBox.okToast(ShellI18nHelper.fileTip15());
         return true;
     }
-
-//    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> callback) {
-//        this.client.setDeleteEndedCallback(callback);
-//    }
-//
-//    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> callback) {
-//        this.client.setDeleteDeletedCallback(callback);
-//    }
 }

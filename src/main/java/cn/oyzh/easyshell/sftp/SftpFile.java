@@ -294,7 +294,7 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     public String getSize() {
         if (this.isDir() || this.isReturnDirectory() || this.isCurrentFile()) {
-            return "";
+            return "-";
         }
         return NumberUtil.formatSize(this.attrs().getSize(), 4);
     }
