@@ -20,18 +20,18 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * profile信息
+ * hosts信息，windows
  *
  * @author oyzh
- * @since 2025/03/18
+ * @since 2025/03/30
  */
-public class ShellConfigProfileTabController extends SubTabController {
+public class ShellConfigWinHostsTabController extends SubTabController {
 
     /**
      * 根节点
      */
     @FXML
-    private FXTab profile;
+    private FXTab winHosts;
 
     /**
      * 数据
@@ -46,7 +46,7 @@ public class ShellConfigProfileTabController extends SubTabController {
     public void refresh() {
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
-            String output = exec.cat_profile();
+            String output = exec.cat_hosts();
             this.data.setText(output);
         });
     }
@@ -70,15 +70,14 @@ public class ShellConfigProfileTabController extends SubTabController {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = "/etc/profile.temp";
+                String tempFile = "/C:/Windows/System32/drivers/etc/HOSTS.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
-                sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
+                sftp.put(new ByteArrayInputStream(text.getBytes(this.client().getRemoteCharset())), tempFile);
                 // 把临时文件内容copy到真实文件
-//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/profile");
-                String output = exec.cat_file(tempFile, "/etc/profile");
+                String output = exec.cat_file(tempFile, "/C:/Windows/System32/drivers/etc/HOSTS");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
@@ -88,20 +87,6 @@ public class ShellConfigProfileTabController extends SubTabController {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 应用
-     */
-    @FXML
-    private void apply() {
-        ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.source("/etc/profile");
-            if (!StringUtil.isBlank(output)) {
-                MessageBox.warn(output);
             }
         });
     }
@@ -116,7 +101,7 @@ public class ShellConfigProfileTabController extends SubTabController {
     @Override
     public void onTabInit(RichTab tab) {
         super.onTabInit(tab);
-        this.profile.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.winHosts.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
                 this.refresh();
             }

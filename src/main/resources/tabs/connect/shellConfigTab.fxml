@@ -19,5 +19,7 @@
         <fx:include fx:id="userBashProfile" source="config/shellConfigUserBashProfileTab.fxml"/>
         <fx:include fx:id="userBashrc" source="config/shellConfigUserBashrcTab.fxml"/>
         <fx:include fx:id="userZshrc" source="config/shellConfigUserZshrcTab.fxml"/>
+        <fx:include fx:id="winHosts" source="config/shellConfigWinHostsTab.fxml"/>
+        <fx:include fx:id="winEnvironment" source="config/shellConfigWinEnvironmentTab.fxml"/>
     </FXTabPane>
 </FXTab>

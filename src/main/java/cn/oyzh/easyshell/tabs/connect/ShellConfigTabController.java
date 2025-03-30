@@ -12,6 +12,8 @@ import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserBashProfileTabContro
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserBashrcTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserProfileTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserZshrcTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinEnvironmentTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinHostsTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -56,42 +58,63 @@ public class ShellConfigTabController extends ParentTabController {
         this.client = client;
         try {
             ShellSftp sftp = this.client.openSftp();
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/etc/environment")) {
-                tabPane.removeTab("environment");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/etc/bash.bashrc")) {
-                tabPane.removeTab("bash");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/etc/hosts")) {
-                tabPane.removeTab("hosts");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/etc/resolv.conf")) {
-                tabPane.removeTab("resolv");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist("/etc/ssh/sshd_config")) {
-                tabPane.removeTab("sshd");
-            }
-            String userHome = this.client.getUserHome();
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userHome + ".profile")) {
-                tabPane.removeTab("userProfile");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userHome + ".zshrc")) {
-                tabPane.removeTab("userZshrc");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userHome + ".bashrc")) {
-                tabPane.removeTab("userBashrc");
-            }
-            // 如果配置文件不存在，则移除此配置
-            if (!sftp.exist(userHome + ".bash_profile")) {
-                tabPane.removeTab("userBashProfile");
+            if (this.client.isWindows()) {
+                // 移除linux专属配置
+                this.tabPane.removeTab("sshd");
+                this.tabPane.removeTab("bash");
+                this.tabPane.removeTab("hosts");
+                this.tabPane.removeTab("resolv");
+                this.tabPane.removeTab("profile");
+                this.tabPane.removeTab("userZshrc");
+                this.tabPane.removeTab("userBashrc");
+                this.tabPane.removeTab("userProfile");
+                this.tabPane.removeTab("environment");
+                this.tabPane.removeTab("userBashProfile");
+            } else {
+                // 移除windows专属配置
+                this.tabPane.removeTab("winHosts");
+                this.tabPane.removeTab("winEnvironment");
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist("/etc/environment")) {
+                    tabPane.removeTab("environment");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist("/etc/bash.bashrc")) {
+                    tabPane.removeTab("bash");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist("/etc/hosts")) {
+                    tabPane.removeTab("hosts");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist("/etc/profile")) {
+                    tabPane.removeTab("profile");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist("/etc/resolv.conf")) {
+                    tabPane.removeTab("resolv");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist("/etc/ssh/sshd_config")) {
+                    tabPane.removeTab("sshd");
+                }
+                String userHome = this.client.getUserHome();
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist(userHome + ".profile")) {
+                    tabPane.removeTab("userProfile");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist(userHome + ".zshrc")) {
+                    tabPane.removeTab("userZshrc");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist(userHome + ".bashrc")) {
+                    tabPane.removeTab("userBashrc");
+                }
+                // 如果配置文件不存在，则移除此配置
+                if (!sftp.exist(userHome + ".bash_profile")) {
+                    tabPane.removeTab("userBashProfile");
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -164,6 +187,18 @@ public class ShellConfigTabController extends ParentTabController {
     private ShellConfigUserZshrcTabController userZshrcController;
 
     /**
+     * 域名解析配置文件，windows
+     */
+    @FXML
+    private ShellConfigWinHostsTabController winHostsController;
+
+    /**
+     * 环境配置，windows
+     */
+    @FXML
+    private ShellConfigWinEnvironmentTabController winEnvironmentController;
+
+    /**
      * 初始化标志位
      */
     private boolean initialized = false;
@@ -183,7 +218,8 @@ public class ShellConfigTabController extends ParentTabController {
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.profileController, this.userProfileController, this.environmentController,
                 this.bashController, this.userBashProfileController, this.userBashrcController,
-                this.userZshrcController, this.resolvController, this.sshdController, this.hostsController
+                this.userZshrcController, this.resolvController, this.sshdController,
+                this.hostsController, this.winHostsController, this.winEnvironmentController
         );
     }
 }

@@ -21,6 +21,9 @@ public class ShellUtil {
     }
 
     public static String fixWindowsFilePath(String filePath) {
+        if (filePath.startsWith("/")) {
+            filePath = filePath.substring(1);
+        }
         return StringUtil.replace(filePath, "/", "\\");
     }
 

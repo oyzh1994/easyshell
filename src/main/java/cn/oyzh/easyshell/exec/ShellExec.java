@@ -126,6 +126,9 @@ public class ShellExec implements AutoCloseable {
     }
 
     public String cat_environment() {
+        if (this.client.isWindows()) {
+            return this.client.exec("set");
+        }
         return this.client.exec("cat /etc/environment");
     }
 
@@ -134,6 +137,9 @@ public class ShellExec implements AutoCloseable {
     }
 
     public String cat_hosts() {
+        if (this.client.isWindows()) {
+            return this.client.exec("type C:\\Windows\\System32\\drivers\\etc\\HOSTS");
+        }
         return this.client.exec("cat /etc/hosts");
     }
 
@@ -183,6 +189,11 @@ public class ShellExec implements AutoCloseable {
     public String cat_file(String sourceFile, String targetFile) {
         if (this.client.isMacos() || this.client.isLinux()) {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
+        }
+        if (this.client.isWindows()) {
+            sourceFile = ShellUtil.fixWindowsFilePath(sourceFile);
+            targetFile = ShellUtil.fixWindowsFilePath(targetFile);
+            return this.client.exec("type " + sourceFile + " > " + targetFile);
         }
         return this.client.exec("cat " + sourceFile + " > " + targetFile);
     }

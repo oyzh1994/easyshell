@@ -123,6 +123,9 @@ public class ServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 String cpuUsage = this.client.exec("wmic cpu get loadpercentage");
                 cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
+                if (StringUtil.isBlank(cpuUsage)) {
+                    return -1;
+                }
                 return Double.parseDouble(cpuUsage);
             }
             if (this.client.isUnix()) {
