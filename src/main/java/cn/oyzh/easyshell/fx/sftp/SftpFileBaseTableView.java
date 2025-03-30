@@ -393,7 +393,6 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         }
     }
 
-
     public void renameFile(SftpFile file) {
         try {
             if (this.checkInvalid(file)) {

@@ -196,6 +196,15 @@ public class ShellExec implements AutoCloseable {
         this.client = null;
     }
 
+    /**
+     * 修改权限，这个方法不能兼容windows，请用以下方法
+     *
+     * @param permission 权限
+     * @param filePath   文件路径
+     * @return 结果
+     * @see cn.oyzh.easyshell.sftp.ShellSftp#chmod(int, String)
+     */
+    @Deprecated
     public String chmod(String permission, String filePath) {
         return this.client.exec("chmod " + permission + " " + filePath);
     }

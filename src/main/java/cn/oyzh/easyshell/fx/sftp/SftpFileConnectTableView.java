@@ -148,8 +148,13 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         this.sftp().mkdir(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
         SftpFile file = new SftpFile(this.currPath(), name, attrs);
-        file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
-        file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+        if (this.client.isWindows()) {
+            file.setOwner("-");
+            file.setGroup("-");
+        } else {
+            file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+        }
         this.files.add(file);
         this.refreshFile();
     }
@@ -166,8 +171,13 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         this.sftp().touch(filePath);
         SftpATTRS attrs = this.sftp().stat(filePath);
         SftpFile file = new SftpFile(this.currPath(), name, attrs);
-        file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
-        file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+        if (this.client.isWindows()) {
+            file.setOwner("-");
+            file.setGroup("-");
+        } else {
+            file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+        }
         this.files.add(file);
         this.refreshFile();
     }

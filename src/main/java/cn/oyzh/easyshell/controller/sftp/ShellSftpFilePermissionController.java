@@ -181,15 +181,12 @@ public class ShellSftpFilePermissionController extends StageController {
                 } else {
                     perms.append("-");
                 }
-                String permission = ShellUtil.permissionToInt(perms.toString());
-                String output = this.client.shellExec().chmod(permission, this.file.getFilePath());
-                if (StringUtil.isNotEmpty(output)) {
-                    MessageBox.warn(output);
-                } else {
-                    SftpATTRS attrs = this.client.openSftp().stat(file.getFilePath());
-                    this.file.setAttrs(attrs);
-                    this.closeWindow();
-                }
+                int permission = ShellUtil.permissionToInt(perms.toString());
+                ShellSftp sftp = this.client.openSftp();
+                sftp.chmod(permission, this.file.getFilePath());
+                SftpATTRS attrs = sftp.stat(file.getFilePath());
+                this.file.setAttrs(attrs);
+                this.closeWindow();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

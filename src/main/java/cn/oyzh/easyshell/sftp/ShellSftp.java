@@ -90,10 +90,15 @@ public class ShellSftp extends ShellChannel {
             SftpFile file = new SftpFile(path, lsEntry);
             files.add(file);
             if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
-                String ownerName = SftpUtil.getOwner(file.getUid(), client);
-                file.setOwner(ownerName);
-                String groupName = SftpUtil.getGroup(file.getGid(), client);
-                file.setGroup(groupName);
+                if (client.isWindows()) {
+                    file.setOwner("-");
+                    file.setGroup("-");
+                } else {
+                    String ownerName = SftpUtil.getOwner(file.getUid(), client);
+                    String groupName = SftpUtil.getGroup(file.getGid(), client);
+                    file.setOwner(ownerName);
+                    file.setGroup(groupName);
+                }
             }
         }
         return files;
@@ -288,5 +293,20 @@ public class ShellSftp extends ShellChannel {
         super.close();
         this.setHolding(false);
         this.client = null;
+    }
+
+    /**
+     * 修改权限，这个方法windows执行无效果
+     *
+     * @param permission 权限
+     * @param filePath   文件路径
+     */
+    public void chmod(int permission, String filePath) throws SftpException {
+        try {
+            this.setUsing(true);
+            this.getChannel().chmod(permission, filePath);
+        } finally {
+            this.setUsing(false);
+        }
     }
 }
