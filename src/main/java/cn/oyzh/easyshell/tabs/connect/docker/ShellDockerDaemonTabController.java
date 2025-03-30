@@ -55,9 +55,10 @@ public class ShellDockerDaemonTabController extends SubTabController {
         StageManager.showMask(() -> {
             try {
                 ShellSftp sftp = this.client().openSftp();
-                if (sftp.exist(this.filePath.getText())) {
+                String filePath = this.filePath.getText();
+                if (sftp.exist(filePath)) {
                     ShellExec exec = this.client().shellExec();
-                    String output = exec.cat_docker_daemon(this.filePath.getText());
+                    String output = exec.cat_docker_daemon(filePath);
                     this.data.setText(output);
                 }
             } catch (Exception ex) {

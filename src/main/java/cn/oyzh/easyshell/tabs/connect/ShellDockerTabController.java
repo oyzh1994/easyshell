@@ -96,7 +96,8 @@ public class ShellDockerTabController extends ParentTabController {
                 MessageBox.info(ShellI18nHelper.connectTip5());
                 return;
             }
-            if (StringUtil.containsAnyIgnoreCase(output, "daemon running")) {
+            // 未运行
+            if (StringUtil.containsAnyIgnoreCase(output, "daemon running", "daemon is not running")) {
                 MessageBox.warn(ShellI18nHelper.connectTip6());
                 return;
             }

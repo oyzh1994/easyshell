@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.easyshell.docker.DockerHistory;
-import cn.oyzh.easyshell.trees.docker.DockerHistoryTableView;
+import cn.oyzh.easyshell.fx.docker.DockerHistoryTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.window.FXStageStyle;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.trees.docker.DockerImageTableView?>
+<?import cn.oyzh.easyshell.fx.docker.DockerImageTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
@@ -38,11 +38,11 @@
         </FXHBox>
         <DockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
-                <FXTableColumn prefWidth="320" valueName="repository" text="%base.repository"/>
-                <FXTableColumn flexWidth="100% - 815" valueName="tag" text="%base.tag"/>
-                <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
-                <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
+                <FXTableColumn realWidth="120" valueName="imageId" text="%base.id"/>
+                <FXTableColumn realWidth="320" valueName="repository" text="%base.repository"/>
+                <FXTableColumn flexWidth="100% - 820" valueName="tag" text="%base.tag"/>
+                <FXTableColumn realWidth="220" valueName="created" text="%base.createTime"/>
+                <FXTableColumn realWidth="150" valueName="size" text="%base.size"/>
             </columns>
         </DockerImageTableView>
     </FXVBox>

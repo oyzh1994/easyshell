@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.connect.docker;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
-import cn.oyzh.easyshell.trees.docker.DockerImageTableView;
+import cn.oyzh.easyshell.fx.docker.DockerImageTableView;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;

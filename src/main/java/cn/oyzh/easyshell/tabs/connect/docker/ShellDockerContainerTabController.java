@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.fx.docker.DockerContainerStatusComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
-import cn.oyzh.easyshell.trees.docker.DockerContainerTableView;
+import cn.oyzh.easyshell.fx.docker.DockerContainerTableView;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;

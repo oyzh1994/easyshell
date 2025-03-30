@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.sftp;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellChannel;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -183,7 +184,7 @@ public class ShellSftp extends ShellChannel {
     public boolean exist(String path) throws SftpException {
         try {
             if (this.client.isWindows() && !path.startsWith("/")) {
-                path = "/" + path;
+                path = "/" + ShellUtil.reverseWindowsFilePath(path);
             }
             return this.stat(path) != null;
         } catch (SftpException ex) {

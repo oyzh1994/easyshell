@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.docker;
+package cn.oyzh.easyshell.fx.docker;
 
 import cn.oyzh.easyshell.docker.DockerHistory;
 import cn.oyzh.fx.plus.controls.table.FXTableView;

@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.docker.DockerContainerStatusComboBox?>
-<?import cn.oyzh.easyshell.trees.docker.DockerContainerTableView?>
+<?import cn.oyzh.easyshell.fx.docker.DockerContainerTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
@@ -44,13 +44,13 @@
         </FXHBox>
         <DockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
-                <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
-                <FXTableColumn flexWidth="100% - 845" valueName="command" text="%base.cmd"/>
-                <FXTableColumn prefWidth="200" valueName="created" text="%base.createTime"/>
-                <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
-                <FXTableColumn prefWidth="160" valueName="ports" text="%base.port"/>
-                <FXTableColumn prefWidth="100" valueName="names" text="%base.name"/>
+                <FXTableColumn realWidth="110" valueName="containerId" text="%base.id"/>
+                <FXTableColumn realWidth="100" valueName="image" text="%base.image"/>
+                <FXTableColumn flexWidth="100% - 812" valueName="command" text="%base.cmd"/>
+                <FXTableColumn realWidth="200" valueName="created" text="%base.createTime"/>
+                <FXTableColumn realWidth="120" valueName="status" text="%base.status"/>
+                <FXTableColumn realWidth="160" valueName="ports" text="%base.port"/>
+                <FXTableColumn realWidth="100" valueName="names" text="%base.name"/>
             </columns>
         </DockerContainerTableView>
     </FXVBox>

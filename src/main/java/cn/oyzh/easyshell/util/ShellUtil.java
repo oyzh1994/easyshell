@@ -16,8 +16,12 @@ public class ShellUtil {
         return StringUtil.containsIgnoreCase(output, "'" + cmd + "'");
     }
 
-    public static String fixToWindowsFilePath(String filePath) {
+    public static String fixWindowsFilePath(String filePath) {
         return StringUtil.replace(filePath, "/", "\\");
+    }
+
+    public static String reverseWindowsFilePath(String filePath) {
+        return StringUtil.replace(filePath, "\\", "/");
     }
 
     public static boolean hasOwnerReadPermission(String permission) {

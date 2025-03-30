@@ -167,7 +167,7 @@ public class ShellExec implements AutoCloseable {
 
     public String cat_docker_daemon(String filePath) {
         if (this.client.isWindows()) {
-            return this.client.exec("type " + ShellUtil.fixToWindowsFilePath(filePath));
+            return this.client.exec("type " + ShellUtil.fixWindowsFilePath(filePath));
         }
         return this.client.exec("cat " + filePath);
     }
