@@ -585,7 +585,7 @@ public class ShellClient {
     }
 
     public void upload(File localFile, String remoteFile) throws SftpException {
-        this.getUploadManager().createMonitor(localFile, remoteFile, this.openSftp());
+        this.getUploadManager().createMonitor(localFile, remoteFile, this);
     }
 
     public void download(File localFile, SftpFile remoteFile) throws SftpException {

@@ -4,11 +4,12 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 
 import java.io.File;
@@ -40,17 +41,19 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
         }
     }
 
+    private ShellClient client;
+
     private final SftpUploadManager manager;
 
-    public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, ShellSftp sftp) {
+    public SftpUploadTask(SftpUploadManager manager, File localFile, String remoteFile, ShellClient client) {
+        this.client = client;
         this.manager = manager;
         this.destPath = remoteFile;
         this.currentFileProperty().set(localFile.getPath());
         this.executeThread = ThreadUtil.start(() -> {
             try {
-                sftp.setHolding(true);
                 this.updateStatus(SftpUploadStatus.IN_PREPARATION);
-                this.addMonitorRecursive(localFile, remoteFile, sftp);
+                this.addMonitorRecursive(localFile, remoteFile, client);
                 this.updateStatus(SftpUploadStatus.UPLOAD_ING);
                 this.calcTotalSize();
                 this.updateTotal();
@@ -58,7 +61,6 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
-                sftp.setHolding(false);
                 this.updateTotal();
                 // 如果是非取消和失败，则设置为结束
                 if (!this.isCancelled() && !this.isFailed()) {
@@ -73,10 +75,10 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @param sftp       sftp操作器
+     * @param client     shell客户端
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, String remoteFile, ShellSftp sftp) throws SftpException {
+    protected void addMonitorRecursive(File localFile, String remoteFile, ShellClient client) throws SftpException {
         // 文件夹
         if (localFile.isDirectory()) {
             // 列举文件
@@ -86,20 +88,20 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                 // 远程文件夹
                 String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                sftp.mkdirRecursive(remoteDir);
+                client.openSftp().mkdirRecursive(remoteDir);
                 // 添加文件
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        this.addMonitorRecursive(file, remoteDir, sftp);
+                        this.addMonitorRecursive(file, remoteDir, client);
                     } else {
                         String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
-                        this.addMonitorRecursive(file, remoteFile1, sftp);
+                        this.addMonitorRecursive(file, remoteFile1, client);
                     }
                 }
             }
         } else {// 文件
             this.updateTotal();
-            this.monitors.add(new SftpUploadMonitor(localFile, remoteFile, this, sftp));
+            this.monitors.add(new SftpUploadMonitor(localFile, remoteFile, this));
         }
     }
 
@@ -116,7 +118,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp sftp = monitor.getSftp();
+            ShellSftp sftp = this.client.newSftp();
             try {
                 sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor);
             } catch (Exception ex) {
@@ -128,6 +130,8 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                     this.failed(monitor, ex);
                     break;
                 }
+            } finally {
+                IOUtil.close(sftp);
             }
             ThreadUtil.sleep(5);
         }
