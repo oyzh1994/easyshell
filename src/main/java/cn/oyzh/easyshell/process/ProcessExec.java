@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,9 +91,14 @@ public class ProcessExec implements AutoCloseable {
                 }
             }
             return ProcessParser.psForWindows(output1, this.processAttr, this.totalMemory);
+        } else if (this.client.isLinux()) {
+            String output = this.client.exec("ps -auxe");
+            return ProcessParser.psForLinux(output);
+        } else if (this.client.isMacos()) {
+            String output = this.client.exec("ps -axo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command");
+            return ProcessParser.psForMacos(output);
         }
-        String output = this.client.exec("ps -auxe");
-        return ProcessParser.psForLinux(output);
+        return Collections.emptyList();
     }
 
     public String kill(int pid) {
