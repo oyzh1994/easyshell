@@ -177,7 +177,6 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
                     file.copy(optional.get());
                 }
             }
-
             // 遍历待显示列表，如果不在已显示列表，则新增
             for (SftpFile file : files) {
                 Optional<SftpFile> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();

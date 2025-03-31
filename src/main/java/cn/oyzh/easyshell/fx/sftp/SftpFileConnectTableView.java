@@ -284,12 +284,7 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
     public void uploadFile() {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-            if (this.uploadFile(files)) {
-                // 下载回调触发
-                if (this.uploadFileCallback != null) {
-                    this.uploadFileCallback.accept(files);
-                }
-            }
+            this.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -299,12 +294,7 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
     public void uploadFolder() {
         try {
             File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
-            if (this.uploadFile(file)) {
-                // 下载回调触发
-                if (this.uploadFileCallback != null) {
-                    this.uploadFileCallback.accept(List.of(file));
-                }
-            }
+            this.uploadFile(file);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -338,6 +328,10 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }
+        }
+        // 下载回调触发
+        if (this.uploadFileCallback != null) {
+            this.uploadFileCallback.accept(files);
         }
         return true;
     }

@@ -187,7 +187,6 @@ public class ShellSftpTabController extends SubTabController {
         this.client().getDeleteManager().setDeleteDeletedCallback(this::updateDeleteInfo);
         // 显示隐藏文件
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
-//        this.fileTable.loadFile();
         // 监听上传中属性
         this.client().getUploadManager().uploadingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -245,7 +244,6 @@ public class ShellSftpTabController extends SubTabController {
             });
             // 绑定属性
             this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
-            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
             // 监听位置
             this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
@@ -257,6 +255,7 @@ public class ShellSftpTabController extends SubTabController {
                 }
             });
             // 隐藏文件
+            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
             this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
                 try {
                     this.fileTable.setShowHiddenFile(t1);

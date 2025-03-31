@@ -46,18 +46,19 @@ public class SftpUploadTaskTableView extends FXTableView<SftpUploadTask> {
         if (CollectionUtil.isEmpty(tasks)) {
             return Collections.emptyList();
         }
+        List<SftpUploadTask> list = new ArrayList<>(tasks);
         List<MenuItem> menuItems = new ArrayList<>();
         MenuItem cancelTransport = MenuItemHelper.cancelUpload("12", ()->{
-            for (SftpUploadTask task : tasks) {
+            for (SftpUploadTask task :list) {
                 task.cancel();
             }
-            this.removeItem(tasks);
+            this.removeItem(list);
         });
         MenuItem removeTransport = MenuItemHelper.removeUpload("12", ()->{
-            for (SftpUploadTask task : tasks) {
+            for (SftpUploadTask task : list) {
                 task.remove();
             }
-            this.removeItem(tasks);
+            this.removeItem(list);
         });
         menuItems.add(cancelTransport);
         menuItems.add(removeTransport);

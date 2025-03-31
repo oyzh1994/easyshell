@@ -41,7 +41,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
         }
     }
 
-    private ShellClient client;
+    private final ShellClient client;
 
     private final SftpUploadManager manager;
 
