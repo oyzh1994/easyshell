@@ -214,7 +214,7 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
             this.dataList.addAll(addList);
         }
         // 更新数据
-        this.setItem(this.doFilter(infos));
+        this.setItem(this.doFilter(this.dataList));
         // 更新排序
         this.sort();
         // 更新表格

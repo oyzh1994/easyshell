@@ -26,7 +26,7 @@
                 <FXTableColumn prefWidth="100" valueName="used" text="%base.used"/>
                 <FXTableColumn prefWidth="100" valueName="avail" text="%base.avail"/>
                 <FXTableColumn prefWidth="75" valueName="use" text="%base.usageRate"/>
-                <FXTableColumn flexWidth="100% - 510" valueName="mountedOn" text="%base.mountedOn"/>
+                <FXTableColumn flexWidth="100% - 515" valueName="mountedOn" text="%base.mountedOn"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="10" top="5"/>
