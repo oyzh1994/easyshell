@@ -97,6 +97,9 @@ public class ProcessExec implements AutoCloseable {
         } else if (this.client.isMacos()) {
             String output = this.client.exec("ps -axo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command");
             return ProcessParser.psForMacos(output);
+        } else if (this.client.isUnix()) {
+            String output = this.client.exec("ps -auxe");
+            return ProcessParser.psForUnix(output);
         }
         return Collections.emptyList();
     }
