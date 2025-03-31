@@ -12,6 +12,6 @@ public class SftpTransportManager extends SftpManager<SftpTransportMonitor, Sftp
 
     public void createMonitor(SftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
         this.tasks.add(new SftpTransportTask(this, localFile, remoteFile, localClient, remoteClient));
-        this.taskChanged();
+        this.taskSizeChanged();
     }
 }

@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.sftp;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -14,7 +17,7 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
     /**
      * 任务列表
      */
-    protected final List<T> tasks = new CopyOnWriteArrayList<>();
+    protected final Queue<T> tasks = new ArrayDeque<>();
 
     /**
      * 获取任务列表
@@ -22,7 +25,7 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
      * @return 任务列表
      */
     public List<T> getTasks() {
-        return tasks;
+        return new ArrayList<>(this.tasks);
     }
 
     /**
@@ -41,7 +44,7 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
      */
     public boolean isCompleted() {
         if (!this.tasks.isEmpty()) {
-            for (T task : tasks) {
+            for (T task : this.tasks) {
                 if (!task.isCompleted()) {
                     return false;
                 }
@@ -56,9 +59,9 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
      * @param task 任务
      */
     public void remove(T task) {
-        task.cancel();
+//        task.cancel();
         this.tasks.remove(task);
-        this.taskChanged();
+        this.taskSizeChanged();
     }
 
     /**
@@ -68,6 +71,8 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
      */
     public void cancel(T task) {
         task.cancel();
+        this.tasks.remove(task);
+        this.taskSizeChanged();
     }
 
     /**
@@ -79,27 +84,43 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
         }
     }
 
-    private Runnable taskChangedCallback;
-
-    public void setTaskChangedCallback(Runnable taskChangedCallback) {
-        this.taskChangedCallback = taskChangedCallback;
+    public int getTaskSize() {
+        return this.tasks.size();
     }
 
-    public void taskChanged() {
-        if (this.taskChangedCallback != null) {
-            this.taskChangedCallback.run();
+    private Runnable taskSizeChangedCallback;
+
+    public void setTaskChangedCallback(Runnable taskChangedCallback) {
+        this.taskSizeChangedCallback = taskChangedCallback;
+    }
+
+    public void taskSizeChanged() {
+        if (this.taskSizeChangedCallback != null) {
+            this.taskSizeChangedCallback.run();
         }
     }
 
-    private Consumer<M> monitorChangedCallback;
+    private BiConsumer<String, T> taskStatusChangedCallback;
 
-    public void setMonitorChangedCallback(Consumer<M> monitorChangedCallback) {
+    public void taskStatusChanged(String status, T task) {
+        if (this.taskStatusChangedCallback != null) {
+            this.taskStatusChangedCallback.accept(status, task);
+        }
+    }
+
+    public void setTaskStatusChangedCallback(BiConsumer<String, T> taskStatusChangedCallback) {
+        this.taskStatusChangedCallback = taskStatusChangedCallback;
+    }
+
+    private BiConsumer<M, T> monitorChangedCallback;
+
+    public void setMonitorChangedCallback(BiConsumer<M, T> monitorChangedCallback) {
         this.monitorChangedCallback = monitorChangedCallback;
     }
 
-    public void monitorChanged(M monitor) {
+    public void monitorChanged(M monitor, T task) {
         if (this.monitorChangedCallback != null) {
-            this.monitorChangedCallback.accept(monitor);
+            this.monitorChangedCallback.accept(monitor, task);
         }
     }
 

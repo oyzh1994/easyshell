@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.connect;
 
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpManageController;
 import cn.oyzh.easyshell.domain.ShellSetting;
@@ -7,9 +8,12 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
+import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadMonitor;
+import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
@@ -17,9 +21,7 @@ import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.plus.chooser.DirChooserHelper;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -57,14 +59,17 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private SftpLocationTextField location;
 
-//    @FXML
-//    private FXLabel fileUpload;
-//
+    @FXML
+    private FXHBox uploadBox;
+
+    @FXML
+    private FXLabel fileUpload;
+
 //    @FXML
 //    private FXLabel uploadProgressInfo;
-//
-//    @FXML
-//    private FXProgressBar uploadProgress;
+
+    @FXML
+    private FXProgressTextBar uploadProgress;
 //
 //    @FXML
 //    private FXLabel fileDownload;
@@ -138,15 +143,15 @@ public class ShellSftpTabController extends SubTabController {
 //    @FXML
 //    private SftpDownloadTaskTableView downloadTable;
 //
-//    /**
-//     * 上传管理器
-//     */
-//    private SftpUploadManager uploadManager;
-//
-//    /**
-//     * 下载管理器
-//     */
-//    private SftpDownloadManager downloadManager;
+    /**
+     * 上传管理器
+     */
+    private SftpUploadManager uploadManager;
+
+    /**
+     * 下载管理器
+     */
+    private SftpDownloadManager downloadManager;
 //
 //    protected void initUploadTable() {
 //        this.uploadTable.setItem(this.uploadManager.getTasks());
@@ -164,8 +169,11 @@ public class ShellSftpTabController extends SubTabController {
         }
         this.initialized = true;
         this.fileTable.setClient(this.client());
-//        this.uploadManager = this.client().getSftpUploadManager();
-//        this.downloadManager = this.client().getSftpDownloadManager();
+        this.uploadManager = this.client().getUploadManager();
+        this.downloadManager = this.client().getDownloadManager();
+        this.uploadManager.setTaskChangedCallback(this::uploadTaskSizeChanged);
+        this.uploadManager.setMonitorChangedCallback(this::uploadMonitorChanged);
+        this.uploadManager.setTaskStatusChangedCallback(this::uploadStatusChanged);
 //        this.uploadManager.setTaskChangedCallback(() -> this.initUploadTable());
 //        this.downloadManager.setTaskChangedCallback(() -> this.initDownloadTable());
 //        // 下载
@@ -404,15 +412,15 @@ public class ShellSftpTabController extends SubTabController {
         }
     }
 
-//    @FXML
-//    private void cancelUpload() {
-//        try {
-//            this.fileTable.cancelUpload();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    @FXML
+    private void cancelUpload() {
+        try {
+            this.uploadManager.cancel();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 //
 //    @FXML
 //    private void cancelDownload() {
@@ -424,7 +432,7 @@ public class ShellSftpTabController extends SubTabController {
 //        }
 //    }
 
-//    private void updateUploadInfo(SftpUploadEnded ended) {
+    //    private void updateUploadInfo(SftpUploadEnded ended) {
 //        try {
 //            JulLog.info("updateUploadInfo:{}", ended);
 //            this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
@@ -479,37 +487,37 @@ public class ShellSftpTabController extends SubTabController {
 //        }
 //    }
 //
-//    private void updateUploadInfo(SftpUploadChanged changed) {
-//        if (!this.uploadBox.isVisible()) {
-//            this.uploadBox.display();
-//            this.updateLayout();
-//        }
-//        if (changed.getFileCount() > 1) {
-//            StringBuilder builder = new StringBuilder();
-//            builder.append("Count: ").append(changed.getFileCount());
-//            builder.append(" Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
-//            this.fileUpload.text(builder.toString());
-//
-//            StringBuilder progress = new StringBuilder();
-//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-//                    .append("/")
-//                    .append(NumberUtil.formatSize(changed.getTotal(), 2))
-//                    .append("/")
-//                    .append(NumberUtil.formatSize(changed.getFileSize(), 2));
-//            this.uploadProgressInfo.text(progress.toString());
-//        } else {
-//            StringBuilder builder = new StringBuilder();
-//            builder.append("Dest: ").append(changed.getRemoteFile()).append("/").append(changed.getLocalFileName());
-//            this.fileUpload.text(builder.toString());
-//
-//            StringBuilder progress = new StringBuilder();
-//            progress.append(NumberUtil.formatSize(changed.getCurrent(), 2))
-//                    .append("/")
-//                    .append(NumberUtil.formatSize(changed.getTotal(), 2));
-//            this.uploadProgressInfo.text(progress.toString());
-//        }
-//        this.uploadProgress.progress(changed.progress());
-//    }
+    private void uploadStatusChanged(String status, SftpUploadTask task) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
+        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
+        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+        this.fileUpload.text(builder.toString());
+        this.uploadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+    }
+
+    private void uploadMonitorChanged(SftpUploadMonitor monitor, SftpUploadTask task) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
+        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
+        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
+        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getLocalFileName());
+        this.fileUpload.text(builder.toString());
+        this.uploadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+    }
+
+    private void uploadTaskSizeChanged() {
+        if (this.uploadManager.isEmpty()) {
+            this.uploadBox.disappear();
+        } else {
+            this.uploadBox.display();
+        }
+        this.updateLayout();
+    }
 //
 //    private void updateUploadInfo(SftpUploadInPreparation inPreparation) {
 //        if (!this.uploadBox.isVisible()) {
@@ -642,9 +650,9 @@ public class ShellSftpTabController extends SubTabController {
         if (this.deleteBox.isVisible()) {
             ++showNum;
         }
-//        if (this.uploadBox.isVisible()) {
-//            ++showNum;
-//        }
+        if (this.uploadBox.isVisible()) {
+            ++showNum;
+        }
 //        if (this.downloadBox.isVisible()) {
 //            ++showNum;
 //        }

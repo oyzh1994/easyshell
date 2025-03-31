@@ -209,6 +209,6 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     @Override
     public void changed(SftpDownloadMonitor monitor) {
         super.changed(monitor);
-        this.manager.monitorChanged(monitor);
+        this.manager.monitorChanged(monitor, this);
     }
 }

@@ -41,18 +41,13 @@ public class SftpUploadMonitor extends SftpMonitor {
     @Override
     public void end() {
         this.ended = true;
-        if (this.cancelled) {
-            JulLog.warn("file:{} upload cancelled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
-            this.task.canceled(this);
-        } else {
-            long endTime = System.currentTimeMillis();
-            long duration = (endTime - this.startTime) / 1000;
-            if (duration == 0) {
-                duration = 1;
-            }
-            JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
-            this.task.ended(this);
+        long endTime = System.currentTimeMillis();
+        long duration = (endTime - this.startTime) / 1000;
+        if (duration == 0) {
+            duration = 1;
         }
+        JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
+        this.task.ended(this);
     }
 
     public String getLocalFileName() {
@@ -69,12 +64,9 @@ public class SftpUploadMonitor extends SftpMonitor {
 
     @Override
     public synchronized void cancel() {
-        if (this.ended) {
-            ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
-        } else {
-            this.cancelled = true;
-            ThreadUtil.start(this::end, 50);
-        }
+        JulLog.warn("file:{} upload canceled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
+        this.cancelled = true;
+        ThreadUtil.start(() -> this.task.canceled(this), 50);
     }
 
     @Override

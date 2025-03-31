@@ -19,6 +19,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.FXProgressTextBar?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellSftpTabController"
        text="%base.file" fx:id="root">
@@ -174,33 +176,33 @@
         <!--                </FXHBox.margin>-->
         <!--            </FXLabel>-->
         <!--        </FXHBox>-->
-        <!--        <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">-->
-        <!--            <FXLabel text="%base.upload">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelUpload">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="8"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </CancelSVGGlyph>-->
-        <!--            <FXProgressBar fx:id="uploadProgress">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="9"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXProgressBar>-->
-        <!--            <FXLabel fx:id="uploadProgressInfo" maxWidth="200">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <FXLabel fx:id="fileUpload" maxWidth="600">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--        </FXHBox>-->
+                <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
+<!--                    <FXLabel text="%base.upload">-->
+<!--                        <FXHBox.margin>-->
+<!--                            <Insets left="5" top="5"/>-->
+<!--                        </FXHBox.margin>-->
+<!--                    </FXLabel>-->
+                    <FXProgressTextBar fx:id="uploadProgress" realWidth="125">
+                        <FXHBox.margin>
+                            <Insets left="5"/>
+                        </FXHBox.margin>
+                    </FXProgressTextBar>
+<!--                    <FXLabel fx:id="uploadProgressInfo" maxWidth="200">-->
+<!--                        <FXHBox.margin>-->
+<!--                            <Insets left="5" top="5"/>-->
+<!--                        </FXHBox.margin>-->
+<!--                    </FXLabel>-->
+                    <FXLabel fx:id="fileUpload" flexWidth="100% - 170">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </FXLabel>
+                    <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelUpload">
+                        <FXHBox.margin>
+                            <Insets left="5" top="9"/>
+                        </FXHBox.margin>
+                    </CancelSVGGlyph>
+                </FXHBox>
         <FXHBox prefHeight="30" flexWidth="100%">
 <!--            <FXLabel text="%base.location" maxWidth="50">-->
 <!--                <FXHBox.margin>-->

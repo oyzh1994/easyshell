@@ -238,6 +238,6 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     @Override
     public void changed(SftpTransportMonitor monitor) {
         super.changed(monitor);
-        this.manager.monitorChanged(monitor);
+        this.manager.monitorChanged(monitor, this);
     }
 }

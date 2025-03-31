@@ -16,7 +16,7 @@ public class SftpDownloadManager extends SftpManager<SftpDownloadMonitor, SftpDo
 
     public void createMonitor(File localFile, SftpFile remoteFile, ShellSftp sftp) {
         this.tasks.add(new SftpDownloadTask(this, localFile, remoteFile, sftp));
-        this.taskChanged();
+        this.taskSizeChanged();
     }
 
     private final BooleanProperty downloadingProperty = new SimpleBooleanProperty(false);

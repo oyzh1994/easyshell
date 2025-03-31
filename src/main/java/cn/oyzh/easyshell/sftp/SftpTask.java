@@ -33,7 +33,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return this.monitors.peek();
     }
 
-    public void removeMonitor(M monitor) {
+    public void remove(M monitor) {
         this.monitors.remove(monitor);
         this.updateTotal();
     }
@@ -42,10 +42,20 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return this.monitors.isEmpty();
     }
 
+    public int size() {
+        return this.monitors.size();
+    }
+
     protected String destPath;
 
     public String getDestPath() {
         return destPath;
+    }
+
+    protected String srcPath;
+
+    public String getSrcPath() {
+        return srcPath;
     }
 
     /**
@@ -115,6 +125,10 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return statusProperty;
     }
 
+    public String getStatus() {
+        return statusProperty.get();
+    }
+
     private StringProperty speedProperty;
 
     public StringProperty speedProperty() {
@@ -122,6 +136,10 @@ public abstract class SftpTask<M extends SftpMonitor> {
             this.speedProperty = new SimpleStringProperty();
         }
         return this.speedProperty;
+    }
+
+    public String getSpeed() {
+        return this.speedProperty.get();
     }
 
     /**
@@ -136,10 +154,18 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return this.fileSizeProperty;
     }
 
+    public String getFileSize() {
+        return this.fileSizeProperty().get();
+    }
+
     /**
      * 文件总大小
      */
     private long totalSize;
+
+    public long getTotalSize() {
+        return totalSize;
+    }
 
     /**
      * 开始时间
@@ -150,6 +176,10 @@ public abstract class SftpTask<M extends SftpMonitor> {
      * 当前大小
      */
     private long currentSize;
+
+    public long getCurrentSize() {
+        return currentSize;
+    }
 
     /**
      * 总数量属性

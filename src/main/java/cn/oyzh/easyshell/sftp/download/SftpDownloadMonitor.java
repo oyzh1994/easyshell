@@ -45,18 +45,13 @@ public class SftpDownloadMonitor extends SftpMonitor {
     @Override
     public void end() {
         this.ended = true;
-        if (this.cancelled) {
-            JulLog.warn("file:{} download cancelled, download:{} total:{}", this.getRemoteFileName(), this.current, this.total);
-            this.task.canceled(this);
-        } else {
-            long endTime = System.currentTimeMillis();
-            long duration = (endTime - this.startTime) / 1000;
-            if (duration == 0) {
-                duration = 1;
-            }
-            JulLog.info("file:{} download finished, cost:{}" + I18nHelper.seconds(), this.getRemoteFileName(), duration);
-            this.task.ended(this);
+        long endTime = System.currentTimeMillis();
+        long duration = (endTime - this.startTime) / 1000;
+        if (duration == 0) {
+            duration = 1;
         }
+        JulLog.info("file:{} download finished, cost:{}" + I18nHelper.seconds(), this.getRemoteFileName(), duration);
+        this.task.ended(this);
     }
 
     public String getRemoteFileName() {
@@ -91,12 +86,9 @@ public class SftpDownloadMonitor extends SftpMonitor {
 
     @Override
     public synchronized void cancel() {
-        if (this.ended) {
-            ThreadUtil.start(() -> this.task.removeMonitor(this), 50);
-        } else {
-            this.cancelled = true;
-            ThreadUtil.start(this::end, 50);
-        }
+        this.cancelled = true;
+        JulLog.warn("file:{} download canceled, download:{} total:{}", this.getRemoteFileName(), this.current, this.total);
+        ThreadUtil.start(() -> this.task.canceled(this), 50);
     }
 
     @Override
