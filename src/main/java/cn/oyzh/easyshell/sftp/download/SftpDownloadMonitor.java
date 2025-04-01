@@ -22,14 +22,7 @@ public class SftpDownloadMonitor extends SftpMonitor {
 
     private final SftpDownloadTask task;
 
-    private final ShellSftp sftp;
-
-    public ShellSftp getSftp() {
-        return sftp;
-    }
-
-    public SftpDownloadMonitor(final File localFile, SftpFile remoteFile, SftpDownloadTask task, ShellSftp sftp) {
-        this.sftp = sftp;
+    public SftpDownloadMonitor(final File localFile, SftpFile remoteFile, SftpDownloadTask task) {
         this.task = task;
         this.localFile = localFile;
         this.remoteFile = remoteFile;

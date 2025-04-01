@@ -5,9 +5,11 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -40,35 +42,76 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
             case DOWNLOAD_ING -> this.statusProperty.set(I18nHelper.downloadIng());
             default -> this.statusProperty.set(I18nHelper.inPreparation());
         }
+        this.manager.taskStatusChanged(this.getStatus(), this);
     }
+
+    private final File localFile;
+
+    private final SftpFile remoteFile;
+
+    private final ShellClient client;
 
     private final SftpDownloadManager manager;
 
-    public SftpDownloadTask(SftpDownloadManager manager, File localFile, SftpFile remoteFile, ShellSftp sftp) {
+    @Override
+    public String getSrcPath() {
+        return this.remoteFile.getName();
+    }
+
+    @Override
+    public String getDestPath() {
+        return this.localFile.getName();
+    }
+
+    public SftpDownloadTask(SftpDownloadManager manager, File localFile, SftpFile remoteFile, ShellClient client) {
+        this.client = client;
         this.manager = manager;
-        this.destPath = localFile.getPath();
-        this.currentFileProperty().set(remoteFile.getPath());
-        // 执行线程
-        this.executeThread = ThreadUtil.start(() -> {
-            try {
-                sftp.setHolding(true);
-                this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
-                this.addMonitorRecursive(localFile, remoteFile, sftp);
-                this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
-                this.calcTotalSize();
-                this.updateTotal();
-                this.doDownload();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                sftp.setHolding(false);
-                this.updateTotal();
-                // 如果是非取消和失败，则设置为结束
-                if (!this.isCancelled() && !this.isFailed()) {
-                    this.updateStatus(SftpDownloadStatus.FINISHED);
-                }
+        this.localFile = localFile;
+        this.remoteFile = remoteFile;
+//        this.currentFileProperty().set(remoteFile.getPath());
+//        // 执行线程
+//        this.executeThread = ThreadUtil.start(() -> {
+//            try {
+//                sftp.setHolding(true);
+//                this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
+//                this.addMonitorRecursive(localFile, remoteFile, sftp);
+//                this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
+//                this.calcTotalSize();
+//                this.updateTotal();
+//                this.doDownload();
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            } finally {
+//                sftp.setHolding(false);
+//                this.updateTotal();
+//                // 如果是非取消和失败，则设置为结束
+//                if (!this.isCancelled() && !this.isFailed()) {
+//                    this.updateStatus(SftpDownloadStatus.FINISHED);
+//                }
+//            }
+//        });
+    }
+
+    /**
+     * 执行下载
+     */
+    public void download() {
+        try {
+            this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
+            this.addMonitorRecursive(localFile, remoteFile);
+            this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
+            this.calcTotalSize();
+            this.updateTotal();
+            this.doDownload();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            this.updateTotal();
+            // 如果是非取消和失败，则设置为结束
+            if (!this.isCancelled() && !this.isFailed()) {
+                this.updateStatus(SftpDownloadStatus.FINISHED);
             }
-        });
+        }
     }
 
     /**
@@ -76,14 +119,18 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @param sftp       sftp操作器
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, SftpFile remoteFile, ShellSftp sftp) throws SftpException {
+    protected void addMonitorRecursive(File localFile, SftpFile remoteFile) throws SftpException {
+        // 已取消则跳过
+        if (this.isCancelled()) {
+            return;
+        }
+        this.manager.taskStatusChanged(this.getStatus(), this);
         // 文件夹
         if (remoteFile.isDir()) {
             // 列举文件
-            List<SftpFile> files = sftp.lsFileNormal(remoteFile.getFilePath());
+            List<SftpFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
@@ -93,16 +140,16 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                 for (SftpFile file : files) {
                     file.setParentPath(remoteFile.getFilePath());
                     if (file.isDir()) {
-                        this.addMonitorRecursive(localDir, file, sftp);
+                        this.addMonitorRecursive(localDir, file);
                     } else {
                         File localFile1 = new File(localDir, file.getFileName());
-                        this.addMonitorRecursive(localFile1, file, sftp);
+                        this.addMonitorRecursive(localFile1, file);
                     }
                 }
             }
         } else {// 文件
             this.updateTotal();
-            this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this, sftp));
+            this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this));
         }
     }
 
@@ -115,11 +162,14 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
             if (monitor == null) {
                 break;
             }
+            if (monitor.isCancelled()) {
+                continue;
+            }
             if (monitor.isFinished()) {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp sftp = monitor.getSftp();
+            ShellSftp sftp = this.client.newSftp();
             try {
                 sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {
@@ -131,6 +181,8 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                     this.failed(monitor, ex);
                     break;
                 }
+            } finally {
+                IOUtil.close(sftp);
             }
             ThreadUtil.sleep(5);
         }
@@ -148,6 +200,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     @Override
     public void cancel() {
         super.cancel();
+        this.manager.remove(this);
         this.updateStatus(SftpDownloadStatus.CANCELED);
     }
 
@@ -186,10 +239,19 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     }
 
     @Override
+    public void remove(SftpDownloadMonitor monitor) {
+        super.remove(monitor);
+        if (this.monitors.isEmpty()) {
+            this.manager.remove(this);
+        }
+    }
+
+    @Override
     public void ended(SftpDownloadMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor);
         if (this.monitors.isEmpty()) {
+            this.manager.remove(this);
             this.updateStatus(SftpDownloadStatus.FINISHED);
         }
     }
@@ -204,6 +266,9 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     public void canceled(SftpDownloadMonitor monitor) {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor);
+        if (this.monitors.isEmpty()) {
+            this.manager.remove(this);
+        }
     }
 
     @Override

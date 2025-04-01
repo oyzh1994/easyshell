@@ -589,7 +589,7 @@ public class ShellClient {
     }
 
     public void download(File localFile, SftpFile remoteFile) throws SftpException {
-        this.getDownloadManager().createMonitor(localFile, remoteFile, this.openSftp());
+        this.getDownloadManager().createMonitor(localFile, remoteFile, this);
     }
 
     public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {

@@ -42,13 +42,13 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
         this.manager.taskStatusChanged(this.getStatus(), this);
     }
 
-    private final ShellClient client;
-
-    private final SftpUploadManager manager;
-
     private final File localFile;
 
     private final String remoteFile;
+
+    private final ShellClient client;
+
+    private final SftpUploadManager manager;
 
     @Override
     public String getSrcPath() {
@@ -88,10 +88,13 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
 //        });
     }
 
+    /**
+     * 执行上传
+     */
     public void upload() {
         try {
             this.updateStatus(SftpUploadStatus.IN_PREPARATION);
-            this.addMonitorRecursive(localFile, remoteFile, client);
+            this.addMonitorRecursive(localFile, remoteFile);
             this.updateStatus(SftpUploadStatus.UPLOAD_ING);
             this.calcTotalSize();
             this.updateTotal();
@@ -112,10 +115,9 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @param client     shell客户端
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, String remoteFile, ShellClient client) throws SftpException {
+    protected void addMonitorRecursive(File localFile, String remoteFile) throws SftpException {
         // 已取消则跳过
         if (this.isCancelled()) {
             return;
@@ -130,14 +132,14 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                 // 远程文件夹
                 String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                client.openSftp().mkdirRecursive(remoteDir);
+                this.client.openSftp().mkdirRecursive(remoteDir);
                 // 添加文件
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        this.addMonitorRecursive(file, remoteDir, client);
+                        this.addMonitorRecursive(file, remoteDir);
                     } else {
                         String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
-                        this.addMonitorRecursive(file, remoteFile1, client);
+                        this.addMonitorRecursive(file, remoteFile1);
                     }
                 }
             }

@@ -46,7 +46,10 @@ public class SftpUploadManager extends SftpManager<SftpUploadMonitor, SftpUpload
         this.uploadingProperty.set(uploading);
     }
 
-    private void doUpload() {
+    /**
+     * 执行上传
+     */
+    protected void doUpload() {
         if (this.isUploading()) {
             return;
         }

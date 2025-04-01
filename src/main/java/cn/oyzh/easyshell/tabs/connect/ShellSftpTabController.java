@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
+import cn.oyzh.easyshell.sftp.download.SftpDownloadMonitor;
+import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
@@ -59,47 +61,47 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private SftpLocationTextField location;
 
+    /**
+     * 上传组件
+     */
     @FXML
     private FXHBox uploadBox;
 
+    /**
+     * 上传标签
+     */
     @FXML
     private FXLabel fileUpload;
 
-//    @FXML
-//    private FXLabel uploadProgressInfo;
-
+    /**
+     * 上传进度
+     */
     @FXML
     private FXProgressTextBar uploadProgress;
-//
-//    @FXML
-//    private FXLabel fileDownload;
-//
-//    @FXML
-//    private FXLabel downloadProgressInfo;
-//
-//    @FXML
-//    private FXProgressBar downloadProgress;
 
-//    @FXML
-//    private FXHBox downloadBox;
-//
-//    @FXML
-//    private FXHBox uploadBox;
+    /**
+     * 下载组件
+     */
+    @FXML
+    private FXHBox downloadBox;
 
-//    @FXML
-//    private SVGGlyph uploadBox;
-//
-//    @FXML
-//    private SVGGlyph downloadBox;
+    /**
+     * 下载标签
+     */
+    @FXML
+    private FXLabel fileDownload;
+
+    /**
+     * 下载进度
+     */
+    @FXML
+    private FXProgressTextBar downloadProgress;
 
     /**
      * 文件管理组件
      */
     @FXML
     private SVGGlyph sftpBox;
-
-//    @FXML
-//    private SVGGlyph copyFilePath;
 
     @FXML
     private FXToggleSwitch hiddenFile;
@@ -119,9 +121,6 @@ public class ShellSftpTabController extends SubTabController {
     @FXML
     private SVGGlyph uploadFile;
 
-//    @FXML
-//    private SVGGlyph refreshFile;
-
     @FXML
     private SVGGlyph uploadDir;
 
@@ -131,18 +130,6 @@ public class ShellSftpTabController extends SubTabController {
 
     private boolean initialized = false;
 
-//    /**
-//     * 上传表
-//     */
-//    @FXML
-//    private SftpUploadTaskTableView uploadTable;
-//
-//    /**
-//     * 下载表
-//     */
-//    @FXML
-//    private SftpDownloadTaskTableView downloadTable;
-//
     /**
      * 上传管理器
      */
@@ -152,16 +139,6 @@ public class ShellSftpTabController extends SubTabController {
      * 下载管理器
      */
     private SftpDownloadManager downloadManager;
-//
-//    protected void initUploadTable() {
-//        this.uploadTable.setItem(this.uploadManager.getTasks());
-//        this.uploadTable.display();
-//    }
-//
-//    protected void initDownloadTable() {
-//        this.downloadTable.setItem(this.downloadManager.getTasks());
-//        this.downloadTable.display();
-//    }
 
     private void init() {
         if (this.initialized) {
@@ -174,6 +151,9 @@ public class ShellSftpTabController extends SubTabController {
         this.uploadManager.setTaskChangedCallback(this::uploadTaskSizeChanged);
         this.uploadManager.setMonitorChangedCallback(this::uploadMonitorChanged);
         this.uploadManager.setTaskStatusChangedCallback(this::uploadStatusChanged);
+        this.downloadManager.setTaskChangedCallback(this::downloadTaskSizeChanged);
+        this.downloadManager.setMonitorChangedCallback(this::downloadMonitorChanged);
+        this.downloadManager.setTaskStatusChangedCallback(this::downloadStatusChanged);
 //        this.uploadManager.setTaskChangedCallback(() -> this.initUploadTable());
 //        this.downloadManager.setTaskChangedCallback(() -> this.initDownloadTable());
 //        // 下载
@@ -421,72 +401,49 @@ public class ShellSftpTabController extends SubTabController {
             MessageBox.exception(ex);
         }
     }
-//
-//    @FXML
-//    private void cancelDownload() {
-//        try {
-//            this.fileTable.cancelDownload();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
 
-    //    private void updateUploadInfo(SftpUploadEnded ended) {
-//        try {
-//            JulLog.info("updateUploadInfo:{}", ended);
-//            this.fileTable.fileUploaded(ended.getLocalFileName(), ended.getRemoteFile());
-//            if (ended.getFileCount() == 0) {
-//                this.fileUpload.clear();
-//                this.uploadProgressInfo.clear();
-//                this.uploadBox.disappear();
-//                this.updateLayout();
-//                // 重新载入一次文件
-//                this.fileTable.loadFile();
-//                // 提示消息
-//                if (!StageManager.hasFocusedWindow()) {
-//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFinished());
-//                }
-//            }
-//        } catch (Exception ex) {
-//            MessageBox.exception(ex);
-//        }
-//    }
-//
-//    private void updateUploadInfo(SftpUploadFailed failed) {
-//        try {
-//            JulLog.info("updateUploadInfo:{}", failed);
-//            if (failed.getFileCount() == 0) {
-//                this.fileUpload.clear();
-//                this.uploadProgressInfo.clear();
-//                this.uploadBox.disappear();
-//                this.updateLayout();
-//                // 重新载入一次文件
-//                this.fileTable.loadFile();
-//                // 提示消息
-//                if (!StageManager.hasFocusedWindow()) {
-//                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.fileUploadFailed());
-//                }
-//            }
-//            MessageBox.warn(failed.getLocalFileName() + " " + I18nHelper.uploadFailed());
-//        } catch (Exception ex) {
-//            MessageBox.exception(ex);
-//        }
-//    }
-//
-//    private void updateUploadInfo(SftpUploadCanceled canceled) {
-//        try {
-//            JulLog.info("updateUploadInfo:{}", canceled);
-//            this.fileUpload.clear();
-//            this.uploadProgressInfo.clear();
-//            this.uploadBox.disappear();
-//            this.updateLayout();
-//            this.fileTable.loadFile();
-//        } catch (Exception ex) {
-//            MessageBox.exception(ex);
-//        }
-//    }
-//
+    @FXML
+    private void cancelDownload() {
+        try {
+            this.downloadManager.cancel();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    private void downloadStatusChanged(String status, SftpDownloadTask task) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
+        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
+        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+        this.fileDownload.text(builder.toString());
+        this.downloadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+    }
+
+    private void downloadMonitorChanged(SftpDownloadMonitor monitor, SftpDownloadTask task) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
+        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
+        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
+        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getRemoteFileName());
+        this.fileDownload.text(builder.toString());
+        this.downloadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+    }
+
+    private void downloadTaskSizeChanged() {
+        if (this.downloadManager.isEmpty()) {
+            this.downloadBox.disappear();
+        } else {
+            this.downloadBox.display();
+        }
+        this.updateLayout();
+    }
+
     private void uploadStatusChanged(String status, SftpUploadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
@@ -653,9 +610,9 @@ public class ShellSftpTabController extends SubTabController {
         if (this.uploadBox.isVisible()) {
             ++showNum;
         }
-//        if (this.downloadBox.isVisible()) {
-//            ++showNum;
-//        }
+        if (this.downloadBox.isVisible()) {
+            ++showNum;
+        }
         this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
         this.fileTable.parentAutosize();
     }
