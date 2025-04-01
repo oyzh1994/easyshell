@@ -234,13 +234,16 @@ public class ShellSftpTransportController extends StageController {
             }
             // 检查文件是否存在
             for (SftpFile file : files) {
+                if (file.isCurrentFile() || file.isReturnDirectory()) {
+                    continue;
+                }
                 if (this.targetFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
                     return;
                 }
             }
             String remotePath = this.targetFile.getLocation();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
-            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.targetFile);
+//            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.sourceTransportBox);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -259,13 +262,16 @@ public class ShellSftpTransportController extends StageController {
             }
             // 检查文件是否存在
             for (SftpFile file : files) {
+                if (file.isCurrentFile() || file.isReturnDirectory()) {
+                    continue;
+                }
                 if (this.sourceFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
                     return;
                 }
             }
             String remotePath = this.sourceFile.getLocation();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
-            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.sourceFile);
+//            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.targetTransportBox);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -282,6 +288,9 @@ public class ShellSftpTransportController extends StageController {
      */
     private void doTransport(List<SftpFile> files, String remotePath, ShellClient sourceClient, ShellClient targetClient) {
         for (SftpFile file : files) {
+            if (file.isCurrentFile() || file.isReturnDirectory()) {
+                continue;
+            }
             if (file.isDirectory()) {
                 sourceClient.transport(file, remotePath, targetClient);
             } else {
@@ -623,6 +632,7 @@ public class ShellSftpTransportController extends StageController {
     private void sourceTransportTaskSizeChanged() {
         if (this.sourceTransportManager.isEmpty()) {
             this.sourceTransportBox.disappear();
+            this.targetFile.loadFile();
         } else {
             this.sourceTransportBox.display();
         }
@@ -670,6 +680,7 @@ public class ShellSftpTransportController extends StageController {
     private void targetTransportTaskSizeChanged() {
         if (this.targetTransportManager.isEmpty()) {
             this.targetTransportBox.disappear();
+            this.sourceFile.loadFile();
         } else {
             this.targetTransportBox.display();
         }
