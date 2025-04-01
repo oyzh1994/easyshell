@@ -366,10 +366,15 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             try {
                 List<SftpFile> sftpFiles = new CopyOnWriteArrayList<>(files);
                 for (SftpFile file : sftpFiles) {
+                    // 不可删除文件
+                    if (file.isReturnDirectory() || file.isCurrentFile()) {
+                        continue;
+                    }
+                    // 隐藏文件
                     if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
                         continue;
                     }
-//                    file.startWaiting();
+                    // 执行删除
                     this.client.delete(file);
                 }
                 this.refreshFile();

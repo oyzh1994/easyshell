@@ -182,7 +182,7 @@
 <!--                            <Insets left="5" top="5"/>-->
 <!--                        </FXHBox.margin>-->
 <!--                    </FXLabel>-->
-                    <FXProgressTextBar fx:id="uploadProgress" realWidth="125">
+                    <FXProgressTextBar fx:id="uploadProgress" realWidth="130">
                         <FXHBox.margin>
                             <Insets left="5"/>
                         </FXHBox.margin>
@@ -192,7 +192,7 @@
 <!--                            <Insets left="5" top="5"/>-->
 <!--                        </FXHBox.margin>-->
 <!--                    </FXLabel>-->
-                    <FXLabel fx:id="fileUpload" flexWidth="100% - 170">
+                    <FXLabel fx:id="fileUpload" flexWidth="100% - 175">
                         <FXHBox.margin>
                             <Insets left="5" top="7"/>
                         </FXHBox.margin>
