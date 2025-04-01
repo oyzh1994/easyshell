@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp.delete;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
@@ -96,9 +97,11 @@ public class SftpDeleteManager {
                         this.rm(deleteFile.getPath(), sftp);
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JulLog.warn("file:{} delete failed", deleteFile.getPath(), ex);
-                    MessageBox.exception(ex);
+                    if(!ExceptionUtil.hasMessage(ex,"no such file")) {
+                        ex.printStackTrace();
+                        JulLog.warn("file:{} delete failed", deleteFile.getPath(), ex);
+                        MessageBox.exception(ex);
+                    }
                 } finally {
                     deleteFile.file.stopWaiting();
                 }

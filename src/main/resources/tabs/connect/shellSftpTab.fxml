@@ -94,12 +94,12 @@
             <!--                    <Insets left="10" top="10"/>-->
             <!--                </FXHBox.margin>-->
             <!--            </DownloadBoxSVGGlyph>-->
-            <SftpSVGGlyph sizeStr="15" fx:id="sftpBox" onMousePrimaryClicked="#showSftpBox"
-                          tipText="%shell.file.tip17">
-                <FXHBox.margin>
-                    <Insets left="30" top="10"/>
-                </FXHBox.margin>
-            </SftpSVGGlyph>
+            <!--            <SftpSVGGlyph sizeStr="15" fx:id="sftpBox" onMousePrimaryClicked="#showSftpBox"-->
+            <!--                          tipText="%shell.file.tip17">-->
+            <!--                <FXHBox.margin>-->
+            <!--                    <Insets left="30" top="10"/>-->
+            <!--                </FXHBox.margin>-->
+            <!--            </SftpSVGGlyph>-->
         </FXHBox>
         <SftpFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
@@ -132,7 +132,7 @@
                     <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
-            <FXProgressTextBar fx:id="downloadProgress">
+            <FXProgressTextBar fx:id="downloadProgress" realWidth="135">
                 <FXHBox.margin>
                     <Insets left="5" top="-4"/>
                 </FXHBox.margin>
