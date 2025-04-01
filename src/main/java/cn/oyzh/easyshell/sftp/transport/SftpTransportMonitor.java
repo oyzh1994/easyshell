@@ -23,23 +23,9 @@ public class SftpTransportMonitor extends SftpMonitor {
 
     private final SftpTransportTask task;
 
-    private final ShellSftp localSftp;
-
-    public ShellSftp getLocalSftp() {
-        return localSftp;
-    }
-
-    private final ShellSftp remoteSftp;
-
-    public ShellSftp getRemoteSftp() {
-        return remoteSftp;
-    }
-
-    public SftpTransportMonitor(final SftpFile localFile, String remoteFile, SftpTransportTask task, ShellSftp localSftp, ShellSftp remoteSftp) {
+    public SftpTransportMonitor(final SftpFile localFile, String remoteFile, SftpTransportTask task) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
-        this.localSftp = localSftp;
-        this.remoteSftp = remoteSftp;
         this.task = task;
     }
 

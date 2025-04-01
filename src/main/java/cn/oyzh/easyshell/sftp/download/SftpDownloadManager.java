@@ -17,7 +17,7 @@ import java.io.File;
  */
 public class SftpDownloadManager extends SftpManager<SftpDownloadMonitor, SftpDownloadTask> {
 
-    public void createMonitor(File localFile, SftpFile remoteFile, ShellClient client) {
+    public void fileDownload(File localFile, SftpFile remoteFile, ShellClient client) {
         this.tasks.add(new SftpDownloadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doDownload();

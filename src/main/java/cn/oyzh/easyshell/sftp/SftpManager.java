@@ -88,15 +88,15 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
         return this.tasks.size();
     }
 
-    private Runnable taskSizeChangedCallback;
+    private final List<Runnable> taskSizeChangedCallbacks=new ArrayList<>();
 
-    public void setTaskChangedCallback(Runnable taskChangedCallback) {
-        this.taskSizeChangedCallback = taskChangedCallback;
+    public void addTaskSizeChangedCallback(Runnable taskChangedCallback) {
+        this.taskSizeChangedCallbacks.add(taskChangedCallback);
     }
 
     public void taskSizeChanged() {
-        if (this.taskSizeChangedCallback != null) {
-            this.taskSizeChangedCallback.run();
+        for (Runnable taskSizeChangedCallback : this.taskSizeChangedCallbacks) {
+            taskSizeChangedCallback.run();
         }
     }
 

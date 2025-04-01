@@ -5,8 +5,6 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteDeleted;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteEnded;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadMonitor;
@@ -182,16 +180,16 @@ public class ShellSftpTabController extends SubTabController {
         this.uploadManager = this.client().getUploadManager();
         this.downloadManager = this.client().getDownloadManager();
         // 上传
-        this.uploadManager.setTaskChangedCallback(this::uploadTaskSizeChanged);
+        this.uploadManager.addTaskSizeChangedCallback(this::uploadTaskSizeChanged);
         this.uploadManager.setMonitorChangedCallback(this::uploadMonitorChanged);
         this.uploadManager.setTaskStatusChangedCallback(this::uploadStatusChanged);
         // 下载
-        this.downloadManager.setTaskChangedCallback(this::downloadTaskSizeChanged);
+        this.downloadManager.addTaskSizeChangedCallback(this::downloadTaskSizeChanged);
         this.downloadManager.setMonitorChangedCallback(this::downloadMonitorChanged);
         this.downloadManager.setTaskStatusChangedCallback(this::downloadStatusChanged);
         // 删除
-        this.deleteManager.setDeleteEndedCallback(this::deleteEnded);
-        this.deleteManager.setDeleteDeletedCallback(this::deleteDeleted);
+        this.deleteManager.addDeleteEndedCallback(this::deleteEnded);
+        this.deleteManager.addDeleteDeletedCallback(this::deleteDeleted);
         // 显示隐藏文件
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
     }
@@ -323,6 +321,9 @@ public class ShellSftpTabController extends SubTabController {
         }
     }
 
+    /**
+     * 取消上传
+     */
     @FXML
     private void cancelUpload() {
         try {
@@ -333,6 +334,9 @@ public class ShellSftpTabController extends SubTabController {
         }
     }
 
+    /**
+     * 取消下载
+     */
     @FXML
     private void cancelDownload() {
         try {
@@ -440,10 +444,8 @@ public class ShellSftpTabController extends SubTabController {
 
     /**
      * 删除结束事件
-     *
-     * @param ended 事件
      */
-    private void deleteEnded(SftpDeleteEnded ended) {
+    private void deleteEnded() {
         this.deleteBox.disappear();
         this.updateLayout();
     }
@@ -451,15 +453,15 @@ public class ShellSftpTabController extends SubTabController {
     /**
      * 文件已删除事件
      *
-     * @param deleted 事件
+     * @param fileName 文件名
      */
-    private void deleteDeleted(SftpDeleteDeleted deleted) {
+    private void deleteDeleted(String fileName) {
         if (!this.deleteBox.isVisible()) {
             this.deleteBox.display();
             this.updateLayout();
         }
-        this.fileTable.fileDeleted(deleted.getRemoteFile());
-        this.fileDelete.text(I18nHelper.deleteIng() + ": " + deleted.getRemoteFile());
+        this.fileTable.fileDeleted(fileName);
+        this.fileDelete.text(I18nHelper.deleteIng() + ": " + fileName);
     }
 
     /**

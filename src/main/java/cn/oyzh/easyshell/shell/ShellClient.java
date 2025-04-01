@@ -438,7 +438,7 @@ public class ShellClient {
 
     public SftpDeleteManager getDeleteManager() {
         if (this.deleteManager == null) {
-            this.deleteManager = new SftpDeleteManager();
+            this.deleteManager = new SftpDeleteManager(this);
         }
         return deleteManager;
     }
@@ -581,19 +581,19 @@ public class ShellClient {
     }
 
     public void delete(SftpFile file) {
-        this.getDeleteManager().deleteFile(file, this.openSftp());
+        this.getDeleteManager().fileDelete(file);
     }
 
     public void upload(File localFile, String remoteFile) throws SftpException {
-        this.getUploadManager().createMonitor(localFile, remoteFile, this);
+        this.getUploadManager().fileUpload(localFile, remoteFile, this);
     }
 
     public void download(File localFile, SftpFile remoteFile) throws SftpException {
-        this.getDownloadManager().createMonitor(localFile, remoteFile, this);
+        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
     }
 
     public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {
-        this.getTransportManager().createMonitor(localFile, remoteFile, this, remoteClient);
+        this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
     }
 
     /**

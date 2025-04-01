@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.sftp.delete;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.SftpFile;
-import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -12,6 +12,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Vector;
 import java.util.function.Consumer;
@@ -20,56 +22,47 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpDeleteManager {
+public class SftpDeleteManager implements AutoCloseable {
 
-    private final Queue<DeleteFile> files = new ArrayDeque<>();
+    private ShellClient client;
 
-    private Consumer<SftpDeleteEnded> deleteEndedCallback;
-
-    public Consumer<SftpDeleteEnded> getDeleteEndedCallback() {
-        return deleteEndedCallback;
+    public SftpDeleteManager(ShellClient client) {
+        this.client = client;
     }
 
-    public void setDeleteEndedCallback(Consumer<SftpDeleteEnded> deleteEndedCallback) {
-        this.deleteEndedCallback = deleteEndedCallback;
+    private final Queue<SftpFile> files = new ArrayDeque<>();
+
+    private final List<Runnable> deleteEndedCallbacks = new ArrayList<>();
+
+    private final List<Consumer<String>> deleteDeletedCallbacks = new ArrayList<>();
+
+
+    public void addDeleteEndedCallback(Runnable deleteEndedCallback) {
+        this.deleteEndedCallbacks.add(deleteEndedCallback);
     }
 
-    public Consumer<SftpDeleteDeleted> getDeleteDeletedCallback() {
-        return deleteDeletedCallback;
+    public void addDeleteDeletedCallback(Consumer<String> deleteDeletedCallback) {
+        this.deleteDeletedCallbacks.add(deleteDeletedCallback);
     }
 
-    public void setDeleteDeletedCallback(Consumer<SftpDeleteDeleted> deleteDeletedCallback) {
-        this.deleteDeletedCallback = deleteDeletedCallback;
-    }
-
-    private Consumer<SftpDeleteDeleted> deleteDeletedCallback;
-
-    public void deleteFile(SftpFile file, ShellSftp sftp) {
-        this.files.add(new DeleteFile(file, sftp));
+    public void fileDelete(SftpFile file) {
+        this.files.add(file);
         this.doDelete();
     }
 
     public void deleteEnded() {
-        if (this.deleteEndedCallback != null) {
-            SftpDeleteEnded deleteEnded = new SftpDeleteEnded();
-            this.deleteEndedCallback.accept(deleteEnded);
-        }
-    }
-
-    public void deleteDeleted(SftpFile file) {
-        if (this.deleteDeletedCallback != null) {
-            String path = SftpUtil.concat(file.getFilePath(), file.getFileName());
-            SftpDeleteDeleted deleteDeleted = new SftpDeleteDeleted();
-            deleteDeleted.setRemoteFile(path);
-            this.deleteDeletedCallback.accept(deleteDeleted);
+        if (!this.deleteEndedCallbacks.isEmpty()) {
+            for (Runnable deleteEndedCallback : this.deleteEndedCallbacks) {
+                deleteEndedCallback.run();
+            }
         }
     }
 
     public void deleteDeleted(String path) {
-        if (this.deleteDeletedCallback != null) {
-            SftpDeleteDeleted deleteDeleted = new SftpDeleteDeleted();
-            deleteDeleted.setRemoteFile(path);
-            this.deleteDeletedCallback.accept(deleteDeleted);
+        if (!this.deleteDeletedCallbacks.isEmpty()) {
+            for (Consumer<String> deleteDeletedCallback : this.deleteDeletedCallbacks) {
+                deleteDeletedCallback.accept(path);
+            }
         }
     }
 
@@ -84,26 +77,27 @@ public class SftpDeleteManager {
         try {
             this.setDeleting(true);
             while (!this.isEmpty()) {
-                DeleteFile deleteFile = this.files.poll();
+                SftpFile deleteFile = this.files.peek();
                 if (deleteFile == null) {
                     break;
                 }
-                ShellSftp sftp = deleteFile.getSftp();
+                ShellSftp sftp = this.client.openSftp();
                 try {
-                    deleteFile.file.startWaiting();
+                    deleteFile.startWaiting();
                     if (deleteFile.isDir()) {
                         this.rmdirRecursive(deleteFile.getPath(), sftp);
                     } else {
                         this.rm(deleteFile.getPath(), sftp);
                     }
                 } catch (Exception ex) {
-                    if(!ExceptionUtil.hasMessage(ex,"no such file")) {
+                    if (!ExceptionUtil.hasMessage(ex, "no such file")) {
                         ex.printStackTrace();
                         JulLog.warn("file:{} delete failed", deleteFile.getPath(), ex);
                         MessageBox.exception(ex);
                     }
                 } finally {
-                    deleteFile.file.stopWaiting();
+                    deleteFile.stopWaiting();
+                    this.files.remove(deleteFile);
                 }
             }
         } finally {
@@ -153,39 +147,8 @@ public class SftpDeleteManager {
         return this.deletingProperty.get();
     }
 
-    public static class DeleteFile {
-
-        private SftpFile file;
-
-        private ShellSftp sftp;
-
-        public ShellSftp getSftp() {
-            return sftp;
-        }
-
-        public void setSftp(ShellSftp sftp) {
-            this.sftp = sftp;
-        }
-
-        public SftpFile getFile() {
-            return file;
-        }
-
-        public void setFile(SftpFile file) {
-            this.file = file;
-        }
-
-        public String getPath() {
-            return file.getFilePath();
-        }
-
-        public boolean isDir() {
-            return file.isDir();
-        }
-
-        public DeleteFile(SftpFile file, ShellSftp sftp) {
-            this.file = file;
-            this.sftp = sftp;
-        }
+    @Override
+    public void close() throws Exception {
+        this.client = null;
     }
 }

@@ -16,7 +16,7 @@ import java.io.File;
  */
 public class SftpUploadManager extends SftpManager<SftpUploadMonitor, SftpUploadTask> {
 
-    public void createMonitor(File localFile, String remoteFile, ShellClient client) {
+    public void fileUpload(File localFile, String remoteFile, ShellClient client) {
         this.tasks.add(new SftpUploadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doUpload();
