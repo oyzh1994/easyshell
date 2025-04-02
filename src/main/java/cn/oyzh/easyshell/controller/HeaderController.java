@@ -3,6 +3,10 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.gui.event.Layout1Event;
+import cn.oyzh.fx.gui.event.Layout2Event;
+import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -18,6 +22,12 @@ import javafx.stage.WindowEvent;
  * @since 2022/1/26
  */
 public class HeaderController extends StageController {
+
+    /**
+     * 布局组件
+     */
+    @FXML
+    private LayoutSVGPane layoutPane;
 
     /**
      * 设置
@@ -62,20 +72,50 @@ public class HeaderController extends StageController {
     }
 
     /**
-     * 布局1
+     * 布局
      */
     @FXML
-    private void layout1() {
-        ShellEventUtil.layout1();
+    private void layout( ) {
+        if (!this.layoutPane.isLayout1()) {
+            ShellEventUtil.layout2();
+        } else {
+            ShellEventUtil.layout1();
+        }
     }
 
     /**
-     * 布局2
+     * 布局1事件
+     * @param event 事件
      */
-    @FXML
-    private void layout2() {
-        ShellEventUtil.layout2();
+    @EventSubscribe
+    private void layout1(Layout1Event event) {
+        this.layoutPane.layout2();
     }
+
+    /**
+     * 布局2事件
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void layout2(Layout2Event event) {
+        this.layoutPane.layout1();
+    }
+
+//    /**
+//     * 布局1
+//     */
+//    @FXML
+//    private void layout1() {
+//        ShellEventUtil.layout1();
+//    }
+//
+//    /**
+//     * 布局2
+//     */
+//    @FXML
+//    private void layout2() {
+//        ShellEventUtil.layout2();
+//    }
 
     /**
      * 分割面板
@@ -87,7 +127,7 @@ public class HeaderController extends StageController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         if (OSUtil.isWindows() || OSUtil.isLinux()) {
-            this.splitPane.setFlexHeight("100% - 252");
+            this.splitPane.setFlexHeight("100% - 225");
         }
     }
 }
