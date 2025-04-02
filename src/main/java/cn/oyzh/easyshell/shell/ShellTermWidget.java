@@ -14,6 +14,7 @@ import java.util.Arrays;
  */
 public class ShellTermWidget extends DefaultTermWidget {
 
+    @Override
     public TtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
