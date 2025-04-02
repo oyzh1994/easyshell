@@ -19,43 +19,69 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public abstract class SftpTask<M extends SftpMonitor> {
 
-    /**
-     * 执行线程
-     */
-    protected Thread executeThread;
+//    /**
+//     * 执行线程
+//     */
+//    protected Thread executeThread;
 
     /**
      * 传输监听器
      */
     protected final Queue<M> monitors = new ConcurrentLinkedQueue<>();
 
+    /**
+     * 获取监听器
+     *
+     * @return 监听器
+     */
     public M takeMonitor() {
         return this.monitors.peek();
     }
 
+    /**
+     * 移除监听器
+     *
+     * @param monitor 监听器
+     */
     public void remove(M monitor) {
         this.monitors.remove(monitor);
-        this.updateTotal();
+//        this.updateTotal();
     }
 
+    /**
+     * 任务是否为空
+     *
+     * @return 任务是否为空
+     */
     public boolean isEmpty() {
         return this.monitors.isEmpty();
     }
 
+    /**
+     * 任务大小
+     *
+     * @return 任务大小
+     */
     public int size() {
         return this.monitors.size();
     }
 
-    protected String destPath;
-
-    public String getDestPath() {
-        return destPath;
-    }
-
+    /**
+     * 源路径
+     */
     protected String srcPath;
 
     public String getSrcPath() {
         return srcPath;
+    }
+
+    /**
+     * 目标路径
+     */
+    protected String destPath;
+
+    public String getDestPath() {
+        return destPath;
     }
 
     /**
@@ -65,7 +91,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
      */
     public void ended(M monitor) {
         this.monitors.remove(monitor);
-        this.updateTotal();
+//        this.updateTotal();
     }
 
     /**
@@ -76,7 +102,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
      */
     public void failed(M monitor, Throwable exception) {
 //        this.monitors.remove(monitor);
-        this.updateTotal();
+//        this.updateTotal();
     }
 
     /**
@@ -86,7 +112,7 @@ public abstract class SftpTask<M extends SftpMonitor> {
      */
     public void canceled(M monitor) {
         this.monitors.remove(monitor);
-        this.updateTotal();
+//        this.updateTotal();
     }
 
     /**
@@ -95,26 +121,23 @@ public abstract class SftpTask<M extends SftpMonitor> {
      * @param monitor 监听器
      */
     public void changed(M monitor) {
-//        this.updateTotal();
-        this.currentFileProperty.set(monitor.getFilePath());
+//        this.currentFileProperty.set(monitor.getFilePath());
         this.calcCurrentSize();
-        if (this.progress != null) {
-            this.progress.setValue(this.currentSize, this.totalSize);
-        }
-//        this.currentProgressProperty.set(NumberUtil.formatSize(monitor.getCurrent(), 2) + "/" + NumberUtil.formatSize(monitor.getTotal(), 2));
-        JulLog.debug("current file:{}", this.currentFileProperty.get());
-//        JulLog.debug("current progress:{}", this.currentProgressProperty.get());
+//        if (this.progress != null) {
+//            this.progress.setValue(this.currentSize, this.totalSize);
+//        }
+//        JulLog.debug("current file:{}", this.currentFileProperty.get());
     }
 
-    protected FXProgressTextBar progress;
-
-    public FXProgressTextBar getProgress() {
-        if (this.progress == null) {
-            this.progress = new FXProgressTextBar();
-            this.progress.setValue(this.currentSize, this.totalSize);
-        }
-        return progress;
-    }
+//    protected FXProgressTextBar progress;
+//
+//    public FXProgressTextBar getProgress() {
+//        if (this.progress == null) {
+//            this.progress = new FXProgressTextBar();
+//            this.progress.setValue(this.currentSize, this.totalSize);
+//        }
+//        return progress;
+//    }
 
     /**
      * 状态属性
@@ -129,6 +152,9 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return statusProperty.get();
     }
 
+    /**
+     * 速度属性
+     */
     private StringProperty speedProperty;
 
     public StringProperty speedProperty() {
@@ -142,20 +168,25 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return this.speedProperty.get();
     }
 
+//    /**
+//     * 文件大小属性、显示用
+//     */
+//    private StringProperty fileSizeProperty;
+//
+//    public StringProperty fileSizeProperty() {
+//        if (this.fileSizeProperty == null) {
+//            this.fileSizeProperty = new SimpleStringProperty(NumberUtil.formatSize(this.totalSize, 2));
+//        }
+//        return this.fileSizeProperty;
+//    }
+
     /**
-     * 文件大小、显示用
+     * 获取文件大小，显示用
+     * @return 文件大小
      */
-    private StringProperty fileSizeProperty;
-
-    public StringProperty fileSizeProperty() {
-        if (this.fileSizeProperty == null) {
-            this.fileSizeProperty = new SimpleStringProperty(NumberUtil.formatSize(this.totalSize, 2));
-        }
-        return this.fileSizeProperty;
-    }
-
     public String getFileSize() {
-        return this.fileSizeProperty().get();
+//        return this.fileSizeProperty().get();
+        return NumberUtil.formatSize(this.totalSize, 2);
     }
 
     /**
@@ -181,30 +212,30 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return currentSize;
     }
 
-    /**
-     * 总数量属性
-     */
-    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
+//    /**
+//     * 总数量属性
+//     */
+//    private final IntegerProperty totalCountProperty = new SimpleIntegerProperty();
+//
+//    public IntegerProperty totalCountProperty() {
+//        return totalCountProperty;
+//    }
 
-    public IntegerProperty totalCountProperty() {
-        return totalCountProperty;
-    }
-
-    /**
-     * 当前文件属性
-     */
-    private final StringProperty currentFileProperty = new SimpleStringProperty();
-
-    public StringProperty currentFileProperty() {
-        return currentFileProperty;
-    }
+//    /**
+//     * 当前文件属性
+//     */
+//    private final StringProperty currentFileProperty = new SimpleStringProperty();
+//
+//    public StringProperty currentFileProperty() {
+//        return currentFileProperty;
+//    }
 
     /**
      * 取消
      */
     public void cancel() {
-        // 停止线程
-        ThreadUtil.interrupt(this.executeThread);
+//        // 停止线程
+//        ThreadUtil.interrupt(this.executeThread);
         // 取消业务
         for (M monitor : this.monitors) {
             try {
@@ -257,6 +288,9 @@ public abstract class SftpTask<M extends SftpMonitor> {
         return this.isCancelled() || this.isFailed() || this.isFinished() || this.monitors.isEmpty();
     }
 
+    /**
+     * 计算总大小
+     */
     protected void calcTotalSize() {
         long totalSize = 0;
         for (M monitor : this.monitors) {
@@ -266,12 +300,15 @@ public abstract class SftpTask<M extends SftpMonitor> {
         this.totalSize = totalSize;
         // 开始时间
         this.startTime = System.currentTimeMillis();
-        // 文件大小
-        if (this.fileSizeProperty != null) {
-            this.fileSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
-        }
+//        // 文件大小
+//        if (this.fileSizeProperty != null) {
+//            this.fileSizeProperty.set(NumberUtil.formatSize(totalSize, 2));
+//        }
     }
 
+    /**
+     * 计算当前大小
+     */
     protected void calcCurrentSize() {
         long currentSize = 0;
         for (M monitor : this.monitors) {
@@ -286,11 +323,11 @@ public abstract class SftpTask<M extends SftpMonitor> {
         this.speedProperty().set(NumberUtil.formatSize(speed, 2) + "/" + I18nHelper.second());
     }
 
-    /**
-     * 更新总信息
-     */
-    protected void updateTotal() {
-        this.totalCountProperty.set(this.monitors.size());
-        JulLog.debug("total count:{}", this.totalCountProperty.get());
-    }
+//    /**
+//     * 更新总信息
+//     */
+//    protected void updateTotal() {
+//        this.totalCountProperty.set(this.monitors.size());
+//        JulLog.debug("total count:{}", this.totalCountProperty.get());
+//    }
 }

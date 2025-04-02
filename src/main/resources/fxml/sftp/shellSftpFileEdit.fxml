@@ -13,7 +13,7 @@
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" prefWidth="1200" realHeight="650">
     <FXHBox prefHeight="40" flexWidth="100%">
-        <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="30" prefWidth="300">
+        <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="30" prefWidth="300">
             <FXHBox.margin>
                 <Insets left="10" top="5"/>
             </FXHBox.margin>

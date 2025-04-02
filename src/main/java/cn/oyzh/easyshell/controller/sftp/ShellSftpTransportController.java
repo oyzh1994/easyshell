@@ -503,17 +503,17 @@ public class ShellSftpTransportController extends StageController {
         this.sourceTransportManager = this.sourceClient.getTransportManager();
         this.targetTransportManager = this.targetClient.getTransportManager();
         // 注册监听器
-        this.sourceTransportManager.setMonitorChangedCallback(this::sourceTransportMonitorChanged);
-        this.sourceTransportManager.addTaskSizeChangedCallback(this::sourceTransportTaskSizeChanged);
-        this.sourceTransportManager.setTaskStatusChangedCallback(this::sourceTransportStatusChanged);
+        this.sourceTransportManager.addMonitorChangedCallback(this, this::sourceTransportMonitorChanged);
+        this.sourceTransportManager.addTaskSizeChangedCallback(this, this::sourceTransportTaskSizeChanged);
+        this.sourceTransportManager.addTaskStatusChangedCallback(this, this::sourceTransportStatusChanged);
 //        this.sourceTransportManager.setMonitorEndedCallback(e -> {
 //            if (this.sourceTransportManager.isCompleted()) {
 //                this.refreshTargetFile();
 //            }
 //        });
-        this.targetTransportManager.setMonitorChangedCallback(this::targetTransportMonitorChanged);
-        this.targetTransportManager.addTaskSizeChangedCallback(this::targetTransportTaskSizeChanged);
-        this.targetTransportManager.setTaskStatusChangedCallback(this::targetTransportStatusChanged);
+        this.targetTransportManager.addMonitorChangedCallback(this, this::targetTransportMonitorChanged);
+        this.targetTransportManager.addTaskSizeChangedCallback(this, this::targetTransportTaskSizeChanged);
+        this.targetTransportManager.addTaskStatusChangedCallback(this, this::targetTransportStatusChanged);
 //        this.targetTransportManager.setMonitorEndedCallback(e -> {
 //            if (this.targetTransportManager.isCompleted()) {
 //                this.refreshSourceFile();
@@ -523,8 +523,8 @@ public class ShellSftpTransportController extends StageController {
         SftpDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
         SftpDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
         // 注册监听器
-        deleteManager1.addDeleteDeletedCallback(f -> this.sourceFile.fileDeleted(f));
-        deleteManager2.addDeleteDeletedCallback(f -> this.targetFile.fileDeleted(f));
+        deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
+        deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));
         // 初始化文件树
         this.sourceFile.loadFile();
         this.targetFile.loadFile();

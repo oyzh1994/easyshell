@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.sftp.delete;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.function.WeakConsumer;
+import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
@@ -32,17 +34,20 @@ public class SftpDeleteManager implements AutoCloseable {
 
     private final Queue<SftpFile> files = new ArrayDeque<>();
 
-    private final List<Runnable> deleteEndedCallbacks = new ArrayList<>();
+    private final List<WeakRunnable> deleteEndedCallbacks = new ArrayList<>();
 
-    private final List<Consumer<String>> deleteDeletedCallbacks = new ArrayList<>();
+    private final List<WeakConsumer<String>> deleteDeletedCallbacks = new ArrayList<>();
 
-
-    public void addDeleteEndedCallback(Runnable deleteEndedCallback) {
-        this.deleteEndedCallbacks.add(deleteEndedCallback);
+    public void addDeleteEndedCallback(Object obj, Runnable deleteEndedCallback) {
+        if (deleteEndedCallback != null) {
+            this.deleteEndedCallbacks.add(new WeakRunnable(obj, deleteEndedCallback));
+        }
     }
 
-    public void addDeleteDeletedCallback(Consumer<String> deleteDeletedCallback) {
-        this.deleteDeletedCallbacks.add(deleteDeletedCallback);
+    public void addDeleteDeletedCallback(Object obj, Consumer<String> deleteDeletedCallback) {
+        if (deleteDeletedCallback != null) {
+            this.deleteDeletedCallbacks.add(new WeakConsumer<>(obj, deleteDeletedCallback));
+        }
     }
 
     public void fileDelete(SftpFile file) {
@@ -52,16 +57,16 @@ public class SftpDeleteManager implements AutoCloseable {
 
     public void deleteEnded() {
         if (!this.deleteEndedCallbacks.isEmpty()) {
-            for (Runnable deleteEndedCallback : this.deleteEndedCallbacks) {
-                deleteEndedCallback.run();
+            for (WeakRunnable action : this.deleteEndedCallbacks) {
+                action.run();
             }
         }
     }
 
     public void deleteDeleted(String path) {
         if (!this.deleteDeletedCallbacks.isEmpty()) {
-            for (Consumer<String> deleteDeletedCallback : this.deleteDeletedCallbacks) {
-                deleteDeletedCallback.accept(path);
+            for (WeakConsumer<String> consumer : this.deleteDeletedCallbacks) {
+                consumer.accept(path);
             }
         }
     }
@@ -150,5 +155,7 @@ public class SftpDeleteManager implements AutoCloseable {
     @Override
     public void close() throws Exception {
         this.client = null;
+        this.deleteEndedCallbacks.clear();
+        this.deleteDeletedCallbacks.clear();
     }
 }

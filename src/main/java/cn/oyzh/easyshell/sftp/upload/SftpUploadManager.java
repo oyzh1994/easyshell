@@ -28,15 +28,15 @@ public class SftpUploadManager extends SftpManager<SftpUploadMonitor, SftpUpload
         return this.uploadingProperty;
     }
 
-    public void updateUploading() {
-        for (SftpUploadTask task : this.tasks) {
-            if (task.isUploading() || task.isInPreparation()) {
-                this.uploadingProperty.set(true);
-                return;
-            }
-        }
-        this.uploadingProperty.set(false);
-    }
+//    public void updateUploading() {
+//        for (SftpUploadTask task : this.tasks) {
+//            if (task.isUploading() || task.isInPreparation()) {
+//                this.uploadingProperty.set(true);
+//                return;
+//            }
+//        }
+//        this.uploadingProperty.set(false);
+//    }
 
     public boolean isUploading() {
         return this.uploadingProperty.get();

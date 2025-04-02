@@ -291,6 +291,22 @@ public class ShellClient {
                 this.sftpManager.close();
                 this.sftpManager = null;
             }
+            if (this.deleteManager != null) {
+                this.deleteManager.close();
+                this.deleteManager = null;
+            }
+            if (this.uploadManager != null) {
+                this.uploadManager.close();
+                this.uploadManager = null;
+            }
+            if (this.transportManager != null) {
+                this.transportManager.close();
+                this.transportManager = null;
+            }
+            if (this.downloadManager != null) {
+                this.downloadManager.close();
+                this.downloadManager = null;
+            }
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;

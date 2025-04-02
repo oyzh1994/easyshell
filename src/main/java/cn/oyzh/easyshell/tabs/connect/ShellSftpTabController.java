@@ -180,16 +180,16 @@ public class ShellSftpTabController extends SubTabController {
         this.uploadManager = this.client().getUploadManager();
         this.downloadManager = this.client().getDownloadManager();
         // 上传
-        this.uploadManager.addTaskSizeChangedCallback(this::uploadTaskSizeChanged);
-        this.uploadManager.setMonitorChangedCallback(this::uploadMonitorChanged);
-        this.uploadManager.setTaskStatusChangedCallback(this::uploadStatusChanged);
+        this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
+        this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
+        this.uploadManager.addTaskStatusChangedCallback(this, this::uploadStatusChanged);
         // 下载
-        this.downloadManager.addTaskSizeChangedCallback(this::downloadTaskSizeChanged);
-        this.downloadManager.setMonitorChangedCallback(this::downloadMonitorChanged);
-        this.downloadManager.setTaskStatusChangedCallback(this::downloadStatusChanged);
+        this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
+        this.downloadManager.addMonitorChangedCallback(this, this::downloadMonitorChanged);
+        this.downloadManager.addTaskStatusChangedCallback(this, this::downloadStatusChanged);
         // 删除
-        this.deleteManager.addDeleteEndedCallback(this::deleteEnded);
-        this.deleteManager.addDeleteDeletedCallback(this::deleteDeleted);
+        this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
+        this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
         // 显示隐藏文件
         this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
     }

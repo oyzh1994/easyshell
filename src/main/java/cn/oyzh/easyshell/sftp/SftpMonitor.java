@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.sftp;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import com.jcraft.jsch.SftpProgressMonitor;
 
 /**

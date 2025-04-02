@@ -101,12 +101,12 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
             this.addMonitorRecursive(localFile, remoteFile);
             this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
             this.calcTotalSize();
-            this.updateTotal();
+//            this.updateTotal();
             this.doDownload();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            this.updateTotal();
+//            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
                 this.updateStatus(SftpDownloadStatus.FINISHED);
@@ -148,7 +148,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
                 }
             }
         } else {// 文件
-            this.updateTotal();
+//            this.updateTotal();
             this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this));
         }
     }
@@ -188,14 +188,14 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
         }
     }
 
-    @Override
-    protected void updateTotal() {
-//        if (this.monitors.isEmpty() && !this.isInPreparation()) {
-//            this.updateStatus(SftpDownloadStatus.FINISHED);
-//        }
-        super.updateTotal();
-        this.manager.updateDownloading();
-    }
+//    @Override
+//    protected void updateTotal() {
+////        if (this.monitors.isEmpty() && !this.isInPreparation()) {
+////            this.updateStatus(SftpDownloadStatus.FINISHED);
+////        }
+//        super.updateTotal();
+//        this.manager.updateDownloading();
+//    }
 
     @Override
     public void cancel() {
@@ -249,7 +249,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     @Override
     public void ended(SftpDownloadMonitor monitor) {
         super.ended(monitor);
-        this.manager.monitorEnded(monitor);
+        this.manager.monitorEnded(monitor, this);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
             this.updateStatus(SftpDownloadStatus.FINISHED);
@@ -265,7 +265,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     @Override
     public void canceled(SftpDownloadMonitor monitor) {
         super.canceled(monitor);
-        this.manager.monitorCanceled(monitor);
+        this.manager.monitorCanceled(monitor, this);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
         }

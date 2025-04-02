@@ -29,15 +29,15 @@ public class SftpDownloadManager extends SftpManager<SftpDownloadMonitor, SftpDo
         return this.downloadingProperty;
     }
 
-    public void updateDownloading() {
-        for (SftpDownloadTask task : this.tasks) {
-            if (task.isDownloading() || task.isInPreparation()) {
-                this.downloadingProperty.set(true);
-                return;
-            }
-        }
-        this.downloadingProperty.set(false);
-    }
+//    public void updateDownloading() {
+//        for (SftpDownloadTask task : this.tasks) {
+//            if (task.isDownloading() || task.isInPreparation()) {
+//                this.downloadingProperty.set(true);
+//                return;
+//            }
+//        }
+//        this.downloadingProperty.set(false);
+//    }
 
     public boolean isDownloading() {
         return this.downloadingProperty.get();

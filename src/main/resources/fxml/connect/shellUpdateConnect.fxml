@@ -172,7 +172,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHBox groupId="background">
+                <FXHBox groupId="background" disable="true">
                     <ClearableTextField realHeight="30" flexWidth="100% - 180"  fx:id="backgroundImage"
                                      tipText="%base.contentTip1">
                         <HBox.margin>

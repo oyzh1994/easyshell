@@ -25,8 +25,9 @@ import cn.oyzh.fx.rich.richtextfx.data.RichDataType;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
-import com.sun.javafx.reflect.FieldUtil;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
@@ -101,7 +102,7 @@ public class ShellSftpFileEditController extends StageController {
     private void save() {
         StageManager.showMask(() -> {
             try {
-                String content = data.getText();
+                String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
                 ShellSftp sftp = this.client.openSftp();
                 sftp.put(new FileInputStream(this.destPath), file.getFilePath());
@@ -144,6 +145,11 @@ public class ShellSftpFileEditController extends StageController {
         });
     }
 
+    /**
+     * 获取数据
+     *
+     * @return 数据
+     */
     private String getData() {
         byte[] content = FileUtil.readBytes(this.destPath);
         if (content != null) {
@@ -243,6 +249,18 @@ public class ShellSftpFileEditController extends StageController {
             this.data.selectRangeAndGoto(index, index + filterText.length());
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 过滤内容回车事件
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void onFilterKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            this.searchNext();
         }
     }
 }

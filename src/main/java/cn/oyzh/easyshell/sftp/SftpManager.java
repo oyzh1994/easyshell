@@ -1,18 +1,19 @@
 package cn.oyzh.easyshell.sftp;
 
+import cn.oyzh.common.function.WeakBiConsumer;
+import cn.oyzh.common.function.WeakRunnable;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * @author oyzh
  * @since 2025-03-21
  */
-public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
+public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> implements AutoCloseable {
 
     /**
      * 任务列表
@@ -88,75 +89,87 @@ public class SftpManager<M extends SftpMonitor, T extends SftpTask<M>> {
         return this.tasks.size();
     }
 
-    private final List<Runnable> taskSizeChangedCallbacks=new ArrayList<>();
+    private final List<WeakRunnable> taskSizeChangedCallbacks = new ArrayList<>();
 
-    public void addTaskSizeChangedCallback(Runnable taskChangedCallback) {
-        this.taskSizeChangedCallbacks.add(taskChangedCallback);
+    public void addTaskSizeChangedCallback(Object obj, Runnable taskChangedCallback) {
+        if (taskChangedCallback != null) {
+            this.taskSizeChangedCallbacks.add(new WeakRunnable(obj, taskChangedCallback));
+        }
     }
 
     public void taskSizeChanged() {
-        for (Runnable taskSizeChangedCallback : this.taskSizeChangedCallbacks) {
-            taskSizeChangedCallback.run();
+        for (WeakRunnable runnable : this.taskSizeChangedCallbacks) {
+            runnable.run();
         }
     }
 
-    private BiConsumer<String, T> taskStatusChangedCallback;
+    private final List<WeakBiConsumer<String, T>> taskStatusChangedCallbacks = new ArrayList<>();
 
     public void taskStatusChanged(String status, T task) {
-        if (this.taskStatusChangedCallback != null) {
-            this.taskStatusChangedCallback.accept(status, task);
+        for (WeakBiConsumer<String, T> consumer : this.taskStatusChangedCallbacks) {
+            consumer.accept(status, task);
         }
     }
 
-    public void setTaskStatusChangedCallback(BiConsumer<String, T> taskStatusChangedCallback) {
-        this.taskStatusChangedCallback = taskStatusChangedCallback;
+    public void addTaskStatusChangedCallback(Object obj, BiConsumer<String, T> taskStatusChangedCallback) {
+        this.taskStatusChangedCallbacks.add(new WeakBiConsumer<>(obj, taskStatusChangedCallback));
     }
 
-    private BiConsumer<M, T> monitorChangedCallback;
+    private final List<WeakBiConsumer<M, T>> monitorChangedCallbacks = new ArrayList<>();
 
-    public void setMonitorChangedCallback(BiConsumer<M, T> monitorChangedCallback) {
-        this.monitorChangedCallback = monitorChangedCallback;
+    public void addMonitorChangedCallback(Object obj, BiConsumer<M, T> monitorChangedCallback) {
+        this.monitorChangedCallbacks.add(new WeakBiConsumer<>(obj, monitorChangedCallback));
     }
 
     public void monitorChanged(M monitor, T task) {
-        if (this.monitorChangedCallback != null) {
-            this.monitorChangedCallback.accept(monitor, task);
+        for (WeakBiConsumer<M, T> consumer : this.monitorChangedCallbacks) {
+            consumer.accept(monitor, task);
         }
     }
 
-    private Consumer<M> monitorCanceledCallback;
+    private final List<WeakBiConsumer<M, T>> monitorCanceledCallbacks = new ArrayList<>();
 
-    public void setMonitorCanceledCallback(Consumer<M> monitorCanceledCallback) {
-        this.monitorCanceledCallback = monitorCanceledCallback;
+    public void addMonitorCanceledCallback(Object obj, BiConsumer<M, T> monitorCanceledCallback) {
+        this.monitorCanceledCallbacks.add(new WeakBiConsumer<>(obj, monitorCanceledCallback));
     }
 
-    public void monitorCanceled(M monitor) {
-        if (this.monitorCanceledCallback != null) {
-            this.monitorCanceledCallback.accept(monitor);
+    public void monitorCanceled(M monitor, T task) {
+        for (WeakBiConsumer<M, T> consumer : this.monitorCanceledCallbacks) {
+            consumer.accept(monitor, task);
         }
     }
 
-    private Consumer<M> monitorEndedCallback;
+    private final List<WeakBiConsumer<M, T>> monitorEndedCallbacks = new ArrayList<>();
 
-    public void setMonitorEndedCallback(Consumer<M> monitorEndedCallback) {
-        this.monitorEndedCallback = monitorEndedCallback;
+    public void addMonitorEndedCallback(Object obj, BiConsumer<M, T> monitorEndedCallback) {
+        this.monitorEndedCallbacks.add(new WeakBiConsumer<>(obj, monitorEndedCallback));
     }
 
-    public void monitorEnded(M monitor) {
-        if (this.monitorEndedCallback != null) {
-            this.monitorEndedCallback.accept(monitor);
+    public void monitorEnded(M monitor, T task) {
+        for (WeakBiConsumer<M, T> consumer : this.monitorEndedCallbacks) {
+            consumer.accept(monitor, task);
         }
     }
 
-    private BiConsumer<M, Throwable> monitorFailedCallback;
+    private final List<WeakBiConsumer<M, Throwable>> monitorFailedCallbacks = new ArrayList<>();
 
-    public void setMonitorFailedCallback(BiConsumer<M, Throwable> monitorFailedCallback) {
-        this.monitorFailedCallback = monitorFailedCallback;
+    public void addMonitorFailedCallback(Object obj, BiConsumer<M, Throwable> monitorFailedCallback) {
+        this.monitorFailedCallbacks.add(new WeakBiConsumer<>(obj, monitorFailedCallback));
     }
 
     public void monitorFailed(M monitor, Throwable ex) {
-        if (this.monitorFailedCallback != null) {
-            this.monitorFailedCallback.accept(monitor, ex);
+        for (WeakBiConsumer<M, Throwable> consumer : this.monitorFailedCallbacks) {
+            consumer.accept(monitor, ex);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.tasks.clear();
+        this.monitorEndedCallbacks.clear();
+        this.monitorFailedCallbacks.clear();
+        this.monitorChangedCallbacks.clear();
+        this.monitorCanceledCallbacks.clear();
+        this.taskStatusChangedCallbacks.clear();
     }
 }

@@ -101,12 +101,12 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
             this.addMonitorRecursive(localFile, remoteFile);
             this.updateStatus(SftpTransportStatus.TRANSPORT_ING);
             this.calcTotalSize();
-            this.updateTotal();
+//            this.updateTotal();
             this.doTransport();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            this.updateTotal();
+//            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
                 this.updateStatus(SftpTransportStatus.FINISHED);
@@ -150,7 +150,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
                 }
             }
         } else {// 文件
-            this.updateTotal();
+//            this.updateTotal();
             this.monitors.add(new SftpTransportMonitor(localFile, remoteFile, this));
         }
     }
@@ -248,7 +248,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     @Override
     public void ended(SftpTransportMonitor monitor) {
         super.ended(monitor);
-        this.manager.monitorEnded(monitor);
+        this.manager.monitorEnded(monitor, this);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
             this.updateStatus(SftpTransportStatus.FINISHED);
@@ -264,7 +264,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
     @Override
     public void canceled(SftpTransportMonitor monitor) {
         super.canceled(monitor);
-        this.manager.monitorCanceled(monitor);
+        this.manager.monitorCanceled(monitor, this);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
         }
