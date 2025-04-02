@@ -11,7 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.OpenTerminalButton?>
+<?import cn.oyzh.fx.gui.button.LocalTerminalButton?>
 <FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
@@ -42,11 +42,11 @@
                 <Insets left="20"/>
             </HBox.margin>
         </AddGroupButton>
-        <OpenTerminalButton onMousePrimaryClicked="#openTerminal">
+        <LocalTerminalButton onMousePrimaryClicked="#openTerminal">
             <HBox.margin>
                 <Insets left="20"/>
             </HBox.margin>
-        </OpenTerminalButton>
+        </LocalTerminalButton>
         <ChangelogButton onMousePrimaryClicked="#changelog">
             <HBox.margin>
                 <Insets left="20"/>
