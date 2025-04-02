@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -61,7 +62,7 @@ public class ShellUpdateConnectController extends StageController {
      * 密码
      */
     @FXML
-    private ClearableTextField password;
+    private PasswordTextField password;
 
     /**
      * 证书
@@ -174,7 +175,7 @@ public class ShellUpdateConnectController extends StageController {
      * ssh主机密码
      */
     @FXML
-    private ClearableTextField sshPassword;
+    private PasswordTextField sshPassword;
 
     /**
      * ssh认证方式
@@ -260,7 +261,7 @@ public class ShellUpdateConnectController extends StageController {
         sshConfig.setHost(this.sshHost.getText());
         sshConfig.setUser(this.sshUser.getText());
         sshConfig.setPort(this.sshPort.getIntValue());
-        sshConfig.setPassword(this.sshPassword.getText());
+        sshConfig.setPassword(this.sshPassword.getPassword());
         sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
         sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
         sshConfig.setCertificatePath(this.sshCertificate.getText());
@@ -297,7 +298,7 @@ public class ShellUpdateConnectController extends StageController {
             shellConnect.setId(this.shellConnect.getId());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
-            shellConnect.setPassword(this.password.getTextTrim());
+            shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificatePath(this.certificate.getTextTrim());
             // ssh转发
@@ -323,7 +324,7 @@ public class ShellUpdateConnectController extends StageController {
             this.userName.requestFocus();
             return;
         }
-        String password = this.password.getTextTrim();
+        String password = this.password.getPassword();
         if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
             this.password.requestFocus();
             return;

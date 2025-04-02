@@ -25,6 +25,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -62,7 +63,7 @@ public class ShellAddConnectController extends StageController {
      * 密码
      */
     @FXML
-    private ClearableTextField password;
+    private PasswordTextField password;
 
     /**
      * 证书
@@ -170,7 +171,7 @@ public class ShellAddConnectController extends StageController {
      * ssh主机密码
      */
     @FXML
-    private ClearableTextField sshPassword;
+    private PasswordTextField sshPassword;
 
     /**
      * ssh认证方式
@@ -225,11 +226,6 @@ public class ShellAddConnectController extends StageController {
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
-     * x11配置存储对象
-     */
-    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
-
-    /**
      * 获取连接地址
      *
      * @return 连接地址
@@ -260,7 +256,7 @@ public class ShellAddConnectController extends StageController {
         sshConfig.setHost(this.sshHost.getText());
         sshConfig.setUser(this.sshUser.getText());
         sshConfig.setPort(this.sshPort.getIntValue());
-        sshConfig.setPassword(this.sshPassword.getText());
+        sshConfig.setPassword(this.sshPassword.getPassword());
         sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
         sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
         sshConfig.setCertificatePath(this.sshCertificate.getText());
@@ -295,7 +291,7 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setConnectTimeOut(3);
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
-            shellConnect.setPassword(this.password.getTextTrim());
+            shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificatePath(this.certificate.getTextTrim());
             // ssh转发
@@ -321,7 +317,7 @@ public class ShellAddConnectController extends StageController {
             this.userName.requestFocus();
             return;
         }
-        String password = this.password.getTextTrim();
+        String password = this.password.getPassword();
         if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
             this.password.requestFocus();
             return;
@@ -494,7 +490,7 @@ public class ShellAddConnectController extends StageController {
      */
     @FXML
     private void chooseBackgroundImage() {
-//        SwingFileChooser chooser = new SwingFileChooser();
+        //        SwingFileChooser chooser = new SwingFileChooser();
 //        chooser.setFileFilter(new FileFilter() {
 //            @Override
 //            public boolean accept(File f) {

@@ -23,6 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="480">
@@ -62,13 +63,13 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </SSHAuthMethodCombobox>
-                    <ClearableTextField fx:id="password" tipText="%base.passwordTip" require="true"
-                                        realHeight="30"
-                                        flexWidth="100% - 340" maxLen="1024">
+                    <PasswordTextField fx:id="password" tipText="%base.passwordTip" require="true"
+                                       realHeight="30"
+                                       flexWidth="100% - 340">
                         <FXHBox.margin>
                             <Insets left="10" top="5"/>
                         </FXHBox.margin>
-                    </ClearableTextField>
+                    </PasswordTextField>
                     <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="certificate"
                                        fx:id="certificate" flexWidth="100% - 340">
                         <HBox.margin>
@@ -259,12 +260,12 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </SSHAuthMethodCombobox>
-                    <ClearableTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
+                    <PasswordTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
                                         flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
-                    </ClearableTextField>
+                    </PasswordTextField>
                     <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="sshCertificate"
                                        fx:id="sshCertificate" flexWidth="100% - 340">
                         <HBox.margin>
