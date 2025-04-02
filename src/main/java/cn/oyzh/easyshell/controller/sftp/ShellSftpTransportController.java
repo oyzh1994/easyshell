@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -146,17 +147,29 @@ public class ShellSftpTransportController extends StageController {
     @FXML
     private ClearableTextField filterTargetFile;
 
+//    /**
+//     * 隐藏来源文件
+//     */
+//    @FXML
+//    private FXToggleSwitch hiddenSourceFile;
+//
+//    /**
+//     * 隐藏目标文件
+//     */
+//    @FXML
+//    private FXToggleSwitch hiddenTargetFile;
+
     /**
      * 隐藏来源文件
      */
     @FXML
-    private FXToggleSwitch hiddenSourceFile;
+    private HiddenSVGPane hiddenSourcePane;
 
     /**
      * 隐藏目标文件
      */
     @FXML
-    private FXToggleSwitch hiddenTargetFile;
+    private HiddenSVGPane hiddenTargetPane;
 
     /**
      * 文件组件盒子
@@ -358,17 +371,17 @@ public class ShellSftpTransportController extends StageController {
 //                this.targetCharsetName.clear();
 //            }
 //        });
-        // 隐藏文件处理
-        this.hiddenSourceFile.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.sourceFile.setShowHiddenFile(newValue);
-            }
-        });
-        this.hiddenTargetFile.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.targetFile.setShowHiddenFile(newValue);
-            }
-        });
+//        // 隐藏文件处理
+//        this.hiddenSourceFile.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                this.sourceFile.setShowHiddenFile(newValue);
+//            }
+//        });
+//        this.hiddenTargetFile.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                this.targetFile.setShowHiddenFile(newValue);
+//            }
+//        });
         // 过滤内容处理
         this.filterSourceFile.addTextChangeListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -616,7 +629,7 @@ public class ShellSftpTransportController extends StageController {
     private void sourceTransportMonitorChanged(SftpTransportMonitor monitor, SftpTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
-        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+//        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
         builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
         builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
         builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
@@ -664,7 +677,7 @@ public class ShellSftpTransportController extends StageController {
     private void targetTransportMonitorChanged(SftpTransportMonitor monitor, SftpTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
-        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+//        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
         builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
         builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
         builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
@@ -702,4 +715,35 @@ public class ShellSftpTransportController extends StageController {
         this.fileBox.parentAutosize();
     }
 
+    /**
+     * 隐藏来源文件
+     */
+    @FXML
+    private void hiddenSourceFile() {
+        if (!this.hiddenSourcePane.isHidden()) {
+            this.hiddenSourcePane.hidden();
+            this.sourceFile.setShowHiddenFile(false);
+            this.hiddenSourcePane.setTipText(I18nHelper.showHiddenFiles());
+        } else {
+            this.hiddenSourcePane.show();
+            this.sourceFile.setShowHiddenFile(true);
+            this.hiddenSourcePane.setTipText(I18nHelper.doNotShowHiddenFiles());
+        }
+    }
+
+    /**
+     * 隐藏来源文件
+     */
+    @FXML
+    private void hiddenTargetFile() {
+        if (!this.hiddenTargetPane.isHidden()) {
+            this.hiddenTargetPane.hidden();
+            this.targetFile.setShowHiddenFile(false);
+            this.hiddenTargetPane.setTipText(I18nHelper.showHiddenFiles());
+        } else {
+            this.hiddenTargetPane.show();
+            this.targetFile.setShowHiddenFile(true);
+            this.hiddenTargetPane.setTipText(I18nHelper.doNotShowHiddenFiles());
+        }
+    }
 }

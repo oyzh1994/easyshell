@@ -20,6 +20,8 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.pane.CollectSVGPane?>
+<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellSftpTabController"
        text="%base.file" fx:id="root">
@@ -75,12 +77,17 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"
-                            unselectedText="%base.doNotShowHiddenFiles">
-                <FXHBox.margin>
-                    <Insets left="5" top="8"/>
-                </FXHBox.margin>
-            </FXToggleSwitch>
+<!--            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"-->
+<!--                            unselectedText="%base.doNotShowHiddenFiles">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="8"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FXToggleSwitch>-->
+            <HiddenSVGPane fx:id="hiddenPane" size="16,14" onMousePrimaryClicked="#hiddenFile">
+                <HBox.margin>
+                    <Insets left="5" top="11"/>
+                </HBox.margin>
+            </HiddenSVGPane>
             <!--            <UploadBoxSVGGlyph sizeStr="15" fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox"-->
             <!--                               tipText="%shell.file.tip10">-->
             <!--                <FXHBox.margin>-->

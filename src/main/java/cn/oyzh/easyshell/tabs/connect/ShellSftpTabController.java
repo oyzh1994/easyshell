@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
 import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -95,11 +96,17 @@ public class ShellSftpTabController extends SubTabController {
 //    @FXML
 //    private SVGGlyph sftpBox;
 
+//    /**
+//     * 隐藏文件
+//     */
+//    @FXML
+//    private FXToggleSwitch hiddenFile;
+
     /**
      * 隐藏文件
      */
     @FXML
-    private FXToggleSwitch hiddenFile;
+    private HiddenSVGPane hiddenPane;
 
     /**
      * 文件表格
@@ -191,7 +198,7 @@ public class ShellSftpTabController extends SubTabController {
         this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
         this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
         // 显示隐藏文件
-        this.fileTable.setShowHiddenFile(this.setting.isShowHiddenFile());
+        this.hiddenFile(this.setting.isShowHiddenFile());
     }
 
     @Override
@@ -222,17 +229,17 @@ public class ShellSftpTabController extends SubTabController {
                     this.location.text(t1);
                 }
             });
-            // 隐藏文件
-            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
-            this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
-                try {
-                    this.fileTable.setShowHiddenFile(t1);
-                    this.setting.setShowHiddenFile(t1);
-                    this.settingStore.update(this.setting);
-                } catch (Exception ex) {
-                    MessageBox.exception(ex);
-                }
-            });
+//            // 隐藏文件
+//            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
+//            this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
+//                try {
+//                    this.fileTable.setShowHiddenFile(t1);
+//                    this.setting.setShowHiddenFile(t1);
+//                    this.settingStore.update(this.setting);
+//                } catch (Exception ex) {
+//                    MessageBox.exception(ex);
+//                }
+//            });
             // 文件过滤
             this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
                 try {
@@ -372,7 +379,7 @@ public class ShellSftpTabController extends SubTabController {
     private void downloadMonitorChanged(SftpDownloadMonitor monitor, SftpDownloadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
-        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+//        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
         builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
         builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
         builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
@@ -419,7 +426,7 @@ public class ShellSftpTabController extends SubTabController {
     private void uploadMonitorChanged(SftpUploadMonitor monitor, SftpUploadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
-        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+//        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
         builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
         builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
         builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
@@ -496,9 +503,42 @@ public class ShellSftpTabController extends SubTabController {
 //        adapter.display();
 //    }
 
+    /**
+     * 文件保存事件
+     *
+     * @param event 事件
+     */
     @EventSubscribe
     private void onFileSaved(ShellSftpFileSavedEvent event) {
         this.fileTable.refresh();
+    }
+
+    /**
+     * 隐藏文件
+     */
+    @FXML
+    private void hiddenFile() {
+        this.hiddenFile(!this.hiddenPane.isHidden());
+    }
+
+    /**
+     * 隐藏文件
+     *
+     * @param hidden 是否隐藏
+     */
+    private void hiddenFile(boolean hidden) {
+        if (hidden) {
+            this.hiddenPane.hidden();
+            this.setting.setShowHiddenFile(false);
+            this.fileTable.setShowHiddenFile(false);
+            this.hiddenPane.setTipText(I18nHelper.showHiddenFiles());
+        } else {
+            this.hiddenPane.show();
+            this.setting.setShowHiddenFile(true);
+            this.fileTable.setShowHiddenFile(true);
+            this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
+        }
+        this.settingStore.update(this.setting);
     }
 
 //    @FXML

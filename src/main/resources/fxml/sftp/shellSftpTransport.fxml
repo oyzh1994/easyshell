@@ -19,6 +19,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1400"
         realHeight="750">
@@ -186,18 +187,23 @@
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterSourceFile"
-                                            tipText="%base.searchKWTip">
+                                            tipText="%base.searchKWTip" prefWidth="300">
                             <FXHBox.margin>
                                 <Insets left="5"/>
                             </FXHBox.margin>
                         </ClearableTextField>
-                        <FXToggleSwitch realHeight="30" fx:id="hiddenSourceFile"
-                                        selectedText="%base.showHiddenFiles"
-                                        unselectedText="%base.doNotShowHiddenFiles">
-                            <FXHBox.margin>
-                                <Insets left="5"/>
-                            </FXHBox.margin>
-                        </FXToggleSwitch>
+                        <HiddenSVGPane fx:id="hiddenSourcePane" size="16,14" onMousePrimaryClicked="#hiddenSourceFile">
+                            <HBox.margin>
+                                <Insets left="5" top="8"/>
+                            </HBox.margin>
+                        </HiddenSVGPane>
+<!--                        <FXToggleSwitch realHeight="30" fx:id="hiddenSourceFile"-->
+<!--                                        selectedText="%base.showHiddenFiles"-->
+<!--                                        unselectedText="%base.doNotShowHiddenFiles">-->
+<!--                            <FXHBox.margin>-->
+<!--                                <Insets left="5"/>-->
+<!--                            </FXHBox.margin>-->
+<!--                        </FXToggleSwitch>-->
                         <RefreshSVGGlyph sizeStr="16" onMousePrimaryClicked="#refreshSourceFile">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
@@ -237,18 +243,23 @@
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterTargetFile"
-                                            tipText="%base.searchKWTip">
+                                            tipText="%base.searchKWTip" prefWidth="300">
                             <FXHBox.margin>
                                 <Insets left="5"/>
                             </FXHBox.margin>
                         </ClearableTextField>
-                        <FXToggleSwitch realHeight="30" fx:id="hiddenTargetFile"
-                                        selectedText="%base.showHiddenFiles"
-                                        unselectedText="%base.doNotShowHiddenFiles">
-                            <FXHBox.margin>
-                                <Insets left="5"/>
-                            </FXHBox.margin>
-                        </FXToggleSwitch>
+<!--                        <FXToggleSwitch realHeight="30" fx:id="hiddenTargetFile"-->
+<!--                                        selectedText="%base.showHiddenFiles"-->
+<!--                                        unselectedText="%base.doNotShowHiddenFiles">-->
+<!--                            <FXHBox.margin>-->
+<!--                                <Insets left="5"/>-->
+<!--                            </FXHBox.margin>-->
+<!--                        </FXToggleSwitch>-->
+                        <HiddenSVGPane fx:id="hiddenTargetPane" size="16,14" onMousePrimaryClicked="#hiddenTargetFile">
+                            <HBox.margin>
+                                <Insets left="5" top="8"/>
+                            </HBox.margin>
+                        </HiddenSVGPane>
                         <RefreshSVGGlyph sizeStr="16" fx:id="refreshTargetFile"
                                          onMousePrimaryClicked="#refreshTargetFile">
                             <FXHBox.margin>
