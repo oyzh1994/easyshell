@@ -349,8 +349,8 @@ public class ShellClient {
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
                 ShellClientChecker.push(this);
-                // 初始化环境
-                this.initEnvironment();
+//                // 初始化环境
+//                this.initEnvironment();
             } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
@@ -562,6 +562,10 @@ public class ShellClient {
      */
     public String getExportPath() {
         StringBuilder builder = new StringBuilder();
+        // 初始化环境
+        if (this.environment.isEmpty()) {
+            this.initEnvironment();
+        }
         if (this.isWindows()) {
             for (String string : this.environment) {
                 builder.append(string).append(";");
@@ -617,6 +621,9 @@ public class ShellClient {
      */
     private final List<String> environment = new ArrayList<>();
 
+    /**
+     * 初始化环境
+     */
     private void initEnvironment() {
         if (this.isWindows()) {
             this.environment.add("C:/Windows/System");
