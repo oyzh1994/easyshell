@@ -35,6 +35,24 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean showHiddenFile;
 
+    /**
+     * 连接后收起左侧
+     */
+    @Column
+    private Boolean hiddenLeftAfterConnected;
+
+    public boolean isHiddenLeftAfterConnected() {
+        return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
+    }
+
+    public Boolean getHiddenLeftAfterConnected() {
+        return hiddenLeftAfterConnected;
+    }
+
+    public void setHiddenLeftAfterConnected(Boolean hiddenLeftAfterConnected) {
+        this.hiddenLeftAfterConnected = hiddenLeftAfterConnected;
+    }
+
     @Override
     public void copy(Object o) {
         super.copy(o);

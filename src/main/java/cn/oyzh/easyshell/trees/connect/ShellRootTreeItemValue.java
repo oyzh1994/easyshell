@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.trees.connect;
 import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * shell树节点值
@@ -14,7 +15,7 @@ public class ShellRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String name() {
-        return "SSH";
+        return I18nHelper.hostList();
     }
 
     @Override

@@ -169,11 +169,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      * 编辑连接
      */
     private void editConnect() {
-        if (!MessageBox.confirm(I18nHelper.closeAndContinue())) {
-            return;
-        }
-        // 关闭所有连接
-        ShellEventUtil.connectEdit(this.value);
+//        if (!MessageBox.confirm(I18nHelper.closeAndContinue())) {
+//            return;
+//        }
+//        // 关闭所有连接
+//        ShellEventUtil.connectEdit(this.value);
         StageAdapter fxView = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
         fxView.setProp("shellConnect", this.value());
         fxView.display();

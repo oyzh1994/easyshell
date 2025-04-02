@@ -24,6 +24,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="450">
     <left>
@@ -34,9 +35,19 @@
         <FXVBox flexWidth="100%" flexHeight="100% - 110">
             <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
-                <InfoLabel text="%shell.connect.tip4">
+                <InfoLabel text="%shell.connect.tip8">
                     <VBox.margin>
                         <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXToggleSwitch fx:id="hiddenLeftAfterConnected">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXToggleSwitch>
+                <InfoLabel text="%shell.connect.tip4">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
@@ -53,7 +64,7 @@
                 </FXHBox>
                 <InfoLabel text="%shell.connect.tip2" groupId="x11">
                     <VBox.margin>
-                        <Insets left="30"/>
+                        <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox groupId="x11">

@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.picker.FXColorPicker;
 import cn.oyzh.fx.plus.controls.text.FXSlider;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.fx.plus.font.FontFamilyComboBox;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -234,6 +235,12 @@ public class SettingController extends StageController {
     private ShellTerminalTypeComboBox terminalType;
 
     /**
+     * 连接后收起左侧
+     */
+    @FXML
+    private FXToggleSwitch hiddenLeftAfterConnected;
+
+    /**
      * 配置对象
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -298,6 +305,8 @@ public class SettingController extends StageController {
         } else {
             this.terminalType.select(this.setting.getTerminalType());
         }
+        // 连接后收起左侧
+        this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
     }
 
     /**
@@ -349,6 +358,8 @@ public class SettingController extends StageController {
             this.setting.setRememberPageResize((byte) (this.pageResize.isSelected() ? 1 : 0));
             this.setting.setRememberPageLocation((byte) (this.pageLocation.isSelected() ? 1 : 0));
             this.setting.setExitMode((byte) Integer.parseInt(this.exitMode.selectedUserData()));
+            // 其他设置
+            this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // 更新设置
             if (this.settingStore.update(this.setting)) {
                 // 关闭窗口
@@ -586,9 +597,9 @@ public class SettingController extends StageController {
             bin = X11Util.findExist(dir, "/bin/", setting.x11Binary());
         }
         if (bin != null) {
-            MessageBox.okToast(I18nHelper.testSuccess());
+            MessageBox.info(I18nHelper.testSuccess());
         } else {
-            MessageBox.warnToast(I18nHelper.testFailed());
+            MessageBox.warn(I18nHelper.testFailed());
         }
     }
 }

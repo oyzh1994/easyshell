@@ -1,8 +1,11 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellConnState;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -78,6 +81,11 @@ public class ShellConnectTabController extends ParentTabController {
     private ShellConfigTabController configTabController;
 
     /**
+     * 设置
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
      * 设置shell客户端
      *
      * @param treeItem shell客户端
@@ -94,6 +102,10 @@ public class ShellConnectTabController extends ParentTabController {
                     MessageBox.warn(I18nHelper.connectFail());
                     this.closeTab();
                     return;
+                }
+                // 收起左侧
+                if (this.setting.isHiddenLeftAfterConnected()) {
+                    ShellEventUtil.layout1();
                 }
                 // 监听连接状态
                 this.client.addStateListener((observableValue, shellConnState, t1) -> {
@@ -119,6 +131,10 @@ public class ShellConnectTabController extends ParentTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.getClient().close();
+        // 展开左侧
+        if (this.setting.isHiddenLeftAfterConnected()) {
+            ShellEventUtil.layout2();
+        }
     }
 
     /**
