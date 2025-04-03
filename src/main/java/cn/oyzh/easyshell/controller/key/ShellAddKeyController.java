@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller.key;
 
 import cn.oyzh.common.security.KeyGenerator;
+import cn.oyzh.common.security.KeyUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -8,6 +9,7 @@ import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -18,11 +20,14 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.ssh.SSHUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.security.KeyPair;
 
 /**
  * ssh密钥新增业务
@@ -150,24 +155,20 @@ public class ShellAddKeyController extends StageController {
         Integer length = this.keyLength.getSelectedItem();
         StageManager.showMask(() -> {
             try {
-                String[] key;
+                String[] key=null;
                 if ("RSA".equalsIgnoreCase(type)) {
-                    key = KeyGenerator.rsa(length);
+                    KeyPair keyPair = KeyGenerator.rsa(length);
+                    key= KeyUtil.toSSHKey(keyPair);
                     // ssh公钥
                     this.publicKey.setText("ssh-rsa " + key[0]);
                 } else {
-                    key = KeyGenerator.ed25519();
+//                    key = KeyGenerator.ed25519();
                     // ssh公钥
-                    this.publicKey.setText("ssh-ed25519 " + key[0]);
+//                    this.publicKey.setText("ssh-ed25519 " + key[0]);
                 }
                 // ssh私钥
-                StringBuilder builder = new StringBuilder();
-                builder.append("-----BEGIN OPENSSH PRIVATE KEY-----")
-                        .append("\n")
-                        .append(key[1])
-                        .append("\n")
-                        .append("-----END OPENSSH PRIVATE KEY-----");
-                this.privateKey.setText(builder.toString());
+//                String privateKeyPem = SSHUtil.formatPem("OPENSSH PRIVATE KEY", key[1]);
+                this.privateKey.setText(key[1]);
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }

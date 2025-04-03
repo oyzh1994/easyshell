@@ -8,9 +8,8 @@ import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.fx.gui.combobox.SSHAuthMethodCombobox;
+import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -177,7 +176,7 @@ public class ShellAddConnectController extends StageController {
      * ssh认证方式
      */
     @FXML
-    private SSHAuthMethodCombobox sshAuthMethod;
+    private SSHAuthTypeCombobox sshAuthMethod;
 
     /**
      * ssh证书
@@ -189,7 +188,7 @@ public class ShellAddConnectController extends StageController {
      * 认证方式
      */
     @FXML
-    private SSHAuthMethodCombobox authMethod;
+    private SSHAuthTypeCombobox authMethod;
 
     /**
      * 系统类型
@@ -293,7 +292,7 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
-            shellConnect.setCertificatePath(this.certificate.getTextTrim());
+            shellConnect.setCertificate(this.certificate.getTextTrim());
             // ssh转发
             shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
@@ -350,7 +349,7 @@ public class ShellAddConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
-            shellConnect.setCertificatePath(certificate);
+            shellConnect.setCertificate(certificate);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // ssh配置
             shellConnect.setSshConfig(this.getSSHConfig());

@@ -103,10 +103,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String authMethod;
 
     /**
-     * 证书路径
+     * 证书路径/密钥id
      */
     @Column
-    private String certificatePath;
+    private String certificate;
 
     /**
      * 系统类型
@@ -187,16 +187,24 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.authMethod = authMethod;
     }
 
-    public String getCertificatePath() {
-        return certificatePath;
+    public String getCertificate() {
+        return certificate;
     }
 
-    public void setCertificatePath(String certificatePath) {
-        this.certificatePath = certificatePath;
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
     }
 
     public boolean isPasswordAuth() {
-        return StringUtil.isBlank(this.authMethod) || StringUtil.equalsAnyIgnoreCase(this.authMethod, "password");
+        return StringUtil.isBlank(this.authMethod) || StringUtil.equalsIgnoreCase(this.authMethod, "password");
+    }
+
+    public boolean isCertificateAuth() {
+        return StringUtil.equalsIgnoreCase(this.authMethod, "certificate");
+    }
+
+    public boolean isManagerAuth() {
+        return StringUtil.equalsIgnoreCase(this.authMethod, "manager");
     }
 
     @Override

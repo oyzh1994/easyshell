@@ -33,7 +33,6 @@ import java.util.List;
 public class ShellOsTypeComboBox extends FXComboBox<String> {
 
     {
-
         this.addItem("Ubuntu");
         this.addItem("Centos");
         this.addItem("Windows");

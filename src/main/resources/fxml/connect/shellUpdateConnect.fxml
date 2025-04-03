@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.combobox.SSHAuthMethodCombobox?>
+<?import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -24,6 +24,8 @@
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
+<?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="480">
@@ -58,12 +60,12 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <SSHAuthMethodCombobox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
+                    <ShellAuthTypeCombobox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
                         <FXHBox.margin>
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
-                    </SSHAuthMethodCombobox>
-                    <PasswordTextField fx:id="password" tipText="%base.passwordTip" require="true"
+                    </ShellAuthTypeCombobox>
+                    <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
                                        realHeight="30"
                                        flexWidth="100% - 340">
                         <FXHBox.margin>
@@ -82,6 +84,12 @@
                             <Insets left="5" top="12"/>
                         </HBox.margin>
                     </ChooseSVGGlyph>
+                    <ShellKeyComboBox visible="false" managedBindVisible="true" groupId="key"
+                                       fx:id="key" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ShellKeyComboBox>
                 </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
@@ -255,11 +263,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox disable="true" groupId="ssh">
-                    <SSHAuthMethodCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
+                    <SSHAuthTypeCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
                         <FXHBox.margin>
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
-                    </SSHAuthMethodCombobox>
+                    </SSHAuthTypeCombobox>
                     <PasswordTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
                                         flexWidth="100% - 340">
                         <HBox.margin>

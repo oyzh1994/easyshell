@@ -1,10 +1,12 @@
 package cn.oyzh.easyshell.shell;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -20,10 +22,13 @@ import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
+import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.SSHForwardConfig;
 import cn.oyzh.ssh.SSHForwarder;
@@ -77,6 +82,11 @@ public class ShellClient {
     private SSHForwarder sshForwarder;
 
     /**
+     * shell密钥存储
+     */
+    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+
+    /**
      * x11配置存储
      */
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
@@ -86,21 +96,21 @@ public class ShellClient {
      */
     private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 
-    /**
-     * 静默关闭标志位
-     */
-    private boolean closeQuietly;
+//    /**
+//     * 静默关闭标志位
+//     */
+//    private boolean closeQuietly;
 
     public ShellClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
-                case CLOSED -> {
-                    if (!this.closeQuietly) {
-                        ShellEventUtil.connectionClosed(this);
-                    }
-                }
+//                case CLOSED -> {
+//                    if (!this.closeQuietly) {
+//                        ShellEventUtil.connectionClosed(this);
+//                    }
+//                }
                 case CONNECTED -> ShellEventUtil.connectionConnected(this);
                 default -> {
 
@@ -219,8 +229,28 @@ public class ShellClient {
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setPassword(this.shellConnect.getPassword());
-        } else {// 证书
-            SSHHolder.JSCH.addIdentity(this.shellConnect.getCertificatePath());
+        } else if (this.shellConnect.isCertificateAuth()) {// 证书
+            String priKeyFile = this.shellConnect.getCertificate();
+            // 检查私钥是否存在
+            if (!FileUtil.exist(priKeyFile)) {
+                MessageBox.warn("certificate file not exist");
+                return;
+            }
+            // 添加认证
+            SSHHolder.JSCH.addIdentity(priKeyFile);
+            // 创建会话
+            this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+        } else if (this.shellConnect.isManagerAuth()) {// 密钥
+            ShellKey key = this.keyStore.selectOne(this.shellConnect.getCertificate());
+            // 检查私钥是否存在
+            if (key == null) {
+                MessageBox.warn("certificate file not exist");
+                return;
+            }
+            // 生成私钥文件
+            File priKeyFile = ShellKeyUtil.generateKeyFile(key);
+            // 添加认证
+            SSHHolder.JSCH.addIdentity(priKeyFile.getPath(), "");
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         }
