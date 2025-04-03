@@ -284,6 +284,9 @@ public class ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
+//        session.setConfig("PubkeyAcceptedAlgorithms", "+ssh-ed25519");
+//        session.setConfig("userauth.gssapi-with-mic", "no");
+
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }

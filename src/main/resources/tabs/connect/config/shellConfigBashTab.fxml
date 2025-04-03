@@ -37,7 +37,7 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100%"
+        <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 10"
                                flexHeight="100% - 30">
             <FXVBox.margin>
                 <Insets left="10"/>

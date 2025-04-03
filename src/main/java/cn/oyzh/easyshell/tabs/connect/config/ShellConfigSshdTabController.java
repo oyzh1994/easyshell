@@ -70,15 +70,14 @@ public class ShellConfigSshdTabController extends SubTabController {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp()) {
                 // 创建临时文件
-                String tempFile = "/etc/resolv.conf.temp";
+                String tempFile = "/etc/ssh/sshd_config.temp";
                 if (!sftp.exist(tempFile)) {
                     sftp.touch(tempFile);
                 }
                 // 上传内容
                 sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
-//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/resolv.conf");
-                String output = exec.cat_file(tempFile, "/etc/resolv.conf");
+                String output = exec.cat_file(tempFile, "/etc/ssh/sshd_config");
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else {
