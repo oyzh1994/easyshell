@@ -255,12 +255,12 @@ public class ShellClient {
 //                    ov9AZQW6tkUnO8yDcwagfw==
 //                    -----END ENCRYPTED PRIVATE KEY-----
 //                    """;
-            priKeyFile = """
-                    -----BEGIN ENCRYPTED PRIVATE KEY-----
-                    MC4CAQAwBQYDK2VwBCIEIJi2Pp4/d/OE8/cTNdM2US09ZuBFqvyY3iYayVuXHTy7
-                    -----END ENCRYPTED PRIVATE KEY-----
-                    """;
-            String password = "your_secure_passphrase!123"; // 在此设置密码
+//            priKeyFile = """
+//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
+//                    MC4CAQAwBQYDK2VwBCIEIJi2Pp4/d/OE8/cTNdM2US09ZuBFqvyY3iYayVuXHTy7
+//                    -----END ENCRYPTED PRIVATE KEY-----
+//                    """;
+//            String password = "your_secure_passphrase!123"; // 在此设置密码
 //            String password = "your_strong_password_123!"; // 在此设置密码
 //            String password = "your_strong_password_123!";
 //            String password = "your_password";
@@ -272,12 +272,12 @@ public class ShellClient {
 //
 //            SSHHolder.JSCH.setConfig("PubkeyAcceptedAlgorithms", "+ssh-ed25519,ssh-rsa");
 
-            // 添加身份认证
-            SSHHolder.JSCH.addIdentity("ed25519_key",
-                    priKeyFile.getBytes(),
-                    null,
-                    password.getBytes()
-            );
+//            // 添加身份认证
+//            SSHHolder.JSCH.addIdentity("ed25519_key",
+//                    priKeyFile.getBytes(),
+//                    null,
+//                    password.getBytes()
+//            );
 
 
 //            String pubkey = "C:\\Users\\Administrator\\Desktop\\k9.pub";
@@ -285,6 +285,7 @@ public class ShellClient {
             // 添加认证
 //            SSHHolder.JSCH.addIdentity("ke1", priKeyFile.getBytes(), null, password.getBytes());
 //            SSHHolder.JSCH.addIdentity(priKeyFile, password.getBytes());
+            SSHHolder.JSCH.addIdentity(priKeyFile);
 //            SSHHolder.JSCH.addIdentity( priKeyFile, pubkey, password.getBytes());
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
