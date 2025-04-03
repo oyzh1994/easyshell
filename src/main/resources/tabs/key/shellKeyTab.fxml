@@ -8,18 +8,25 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
-<FXVBox fx:id="root" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<FXVBox styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.key.ShellKeyTabController">
     <FXHBox prefHeight="30">
         <AddSVGGlyph onMousePrimaryClicked="#addKey">
             <FXHBox.margin>
-                <Insets left="10" top="10" />
+                <Insets left="10" top="10"/>
             </FXHBox.margin>
         </AddSVGGlyph>
+        <ImportSVGGlyph onMousePrimaryClicked="#importKey">
+            <FXHBox.margin>
+                <Insets left="10" top="10"/>
+            </FXHBox.margin>
+        </ImportSVGGlyph>
         <EditSVGGlyph onMousePrimaryClicked="#editKey">
             <FXHBox.margin>
-                <Insets left="10" top="10" />
+                <Insets left="10" top="10"/>
             </FXHBox.margin>
         </EditSVGGlyph>
     </FXHBox>
@@ -30,7 +37,7 @@
             <FXTableColumn prefWidth="150" valueName="length" text="%base.length"/>
         </columns>
         <FXVBox.margin>
-            <Insets left="10" />
+            <Insets left="10"/>
         </FXVBox.margin>
     </ShellKeyTableView>
 </FXVBox>

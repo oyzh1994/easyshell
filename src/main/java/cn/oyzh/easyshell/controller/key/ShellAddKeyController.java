@@ -73,7 +73,7 @@ public class ShellAddKeyController extends StageController {
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     /**
-     * 添加ssh信息
+     * 添加密钥
      */
     @FXML
     private void add() {
@@ -83,11 +83,17 @@ public class ShellAddKeyController extends StageController {
             this.name.requestFocus();
             return;
         }
-        String publicKey = this.publicKey.getTextTrim();
-        String privateKey = this.privateKey.getTextTrim();
         // 密钥检查
-        if (StringUtil.isBlank(publicKey) || StringUtil.isBlank(privateKey)) {
+        String publicKey = this.publicKey.getTextTrim();
+        if (StringUtil.isBlank(publicKey)) {
             MessageBox.warn(ShellI18nHelper.keyTip1());
+            this.publicKey.requestFocus();
+            return;
+        }
+        String privateKey = this.privateKey.getTextTrim();
+        if (StringUtil.isBlank(privateKey)) {
+            MessageBox.warn(ShellI18nHelper.keyTip1());
+            this.privateKey.requestFocus();
             return;
         }
         try {
@@ -123,6 +129,7 @@ public class ShellAddKeyController extends StageController {
             this.publicKey.clear();
             this.privateKey.clear();
         });
+        this.keyLength.init("RSA");
     }
 
     @Override

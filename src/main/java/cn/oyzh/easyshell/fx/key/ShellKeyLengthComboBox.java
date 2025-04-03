@@ -10,10 +10,6 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class ShellKeyLengthComboBox extends FXComboBox<Integer> {
 
-    {
-        this.init("RSA");
-    }
-
     public void init(String keyType) {
         this.clearItems();
         switch (keyType.toUpperCase()) {

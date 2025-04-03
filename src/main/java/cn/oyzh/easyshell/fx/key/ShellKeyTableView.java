@@ -13,6 +13,7 @@ import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,6 +34,12 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
      * 密钥存储器
      */
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+
+    @Override
+    protected void initTableView() {
+        super.initTableView();
+        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
 
     @Override
     protected void initEvenListener() {

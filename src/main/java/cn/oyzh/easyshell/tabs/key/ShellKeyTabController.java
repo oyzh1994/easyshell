@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.key;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
+import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.fx.key.ShellKeyTableView;
@@ -26,11 +27,8 @@ import javafx.scene.input.MouseEvent;
 public class ShellKeyTabController extends RichTabController {
 
     /**
-     * 软件信息
+     * 密钥表单
      */
-    @FXML
-    private FXVBox root;
-
     @FXML
     private ShellKeyTableView keyTable;
 
@@ -55,25 +53,21 @@ public class ShellKeyTabController extends RichTabController {
     }
 
     /**
+     * 导入密钥
+     */
+    @FXML
+    private void importKey() {
+        StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class);
+        adapter.display();
+    }
+
+    /**
      * 编辑密钥
      */
     @FXML
     private void editKey() {
         ShellKey key = this.keyTable.getSelectedItem();
-        if (key == null) {
-            return;
-        }
-        String oldName = key.getName();
-        String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), oldName);
-        if (StringUtil.isNotBlank(newName)) {
-            return;
-        }
-        key.setName(newName);
-        if (this.keyStore.update(key)) {
-            this.keyTable.refresh();
-        } else {
-            key.setName(oldName);
-        }
+        this.keyTable.renameKey(key);
     }
 
     /**
@@ -92,6 +86,4 @@ public class ShellKeyTabController extends RichTabController {
     private void onKeyAdded(ShellKeyAddedEvent event) {
         this.refresh();
     }
-
-
 }

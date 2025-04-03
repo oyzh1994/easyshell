@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox?>
+<?import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.ImportButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.key.ShellImportKeyController" realWidth="750"
+        realHeight="700">
+    <InfoLabel text="%base.name">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="name" tipText="%base.nameTip" maxLen="30" require="true" realHeight="30"
+                        flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.type">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ShellKeyTypeComboBox disable="true" fx:id="keyType" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ShellKeyTypeComboBox>
+    <InfoLabel text="%base.length">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ShellKeyLengthComboBox disable="true" fx:id="keyLength" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ShellKeyLengthComboBox>
+    <InfoLabel text="%base.publicKey">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <FXTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </FXTextArea>
+        <FXVBox>
+            <PasteSVGGlyph onMousePrimaryClicked="#pastePubKey">
+                <VBox.margin>
+                    <Insets left="10" top="10"/>
+                </VBox.margin>
+            </PasteSVGGlyph>
+            <ChooseSVGGlyph onMousePrimaryClicked="#choosePubKey">
+                <VBox.margin>
+                    <Insets left="10" top="10"/>
+                </VBox.margin>
+            </ChooseSVGGlyph>
+        </FXVBox>
+    </FXHBox>
+    <InfoLabel text="%base.privateKey">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </FXTextArea>
+        <FXVBox>
+            <PasteSVGGlyph onMousePrimaryClicked="#pastePriKey">
+                <VBox.margin>
+                    <Insets left="10" top="10"/>
+                </VBox.margin>
+            </PasteSVGGlyph>
+            <ChooseSVGGlyph onMousePrimaryClicked="#choosePriKey">
+                <VBox.margin>
+                    <Insets left="10" top="10"/>
+                </VBox.margin>
+            </ChooseSVGGlyph>
+        </FXVBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <ImportButton onAction="#importKey" iconSizePercent="0.8">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </ImportButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

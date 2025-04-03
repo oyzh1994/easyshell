@@ -10,6 +10,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SftpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -17,11 +18,8 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.pane.CollectSVGPane?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellSftpTabController"
        text="%base.file" fx:id="root">

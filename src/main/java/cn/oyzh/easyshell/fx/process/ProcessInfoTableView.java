@@ -68,11 +68,6 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
     }
 
     @Override
-    protected void initTableView() {
-        super.initTableView();
-    }
-
-    @Override
     protected void initEvenListener() {
         super.initEvenListener();
         // 右键菜单事件
@@ -84,8 +79,6 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
                 this.clearContextMenu();
             }
         });
-        // 初始化鼠标多选辅助类
-        TableViewMouseSelectHelper.install(this);
     }
 
     @Override
