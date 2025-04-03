@@ -1,14 +1,11 @@
 package cn.oyzh.easyshell.test;
 
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.openssl.jcajce.JcePEMEncryptorBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 public class OpenSSHEd25519Generator {
@@ -16,15 +13,16 @@ public class OpenSSHEd25519Generator {
     public static void main(String[] args) throws Exception {
         // 生成Ed25519密钥对
         KeyPair keyPair = generateEd25519KeyPair();
-        
+
         // 生成OpenSSH格式公钥
         String publicKey = generateSSHPublicKey(keyPair.getPublic());
         System.out.println("Public Key (OpenSSH):");
         System.out.println(publicKey);
 
-        // 生成PEM格式私钥
-        String privateKey = generatePEMPrivateKey(keyPair.getPrivate());
-        System.out.println("\nPrivate Key (PEM):");
+        // 生成加密的PEM私钥（设置密码）
+        String password = "your_strong_password_123!";
+        String privateKey = generateEncryptedPEMPrivateKey(keyPair.getPrivate(), password);
+        System.out.println("\nEncrypted Private Key (PEM):");
         System.out.println(privateKey);
     }
 
@@ -51,7 +49,7 @@ public class OpenSSHEd25519Generator {
             // 写入算法标识符
             dos.writeInt("ssh-ed25519".length());
             dos.write("ssh-ed25519".getBytes());
-            
+
             // 写入密钥数据
             dos.writeInt(keyBytes.length);
             dos.write(keyBytes);
@@ -63,14 +61,26 @@ public class OpenSSHEd25519Generator {
         }
     }
 
-    private static String generatePEMPrivateKey(PrivateKey privateKey) throws IOException {
-        // 构造PKCS#8格式的PEM文件
-//        PemObject pemObject = new PemObject("ED25519 PRIVATE KEY", privateKey.getEncoded());
-//        PemObject pemObject = new PemObject("OPENSSH PRIVATE KEY", privateKey.getEncoded());
-        PemObject pemObject = new PemObject("PRIVATE KEY", privateKey.getEncoded());
+    private static String generateEncryptedPEMPrivateKey(PrivateKey privateKey, String password) throws Exception {
+        // 使用BC加密器构建（兼容OpenSSH格式）
+        JcePEMEncryptorBuilder encryptorBuilder = new JcePEMEncryptorBuilder("AES-256-CBC");
+        encryptorBuilder.setSecureRandom(SecureRandom.getInstanceStrong());
+        
+        // 构造PKCS#8格式的加密私钥
+        PemObject pemObject = new PemObject("ENCRYPTED PRIVATE KEY", privateKey.getEncoded());
 
         StringWriter sw = new StringWriter();
-        try (PemWriter pw = new PemWriter(sw)) {
+        try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
+            pw.writeObject(pemObject, encryptorBuilder.build(password.toCharArray()));
+        }
+        return sw.toString();
+    }
+
+    // 保留原有未加密生成方法（可选）
+    private static String generatePEMPrivateKey(PrivateKey privateKey) throws IOException {
+        PemObject pemObject = new PemObject("PRIVATE KEY", privateKey.getEncoded());
+        StringWriter sw = new StringWriter();
+        try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
             pw.writeObject(pemObject);
         }
         return sw.toString();

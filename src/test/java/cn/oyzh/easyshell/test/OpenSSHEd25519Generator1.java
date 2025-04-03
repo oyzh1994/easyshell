@@ -2,23 +2,31 @@ package cn.oyzh.easyshell.test;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMEncryptor;
-import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.openssl.jcajce.JcePEMEncryptorBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 
-import java.io.*;
-import java.security.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.util.Base64;
 
-public class OpenSSHKeyGenerator {
+public class OpenSSHEd25519Generator1 {
 
     public static void main(String[] args) throws Exception {
         // 生成RSA密钥对（2048位）
-        KeyPair keyPair = generateRSAKeyPair(2048);
+        KeyPair keyPair = generateEd25519KeyPair();
 
         // 生成OpenSSH格式公钥
-        String publicKey = generateOpenSSHPublicKey(keyPair.getPublic());
+        String publicKey = generateSSHPublicKey(keyPair.getPublic());
         System.out.println("Public Key (OpenSSH):");
         System.out.println(publicKey);
 
@@ -36,43 +44,38 @@ public class OpenSSHKeyGenerator {
         System.out.println(privateKeyPkcs8);
     }
 
-    private static KeyPair generateRSAKeyPair(int keySize) throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(keySize);
-        return keyPairGenerator.generateKeyPair();
+    private static KeyPair generateEd25519KeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("Ed25519");
+        return kpg.generateKeyPair();
     }
 
-    private static String generateOpenSSHPublicKey(PublicKey publicKey) {
-        if (!(publicKey instanceof java.security.interfaces.RSAPublicKey)) {
-            throw new IllegalArgumentException("Not an RSA public key");
+    private static String generateSSHPublicKey(PublicKey publicKey) {
+        if (!"EdDSA".equals(publicKey.getAlgorithm())) {
+            throw new IllegalArgumentException("Not an Ed25519 public key");
         }
 
-        java.security.interfaces.RSAPublicKey rsaPublicKey = (java.security.interfaces.RSAPublicKey) publicKey;
-
-        // OpenSSH公钥格式：ssh-rsa + Base64编码的 [类型长度][类型][e长度][e][n长度][n]
-        byte[] eBytes = rsaPublicKey.getPublicExponent().toByteArray();
-        byte[] nBytes = rsaPublicKey.getModulus().toByteArray();
+        // OpenSSH公钥格式结构：
+        // ssh-ed25519 + Base64([类型长度][类型][密钥长度][密钥])
+        byte[] pubBytes = publicKey.getEncoded();
+        byte[] keyBytes = new byte[pubBytes.length - 12];
+        System.arraycopy(pubBytes, 12, keyBytes, 0, keyBytes.length);
 
         try {
             ByteArrayOutputStream byteOs = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(byteOs);
 
-            // 写入算法类型 "ssh-rsa"
-            dos.writeInt("ssh-rsa".getBytes().length);
-            dos.write("ssh-rsa".getBytes());
-
-            // 写入e
-            dos.writeInt(eBytes.length);
-            dos.write(eBytes);
-
-            // 写入n
-            dos.writeInt(nBytes.length);
-            dos.write(nBytes);
+            // 写入算法标识符
+            dos.writeInt("ssh-ed25519".length());
+            dos.write("ssh-ed25519".getBytes());
+            
+            // 写入密钥数据
+            dos.writeInt(keyBytes.length);
+            dos.write(keyBytes);
 
             String encoded = Base64.getEncoder().encodeToString(byteOs.toByteArray());
-            return "ssh-rsa " + encoded + " generated-by-java";
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            return "ssh-ed25519 " + encoded + " generated-by-java";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,7 +96,7 @@ public class OpenSSHKeyGenerator {
         if ("PKCS#1".equalsIgnoreCase(formatType)) {
             // PKCS#1格式
             PrivateKeyInfo pkInfo = PrivateKeyInfo.getInstance(privateKey.getEncoded());
-            pemObject = new PemObject("RSA PRIVATE KEY",
+            pemObject = new PemObject("PRIVATE KEY",
                     pkInfo.parsePrivateKey().toASN1Primitive().getEncoded());
         } else {
             // PKCS#8格式

@@ -236,10 +236,59 @@ public class ShellClient {
                 MessageBox.warn("certificate file not exist");
                 return;
             }
+
+//            priKeyFile = """
+//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
+//                    MC4CAQAwBQYDK2VwBCIEIKjt/RWhKtueLFAv/XsqBSlUd1jmNQSUqjNwz4OIFKv7
+//                    -----END ENCRYPTED PRIVATE KEY-----
+//                    """;
+//            priKeyFile = """
+//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
+//                    MC4CAQAwBQYDK2VwBCIEIGBdSVs7fOdMZ1Q6zQx0TaxraNOWHfXCzpJ6iblK1gXj
+//                    -----END ENCRYPTED PRIVATE KEY-----
+//                    """;
+//            priKeyFile = """
+//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
+//                    Proc-Type: 4,ENCRYPTED
+//                    DEK-Info: AES-256-CBC,CF530674348ECCC9451934600FA4C175
+//                    IuLofJFk0g0LFfRSZ0iTRLayiMQAgwhR7orPQGTFBy632YXiV8AAfvynxlZ3Bsb6
+//                    ov9AZQW6tkUnO8yDcwagfw==
+//                    -----END ENCRYPTED PRIVATE KEY-----
+//                    """;
+            priKeyFile = """
+                    -----BEGIN ENCRYPTED PRIVATE KEY-----
+                    MC4CAQAwBQYDK2VwBCIEIJi2Pp4/d/OE8/cTNdM2US09ZuBFqvyY3iYayVuXHTy7
+                    -----END ENCRYPTED PRIVATE KEY-----
+                    """;
+            String password = "your_secure_passphrase!123"; // 在此设置密码
+//            String password = "your_strong_password_123!"; // 在此设置密码
+//            String password = "your_strong_password_123!";
+//            String password = "your_password";
+
+//            // 配置支持Ed25519算法
+//            SSHHolder.JSCH.setConfig("server_host_key", "ssh-ed25519,ssh-rsa");
+//
+//            // 添加更多兼容算法配置
+//
+//            SSHHolder.JSCH.setConfig("PubkeyAcceptedAlgorithms", "+ssh-ed25519,ssh-rsa");
+
+            // 添加身份认证
+            SSHHolder.JSCH.addIdentity("ed25519_key",
+                    priKeyFile.getBytes(),
+                    null,
+                    password.getBytes()
+            );
+
+
+//            String pubkey = "C:\\Users\\Administrator\\Desktop\\k9.pub";
+//            String pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIINNtsDClAFKIO9iL/zcOUXos/q1CRhZwZELE3eZq6/e generated-by-java";
             // 添加认证
-            SSHHolder.JSCH.addIdentity(priKeyFile);
+//            SSHHolder.JSCH.addIdentity("ke1", priKeyFile.getBytes(), null, password.getBytes());
+//            SSHHolder.JSCH.addIdentity(priKeyFile, password.getBytes());
+//            SSHHolder.JSCH.addIdentity( priKeyFile, pubkey, password.getBytes());
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+//            session.setConfig("server_host_key", "ssh-ed25519,ssh-rsa");
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getCertificate());
             // 检查私钥是否存在
