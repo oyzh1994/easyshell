@@ -2,8 +2,7 @@ package cn.oyzh.easyshell.tabs.connect.monitor;
 
 import cn.oyzh.easyshell.exec.DiskInfo;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.exec.ShellExecParser;
-import cn.oyzh.easyshell.fx.DiskInfoTableView;
+import cn.oyzh.easyshell.fx.ShellDiskInfoTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -32,7 +31,7 @@ public class ShellMonitorDiskTabController extends SubTabController {
      * 磁盘信息
      */
     @FXML
-    private DiskInfoTableView diskTable;
+    private ShellDiskInfoTableView diskTable;
 
     @FXML
     private void refresh() {

@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane?>
+<?import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30">
     <TransportSVGGlyph onMousePrimaryClicked="#transport" size="12">
@@ -18,6 +19,11 @@
             <Insets left="10" top="60"/>
         </VBox.margin>
     </TransportSVGGlyph>
+    <KeySVGGlyph onMousePrimaryClicked="#key" size="13">
+        <VBox.margin>
+            <Insets left="10" top="15"/>
+        </VBox.margin>
+    </KeySVGGlyph>
     <ToolsSVGGlyph onMousePrimaryClicked="#tool" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>
@@ -43,7 +49,7 @@
             <Insets left="10" top="15"/>
         </VBox.margin>
     </LayoutSVGPane>
-    <FXPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 223">
+    <FXPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 250">
 
     </FXPane>
     <QuitSVGGlyph onMousePrimaryClicked="#quit" size="12">

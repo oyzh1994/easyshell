@@ -64,6 +64,14 @@ public class HeaderController extends StageController {
     }
 
     /**
+     * 密钥
+     */
+    @FXML
+    private void key() {
+        ShellEventUtil.showKey();
+    }
+
+    /**
      * 工具箱
      */
     @FXML
@@ -127,7 +135,7 @@ public class HeaderController extends StageController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         if (OSUtil.isWindows() || OSUtil.isLinux()) {
-            this.splitPane.setFlexHeight("100% - 225");
+            this.splitPane.setFlexHeight("100% - 246");
         }
     }
 }

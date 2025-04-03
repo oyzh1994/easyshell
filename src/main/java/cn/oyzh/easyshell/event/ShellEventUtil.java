@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.event;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
@@ -14,6 +15,7 @@ import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
+import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
@@ -22,6 +24,7 @@ import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
 import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
+import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
@@ -245,6 +248,13 @@ public class ShellEventUtil {
     }
 
     /**
+     * 显示密钥管理
+     */
+    public static void showKey() {
+        EventUtil.post(new ShellShowKeyEvent());
+    }
+
+    /**
      * 显示工具页面
      */
     public static void showTool() {
@@ -322,6 +332,17 @@ public class ShellEventUtil {
     public static void showTransportFile(ShellConnect connect) {
         ShellShowTransportFileEvent event = new ShellShowTransportFileEvent();
         event.data(connect);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 密钥已新增事件
+     *
+     * @param shellKey 密钥
+     */
+    public static void keyAdded(ShellKey shellKey) {
+        ShellKeyAddedEvent event = new ShellKeyAddedEvent();
+        event.data(shellKey);
         EventUtil.post(event);
     }
 }

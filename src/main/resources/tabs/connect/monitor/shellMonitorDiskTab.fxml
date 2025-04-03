@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.DiskInfoTableView?>
+<?import cn.oyzh.easyshell.fx.ShellDiskInfoTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -19,7 +19,7 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <DiskInfoTableView flexWidth="100% - 20" flexHeight="100% - 30" fx:id="diskTable">
+        <ShellDiskInfoTableView flexWidth="100% - 20" flexHeight="100% - 30" fx:id="diskTable">
             <columns>
                 <FXTableColumn prefWidth="125" valueName="fileSystem" text="%base.fileSystem"/>
                 <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
@@ -31,6 +31,6 @@
             <FXVBox.margin>
                 <Insets left="10" top="5"/>
             </FXVBox.margin>
-        </DiskInfoTableView>
+        </ShellDiskInfoTableView>
     </FXVBox>
 </FXTab>

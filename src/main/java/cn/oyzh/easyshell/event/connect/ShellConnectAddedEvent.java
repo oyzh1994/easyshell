@@ -13,6 +13,6 @@ public class ShellConnectAddedEvent extends Event<ShellConnect> implements Event
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] ", I18nHelper.connect(), this.data().getName());
+        return String.format("[%s:%s] added", I18nHelper.connect(), this.data().getName());
     }
 }

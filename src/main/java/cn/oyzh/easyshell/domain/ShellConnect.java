@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.domain;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.object.ObjectComparator;
+import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -16,7 +17,7 @@ import java.io.Serializable;
  * @since 2023/6/16
  */
 @Table("t_connect")
-public class ShellConnect implements Comparable<ShellConnect>, Serializable, ObjectComparator<ShellConnect> {
+public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<ShellConnect>, Serializable, ObjectComparator<ShellConnect> {
 
     /**
      * 数据id
@@ -198,13 +199,8 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
         return StringUtil.isBlank(this.authMethod) || StringUtil.equalsAnyIgnoreCase(this.authMethod, "password");
     }
 
-    /**
-     * 复制对象
-     *
-     * @param shellConnect shell信息
-     * @return 当前对象
-     */
-    public ShellConnect copy(ShellConnect shellConnect) {
+    @Override
+    public void copy(ShellConnect shellConnect) {
         this.name = shellConnect.name;
         this.host = shellConnect.host;
         this.user = shellConnect.user;
@@ -219,7 +215,6 @@ public class ShellConnect implements Comparable<ShellConnect>, Serializable, Obj
         // x11
         this.x11Config = shellConnect.x11Config;
         this.x11forwarding = shellConnect.x11forwarding;
-        return this;
     }
 
     /**

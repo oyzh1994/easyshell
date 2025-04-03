@@ -5,11 +5,13 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
+import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
+import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
@@ -202,16 +204,31 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     }
 
     /**
-     * 终端打开事件
+     * 本地终端事件
      *
      * @param event 事件
      */
     @EventSubscribe
-    private void terminalOpen(ShellShowTerminalEvent event) {
+    private void localTerminal(ShellShowTerminalEvent event) {
         ShellTerminalTab terminalTab = new ShellTerminalTab();
         super.addTab(terminalTab);
         if (!terminalTab.isSelected()) {
             this.select(terminalTab);
+        }
+    }
+
+    /**
+     * 密钥管理事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void keyManager(ShellShowKeyEvent event) {
+        ShellKeyTab keyTab = this.getTab(ShellKeyTab.class);
+        if (keyTab == null) {
+            this.addTab(new ShellKeyTab());
+        } else if (!keyTab.isSelected()) {
+            this.select(keyTab);
         }
     }
 }
