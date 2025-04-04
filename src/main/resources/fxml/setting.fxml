@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellTerminalTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellShellTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SaveButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -51,11 +51,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ShellTerminalTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
+                    <ShellShellTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
-                    </ShellTerminalTypeComboBox>
+                    </ShellShellTypeComboBox>
                     <FXButton text="%base.test" onMousePrimaryClicked="#testBashPath">
                         <HBox.margin>
                             <Insets left="5" top="5"/>

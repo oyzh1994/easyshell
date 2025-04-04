@@ -6,7 +6,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.ShellTerminalTypeComboBox;
+import cn.oyzh.easyshell.fx.ShellShellTypeComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.X11Util;
@@ -232,7 +232,7 @@ public class SettingController extends StageController {
      * 终端类型
      */
     @FXML
-    private ShellTerminalTypeComboBox terminalType;
+    private ShellShellTypeComboBox terminalType;
 
     /**
      * 连接后收起左侧

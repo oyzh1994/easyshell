@@ -8,12 +8,12 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import java.util.List;
 
 /**
- * shell终端类型选择框
+ * shell类型选择框
  *
  * @author oyzh
- * @since 23/03/09
+ * @since 25/04/01
  */
-public class ShellTerminalTypeComboBox extends FXComboBox<String> {
+public class ShellShellTypeComboBox extends FXComboBox<String> {
 
     {
         if (OSUtil.isWindows()) {

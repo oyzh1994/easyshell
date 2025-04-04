@@ -26,6 +26,7 @@
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellTermTypeComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="480">
@@ -128,16 +129,6 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <CharsetComboBox fx:id="charset" prefWidth="200">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <InfoLabel text="%base.connectTimeout">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
                 <FXHBox>
                     <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
                                      tipText="%shell.info.connectTimoutTip" value="5" require="true">
@@ -164,6 +155,30 @@
                 </FXTextArea>
             </FXVBox>
         </FXTab>
+        <FXTab text="%base.terminal">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset" prefWidth="200">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
+                <InfoLabel text="%base.terminal">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermTypeComboBox fx:id="termType" prefWidth="200">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermTypeComboBox>
+            </FXVBox>
+        </FXTab>
         <FXTab text="%base.background" fx:id="backgroundTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableBackground">
@@ -176,14 +191,14 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </SwitchToggleSwitch>
-                <InfoLabel text="%base.image">
+                <InfoLabel text="%base.file">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox groupId="background" disable="true">
                     <ClearableTextField realHeight="30" flexWidth="100% - 180"  fx:id="backgroundImage"
-                                     tipText="%base.contentTip1">
+                                     tipText="%base.fileTip1">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>

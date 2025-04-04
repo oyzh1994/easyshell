@@ -69,6 +69,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String charset;
 
     /**
+     * 终端类型
+     */
+    @Column
+    private String termType;
+
+    /**
      * 连接超时时间
      */
     @Column
@@ -213,16 +219,24 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.host = shellConnect.host;
         this.user = shellConnect.user;
         this.remark = shellConnect.remark;
+        this.osType = shellConnect.osType;
         this.groupId = shellConnect.groupId;
-        this.password = shellConnect.password;
         this.charset = shellConnect.charset;
+        this.termType = shellConnect.termType;
         this.connectTimeOut = shellConnect.connectTimeOut;
+        // 认证
+        this.password = shellConnect.password;
+        this.authMethod = shellConnect.authMethod;
+        this.certificate = shellConnect.certificate;
         // ssh
         this.sshConfig = shellConnect.sshConfig;
         this.sshForward = shellConnect.sshForward;
         // x11
         this.x11Config = shellConnect.x11Config;
         this.x11forwarding = shellConnect.x11forwarding;
+        // 背景
+        this.backgroundImage = shellConnect.backgroundImage;
+        this.enableBackground = shellConnect.enableBackground;
     }
 
     /**
@@ -399,5 +413,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
             return false;
         }
         return StringUtil.equals(this.name, t1.name);
+    }
+
+    public String getTermType() {
+        return termType == null ? "xterm-256color" : termType;
+    }
+
+    public void setTermType(String termType) {
+        this.termType = termType;
     }
 }

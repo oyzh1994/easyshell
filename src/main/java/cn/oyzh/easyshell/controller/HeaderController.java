@@ -135,7 +135,7 @@ public class HeaderController extends StageController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         if (OSUtil.isWindows() || OSUtil.isLinux()) {
-            this.splitPane.setFlexHeight("100% - 246");
+            this.splitPane.setFlexHeight("100% - 254");
         }
     }
 }

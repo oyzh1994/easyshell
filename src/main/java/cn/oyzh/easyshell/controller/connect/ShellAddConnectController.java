@@ -7,7 +7,10 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.ShellTermTypeComboBox;
+import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -71,6 +74,12 @@ public class ShellAddConnectController extends StageController {
     private ReadOnlyTextField certificate;
 
     /**
+     * 密钥
+     */
+    @FXML
+    private ShellKeyComboBox key;
+
+    /**
      * tab组件
      */
     @FXML
@@ -105,6 +114,12 @@ public class ShellAddConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端类型
+     */
+    @FXML
+    private ShellTermTypeComboBox termType;
 
     /**
      * 连接超时时间
@@ -188,7 +203,7 @@ public class ShellAddConnectController extends StageController {
      * 认证方式
      */
     @FXML
-    private SSHAuthTypeCombobox authMethod;
+    private ShellAuthTypeCombobox authMethod;
 
     /**
      * 系统类型
@@ -292,7 +307,11 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
-            shellConnect.setCertificate(this.certificate.getTextTrim());
+            if (this.authMethod.isManagerAuth()) {
+                shellConnect.setCertificate(this.key.getCertificate());
+            } else {
+                shellConnect.setCertificate(this.certificate.getTextTrim());
+            }
             // ssh转发
             shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
@@ -326,6 +345,11 @@ public class ShellAddConnectController extends StageController {
             this.certificate.requestFocus();
             return;
         }
+        String key = this.key.getCertificate();
+        if (this.authMethod.isManagerAuth() && StringUtil.isBlank(key)) {
+            this.key.requestFocus();
+            return;
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -336,6 +360,7 @@ public class ShellAddConnectController extends StageController {
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
+            String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             boolean enableBackground = this.enableBackground.isSelected();
@@ -345,11 +370,16 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
+            shellConnect.setTermType(termType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
-            shellConnect.setCertificate(certificate);
+            if (this.authMethod.isManagerAuth()) {
+                shellConnect.setCertificate(key);
+            } else {
+                shellConnect.setCertificate(certificate);
+            }
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // ssh配置
             shellConnect.setSshConfig(this.getSSHConfig());
@@ -400,11 +430,17 @@ public class ShellAddConnectController extends StageController {
         // 认证方式
         this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.authMethod.isPasswordAuth()) {
-                this.password.display();
+                NodeGroupUtil.disappear(this.tabPane, "key");
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
-            } else {
-                this.password.disappear();
+                NodeGroupUtil.display(this.tabPane, "password");
+            } else if (this.authMethod.isCertificateAuth()) {
+                NodeGroupUtil.disappear(this.tabPane, "key");
+                NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.display(this.tabPane, "certificate");
+            } else {
+                NodeGroupUtil.disappear(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
+                NodeGroupUtil.display(this.tabPane, "key");
             }
         });
         // ssh认证方式

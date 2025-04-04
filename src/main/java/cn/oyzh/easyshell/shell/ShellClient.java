@@ -236,8 +236,8 @@ public class ShellClient {
         }
         // 配置参数
         Properties config = new Properties();
-        // 设置终端类型
-        config.put("term", "xterm-256color");
+//        // 设置终端类型
+//        config.put("term", "xterm-256color");
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
         // 启用X11转发
@@ -422,8 +422,8 @@ public class ShellClient {
                 }
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
-                // todo: 必须设置为这个，不然htop鼠标交互不了
-                channel.setPtyType("xterm-color");
+                // 设置终端类型
+                channel.setPtyType(this.shellConnect.getTermType());
                 this.shell = new ShellShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();

@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
-import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
@@ -119,6 +119,12 @@ public class ShellUpdateConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端类型
+     */
+    @FXML
+    private ShellTermTypeComboBox termType;
 
     /**
      * 连接超时时间
@@ -361,6 +367,7 @@ public class ShellUpdateConnectController extends StageController {
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
+            String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             boolean enableBackground = this.enableBackground.isSelected();
@@ -370,6 +377,7 @@ public class ShellUpdateConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
+            this.shellConnect.setTermType(termType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             this.shellConnect.setUser(userName.trim());
@@ -471,6 +479,7 @@ public class ShellUpdateConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
+        this.termType.select(this.shellConnect.getTermType());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
