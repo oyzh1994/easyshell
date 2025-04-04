@@ -1,7 +1,5 @@
 package cn.oyzh.easyshell.fx;
 
-import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.AppleSVGGlyph;
@@ -21,8 +19,6 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-
-import java.util.List;
 
 /**
  * shell终端类型选择框

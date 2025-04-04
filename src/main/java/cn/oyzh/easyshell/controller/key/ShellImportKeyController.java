@@ -2,15 +2,13 @@ package cn.oyzh.easyshell.controller.key;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.security.KeyUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox;
-import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -20,6 +18,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.ssh.OpenSSHRSAUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -61,13 +60,13 @@ public class ShellImportKeyController extends StageController {
      * 密钥类型
      */
     @FXML
-    private ShellKeyTypeComboBox keyType;
+    private ReadOnlyTextField keyType;
 
     /**
      * 密钥长度
      */
     @FXML
-    private ShellKeyLengthComboBox keyLength;
+    private ReadOnlyTextField keyLength;
 
     /**
      * 密钥存储对象
@@ -92,7 +91,7 @@ public class ShellImportKeyController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.addKey1();
+        return I18nHelper.importKey1();
     }
 
     /**
@@ -120,8 +119,8 @@ public class ShellImportKeyController extends StageController {
             return;
         }
         try {
-            String keyType = this.keyType.getSelectedItem();
-            int keyLength = this.keyLength.getSelectedItem();
+            String keyType = this.keyType.getText();
+            int keyLength = Integer.parseInt(this.keyLength.getText());
 
             ShellKey shellKey = new ShellKey();
             shellKey.setPublicKey(publicKey);
@@ -221,11 +220,11 @@ public class ShellImportKeyController extends StageController {
     private void fillPubKey() {
         String publicKey = this.publicKey.getTextTrim();
         if (StringUtil.startWithIgnoreCase(publicKey, "ssh-ed25519")) {
-            this.keyType.select(1);
+            this.keyType.setText("ED25519");
         } else if (StringUtil.startWithIgnoreCase(publicKey, "ssh-rsa")) {
-            this.keyType.select(0);
+            this.keyType.setText("RSA");
         } else {
-            this.keyType.clearSelection();
+            this.keyType.clear();
         }
         this.fillKeyLength();
     }
@@ -234,22 +233,15 @@ public class ShellImportKeyController extends StageController {
      * 填充密钥长度
      */
     private void fillKeyLength() {
-        String keyType = this.keyType.getSelectedItem();
+        String keyType = this.keyType.getText();
         if ("ED25519".equals(keyType)) {
-            this.keyLength.init("ED25519");
-            this.keyLength.selectFirst();
+            this.keyLength.setValue(256);
         } else if ("RSA".equals(keyType)) {
             String pubKey = this.publicKey.getTextTrim();
-            if (pubKey.length() > 8) {
-                pubKey = pubKey.substring(8);
-                int len = KeyUtil.getRSAKeyLength(pubKey);
-                this.keyLength.init("RSA");
-                this.keyLength.select(len);
-            } else {
-                this.keyLength.clearItems();
-            }
+            int len = OpenSSHRSAUtil.getKeyLength(pubKey);
+            this.keyLength.setValue(len);
         } else {
-            this.keyLength.clearItems();
+            this.keyLength.clear();
         }
     }
 }

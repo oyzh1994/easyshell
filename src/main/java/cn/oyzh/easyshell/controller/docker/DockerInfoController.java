@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
-import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;

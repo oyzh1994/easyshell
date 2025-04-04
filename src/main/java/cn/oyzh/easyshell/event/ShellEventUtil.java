@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
+import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
@@ -37,7 +38,6 @@ import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
-import cn.oyzh.ssh.SSHConnect;
 import javafx.scene.control.TreeItem;
 
 import java.io.File;
@@ -342,6 +342,17 @@ public class ShellEventUtil {
      */
     public static void keyAdded(ShellKey shellKey) {
         ShellKeyAddedEvent event = new ShellKeyAddedEvent();
+        event.data(shellKey);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 密钥已修改事件
+     *
+     * @param shellKey 密钥
+     */
+    public static void keyUpdated(ShellKey shellKey) {
+        ShellKeyUpdatedEvent event = new ShellKeyUpdatedEvent();
         event.data(shellKey);
         EventUtil.post(event);
     }

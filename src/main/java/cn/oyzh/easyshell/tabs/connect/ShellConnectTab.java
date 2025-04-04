@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;

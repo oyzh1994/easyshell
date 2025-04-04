@@ -1,11 +1,6 @@
 package cn.oyzh.easyshell.fx;
 
-import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.system.RuntimeUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
-
-import java.util.List;
 
 /**
  * shell终端类型选择框

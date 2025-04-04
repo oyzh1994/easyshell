@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
-import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
 
 /**

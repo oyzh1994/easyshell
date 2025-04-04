@@ -3,9 +3,7 @@ package cn.oyzh.easyshell.shell;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.terminal.DefaultTtyConnector;
 import com.pty4j.PtyProcess;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;

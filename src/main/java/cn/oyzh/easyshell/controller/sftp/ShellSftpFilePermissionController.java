@@ -1,37 +1,22 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.common.file.FileNameUtil;
-import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.UUIDUtil;
-import cn.oyzh.easyshell.ShellConst;
-import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellUtil;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
-import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataType;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.FileInputStream;
 
 /**
  * ssh文件权限业务

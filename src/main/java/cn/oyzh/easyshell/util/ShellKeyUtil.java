@@ -1,41 +1,13 @@
 package cn.oyzh.easyshell.util;
 
-import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import com.jcraft.jsch.SftpException;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Base64Encoder;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
 
-import javax.crypto.Cipher;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.interfaces.RSAPrivateCrtKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author oyzh

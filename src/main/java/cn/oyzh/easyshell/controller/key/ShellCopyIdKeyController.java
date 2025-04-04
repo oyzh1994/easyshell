@@ -1,41 +1,24 @@
 package cn.oyzh.easyshell.controller.key;
 
-import cn.oyzh.common.file.FileNameUtil;
-import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.security.KeyUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
-import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox;
-import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
-import cn.oyzh.easyshell.store.ShellKeyStore;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

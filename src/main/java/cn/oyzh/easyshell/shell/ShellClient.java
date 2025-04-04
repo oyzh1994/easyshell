@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.process.ProcessExec;
@@ -228,9 +227,9 @@ public class ShellClient {
             }
             String keyName = "key_" + key.getId();
             // 添加认证
-            if (!SSHHolder.JSCH.getIdentityNames().contains(keyName)) {
+//            if (!SSHHolder.JSCH.getIdentityNames().contains(keyName)) {
                 SSHHolder.JSCH.addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
-            }
+//            }
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         }

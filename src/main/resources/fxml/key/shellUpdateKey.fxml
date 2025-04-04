@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
-<?import cn.oyzh.fx.gui.button.ImportButton?>
+<?import cn.oyzh.fx.gui.button.GenerateKeyButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
@@ -12,11 +12,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
-<?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.key.ShellImportKeyController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.key.ShellUpdateKeyController" realWidth="750"
         realHeight="700">
     <InfoLabel text="%base.name">
         <VBox.margin>
@@ -54,55 +52,27 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXHBox>
-        <FXTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180">
-            <FXHBox.margin>
-                <Insets left="30" top="5"/>
-            </FXHBox.margin>
-        </FXTextArea>
-        <FXVBox>
-            <PasteSVGGlyph onMousePrimaryClicked="#pastePubKey">
-                <VBox.margin>
-                    <Insets left="10" top="10"/>
-                </VBox.margin>
-            </PasteSVGGlyph>
-            <ChooseSVGGlyph onMousePrimaryClicked="#choosePubKey">
-                <VBox.margin>
-                    <Insets left="10" top="10"/>
-                </VBox.margin>
-            </ChooseSVGGlyph>
-        </FXVBox>
-    </FXHBox>
+    <ReadOnlyTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextArea>
     <InfoLabel text="%base.privateKey">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXHBox>
-        <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180">
-            <FXHBox.margin>
-                <Insets left="30" top="5"/>
-            </FXHBox.margin>
-        </FXTextArea>
-        <FXVBox>
-            <PasteSVGGlyph onMousePrimaryClicked="#pastePriKey">
-                <VBox.margin>
-                    <Insets left="10" top="10"/>
-                </VBox.margin>
-            </PasteSVGGlyph>
-            <ChooseSVGGlyph onMousePrimaryClicked="#choosePriKey">
-                <VBox.margin>
-                    <Insets left="10" top="10"/>
-                </VBox.margin>
-            </ChooseSVGGlyph>
-        </FXVBox>
-    </FXHBox>
+    <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXTextArea>
     <FXHBox flexWidth="100%" realHeight="50">
-        <ImportButton onAction="#importKey" iconSizePercent="0.8">
+        <SubmitButton onAction="#save">
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>
-        </ImportButton>
+        </SubmitButton>
         <CancelButton>
             <HBox.margin>
                 <Insets left="15" top="20"/>

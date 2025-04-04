@@ -4,9 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpMonitor;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.File;
 

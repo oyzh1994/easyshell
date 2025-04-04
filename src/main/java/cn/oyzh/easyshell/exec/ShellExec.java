@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.exec;
 
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 

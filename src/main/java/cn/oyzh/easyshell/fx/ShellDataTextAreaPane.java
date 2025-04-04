@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.fx;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import javafx.scene.text.Font;
 

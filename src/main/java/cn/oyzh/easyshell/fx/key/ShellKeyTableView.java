@@ -4,6 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
+import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -67,14 +68,14 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem copyKeys1ToHost = MenuItemHelper.copyKeys1ToHost("12", () -> this.copyKeysToHost(keys));
+        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost("12", () -> this.copyKeysToHost(keys));
         menuItems.add(copyKeys1ToHost);
         MenuItem deleteKey = MenuItemHelper.deleteKey1("12", () -> this.deleteKey(keys));
         menuItems.add(deleteKey);
         if (keys.size() == 1) {
             ShellKey key = keys.getFirst();
-            MenuItem renameKey = MenuItemHelper.renameKey1("12", () -> this.renameKey(key));
-            menuItems.add(renameKey);
+            MenuItem updateKey = MenuItemHelper.updateKey1("12", () -> this.updateKey(key));
+            menuItems.add(updateKey);
             MenuItem exportKey = MenuItemHelper.exportKey1("12", () -> this.exportKey(key));
             menuItems.add(exportKey);
         }
@@ -110,6 +111,24 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
                 this.keyStore.delete(key);
             }
             this.removeItem(keys);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改密钥
+     *
+     * @param key 密钥
+     */
+    public void updateKey(ShellKey key) {
+        try {
+            if (key == null) {
+                return;
+            }
+            StageAdapter adapter=StageManager.parseStage(ShellUpdateKeyController.class);
+            adapter.setProp("key", key);
+            adapter.display();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

@@ -1,25 +1,13 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.fx.gui.skin.ActionTextFieldSkin;
-import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
-import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph;
-import cn.oyzh.fx.plus.controls.popup.SearchHistoryPopup;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.controls.text.field.FXTextField;
-import cn.oyzh.fx.plus.skin.FXTextFieldSkin;
-import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 import java.util.function.Consumer;
 

@@ -1,12 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
-import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 

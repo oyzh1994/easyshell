@@ -3,21 +3,18 @@ package cn.oyzh.easyshell.controller.key;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox;
-import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.OpenSSHED25519Util;
-import cn.oyzh.ssh.OpenSSHRSAUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -31,9 +28,9 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "key/shellAddKey.fxml"
+        value = FXConst.FXML_PATH + "key/shellUpdateKey.fxml"
 )
-public class ShellAddKeyController extends StageController {
+public class ShellUpdateKeyController extends StageController {
 
     /**
      * 密钥名称
@@ -45,7 +42,7 @@ public class ShellAddKeyController extends StageController {
      * 私钥
      */
     @FXML
-    private ReadOnlyTextArea privateKey;
+    private FXTextArea privateKey;
 
     /**
      * 公钥
@@ -57,13 +54,18 @@ public class ShellAddKeyController extends StageController {
      * 密钥类型
      */
     @FXML
-    private ShellKeyTypeComboBox keyType;
+    private ReadOnlyTextField keyType;
 
     /**
      * 密钥长度
      */
     @FXML
-    private ShellKeyLengthComboBox keyLength;
+    private ReadOnlyTextField keyLength;
+
+    /**
+     * 密钥
+     */
+    private ShellKey key;
 
     /**
      * 密钥存储对象
@@ -71,21 +73,14 @@ public class ShellAddKeyController extends StageController {
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     /**
-     * 添加密钥
+     * 保存密钥
      */
     @FXML
-    private void add() {
+    private void save() {
         String name = this.name.getTextTrim();
         // 名称检查
         if (StringUtil.isBlank(name)) {
             this.name.requestFocus();
-            return;
-        }
-        // 密钥检查
-        String publicKey = this.publicKey.getTextTrim();
-        if (StringUtil.isBlank(publicKey)) {
-            MessageBox.warn(ShellI18nHelper.keyTip1());
-            this.publicKey.requestFocus();
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
@@ -95,20 +90,11 @@ public class ShellAddKeyController extends StageController {
             return;
         }
         try {
-
-            String keyType = this.keyType.getSelectedItem();
-            int keyLength = this.keyLength.getSelectedItem();
-
-            ShellKey shellKey = new ShellKey();
-            shellKey.setPublicKey(publicKey);
-            shellKey.setPrivateKey(privateKey);
-            shellKey.setName(name);
-            shellKey.setType(keyType);
-            shellKey.setLength(keyLength);
-
+            this.key.setName(name);
+            this.key.setPrivateKey(privateKey);
             // 保存数据
-            if (this.keyStore.insert(shellKey)) {
-                ShellEventUtil.keyAdded(shellKey);
+            if (this.keyStore.update(this.key)) {
+                ShellEventUtil.keyUpdated(this.key);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
@@ -120,19 +106,16 @@ public class ShellAddKeyController extends StageController {
         }
     }
 
-    @Override
-    protected void bindListeners() {
-        this.keyType.selectedItemChanged((observableValue, number, t1) -> {
-            this.keyLength.init(t1);
-            this.publicKey.clear();
-            this.privateKey.clear();
-        });
-        this.keyLength.init("RSA");
-    }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
+        this.key = this.getWindowProp("key");
+        this.name.setText(this.key.getName());
+        this.keyType.setText(this.key.getType());
+        this.publicKey.setText(this.key.getPublicKey());
+        this.keyLength.setText(this.key.getLength() + "");
+        this.privateKey.setText(this.key.getPrivateKey());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -140,29 +123,5 @@ public class ShellAddKeyController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.addKey1();
-    }
-
-    @FXML
-    private void generateKey() {
-        String type = this.keyType.getSelectedItem();
-        Integer length = this.keyLength.getSelectedItem();
-        StageManager.showMask(() -> {
-            try {
-                String[] key;
-                if ("RSA".equalsIgnoreCase(type)) {
-                    key = OpenSSHRSAUtil.generateKey(length);
-                    // ssh公钥
-                    this.publicKey.setText( key[0]);
-                } else {
-                    key = OpenSSHED25519Util.generateKey();
-                    // ssh公钥
-                    this.publicKey.setText( key[0]);
-                }
-                // ssh私钥
-                this.privateKey.setText(key[1]);
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        });
     }
 }

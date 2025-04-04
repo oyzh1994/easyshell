@@ -1,13 +1,10 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.SftpFile;
@@ -24,23 +21,19 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**

@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.process.ProcessInfo;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 

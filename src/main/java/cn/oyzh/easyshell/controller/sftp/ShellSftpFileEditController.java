@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;

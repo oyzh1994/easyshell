@@ -1,22 +1,18 @@
 package cn.oyzh.easyshell.tabs.key;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
+import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.fx.key.ShellKeyTableView;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
 
 /**
  * shell终端tab内容组件
@@ -85,5 +81,15 @@ public class ShellKeyTabController extends RichTabController {
     @EventSubscribe
     private void onKeyAdded(ShellKeyAddedEvent event) {
         this.refresh();
+    }
+
+    /**
+     * 密钥修改事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onKeyUpdated(ShellKeyUpdatedEvent event) {
+        this.keyTable.refresh();
     }
 }

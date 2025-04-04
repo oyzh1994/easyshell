@@ -4,7 +4,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
-import cn.oyzh.i18n.I18nHelper;
 
 import java.util.List;
 
