@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.test;
 
+import cn.oyzh.common.file.FileUtil;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMEncryptor;
 import org.bouncycastle.openssl.PEMParser;
@@ -34,6 +35,15 @@ public class OpenSSHKeyGenerator {
         String privateKeyPkcs8 = generatePEMPrivateKey(keyPair.getPrivate(), password, "PKCS#8");
         System.out.println("\nPrivate Key (Encrypted PKCS#8):");
         System.out.println(privateKeyPkcs8);
+
+        String dir = "C:\\Users\\Administrator\\Desktop\\";
+
+        File privateK = new File(dir, "k11.pri");
+        File privateK1 = new File(dir, "k11.pri8");
+        File publicK = new File(dir, "k11.pub");
+        FileUtil.writeString(privateKeyPkcs1, privateK);
+        FileUtil.writeString(privateKeyPkcs8, privateK1);
+        FileUtil.writeString(publicKey, publicK);
     }
 
     private static KeyPair generateRSAKeyPair(int keySize) throws NoSuchAlgorithmException {

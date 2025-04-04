@@ -106,12 +106,20 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
         return publicKey;
     }
 
+    public byte[] getPublicKeyBytes() {
+        return publicKey == null ? null : publicKey.getBytes();
+    }
+
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 
     public String getPrivateKey() {
         return privateKey;
+    }
+
+    public byte[] getPrivateKeyBytes() {
+        return privateKey == null ? null : privateKey.getBytes();
     }
 
     public void setPrivateKey(String privateKey) {

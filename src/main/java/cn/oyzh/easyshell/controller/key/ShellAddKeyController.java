@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.controller.key;
 
-import cn.oyzh.common.security.KeyGenerator;
 import cn.oyzh.common.security.KeyUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
@@ -9,7 +8,6 @@ import cn.oyzh.easyshell.fx.key.ShellKeyLengthComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -20,6 +18,8 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.ssh.OpenSSHED25519KeyGenerator;
+import cn.oyzh.ssh.OpenSSHRSAKeyGenerator;
 import cn.oyzh.ssh.SSHUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -155,19 +155,17 @@ public class ShellAddKeyController extends StageController {
         Integer length = this.keyLength.getSelectedItem();
         StageManager.showMask(() -> {
             try {
-                String[] key=null;
+                String[] key;
                 if ("RSA".equalsIgnoreCase(type)) {
-                    KeyPair keyPair = KeyGenerator.rsa(length);
-                    key= KeyUtil.toSSHKey(keyPair);
+                    key = OpenSSHRSAKeyGenerator.generateKey(length);
                     // ssh公钥
-                    this.publicKey.setText("ssh-rsa " + key[0]);
+                    this.publicKey.setText( key[0]);
                 } else {
-//                    key = KeyGenerator.ed25519();
+                    key = OpenSSHED25519KeyGenerator.generateKey();
                     // ssh公钥
-//                    this.publicKey.setText("ssh-ed25519 " + key[0]);
+                    this.publicKey.setText( key[0]);
                 }
                 // ssh私钥
-//                String privateKeyPem = SSHUtil.formatPem("OPENSSH PRIVATE KEY", key[1]);
                 this.privateKey.setText(key[1]);
             } catch (Exception ex) {
                 MessageBox.exception(ex);

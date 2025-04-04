@@ -25,7 +25,6 @@ import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
-import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -42,10 +41,12 @@ import com.jcraft.jsch.SftpException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -264,6 +265,9 @@ public class ShellClient {
 //            String password = "your_strong_password_123!"; // 在此设置密码
 //            String password = "your_strong_password_123!";
 //            String password = "your_password";
+//            String password = "yourpassword";
+//            String password = "your_strong_password_123!xx"; // 在此设置密码
+
 
 //            // 配置支持Ed25519算法
 //            SSHHolder.JSCH.setConfig("server_host_key", "ssh-ed25519,ssh-rsa");
@@ -284,11 +288,16 @@ public class ShellClient {
 //            String pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIINNtsDClAFKIO9iL/zcOUXos/q1CRhZwZELE3eZq6/e generated-by-java";
             // 添加认证
 //            SSHHolder.JSCH.addIdentity("ke1", priKeyFile.getBytes(), null, password.getBytes());
+            Security.addProvider(new BouncyCastleProvider());
 //            SSHHolder.JSCH.addIdentity(priKeyFile, password.getBytes());
             SSHHolder.JSCH.addIdentity(priKeyFile);
 //            SSHHolder.JSCH.addIdentity( priKeyFile, pubkey, password.getBytes());
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+            session.setConfig("userauth.gssapi-with-mic", "no");  // ‌:ml-citation{ref="2,5" data="citationList"}
+            session.setConfig("KexAlgorithms", "diffie-hellman-group14-sha1");
+            session.setConfig("Ciphers", "aes128-ctr");  // ‌:ml-citation{ref="4,7" data="citationList"}
+
 //            session.setConfig("server_host_key", "ssh-ed25519,ssh-rsa");
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getCertificate());
@@ -297,10 +306,11 @@ public class ShellClient {
                 MessageBox.warn("certificate file not exist");
                 return;
             }
-            // 生成私钥文件
-            File priKeyFile = ShellKeyUtil.generateKeyFile(key);
+            String keyName = "key_" + key.getId();
             // 添加认证
-            SSHHolder.JSCH.addIdentity(priKeyFile.getPath(), "");
+            if (!SSHHolder.JSCH.getIdentityNames().contains(keyName)) {
+                SSHHolder.JSCH.addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
+            }
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         }
