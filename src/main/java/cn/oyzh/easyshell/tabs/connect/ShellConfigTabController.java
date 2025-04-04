@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserProfileTabController
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserZshrcTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinHostsTabController;
+import cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinSshdTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -72,6 +73,7 @@ public class ShellConfigTabController extends ParentTabController {
                 this.tabPane.removeTab("userBashProfile");
             } else {
                 // 移除windows专属配置
+                this.tabPane.removeTab("winSshd");
                 this.tabPane.removeTab("winHosts");
                 this.tabPane.removeTab("winEnvironment");
                 // 如果配置文件不存在，则移除此配置
@@ -193,6 +195,12 @@ public class ShellConfigTabController extends ParentTabController {
     private ShellConfigWinHostsTabController winHostsController;
 
     /**
+     * ssh配置文件，windows
+     */
+    @FXML
+    private ShellConfigWinSshdTabController winSshdController;
+
+    /**
      * 环境配置，windows
      */
     @FXML
@@ -219,7 +227,8 @@ public class ShellConfigTabController extends ParentTabController {
         return List.of(this.profileController, this.userProfileController, this.environmentController,
                 this.bashController, this.userBashProfileController, this.userBashrcController,
                 this.userZshrcController, this.resolvController, this.sshdController,
-                this.hostsController, this.winHostsController, this.winEnvironmentController
+                this.hostsController, this.winHostsController, this.winEnvironmentController,
+                this.winSshdController
         );
     }
 }

@@ -226,8 +226,10 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     private void keyManager(ShellShowKeyEvent event) {
         ShellKeyTab keyTab = this.getTab(ShellKeyTab.class);
         if (keyTab == null) {
-            this.addTab(new ShellKeyTab());
-        } else if (!keyTab.isSelected()) {
+            keyTab = new ShellKeyTab();
+            this.addTab(keyTab);
+        }
+        if (!keyTab.isSelected()) {
             this.select(keyTab);
         }
     }

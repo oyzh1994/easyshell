@@ -234,11 +234,11 @@ public class ShellKeyUtil {
             // windows
             if (client.isWindows()) {
                 sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
-                if (client.openSftp().exist(sshFile)) {
-                    sshFile = sshFile + "authorized_keys";
-                } else {
-                    sshFile = " C:\\Users\\Administrator\\.ssh" + client.getFileSeparator() + "authorized_keys";
+                // 检查文件夹
+                if (!client.openSftp().exist(sshFile)) {
+                    client.openSftp().mkdir(sshFile);
                 }
+                sshFile = sshFile + "authorized_keys";
             } else {
                 sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator() + "authorized_keys";
             }
@@ -247,7 +247,7 @@ public class ShellKeyUtil {
                 String remoteFile = client.getUserHome() + key.getId() + ".pub";
                 // 上传
                 ShellSftp sftp = client.newSftp();
-                sftp.put(new ByteArrayInputStream(key.getPublicKeyBytes()), key.getId() + ".pub");
+                sftp.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile);
                 IOUtil.close(sftp);
                 // 追加到已知公钥
                 client.shellExec().append_file(remoteFile, sshFile);

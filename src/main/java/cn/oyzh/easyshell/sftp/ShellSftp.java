@@ -59,6 +59,9 @@ public class ShellSftp extends ShellChannel {
     public Vector<ChannelSftp.LsEntry> ls(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             return this.getChannel().ls(path);
         } finally {
             this.setUsing(false);
@@ -68,6 +71,9 @@ public class ShellSftp extends ShellChannel {
     public void cd(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             this.getChannel().cd(path);
         } finally {
             this.setUsing(false);
@@ -84,7 +90,9 @@ public class ShellSftp extends ShellChannel {
     }
 
     public List<SftpFile> lsFile(String path, ShellClient client) throws SftpException {
-//        this.cd(path);
+        if (this.client.isWindows()) {
+            path = ShellUtil.reverseWindowsFilePath(path);
+        }
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
@@ -108,6 +116,9 @@ public class ShellSftp extends ShellChannel {
     public void rm(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             this.getChannel().rm(path);
         } finally {
             this.setUsing(false);
@@ -117,27 +128,30 @@ public class ShellSftp extends ShellChannel {
     public void rmdir(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             this.getChannel().rmdir(path);
         } finally {
             this.setUsing(false);
         }
     }
 
-    public void rmdirRecursive(String path) throws SftpException {
-        Vector<ChannelSftp.LsEntry> entries = this.ls(path);
-        for (ChannelSftp.LsEntry entry : entries) {
-            String filename = entry.getFilename();
-            if (!filename.equals(".") && !filename.equals("..")) {
-                String fullPath = path + "/" + filename;
-                if (entry.getAttrs().isDir()) {
-                    this.rmdirRecursive(fullPath);
-                } else {
-                    this.rm(fullPath);
-                }
-            }
-        }
-        this.rmdir(path);
-    }
+//    public void rmdirRecursive(String path) throws SftpException {
+//        Vector<ChannelSftp.LsEntry> entries = this.ls(path);
+//        for (ChannelSftp.LsEntry entry : entries) {
+//            String filename = entry.getFilename();
+//            if (!filename.equals(".") && !filename.equals("..")) {
+//                String fullPath = path + "/" + filename;
+//                if (entry.getAttrs().isDir()) {
+//                    this.rmdirRecursive(fullPath);
+//                } else {
+//                    this.rm(fullPath);
+//                }
+//            }
+//        }
+//        this.rmdir(path);
+//    }
 
     public String pwd() throws SftpException {
         try {
@@ -151,19 +165,25 @@ public class ShellSftp extends ShellChannel {
     public void mkdir(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             this.getChannel().mkdir(path);
         } finally {
             this.setUsing(false);
         }
     }
 
-    public void mkdirIfNotExist(String path) throws SftpException {
-        if (!this.exist(path)) {
-            this.mkdir(path);
-        }
-    }
+//    public void mkdirIfNotExist(String path) throws SftpException {
+//        if (!this.exist(path)) {
+//            this.mkdir(path);
+//        }
+//    }
 
     public void mkdirRecursive(String path) throws SftpException {
+        if (this.client.isWindows()) {
+            path = ShellUtil.reverseWindowsFilePath(path);
+        }
         String[] dirs = path.split("/");
         StringBuilder currentPath = new StringBuilder();
         for (String dir : dirs) {
@@ -183,8 +203,8 @@ public class ShellSftp extends ShellChannel {
 
     public boolean exist(String path) throws SftpException {
         try {
-            if (this.client.isWindows() && !path.startsWith("/")) {
-                path = "/" + ShellUtil.reverseWindowsFilePath(path);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
             }
             return this.stat(path) != null;
         } catch (SftpException ex) {
@@ -198,6 +218,9 @@ public class ShellSftp extends ShellChannel {
     public void touch(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
             this.getChannel().put(inputStream, path);
         } finally {
@@ -208,6 +231,9 @@ public class ShellSftp extends ShellChannel {
     public void rename(String path, String newPath) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             this.getChannel().rename(path, newPath);
         } finally {
             this.setUsing(false);
@@ -217,6 +243,9 @@ public class ShellSftp extends ShellChannel {
     public SftpATTRS stat(String path) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
             return this.getChannel().stat(path);
         } finally {
             this.setUsing(false);
@@ -230,6 +259,10 @@ public class ShellSftp extends ShellChannel {
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                src = ShellUtil.reverseWindowsFilePath(src);
+                dest = ShellUtil.reverseWindowsFilePath(dest);
+            }
             this.getChannel().put(src, dest, monitor, mode);
         } finally {
             this.setUsing(false);
@@ -239,6 +272,9 @@ public class ShellSftp extends ShellChannel {
     public void put(InputStream src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                dest = ShellUtil.reverseWindowsFilePath(dest);
+            }
             this.getChannel().put(src, dest, monitor, mode);
         } finally {
             this.setUsing(false);
@@ -256,6 +292,10 @@ public class ShellSftp extends ShellChannel {
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                src = ShellUtil.reverseWindowsFilePath(src);
+                dest = ShellUtil.reverseWindowsFilePath(dest);
+            }
             this.getChannel().get(src, dest, monitor, mode);
         } finally {
             this.setUsing(false);
@@ -265,6 +305,9 @@ public class ShellSftp extends ShellChannel {
     public InputStream get(String src) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                src = ShellUtil.reverseWindowsFilePath(src);
+            }
             return this.getChannel().get(src);
         } finally {
             this.setUsing(false);
@@ -278,6 +321,9 @@ public class ShellSftp extends ShellChannel {
     public OutputStream put(String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
+            if (this.client.isWindows()) {
+                dest = ShellUtil.reverseWindowsFilePath(dest);
+            }
             return this.getChannel().put(dest, monitor, mode);
         } finally {
             this.setUsing(false);
@@ -300,12 +346,15 @@ public class ShellSftp extends ShellChannel {
      * 修改权限，这个方法windows执行无效果
      *
      * @param permission 权限
-     * @param filePath   文件路径
+     * @param path   文件路径
      */
-    public void chmod(int permission, String filePath) throws SftpException {
+    public void chmod(int permission, String path) throws SftpException {
         try {
             this.setUsing(true);
-            this.getChannel().chmod(permission, filePath);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
+            this.getChannel().chmod(permission, path);
         } finally {
             this.setUsing(false);
         }

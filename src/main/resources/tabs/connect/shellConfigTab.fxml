@@ -20,6 +20,7 @@
         <fx:include fx:id="userBashrc" source="config/shellConfigUserBashrcTab.fxml"/>
         <fx:include fx:id="userZshrc" source="config/shellConfigUserZshrcTab.fxml"/>
         <fx:include fx:id="winHosts" source="config/shellConfigWinHostsTab.fxml"/>
+        <fx:include fx:id="winSshd" source="config/shellConfigWinSshdTab.fxml"/>
         <fx:include fx:id="winEnvironment" source="config/shellConfigWinEnvironmentTab.fxml"/>
     </FXTabPane>
 </FXTab>

@@ -28,6 +28,9 @@ public class ShellUtil {
     }
 
     public static String reverseWindowsFilePath(String filePath) {
+        if (!filePath.startsWith("/")) {
+            filePath = "/" + filePath;
+        }
         return StringUtil.replace(filePath, "\\", "/");
     }
 

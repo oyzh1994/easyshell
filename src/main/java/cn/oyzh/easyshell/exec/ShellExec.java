@@ -146,6 +146,9 @@ public class ShellExec implements AutoCloseable {
     }
 
     public String cat_sshd_config() {
+        if (this.client.isWindows()) {
+            return this.client.exec("type C:\\ProgramData\\ssh\\sshd_config");
+        }
         return this.client.exec("cat /etc/ssh/sshd_config");
     }
 
