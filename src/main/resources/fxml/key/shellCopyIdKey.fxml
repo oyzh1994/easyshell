@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.ExecuteButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController" realWidth="750"
+        realHeight="480">
+    <InfoLabel text="%base.host">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ShellConnectComboBox fx:id="host" require="true" realHeight="30"
+                          flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ShellConnectComboBox>
+    <InfoLabel text="%base.keys1">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextArea fx:id="keyInfo" realHeight="80" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextArea>
+    <InfoLabel text="%base.message">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <MsgTextArea fx:id="message" realHeight="150" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </MsgTextArea>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <ExecuteButton onAction="#copyKeys" iconSizePercent="0.8">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </ExecuteButton>
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>

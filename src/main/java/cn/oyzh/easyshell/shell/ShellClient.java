@@ -541,7 +541,9 @@ public class ShellClient {
                 result = stream.toString();
             }
             stream.close();
-            if (StringUtil.endsWith(result, "\n")) {
+            if (StringUtil.endsWith(result, "\r\n")) {
+                result = result.substring(0, result.length() - 2);
+            } else if (StringUtil.endWithAny(result, "\n", "\r")) {
                 result = result.substring(0, result.length() - 1);
             }
             return result;
@@ -788,5 +790,12 @@ public class ShellClient {
             }
         }
         return this.remoteCharset;
+    }
+
+    public String getFileSeparator() {
+        if (this.isWindows()) {
+            return "\\";
+        }
+        return "/";
     }
 }

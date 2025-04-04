@@ -1,39 +1,48 @@
-//package cn.oyzh.easyshell.util;
-//
-//import cn.oyzh.common.file.FileUtil;
-//import cn.oyzh.easyshell.ShellConst;
-//import cn.oyzh.easyshell.domain.ShellKey;
-//import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-//import org.bouncycastle.jce.provider.BouncyCastleProvider;
-//import org.bouncycastle.util.encoders.Base64Encoder;
-//import org.bouncycastle.util.io.pem.PemObject;
-//import org.bouncycastle.util.io.pem.PemWriter;
-//
-//import javax.crypto.Cipher;
-//import java.io.File;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.nio.ByteBuffer;
-//import java.security.KeyFactory;
-//import java.security.KeyPair;
-//import java.security.KeyPairGenerator;
-//import java.security.NoSuchAlgorithmException;
-//import java.security.PrivateKey;
-//import java.security.PublicKey;
-//import java.security.Security;
-//import java.security.interfaces.RSAPrivateCrtKey;
-//import java.security.spec.InvalidKeySpecException;
-//import java.security.spec.PKCS8EncodedKeySpec;
-//import java.util.Arrays;
-//import java.util.Base64;
-//import java.util.Random;
-//
-///**
-// * @author oyzh
-// * @since 2025-04-03
-// */
-//public class ShellKeyUtil {
-//
+package cn.oyzh.easyshell.util;
+
+import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.easyshell.ShellConst;
+import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.shell.ShellClient;
+import com.jcraft.jsch.SftpException;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64Encoder;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
+
+import javax.crypto.Cipher;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * @author oyzh
+ * @since 2025-04-03
+ */
+public class ShellKeyUtil {
+
 //    /**
 //     * 生成私钥文件
 //     *
@@ -210,6 +219,49 @@
 //        }
 //        return null;
 //    }
-//
-//
-//}
+
+    /**
+     * 把ssh公钥复制到远程服务
+     *
+     * @param keys   密钥列表
+     * @param client shell客户端
+     * @return 结果
+     */
+    public static boolean sshCopyId(List<ShellKey> keys, ShellClient client) {
+        try {
+            // ssh已知公钥文件
+            String sshFile;
+            // windows
+            if (client.isWindows()) {
+                sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
+                if (client.openSftp().exist(sshFile)) {
+                    sshFile = sshFile + "authorized_keys";
+                } else {
+                    sshFile = " C:\\Users\\Administrator\\.ssh" + client.getFileSeparator() + "authorized_keys";
+                }
+            } else {
+                sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator() + "authorized_keys";
+            }
+            for (ShellKey key : keys) {
+                // 远程临时公钥
+                String remoteFile = client.getUserHome() + key.getId() + ".pub";
+                // 上传
+                ShellSftp sftp = client.newSftp();
+                sftp.put(new ByteArrayInputStream(key.getPublicKeyBytes()), key.getId() + ".pub");
+                IOUtil.close(sftp);
+                // 追加到已知公钥
+                client.shellExec().append_file(remoteFile, sshFile);
+                try {
+                    // 删除临时公钥文件
+                    client.openSftp().rm(remoteFile);
+                } catch (Exception ignored) {
+                }
+            }
+            return true;
+        } catch (SftpException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+}

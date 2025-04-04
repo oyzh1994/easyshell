@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.fx.key;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -11,6 +12,8 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -64,6 +67,8 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
+        MenuItem copyKeys1ToHost = MenuItemHelper.copyKeys1ToHost("12", () -> this.copyKeysToHost(keys));
+        menuItems.add(copyKeys1ToHost);
         MenuItem deleteKey = MenuItemHelper.deleteKey1("12", () -> this.deleteKey(keys));
         menuItems.add(deleteKey);
         if (keys.size() == 1) {
@@ -74,6 +79,21 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             menuItems.add(exportKey);
         }
         return menuItems;
+    }
+
+    /**
+     * 复制密钥到主机
+     *
+     * @param keys 密钥
+     */
+    public void copyKeysToHost(List<ShellKey> keys) {
+        try {
+            StageAdapter adapter= StageManager.parseStage(ShellCopyIdKeyController.class);
+            adapter.setProp("keys", keys);
+            adapter.display();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

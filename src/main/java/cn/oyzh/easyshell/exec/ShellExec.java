@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.exec;
 
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
@@ -198,6 +200,22 @@ public class ShellExec implements AutoCloseable {
         return this.client.exec("cat " + sourceFile + " > " + targetFile);
     }
 
+    public String append(String text, String file) {
+        return this.client.exec("echo \"" + text + "\" >> " + file);
+    }
+
+    public String append_file(String sourceFile, String targetFile) {
+        if (this.client.isMacos() || this.client.isLinux()) {
+            return this.echo("$(cat " + sourceFile + ")", targetFile);
+        }
+        if (this.client.isWindows()) {
+            sourceFile = ShellUtil.fixWindowsFilePath(sourceFile);
+            targetFile = ShellUtil.fixWindowsFilePath(targetFile);
+            return this.client.exec("type " + sourceFile + " >> " + targetFile);
+        }
+        return this.client.exec("cat " + sourceFile + " >> " + targetFile);
+    }
+
     public String whoami() {
         return this.client.exec("whoami");
     }
@@ -219,4 +237,6 @@ public class ShellExec implements AutoCloseable {
     public String chmod(String permission, String filePath) {
         return this.client.exec("chmod " + permission + " " + filePath);
     }
+
+
 }
