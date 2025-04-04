@@ -41,12 +41,10 @@ import com.jcraft.jsch.SftpException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.Charset;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -97,27 +95,8 @@ public class ShellClient {
      */
     private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
 
-//    /**
-//     * 静默关闭标志位
-//     */
-//    private boolean closeQuietly;
-
     public ShellClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
-        // 监听连接状态
-        this.stateProperty().addListener((observable, oldValue, newValue) -> {
-            switch (newValue) {
-//                case CLOSED -> {
-//                    if (!this.closeQuietly) {
-//                        ShellEventUtil.connectionClosed(this);
-//                    }
-//                }
-                case CONNECTED -> ShellEventUtil.connectionConnected(this);
-                default -> {
-
-                }
-            }
-        });
     }
 
     /**
@@ -237,68 +216,9 @@ public class ShellClient {
                 MessageBox.warn("certificate file not exist");
                 return;
             }
-
-//            priKeyFile = """
-//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
-//                    MC4CAQAwBQYDK2VwBCIEIKjt/RWhKtueLFAv/XsqBSlUd1jmNQSUqjNwz4OIFKv7
-//                    -----END ENCRYPTED PRIVATE KEY-----
-//                    """;
-//            priKeyFile = """
-//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
-//                    MC4CAQAwBQYDK2VwBCIEIGBdSVs7fOdMZ1Q6zQx0TaxraNOWHfXCzpJ6iblK1gXj
-//                    -----END ENCRYPTED PRIVATE KEY-----
-//                    """;
-//            priKeyFile = """
-//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
-//                    Proc-Type: 4,ENCRYPTED
-//                    DEK-Info: AES-256-CBC,CF530674348ECCC9451934600FA4C175
-//                    IuLofJFk0g0LFfRSZ0iTRLayiMQAgwhR7orPQGTFBy632YXiV8AAfvynxlZ3Bsb6
-//                    ov9AZQW6tkUnO8yDcwagfw==
-//                    -----END ENCRYPTED PRIVATE KEY-----
-//                    """;
-//            priKeyFile = """
-//                    -----BEGIN ENCRYPTED PRIVATE KEY-----
-//                    MC4CAQAwBQYDK2VwBCIEIJi2Pp4/d/OE8/cTNdM2US09ZuBFqvyY3iYayVuXHTy7
-//                    -----END ENCRYPTED PRIVATE KEY-----
-//                    """;
-//            String password = "your_secure_passphrase!123"; // 在此设置密码
-//            String password = "your_strong_password_123!"; // 在此设置密码
-//            String password = "your_strong_password_123!";
-//            String password = "your_password";
-//            String password = "yourpassword";
-//            String password = "your_strong_password_123!xx"; // 在此设置密码
-
-
-//            // 配置支持Ed25519算法
-//            SSHHolder.JSCH.setConfig("server_host_key", "ssh-ed25519,ssh-rsa");
-//
-//            // 添加更多兼容算法配置
-//
-//            SSHHolder.JSCH.setConfig("PubkeyAcceptedAlgorithms", "+ssh-ed25519,ssh-rsa");
-
-//            // 添加身份认证
-//            SSHHolder.JSCH.addIdentity("ed25519_key",
-//                    priKeyFile.getBytes(),
-//                    null,
-//                    password.getBytes()
-//            );
-
-
-//            String pubkey = "C:\\Users\\Administrator\\Desktop\\k9.pub";
-//            String pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIINNtsDClAFKIO9iL/zcOUXos/q1CRhZwZELE3eZq6/e generated-by-java";
-            // 添加认证
-//            SSHHolder.JSCH.addIdentity("ke1", priKeyFile.getBytes(), null, password.getBytes());
-            Security.addProvider(new BouncyCastleProvider());
-//            SSHHolder.JSCH.addIdentity(priKeyFile, password.getBytes());
             SSHHolder.JSCH.addIdentity(priKeyFile);
-//            SSHHolder.JSCH.addIdentity( priKeyFile, pubkey, password.getBytes());
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
-            session.setConfig("userauth.gssapi-with-mic", "no");  // ‌:ml-citation{ref="2,5" data="citationList"}
-            session.setConfig("KexAlgorithms", "diffie-hellman-group14-sha1");
-            session.setConfig("Ciphers", "aes128-ctr");  // ‌:ml-citation{ref="4,7" data="citationList"}
-
-//            session.setConfig("server_host_key", "ssh-ed25519,ssh-rsa");
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getCertificate());
             // 检查私钥是否存在
@@ -344,20 +264,9 @@ public class ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
-//        session.setConfig("PubkeyAcceptedAlgorithms", "+ssh-ed25519");
-//        session.setConfig("userauth.gssapi-with-mic", "no");
-
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
-
-//    /**
-//     * 关闭客户端，静默模式
-//     */
-//    public void closeQuiet() {
-//        this.closeQuietly = true;
-//        this.close();
-//    }
 
     /**
      * 关闭客户端
@@ -442,8 +351,6 @@ public class ShellClient {
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
                 ShellClientChecker.push(this);
-//                // 初始化环境
-//                this.initEnvironment();
             } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
