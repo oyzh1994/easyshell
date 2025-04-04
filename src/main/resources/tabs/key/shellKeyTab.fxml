@@ -19,16 +19,16 @@
                 <Insets left="10" top="10"/>
             </FXHBox.margin>
         </AddSVGGlyph>
-        <ImportSVGGlyph onMousePrimaryClicked="#importKey">
-            <FXHBox.margin>
-                <Insets left="10" top="10"/>
-            </FXHBox.margin>
-        </ImportSVGGlyph>
         <EditSVGGlyph onMousePrimaryClicked="#editKey">
             <FXHBox.margin>
                 <Insets left="10" top="10"/>
             </FXHBox.margin>
         </EditSVGGlyph>
+        <ImportSVGGlyph onMousePrimaryClicked="#importKey">
+            <FXHBox.margin>
+                <Insets left="10" top="10"/>
+            </FXHBox.margin>
+        </ImportSVGGlyph>
     </FXHBox>
     <ShellKeyTableView fx:id="keyTable" flexWidth="100% - 20" flexHeight="100% - 30">
         <columns>

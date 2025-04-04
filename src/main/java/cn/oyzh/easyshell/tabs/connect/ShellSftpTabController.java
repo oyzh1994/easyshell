@@ -528,15 +528,14 @@ public class ShellSftpTabController extends SubTabController {
     private void hiddenFile(boolean hidden) {
         if (hidden) {
             this.hiddenPane.hidden();
-            this.setting.setShowHiddenFile(false);
             this.fileTable.setShowHiddenFile(false);
             this.hiddenPane.setTipText(I18nHelper.showHiddenFiles());
         } else {
             this.hiddenPane.show();
-            this.setting.setShowHiddenFile(true);
             this.fileTable.setShowHiddenFile(true);
             this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
+        this.setting.setShowHiddenFile(hidden);
         this.settingStore.update(this.setting);
     }
 
