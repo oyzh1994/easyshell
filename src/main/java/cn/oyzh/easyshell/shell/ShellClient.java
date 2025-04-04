@@ -220,7 +220,7 @@ public class ShellClient {
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
-            ShellKey key = this.keyStore.selectOne(this.shellConnect.getCertificate());
+            ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
             if (key == null) {
                 MessageBox.warn("certificate file not exist");

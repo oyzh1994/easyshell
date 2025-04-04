@@ -312,14 +312,11 @@ public class ShellUpdateConnectController extends StageController {
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
             // 认证信息
+            shellConnect.setKeyId(this.key.getKeyId());
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
-            if (this.authMethod.isManagerAuth()) {
-                shellConnect.setCertificate(this.key.getCertificate());
-            } else {
-                shellConnect.setCertificate(this.certificate.getTextTrim());
-            }
+            shellConnect.setCertificate(this.certificate.getTextTrim());
             // ssh转发
             shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
@@ -353,8 +350,8 @@ public class ShellUpdateConnectController extends StageController {
             this.certificate.requestFocus();
             return;
         }
-        String key = this.key.getCertificate();
-        if (this.authMethod.isManagerAuth() && StringUtil.isBlank(key)) {
+        String keyId = this.key.getKeyId();
+        if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
             this.key.requestFocus();
             return;
         }
@@ -380,13 +377,10 @@ public class ShellUpdateConnectController extends StageController {
             this.shellConnect.setTermType(termType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
+            this.shellConnect.setKeyId(keyId);
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
-            if (this.authMethod.isManagerAuth()) {
-                this.shellConnect.setCertificate(key);
-            } else {
-                this.shellConnect.setCertificate(certificate);
-            }
+            this.shellConnect.setCertificate(certificate);
             this.shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // ssh配置
             this.shellConnect.setSshConfig(this.getSSHConfig());
@@ -492,7 +486,7 @@ public class ShellUpdateConnectController extends StageController {
         } else {
             this.authMethod.select(2);
             // 选中密钥
-            this.key.selectById(this.shellConnect.getCertificate());
+            this.key.selectById(this.shellConnect.getKeyId());
         }
         // ssh配置
         this.sshForward.setSelected(this.shellConnect.isSSHForward());

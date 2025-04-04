@@ -304,14 +304,11 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             // 认证信息
+            shellConnect.setKeyId(this.key.getKeyId());
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
-            if (this.authMethod.isManagerAuth()) {
-                shellConnect.setCertificate(this.key.getCertificate());
-            } else {
-                shellConnect.setCertificate(this.certificate.getTextTrim());
-            }
+            shellConnect.setCertificate(this.certificate.getTextTrim());
             // ssh转发
             shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
@@ -345,8 +342,8 @@ public class ShellAddConnectController extends StageController {
             this.certificate.requestFocus();
             return;
         }
-        String key = this.key.getCertificate();
-        if (this.authMethod.isManagerAuth() && StringUtil.isBlank(key)) {
+        String keyId = this.key.getKeyId();
+        if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
             this.key.requestFocus();
             return;
         }
@@ -373,13 +370,10 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setTermType(termType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
+            shellConnect.setKeyId(keyId);
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
-            if (this.authMethod.isManagerAuth()) {
-                shellConnect.setCertificate(key);
-            } else {
-                shellConnect.setCertificate(certificate);
-            }
+            shellConnect.setCertificate(certificate);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // ssh配置
             shellConnect.setSshConfig(this.getSSHConfig());

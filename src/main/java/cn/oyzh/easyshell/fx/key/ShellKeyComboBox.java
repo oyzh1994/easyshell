@@ -30,7 +30,7 @@ public class ShellKeyComboBox extends FXComboBox<ShellKey> {
         this.setItem(keys);
     }
 
-    public String getCertificate() {
+    public String getKeyId() {
         ShellKey key = this.getSelectedItem();
         if (key == null) {
             return null;

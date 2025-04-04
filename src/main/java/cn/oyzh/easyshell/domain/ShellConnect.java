@@ -109,10 +109,24 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String authMethod;
 
     /**
-     * 证书路径/密钥id
+     * 证书路径
      */
     @Column
     private String certificate;
+
+    /**
+     * 密钥id
+     */
+    @Column
+    private String keyId;
+
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
+    }
 
     /**
      * 系统类型
