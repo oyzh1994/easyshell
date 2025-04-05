@@ -122,6 +122,6 @@ public class ShellUpdateKeyController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.addKey1();
+        return I18nHelper.updateKey1();
     }
 }
