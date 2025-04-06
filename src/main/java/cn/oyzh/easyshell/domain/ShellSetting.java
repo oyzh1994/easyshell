@@ -5,6 +5,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.domain.AppSetting;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
 
@@ -48,6 +49,12 @@ public class ShellSetting extends AppSetting {
     private Boolean termBeep;
 
     /**
+     * 刷新率-终端
+     */
+    @Column
+    private Integer termRefreshRate;
+
+    /**
      * 光标闪烁-终端
      */
     @Column
@@ -85,6 +92,7 @@ public class ShellSetting extends AppSetting {
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
             this.showHiddenFile = setting.showHiddenFile;
+            this.termRefreshRate = setting.termRefreshRate;
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
             this.termCopyOnSelected = setting.termCopyOnSelected;
@@ -187,5 +195,13 @@ public class ShellSetting extends AppSetting {
 
     public void setTermCopyOnSelected(Boolean termCopyOnSelected) {
         this.termCopyOnSelected = termCopyOnSelected;
+    }
+
+    public Integer getTermRefreshRate() {
+        return termRefreshRate == null || termRefreshRate <= 0 ? -1 : termRefreshRate;
+    }
+
+    public void setTermRefreshRate(Integer termRefreshRate) {
+        this.termRefreshRate = termRefreshRate;
     }
 }

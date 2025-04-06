@@ -117,7 +117,10 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public int maxRefreshRate() {
-        return FXUtil.screenRefreshRate();
+        if (this.setting.getTermRefreshRate() == -1) {
+            return FXUtil.screenRefreshRate();
+        }
+        return this.setting.getTermRefreshRate();
     }
 
     @Override

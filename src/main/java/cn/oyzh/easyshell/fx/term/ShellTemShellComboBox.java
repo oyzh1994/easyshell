@@ -13,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 25/04/01
  */
-public class ShellShellTypeComboBox extends FXComboBox<String> {
+public class ShellTemShellComboBox extends FXComboBox<String> {
 
     {
         if (OSUtil.isWindows()) {

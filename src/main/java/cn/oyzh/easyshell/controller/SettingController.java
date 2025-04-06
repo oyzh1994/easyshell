@@ -6,8 +6,9 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.term.ShellShellTypeComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.X11Util;
@@ -240,7 +241,7 @@ public class SettingController extends StageController {
      * 终端类型
      */
     @FXML
-    private ShellShellTypeComboBox termType;
+    private ShellTemShellComboBox termType;
 
     /**
      * 蜂鸣声
@@ -254,17 +255,25 @@ public class SettingController extends StageController {
     @FXML
     private NumberTextField termMaxLineCount;
 
-    /**
-     * 光标闪烁
-     */
-    @FXML
-    private ShellTermCursorComboBox termCursorBlinks;
 
     /**
      * 选中时复制
      */
     @FXML
     private FXToggleSwitch termCopyOnSelected;
+
+    /**
+     * 刷新率
+     */
+    @FXML
+    private ShellTermFpsComboBox termFps;
+
+    /**
+     * 光标闪烁
+     */
+    @FXML
+    private ShellTermCursorComboBox termCursorBlinks;
+
 
     /**
      * 配置对象
@@ -328,6 +337,7 @@ public class SettingController extends StageController {
         // 终端设置
         this.termType.select(this.setting.getTermType());
         this.termBeep.setSelected(this.setting.isTermBeep());
+        this.termFps.selectFps(this.setting.getTermRefreshRate());
         this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
         this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
@@ -357,6 +367,7 @@ public class SettingController extends StageController {
 
             // 终端设置
             this.setting.setTermBeep(this.termBeep.isSelected());
+            this.setting.setTermRefreshRate(this.termFps.getFps());
             this.setting.setTermType(this.termType.getSelectedItem());
             this.setting.setTermMaxLineCount(this.termMaxLineCount.getIntValue());
             this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());
