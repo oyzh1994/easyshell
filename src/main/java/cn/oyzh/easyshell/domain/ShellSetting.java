@@ -24,12 +24,6 @@ public class ShellSetting extends AppSetting {
     private String x11Path;
 
     /**
-     * 终端类型
-     */
-    @Column
-    private String terminalType;
-
-    /**
      * 是否显示隐藏文件
      */
     @Column
@@ -40,6 +34,36 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Boolean hiddenLeftAfterConnected;
+
+    /**
+     * 终端类型
+     */
+    @Column
+    private String termType;
+
+    /**
+     * 蜂鸣声-终端
+     */
+    @Column
+    private Boolean termBeep;
+
+    /**
+     * 光标闪烁-终端
+     */
+    @Column
+    private Integer termCursorBlinks;
+
+    /**
+     * 最大行数-终端
+     */
+    @Column
+    private Integer termMaxLineCount;
+
+    /**
+     * 选中时复制-终端
+     */
+    @Column
+    private Boolean termCopyOnSelected;
 
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
@@ -58,8 +82,13 @@ public class ShellSetting extends AppSetting {
         super.copy(o);
         if (o instanceof ShellSetting setting) {
             this.x11Path = setting.x11Path;
-            this.terminalType = setting.terminalType;
+            this.termBeep = setting.termBeep;
+            this.termType = setting.termType;
             this.showHiddenFile = setting.showHiddenFile;
+            this.termCursorBlinks = setting.termCursorBlinks;
+            this.termMaxLineCount = setting.termMaxLineCount;
+            this.termCopyOnSelected = setting.termCopyOnSelected;
+            this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
         }
     }
 
@@ -98,14 +127,6 @@ public class ShellSetting extends AppSetting {
         this.x11Path = x11Path;
     }
 
-    public String getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(String terminalType) {
-        this.terminalType = terminalType;
-    }
-
     public Boolean getShowHiddenFile() {
         return showHiddenFile;
     }
@@ -126,5 +147,45 @@ public class ShellSetting extends AppSetting {
             return x11Path;
         }
         return null;
+    }
+
+    public String getTermType() {
+        return termType;
+    }
+
+    public void setTermType(String termType) {
+        this.termType = termType;
+    }
+
+    public boolean isTermBeep() {
+        return termBeep == null || termBeep;
+    }
+
+    public void setTermBeep(Boolean termBeep) {
+        this.termBeep = termBeep;
+    }
+
+    public int getTermCursorBlinks() {
+        return termCursorBlinks == null ? 500 : termCursorBlinks;
+    }
+
+    public void setTermCursorBlinks(Integer termCursorBlinks) {
+        this.termCursorBlinks = termCursorBlinks;
+    }
+
+    public Integer getTermMaxLineCount() {
+        return termMaxLineCount == null ? 5000 : termMaxLineCount;
+    }
+
+    public void setTermMaxLineCount(Integer termMaxLineCount) {
+        this.termMaxLineCount = termMaxLineCount;
+    }
+
+    public boolean isTermCopyOnSelected() {
+        return termCopyOnSelected == null ? Boolean.FALSE : termCopyOnSelected;
+    }
+
+    public void setTermCopyOnSelected(Boolean termCopyOnSelected) {
+        this.termCopyOnSelected = termCopyOnSelected;
     }
 }

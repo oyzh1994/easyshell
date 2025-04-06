@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellShellTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellShellTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SaveButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -25,8 +25,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="450">
+                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="470">
     <left>
         <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
         </SettingLeftTreeView>
@@ -42,26 +44,9 @@
                 </InfoLabel>
                 <FXToggleSwitch fx:id="hiddenLeftAfterConnected">
                     <VBox.margin>
-                        <Insets left="30" top="5"/>
+                        <Insets left="30"/>
                     </VBox.margin>
                 </FXToggleSwitch>
-                <InfoLabel text="%shell.connect.tip4">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox>
-                    <ShellShellTypeComboBox fx:id="terminalType" flexWidth="100% - 225">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ShellShellTypeComboBox>
-                    <FXButton text="%base.test" onMousePrimaryClicked="#testBashPath">
-                        <HBox.margin>
-                            <Insets left="5" top="5"/>
-                        </HBox.margin>
-                    </FXButton>
-                </FXHBox>
                 <InfoLabel text="%shell.connect.tip2" groupId="x11">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -84,6 +69,67 @@
                         </HBox.margin>
                     </FXButton>
                 </FXHBox>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="term_box" flexWidth="100%" flexHeight="100%"
+                    groupId="setting_item">
+                <InfoLabel text="%shell.connect.tip4">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ShellShellTypeComboBox fx:id="termType" flexWidth="100% - 225">
+                        <HBox.margin>
+                            <Insets left="30"/>
+                        </HBox.margin>
+                    </ShellShellTypeComboBox>
+                    <FXButton text="%base.test" onMousePrimaryClicked="#testBashPath">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
+                <InfoLabel text="%base.maxLineCount">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <NumberTextField step="100" flexWidth="100% - 140" value="5000" minVal="100" maxVal="10000"
+                                 fx:id="termMaxLineCount">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </NumberTextField>
+                <InfoLabel text="%base.beep">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXToggleSwitch selected="true" fx:id="termBeep">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXToggleSwitch>
+                <InfoLabel text="%base.cursorBlinks">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermCursorComboBox flexWidth="100% - 140" initIndex="2" fx:id="termCursorBlinks">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermCursorComboBox>
+                <InfoLabel text="%base.copyOnSelected">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXToggleSwitch selected="true" fx:id="termCopyOnSelected">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXToggleSwitch>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="window_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">

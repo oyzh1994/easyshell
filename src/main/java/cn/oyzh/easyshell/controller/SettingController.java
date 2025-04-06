@@ -6,7 +6,8 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.ShellShellTypeComboBox;
+import cn.oyzh.easyshell.fx.term.ShellShellTypeComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.X11Util;
@@ -14,6 +15,7 @@ import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingTreeItem;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
@@ -229,16 +231,40 @@ public class SettingController extends StageController {
     private ReadOnlyTextField x11Path;
 
     /**
-     * 终端类型
-     */
-    @FXML
-    private ShellShellTypeComboBox terminalType;
-
-    /**
      * 连接后收起左侧
      */
     @FXML
     private FXToggleSwitch hiddenLeftAfterConnected;
+
+    /**
+     * 终端类型
+     */
+    @FXML
+    private ShellShellTypeComboBox termType;
+
+    /**
+     * 蜂鸣声
+     */
+    @FXML
+    private FXToggleSwitch termBeep;
+
+    /**
+     * 最大行数
+     */
+    @FXML
+    private NumberTextField termMaxLineCount;
+
+    /**
+     * 光标闪烁
+     */
+    @FXML
+    private ShellTermCursorComboBox termCursorBlinks;
+
+    /**
+     * 选中时复制
+     */
+    @FXML
+    private FXToggleSwitch termCopyOnSelected;
 
     /**
      * 配置对象
@@ -299,12 +325,12 @@ public class SettingController extends StageController {
         }
         // x11目录
         this.x11Path.setText(this.setting.x11Path());
-        // 终端类型
-        if (StringUtil.isBlank(this.setting.getTerminalType())) {
-            this.terminalType.selectFirst();
-        } else {
-            this.terminalType.select(this.setting.getTerminalType());
-        }
+        // 终端设置
+        this.termType.select(this.setting.getTermType());
+        this.termBeep.setSelected(this.setting.isTermBeep());
+        this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
+        this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
+        this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
         // 连接后收起左侧
         this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
     }
@@ -329,6 +355,12 @@ public class SettingController extends StageController {
             // 提示文字
             String tips = this.checkConfigForRestart(locale);
 
+            // 终端设置
+            this.setting.setTermBeep(this.termBeep.isSelected());
+            this.setting.setTermType(this.termType.getSelectedItem());
+            this.setting.setTermMaxLineCount(this.termMaxLineCount.getIntValue());
+            this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());
+            this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());
             // 字体相关
             this.setting.setFontSize(fontSize);
             this.setting.setFontFamily(fontFamily);
@@ -348,8 +380,6 @@ public class SettingController extends StageController {
             this.setting.setLocale(locale);
             // x11目录
             this.setting.setX11Path(this.x11Path.getText());
-            // 终端类型
-            this.setting.setTerminalType(this.terminalType.getSelectedItem());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
             this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
@@ -416,6 +446,7 @@ public class SettingController extends StageController {
     public void onWindowShown(WindowEvent event) {
         SettingLeftTreeView treeView = this.root.getLeftTreeView();
         treeView.addItem(SettingLeftItem.of(I18nHelper.base(), "ssh_box"));
+        treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
         SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.general(), "font_general_box"));
@@ -567,7 +598,7 @@ public class SettingController extends StageController {
 
     @FXML
     private void testBashPath() {
-        String bash = this.terminalType.getSelectedItem();
+        String bash = this.termType.getSelectedItem();
         if (OSUtil.isWindows()) {
             String result = RuntimeUtil.execForStr("where " + bash);
             if (StringUtil.isNotBlank(result)) {

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx;
+package cn.oyzh.easyshell.fx.term;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
@@ -42,6 +42,15 @@ public class ShellShellTypeComboBox extends FXComboBox<String> {
                 this.setItem(List.of("/bin/bash"));
             }
 //            this.setItem(List.of("/bin/zsh", "/bin/bash"));
+        }
+    }
+
+    @Override
+    public void select(String obj) {
+        if (obj == null || obj.isEmpty()) {
+            this.selectFirst();
+        } else {
+            super.select(obj);
         }
     }
 }

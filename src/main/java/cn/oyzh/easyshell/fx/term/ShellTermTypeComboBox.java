@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx;
+package cn.oyzh.easyshell.fx.term;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 public class ShellTermTypeComboBox extends FXComboBox<String> {
 
     {
-
         this.addItem("xterm-256color");
         this.addItem("xterm-color");
         this.addItem("xterm");

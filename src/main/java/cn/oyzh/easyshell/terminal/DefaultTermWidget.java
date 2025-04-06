@@ -46,12 +46,12 @@ public class DefaultTermWidget extends JediTermFxWidget {
 
     protected String[] getProcessCommand() {
         // 如果设置了指定类型的终端，则直接返回
-        String terminalType = this.setting.getTerminalType();
-        if (StringUtil.isNotBlank(terminalType)) {
+        String termType = this.setting.getTermType();
+        if (StringUtil.isNotBlank(termType)) {
             if (OSUtil.isMacOS()) {
-                return new String[]{terminalType, "--login"};
+                return new String[]{termType, "--login"};
             }
-            return new String[]{terminalType, "-l"};
+            return new String[]{termType, "-l"};
         }
         String[] command = new String[]{"/bin/bash"};
         Map<String, String> envs = this.getEnvironments();

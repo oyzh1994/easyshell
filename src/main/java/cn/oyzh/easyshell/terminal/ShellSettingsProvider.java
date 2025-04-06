@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.terminal;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.techsenger.jeditermfx.core.emulator.ColorPalette;
@@ -23,6 +24,11 @@ import static com.techsenger.jeditermfx.core.util.Platform.isMacOS;
  * @since 2025-03-08
  */
 public class ShellSettingsProvider extends DefaultSettingsProvider {
+
+    /**
+     * 程序设置
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     @Override
     public @NotNull TerminalActionPresentation getOpenUrlActionPresentation() {
@@ -50,7 +56,7 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
     @Override
     public @NotNull TerminalActionPresentation getClearBufferActionPresentation() {
         return new TerminalActionPresentation(I18nHelper.clearBuffer(), isMacOS()
-                ? new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN)
+                ? new KeyCodeCombination(KeyCode.L, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
     }
 
@@ -99,16 +105,14 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public Font getTerminalFont() {
-        ShellSetting setting = ShellSettingStore.SETTING;
-        Font font = Font.font(setting.getTerminalFontFamily(), setting.getTerminalFontSize());
+        Font font = FontManager.toFont(this.setting.terminalFontConfig());
         JulLog.debug("Terminal font: {}", font);
         return font;
     }
 
     @Override
     public float getTerminalFontSize() {
-        ShellSetting setting = ShellSettingStore.SETTING;
-        return setting.getFontSize();
+        return this.setting.getFontSize();
     }
 
     @Override
@@ -118,7 +122,7 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public int caretBlinkingMs() {
-        return 500;
+        return this.setting.getTermCursorBlinks();
     }
 
     @Override
@@ -128,13 +132,23 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public int getBufferMaxLinesCount() {
-        return 10_000;
+        return this.setting.getTermMaxLineCount();
     }
 
     @Override
-    public boolean ambiguousCharsAreDoubleWidth() {
-        return true;
+    public boolean audibleBell() {
+        return this.setting.isTermBeep();
     }
+
+    @Override
+    public boolean copyOnSelect() {
+        return this.setting.isTermCopyOnSelected();
+    }
+
+    //    @Override
+//    public boolean ambiguousCharsAreDoubleWidth() {
+//        return true;
+//    }
 
 //    /**
 //     * 寻找最接近的配色

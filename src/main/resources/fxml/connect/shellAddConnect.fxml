@@ -26,7 +26,7 @@
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellTermTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectController" realWidth="750"
         realHeight="480">
