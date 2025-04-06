@@ -37,6 +37,22 @@ public class ShellColorPalette extends ColorPalette {
     @Override
     protected @NotNull Color getForegroundByColorIndex(int colorIndex) {
         Color color;
+        //TODO: 如果是暗黑模式，需要修正部分颜色
+        if (ThemeManager.isDarkMode()) {
+            if (colorIndex == 0) {
+                colorIndex = 7;
+            } else if (colorIndex == 8) {
+                colorIndex = 15;
+            } else if (colorIndex == 7) {
+                colorIndex = 0;
+            } else if (colorIndex == 15) {
+                colorIndex = 8;
+            } else if (colorIndex == 4) {
+                colorIndex = 2;
+            } else if (colorIndex == 12) {
+                colorIndex = 10;
+            }
+        }
         Method method = ReflectUtil.getMethod(ColorPalette.class, "getForegroundByColorIndex", int.class);
         if (OSUtil.isWindows()) {
             color = (Color) ReflectUtil.invoke(ColorPaletteImpl.WINDOWS_PALETTE, method, colorIndex);
