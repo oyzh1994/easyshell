@@ -7,14 +7,17 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.File7zSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileAspSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBatSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBinSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBmpSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileCmdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCompressSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileConfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCssSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDllSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDmgSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileDotSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDylibSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileExcelSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileExeSVGGlyph;
@@ -32,6 +35,8 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileJsonSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJspSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileLinkSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMarkdownSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileMkvSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileMovSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMp3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMp4SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePdfSVGGlyph;
@@ -39,8 +44,10 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FilePptSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePsdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePySVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRarSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileRmSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRmvbSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRssSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileRtfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileShSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSoSVGGlyph;
@@ -52,6 +59,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileTextSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileTsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileTtfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileUnknownSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileWavSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileWordSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileXlsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileXmlSVGGlyph;
@@ -194,6 +202,22 @@ public class SftpFile implements ObjectCopier<SftpFile> {
             String extName = FileNameUtil.extName(this.getFileName());
             if (StringUtil.isEmpty(extName)) {
                 glyph = new FileUnknownSVGGlyph("12");
+            } else if (FileNameUtil.isAspType(extName)) {
+                glyph = new FileAspSVGGlyph("12");
+            } else if (FileNameUtil.isCmdType(extName)) {
+                glyph = new FileCmdSVGGlyph("12");
+            } else if (FileNameUtil.isRmType(extName)) {
+                glyph = new FileRmSVGGlyph("12");
+            } else if (FileNameUtil.isMkvType(extName)) {
+                glyph = new FileMkvSVGGlyph("12");
+            } else if (FileNameUtil.isDotType(extName)) {
+                glyph = new FileDotSVGGlyph("12");
+            } else if (FileNameUtil.isRtfType(extName)) {
+                glyph = new FileRtfSVGGlyph("12");
+            } else if (FileNameUtil.isWavType(extName)) {
+                glyph = new FileWavSVGGlyph("12");
+            } else if (FileNameUtil.isMovType(extName)) {
+                glyph = new FileMovSVGGlyph("12");
             } else if (FileNameUtil.isSoType(extName)) {
                 glyph = new FileSoSVGGlyph("12");
             } else if (FileNameUtil.isDllType(extName)) {
