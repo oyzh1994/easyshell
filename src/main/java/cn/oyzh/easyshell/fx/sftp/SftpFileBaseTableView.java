@@ -311,8 +311,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             this.returnDir();
             return;
         }
-        String currPath = SftpUtil.concat(this.getLocation(), file.getFileName());
-        this.setLocation(currPath);
+        this.setLocation(file.getPath());
         this.loadFile();
     }
 

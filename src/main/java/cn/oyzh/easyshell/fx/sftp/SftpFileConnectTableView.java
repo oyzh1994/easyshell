@@ -173,9 +173,12 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
             return;
         }
         String filePath = SftpUtil.concat(this.getLocation(), name);
-        this.sftp().mkdir(filePath);
-        SftpATTRS attrs = this.sftp().stat(filePath);
+        ShellSftp sftp = this.sftp();
+        sftp.mkdir(filePath);
+        SftpATTRS attrs = sftp.stat(filePath);
         SftpFile file = new SftpFile(this.getLocation(), name, attrs);
+        // 读取链接文件
+        SftpUtil.realpath(file, sftp);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");
@@ -210,6 +213,8 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
         sftp.touch(filePath);
         SftpATTRS attrs = sftp.stat(filePath);
         SftpFile file = new SftpFile(this.getLocation(), name, attrs);
+        // 读取链接文件
+        SftpUtil.realpath(file, sftp);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");

@@ -1,10 +1,13 @@
 package cn.oyzh.easyshell.sftp;
 
+import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellChannel;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
@@ -89,14 +92,29 @@ public class ShellSftp extends ShellChannel {
         return this.lsFile(path, null);
     }
 
+    public String realpath(String path) throws SftpException {
+        try {
+            this.setUsing(true);
+            if (this.client.isWindows()) {
+                path = ShellUtil.reverseWindowsFilePath(path);
+            }
+            return this.getChannel().realpath(path);
+        } finally {
+            this.setUsing(false);
+        }
+    }
+
     public List<SftpFile> lsFile(String path, ShellClient client) throws SftpException {
         if (this.client.isWindows()) {
             path = ShellUtil.reverseWindowsFilePath(path);
         }
+        this.cd(path);
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<SftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
             SftpFile file = new SftpFile(path, lsEntry);
+            // 读取链接文件
+            SftpUtil.realpath(file, this);
             files.add(file);
             if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
                 if (client.isWindows()) {
@@ -247,6 +265,11 @@ public class ShellSftp extends ShellChannel {
                 path = ShellUtil.reverseWindowsFilePath(path);
             }
             return this.getChannel().stat(path);
+        } catch (SftpException ex) {
+            if (ExceptionUtil.hasMessage(ex, "No such file")) {
+                JulLog.info("File:{}", path);
+            }
+            throw ex;
         } finally {
             this.setUsing(false);
         }
@@ -346,7 +369,7 @@ public class ShellSftp extends ShellChannel {
      * 修改权限，这个方法windows执行无效果
      *
      * @param permission 权限
-     * @param path   文件路径
+     * @param path       文件路径
      */
     public void chmod(int permission, String path) throws SftpException {
         try {

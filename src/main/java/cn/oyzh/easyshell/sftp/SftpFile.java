@@ -13,7 +13,9 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileBmpSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCompressSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileConfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCssSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileDllSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDmgSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileDylibSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileExcelSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileExeSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileGifSVGGlyph;
@@ -22,6 +24,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileHtmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIcoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileImageSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIniSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileIsoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJpgSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJsSVGGlyph;
@@ -37,8 +40,11 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FilePsdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePySVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRmvbSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileRssSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileShSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSoSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSrtSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSwfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileTarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileTerminalSVGGlyph;
@@ -52,6 +58,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileXmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileYamlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileYmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileZipSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FolderLinkSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -72,11 +79,22 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     private SftpATTRS attrs;
 
+
     private String owner;
 
     private String group;
 
     private String fileName;
+
+    /**
+     * 链接路径
+     */
+    private String linkPath;
+
+    /**
+     * 链接属性
+     */
+    private SftpATTRS linkAttrs;
 
     public ChannelSftp.LsEntry getEntry() {
         return entry;
@@ -87,12 +105,23 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     }
 
     public SftpATTRS getAttrs() {
+        if (this.attrs == null) {
+            return this.entry.getAttrs();
+        }
         return attrs;
     }
 
     public void setAttrs(SftpATTRS attrs) {
         this.attrs = attrs;
         this.updatePermissions();
+    }
+
+    public SftpATTRS getLinkAttrs() {
+        return linkAttrs;
+    }
+
+    public void setLinkAttrs(SftpATTRS linkAttrs) {
+        this.linkAttrs = linkAttrs;
     }
 
     public String getOwner() {
@@ -142,17 +171,6 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         this.updatePermissions();
     }
 
-    protected SftpATTRS attrs() {
-        if (this.attrs == null) {
-            return this.entry.getAttrs();
-        }
-        return this.attrs;
-    }
-
-    public boolean isDir() {
-        return this.attrs().isDir();
-    }
-
     public boolean isNormal() {
         return !this.isCurrentFile() && !this.isReturnDirectory();
     }
@@ -166,14 +184,28 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         SVGGlyph glyph;
         if (this.isReturnDirectory()) {
             glyph = new ReturnFolderSVGGlyph("12");
-        } else if (this.attrs().isDir()) {
-            glyph = new FolderSVGGlyph("12");
-        } else if (this.attrs().isLink()) {
+        } else if (this.isLink() && this.isDir()) {
+            glyph = new FolderLinkSVGGlyph("12");
+        } else if (this.isLink() && this.isFile()) {
             glyph = new FileLinkSVGGlyph("12");
+        } else if (this.isDir()) {
+            glyph = new FolderSVGGlyph("12");
         } else {
             String extName = FileNameUtil.extName(this.getFileName());
             if (StringUtil.isEmpty(extName)) {
                 glyph = new FileUnknownSVGGlyph("12");
+            } else if (FileNameUtil.isSoType(extName)) {
+                glyph = new FileSoSVGGlyph("12");
+            } else if (FileNameUtil.isDllType(extName)) {
+                glyph = new FileDllSVGGlyph("12");
+            } else if (FileNameUtil.isDylibType(extName)) {
+                glyph = new FileDylibSVGGlyph("12");
+            } else if (FileNameUtil.isIsoType(extName)) {
+                glyph = new FileIsoSVGGlyph("12");
+            } else if (FileNameUtil.isRssType(extName)) {
+                glyph = new FileRssSVGGlyph("12");
+            } else if (FileNameUtil.isSrtType(extName)) {
+                glyph = new FileSrtSVGGlyph("12");
             } else if (FileNameUtil.isExcelType(extName)) {
                 glyph = new FileExcelSVGGlyph("12");
             } else if (FileNameUtil.isXlsType(extName) || FileNameUtil.isXlsxType(extName)) {
@@ -296,11 +328,11 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         if (this.isDir() || this.isReturnDirectory() || this.isCurrentFile()) {
             return "-";
         }
-        return NumberUtil.formatSize(this.attrs().getSize(), 4);
+        return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
     }
 
     public long size() {
-        return this.attrs().getSize();
+        return this.getAttrs().getSize();
     }
 
     public String getName() {
@@ -319,6 +351,9 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     }
 
     public String getFilePath() {
+        if (this.linkPath != null) {
+            return this.linkPath;
+        }
         String fileName = this.getFileName();
         if (fileName.startsWith("/")) {
             return fileName;
@@ -329,14 +364,14 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     private StringProperty permissionsProperty;
 
     public StringProperty permissionsProperty() {
-        if (this.permissionsProperty ==                                                                       null) {
+        if (this.permissionsProperty == null) {
             this.permissionsProperty = new SimpleStringProperty();
         }
         return this.permissionsProperty;
     }
 
     protected void updatePermissions() {
-        this.permissionsProperty().set(this.attrs().getPermissionsString());
+        this.permissionsProperty().set(this.getAttrs().getPermissionsString());
     }
 
     public String getPermissions() {
@@ -344,14 +379,13 @@ public class SftpFile implements ObjectCopier<SftpFile> {
             return "";
         }
         return permissionsProperty().get();
-//        return this.attrs().getPermissionsString();
     }
 
     public String getAddTime() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
-        int aTime = this.attrs().getATime();
+        int aTime = this.getAttrs().getATime();
         return DateHelper.formatDateTime(new Date(aTime * 1000L));
     }
 
@@ -359,16 +393,16 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
-        int mtime = this.attrs().getMTime();
+        int mtime = this.getAttrs().getMTime();
         return DateHelper.formatDateTime(new Date(mtime * 1000L));
     }
 
     public int getUid() {
-        return this.attrs().getUId();
+        return this.getAttrs().getUId();
     }
 
     public int getGid() {
-        return this.attrs().getGId();
+        return this.getAttrs().getGId();
     }
 
     public boolean isHiddenFile() {
@@ -402,8 +436,28 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         return 0;
     }
 
+    public boolean isDir() {
+        if (this.isLink()) {
+            if (this.linkAttrs != null) {
+                return this.linkAttrs.isDir();
+            }
+            return false;
+        }
+        return this.getAttrs().isDir();
+    }
+
     public boolean isFile() {
-        return !this.isDir() && !this.attrs().isLink();
+        if (this.isLink()) {
+            if (this.linkAttrs != null) {
+                return this.linkAttrs.isFifo();
+            }
+            return false;
+        }
+        return this.getAttrs().isFifo();
+    }
+
+    public boolean isLink() {
+        return this.getAttrs().isLink();
     }
 
     @Override
@@ -421,6 +475,8 @@ public class SftpFile implements ObjectCopier<SftpFile> {
             this.group = t1.group;
         }
         this.fileName = t1.fileName;
+        this.linkPath = t1.linkPath;
+        this.linkAttrs = t1.linkAttrs;
         this.parentPath = t1.parentPath;
     }
 
@@ -470,6 +526,14 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     public boolean hasOthersWritePermission() {
         return ShellUtil.hasOthersWritePermission(this.getPermissions());
+    }
+
+    public String getLinkPath() {
+        return linkPath;
+    }
+
+    public void setLinkPath(String linkPath) {
+        this.linkPath = linkPath;
     }
 
     public boolean hasOthersExecutePermission() {

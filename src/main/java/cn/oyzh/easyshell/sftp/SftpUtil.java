@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.shell.ShellClient;
+import com.jcraft.jsch.SftpException;
 
 /**
  * @author oyzh
@@ -45,5 +46,23 @@ public class SftpUtil {
             return dest;
         }
         return dest.substring(0, dest.lastIndexOf("/"));
+    }
+
+    /**
+     * 读取链接路径
+     *
+     * @param file 文件
+     * @param sftp sftp操作器
+     * @throws SftpException 异常
+     */
+    public static void realpath(SftpFile file, ShellSftp sftp) throws SftpException {
+        // 读取链接文件
+        if (file != null && file.isLink()) {
+            String linkPath = sftp.realpath(file.getPath());
+            if (linkPath != null) {
+                file.setLinkPath(linkPath);
+                file.setLinkAttrs(sftp.stat(linkPath));
+            }
+        }
     }
 }
