@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="anchorPane" prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.serialPort.SerialPortSettingController">
+
+    <!-- 顶部配置区域 -->
+    <HBox>
+
+
+        <VBox layoutX="10" layoutY="10" spacing="10">
+            <Label style="-fx-font-weight: bold;" text="端口:"/>
+            <ComboBox fx:id="comboBoxPort" prefWidth="120"/>
+
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="波特率:"/>
+            <ComboBox fx:id="comboBoxBaudRate" prefWidth="120"/>
+
+            <!-- 添加复选框和输入框 -->
+            <CheckBox fx:id="checkBoxCustomBaudRate" onAction="#checkBoxCustomBaudrate" style="-fx-font-weight: bold; margin-left: 20;" text="自定义波特率"/>
+            <TextField fx:id="textFieldCustomBaudRate" onAction="#customBaudrateInput" prefWidth="120" promptText="请输入自定义波特率"/>
+
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="数据位:"/>
+            <ComboBox fx:id="comboBoxDataBits" prefWidth="120"/>
+
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="停止位:"/>
+            <ComboBox fx:id="comboBoxStopBits" prefWidth="120"/>
+
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="校验位:"/>
+            <ComboBox fx:id="comboBoxParity" prefWidth="120"/>
+
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="流控:"/>
+            <ComboBox fx:id="comboBoxFlowControl" prefWidth="120"/>
+
+            <Button fx:id="buttonOpen" text="打开串口" onAction="#handleOpenPort" prefWidth="120"/>
+        </VBox>
+        <VBox layoutX="10" layoutY="10" spacing="10">
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="接收设置:"/>
+            <ComboBox fx:id="comboBoxInCharset" prefWidth="120"/>
+        </VBox>
+
+        <VBox layoutX="10" layoutY="10" spacing="10">
+            <Label style="-fx-font-weight: bold; margin-left: 20;" text="发送设置:"/>
+            <ComboBox fx:id="comboBoxOutCharset" prefWidth="120"/>
+        </VBox>
+    </HBox>
+
+</AnchorPane>

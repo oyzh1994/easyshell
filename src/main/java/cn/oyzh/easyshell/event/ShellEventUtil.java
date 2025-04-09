@@ -3,12 +3,7 @@ package cn.oyzh.easyshell.event;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
+import cn.oyzh.easyshell.event.connect.*;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
@@ -17,20 +12,12 @@ import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
+import cn.oyzh.easyshell.event.serialPort.SerialPortOpenEvent;
+import cn.oyzh.easyshell.event.serialPort.SerialPortSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
-import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
-import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
-import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
-import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
-import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
-import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
-import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
-import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
+import cn.oyzh.easyshell.event.window.*;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -310,9 +297,8 @@ public class ShellEventUtil {
 
     /**
      * 打开终端页面
-     *
      */
-    public static void showTerminal( ) {
+    public static void showTerminal() {
         ShellShowTerminalEvent event = new ShellShowTerminalEvent();
         EventUtil.post(event);
     }
@@ -356,4 +342,16 @@ public class ShellEventUtil {
         event.data(shellKey);
         EventUtil.post(event);
     }
+
+    public static void newSerialPort() {
+        EventUtil.post(new SerialPortOpenEvent());
+    }
+
+    public static void openSerialPort(SerialPortSetting serialPortSetting) {
+        var event = new SerialPortOpenEvent();
+        event.data(serialPortSetting);
+        EventUtil.post(event);
+    }
+
+
 }

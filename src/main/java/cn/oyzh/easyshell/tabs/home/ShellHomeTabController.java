@@ -19,26 +19,25 @@ import java.util.ResourceBundle;
 public class ShellHomeTabController extends RichTabController {
 
     /**
+     * 项目对象
+     */
+    private final Project project = Project.load();
+    /**
      * 软件信息
      */
     @FXML
     private FXText softInfo;
-
     /**
      * 环境信息
      */
     @FXML
     private FXText jdkInfo;
 
-    /**
-     * 项目对象
-     */
-    private final Project project = Project.load();
-
     @Override
     public void initialize(URL url, ResourceBundle resource) {
         super.initialize(url, resource);
-        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
+        this.softInfo.setText(
+                I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
         String jdkInfo = "";
         if (System.getProperty("java.vm.name") != null) {
             jdkInfo += System.getProperty("java.vm.name");
@@ -79,5 +78,10 @@ public class ShellHomeTabController extends RichTabController {
     @FXML
     private void changelog() {
         ShellEventUtil.changelog();
+    }
+
+    @FXML
+    private void openSerialPort() {
+        ShellEventUtil.newSerialPort();
     }
 }

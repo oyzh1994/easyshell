@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.VBox?>
+<FXTabPane fx:id="root" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.serialPort.SerialPortTabController"
+        side="RIGHT">
+    <Tab fx:id="serialPort" text="串口">
+        <VBox>
+            <FXTextArea fx:id="textAreaOutPut" flexHeight="80%" flexWidth="100%">
+            </FXTextArea>
+            <FXTextArea fx:id="textAreaInput" flexHeight="20%" flexWidth="100%" onKeyReleased="#onKeyReleased">
+            </FXTextArea>
+        </VBox>
+    </Tab>
+
+    <Tab fx:id="settings" text="配置">
+        <fx:include source="/tabs/serialPort/serialPortSetting.fxml"/>
+    </Tab>
+</FXTabPane>

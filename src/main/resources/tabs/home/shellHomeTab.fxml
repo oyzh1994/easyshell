@@ -2,19 +2,17 @@
 <?import cn.oyzh.fx.gui.button.AddConnectButton?>
 <?import cn.oyzh.fx.gui.button.AddGroupButton?>
 <?import cn.oyzh.fx.gui.button.ChangelogButton?>
+<?import cn.oyzh.fx.gui.button.LocalTerminalButton?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.LocalTerminalButton?>
-<FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
-        xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
+<?import javafx.scene.layout.*?>
+<FXPane xmlns:fx="http://javafx.com/fxml" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx" fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
     <ImageView fitWidth="190" fitHeight="190" layoutX="50" layoutY="100">
         <Image url="/image/shell_no_bg.png"/>
     </ImageView>
@@ -47,6 +45,11 @@
                 <Insets left="20"/>
             </HBox.margin>
         </LocalTerminalButton>
+        <Button text="%shell.home.openSerialPort" onMouseClicked="#openSerialPort">
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+        </Button>
         <ChangelogButton onMousePrimaryClicked="#changelog">
             <HBox.margin>
                 <Insets left="20"/>
