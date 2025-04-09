@@ -15,18 +15,12 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
-import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
-import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
-import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
-import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
-import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
+import cn.oyzh.easyshell.event.serialPort.SerialPortNewEvent;
+import cn.oyzh.easyshell.event.window.*;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
+import cn.oyzh.easyshell.tabs.serialPort.SerialPortSettingController;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventListener;
@@ -47,6 +41,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nManager;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.awt.event.MouseEvent;
@@ -373,6 +368,18 @@ public class EasyShellApp extends FXApplication implements EventListener {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
+            }
+        });
+    }
+
+    @EventSubscribe
+    public void showSerialPortWindow(SerialPortNewEvent ignoredEvent) {
+        Platform.runLater(() -> {
+            try {
+                StageManager.showStage(SerialPortSettingController.class, StageManager.getPrimaryStage());
+            } catch (Exception e) {
+                JulLog.error("Failed to show SerialPortWindow", e);
+                MessageBox.exception(e);
             }
         });
     }

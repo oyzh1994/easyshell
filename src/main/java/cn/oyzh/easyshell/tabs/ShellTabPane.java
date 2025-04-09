@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
+import cn.oyzh.easyshell.event.serialPort.SerialPortOpenEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -12,6 +13,7 @@ import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
+import cn.oyzh.easyshell.tabs.serialPort.SerialPortTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
@@ -231,6 +233,25 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
         if (!keyTab.isSelected()) {
             this.select(keyTab);
+        }
+    }
+
+    @EventSubscribe
+    private void showSerialPortTabPane(SerialPortOpenEvent event) {
+        var serialPortTab = this.getTab(SerialPortTab.class);
+        if (serialPortTab == null && event.data() == null) {
+            serialPortTab = new SerialPortTab(event.data());
+            this.addTab(serialPortTab);
+        } else if (serialPortTab == null) {
+            serialPortTab = new SerialPortTab(event.data());
+            serialPortTab.initSerialPort(event.data());
+            this.addTab(serialPortTab);
+        } else if (event.data() != null) {
+            serialPortTab.initSerialPort(event.data());
+            this.select(serialPortTab);
+        }
+        if (!serialPortTab.isSelected()) {
+            this.select(serialPortTab);
         }
     }
 }
