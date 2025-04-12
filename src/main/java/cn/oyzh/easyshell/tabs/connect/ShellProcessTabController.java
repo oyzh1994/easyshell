@@ -124,14 +124,14 @@ public class ShellProcessTabController extends SubTabController {
      */
     private void renderPane() {
         try {
-            JulLog.info("renderPane started.");
+            JulLog.info("render process started.");
             if (this.client != null) {
                 // 获取数据
                 List<ProcessInfo> processInfos = this.processExec.ps();
                 this.getProcessTable().updateData(processInfos);
                 this.getProcessTable().sort();
             }
-            JulLog.info("renderPane finished.");
+            JulLog.info("render process finished.");
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("renderPane error", ex);
