@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.MonitorSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<FXTab fx:id="root" text="%base.monitor" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController">
+    <graphic>
+        <MonitorSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXTableView flexWidth="100%" realHeight="80" fx:id="serverTable">
+            <columns>
+                <FXTableColumn sortable="false" valueName="totalMemoryInfo" text="%base.totalMemory" prefWidth="100"/>
+                <FXTableColumn sortable="false" valueName="uname" text="%base.systemInfo" prefWidth="180"/>
+                <FXTableColumn sortable="false" valueName="arch" text="%base.arch" prefWidth="85"/>
+                <FXTableColumn sortable="false" valueName="ulimit" text="ulimit" prefWidth="70"/>
+                <FXTableColumn sortable="false" valueName="uptime" text="%base.uptime" prefWidth="160"/>
+            </columns>
+        </FXTableView>
+        <FXTabPane flexWidth="100%" flexHeight="100% - 120">
+            <fx:include fx:id="disk" source="server/shellInfoDiskTab.fxml"/>
+            <fx:include fx:id="network" source="server/shellInfoNetworkTab.fxml"/>
+            <fx:include fx:id="memory" source="server/shellInfoMemoryTab.fxml"/>
+            <fx:include fx:id="cpu" source="server/shellInfoCpuTab.fxml"/>
+            <fx:include fx:id="gpu" source="server/shellInfoGpuTab.fxml"/>
+        </FXTabPane>
+    </FXVBox>
+</FXTab>
