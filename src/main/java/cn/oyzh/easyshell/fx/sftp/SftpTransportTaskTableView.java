@@ -19,8 +19,8 @@ import java.util.List;
 public class SftpTransportTaskTableView extends FXTableView<SftpTransportTask> {
 
     @Override
-    protected void initTableView() {
-        super.initTableView();
+    public void initNode() {
+        super.initNode();
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 

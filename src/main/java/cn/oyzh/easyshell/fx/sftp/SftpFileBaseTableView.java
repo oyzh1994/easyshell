@@ -43,8 +43,8 @@ import java.util.stream.Collectors;
 public class SftpFileBaseTableView extends FXTableView<SftpFile> {
 
     @Override
-    protected void initTableView() {
-        super.initTableView();
+    public void initNode() {
+        super.initNode();
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 

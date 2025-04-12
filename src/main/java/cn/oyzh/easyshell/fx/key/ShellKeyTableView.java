@@ -40,8 +40,8 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     @Override
-    protected void initTableView() {
-        super.initTableView();
+    public void initNode() {
+        super.initNode();
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 

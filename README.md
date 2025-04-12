@@ -22,6 +22,7 @@ openjdk https://jdk.java.net/archive/
 
 ###### 结构说明 
 docker -> docker配置文件  
+docs -> 文档相关资源  
 package -> 打包相关配置  
 resource -> 项目相关资源文件  
 src -> 项目相关代码
