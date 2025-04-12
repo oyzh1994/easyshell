@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -252,7 +253,7 @@ public class ShellSftpFileEditController extends StageController {
     }
 
     /**
-     * 过滤内容回车事件
+     * 过滤内容输入事件
      *
      * @param event 事件
      */
@@ -260,6 +261,18 @@ public class ShellSftpFileEditController extends StageController {
     private void onFilterKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             this.searchNext();
+        }
+    }
+
+    /**
+     * 数据内容输入事件
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void onDataKeyPressed(KeyEvent event) {
+        if (KeyboardUtil.isCtrlS(event)) {
+            this.save();
         }
     }
 }

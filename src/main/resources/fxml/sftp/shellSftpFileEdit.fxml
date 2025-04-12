@@ -40,7 +40,7 @@
             </FXHBox.margin>
         </SaveSVGGlyph>
     </FXHBox>
-    <ShellDataTextAreaPane fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
+    <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
