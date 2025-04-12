@@ -228,7 +228,7 @@ public class ShellClient {
             String keyName = "key_" + key.getId();
             // 添加认证
 //            if (!SSHHolder.JSCH.getIdentityNames().contains(keyName)) {
-                SSHHolder.JSCH.addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
+            SSHHolder.JSCH.addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
 //            }
             // 创建会话
             this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
@@ -508,8 +508,16 @@ public class ShellClient {
             } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
                 extCommand = "/usr/bin/" + command;
             } else if (this.isWindows()) {
+                // 初始化环境
+                if (this.environment.isEmpty()) {
+                    this.initEnvironment();
+                }
                 extCommand = command;
             } else if (this.isLinux() || this.isMacos()) {
+                // 初始化环境
+                if (this.environment.isEmpty()) {
+                    this.initEnvironment();
+                }
                 String exportPath = this.getExportPath();
                 extCommand = "export PATH=$PATH" + exportPath + " && " + command;
             } else if (this.isUnix()) {
@@ -563,10 +571,10 @@ public class ShellClient {
      */
     public String getExportPath() {
         StringBuilder builder = new StringBuilder();
-        // 初始化环境
-        if (this.environment.isEmpty()) {
-            this.initEnvironment();
-        }
+//        // 初始化环境
+//        if (this.environment.isEmpty()) {
+//            this.initEnvironment();
+//        }
         if (this.isWindows()) {
             for (String string : this.environment) {
                 builder.append(string).append(";");
@@ -780,13 +788,7 @@ public class ShellClient {
     public String getRemoteCharset() {
         if (this.remoteCharset == null) {
             String output = this.exec("chcp");
-            if (output.contains("437")) {
-                this.remoteCharset = "iso-8859-1";
-            } else if (output.contains("936")) {
-                this.remoteCharset = "gbk";
-            } else if (output.contains("65001")) {
-                this.remoteCharset = "utf-8";
-            }
+            this.remoteCharset = ShellUtil.getCharsetFromChcp(output);
         }
         return this.remoteCharset;
     }

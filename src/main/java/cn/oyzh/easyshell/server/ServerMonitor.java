@@ -6,19 +6,19 @@ package cn.oyzh.easyshell.server;
  */
 public class ServerMonitor {
 
-    private String ulimit;
-
-    private String arch;
-
-    private String uname;
-
-    private String uptime;
+//    private String ulimit;
+//
+//    private String arch;
+//
+//    private String uname;
+//
+//    private String uptime;
 
     private double cpuUsage;
 
     private double memoryUsage;
 
-    private double totalMemory;
+//    private double totalMemory;
 
     private double diskReadSpeed;
 
@@ -28,13 +28,13 @@ public class ServerMonitor {
 
     private double networkReceiveSpeed;
 
-    public String getUptime() {
-        return uptime;
-    }
-
-    public void setUptime(String uptime) {
-        this.uptime = uptime;
-    }
+//    public String getUptime() {
+//        return uptime;
+//    }
+//
+//    public void setUptime(String uptime) {
+//        this.uptime = uptime;
+//    }
 
     public double getDiskReadSpeed() {
         return diskReadSpeed;
@@ -68,29 +68,29 @@ public class ServerMonitor {
         this.networkReceiveSpeed = networkReceiveSpeed;
     }
 
-    public String getUlimit() {
-        return ulimit;
-    }
-
-    public void setUlimit(String ulimit) {
-        this.ulimit = ulimit;
-    }
-
-    public String getArch() {
-        return arch;
-    }
-
-    public void setArch(String arch) {
-        this.arch = arch;
-    }
-
-    public String getUname() {
-        return uname;
-    }
-
-    public void setUname(String uname) {
-        this.uname = uname;
-    }
+//    public String getUlimit() {
+//        return ulimit;
+//    }
+//
+//    public void setUlimit(String ulimit) {
+//        this.ulimit = ulimit;
+//    }
+//
+//    public String getArch() {
+//        return arch;
+//    }
+//
+//    public void setArch(String arch) {
+//        this.arch = arch;
+//    }
+//
+//    public String getUname() {
+//        return uname;
+//    }
+//
+//    public void setUname(String uname) {
+//        this.uname = uname;
+//    }
 
     public double getCpuUsage() {
         return cpuUsage;
@@ -108,15 +108,15 @@ public class ServerMonitor {
         this.memoryUsage = memoryUsage;
     }
 
-    public double getTotalMemory() {
-        return totalMemory;
-    }
-
-    public String getTotalMemoryInfo() {
-        return totalMemory + "MB";
-    }
-
-    public void setTotalMemory(double totalMemory) {
-        this.totalMemory = totalMemory;
-    }
+//    public double getTotalMemory() {
+//        return totalMemory;
+//    }
+//
+//    public String getTotalMemoryInfo() {
+//        return totalMemory + "MB";
+//    }
+//
+//    public void setTotalMemory(double totalMemory) {
+//        this.totalMemory = totalMemory;
+//    }
 }

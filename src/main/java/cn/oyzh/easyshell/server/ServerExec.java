@@ -40,22 +40,41 @@ public class ServerExec implements AutoCloseable {
         this.network = new ServerNetwork();
     }
 
-    public ServerMonitor monitor() {
-        ServerMonitor monitor = this.monitorSimple();
+    public ServerInfo info() {
+        ServerInfo info = new ServerInfo();
         String arch = this.arch();
         String uname = this.uname();
         String ulimit = this.ulimit();
         String uptime = this.uptime();
+        String locale = this.locale();
+        String timezone = this.timezone();
         double totalMemory = this.totalMemory();
-        monitor.setArch(arch);
-        monitor.setUname(uname);
-        monitor.setUlimit(ulimit);
-        monitor.setUptime(uptime);
-        monitor.setTotalMemory(totalMemory);
-        return monitor;
+        info.setArch(arch);
+        info.setUname(uname);
+        info.setUlimit(ulimit);
+        info.setUptime(uptime);
+        info.setLocale(locale);
+        info.setTimezone(timezone);
+        info.setTotalMemory(totalMemory);
+        return info;
     }
 
-    public ServerMonitor monitorSimple() {
+//    public ServerMonitor monitor() {
+//        ServerMonitor monitor = this.monitorSimple();
+//        String arch = this.arch();
+//        String uname = this.uname();
+//        String ulimit = this.ulimit();
+//        String uptime = this.uptime();
+//        double totalMemory = this.totalMemory();
+//        monitor.setArch(arch);
+//        monitor.setUname(uname);
+//        monitor.setUlimit(ulimit);
+//        monitor.setUptime(uptime);
+//        monitor.setTotalMemory(totalMemory);
+//        return monitor;
+//    }
+
+    public ServerMonitor monitor() {
         ServerMonitor monitor = new ServerMonitor();
         DownLatch latch = new DownLatch(4);
 
@@ -489,6 +508,43 @@ public class ServerExec implements AutoCloseable {
                     output = output.substring(0, output.indexOf(","));
                     return output.trim();
                 }
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return "N/A";
+    }
+
+    /**
+     * 获取时区
+     *
+     * @return 时区
+     */
+    public String timezone() {
+        try {
+            if (this.client.isWindows()) {
+                return this.client.exec("tzutil /g");
+            } else {
+                return this.client.exec("cat /etc/timezone");
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return "N/A";
+    }
+
+    /**
+     * 获取区域
+     *
+     * @return 区域
+     */
+    public String locale() {
+        try {
+            if (this.client.isWindows()) {
+                String output = this.client.exec("chcp");
+                return ShellUtil.getCharsetFromChcp(output);
+            } else {
+                return this.client.exec("echo $LANG");
             }
         } catch (Exception ee) {
             ee.printStackTrace();

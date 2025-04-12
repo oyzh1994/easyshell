@@ -151,4 +151,26 @@ public class ShellUtil {
         result.add(currentValue.toString().trim());
         return result;
     }
+
+    /**
+     * 从windows命令输出获取字符集名称
+     *
+     * @param chcp 命令结果
+     * @return 字符集
+     */
+    public static String getCharsetFromChcp(String chcp) {
+        if (chcp.contains("437")) {
+            return "iso-8859-1";
+        }
+        if (chcp.contains("936")) {
+            return "gbk";
+        }
+        if (chcp.contains("950")) {
+            return "big5";
+        }
+        if (chcp.contains("65001")) {
+            return "utf-8";
+        }
+        return "gbk";
+    }
 }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.easyshell.server.ServerExec;
-import cn.oyzh.easyshell.server.ServerMonitor;
+import cn.oyzh.easyshell.server.ServerInfo;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.server.ShellServerCpuTabController;
 import cn.oyzh.easyshell.tabs.connect.server.ShellServerDiskTabController;
@@ -56,7 +56,7 @@ public class ShellServerTabController extends ParentTabController {
      * 服务信息
      */
     @FXML
-    private FXTableView<ServerMonitor> serverTable;
+    private FXTableView<ServerInfo> serverTable;
 
     /**
      * cpu信息
@@ -103,9 +103,9 @@ public class ShellServerTabController extends ParentTabController {
                     // 初始化磁盘信息
                     this.diskController.init();
                     // 获取数据
-                    ServerMonitor monitor = this.serverExec.monitor();
+                    ServerInfo info = this.serverExec.info();
                     // 初始化表格
-                    this.serverTable.setItem(monitor);
+                    this.serverTable.setItem(info);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

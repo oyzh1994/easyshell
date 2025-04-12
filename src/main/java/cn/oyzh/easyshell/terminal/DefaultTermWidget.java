@@ -51,7 +51,8 @@ public class DefaultTermWidget extends JediTermFxWidget {
             if (OSUtil.isMacOS()) {
                 return new String[]{termType, "--login"};
             }
-            return new String[]{termType, "-l"};
+//            return new String[]{termType, "-l"};
+            return new String[]{termType};
         }
         String[] command = new String[]{"/bin/bash"};
         Map<String, String> envs = this.getEnvironments();
