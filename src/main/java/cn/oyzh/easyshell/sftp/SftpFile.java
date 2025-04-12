@@ -473,11 +473,11 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     public boolean isFile() {
         if (this.isLink()) {
             if (this.linkAttrs != null) {
-                return this.linkAttrs.isFifo();
+                return this.linkAttrs.isReg();
             }
             return false;
         }
-        return this.getAttrs().isFifo();
+        return this.getAttrs().isReg();
     }
 
     public boolean isLink() {

@@ -8,6 +8,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportLeftSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportRightSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -15,11 +16,9 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1400"
         realHeight="750">

@@ -11,11 +11,11 @@
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyVersion">
             <FXHBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="6"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellDataTextAreaPane editable="false" fx:id="version" flexHeight="100% - 30" flexWidth="100% - 20">
+    <ShellDataTextAreaPane editable="false" fx:id="version" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>

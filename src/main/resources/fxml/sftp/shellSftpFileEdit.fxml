@@ -12,30 +12,31 @@
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" prefWidth="1200" realHeight="650">
-    <FXHBox prefHeight="40" flexWidth="100%">
-        <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="30" prefWidth="300">
+    <FXHBox prefHeight="30" flexWidth="100%">
+        <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
+                            tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
             <FXHBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="10" top="4"/>
             </FXHBox.margin>
         </ClearableTextField>
-        <NextSVGGlyph sizeStr="20" onMousePrimaryClicked="#searchNext">
+        <NextSVGGlyph onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
-                <Insets left="5" top="10"/>
+                <Insets left="5" top="6"/>
             </FXHBox.margin>
         </NextSVGGlyph>
-        <RichDataTypeComboBox realHeight="30" fx:id="format">
+        <RichDataTypeComboBox realHeight="22" fx:id="format">
             <FXHBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="10" top="4"/>
             </FXHBox.margin>
         </RichDataTypeComboBox>
-        <FontSizeComboBox realHeight="30" fx:id="fontSize">
+        <FontSizeComboBox realHeight="22" fx:id="fontSize">
             <FXHBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="10" top="4"/>
             </FXHBox.margin>
         </FontSizeComboBox>
-        <SaveSVGGlyph sizeStr="20" onMousePrimaryClicked="#save">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
             <FXHBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="6"/>
             </FXHBox.margin>
         </SaveSVGGlyph>
     </FXHBox>

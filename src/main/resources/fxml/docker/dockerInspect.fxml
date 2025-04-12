@@ -10,20 +10,21 @@
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.DockerInspectController" prefWidth="900" realHeight="650">
-    <FXHBox realHeight="40" flexWidth="100%">
-        <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="30" prefWidth="300">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="22"
+                            prefWidth="300">
             <FXHBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="10" top="4"/>
             </FXHBox.margin>
         </ClearableTextField>
-        <NextSVGGlyph sizeStr="20" onMousePrimaryClicked="#searchNext">
+        <NextSVGGlyph onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
-                <Insets left="5" top="10"/>
+                <Insets left="5" top="6"/>
             </FXHBox.margin>
         </NextSVGGlyph>
-        <CopySVGGlyph sizeStr="20" onMousePrimaryClicked="#copyInspect">
+        <CopySVGGlyph onMousePrimaryClicked="#copyInspect">
             <FXHBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="6"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
