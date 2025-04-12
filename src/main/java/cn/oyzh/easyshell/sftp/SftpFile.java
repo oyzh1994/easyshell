@@ -87,7 +87,6 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     private SftpATTRS attrs;
 
-
     private String owner;
 
     private String group;
@@ -562,5 +561,14 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     public boolean hasOthersExecutePermission() {
         return ShellUtil.hasOthersExecutePermission(this.getPermissions());
+    }
+
+    /**
+     * 是否根目录
+     *
+     * @return 结果
+     */
+    public boolean isRoot() {
+        return this.isDir() && "/".equals(this.getFilePath());
     }
 }

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
 import javafx.scene.control.Skin;
@@ -28,8 +29,11 @@ public class SftpLocationTextField extends FXTextField {
             super.clear();
             this.skin().setItemList(Collections.emptyList());
         } else {
+            text = ShellUtil.reverseWindowsFilePath(text);
             if (!text.equals("/") && text.endsWith("/")) {
                 text = text.substring(0, text.length() - 1);
+            } else if (text.isBlank()) {
+                text = "/";
             }
             super.text(text);
             List<String> list = new ArrayList<>(this.skin().getItemList());

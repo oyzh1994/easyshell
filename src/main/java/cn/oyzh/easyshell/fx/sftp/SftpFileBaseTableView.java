@@ -1,19 +1,25 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -21,6 +27,7 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -40,7 +47,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SftpFileBaseTableView extends FXTableView<SftpFile> {
+public class SftpFileBaseTableView extends FXTableView<SftpFile> implements FXEventListener {
 
     @Override
     public void initNode() {
@@ -146,6 +153,8 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             if (currPath == null) {
                 this.setLocation(sftp.pwd());
                 currPath = this.getLocation();
+            } else if (currPath.isBlank()) {
+                currPath = "/";
             }
             JulLog.info("current path: {}", currPath);
             // 更新当前列表
@@ -238,9 +247,6 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     @Override
     public List<FXMenuItem> getMenuItems() {
         List<SftpFile> files = this.getSelectedItems();
-        if (CollectionUtil.isEmpty(files)) {
-            return Collections.emptyList();
-        }
 //        // 发现操作中的文件，则跳过
 //        for (SftpFile file : files) {
 //            if (file.isWaiting()) {
@@ -251,25 +257,35 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         if (this.checkInvalid(files)) {
             return Collections.emptyList();
         }
+
         List<FXMenuItem> menuItems = new ArrayList<>();
-        if (files.size() == 1) {
-            SftpFile file = files.getFirst();
-            // 文件信息
-            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
-            menuItems.add(fileInfo);
-            // 复制路径
-            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
-            menuItems.add(copyFilePath);
-            // 重命名文件
-            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
-            menuItems.add(renameFile);
-            // 文件权限
-            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
-            menuItems.add(filePermission);
+        if (CollectionUtil.isEmpty(files)) {
+            // 创建文件
+            FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
+            menuItems.add(touch);
+            // 创建文件夹
+            FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
+            menuItems.add(mkdir);
+        } else {
+            if (files.size() == 1) {
+                SftpFile file = files.getFirst();
+                // 文件信息
+                FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
+                menuItems.add(fileInfo);
+                // 复制路径
+                FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
+                menuItems.add(copyFilePath);
+                // 重命名文件
+                FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
+                menuItems.add(renameFile);
+                // 文件权限
+                FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+                menuItems.add(filePermission);
+            }
+            // 删除文件
+            FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+            menuItems.add(deleteFile);
         }
-        // 删除文件
-        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-        menuItems.add(deleteFile);
         return menuItems;
     }
 
@@ -283,6 +299,11 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
 
     protected void onMouseClicked(MouseEvent event) {
         try {
+            // 鼠标后退
+            if (event.getButton() == MouseButton.BACK && event.getClickCount() == 1) {
+                this.back();
+                return;
+            }
             List<SftpFile> files = this.getSelectedItems();
             if (files == null) {
                 return;
@@ -290,10 +311,18 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             if (files.size() != 1) {
                 return;
             }
+            // 鼠标前进
+            if (event.getButton() == MouseButton.FORWARD && event.getClickCount() == 1) {
+                this.forward();
+                return;
+            }
+            // 鼠标按键
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 SftpFile file = files.getFirst();
                 if (file.isDir()) {
                     this.intoDir(file);
+                } else if (file.isFile()) {
+                    this.editFile(file);
                 }
             }
         } catch (Exception ex) {
@@ -317,6 +346,30 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     public void intoDir(String filePath) {
         this.setLocation(filePath);
         this.loadFile();
+    }
+
+    /**
+     * 后退
+     */
+    public void back() {
+        String location = this.getLocation();
+        String parent = SftpUtil.parent(location);
+        this.intoDir(parent);
+    }
+
+    /**
+     * 前进
+     */
+    public void forward() {
+        List<SftpFile> files = this.getSelectedItems();
+        if (files.size() != 1) {
+            return;
+        }
+        SftpFile file = files.getFirst();
+        if (!file.isDir()) {
+            return;
+        }
+        this.intoDir(file);
     }
 
     public void returnDir() {
@@ -441,6 +494,123 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             } catch (SftpException ex) {
                 MessageBox.exception(ex);
             }
+        }
+    }
+
+    /**
+     * 编辑文件
+     *
+     * @param file 文件
+     */
+    public void editFile(SftpFile file) {
+        if (this.checkInvalid(file)) {
+            return;
+        }
+        if (!file.isFile()) {
+            return;
+        }
+        if (file.size() > 500 * 1024) {
+            return;
+        }
+        // 检查类型
+        String extName = FileNameUtil.extName(file.getFileName());
+        if (!StringUtil.equalsAnyIgnoreCase(extName,
+                "txt", "text", "log", "yaml", "java",
+                "xml", "json", "htm", "html", "xhtml",
+                "php", "css", "c", "cpp", "rs",
+                "js", "csv", "sql", "md", "ini",
+                "cfg", "sh", "bat", "py", "asp",
+                "aspx", "env", "tsv", "conf")) {
+            return;
+        }
+        StageAdapter adapter = StageManager.parseStage(ShellSftpFileEditController.class);
+        adapter.setProp("file", file);
+        adapter.setProp("client", this.client);
+        adapter.display();
+    }
+
+    public void touch() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
+            this.touch(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public void touch(String name) throws SftpException {
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        name = name.trim();
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
+            return;
+        }
+        String filePath = SftpUtil.concat(this.getLocation(), name);
+        ShellSftp sftp = this.sftp();
+        sftp.touch(filePath);
+        SftpATTRS attrs = sftp.stat(filePath);
+        SftpFile file = new SftpFile(this.getLocation(), name, attrs);
+        // 读取链接文件
+        SftpUtil.realpath(file, sftp);
+        if (this.client.isWindows()) {
+            file.setOwner("-");
+            file.setGroup("-");
+        } else {
+            file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+        }
+        this.files.add(file);
+        this.refreshFile();
+    }
+
+
+    public void mkdir() {
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
+            this.mkdir(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public void mkdir(String name) throws SftpException {
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        name = name.trim();
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
+            return;
+        }
+        String filePath = SftpUtil.concat(this.getLocation(), name);
+        ShellSftp sftp = this.sftp();
+        sftp.mkdir(filePath);
+        SftpATTRS attrs = sftp.stat(filePath);
+        SftpFile file = new SftpFile(this.getLocation(), name, attrs);
+        // 读取链接文件
+        SftpUtil.realpath(file, sftp);
+        if (this.client.isWindows()) {
+            file.setOwner("-");
+            file.setGroup("-");
+        } else {
+            file.setOwner(SftpUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(SftpUtil.getGroup(file.getGid(), this.client));
+        }
+        this.files.add(file);
+        this.refreshFile();
+    }
+
+    /**
+     * 文件保存事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onFileSaved(ShellSftpFileSavedEvent event) {
+        if (this.existFile(event.fileName())) {
+            this.refresh();
         }
     }
 }

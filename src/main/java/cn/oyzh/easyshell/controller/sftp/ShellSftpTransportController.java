@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
+import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
@@ -143,6 +144,18 @@ public class ShellSftpTransportController extends StageController {
      */
     @FXML
     private ClearableTextField filterTargetFile;
+
+    /**
+     * 来源当前位置
+     */
+    @FXML
+    private SftpLocationTextField sourceLocation;
+
+    /**
+     * 目标当前位置
+     */
+    @FXML
+    private SftpLocationTextField targetLocation;
 
 //    /**
 //     * 隐藏来源文件
@@ -535,6 +548,28 @@ public class ShellSftpTransportController extends StageController {
         // 注册监听器
         deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
         deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));
+        // 监听位置
+        this.sourceFile.locationProperty().addListener((observable, oldValue, t1) -> {
+            if (t1 == null) {
+                this.sourceLocation.clear();
+            } else {
+                this.sourceLocation.text(t1);
+            }
+        });
+        this.targetFile.locationProperty().addListener((observable, oldValue, t1) -> {
+            if (t1 == null) {
+                this.targetLocation.clear();
+            } else {
+                this.targetLocation.text(t1);
+            }
+        });
+        // 路径跳转
+        this.sourceLocation.setOnJumpLocation(path -> {
+            this.sourceFile.cd(path);
+        });
+        this.targetLocation.setOnJumpLocation(path -> {
+            this.targetFile.cd(path);
+        });
         // 初始化文件树
         this.sourceFile.loadFile();
         this.targetFile.loadFile();
@@ -742,5 +777,25 @@ public class ShellSftpTransportController extends StageController {
             this.targetFile.setShowHiddenFile(true);
             this.hiddenTargetPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
+    }
+
+    @FXML
+    private void intoSourceHome( ) {
+        this.sourceFile.intoHome();
+    }
+
+    @FXML
+    private void returnSourceDir( ) {
+        this.sourceFile.returnDir();
+    }
+
+    @FXML
+    private void intoTargetHome( ) {
+        this.targetFile.intoHome();
+    }
+
+    @FXML
+    private void returnTargetDir( ) {
+        this.targetFile.returnDir();
     }
 }

@@ -515,15 +515,15 @@ public class ShellSftpTabController extends SubTabController {
 //        adapter.display();
 //    }
 
-    /**
-     * 文件保存事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void onFileSaved(ShellSftpFileSavedEvent event) {
-        this.fileTable.refresh();
-    }
+//    /**
+//     * 文件保存事件
+//     *
+//     * @param event 事件
+//     */
+//    @EventSubscribe
+//    private void onFileSaved(ShellSftpFileSavedEvent event) {
+//        this.fileTable.refresh();
+//    }
 
     /**
      * 隐藏文件

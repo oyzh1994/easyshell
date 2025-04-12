@@ -10,4 +10,7 @@ import cn.oyzh.event.Event;
  */
 public class ShellSftpFileSavedEvent extends Event<SftpFile> {
 
+    public String fileName() {
+        return this.data().getFileName();
+    }
 }

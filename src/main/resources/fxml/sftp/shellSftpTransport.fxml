@@ -19,6 +19,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController" realWidth="1400"
         realHeight="750">
@@ -73,16 +76,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellConnectComboBox>
-<!--                    <FXLabel text="%base.charset" realHeight="30">-->
-<!--                        <VBox.margin>-->
-<!--                            <Insets left="30" top="15"/>-->
-<!--                        </VBox.margin>-->
-<!--                    </FXLabel>-->
-<!--                    <CharsetComboBox fx:id="sourceCharset" realHeight="30" flexWidth="100% - 50">-->
-<!--                        <VBox.margin>-->
-<!--                            <Insets left="30" top="5"/>-->
-<!--                        </VBox.margin>-->
-<!--                    </CharsetComboBox>-->
+                    <!--                    <FXLabel text="%base.charset" realHeight="30">-->
+                    <!--                        <VBox.margin>-->
+                    <!--                            <Insets left="30" top="15"/>-->
+                    <!--                        </VBox.margin>-->
+                    <!--                    </FXLabel>-->
+                    <!--                    <CharsetComboBox fx:id="sourceCharset" realHeight="30" flexWidth="100% - 50">-->
+                    <!--                        <VBox.margin>-->
+                    <!--                            <Insets left="30" top="5"/>-->
+                    <!--                        </VBox.margin>-->
+                    <!--                    </CharsetComboBox>-->
                     <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                              style="-fx-text-fill: yellowgreen">
                         <VBox.margin>
@@ -101,18 +104,18 @@
                             </HBox.margin>
                         </FXLabel>
                     </FXHBox>
-<!--                    <FXHBox realHeight="25" flexWidth="100%">-->
-<!--                        <FXLabel text="%base.charset" realWidth="80">-->
-<!--                            <HBox.margin>-->
-<!--                                <Insets left="30" top="5"/>-->
-<!--                            </HBox.margin>-->
-<!--                        </FXLabel>-->
-<!--                        <FXLabel fx:id="sourceCharsetName" flexWidth="100% - 100">-->
-<!--                            <HBox.margin>-->
-<!--                                <Insets left="10" top="5"/>-->
-<!--                            </HBox.margin>-->
-<!--                        </FXLabel>-->
-<!--                    </FXHBox>-->
+                    <!--                    <FXHBox realHeight="25" flexWidth="100%">-->
+                    <!--                        <FXLabel text="%base.charset" realWidth="80">-->
+                    <!--                            <HBox.margin>-->
+                    <!--                                <Insets left="30" top="5"/>-->
+                    <!--                            </HBox.margin>-->
+                    <!--                        </FXLabel>-->
+                    <!--                        <FXLabel fx:id="sourceCharsetName" flexWidth="100% - 100">-->
+                    <!--                            <HBox.margin>-->
+                    <!--                                <Insets left="10" top="5"/>-->
+                    <!--                            </HBox.margin>-->
+                    <!--                        </FXLabel>-->
+                    <!--                    </FXHBox>-->
                 </FXVBox>
                 <FXVBox flexHeight="100%" flexWidth="50% -5">
                     <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
@@ -131,16 +134,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellConnectComboBox>
-<!--                    <FXLabel text="%base.charset" realHeight="30">-->
-<!--                        <VBox.margin>-->
-<!--                            <Insets left="30" top="15"/>-->
-<!--                        </VBox.margin>-->
-<!--                    </FXLabel>-->
-<!--                    <CharsetComboBox fx:id="targetCharset" realHeight="30" flexWidth="100% - 50">-->
-<!--                        <VBox.margin>-->
-<!--                            <Insets left="30" top="5"/>-->
-<!--                        </VBox.margin>-->
-<!--                    </CharsetComboBox>-->
+                    <!--                    <FXLabel text="%base.charset" realHeight="30">-->
+                    <!--                        <VBox.margin>-->
+                    <!--                            <Insets left="30" top="15"/>-->
+                    <!--                        </VBox.margin>-->
+                    <!--                    </FXLabel>-->
+                    <!--                    <CharsetComboBox fx:id="targetCharset" realHeight="30" flexWidth="100% - 50">-->
+                    <!--                        <VBox.margin>-->
+                    <!--                            <Insets left="30" top="5"/>-->
+                    <!--                        </VBox.margin>-->
+                    <!--                    </CharsetComboBox>-->
                     <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                              style="-fx-text-fill: mediumturquoise">
                         <VBox.margin>
@@ -159,18 +162,18 @@
                             </HBox.margin>
                         </FXLabel>
                     </FXHBox>
-<!--                    <FXHBox realHeight="25" flexWidth="100%">-->
-<!--                        <FXLabel text="%base.charset" realWidth="80">-->
-<!--                            <HBox.margin>-->
-<!--                                <Insets left="30" top="5"/>-->
-<!--                            </HBox.margin>-->
-<!--                        </FXLabel>-->
-<!--                        <FXLabel fx:id="targetCharsetName" flexWidth="100% - 100">-->
-<!--                            <HBox.margin>-->
-<!--                                <Insets left="10" top="5"/>-->
-<!--                            </HBox.margin>-->
-<!--                        </FXLabel>-->
-<!--                    </FXHBox>-->
+                    <!--                    <FXHBox realHeight="25" flexWidth="100%">-->
+                    <!--                        <FXLabel text="%base.charset" realWidth="80">-->
+                    <!--                            <HBox.margin>-->
+                    <!--                                <Insets left="30" top="5"/>-->
+                    <!--                            </HBox.margin>-->
+                    <!--                        </FXLabel>-->
+                    <!--                        <FXLabel fx:id="targetCharsetName" flexWidth="100% - 100">-->
+                    <!--                            <HBox.margin>-->
+                    <!--                                <Insets left="10" top="5"/>-->
+                    <!--                            </HBox.margin>-->
+                    <!--                        </FXLabel>-->
+                    <!--                    </FXHBox>-->
                 </FXVBox>
             </FXHBox>
             <FXHBox flexWidth="100%" realHeight="50">
@@ -185,29 +188,37 @@
             <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100%">
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
-                        <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterSourceFile"
-                                            tipText="%base.searchKWTip" prefWidth="300">
+                        <HomeSVGGlyph onMousePrimaryClicked="#intoSourceHome">
                             <FXHBox.margin>
-                                <Insets left="5"/>
+                                <Insets left="5" top="7"/>
                             </FXHBox.margin>
-                        </ClearableTextField>
+                        </HomeSVGGlyph>
+                        <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnSourceDir">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </ReturnFolderSVGGlyph>
+                        <SftpLocationTextField prefHeight="22" fx:id="sourceLocation" flexWidth="100% - 220">
+                            <FXHBox.margin>
+                                <Insets left="5" top="4"/>
+                            </FXHBox.margin>
+                        </SftpLocationTextField>
+                        <RefreshSVGGlyph onMousePrimaryClicked="#refreshSourceFile">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </RefreshSVGGlyph>
                         <HiddenSVGPane fx:id="hiddenSourcePane" size="16,14" onMousePrimaryClicked="#hiddenSourceFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>
                         </HiddenSVGPane>
-<!--                        <FXToggleSwitch realHeight="30" fx:id="hiddenSourceFile"-->
-<!--                                        selectedText="%base.showHiddenFiles"-->
-<!--                                        unselectedText="%base.doNotShowHiddenFiles">-->
-<!--                            <FXHBox.margin>-->
-<!--                                <Insets left="5"/>-->
-<!--                            </FXHBox.margin>-->
-<!--                        </FXToggleSwitch>-->
-                        <RefreshSVGGlyph sizeStr="16" onMousePrimaryClicked="#refreshSourceFile">
+                        <ClearableTextField focusTraversable="false" realHeight="22" fx:id="filterSourceFile"
+                                            tipText="%base.searchKWTip" prefWidth="120">
                             <FXHBox.margin>
-                                <Insets left="5" top="7"/>
+                                <Insets left="5" top="4"/>
                             </FXHBox.margin>
-                        </RefreshSVGGlyph>
+                        </ClearableTextField>
                     </FXHBox>
                     <SftpTransportFileTableView fx:id="sourceFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
@@ -241,30 +252,37 @@
                 </FXVBox>
                 <FXVBox flexWidth="50% - 15" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
-                        <ClearableTextField focusTraversable="false" realHeight="30" fx:id="filterTargetFile"
-                                            tipText="%base.searchKWTip" prefWidth="300">
+                        <HomeSVGGlyph onMousePrimaryClicked="#intoTargetHome">
                             <FXHBox.margin>
-                                <Insets left="5"/>
+                                <Insets left="5" top="7"/>
                             </FXHBox.margin>
-                        </ClearableTextField>
-<!--                        <FXToggleSwitch realHeight="30" fx:id="hiddenTargetFile"-->
-<!--                                        selectedText="%base.showHiddenFiles"-->
-<!--                                        unselectedText="%base.doNotShowHiddenFiles">-->
-<!--                            <FXHBox.margin>-->
-<!--                                <Insets left="5"/>-->
-<!--                            </FXHBox.margin>-->
-<!--                        </FXToggleSwitch>-->
+                        </HomeSVGGlyph>
+                        <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnTargetDir">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </ReturnFolderSVGGlyph>
+                        <SftpLocationTextField prefHeight="22" fx:id="targetLocation" flexWidth="100% - 220">
+                            <FXHBox.margin>
+                                <Insets left="5" top="4"/>
+                            </FXHBox.margin>
+                        </SftpLocationTextField>
+                        <RefreshSVGGlyph onMousePrimaryClicked="#refreshTargetFile">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </RefreshSVGGlyph>
                         <HiddenSVGPane fx:id="hiddenTargetPane" size="16,14" onMousePrimaryClicked="#hiddenTargetFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>
                         </HiddenSVGPane>
-                        <RefreshSVGGlyph sizeStr="16" fx:id="refreshTargetFile"
-                                         onMousePrimaryClicked="#refreshTargetFile">
+                        <ClearableTextField focusTraversable="false" realHeight="22" fx:id="filterTargetFile"
+                                            tipText="%base.searchKWTip" prefWidth="120">
                             <FXHBox.margin>
-                                <Insets left="5" top="7"/>
+                                <Insets left="5" top="4"/>
                             </FXHBox.margin>
-                        </RefreshSVGGlyph>
+                        </ClearableTextField>
                     </FXHBox>
                     <SftpTransportFileTableView fx:id="targetFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
@@ -285,19 +303,20 @@
                     </SftpTransportFileTableView>
                 </FXVBox>
             </FXHBox>
-<!--            <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">-->
-<!--                <columns>-->
-<!--                    <FXTableColumn prefWidth="100" valueName="remoteName" text="%base.targetConnect"/>-->
-<!--                    <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>-->
-<!--                    <FXTableColumn flexWidth="100% - 862" valueName="currentFile" text="%base.currentFile"/>-->
-<!--                    <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>-->
-<!--                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>-->
-<!--                    <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>-->
-<!--                    <FXTableColumn prefWidth="90" valueName="fileSize" text="%base.fileSize"/>-->
-<!--                    <FXTableColumn prefWidth="90" valueName="status" text="%base.status"/>-->
-<!--                </columns>-->
-<!--            </SftpTransportTaskTableView>-->
-            <FXHBox fx:id="sourceTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
+            <!--            <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">-->
+            <!--                <columns>-->
+            <!--                    <FXTableColumn prefWidth="100" valueName="remoteName" text="%base.targetConnect"/>-->
+            <!--                    <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>-->
+            <!--                    <FXTableColumn flexWidth="100% - 862" valueName="currentFile" text="%base.currentFile"/>-->
+            <!--                    <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>-->
+            <!--                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>-->
+            <!--                    <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>-->
+            <!--                    <FXTableColumn prefWidth="90" valueName="fileSize" text="%base.fileSize"/>-->
+            <!--                    <FXTableColumn prefWidth="90" valueName="status" text="%base.status"/>-->
+            <!--                </columns>-->
+            <!--            </SftpTransportTaskTableView>-->
+            <FXHBox fx:id="sourceTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true"
+                    visible="false">
                 <FXLabel fx:id="sourceName" prefWidth="50" maxWidth="50">
                     <FXHBox.margin>
                         <Insets left="5" top="5"/>
@@ -319,7 +338,8 @@
                     </FXHBox.margin>
                 </CancelSVGGlyph>
             </FXHBox>
-            <FXHBox fx:id="targetTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
+            <FXHBox fx:id="targetTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true"
+                    visible="false">
                 <FXLabel fx:id="targetName" prefWidth="50" maxWidth="50">
                     <FXHBox.margin>
                         <Insets left="5" top="5"/>
