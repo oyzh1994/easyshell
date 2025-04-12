@@ -1,10 +1,9 @@
-package cn.oyzh.easyshell.tabs.connect.monitor;
+package cn.oyzh.easyshell.tabs.connect.server;
 
 import cn.oyzh.easyshell.exec.DiskInfo;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellDiskInfoTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
 import cn.oyzh.easyshell.tabs.connect.ShellServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -20,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellMonitorDiskTabController extends SubTabController {
+public class ShellServerDiskTabController extends SubTabController {
 
     /**
      * 根节点

@@ -1,16 +1,13 @@
 package cn.oyzh.easyshell.tabs.connect;
 
-import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorAggregationTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorCpuTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorDiskTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorGpuTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorMemoryTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorNetworkTabController;
+import cn.oyzh.easyshell.tabs.connect.server.ShellServerCpuTabController;
+import cn.oyzh.easyshell.tabs.connect.server.ShellServerDiskTabController;
+import cn.oyzh.easyshell.tabs.connect.server.ShellServerGpuTabController;
+import cn.oyzh.easyshell.tabs.connect.server.ShellServerMemoryTabController;
+import cn.oyzh.easyshell.tabs.connect.server.ShellServerNetworkTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -18,11 +15,9 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * 服务器信息tab内容组件
@@ -67,31 +62,31 @@ public class ShellServerTabController extends ParentTabController {
      * cpu信息
      */
     @FXML
-    private ShellMonitorCpuTabController cpuController;
+    private ShellServerCpuTabController cpuController;
 
     /**
      * 磁盘信息
      */
     @FXML
-    private ShellMonitorDiskTabController diskController;
+    private ShellServerDiskTabController diskController;
 
     /**
      * 网络信息
      */
     @FXML
-    private ShellMonitorNetworkTabController networkController;
+    private ShellServerNetworkTabController networkController;
 
     /**
      * 内存信息
      */
     @FXML
-    private ShellMonitorMemoryTabController memoryController;
+    private ShellServerMemoryTabController memoryController;
 
     /**
      * 显卡信息
      */
     @FXML
-    private ShellMonitorGpuTabController gpuController;
+    private ShellServerGpuTabController gpuController;
 
     /**
      *

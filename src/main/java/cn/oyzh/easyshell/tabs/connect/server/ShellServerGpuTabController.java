@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.tabs.connect.monitor;
+package cn.oyzh.easyshell.tabs.connect.server;
 
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -19,7 +19,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellMonitorGpuTabController extends SubTabController {
+public class ShellServerGpuTabController extends SubTabController {
 
     /**
      * 根节点

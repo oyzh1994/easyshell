@@ -5,18 +5,9 @@ import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.server.ServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorAggregationTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorCpuTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorDiskTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorGpuTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorMemoryTabController;
-import cn.oyzh.easyshell.tabs.connect.monitor.ShellMonitorNetworkTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.controls.table.FXTableView;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;

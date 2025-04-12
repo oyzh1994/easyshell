@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.tabs.connect.monitor;
+package cn.oyzh.easyshell.tabs.connect.server;
 
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -14,12 +14,12 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
- * 服务器网卡信息
+ * 服务器cpu信息
  *
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellMonitorNetworkTabController extends SubTabController {
+public class ShellServerCpuTabController extends SubTabController {
 
     /**
      * 根节点
@@ -31,7 +31,7 @@ public class ShellMonitorNetworkTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private ReadOnlyTextArea networkCardInfo;
+    private ReadOnlyTextArea cpuInfo;
 
     @FXML
     private void refresh() {
@@ -39,19 +39,19 @@ public class ShellMonitorNetworkTabController extends SubTabController {
     }
 
     private void refresh(boolean force) {
-        if (!force && !this.networkCardInfo.isEmpty()) {
+        if (!force && !this.cpuInfo.isEmpty()) {
             return;
         }
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            String output = exec.network_interface_info();
-            this.networkCardInfo.text(output);
+            String output = exec.cpu_info();
+            this.cpuInfo.text(output);
         });
     }
 
     @FXML
     private void copyInfo() {
-        ClipboardUtil.copy(this.networkCardInfo.getText());
+        ClipboardUtil.copy(this.cpuInfo.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
 
