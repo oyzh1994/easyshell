@@ -5,8 +5,9 @@
            rotateGraphic="true" side="RIGHT">
     <fx:include fx:id="termTab" source="shellTermTab.fxml"/>
     <fx:include fx:id="sftpTab" source="shellSftpTab.fxml"/>
+    <fx:include fx:id="serverTab" source="shellServerTab.fxml"/>
     <fx:include fx:id="dockerTab" source="shellDockerTab.fxml"/>
-    <fx:include fx:id="processTab" source="shellProcessTab.fxml"/>
     <fx:include fx:id="monitorTab" source="shellMonitorTab.fxml"/>
+    <fx:include fx:id="processTab" source="shellProcessTab.fxml"/>
     <fx:include fx:id="configTab" source="shellConfigTab.fxml"/>
 </FXTabPane>

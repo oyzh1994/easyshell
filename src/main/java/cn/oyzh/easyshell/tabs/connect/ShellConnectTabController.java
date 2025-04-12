@@ -57,6 +57,12 @@ public class ShellConnectTabController extends ParentTabController {
     private ShellSftpTabController sftpTabController;
 
     /**
+     * 服务器信息
+     */
+    @FXML
+    private ShellServerTabController serverTabController;
+
+    /**
      * docker
      */
     @FXML
@@ -115,6 +121,7 @@ public class ShellConnectTabController extends ParentTabController {
                     }
                 });
                 this.termTabController.init();
+                this.serverTabController.setClient(this.client);
                 this.configTabController.setClient(this.client);
                 this.dockerTabController.setClient(this.client);
                 this.monitorTabController.setClient(this.client);
@@ -148,7 +155,8 @@ public class ShellConnectTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.termTabController, this.sftpTabController, this.dockerTabController,
-                this.monitorTabController, this.configTabController, this.processTabController);
+        return List.of(this.serverTabController, this.termTabController, this.sftpTabController,
+                this.dockerTabController, this.monitorTabController, this.configTabController,
+                this.processTabController);
     }
 }

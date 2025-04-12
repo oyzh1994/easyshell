@@ -55,47 +55,6 @@ public class ShellMonitorTabController extends ParentTabController {
         this.serverExec = this.client.serverExec();
     }
 
-    /**
-     * 服务信息
-     */
-    @FXML
-    private FXTableView<ServerMonitor> serverTable;
-
-    /**
-     * 汇总信息
-     */
-    @FXML
-    private ShellMonitorAggregationTabController aggregationController;
-
-    /**
-     * cpu信息
-     */
-    @FXML
-    private ShellMonitorCpuTabController cpuController;
-
-    /**
-     * 磁盘信息
-     */
-    @FXML
-    private ShellMonitorDiskTabController diskController;
-
-    /**
-     * 网络信息
-     */
-    @FXML
-    private ShellMonitorNetworkTabController networkController;
-
-    /**
-     * 内存信息
-     */
-    @FXML
-    private ShellMonitorMemoryTabController memoryController;
-
-    /**
-     * 显卡信息
-     */
-    @FXML
-    private ShellMonitorGpuTabController gpuController;
 
     /**
      * 刷新任务
@@ -146,17 +105,6 @@ public class ShellMonitorTabController extends ParentTabController {
             if (this.client != null) {
                 // 获取数据
                 ServerMonitor monitor;
-                if (this.serverTable.isItemEmpty()) {
-                    monitor = this.serverExec.monitor();
-                    // 初始化表格
-                    this.serverTable.setItem(monitor);
-                } else {
-                    monitor = this.serverExec.monitorSimple();
-                    ServerMonitor monitor1 = (ServerMonitor) this.serverTable.getItem(0);
-                    this.serverTable.setItem(monitor1);
-                }
-                // 初始化图表
-                this.aggregationController.init(monitor);
             }
             JulLog.info("renderPane finished.");
         } catch (Exception ex) {
@@ -166,26 +114,8 @@ public class ShellMonitorTabController extends ParentTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
-        super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                this.initRefreshTask();
-//            } else {
-//                this.closeRefreshTask();
-            }
-        });
-    }
-
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.closeRefreshTask();
-    }
-
-    @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.aggregationController, this.cpuController, this.diskController,
-                this.networkController, this.memoryController, this.gpuController);
+       return List.of();
+
     }
 }

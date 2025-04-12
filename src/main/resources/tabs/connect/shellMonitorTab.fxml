@@ -3,8 +3,6 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <FXTab fx:id="root" text="%base.monitor" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController">
     <graphic>
@@ -13,11 +11,6 @@
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">
             <fx:include fx:id="aggregation" source="monitor/shellMonitorAggregationTab.fxml"/>
-            <fx:include fx:id="cpu" source="server/shellMonitorCpuTab.fxml"/>
-            <fx:include fx:id="disk" source="server/shellMonitorDiskTab.fxml"/>
-            <fx:include fx:id="network" source="server/shellMonitorNetworkTab.fxml"/>
-            <fx:include fx:id="memory" source="server/shellMonitorMemoryTab.fxml"/>
-            <fx:include fx:id="gpu" source="server/shellMonitorGpuTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

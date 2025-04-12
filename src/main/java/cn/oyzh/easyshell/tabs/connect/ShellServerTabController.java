@@ -16,6 +16,8 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -23,10 +25,10 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * 服务器监控tab内容组件
+ * 服务器信息tab内容组件
  *
  * @author oyzh
- * @since 2025/03/16
+ * @since 2025/04/12
  */
 public class ShellServerTabController extends ParentTabController {
 
@@ -62,12 +64,6 @@ public class ShellServerTabController extends ParentTabController {
     private FXTableView<ServerMonitor> serverTable;
 
     /**
-     * 汇总信息
-     */
-    @FXML
-    private ShellMonitorAggregationTabController aggregationController;
-
-    /**
      * cpu信息
      */
     @FXML
@@ -98,71 +94,29 @@ public class ShellServerTabController extends ParentTabController {
     private ShellMonitorGpuTabController gpuController;
 
     /**
-     * 刷新任务
-     */
-    private Future<?> refreshTask;
-
-    /**
      *
      */
     private ServerExec serverExec;
 
     /**
-     * 初始化自动刷新任务
+     * 初始化数据
      */
-    private void initRefreshTask() {
-        if (this.refreshTask != null) {
-            return;
-        }
-        try {
-            this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
-            JulLog.debug("RefreshTask started.");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JulLog.error("initRefreshTask error", ex);
-        }
-    }
-
-    /**
-     * 关闭自动刷新任务
-     */
-    public void closeRefreshTask() {
-        try {
-            ExecutorUtil.cancel(this.refreshTask);
-            this.refreshTask = null;
-            JulLog.debug("RefreshTask closed.");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JulLog.error("closeRefreshTask error", ex);
-        }
-    }
-
-    /**
-     * 渲染主面板
-     */
-    private void renderPane() {
-        try {
-            JulLog.info("renderPane started.");
-            if (this.client != null) {
-                // 获取数据
-                ServerMonitor monitor;
-                if (this.serverTable.isItemEmpty()) {
-                    monitor = this.serverExec.monitor();
+    private void init() {
+        StageManager.showMask(()->{
+            try {
+                if (this.client != null) {
+                    // 获取数据
+                    ServerMonitor monitor = this.serverExec.monitor();
                     // 初始化表格
                     this.serverTable.setItem(monitor);
-                } else {
-                    monitor = this.serverExec.monitorSimple();
-                    ServerMonitor monitor1 = (ServerMonitor) this.serverTable.getItem(0);
-                    this.serverTable.setItem(monitor1);
+                    // 初始化磁盘信息
+                    this.diskController.init();
                 }
-                // 初始化图表
-                this.aggregationController.init(monitor);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
-            JulLog.info("renderPane finished.");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JulLog.error("renderPane error", ex);
-        }
+        });
     }
 
     @Override
@@ -170,22 +124,14 @@ public class ShellServerTabController extends ParentTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.initRefreshTask();
-//            } else {
-//                this.closeRefreshTask();
+                this.init();
             }
         });
     }
 
     @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.closeRefreshTask();
-    }
-
-    @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.aggregationController, this.cpuController, this.diskController,
-                this.networkController, this.memoryController, this.gpuController);
+        return List.of(this.cpuController, this.diskController, this.networkController,
+                this.memoryController, this.gpuController);
     }
 }

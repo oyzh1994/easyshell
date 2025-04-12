@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellDiskInfoTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
+import cn.oyzh.easyshell.tabs.connect.ShellServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -42,11 +43,7 @@ public class ShellMonitorDiskTabController extends SubTabController {
         if (!force && !this.diskTable.isChildEmpty()) {
             return;
         }
-        StageManager.showMask(() -> {
-            ShellExec exec = this.client().shellExec();
-            List<DiskInfo> diskInfos = exec.disk_info();
-            this.diskTable.setItem(diskInfos);
-        });
+        StageManager.showMask(this::init);
     }
 
     @Override
@@ -64,7 +61,13 @@ public class ShellMonitorDiskTabController extends SubTabController {
     }
 
     @Override
-    public ShellMonitorTabController parent() {
-        return (ShellMonitorTabController) super.parent();
+    public ShellServerTabController parent() {
+        return (ShellServerTabController) super.parent();
+    }
+
+    public void init() {
+        ShellExec exec = this.client().shellExec();
+        List<DiskInfo> diskInfos = exec.disk_info();
+        this.diskTable.setItem(diskInfos);
     }
 }
