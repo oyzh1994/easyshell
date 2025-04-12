@@ -1,9 +1,6 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.fx.gui.skin.ActionTextFieldSkin;
-import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.fx.gui.skin.SelectTextFiledSkin;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -17,7 +14,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2023/10/9
  */
-public class SftpLocationTextFieldSkin extends ActionTextFieldSkin {
+public class SftpLocationTextFieldSkin extends SelectTextFiledSkin {
 
     /**
      * 跳转路径事件
@@ -44,9 +41,11 @@ public class SftpLocationTextFieldSkin extends ActionTextFieldSkin {
     }
 
     public SftpLocationTextFieldSkin(TextField textField) {
-        super(textField, new CopySVGGlyph("13"));
-        this.button.disappear();
-        this.button.setTipText(I18nHelper.copyFilePath());
+        super(textField);
+        // 设置选中事件
+        super.setSelectIndexChanged((observable, oldValue, newValue) -> {
+            this.onJumpLocation(this.getText());
+        });
         // 按键监听
         this.getSkinnable().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -57,15 +56,15 @@ public class SftpLocationTextFieldSkin extends ActionTextFieldSkin {
 
     @Override
     protected void onButtonClicked(MouseEvent e) {
-        ClipboardUtil.copy(this.getText());
+        super.onButtonClicked(e);
     }
 
-    @Override
-    protected void updateButtonVisibility() {
-        boolean visible = this.getSkinnable().isVisible();
-        boolean disable = this.getSkinnable().isDisable();
-        boolean hasFocus = this.getSkinnable().isFocused();
-        boolean shouldBeVisible = !disable && visible && hasFocus;
-        this.button.setVisible(shouldBeVisible);
-    }
+//    @Override
+//    protected void updateButtonVisibility() {
+//        boolean visible = this.getSkinnable().isVisible();
+//        boolean disable = this.getSkinnable().isDisable();
+//        boolean hasFocus = this.getSkinnable().isFocused();
+//        boolean shouldBeVisible = !disable && visible && hasFocus;
+//        this.button.setVisible(shouldBeVisible);
+//    }
 }

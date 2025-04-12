@@ -11,7 +11,7 @@
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyVersion">
             <FXHBox.margin>
-                <Insets left="10" top="6"/>
+                <Insets left="10" top="7"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>

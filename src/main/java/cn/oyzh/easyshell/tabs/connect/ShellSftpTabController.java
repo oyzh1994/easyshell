@@ -296,6 +296,19 @@ public class ShellSftpTabController extends SubTabController {
         }
     }
 
+    /**
+     * 进入home目录
+     */
+    @FXML
+    private void intoHome() {
+        try {
+            this.fileTable.intoHome();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
     @FXML
     private void mkdir() {
         this.fileTable.mkdir();
@@ -484,7 +497,7 @@ public class ShellSftpTabController extends SubTabController {
         if (this.downloadBox.isVisible()) {
             ++showNum;
         }
-        this.fileTable.setFlexHeight("100% - " + (60 + showNum * 30));
+        this.fileTable.setFlexHeight("100% - " + (30 + showNum * 30));
         this.fileTable.parentAutosize();
     }
 

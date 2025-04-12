@@ -21,7 +21,7 @@
         </ClearableTextField>
         <NextSVGGlyph onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
-                <Insets left="5" top="6"/>
+                <Insets left="5" top="7"/>
             </FXHBox.margin>
         </NextSVGGlyph>
         <RichDataTypeComboBox realHeight="22" fx:id="format">
@@ -36,7 +36,7 @@
         </FontSizeComboBox>
         <SaveSVGGlyph onMousePrimaryClicked="#save">
             <FXHBox.margin>
-                <Insets left="10" top="6"/>
+                <Insets left="10" top="7"/>
             </FXHBox.margin>
         </SaveSVGGlyph>
     </FXHBox>

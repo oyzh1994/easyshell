@@ -19,12 +19,12 @@
         </ClearableTextField>
         <NextSVGGlyph onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
-                <Insets left="5" top="6"/>
+                <Insets left="5" top="7"/>
             </FXHBox.margin>
         </NextSVGGlyph>
         <CopySVGGlyph onMousePrimaryClicked="#copyInspect">
             <FXHBox.margin>
-                <Insets left="10" top="6"/>
+                <Insets left="10" top="7"/>
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>

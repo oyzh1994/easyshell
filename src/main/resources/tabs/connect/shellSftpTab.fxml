@@ -20,6 +20,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellSftpTabController"
        text="%base.file" fx:id="root">
@@ -28,64 +29,74 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
+            <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
                 <FXHBox.margin>
-                    <Insets left="5" top="3"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
-            </ClearableTextField>
+            </HomeSVGGlyph>
             <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </ReturnFolderSVGGlyph>
-            <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
+            <SftpLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 330">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="4"/>
                 </FXHBox.margin>
-            </RefreshSVGGlyph>
+            </SftpLocationTextField>
             <!--            <CopySVGGlyph onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">-->
             <!--                <FXHBox.margin>-->
             <!--                    <Insets left="5" top="10"/>-->
             <!--                </FXHBox.margin>-->
             <!--            </CopySVGGlyph>-->
+            <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
             <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"
                                 onMousePrimaryClicked="#uploadFile">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FileUploadSVGGlyph>
             <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"
                                   onMousePrimaryClicked="#uploadFolder">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FolderUploadSVGGlyph>
             <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FileAddSVGGlyph>
             <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FolderAddSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-<!--            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"-->
-<!--                            unselectedText="%base.doNotShowHiddenFiles">-->
-<!--                <FXHBox.margin>-->
-<!--                    <Insets left="5" top="8"/>-->
-<!--                </FXHBox.margin>-->
-<!--            </FXToggleSwitch>-->
+            <!--            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"-->
+            <!--                            unselectedText="%base.doNotShowHiddenFiles">-->
+            <!--                <FXHBox.margin>-->
+            <!--                    <Insets left="5" top="8"/>-->
+            <!--                </FXHBox.margin>-->
+            <!--            </FXToggleSwitch>-->
             <HiddenSVGPane fx:id="hiddenPane" size="16,14" onMousePrimaryClicked="#hiddenFile">
                 <HBox.margin>
-                    <Insets left="5" top="11"/>
+                    <Insets left="5" top="8"/>
                 </HBox.margin>
             </HiddenSVGPane>
+            <ClearableTextField prefWidth="120" realHeight="22" fx:id="filterFile" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="4"/>
+                </FXHBox.margin>
+            </ClearableTextField>
             <!--            <UploadBoxSVGGlyph sizeStr="15" fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox"-->
             <!--                               tipText="%shell.file.tip10">-->
             <!--                <FXHBox.margin>-->
@@ -105,7 +116,7 @@
             <!--                </FXHBox.margin>-->
             <!--            </SftpSVGGlyph>-->
         </FXHBox>
-        <SftpFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
+        <SftpFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                 <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
@@ -173,18 +184,6 @@
                     <Insets left="5" top="8"/>
                 </FXHBox.margin>
             </CancelSVGGlyph>
-        </FXHBox>
-        <FXHBox prefHeight="30" flexWidth="100%">
-            <FXLabel text="%base.location" prefWidth="50" maxWidth="50">
-                <FXHBox.margin>
-                    <Insets left="5" top="9"/>
-                </FXHBox.margin>
-            </FXLabel>
-            <SftpLocationTextField fx:id="location" flexWidth="100% - 60">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </SftpLocationTextField>
         </FXHBox>
     </FXVBox>
 </FXTab>

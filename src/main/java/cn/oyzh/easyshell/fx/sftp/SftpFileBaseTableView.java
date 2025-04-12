@@ -311,7 +311,11 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
             this.returnDir();
             return;
         }
-        this.setLocation(file.getPath());
+        this.intoDir(file.getFilePath());
+    }
+
+    public void intoDir(String filePath) {
+        this.setLocation(filePath);
         this.loadFile();
     }
 
@@ -326,6 +330,13 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
         currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
         this.setLocation(currPath);
         this.loadFile();
+    }
+
+    /**
+     * 进入home目录
+     */
+    public void intoHome() {
+        this.intoDir(this.client.getUserHome());
     }
 
     public boolean existFile(String fileName) {
@@ -421,13 +432,15 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> {
     }
 
     public void cd(String path) {
-        try {
-            if (this.sftp().exist(path)) {
-                this.setLocation(path);
-                this.loadFile();
+        if (!StringUtil.isBlank(path)) {
+            try {
+                if (this.sftp().exist(path)) {
+                    this.setLocation(path);
+                    this.loadFile();
+                }
+            } catch (SftpException ex) {
+                MessageBox.exception(ex);
             }
-        } catch (SftpException ex) {
-            MessageBox.exception(ex);
         }
     }
 }
