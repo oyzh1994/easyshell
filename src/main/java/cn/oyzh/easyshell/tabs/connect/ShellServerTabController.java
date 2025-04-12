@@ -100,12 +100,12 @@ public class ShellServerTabController extends ParentTabController {
         StageManager.showMask(()->{
             try {
                 if (this.client != null) {
+                    // 初始化磁盘信息
+                    this.diskController.init();
                     // 获取数据
                     ServerMonitor monitor = this.serverExec.monitor();
                     // 初始化表格
                     this.serverTable.setItem(monitor);
-                    // 初始化磁盘信息
-                    this.diskController.init();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

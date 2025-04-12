@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.connect.server;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController;
+import cn.oyzh.easyshell.tabs.connect.ShellServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -72,7 +73,7 @@ public class ShellServerGpuTabController extends SubTabController {
     }
 
     @Override
-    public ShellMonitorTabController parent() {
-        return (ShellMonitorTabController) super.parent();
+    public ShellServerTabController parent() {
+        return (ShellServerTabController) super.parent();
     }
 }

@@ -15,11 +15,11 @@
         <FXHBox prefHeight="30">
             <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ShellDiskInfoTableView flexWidth="100% - 20" flexHeight="100% - 30" fx:id="diskTable">
+        <ShellDiskInfoTableView flexWidth="100% - 20" flexHeight="100% - 40" fx:id="diskTable">
             <columns>
                 <FXTableColumn prefWidth="125" valueName="fileSystem" text="%base.fileSystem"/>
                 <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>

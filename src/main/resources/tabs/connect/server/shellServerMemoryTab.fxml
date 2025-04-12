@@ -15,16 +15,16 @@
         <FXHBox flexWidth="100%" prefHeight="30">
             <CopySVGGlyph onMousePrimaryClicked="#copyInfo">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
             <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ReadOnlyTextArea fx:id="memoryInfo" flexWidth="100% - 20" flexHeight="100% - 30">
+        <ReadOnlyTextArea fx:id="memoryInfo" flexWidth="100% - 20" flexHeight="100% - 40">
             <FXVBox.margin>
                 <Insets left="10" top="5"/>
             </FXVBox.margin>
