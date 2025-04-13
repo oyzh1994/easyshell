@@ -23,6 +23,7 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -448,21 +449,24 @@ public class ShellSftpTransportController extends StageController {
             ShellConnect targetInfo = this.targetInfo.getSelectedItem();
             // 检查来源连接
             if (sourceInfo == null) {
-                this.sourceInfo.requestFocus();
-                MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
+//                this.sourceInfo.requestFocus();
+//                MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
+                ControlUtil.validFail(this.sourceInfo);
                 return;
             }
             // 检查目标连接
             if (targetInfo == null) {
-                this.targetInfo.requestFocus();
-                MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
+//                this.targetInfo.requestFocus();
+//                MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
+                ControlUtil.validFail(this.targetInfo);
                 return;
             }
 
             // 检查连接是否一样
             if (sourceInfo.compare(targetInfo)) {
-                this.sourceInfo.requestFocus();
-                MessageBox.warn(I18nHelper.connectionsCannotBeTheSame());
+//                this.sourceInfo.requestFocus();
+//                MessageBox.warn(I18nHelper.connectionsCannotBeTheSame());
+                ControlUtil.validFail(this.sourceInfo);
                 return;
             }
 

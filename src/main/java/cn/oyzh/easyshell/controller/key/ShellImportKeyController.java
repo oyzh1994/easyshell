@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -102,20 +103,23 @@ public class ShellImportKeyController extends StageController {
         String name = this.name.getTextTrim();
         // 名称检查
         if (StringUtil.isBlank(name)) {
-            this.name.requestFocus();
+//            this.name.requestFocus();
+            ControlUtil.validFail(this.name);
             return;
         }
         // 密钥检查
         String publicKey = this.publicKey.getTextTrim();
         if (StringUtil.isBlank(publicKey)) {
-            MessageBox.warn(ShellI18nHelper.keyTip1());
-            this.publicKey.requestFocus();
+//            MessageBox.warn(ShellI18nHelper.keyTip1());
+//            this.publicKey.requestFocus();
+            ControlUtil.validFail(this.publicKey);
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
         if (StringUtil.isBlank(privateKey)) {
-            MessageBox.warn(ShellI18nHelper.keyTip1());
-            this.privateKey.requestFocus();
+//            MessageBox.warn(ShellI18nHelper.keyTip1());
+//            this.privateKey.requestFocus();
+            ControlUtil.validFail(this.privateKey);
             return;
         }
         try {

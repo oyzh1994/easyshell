@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -87,8 +88,9 @@ public class ShellCopyIdKeyController extends StageController {
     private void copyKeys() {
         ShellConnect connect = this.host.getSelectedItem();
         if (connect == null) {
-            this.host.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseSelectConnect());
+//            this.host.requestFocus();
+//            MessageBox.warn(I18nHelper.pleaseSelectConnect());
+            ControlUtil.validFail(this.host);
             return;
         }
         ShellClient client = ShellClientUtil.newClient(connect);

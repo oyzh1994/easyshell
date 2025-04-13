@@ -31,6 +31,7 @@ import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -255,10 +256,12 @@ public class ShellUpdateConnectController extends StageController {
         this.tabPane.select(0);
         if (!this.hostPort.validate()) {
             this.tabPane.select(0);
+            ControlUtil.validFail(this.hostPort);
             return null;
         }
         if (!this.hostIp.validate()) {
             this.tabPane.select(0);
+            ControlUtil.validFail(this.hostIp);
             return null;
         }
         hostText = hostIp + ":" + this.hostPort.getValue();
@@ -304,7 +307,7 @@ public class ShellUpdateConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
@@ -337,22 +340,26 @@ public class ShellUpdateConnectController extends StageController {
         }
         String userName = this.userName.getTextTrim();
         if (StringUtil.isBlank(userName)) {
-            this.userName.requestFocus();
+//            this.userName.requestFocus();
+            ControlUtil.validFail(this.userName);
             return;
         }
         String password = this.password.getPassword();
         if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
-            this.password.requestFocus();
+//            this.password.requestFocus();
+            ControlUtil.validFail(this.password);
             return;
         }
         String certificate = this.certificate.getTextTrim();
         if (this.authMethod.isCertificateAuth() && StringUtil.isBlank(certificate)) {
-            this.certificate.requestFocus();
+//            this.certificate.requestFocus();
+            ControlUtil.validFail(this.certificate);
             return;
         }
         String keyId = this.key.getKeyId();
         if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
-            this.key.requestFocus();
+//            this.key.requestFocus();
+            ControlUtil.validFail(this.key);
             return;
         }
         // 名称未填，则直接以host为名称

@@ -12,6 +12,7 @@ import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -78,24 +79,26 @@ public class ShellAddKeyController extends StageController {
         String name = this.name.getTextTrim();
         // 名称检查
         if (StringUtil.isBlank(name)) {
-            this.name.requestFocus();
+//            this.name.requestFocus();
+            ControlUtil.validFail(this.name);
             return;
         }
         // 密钥检查
         String publicKey = this.publicKey.getTextTrim();
         if (StringUtil.isBlank(publicKey)) {
-            MessageBox.warn(ShellI18nHelper.keyTip1());
-            this.publicKey.requestFocus();
+//            MessageBox.warn(ShellI18nHelper.keyTip1());
+//            this.publicKey.requestFocus();
+            ControlUtil.validFail(this.publicKey);
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
         if (StringUtil.isBlank(privateKey)) {
-            MessageBox.warn(ShellI18nHelper.keyTip1());
-            this.privateKey.requestFocus();
+//            MessageBox.warn(ShellI18nHelper.keyTip1());
+//            this.privateKey.requestFocus();
+            ControlUtil.validFail(this.privateKey);
             return;
         }
         try {
-
             String keyType = this.keyType.getSelectedItem();
             int keyLength = this.keyLength.getSelectedItem();
 
@@ -152,11 +155,11 @@ public class ShellAddKeyController extends StageController {
                 if ("RSA".equalsIgnoreCase(type)) {
                     key = OpenSSHRSAUtil.generateKey(length);
                     // ssh公钥
-                    this.publicKey.setText( key[0]);
+                    this.publicKey.setText(key[0]);
                 } else {
                     key = OpenSSHED25519Util.generateKey();
                     // ssh公钥
-                    this.publicKey.setText( key[0]);
+                    this.publicKey.setText(key[0]);
                 }
                 // ssh私钥
                 this.privateKey.setText(key[1]);
