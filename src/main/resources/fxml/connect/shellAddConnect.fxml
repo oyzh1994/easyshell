@@ -119,7 +119,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellOsTypeComboBox fx:id="osType" prefWidth="200">
+                <ShellOsTypeComboBox fx:id="osType" prefWidth="200" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -162,7 +162,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <CharsetComboBox fx:id="charset" prefWidth="200">
+                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -172,7 +172,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellTermTypeComboBox fx:id="termType" prefWidth="200">
+                <ShellTermTypeComboBox fx:id="termType" prefWidth="200" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -328,7 +328,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField text="127.0.0.1" fx:id="x11Host" tipText="%base.contentTip1" flexWidth="100% - 180">
+                <ClearableTextField prefHeight="30" text="127.0.0.1" fx:id="x11Host" tipText="%base.contentTip1" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -338,7 +338,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <PortTextField text="6000" fx:id="x11Port" tipText="%base.contentTip1" flexWidth="100% - 180">
+                <PortTextField prefHeight="30" text="6000" fx:id="x11Port" tipText="%base.contentTip1" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
