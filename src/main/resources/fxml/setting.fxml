@@ -54,7 +54,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox groupId="x11">
-                    <ReadOnlyTextField fx:id="x11Path" flexWidth="100% - 225">
+                    <ReadOnlyTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 225">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -79,7 +79,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ShellTemShellComboBox fx:id="termType" flexWidth="100% - 225">
+                    <ShellTemShellComboBox prefHeight="30" fx:id="termType" flexWidth="100% - 190">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -95,7 +95,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <NumberTextField step="100" flexWidth="100% - 140" value="5000" minVal="100" maxVal="10000"
+                <NumberTextField prefHeight="30" step="100" flexWidth="100% - 140" value="5000" minVal="100" maxVal="10000"
                                  fx:id="termMaxLineCount">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -116,7 +116,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellTermCursorComboBox flexWidth="100% - 140" initIndex="2" fx:id="termCursorBlinks">
+                <ShellTermCursorComboBox prefHeight="30" flexWidth="100% - 140" initIndex="2" fx:id="termCursorBlinks">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -136,7 +136,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellTermFpsComboBox flexWidth="100% - 140" initIndex="2" fx:id="termFps">
+                <ShellTermFpsComboBox prefHeight="30" flexWidth="100% - 140" initIndex="2" fx:id="termFps">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
