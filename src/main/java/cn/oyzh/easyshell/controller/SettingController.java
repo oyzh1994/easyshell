@@ -459,7 +459,8 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftItem.of(I18nHelper.base(), "ssh_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
-        SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font"));
+        treeView.addItem(SettingLeftItem.of(I18nHelper.shortcutKey(), "shortcut_box"));
+        SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font_general_box"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.general(), "font_general_box"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.editor(), "font_editor_box"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.terminal(), "font_terminal_box"));

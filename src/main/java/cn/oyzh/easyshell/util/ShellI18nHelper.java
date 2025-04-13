@@ -88,4 +88,36 @@ public class ShellI18nHelper {
     public static String keyTip1() {
         return I18nResourceBundle.i18nString("shell.key.tip1");
     }
+
+    public static String termTip1() {
+        return I18nResourceBundle.i18nString("shell.term.tip1");
+    }
+
+    public static String termTip2() {
+        return I18nResourceBundle.i18nString("shell.term.tip2");
+    }
+
+    public static String termTip3() {
+        return I18nResourceBundle.i18nString("shell.term.tip3");
+    }
+
+    public static String termTip4() {
+        return I18nResourceBundle.i18nString("shell.term.tip4");
+    }
+
+    public static String termTip5() {
+        return I18nResourceBundle.i18nString("shell.term.tip5");
+    }
+
+    public static String termTip6() {
+        return I18nResourceBundle.i18nString("shell.term.tip6");
+    }
+
+    public static String termTip7() {
+        return I18nResourceBundle.i18nString("shell.term.tip7");
+    }
+
+    public static String termTip8() {
+        return I18nResourceBundle.i18nString("shell.term.tip8");
+    }
 }
