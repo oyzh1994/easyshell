@@ -237,8 +237,11 @@
                 <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100%">
                     <columns>
                         <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
-                        <FXTableColumn flexWidth="50% - 4" valueName="value" text="%base.desc"/>
+                        <FXTableColumn flexWidth="50% - 34" valueName="value" text="%base.desc"/>
                     </columns>
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
                 </ShellShortcutKeyTableView>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="font_general_box" flexWidth="100%"
