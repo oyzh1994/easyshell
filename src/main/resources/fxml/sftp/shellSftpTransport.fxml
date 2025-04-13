@@ -186,7 +186,7 @@
         </FXVBox>
         <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
             <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100%">
-                <FXVBox flexWidth="50% - 15" flexHeight="100%">
+                <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <HomeSVGGlyph onMousePrimaryClicked="#intoSourceHome">
                             <FXHBox.margin>
@@ -238,19 +238,19 @@
                         </FXVBox.margin>
                     </SftpTransportFileTableView>
                 </FXVBox>
-                <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">
-                    <TransportRightSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport1">
-                        <FXVBox.margin>
-                            <Insets left="3" top="-10"/>
-                        </FXVBox.margin>
-                    </TransportRightSVGGlyph>
-                    <TransportLeftSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport2">
-                        <FXVBox.margin>
-                            <Insets left="3" top="20"/>
-                        </FXVBox.margin>
-                    </TransportLeftSVGGlyph>
-                </FXVBox>
-                <FXVBox flexWidth="50% - 15" flexHeight="100%">
+<!--                <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">-->
+<!--                    <TransportRightSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport1">-->
+<!--                        <FXVBox.margin>-->
+<!--                            <Insets left="3" top="-10"/>-->
+<!--                        </FXVBox.margin>-->
+<!--                    </TransportRightSVGGlyph>-->
+<!--                    <TransportLeftSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport2">-->
+<!--                        <FXVBox.margin>-->
+<!--                            <Insets left="3" top="20"/>-->
+<!--                        </FXVBox.margin>-->
+<!--                    </TransportLeftSVGGlyph>-->
+<!--                </FXVBox>-->
+                <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <HomeSVGGlyph onMousePrimaryClicked="#intoTargetHome">
                             <FXHBox.margin>

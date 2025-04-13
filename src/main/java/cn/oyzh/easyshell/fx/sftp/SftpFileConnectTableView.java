@@ -1,14 +1,9 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.SftpFile;
-import cn.oyzh.easyshell.sftp.SftpUtil;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
@@ -16,13 +11,9 @@ import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.MenuItem;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,25 +41,25 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
     }
 
     @Override
-    public List<FXMenuItem> getMenuItems() {
+    public List<? extends MenuItem> getMenuItems() {
         List<SftpFile> files = this.getSelectedItems();
-        if (CollectionUtil.isEmpty(files)) {
-            // 菜单列表
-            List<FXMenuItem> menuItems = new ArrayList<>();
-//            // 创建文件
-//            FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
-//            // 创建文件夹
-//            FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
-            // 上传文件
-            FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
-            // 上传文件夹
-            FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
-//            menuItems.add(touch);
-//            menuItems.add(mkdir);
-            menuItems.add(uploadFile);
-            menuItems.add(uploadFolder);
-            return menuItems;
-        }
+//        if (CollectionUtil.isEmpty(files)) {
+//            // 菜单列表
+//            List<MenuItem> menuItems = new ArrayList<>();
+////            // 创建文件
+////            FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
+////            // 创建文件夹
+////            FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
+//            // 上传文件
+//            FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+//            // 上传文件夹
+//            FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+////            menuItems.add(touch);
+////            menuItems.add(mkdir);
+//            menuItems.add(uploadFile);
+//            menuItems.add(uploadFolder);
+//            return menuItems;
+//        }
 //        // 发现操作中的文件，则跳过
 //        for (SftpFile file : files) {
 //            if (file.isWaiting()) {
@@ -76,14 +67,23 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
 //            }
 //        }
         // 检查是否包含无效文件
+        // 获取父级菜单
+        List<MenuItem> menuItems = new ArrayList<>(super.getMenuItems());
+        menuItems.add(MenuItemHelper.separator());
+        // 上传文件
+        FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+        // 上传文件夹
+        FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+        menuItems.add(uploadFile);
+        menuItems.add(uploadFolder);
         if (this.checkInvalid(files)) {
             return Collections.emptyList();
         }
-        // 获取父级菜单
-        List<FXMenuItem> menuItems = super.getMenuItems();
-        // 下载文件
-        FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
-        menuItems.add(downloadFile);
+        if (!files.isEmpty()) {
+            // 下载文件
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
+            menuItems.add(downloadFile);
+        }
         return menuItems;
     }
 
@@ -124,18 +124,18 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
 //        }
 //    }
 
-//    /**
-//     * 下载回调
-//     */
-//    private Consumer<List<SftpFile>> downloadFileCallback;
-//
-//    public Consumer<List<SftpFile>> getDownloadFileCallback() {
-//        return downloadFileCallback;
-//    }
-//
-//    public void setDownloadFileCallback(Consumer<List<SftpFile>> downloadFileCallback) {
-//        this.downloadFileCallback = downloadFileCallback;
-//    }
+    /**
+     * 下载回调
+     */
+    private Consumer<List<SftpFile>> downloadFileCallback;
+
+    public Consumer<List<SftpFile>> getDownloadFileCallback() {
+        return downloadFileCallback;
+    }
+
+    public void setDownloadFileCallback(Consumer<List<SftpFile>> downloadFileCallback) {
+        this.downloadFileCallback = downloadFileCallback;
+    }
 
     public boolean downloadFile(List<SftpFile> files) {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
@@ -162,27 +162,27 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
                     MessageBox.exception(ex);
                 }
             }
-//            // 下载回调触发
-//            if (this.downloadFileCallback != null) {
-//                this.downloadFileCallback.accept(files);
-//            }
+            // 下载回调触发
+            if (this.downloadFileCallback != null) {
+                this.downloadFileCallback.accept(files);
+            }
             return true;
         }
         return false;
     }
 
-//    /**
-//     * 上传回调
-//     */
-//    private Consumer<List<File>> uploadFileCallback;
-//
-//    public Consumer<List<File>> getUploadFileCallback() {
-//        return uploadFileCallback;
-//    }
-//
-//    public void setUploadFileCallback(Consumer<List<File>> uploadFileCallback) {
-//        this.uploadFileCallback = uploadFileCallback;
-//    }
+    /**
+     * 上传回调
+     */
+    private Consumer<List<File>> uploadFileCallback;
+
+    public Consumer<List<File>> getUploadFileCallback() {
+        return uploadFileCallback;
+    }
+
+    public void setUploadFileCallback(Consumer<List<File>> uploadFileCallback) {
+        this.uploadFileCallback = uploadFileCallback;
+    }
 
     public void uploadFile() {
         try {
@@ -232,10 +232,10 @@ public class SftpFileConnectTableView extends SftpFileBaseTableView {
                 MessageBox.exception(ex);
             }
         }
-//        // 下载回调触发
-//        if (this.uploadFileCallback != null) {
-//            this.uploadFileCallback.accept(files);
-//        }
+        // 下载回调触发
+        if (this.uploadFileCallback != null) {
+            this.uploadFileCallback.accept(files);
+        }
         return true;
     }
 }

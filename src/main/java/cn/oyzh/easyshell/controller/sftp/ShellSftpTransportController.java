@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.SftpFile;
 import cn.oyzh.easyshell.sftp.SftpUtil;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
@@ -23,6 +24,7 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -249,10 +251,10 @@ public class ShellSftpTransportController extends StageController {
     /**
      * 执行传输1
      */
-    @FXML
-    private void doTransport1() {
+//    @FXML
+    private void doTransport1(List<SftpFile> files) {
         try {
-            List<SftpFile> files = this.sourceFile.getSelectedItems();
+//            List<SftpFile> files = this.sourceFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
@@ -267,7 +269,7 @@ public class ShellSftpTransportController extends StageController {
             }
             String remotePath = this.targetFile.getLocation();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
-//            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.sourceTransportBox);
+            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.sourceTransportBox);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -277,10 +279,10 @@ public class ShellSftpTransportController extends StageController {
     /**
      * 执行传输2
      */
-    @FXML
-    private void doTransport2() {
+//    @FXML
+    private void doTransport2(List<SftpFile> files) {
         try {
-            List<SftpFile> files = this.targetFile.getSelectedItems();
+//            List<SftpFile> files = this.targetFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
@@ -295,7 +297,7 @@ public class ShellSftpTransportController extends StageController {
             }
             String remotePath = this.sourceFile.getLocation();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
-//            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.targetTransportBox);
+            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.targetTransportBox);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -574,6 +576,9 @@ public class ShellSftpTransportController extends StageController {
         this.targetLocation.setOnJumpLocation(path -> {
             this.targetFile.cd(path);
         });
+        // 绑定传输回调
+        this.sourceFile.setTransportCallback(this::doTransport1);
+        this.targetFile.setTransportCallback(this::doTransport2);
         // 初始化文件树
         this.sourceFile.loadFile();
         this.targetFile.loadFile();
@@ -784,22 +789,22 @@ public class ShellSftpTransportController extends StageController {
     }
 
     @FXML
-    private void intoSourceHome( ) {
+    private void intoSourceHome() {
         this.sourceFile.intoHome();
     }
 
     @FXML
-    private void returnSourceDir( ) {
+    private void returnSourceDir() {
         this.sourceFile.returnDir();
     }
 
     @FXML
-    private void intoTargetHome( ) {
+    private void intoTargetHome() {
         this.targetFile.intoHome();
     }
 
     @FXML
-    private void returnTargetDir( ) {
+    private void returnTargetDir() {
         this.targetFile.returnDir();
     }
 }

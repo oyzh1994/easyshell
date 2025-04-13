@@ -31,6 +31,7 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -60,7 +61,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> implements FXEv
         super.initEvenListener();
         // 右键菜单事件
         this.setOnContextMenuRequested(e -> {
-            List<FXMenuItem> items = this.getMenuItems();
+            List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
                 this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
             } else {
@@ -245,7 +246,7 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> implements FXEv
     }
 
     @Override
-    public List<FXMenuItem> getMenuItems() {
+    public List<? extends MenuItem> getMenuItems() {
         List<SftpFile> files = this.getSelectedItems();
 //        // 发现操作中的文件，则跳过
 //        for (SftpFile file : files) {
@@ -258,34 +259,36 @@ public class SftpFileBaseTableView extends FXTableView<SftpFile> implements FXEv
             return Collections.emptyList();
         }
 
-        List<FXMenuItem> menuItems = new ArrayList<>();
-        if (CollectionUtil.isEmpty(files)) {
-            // 创建文件
-            FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
-            menuItems.add(touch);
-            // 创建文件夹
-            FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
-            menuItems.add(mkdir);
-        } else {
-            if (files.size() == 1) {
-                SftpFile file = files.getFirst();
-                // 文件信息
-                FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
-                menuItems.add(fileInfo);
-                // 复制路径
-                FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
-                menuItems.add(copyFilePath);
-                // 重命名文件
-                FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
-                menuItems.add(renameFile);
-                // 文件权限
-                FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
-                menuItems.add(filePermission);
-            }
-            // 删除文件
-            FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-            menuItems.add(deleteFile);
+        List<MenuItem> menuItems = new ArrayList<>();
+        // 创建文件
+        FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
+        menuItems.add(touch);
+        // 创建文件夹
+        FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
+        menuItems.add(mkdir);
+        menuItems.add(MenuItemHelper.separator());
+        if (files.size() == 1) {
+            SftpFile file = files.getFirst();
+            // 文件信息
+            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
+            menuItems.add(fileInfo);
+            // 复制路径
+            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
+            menuItems.add(copyFilePath);
+            // 重命名文件
+            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
+            menuItems.add(renameFile);
+            // 文件权限
+            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+            menuItems.add(filePermission);
+            menuItems.add(MenuItemHelper.separator());
         }
+        // 刷新文件
+        FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
+        menuItems.add(refreshFile);
+        // 删除文件
+        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+        menuItems.add(deleteFile);
         return menuItems;
     }
 

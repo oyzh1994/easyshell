@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.tabs.connect;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
-import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.download.SftpDownloadMonitor;
@@ -26,6 +26,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -198,6 +199,14 @@ public class ShellSftpTabController extends SubTabController {
         this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
         // 显示隐藏文件
         this.hiddenFile(this.setting.isShowHiddenFile());
+        // 上传回调
+        this.fileTable.setUploadFileCallback(files -> {
+            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.uploadBox);
+        });
+        // 下载回调
+        this.fileTable.setDownloadFileCallback(files -> {
+            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.downloadBox);
+        });
     }
 
     @Override
