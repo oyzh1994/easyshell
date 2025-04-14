@@ -1,0 +1,10 @@
+以ubuntu为例
+apt update
+apt install tinyproxy
+# 配置文件
+vim /etc/tinyproxy/tinyproxy.conf
+# 监听地址和端口
+Listen 127.0.0.1
+Port 8888
+# 允许所有客户端连接（可根据实际情况调整）
+Allow 0.0.0.0/0
