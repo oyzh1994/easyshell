@@ -17,4 +17,11 @@ public class ShellProxyAuthTypeCombobox extends FXComboBox<String> {
     public boolean isPasswordAuth() {
         return this.getSelectedIndex() == 1;
     }
+
+    public String getAuthType() {
+        if (this.getSelectedIndex() == 0) {
+            return "none";
+        }
+        return "password";
+    }
 }

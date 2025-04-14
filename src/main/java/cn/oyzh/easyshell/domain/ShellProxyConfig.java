@@ -125,4 +125,12 @@ public class ShellProxyConfig implements Serializable {
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
+
+    public boolean isHttpProxy() {
+        return "http".equalsIgnoreCase(this.protocol);
+    }
+
+    public boolean isPasswordAuth() {
+        return "password".equalsIgnoreCase(this.authType);
+    }
 }

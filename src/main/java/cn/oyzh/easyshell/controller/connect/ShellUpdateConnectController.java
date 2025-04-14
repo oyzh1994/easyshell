@@ -14,7 +14,9 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
+import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
@@ -307,9 +309,19 @@ public class ShellUpdateConnectController extends StageController {
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
-     * ssh连接储存对象
+     * ssh配置储存对象
      */
     private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+
+    /**
+     * x11配置储存对象
+     */
+    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
+
+    /**
+     * 代理配置储存对象
+     */
+    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -377,7 +389,7 @@ public class ShellUpdateConnectController extends StageController {
         proxyConfig.setPort(this.proxyPort.getIntValue());
         proxyConfig.setUser(this.proxyUser.getTextTrim());
         proxyConfig.setPassword(this.proxyPassword.getTextTrim());
-        proxyConfig.setAuthType(this.proxyAuthType.getSelectedItem());
+        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
         proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
         return proxyConfig;
     }
@@ -627,9 +639,13 @@ public class ShellUpdateConnectController extends StageController {
             // 选中密钥
             this.key.selectById(this.shellConnect.getKeyId());
         }
+        String iid = this.shellConnect.getId();
+        // 背景配置
+        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
+        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // ssh配置
         this.sshForward.setSelected(this.shellConnect.isSSHForward());
-        ShellSSHConfig sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
+        ShellSSHConfig sshConfig = this.sshConfigStore.getByIid(iid);
         if (sshConfig != null) {
             this.sshHost.setText(sshConfig.getHost());
             this.sshUser.setText(sshConfig.getUser());
@@ -643,15 +659,25 @@ public class ShellUpdateConnectController extends StageController {
                 this.sshAuthMethod.select(1);
             }
         }
-        // 背景配置
-        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
-        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // x11配置
         this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
-        ShellX11Config x11Config = this.shellConnect.getX11Config();
+        ShellX11Config x11Config = this.x11ConfigStore.getByIid(iid);
         if (x11Config != null) {
             this.x11Host.setValue(x11Config.getHost());
             this.x11Port.setValue(x11Config.getPort());
+        }
+        // 代理配置
+        this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
+        ShellProxyConfig proxyConfig = this.proxyConfigStore.getByIid(iid);
+        if (proxyConfig != null) {
+            this.proxyHost.setValue(proxyConfig.getHost());
+            this.proxyPort.setValue(proxyConfig.getPort());
+            this.proxyUser.setValue(proxyConfig.getUser());
+            this.proxyProtocol.select(proxyConfig.getProtocol());
+            this.proxyPassword.setValue(proxyConfig.getPassword());
+            if (proxyConfig.isPasswordAuth()) {
+                this.proxyAuthType.select(1);
+            }
         }
         // linux隐藏x11
         if (OSUtil.isLinux()) {

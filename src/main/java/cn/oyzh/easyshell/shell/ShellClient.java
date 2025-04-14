@@ -7,10 +7,12 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox;
 import cn.oyzh.easyshell.process.ProcessExec;
 import cn.oyzh.easyshell.server.ServerExec;
 import cn.oyzh.easyshell.sftp.SftpAttr;
@@ -22,6 +24,7 @@ import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -35,6 +38,7 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.ProxyHTTP;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
@@ -91,9 +95,14 @@ public class ShellClient {
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     /**
-     * shell配置存储
+     * ssh配置存储
      */
     private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+
+    /**
+     * 代理配置存储
+     */
+    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     public ShellClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
@@ -194,6 +203,29 @@ public class ShellClient {
     }
 
     /**
+     * 初始化代理
+     */
+    private void initProxy() {
+        // 开启了代理
+        if (this.shellConnect.isEnableProxy()) {
+            // 初始化ssh转发器
+            ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+            // 从数据库获取
+            if (proxyConfig == null) {
+                proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
+            }
+            if (proxyConfig == null) {
+                JulLog.warn("proxy is enable but proxy config is null");
+                throw new SSHException("proxy is enable but proxy config is null");
+            }
+            // 初始化代理
+            Proxy proxy = ShellClientUtil.newProxy(proxyConfig);
+            // 设置代理
+            this.session.setProxy(proxy);
+        }
+    }
+
+    /**
      * 初始化客户端
      */
     private void initClient() throws JSchException {
@@ -266,6 +298,8 @@ public class ShellClient {
         this.session.setConfig(config);
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
+        // 初始化代理
+        this.initProxy();
     }
 
     /**
