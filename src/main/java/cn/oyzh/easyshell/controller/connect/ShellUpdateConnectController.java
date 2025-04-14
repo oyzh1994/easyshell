@@ -420,6 +420,11 @@ public class ShellUpdateConnectController extends StageController {
             if (shellConnect.isSSHForward()) {
                 shellConnect.setSshConfig(this.getSSHConfig());
             }
+            // 代理
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            if (shellConnect.isEnableProxy()) {
+                shellConnect.setProxyConfig(this.getProxyConfig());
+            }
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }

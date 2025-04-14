@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.ShellConnectInfo;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -39,24 +38,24 @@ public class ShellConnectUtil {
         }
     }
 
-    /**
-     * 解析连接
-     *
-     * @param input 输入内容
-     * @return 连接
-     */
-    public static ShellConnectInfo parse(String input) {
-        return null;
-    }
+//    /**
+//     * 解析连接
+//     *
+//     * @param input 输入内容
+//     * @return 连接
+//     */
+//    public static ShellConnectInfo parse(String input) {
+//        return null;
+//    }
 
     /**
      * 测试连接
      *
-     * @param adapter    页面
+     * @param adapter      页面
      * @param shellConnect 连接信息
      */
     public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
-        StageManager.showMask(() -> {
+        StageManager.showMask(adapter, () -> {
             try {
 //                adapter.disable();
 //                adapter.waitCursor();

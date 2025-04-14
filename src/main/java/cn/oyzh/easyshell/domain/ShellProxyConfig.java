@@ -130,6 +130,14 @@ public class ShellProxyConfig implements Serializable {
         return "http".equalsIgnoreCase(this.protocol);
     }
 
+    public boolean isSocks4Proxy() {
+        return "socks4".equalsIgnoreCase(this.protocol);
+    }
+
+    public boolean isSocks5Proxy() {
+        return "socks5".equalsIgnoreCase(this.protocol);
+    }
+
     public boolean isPasswordAuth() {
         return "password".equalsIgnoreCase(this.authType);
     }
