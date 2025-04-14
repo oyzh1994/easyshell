@@ -367,7 +367,7 @@ public class ShellAddConnectController extends StageController {
         proxyConfig.setHost(this.proxyHost.getText());
         proxyConfig.setPort(this.proxyPort.getIntValue());
         proxyConfig.setUser(this.proxyUser.getTextTrim());
-        proxyConfig.setPassword(this.proxyPassword.getTextTrim());
+        proxyConfig.setPassword(this.proxyPassword.getPassword());
         proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
         proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
         return proxyConfig;

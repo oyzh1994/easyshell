@@ -65,7 +65,7 @@ public class ShellConnectUtil {
                 }
                 ShellClient client = new ShellClient(shellConnect);
                 // 开始连接
-                client.start(3_000);
+                client.start(10_000);
                 if (client.isConnected()) {
                     client.close();
                     MessageBox.okToast(I18nHelper.connectSuccess());

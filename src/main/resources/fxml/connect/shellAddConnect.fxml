@@ -126,7 +126,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellOsTypeComboBox>
-                <InfoLabel text="%base.charset">
+                <InfoLabel text="%base.connectTimeout">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
