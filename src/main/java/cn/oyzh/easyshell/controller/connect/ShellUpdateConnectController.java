@@ -3,11 +3,14 @@ package cn.oyzh.easyshell.controller.connect;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -25,6 +28,7 @@ import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -33,11 +37,13 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
@@ -140,6 +146,12 @@ public class ShellUpdateConnectController extends StageController {
     private FXToggleSwitch x11forwarding;
 
     /**
+     * x11面板
+     */
+    @FXML
+    private FXTab x11Tab;
+
+    /**
      * x11地址
      */
     @FXML
@@ -236,6 +248,60 @@ public class ShellUpdateConnectController extends StageController {
     private ClearableTextField backgroundImage;
 
     /**
+     * 开启代理
+     */
+    @FXML
+    private FXToggleSwitch enableProxy;
+
+    /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 代理地址
+     */
+    @FXML
+    private ClearableTextField proxyHost;
+
+    /**
+     * 代理端口
+     */
+    @FXML
+    private NumberTextField proxyPort;
+
+    /**
+     * 代理信息组件
+     */
+    @FXML
+    private FXHBox proxyAuthInfoBox;
+
+    /**
+     * 代理用户
+     */
+    @FXML
+    private ClearableTextField proxyUser;
+
+    /**
+     * 代理密码
+     */
+    @FXML
+    private PasswordTextField proxyPassword;
+
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolCombobox proxyProtocol;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeCombobox proxyAuthType;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -256,12 +322,12 @@ public class ShellUpdateConnectController extends StageController {
         this.tabPane.select(0);
         if (!this.hostPort.validate()) {
             this.tabPane.select(0);
-            ControlUtil.validFail(this.hostPort);
+//            ValidatorUtil.validFail(this.hostPort);
             return null;
         }
         if (!this.hostIp.validate()) {
             this.tabPane.select(0);
-            ControlUtil.validFail(this.hostIp);
+//            ValidatorUtil.validFail(this.hostIp);
             return null;
         }
         hostText = hostIp + ":" + this.hostPort.getValue();
@@ -297,6 +363,23 @@ public class ShellUpdateConnectController extends StageController {
         sshConfig.setHost(this.x11Host.getText());
         sshConfig.setPort(this.x11Port.getIntValue());
         return sshConfig;
+    }
+
+    /**
+     * 获取代理配置信息
+     *
+     * @return 代理配置信息
+     */
+    private ShellProxyConfig getProxyConfig() {
+        ShellProxyConfig proxyConfig = new ShellProxyConfig();
+        proxyConfig.setIid(this.shellConnect.getId());
+        proxyConfig.setHost(this.proxyHost.getText());
+        proxyConfig.setPort(this.proxyPort.getIntValue());
+        proxyConfig.setUser(this.proxyUser.getTextTrim());
+        proxyConfig.setPassword(this.proxyPassword.getTextTrim());
+        proxyConfig.setAuthType(this.proxyAuthType.getSelectedItem());
+        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
+        return proxyConfig;
     }
 
     /**
@@ -339,28 +422,53 @@ public class ShellUpdateConnectController extends StageController {
             return;
         }
         String userName = this.userName.getTextTrim();
-        if (StringUtil.isBlank(userName)) {
+        if (!this.userName.validate()) {
 //            this.userName.requestFocus();
-            ControlUtil.validFail(this.userName);
+//            ValidatorUtil.validFail(this.userName);
             return;
         }
         String password = this.password.getPassword();
         if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
 //            this.password.requestFocus();
-            ControlUtil.validFail(this.password);
+            ValidatorUtil.validFail(this.password);
             return;
         }
         String certificate = this.certificate.getTextTrim();
         if (this.authMethod.isCertificateAuth() && StringUtil.isBlank(certificate)) {
 //            this.certificate.requestFocus();
-            ControlUtil.validFail(this.certificate);
+            ValidatorUtil.validFail(this.certificate);
             return;
         }
         String keyId = this.key.getKeyId();
         if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
 //            this.key.requestFocus();
-            ControlUtil.validFail(this.key);
+            ValidatorUtil.validFail(this.key);
             return;
+        }
+        // 检查背景配置
+        if (this.x11forwarding.isSelected()) {
+            if (!this.x11Host.validate() || !this.x11Port.validate()) {
+                this.tabPane.select(this.x11Tab);
+                return;
+            }
+        }
+        // 检查背景配置
+        if (this.enableBackground.isSelected()) {
+            if (!this.backgroundImage.validate()) {
+                this.tabPane.select(this.backgroundTab);
+                return;
+            }
+        }
+        // 检查代理配置
+        if (this.enableProxy.isSelected()) {
+            if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
+                this.tabPane.select(this.proxyTab);
+                return;
+            }
+            if (!this.proxyAuthType.validate() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+                this.tabPane.select(this.proxyTab);
+                return;
+            }
         }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
@@ -398,6 +506,9 @@ public class ShellUpdateConnectController extends StageController {
             // x11配置
             this.shellConnect.setX11Config(this.getX11Config());
             this.shellConnect.setX11forwarding(this.x11forwarding.isSelected());
+            // 代理配置
+            this.shellConnect.setProxyConfig(this.getProxyConfig());
+            this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -466,6 +577,27 @@ public class ShellUpdateConnectController extends StageController {
                 NodeGroupUtil.enable(this.backgroundTab, "background");
             } else {
                 NodeGroupUtil.disable(this.backgroundTab, "background");
+            }
+        });
+        // 代理配置
+        this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.proxyTab, "proxy");
+                if (this.proxyAuthType.isPasswordAuth()) {
+                    this.proxyAuthInfoBox.enable();
+                } else {
+                    this.proxyAuthInfoBox.disable();
+                }
+            } else {
+                NodeGroupUtil.disable(this.proxyTab, "proxy");
+            }
+        });
+        // 代理认证配置
+        this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthType.isPasswordAuth()) {
+                this.proxyAuthInfoBox.enable();
+            } else {
+                this.proxyAuthInfoBox.disable();
             }
         });
     }

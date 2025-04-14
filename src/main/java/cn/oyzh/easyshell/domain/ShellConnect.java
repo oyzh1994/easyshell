@@ -120,14 +120,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String keyId;
 
-    public String getKeyId() {
-        return keyId;
-    }
-
-    public void setKeyId(String keyId) {
-        this.keyId = keyId;
-    }
-
     /**
      * 系统类型
      */
@@ -145,6 +137,45 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @Column
     private String backgroundImage;
+
+    /**
+     * 是否开启代理转发
+     */
+    @Column
+    private Boolean enableProxy;
+
+    /**
+     * 代理配置
+     */
+    private ShellProxyConfig proxyConfig;
+
+    public Boolean getEnableProxy() {
+        return enableProxy;
+    }
+
+    public void setEnableProxy(Boolean enableProxy) {
+        this.enableProxy = enableProxy;
+    }
+
+    public Boolean isEnableProxy() {
+        return enableProxy != null && enableProxy;
+    }
+
+    public ShellProxyConfig getProxyConfig() {
+        return proxyConfig;
+    }
+
+    public void setProxyConfig(ShellProxyConfig proxyConfig) {
+        this.proxyConfig = proxyConfig;
+    }
+
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
+    }
 
     public Boolean getEnableBackground() {
         return enableBackground;

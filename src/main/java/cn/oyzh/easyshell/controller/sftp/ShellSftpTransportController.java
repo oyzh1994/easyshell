@@ -26,6 +26,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.util.ControlUtil;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -453,14 +454,14 @@ public class ShellSftpTransportController extends StageController {
             if (sourceInfo == null) {
 //                this.sourceInfo.requestFocus();
 //                MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
-                ControlUtil.validFail(this.sourceInfo);
+                ValidatorUtil.validFail(this.sourceInfo);
                 return;
             }
             // 检查目标连接
             if (targetInfo == null) {
 //                this.targetInfo.requestFocus();
 //                MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
-                ControlUtil.validFail(this.targetInfo);
+                ValidatorUtil.validFail(this.targetInfo);
                 return;
             }
 
@@ -468,7 +469,7 @@ public class ShellSftpTransportController extends StageController {
             if (sourceInfo.compare(targetInfo)) {
 //                this.sourceInfo.requestFocus();
 //                MessageBox.warn(I18nHelper.connectionsCannotBeTheSame());
-                ControlUtil.validFail(this.sourceInfo);
+                ValidatorUtil.validFail(this.sourceInfo);
                 return;
             }
 

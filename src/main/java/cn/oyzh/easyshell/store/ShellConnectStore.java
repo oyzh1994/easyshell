@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
@@ -20,9 +21,20 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      */
     public static final ShellConnectStore INSTANCE = new ShellConnectStore();
 
+    /**
+     * xx配置存储
+     */
     public final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
+    /**
+     * ssh配置存储
+     */
     public final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+
+    /**
+     * 代理配置存储
+     */
+    public final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     public synchronized List<ShellConnect> load() {
         return super.selectList();
@@ -73,6 +85,15 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 this.x11ConfigStore.replace(x11Config);
             } else {
                 this.x11ConfigStore.deleteByIid(model.getId());
+            }
+
+            // 代理处理
+            ShellProxyConfig proxyConfig = model.getProxyConfig();
+            if (proxyConfig != null) {
+                proxyConfig.setIid(model.getId());
+                this.proxyConfigStore.replace(proxyConfig);
+            } else {
+                this.proxyConfigStore.deleteByIid(model.getId());
             }
         }
         return result;

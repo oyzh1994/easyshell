@@ -13,6 +13,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ControlUtil;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -80,7 +81,7 @@ public class ShellAddKeyController extends StageController {
         // 名称检查
         if (StringUtil.isBlank(name)) {
 //            this.name.requestFocus();
-            ControlUtil.validFail(this.name);
+            ValidatorUtil.validFail(this.name);
             return;
         }
         // 密钥检查
@@ -88,14 +89,14 @@ public class ShellAddKeyController extends StageController {
         if (StringUtil.isBlank(publicKey)) {
 //            MessageBox.warn(ShellI18nHelper.keyTip1());
 //            this.publicKey.requestFocus();
-            ControlUtil.validFail(this.publicKey);
+            ValidatorUtil.validFail(this.publicKey);
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
         if (StringUtil.isBlank(privateKey)) {
 //            MessageBox.warn(ShellI18nHelper.keyTip1());
 //            this.privateKey.requestFocus();
-            ControlUtil.validFail(this.privateKey);
+            ValidatorUtil.validFail(this.privateKey);
             return;
         }
         try {

@@ -13,6 +13,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ControlUtil;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -82,14 +83,14 @@ public class ShellUpdateKeyController extends StageController {
         // 名称检查
         if (StringUtil.isBlank(name)) {
 //            this.name.requestFocus();
-            ControlUtil.validFail(this.name);
+            ValidatorUtil.validFail(this.name);
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
         if (StringUtil.isBlank(privateKey)) {
 //            MessageBox.warn(ShellI18nHelper.keyTip1());
 //            this.privateKey.requestFocus();
-            ControlUtil.validFail(this.privateKey);
+            ValidatorUtil.validFail(this.privateKey);
             return;
         }
         try {
