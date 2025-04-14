@@ -1,6 +1,6 @@
 以ubuntu为例
 apt update
-apt install tinyproxy
+apt install tinyproxy -y
 # 配置文件
 vim /etc/tinyproxy/tinyproxy.conf
 # 监听地址和端口

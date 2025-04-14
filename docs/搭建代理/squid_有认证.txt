@@ -1,11 +1,11 @@
 以ubuntu为例
 apt update
-apt install squid apache2-utils
-# 首次创建用户，后面会提示输入密码(非首次去掉-c参数)
+apt install squid apache2-utils -y
+# 首次创建认证用户，后面会提示输入密码(非首次去掉-c参数)
 htpasswd -c /etc/tinyproxy/proxyusers proxyuser
 # 配置文件
 vim /etc/squid/squid.conf
-# 设置认证用户，如果无需认证可忽略
+# 设置认证用户
 auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
 auth_param basic realm Proxy Authentication
 acl authenticated proxy_auth REQUIRED

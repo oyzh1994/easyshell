@@ -1,0 +1,30 @@
+以ubuntu为例
+apt update
+apt install danted -y
+# 创建认证用户，注意是系统用户，后面认证要用到
+useradd -r test
+passwd test
+# 配置文件
+vim /etc/danted.conf
+# 内部网络接口和监听端口
+internal: eth0 port = 1080
+# 外部网络接口
+external: eth0
+# 配置 SOCKS5 代理的认证方法
+socksmethod: username
+# 配置客户端的认证方法
+clientmethod: none
+# 用户配置
+user.privileged: root
+user.unprivileged: nobody
+# 客户端通过规则（这里只是示例，实际可根据需求限制）
+client pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    log: connect disconnect error
+}
+# SOCKS5 代理通过规则（这里只是示例，实际可根据需求限制）
+socks pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    log: connect disconnect error
+    method: username
+}

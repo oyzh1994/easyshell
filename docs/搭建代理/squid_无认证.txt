@@ -1,0 +1,7 @@
+以ubuntu为例
+apt update
+apt install squid -y
+# 配置文件
+vim /etc/squid/squid.conf
+# 设置监听端口
+http_port 8889
