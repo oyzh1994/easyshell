@@ -31,7 +31,7 @@ import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHForwardConfig;
-import cn.oyzh.ssh.jump.SSHForwarder;
+import cn.oyzh.ssh.jump.SSHJumper;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -80,7 +80,7 @@ public class ShellClient {
     /**
      * ssh端口转发器
      */
-    private SSHForwarder sshForwarder;
+    private SSHJumper sshJumper;
 
     /**
      * shell密钥存储
@@ -178,15 +178,15 @@ public class ShellClient {
                 sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
             }
             if (sshConfig != null) {
-                if (this.sshForwarder == null) {
-                    this.sshForwarder = new SSHForwarder(sshConfig);
+                if (this.sshJumper == null) {
+                    this.sshJumper = new SSHJumper(sshConfig);
                 }
                 // ssh配置
                 SSHForwardConfig forwardConfig = new SSHForwardConfig();
                 forwardConfig.setHost(this.shellConnect.hostIp());
                 forwardConfig.setPort(this.shellConnect.hostPort());
                 // 执行连接
-                int localPort = this.sshForwarder.forward(forwardConfig);
+                int localPort = this.sshJumper.forward(forwardConfig);
                 // 连接信息
                 host = "127.0.0.1:" + localPort;
             } else {
