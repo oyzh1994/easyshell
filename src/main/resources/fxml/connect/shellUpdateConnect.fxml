@@ -36,6 +36,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="480">
@@ -362,9 +363,14 @@
         <FXTab text="%base.jumpHosts" fx:id="jumpTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXHBox realHeight="30">
-                    <AddSVGGlyph onMousePrimaryClicked="#addJump">
+                    <AddHostSVGGlyph onMousePrimaryClicked="#addHost">
                         <FXHBox.margin>
                             <Insets left="30" top="7"/>
+                        </FXHBox.margin>
+                    </AddHostSVGGlyph>
+                    <AddSVGGlyph onMousePrimaryClicked="#addJump">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
                         </FXHBox.margin>
                     </AddSVGGlyph>
                     <EditSVGGlyph onMousePrimaryClicked="#updateJump">
@@ -387,11 +393,14 @@
                             <Insets left="10" top="7"/>
                         </FXHBox.margin>
                     </MoveDownSVGGlyph>
+                    <FXVBox.margin>
+                        <Insets top="10"/>
+                    </FXVBox.margin>
                 </FXHBox>
-                <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 40" flexHeight="100% - 30">
+                <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 50" flexHeight="100% - 50">
                     <columns>
-                        <FXTableColumn flexWidth="35%" valueName="name" text="%base.name"/>
-                        <FXTableColumn flexWidth="65% - 110" valueName="host" text="%base.host"/>
+                        <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
+                        <FXTableColumn flexWidth="100% - 254" valueName="host" text="%base.host"/>
                         <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
                     </columns>
                     <FXVBox.margin>

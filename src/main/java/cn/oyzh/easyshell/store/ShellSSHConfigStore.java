@@ -6,6 +6,7 @@ import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +69,14 @@ public class ShellSSHConfigStore extends JdbcStandardStore<ShellSSHConfig> {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }
-        return super.selectList(QueryParam.of("iid", iid));
+        List<ShellSSHConfig> configs = super.selectList(QueryParam.of("iid", iid));
+        // 过滤历史原因造成的无效配置
+        List<ShellSSHConfig> results = new ArrayList<>();
+        for (ShellSSHConfig config : configs) {
+            if (StringUtil.isNotBlank(config.getUser(), config.getHost())) {
+                results.add(config);
+            }
+        }
+        return results;
     }
 }

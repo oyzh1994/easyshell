@@ -176,6 +176,12 @@ public class ShellUtil {
         return "gbk";
     }
 
+    /**
+     * 转换为ssh连接
+     *
+     * @param connect shell连接
+     * @return ssh连接
+     */
     public static SSHConnect toSSHConnect(ShellConnect connect) {
         SSHConnect sshConnect = new SSHConnect();
         sshConnect.setHost(connect.hostIp());

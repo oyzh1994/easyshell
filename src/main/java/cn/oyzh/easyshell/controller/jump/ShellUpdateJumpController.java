@@ -28,10 +28,10 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 
 /**
- * ssh连接新增业务
+ * ssh跳板编辑业务
  *
  * @author oyzh
- * @since 2020/9/15
+ * @since 2025/04/15
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
@@ -119,7 +119,6 @@ public class ShellUpdateJumpController extends StageController {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
             // 认证信息
             shellConnect.setUser(this.sshUser.getTextTrim());
             shellConnect.setPassword(this.sshPassword.getPassword());
@@ -161,9 +160,9 @@ public class ShellUpdateJumpController extends StageController {
             this.config.setPort(port);
             this.config.setHost(host);
             this.config.setUser(userName);
-            this.config.setTimeout(timeout);
             this.config.setPassword(password);
             this.config.setAuthMethod(authType);
+            this.config.setTimeout(timeout * 1000);
             this.config.setCertificatePath(certificate);
             this.closeWindow();
             // 设置数据

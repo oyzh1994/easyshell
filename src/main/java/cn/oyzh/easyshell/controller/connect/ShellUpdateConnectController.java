@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.controller.connect;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
 import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -40,6 +41,7 @@ import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
@@ -530,6 +532,8 @@ public class ShellUpdateConnectController extends StageController {
             this.shellConnect.setPassword(password.trim());
             this.shellConnect.setCertificate(certificate);
             this.shellConnect.setAuthMethod(this.authMethod.getAuthType());
+            // 跳板机配置
+            this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // ssh配置
 //            this.shellConnect.setSshConfig(this.getSSHConfig());
 //            this.shellConnect.setSshForward(this.sshForward.isSelected());
@@ -784,15 +788,29 @@ public class ShellUpdateConnectController extends StageController {
     }
 
     /**
+     * 添加主机
+     */
+    @FXML
+    private void addHost() {
+        StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
+        adapter.showAndWait();
+        ShellSSHConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            jumpConfig.setIid(this.shellConnect.getId());
+            this.jumpTableView.addItem(jumpConfig);
+        }
+    }
+
+    /**
      * 添加跳板
      */
     @FXML
     private void addJump() {
         StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class);
-        adapter.setProp("connect", this.shellConnect);
         adapter.showAndWait();
         ShellSSHConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
+            jumpConfig.setIid(this.shellConnect.getId());
             this.jumpTableView.addItem(jumpConfig);
         }
     }
@@ -815,15 +833,27 @@ public class ShellUpdateConnectController extends StageController {
         }
     }
 
+    /**
+     * 删除跳板
+     */
     @FXML
     private void deleteJump() {
+        this.jumpTableView.removeSelectedItem();
     }
 
+    /**
+     * 上移跳板
+     */
     @FXML
     private void moveJumpUp() {
+        TableViewUtil.moveUp(this.jumpTableView);
     }
 
+    /**
+     * 下移跳板
+     */
     @FXML
     private void moveJumpDown() {
+        TableViewUtil.moveDown(this.jumpTableView);
     }
 }
