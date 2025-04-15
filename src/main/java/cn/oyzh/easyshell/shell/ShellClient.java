@@ -32,8 +32,7 @@ import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.domain.SSHJumpConfig;
-import cn.oyzh.ssh.jump.SSHJumper;
+import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -82,7 +81,7 @@ public class ShellClient {
     /**
      * ssh端口转发器
      */
-    private SSHJumper sshJumper;
+    private SSHJumpForwarder sshJumper;
 
     /**
      * shell密钥存储
@@ -181,7 +180,7 @@ public class ShellClient {
             }
             if (CollectionUtil.isEmpty(jumpConfigs)) {
                 if (this.sshJumper == null) {
-                    this.sshJumper = new SSHJumper();
+                    this.sshJumper = new SSHJumpForwarder();
                 }
                 SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
                 // 执行连接
@@ -236,7 +235,7 @@ public class ShellClient {
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
-            this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setPassword(this.shellConnect.getPassword());
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
@@ -245,9 +244,9 @@ public class ShellClient {
                 MessageBox.warn("certificate file not exist");
                 return;
             }
-            SSHHolder.JSCH.addIdentity(priKeyFile);
+            SSHHolder.getJsch().addIdentity(priKeyFile);
             // 创建会话
-            this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
@@ -258,10 +257,10 @@ public class ShellClient {
             String keyName = "key_" + key.getId();
             // 添加认证
 //            if (!SSHHolder.JSCH.getIdentityNames().contains(keyName)) {
-            SSHHolder.JSCH.addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
+            SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
 //            }
             // 创建会话
-            this.session = SSHHolder.JSCH.getSession(this.shellConnect.getUser(), hostIp, port);
+            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
         // 配置参数
         Properties config = new Properties();
@@ -293,12 +292,6 @@ public class ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
-        session.setConfig("kex", "diffie-hellman-group14-sha256,ecdh-sha2-nistp256");
-        session.setConfig("server_host_key", "ssh-rsa,ssh-ed25519");
-        session.setConfig("cipher.s2c", "aes128-ctr,aes192-ctr,aes256-ctr");
-//        session.setConfig("kex", "diffie-hellman-group14-sha256,diffie-hellman-group1-sha1");
-//        session.setConfig("server_host_key", "ssh-rsa,ssh-dss");
-
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
         // 初始化代理
