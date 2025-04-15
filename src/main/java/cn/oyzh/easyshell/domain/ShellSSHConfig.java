@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.domain;
 
-import cn.oyzh.ssh.SSHConnect;
+import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
