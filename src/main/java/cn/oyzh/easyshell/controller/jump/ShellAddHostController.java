@@ -1,34 +1,21 @@
 package cn.oyzh.easyshell.controller.jump;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.easyshell.util.ShellUtil;
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.gui.text.field.NumberTextField;
-import cn.oyzh.fx.gui.text.field.PasswordTextField;
-import cn.oyzh.fx.gui.text.field.PortTextField;
-import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
 
 /**
  * ssh连接新增业务
@@ -56,7 +43,7 @@ public class ShellAddHostController extends StageController {
     private ShellConnectComboBox host;
 
     /**
-     * 密钥存在
+     * 密钥存储
      */
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
@@ -86,7 +73,7 @@ public class ShellAddHostController extends StageController {
         }
         try {
             ShellConnect connect = this.host.getSelectedItem();
-            ShellSSHConfig config = new ShellSSHConfig();
+            ShellJumpConfig config = new ShellJumpConfig();
             config.setName(name);
             config.setHost(connect.hostIp());
             config.setUser(connect.getUser());

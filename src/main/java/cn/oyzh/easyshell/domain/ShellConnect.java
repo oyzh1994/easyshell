@@ -4,6 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
@@ -81,16 +82,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private Integer connectTimeOut;
 
-    /**
-     * 是否开启ssh转发
-     */
-    @Column
-    private Boolean sshForward;
+//    /**
+//     * 是否开启ssh转发
+//     */
+//    @Column
+//    private Boolean sshForward;
 
     /**
      * 跳板信息
      */
-    private List<ShellSSHConfig> jumpConfigs;
+    private List<ShellJumpConfig> jumpConfigs;
 
     /**
      * x11转发
@@ -274,9 +275,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.password = shellConnect.password;
         this.authMethod = shellConnect.authMethod;
         this.certificate = shellConnect.certificate;
-        // ssh
+        // 跳板机
         this.jumpConfigs = shellConnect.jumpConfigs;
-        this.sshForward = shellConnect.sshForward;
+//        this.sshForward = shellConnect.sshForward;
         // x11
         this.x11Config = shellConnect.x11Config;
         this.x11forwarding = shellConnect.x11forwarding;
@@ -286,13 +287,22 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
-     * 是否开启ssh转发
+     * 是否开启ssh跳板
      *
      * @return 结果
      */
-    public boolean isSSHForward() {
-        return BooleanUtil.isTrue(this.sshForward);
+    public boolean isJumpForward() {
+        return CollectionUtil.isNotEmpty(this.jumpConfigs);
     }
+
+//    /**
+//     * 是否开启ssh转发
+//     *
+//     * @return 结果
+//     */
+//    public boolean isSSHForward() {
+//        return BooleanUtil.isTrue(this.sshForward);
+//    }
 
     public boolean isX11forwarding() {
         return this.x11forwarding != null && this.x11forwarding;
@@ -375,14 +385,14 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     public void setConnectTimeOut(Integer connectTimeOut) {
         this.connectTimeOut = connectTimeOut;
     }
-
-    public Boolean getSshForward() {
-        return sshForward;
-    }
-
-    public void setSshForward(Boolean sshForward) {
-        this.sshForward = sshForward;
-    }
+//
+//    public Boolean getSshForward() {
+//        return sshForward;
+//    }
+//
+//    public void setSshForward(Boolean sshForward) {
+//        this.sshForward = sshForward;
+//    }
 
     public Boolean getX11forwarding() {
         return x11forwarding;
@@ -461,11 +471,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.termType = termType;
     }
 
-    public List<ShellSSHConfig> getJumpConfigs() {
+    public List<ShellJumpConfig> getJumpConfigs() {
         return jumpConfigs;
     }
 
-    public void setJumpConfigs(List<ShellSSHConfig> jumpConfigs) {
+    public void setJumpConfigs(List<ShellJumpConfig> jumpConfigs) {
         this.jumpConfigs = jumpConfigs;
     }
 }

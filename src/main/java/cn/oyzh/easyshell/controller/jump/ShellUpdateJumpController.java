@@ -2,8 +2,7 @@ package cn.oyzh.easyshell.controller.jump;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
-import cn.oyzh.easyshell.store.ShellSSHConfigStore;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -89,9 +88,9 @@ public class ShellUpdateJumpController extends StageController {
     private ReadOnlyTextField sshCertificate;
 
     /**
-     * 连接
+     * 跳板配置
      */
-    private ShellSSHConfig config;
+    private ShellJumpConfig config;
 
     /**
      * 获取连接地址

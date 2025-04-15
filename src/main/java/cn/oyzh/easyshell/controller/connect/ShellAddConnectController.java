@@ -2,14 +2,18 @@ package cn.oyzh.easyshell.controller.connect;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
+import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
+import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
@@ -35,12 +39,13 @@ import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.util.ControlUtil;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -157,59 +162,59 @@ public class ShellAddConnectController extends StageController {
     @FXML
     private PortTextField x11Port;
 
-    /**
-     * ssh面板
-     */
-    @FXML
-    private FXTab sshTab;
-
-    /**
-     * 开启ssh
-     */
-    @FXML
-    private FXToggleSwitch sshForward;
-
-    /**
-     * ssh主机地址
-     */
-    @FXML
-    private ClearableTextField sshHost;
-
-    /**
-     * ssh主机端口
-     */
-    @FXML
-    private PortTextField sshPort;
-
-    /**
-     * ssh主机端口
-     */
-    @FXML
-    private NumberTextField sshTimeout;
-
-    /**
-     * ssh主机用户
-     */
-    @FXML
-    private ClearableTextField sshUser;
-
-    /**
-     * ssh主机密码
-     */
-    @FXML
-    private PasswordTextField sshPassword;
-
-    /**
-     * ssh认证方式
-     */
-    @FXML
-    private SSHAuthTypeCombobox sshAuthMethod;
-
-    /**
-     * ssh证书
-     */
-    @FXML
-    private ReadOnlyTextField sshCertificate;
+//    /**
+//     * ssh面板
+//     */
+//    @FXML
+//    private FXTab sshTab;
+//
+//    /**
+//     * 开启ssh
+//     */
+//    @FXML
+//    private FXToggleSwitch sshForward;
+//
+//    /**
+//     * ssh主机地址
+//     */
+//    @FXML
+//    private ClearableTextField sshHost;
+//
+//    /**
+//     * ssh主机端口
+//     */
+//    @FXML
+//    private PortTextField sshPort;
+//
+//    /**
+//     * ssh主机端口
+//     */
+//    @FXML
+//    private NumberTextField sshTimeout;
+//
+//    /**
+//     * ssh主机用户
+//     */
+//    @FXML
+//    private ClearableTextField sshUser;
+//
+//    /**
+//     * ssh主机密码
+//     */
+//    @FXML
+//    private PasswordTextField sshPassword;
+//
+//    /**
+//     * ssh认证方式
+//     */
+//    @FXML
+//    private SSHAuthTypeCombobox sshAuthMethod;
+//
+//    /**
+//     * ssh证书
+//     */
+//    @FXML
+//    private ReadOnlyTextField sshCertificate;
 
     /**
      * 认证方式
@@ -301,6 +306,12 @@ public class ShellAddConnectController extends StageController {
     private ShellProxyAuthTypeCombobox proxyAuthType;
 
     /**
+     * 跳板机配置
+     */
+    @FXML
+    private ShellJumpTableView jumpTableView;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -328,22 +339,23 @@ public class ShellAddConnectController extends StageController {
         return hostText;
     }
 
-    /**
-     * 获取ssh信息
-     *
-     * @return ssh连接信息
-     */
-    private ShellSSHConfig getSSHConfig() {
-        ShellSSHConfig sshConfig = new ShellSSHConfig();
-        sshConfig.setHost(this.sshHost.getText());
-        sshConfig.setUser(this.sshUser.getText());
-        sshConfig.setPort(this.sshPort.getIntValue());
-        sshConfig.setPassword(this.sshPassword.getPassword());
-        sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
-        sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
-        sshConfig.setCertificatePath(this.sshCertificate.getText());
-        return sshConfig;
-    }
+//    /**
+//     * 获取ssh信息
+//     *
+//     * @return ssh连接信息
+//     */
+//    private ShellSSHConfig getSSHConfig() {
+//        ShellSSHConfig sshConfig = new ShellSSHConfig();
+//        sshConfig.setIid(this.shellConnect.getId());
+//        sshConfig.setHost(this.sshHost.getText());
+//        sshConfig.setUser(this.sshUser.getText());
+//        sshConfig.setPort(this.sshPort.getIntValue());
+//        sshConfig.setPassword(this.sshPassword.getPassword());
+//        sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
+//        sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
+//        sshConfig.setCertificatePath(this.sshCertificate.getText());
+//        return sshConfig;
+//    }
 
     /**
      * 获取x11配置信息
@@ -393,11 +405,13 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
-            // ssh转发
-            shellConnect.setSshForward(this.sshForward.isSelected());
-            if (shellConnect.isSSHForward()) {
+//            // ssh转发
+//            shellConnect.setSshForward(this.sshForward.isSelected());
+//            if (shellConnect.isSSHForward()) {
 //                shellConnect.setSshConfig(this.getSSHConfig());
-            }
+//            }
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
             if (shellConnect.isEnableProxy()) {
@@ -493,9 +507,11 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setPassword(password.trim());
             shellConnect.setCertificate(certificate);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // ssh配置
 //            shellConnect.setSshConfig(this.getSSHConfig());
-            shellConnect.setSshForward(this.sshForward.isSelected());
+//            shellConnect.setSshForward(this.sshForward.isSelected());
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);
             shellConnect.setEnableBackground(enableBackground);
@@ -534,14 +550,14 @@ public class ShellAddConnectController extends StageController {
                 }
             }
         });
-        // ssh配置
-        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.sshTab, "ssh");
-            } else {
-                NodeGroupUtil.disable(this.sshTab, "ssh");
-            }
-        });
+//        // ssh配置
+//        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.sshTab, "ssh");
+//            } else {
+//                NodeGroupUtil.disable(this.sshTab, "ssh");
+//            }
+//        });
         // 认证方式
         this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.authMethod.isPasswordAuth()) {
@@ -558,16 +574,16 @@ public class ShellAddConnectController extends StageController {
                 NodeGroupUtil.display(this.tabPane, "key");
             }
         });
-        // ssh认证方式
-        this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
-            if (this.sshAuthMethod.isPasswordAuth()) {
-                this.sshPassword.display();
-                NodeGroupUtil.disappear(this.tabPane, "sshCertificate");
-            } else {
-                this.sshPassword.disappear();
-                NodeGroupUtil.display(this.tabPane, "sshCertificate");
-            }
-        });
+//        // ssh认证方式
+//        this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
+//            if (this.sshAuthMethod.isPasswordAuth()) {
+//                this.sshPassword.display();
+//                NodeGroupUtil.disappear(this.tabPane, "sshCertificate");
+//            } else {
+//                this.sshPassword.disappear();
+//                NodeGroupUtil.display(this.tabPane, "sshCertificate");
+//            }
+//        });
         // 背景配置
         this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -645,16 +661,16 @@ public class ShellAddConnectController extends StageController {
         }
     }
 
-    /**
-     * 选择ssh证书
-     */
-    @FXML
-    private void chooseSSHCertificate() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-        if (file != null) {
-            this.sshCertificate.setText(file.getPath());
-        }
-    }
+//    /**
+//     * 选择ssh证书
+//     */
+//    @FXML
+//    private void chooseSSHCertificate() {
+//        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+//        if (file != null) {
+//            this.sshCertificate.setText(file.getPath());
+//        }
+//    }
 
     /**
      * 选择背景图片
@@ -682,5 +698,81 @@ public class ShellAddConnectController extends StageController {
         if (file != null) {
             this.backgroundImage.setText(file.getPath());
         }
+    }
+
+    /**
+     * 添加主机
+     */
+    @FXML
+    private void addHost() {
+        StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
+        adapter.showAndWait();
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 添加跳板
+     */
+    @FXML
+    private void addJump() {
+        StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class);
+        adapter.showAndWait();
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 编辑跳板
+     */
+    @FXML
+    private void updateJump() {
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (config == null) {
+            return;
+        }
+        StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class);
+        adapter.setProp("config", config);
+        adapter.showAndWait();
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.refresh();
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 删除跳板
+     */
+    @FXML
+    private void deleteJump() {
+        this.jumpTableView.removeSelectedItem();
+        this.jumpTableView.updateOrder();
+    }
+
+    /**
+     * 上移跳板
+     */
+    @FXML
+    private void moveJumpUp() {
+        TableViewUtil.moveUp(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
+    }
+
+    /**
+     * 下移跳板
+     */
+    @FXML
+    private void moveJumpDown() {
+        TableViewUtil.moveDown(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
     }
 }

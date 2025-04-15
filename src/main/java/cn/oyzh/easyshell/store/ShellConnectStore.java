@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.store;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 
@@ -30,7 +30,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     /**
      * ssh配置存储
      */
-    public final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+    public final ShellJumpConfigStore sshConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * 代理配置存储
@@ -71,15 +71,14 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 result = this.insert(model);
             }
 
-            // shell处理
-            List<ShellSSHConfig> jumpConfigs = model.getJumpConfigs();
+            // 跳板机处理
+            List<ShellJumpConfig> jumpConfigs = model.getJumpConfigs();
             if (CollectionUtil.isNotEmpty(jumpConfigs)) {
-                for (ShellSSHConfig jumpConfig : jumpConfigs) {
+                for (ShellJumpConfig jumpConfig : jumpConfigs) {
                     jumpConfig.setIid(model.getId());
                 }
-                this.sshConfigStore.replace(jumpConfigs);
-            } else {
                 this.sshConfigStore.deleteByIid(model.getId());
+                this.sshConfigStore.replace(jumpConfigs);
             }
 
             // x11处理

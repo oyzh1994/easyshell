@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -15,33 +15,35 @@ import java.util.List;
  * @author oyzh
  * @since 2025/03/15
  */
-public class ShellSSHConfigStore extends JdbcStandardStore<ShellSSHConfig> {
+public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
 
     /**
      * 当前实例
      */
-    public static final ShellSSHConfigStore INSTANCE = new ShellSSHConfigStore();
+    public static final ShellJumpConfigStore INSTANCE = new ShellJumpConfigStore();
 
-    public boolean replace(List<ShellSSHConfig> models) {
-        for (ShellSSHConfig model : models) {
-            if (!this.replace(model)) {
-                return false;
+    public boolean replace(List<ShellJumpConfig> models) {
+        try {
+            for (ShellJumpConfig model : models) {
+                this.replace(model);
             }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return true;
+        return false;
     }
 
-    public boolean replace(ShellSSHConfig model) {
-        String iid = model.getIid();
-        if (super.exist(iid)) {
+    public boolean replace(ShellJumpConfig model) {
+        if (super.exist(model.getId())) {
             return super.update(model);
         }
         return this.insert(model);
     }
 
     @Override
-    protected Class<ShellSSHConfig> modelClass() {
-        return ShellSSHConfig.class;
+    protected Class<ShellJumpConfig> modelClass() {
+        return ShellJumpConfig.class;
     }
 
     /**
@@ -65,14 +67,14 @@ public class ShellSSHConfigStore extends JdbcStandardStore<ShellSSHConfig> {
      * @param iid shell连接id
      * @return ssh配置
      */
-    public List<ShellSSHConfig> listByIid(String iid) {
+    public List<ShellJumpConfig> listByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }
-        List<ShellSSHConfig> configs = super.selectList(QueryParam.of("iid", iid));
+        List<ShellJumpConfig> configs = super.selectList(QueryParam.of("iid", iid));
         // 过滤历史原因造成的无效配置
-        List<ShellSSHConfig> results = new ArrayList<>();
-        for (ShellSSHConfig config : configs) {
+        List<ShellJumpConfig> results = new ArrayList<>();
+        for (ShellJumpConfig config : configs) {
             if (StringUtil.isNotBlank(config.getUser(), config.getHost())) {
                 results.add(config);
             }

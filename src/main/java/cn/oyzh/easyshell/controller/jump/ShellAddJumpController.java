@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.jump;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -150,7 +150,7 @@ public class ShellAddJumpController extends StageController {
             String host = this.sshHost.getTextTrim();
             int timeout = this.sshTimeout.getIntValue();
             String authType = this.sshAuthMethod.getAuthType();
-            ShellSSHConfig config = new ShellSSHConfig();
+            ShellJumpConfig config = new ShellJumpConfig();
             config.setName(name);
             config.setPort(port);
             config.setHost(host);

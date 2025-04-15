@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
@@ -25,7 +25,7 @@ import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
-import cn.oyzh.easyshell.store.ShellSSHConfigStore;
+import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
@@ -79,9 +79,9 @@ public class ShellClient {
     }
 
     /**
-     * ssh端口转发器
+     * ssh跳板转发器
      */
-    private SSHJumpForwarder sshJumper;
+    private SSHJumpForwarder jumpForwarder;
 
     /**
      * shell密钥存储
@@ -94,9 +94,9 @@ public class ShellClient {
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     /**
-     * ssh配置存储
+     * 跳板配置存储
      */
-    private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+    private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * 代理配置存储
@@ -170,27 +170,23 @@ public class ShellClient {
     private String initHost() {
         // 连接地址
         String host;
+        // 初始化ssh转发器
+        List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+        // 从数据库获取
+        if (jumpConfigs == null) {
+            jumpConfigs = this.jumpConfigStore.listByIid(this.shellConnect.getId());
+        }
         // 初始化ssh端口转发
-        if (this.shellConnect.isSSHForward()) {
-            // 初始化ssh转发器
-            List<ShellSSHConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
-            // 从数据库获取
-            if (jumpConfigs == null) {
-                jumpConfigs = this.sshConfigStore.listByIid(this.shellConnect.getId());
+        if (CollectionUtil.isNotEmpty(jumpConfigs)) {
+            if (this.jumpForwarder == null) {
+                this.jumpForwarder = new SSHJumpForwarder();
             }
-            if (CollectionUtil.isEmpty(jumpConfigs)) {
-                if (this.sshJumper == null) {
-                    this.sshJumper = new SSHJumpForwarder();
-                }
-                SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
-                // 执行连接
-                int localPort = this.sshJumper.forward(jumpConfigs, target);
-                // 连接信息
-                host = "127.0.0.1:" + localPort;
-            } else {
-                JulLog.warn("ssh forward is enable but ssh config is null");
-                throw new SSHException("ssh forward is enable but ssh config is null");
-            }
+            // 转换为目标连接
+            SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
+            // 执行连接
+            int localPort = this.jumpForwarder.forward(jumpConfigs, target);
+            // 连接信息
+            host = "127.0.0.1:" + localPort;
         } else {// 直连
             // 连接信息
             host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
@@ -443,7 +439,7 @@ public class ShellClient {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
                 // 客户端转发
-                if (this.shellConnect.isSSHForward()) {
+                if (this.shellConnect.isJumpForward()) {
                     channel.setAgentForwarding(true);
                 }
                 // x11转发
@@ -556,7 +552,7 @@ public class ShellClient {
             }
             channel = (ChannelExec) this.session.openChannel("exec");
             // 客户端转发
-            if (this.shellConnect.isSSHForward()) {
+            if (this.shellConnect.isJumpForward()) {
                 channel.setAgentForwarding(true);
             }
             // x11转发

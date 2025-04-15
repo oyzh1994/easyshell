@@ -83,7 +83,7 @@
                             <Insets left="10" top="5"/>
                         </FXHBox.margin>
                     </PasswordTextField>
-                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="certificate"
+                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true" groupId="certificate"
                                        fx:id="certificate" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
@@ -95,7 +95,7 @@
                             <Insets left="5" top="12"/>
                         </HBox.margin>
                     </ChooseSVGGlyph>
-                    <ShellKeyComboBox visible="false" managedBindVisible="true" groupId="key"
+                    <ShellKeyComboBox realHeight="30" require="true" visible="false" managedBindVisible="true" groupId="key"
                                       fx:id="key" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>

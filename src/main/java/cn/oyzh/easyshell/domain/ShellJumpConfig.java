@@ -8,13 +8,21 @@ import cn.oyzh.store.jdbc.Table;
 import java.io.Serializable;
 
 /**
- * shell连接ssh配置
+ * shell跳板配置
  *
  * @author oyzh
  * @since 2025-03-15
  */
-@Table("t_ssh_config")
-public class ShellSSHConfig extends SSHConnect implements Serializable {
+@Table("t_jump_config")
+public class ShellJumpConfig extends SSHConnect implements Serializable {
+
+    /**
+     * id
+     *
+     */
+    @Column
+    @PrimaryKey
+    private String id;
 
     /**
      * 连接id
@@ -22,7 +30,6 @@ public class ShellSSHConfig extends SSHConnect implements Serializable {
      * @see ShellConnect
      */
     @Column
-    @PrimaryKey
     private String iid;
 
     public String getIid() {
@@ -31,5 +38,13 @@ public class ShellSSHConfig extends SSHConnect implements Serializable {
 
     public void setIid(String iid) {
         this.iid = iid;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

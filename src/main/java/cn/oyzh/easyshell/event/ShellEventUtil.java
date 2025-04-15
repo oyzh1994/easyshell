@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
@@ -16,8 +16,6 @@ import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
-import cn.oyzh.easyshell.event.jump.ShellJumpAddedEvent;
-import cn.oyzh.easyshell.event.jump.ShellJumpUpdatedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
@@ -359,26 +357,26 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 跳板已新增事件
-     *
-     * @param config 跳板配置
-     */
-    public static void jumpAdded(ShellSSHConfig config) {
-        ShellJumpAddedEvent event = new ShellJumpAddedEvent();
-        event.data(config);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 跳板已修改事件
-     *
-     * @param config 跳板配置
-     */
-    public static void jumpUpdated(ShellSSHConfig config) {
-        ShellJumpUpdatedEvent event = new ShellJumpUpdatedEvent();
-        event.data(config);
-        EventUtil.post(event);
-    }
+//    /**
+//     * 跳板已新增事件
+//     *
+//     * @param config 跳板配置
+//     */
+//    public static void jumpAdded(ShellJumpConfig config) {
+//        ShellJumpAddedEvent event = new ShellJumpAddedEvent();
+//        event.data(config);
+//        EventUtil.post(event);
+//    }
+//
+//    /**
+//     * 跳板已修改事件
+//     *
+//     * @param config 跳板配置
+//     */
+//    public static void jumpUpdated(ShellJumpConfig config) {
+//        ShellJumpUpdatedEvent event = new ShellJumpUpdatedEvent();
+//        event.data(config);
+//        EventUtil.post(event);
+//    }
 
 }

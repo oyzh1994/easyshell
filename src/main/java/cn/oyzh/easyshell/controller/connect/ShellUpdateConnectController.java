@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
 import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellSSHConfig;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
@@ -19,11 +19,9 @@ import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
-import cn.oyzh.easyshell.store.ShellSSHConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -42,7 +40,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -50,16 +47,11 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.domain.SSHJumpConfig;
 import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ssh连接修改业务
@@ -324,10 +316,10 @@ public class ShellUpdateConnectController extends StageController {
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    /**
-     * ssh配置储存对象
-     */
-    private final ShellSSHConfigStore sshConfigStore = ShellSSHConfigStore.INSTANCE;
+//    /**
+//     * ssh配置储存对象
+//     */
+//    private final ShellJumpConfigStore sshConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * x11配置储存对象
@@ -794,10 +786,10 @@ public class ShellUpdateConnectController extends StageController {
     private void addHost() {
         StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
         adapter.showAndWait();
-        ShellSSHConfig jumpConfig = adapter.getProp("jumpConfig");
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
-            jumpConfig.setIid(this.shellConnect.getId());
             this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
         }
     }
 
@@ -808,10 +800,10 @@ public class ShellUpdateConnectController extends StageController {
     private void addJump() {
         StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class);
         adapter.showAndWait();
-        ShellSSHConfig jumpConfig = adapter.getProp("jumpConfig");
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
-            jumpConfig.setIid(this.shellConnect.getId());
             this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
         }
     }
 
@@ -820,16 +812,17 @@ public class ShellUpdateConnectController extends StageController {
      */
     @FXML
     private void updateJump() {
-        ShellSSHConfig config = this.jumpTableView.getSelectedItem();
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
         if (config == null) {
             return;
         }
         StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class);
         adapter.setProp("config", config);
         adapter.showAndWait();
-        ShellSSHConfig jumpConfig = adapter.getProp("jumpConfig");
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.refresh();
+            this.jumpTableView.updateOrder();
         }
     }
 
@@ -839,6 +832,7 @@ public class ShellUpdateConnectController extends StageController {
     @FXML
     private void deleteJump() {
         this.jumpTableView.removeSelectedItem();
+        this.jumpTableView.updateOrder();
     }
 
     /**
@@ -847,6 +841,8 @@ public class ShellUpdateConnectController extends StageController {
     @FXML
     private void moveJumpUp() {
         TableViewUtil.moveUp(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
     }
 
     /**
@@ -855,5 +851,7 @@ public class ShellUpdateConnectController extends StageController {
     @FXML
     private void moveJumpDown() {
         TableViewUtil.moveDown(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
     }
 }
