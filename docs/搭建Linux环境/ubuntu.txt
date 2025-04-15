@@ -1,0 +1,17 @@
+1. 下载镜像
+https://cn.ubuntu.com/download/desktop
+2. 安装镜像
+虚拟机安装
+网络设置为桥接模式
+3. 设置root密码
+sudo passwd root
+4. 安装ssh、vim
+sudo apt update
+sudo apt install vim -y
+sudo apt install openssh-server -y
+5. 配置ssh
+vim /etc/ssh/ssd_config
+# 允许root登录
+PermitRootLogin yes
+6. 重启ssh
+systemctl restart ssh
