@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.shell;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CharsetUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.DockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -30,7 +31,8 @@ import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
-import cn.oyzh.ssh.domain.SSHForwardConfig;
+import cn.oyzh.ssh.domain.SSHConnect;
+import cn.oyzh.ssh.domain.SSHJumpConfig;
 import cn.oyzh.ssh.jump.SSHJumper;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
@@ -172,21 +174,18 @@ public class ShellClient {
         // 初始化ssh端口转发
         if (this.shellConnect.isSSHForward()) {
             // 初始化ssh转发器
-            ShellSSHConfig sshConfig = this.shellConnect.getSshConfig();
+            List<ShellSSHConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
             // 从数据库获取
-            if (sshConfig == null) {
-                sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
+            if (jumpConfigs == null) {
+                jumpConfigs = this.sshConfigStore.listByIid(this.shellConnect.getId());
             }
-            if (sshConfig != null) {
+            if (CollectionUtil.isEmpty(jumpConfigs)) {
                 if (this.sshJumper == null) {
-                    this.sshJumper = new SSHJumper(sshConfig);
+                    this.sshJumper = new SSHJumper();
                 }
-                // ssh配置
-                SSHForwardConfig forwardConfig = new SSHForwardConfig();
-                forwardConfig.setHost(this.shellConnect.hostIp());
-                forwardConfig.setPort(this.shellConnect.hostPort());
+                SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
                 // 执行连接
-                int localPort = this.sshJumper.forward(forwardConfig);
+                int localPort = this.sshJumper.forward(jumpConfigs, target);
                 // 连接信息
                 host = "127.0.0.1:" + localPort;
             } else {
@@ -294,6 +293,12 @@ public class ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
+        session.setConfig("kex", "diffie-hellman-group14-sha256,ecdh-sha2-nistp256");
+        session.setConfig("server_host_key", "ssh-rsa,ssh-ed25519");
+        session.setConfig("cipher.s2c", "aes128-ctr,aes192-ctr,aes256-ctr");
+//        session.setConfig("kex", "diffie-hellman-group14-sha256,diffie-hellman-group1-sha1");
+//        session.setConfig("server_host_key", "ssh-rsa,ssh-dss");
+
         // 超时连接
         this.session.setTimeout(this.shellConnect.connectTimeOutMs());
         // 初始化代理

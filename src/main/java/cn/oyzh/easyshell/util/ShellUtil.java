@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.ssh.domain.SSHConnect;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,5 +174,12 @@ public class ShellUtil {
             return "utf-8";
         }
         return "gbk";
+    }
+
+    public static SSHConnect toSSHConnect(ShellConnect connect) {
+        SSHConnect sshConnect = new SSHConnect();
+        sshConnect.setHost(connect.hostIp());
+        sshConnect.setPort(connect.hostPort());
+        return sshConnect;
     }
 }

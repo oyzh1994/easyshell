@@ -396,7 +396,7 @@ public class ShellAddConnectController extends StageController {
             // ssh转发
             shellConnect.setSshForward(this.sshForward.isSelected());
             if (shellConnect.isSSHForward()) {
-                shellConnect.setSshConfig(this.getSSHConfig());
+//                shellConnect.setSshConfig(this.getSSHConfig());
             }
             // 代理
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -494,7 +494,7 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setCertificate(certificate);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // ssh配置
-            shellConnect.setSshConfig(this.getSSHConfig());
+//            shellConnect.setSshConfig(this.getSSHConfig());
             shellConnect.setSshForward(this.sshForward.isSelected());
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);

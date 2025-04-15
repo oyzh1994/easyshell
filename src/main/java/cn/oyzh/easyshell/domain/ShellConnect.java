@@ -11,6 +11,7 @@ import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author oyzh
@@ -87,9 +88,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean sshForward;
 
     /**
-     * ssh信息
+     * 跳板信息
      */
-    private ShellSSHConfig sshConfig;
+    private List<ShellSSHConfig> jumpConfigs;
 
     /**
      * x11转发
@@ -274,7 +275,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.authMethod = shellConnect.authMethod;
         this.certificate = shellConnect.certificate;
         // ssh
-        this.sshConfig = shellConnect.sshConfig;
+        this.jumpConfigs = shellConnect.jumpConfigs;
         this.sshForward = shellConnect.sshForward;
         // x11
         this.x11Config = shellConnect.x11Config;
@@ -383,14 +384,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.sshForward = sshForward;
     }
 
-    public ShellSSHConfig getSshConfig() {
-        return sshConfig;
-    }
-
-    public void setSshConfig(ShellSSHConfig sshConfig) {
-        this.sshConfig = sshConfig;
-    }
-
     public Boolean getX11forwarding() {
         return x11forwarding;
     }
@@ -466,5 +459,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setTermType(String termType) {
         this.termType = termType;
+    }
+
+    public List<ShellSSHConfig> getJumpConfigs() {
+        return jumpConfigs;
+    }
+
+    public void setJumpConfigs(List<ShellSSHConfig> jumpConfigs) {
+        this.jumpConfigs = jumpConfigs;
     }
 }

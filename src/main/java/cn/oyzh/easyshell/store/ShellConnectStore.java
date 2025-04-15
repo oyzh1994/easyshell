@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.store;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSHConfig;
@@ -49,7 +50,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         List<ShellConnect> connects = this.load();
         for (ShellConnect connect : connects) {
             connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
-            connect.setSshConfig(this.sshConfigStore.getByIid(connect.getId()));
+            connect.setJumpConfigs(this.sshConfigStore.listByIid(connect.getId()));
+            connect.setProxyConfig(this.proxyConfigStore.getByIid(connect.getId()));
         }
         return connects;
     }
@@ -70,10 +72,12 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             }
 
             // shell处理
-            ShellSSHConfig sshConfig = model.getSshConfig();
-            if (sshConfig != null) {
-                sshConfig.setIid(model.getId());
-                this.sshConfigStore.replace(sshConfig);
+            List<ShellSSHConfig> jumpConfigs = model.getJumpConfigs();
+            if (CollectionUtil.isNotEmpty(jumpConfigs)) {
+                for (ShellSSHConfig jumpConfig : jumpConfigs) {
+                    jumpConfig.setIid(model.getId());
+                }
+                this.sshConfigStore.replace(jumpConfigs);
             } else {
                 this.sshConfigStore.deleteByIid(model.getId());
             }

@@ -6,6 +6,8 @@ import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
 
+import java.util.List;
+
 /**
  * shell ssh配置存储
  *
@@ -18,6 +20,15 @@ public class ShellSSHConfigStore extends JdbcStandardStore<ShellSSHConfig> {
      * 当前实例
      */
     public static final ShellSSHConfigStore INSTANCE = new ShellSSHConfigStore();
+
+    public boolean replace(List<ShellSSHConfig> models) {
+        for (ShellSSHConfig model : models) {
+            if (!this.replace(model)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public boolean replace(ShellSSHConfig model) {
         String iid = model.getIid();
@@ -53,10 +64,10 @@ public class ShellSSHConfigStore extends JdbcStandardStore<ShellSSHConfig> {
      * @param iid shell连接id
      * @return ssh配置
      */
-    public ShellSSHConfig getByIid(String iid) {
+    public List<ShellSSHConfig> listByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }
-        return super.selectOne(QueryParam.of("iid", iid));
+        return super.selectList(QueryParam.of("iid", iid));
     }
 }

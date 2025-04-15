@@ -29,6 +29,13 @@
 <?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox?>
+<?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="480">
@@ -259,97 +266,138 @@
                 </FXHBox>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.sshForwarding" fx:id="sshTab">
+        <!--        <FXTab text="%base.sshForwarding" fx:id="sshTab">-->
+        <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
+        <!--                <InfoLabel text="%base.enableSSHForwarding">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="10"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </InfoLabel>-->
+        <!--                <SwitchToggleSwitch fx:id="sshForward">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="5"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </SwitchToggleSwitch>-->
+        <!--                <InfoLabel text="%base.host">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="10"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </InfoLabel>-->
+        <!--                <FXHBox disable="true" groupId="ssh">-->
+        <!--                    <ClearableTextField fx:id="sshHost" tipText="%base.hostTip" require="true" realHeight="30"-->
+        <!--                                        flexWidth="100% - 285" maxLen="1024">-->
+        <!--                        <HBox.margin>-->
+        <!--                            <Insets left="30" top="5"/>-->
+        <!--                        </HBox.margin>-->
+        <!--                    </ClearableTextField>-->
+        <!--                    <PortTextField realWidth="100" fx:id="sshPort" realHeight="30" value="22">-->
+        <!--                        <HBox.margin>-->
+        <!--                            <Insets left="5" top="5"/>-->
+        <!--                        </HBox.margin>-->
+        <!--                    </PortTextField>-->
+        <!--                </FXHBox>-->
+        <!--                <InfoLabel text="%base.connectTimeout">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="10"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </InfoLabel>-->
+        <!--                <FXHBox disable="true" groupId="ssh">-->
+        <!--                    <NumberTextField disable="true" groupId="ssh" flexWidth="100% - 180" fx:id="sshTimeout"-->
+        <!--                                     tipText="%base.sshTimeoutTip"-->
+        <!--                                     realHeight="30" value="3">-->
+        <!--                        <FXHBox.margin>-->
+        <!--                            <Insets left="30" top="5"/>-->
+        <!--                        </FXHBox.margin>-->
+        <!--                    </NumberTextField>-->
+        <!--                    <FXLabel text="%base.second">-->
+        <!--                        <HBox.margin>-->
+        <!--                            <Insets left="10" top="9"/>-->
+        <!--                        </HBox.margin>-->
+        <!--                    </FXLabel>-->
+        <!--                </FXHBox>-->
+        <!--                <InfoLabel text="%base.sshUser">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="10"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </InfoLabel>-->
+        <!--                <ClearableTextField disable="true" groupId="ssh" fx:id="sshUser" tipText="%base.sshUserTip"-->
+        <!--                                    require="true" realHeight="30"-->
+        <!--                                    flexWidth="100% - 180" text="root">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="5"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </ClearableTextField>-->
+        <!--                <InfoLabel text="%base.auth">-->
+        <!--                    <VBox.margin>-->
+        <!--                        <Insets left="30" top="10"/>-->
+        <!--                    </VBox.margin>-->
+        <!--                </InfoLabel>-->
+        <!--                <FXHBox disable="true" groupId="ssh">-->
+        <!--                    <SSHAuthTypeCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">-->
+        <!--                        <FXHBox.margin>-->
+        <!--                            <Insets left="30" top="5"/>-->
+        <!--                        </FXHBox.margin>-->
+        <!--                    </SSHAuthTypeCombobox>-->
+        <!--                    <PasswordTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"-->
+        <!--                                       flexWidth="100% - 340">-->
+        <!--                        <HBox.margin>-->
+        <!--                            <Insets left="10" top="5"/>-->
+        <!--                        </HBox.margin>-->
+        <!--                    </PasswordTextField>-->
+        <!--                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="sshCertificate"-->
+        <!--                                       fx:id="sshCertificate" flexWidth="100% - 340">-->
+        <!--                        <HBox.margin>-->
+        <!--                            <Insets left="10" top="5"/>-->
+        <!--                        </HBox.margin>-->
+        <!--                    </ReadOnlyTextField>-->
+        <!--                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="sshCertificate"-->
+        <!--                                    onMousePrimaryClicked="#chooseSSHCertificate">-->
+        <!--                        <HBox.margin>-->
+        <!--                            <Insets left="5" top="12"/>-->
+        <!--                        </HBox.margin>-->
+        <!--                    </ChooseSVGGlyph>-->
+        <!--                </FXHBox>-->
+        <!--            </FXVBox>-->
+        <!--        </FXTab>-->
+        <FXTab text="%base.jumpHosts" fx:id="jumpTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.enableSSHForwarding">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <SwitchToggleSwitch fx:id="sshForward">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </SwitchToggleSwitch>
-                <InfoLabel text="%base.host">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox disable="true" groupId="ssh">
-                    <ClearableTextField fx:id="sshHost" tipText="%base.hostTip" require="true" realHeight="30"
-                                        flexWidth="100% - 285" maxLen="1024">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ClearableTextField>
-                    <PortTextField realWidth="100" fx:id="sshPort" realHeight="30" value="22">
-                        <HBox.margin>
-                            <Insets left="5" top="5"/>
-                        </HBox.margin>
-                    </PortTextField>
-                </FXHBox>
-                <InfoLabel text="%base.connectTimeout">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox disable="true" groupId="ssh">
-                    <NumberTextField disable="true" groupId="ssh" flexWidth="100% - 180" fx:id="sshTimeout"
-                                     tipText="%base.sshTimeoutTip"
-                                     realHeight="30" value="3">
+                <FXHBox realHeight="30">
+                    <AddSVGGlyph onMousePrimaryClicked="#addJump">
                         <FXHBox.margin>
-                            <Insets left="30" top="5"/>
+                            <Insets left="30" top="7"/>
                         </FXHBox.margin>
-                    </NumberTextField>
-                    <FXLabel text="%base.second">
-                        <HBox.margin>
-                            <Insets left="10" top="9"/>
-                        </HBox.margin>
-                    </FXLabel>
-                </FXHBox>
-                <InfoLabel text="%base.sshUser">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField disable="true" groupId="ssh" fx:id="sshUser" tipText="%base.sshUserTip"
-                                    require="true" realHeight="30"
-                                    flexWidth="100% - 180" text="root">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
-                <InfoLabel text="%base.auth">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox disable="true" groupId="ssh">
-                    <SSHAuthTypeCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
+                    </AddSVGGlyph>
+                    <EditSVGGlyph onMousePrimaryClicked="#updateJump">
                         <FXHBox.margin>
-                            <Insets left="30" top="5"/>
+                            <Insets left="10" top="7"/>
                         </FXHBox.margin>
-                    </SSHAuthTypeCombobox>
-                    <PasswordTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
-                                       flexWidth="100% - 340">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </PasswordTextField>
-                    <ReadOnlyTextField visible="false" managedBindVisible="true" groupId="sshCertificate"
-                                       fx:id="sshCertificate" flexWidth="100% - 340">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </ReadOnlyTextField>
-                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="sshCertificate"
-                                    onMousePrimaryClicked="#chooseSSHCertificate">
-                        <HBox.margin>
-                            <Insets left="5" top="12"/>
-                        </HBox.margin>
-                    </ChooseSVGGlyph>
+                    </EditSVGGlyph>
+                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteJump">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
+                        </FXHBox.margin>
+                    </DeleteSVGGlyph>
+                    <MoveUpSVGGlyph onMousePrimaryClicked="#moveJumpUp">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
+                        </FXHBox.margin>
+                    </MoveUpSVGGlyph>
+                    <MoveDownSVGGlyph onMousePrimaryClicked="#moveJumpDown">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
+                        </FXHBox.margin>
+                    </MoveDownSVGGlyph>
                 </FXHBox>
+                <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 40" flexHeight="100% - 30">
+                    <columns>
+                        <FXTableColumn flexWidth="35%" valueName="name" text="%base.name"/>
+                        <FXTableColumn flexWidth="65% - 110" valueName="host" text="%base.host"/>
+                        <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
+                    </columns>
+                    <FXVBox.margin>
+                        <Insets left="30" top="7"/>
+                    </FXVBox.margin>
+                </ShellJumpTableView>
             </FXVBox>
         </FXTab>
         <FXTab text="X11" fx:id="x11Tab">
@@ -376,7 +424,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField require="true" prefHeight="30" text="127.0.0.1" fx:id="x11Host" tipText="%base.contentTip1"
+                <ClearableTextField require="true" prefHeight="30" text="127.0.0.1" fx:id="x11Host"
+                                    tipText="%base.contentTip1"
                                     flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
