@@ -386,10 +386,9 @@
                 <ShellTunnelingTableView fx:id="tunnelingTableView" flexWidth="100% - 50" flexHeight="100% - 50">
                     <columns>
                         <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
-                        <FXTableColumn flexWidth="50% - 176" valueName="localHost" text="%base.localHost"/>
-                        <FXTableColumn prefWidth="100" valueName="localPort" text="%base.localPort"/>
-                        <FXTableColumn flexWidth="50% - 176" valueName="remoteHost" text="%base.remoteHost"/>
-                        <FXTableColumn prefWidth="100" valueName="remotePort" text="%base.remotePort"/>
+                        <FXTableColumn prefWidth="100" valueName="type" text="%base.type"/>
+                        <FXTableColumn flexWidth="50% - 127" valueName="localHostName" text="%base.localHost"/>
+                        <FXTableColumn flexWidth="50% - 127" valueName="remoteHostName" text="%base.remoteHost"/>
                     </columns>
                     <FXVBox.margin>
                         <Insets left="30" top="7"/>
