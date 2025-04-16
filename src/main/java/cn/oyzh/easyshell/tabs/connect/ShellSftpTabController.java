@@ -6,13 +6,13 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteTaskManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadMonitor;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadMonitor;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
+import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
+import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadMonitor;
+import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.event.EventSubscribe;
@@ -162,12 +162,12 @@ public class ShellSftpTabController extends SubTabController {
     /**
      * 删除管理器
      */
-    private SftpDeleteManager deleteManager;
+    private ShellSftpDeleteTaskManager deleteManager;
 
     /**
      * 上传管理器
      */
-    private SftpUploadManager uploadManager;
+    private ShellSftpUploadManager uploadManager;
 
     /**
      * 下载管理器
@@ -428,7 +428,7 @@ public class ShellSftpTabController extends SubTabController {
      * @param status 状态
      * @param task   任务
      */
-    private void uploadStatusChanged(String status, SftpUploadTask task) {
+    private void uploadStatusChanged(String status, ShellSftpUploadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -444,7 +444,7 @@ public class ShellSftpTabController extends SubTabController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void uploadMonitorChanged(SftpUploadMonitor monitor, SftpUploadTask task) {
+    private void uploadMonitorChanged(ShellSftpUploadMonitor monitor, ShellSftpUploadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());

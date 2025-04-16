@@ -1,7 +1,7 @@
 //package cn.oyzh.easyshell.fx.sftp;
 //
 //import cn.oyzh.common.util.CollectionUtil;
-//import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
+//import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
 //import cn.oyzh.fx.gui.menu.MenuItemHelper;
 //import cn.oyzh.fx.plus.controls.table.FXTableView;
 //import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -16,7 +16,7 @@
 // * @author oyzh
 // * @since 2025-03-21
 // */
-//public class SftpTransportTaskTableView extends FXTableView<SftpTransportTask> {
+//public class SftpTransportTaskTableView extends FXTableView<ShellSftpTransportTask> {
 //
 //    @Override
 //    public void initNode() {
@@ -42,19 +42,19 @@
 //
 //    @Override
 //    public List<? extends MenuItem> getMenuItems() {
-//        List<SftpTransportTask> tasks = this.getSelectedItems();
+//        List<ShellSftpTransportTask> tasks = this.getSelectedItems();
 //        if (CollectionUtil.isEmpty(tasks)) {
 //            return Collections.emptyList();
 //        }
 //        List<MenuItem> menuItems = new ArrayList<>();
 //        MenuItem cancelTransport = MenuItemHelper.cancelTransport("12", () -> {
-//            for (SftpTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
+//            for (ShellSftpTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
 //                sftpTransportTask.cancel();
 //            }
 //            this.removeItem(tasks);
 //        });
 //        MenuItem removeTransport = MenuItemHelper.removeTransport("12", () -> {
-//            for (SftpTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
+//            for (ShellSftpTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
 //                sftpTransportTask.remove();
 //            }
 //            this.removeItem(tasks);

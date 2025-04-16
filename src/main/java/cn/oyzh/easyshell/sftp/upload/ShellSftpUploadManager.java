@@ -14,10 +14,10 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpUploadManager extends ShellSftpTaskManager<SftpUploadMonitor, SftpUploadTask> {
+public class ShellSftpUploadManager extends ShellSftpTaskManager<ShellSftpUploadMonitor, ShellSftpUploadTask> {
 
     public void fileUpload(File localFile, String remoteFile, ShellClient client) {
-        this.tasks.add(new SftpUploadTask(this, localFile, remoteFile, client));
+        this.tasks.add(new ShellSftpUploadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doUpload();
     }
@@ -29,7 +29,7 @@ public class SftpUploadManager extends ShellSftpTaskManager<SftpUploadMonitor, S
     }
 
 //    public void updateUploading() {
-//        for (SftpUploadTask task : this.tasks) {
+//        for (ShellSftpUploadTask task : this.tasks) {
 //            if (task.isUploading() || task.isInPreparation()) {
 //                this.uploadingProperty.set(true);
 //                return;
@@ -57,7 +57,7 @@ public class SftpUploadManager extends ShellSftpTaskManager<SftpUploadMonitor, S
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    SftpUploadTask task = this.tasks.peek();
+                    ShellSftpUploadTask task = this.tasks.peek();
                     if (task == null) {
                         break;
                     }

@@ -8,7 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2025-03-07
  */
-public class ShellSftpManager {
+public class ShellSftpChannelManager {
 
     private final List<ShellSftp> sftpList = new CopyOnWriteArrayList<>();
 

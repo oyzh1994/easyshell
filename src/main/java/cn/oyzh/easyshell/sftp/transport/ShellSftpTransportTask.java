@@ -21,19 +21,19 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-15
  */
-public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
+public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMonitor> {
 
     /**
      * 传输状态
      */
-    private SftpTransportStatus status;
+    private ShellSftpTransportStatus status;
 
     /**
      * 更新状态
      *
      * @param status 状态
      */
-    private void updateStatus(SftpTransportStatus status) {
+    private void updateStatus(ShellSftpTransportStatus status) {
         this.status = status;
         switch (status) {
             case FAILED -> this.statusProperty.set(I18nHelper.failed());
@@ -53,7 +53,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
 
     private final ShellClient remoteClient;
 
-    private final SftpTransportManager manager;
+    private final ShellSftpTransportTaskManager manager;
 
     @Override
     public String getSrcPath() {
@@ -65,7 +65,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
         return this.remoteFile;
     }
 
-    public SftpTransportTask(SftpTransportManager manager, ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
+    public ShellSftpTransportTask(ShellSftpTransportTaskManager manager, ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
         this.manager = manager;
         this.localFile = localFile;
         this.remoteFile = remoteFile;
@@ -74,9 +74,9 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
 //        this.currentFileProperty().set(localFile.getPath());
 //        this.executeThread = ThreadUtil.start(() -> {
 //            try {
-//                this.updateStatus(SftpTransportStatus.IN_PREPARATION);
+//                this.updateStatus(ShellSftpTransportStatus.IN_PREPARATION);
 //                this.addMonitorRecursive(localFile, remoteFile);
-//                this.updateStatus(SftpTransportStatus.TRANSPORT_ING);
+//                this.updateStatus(ShellSftpTransportStatus.TRANSPORT_ING);
 //                this.calcTotalSize();
 //                this.updateTotal();
 //                this.doTransport();
@@ -86,7 +86,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
 //                this.updateTotal();
 //                // 如果是非取消和失败，则设置为结束
 //                if (!this.isCancelled() && !this.isFailed()) {
-//                    this.updateStatus(SftpTransportStatus.FINISHED);
+//                    this.updateStatus(ShellSftpTransportStatus.FINISHED);
 //                }
 //            }
 //        });
@@ -97,9 +97,9 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
      */
     public void transport() {
         try {
-            this.updateStatus(SftpTransportStatus.IN_PREPARATION);
+            this.updateStatus(ShellSftpTransportStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(SftpTransportStatus.TRANSPORT_ING);
+            this.updateStatus(ShellSftpTransportStatus.TRANSPORT_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doTransport();
@@ -109,7 +109,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(SftpTransportStatus.FINISHED);
+                this.updateStatus(ShellSftpTransportStatus.FINISHED);
             }
         }
     }
@@ -151,7 +151,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
             }
         } else {// 文件
 //            this.updateTotal();
-            this.monitors.add(new SftpTransportMonitor(localFile, remoteFile, this));
+            this.monitors.add(new ShellSftpTransportMonitor(localFile, remoteFile, this));
         }
     }
 
@@ -160,7 +160,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
      */
     private void doTransport() {
         while (!this.isEmpty()) {
-            SftpTransportMonitor monitor = this.takeMonitor();
+            ShellSftpTransportMonitor monitor = this.takeMonitor();
             if (monitor == null) {
                 break;
             }
@@ -200,7 +200,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
     public void cancel() {
         super.cancel();
         this.manager.remove(this);
-        this.updateStatus(SftpTransportStatus.CANCELED);
+        this.updateStatus(ShellSftpTransportStatus.CANCELED);
     }
 
     @Override
@@ -210,22 +210,22 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
 
     @Override
     public boolean isFailed() {
-        return this.status == SftpTransportStatus.FAILED;
+        return this.status == ShellSftpTransportStatus.FAILED;
     }
 
     @Override
     public boolean isFinished() {
-        return this.status == SftpTransportStatus.FINISHED;
+        return this.status == ShellSftpTransportStatus.FINISHED;
     }
 
     @Override
     public boolean isCancelled() {
-        return this.status == SftpTransportStatus.CANCELED;
+        return this.status == ShellSftpTransportStatus.CANCELED;
     }
 
     @Override
     public boolean isInPreparation() {
-        return this.status == SftpTransportStatus.IN_PREPARATION;
+        return this.status == ShellSftpTransportStatus.IN_PREPARATION;
     }
 
     /**
@@ -234,11 +234,11 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
      * @return 结果
      */
     public boolean isTransporting() {
-        return this.status == SftpTransportStatus.TRANSPORT_ING;
+        return this.status == ShellSftpTransportStatus.TRANSPORT_ING;
     }
 
     @Override
-    public void remove(SftpTransportMonitor monitor) {
+    public void remove(ShellSftpTransportMonitor monitor) {
         super.remove(monitor);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
@@ -246,23 +246,23 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
     }
 
     @Override
-    public void ended(SftpTransportMonitor monitor) {
+    public void ended(ShellSftpTransportMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
-            this.updateStatus(SftpTransportStatus.FINISHED);
+            this.updateStatus(ShellSftpTransportStatus.FINISHED);
         }
     }
 
     @Override
-    public void failed(SftpTransportMonitor monitor, Throwable exception) {
+    public void failed(ShellSftpTransportMonitor monitor, Throwable exception) {
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
     }
 
     @Override
-    public void canceled(SftpTransportMonitor monitor) {
+    public void canceled(ShellSftpTransportMonitor monitor) {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
         if (this.monitors.isEmpty()) {
@@ -271,7 +271,7 @@ public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
     }
 
     @Override
-    public void changed(SftpTransportMonitor monitor) {
+    public void changed(ShellSftpTransportMonitor monitor) {
         super.changed(monitor);
         this.manager.monitorChanged(monitor, this);
     }

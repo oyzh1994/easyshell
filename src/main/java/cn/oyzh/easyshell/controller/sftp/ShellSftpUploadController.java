@@ -1,7 +1,7 @@
 //package cn.oyzh.easyshell.controller.sftp;
 //
-//import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
-//import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
+//import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
+//import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
 //import cn.oyzh.easyshell.shell.ShellClient;
 //import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -33,7 +33,7 @@
 //    /**
 //     * 上传管理器
 //     */
-//    private SftpUploadManager uploadManager;
+//    private ShellSftpUploadManager uploadManager;
 //
 //    @Override
 //    protected void bindListeners() {
@@ -56,7 +56,7 @@
 ////    @FXML
 ////    private void cancelTask() {
 ////        try {
-////            SftpUploadTask task = this.uploadTable.getSelectedItem();
+////            ShellSftpUploadTask task = this.uploadTable.getSelectedItem();
 ////            if (task != null) {
 ////                if (task.isFinished()) {
 ////                    if (MessageBox.confirm(ShellI18nHelper.fileTip13())) {
@@ -78,7 +78,7 @@
 ////    @FXML
 ////    private void removeTask() {
 ////        try {
-////            SftpUploadTask task = this.uploadTable.getSelectedItem();
+////            ShellSftpUploadTask task = this.uploadTable.getSelectedItem();
 ////            if (task != null && MessageBox.confirm(ShellI18nHelper.fileTip12())) {
 ////                this.uploadManager.remove(task);
 ////                this.uploadTable.removeItem(task);

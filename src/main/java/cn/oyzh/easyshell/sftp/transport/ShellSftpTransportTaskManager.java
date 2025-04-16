@@ -13,10 +13,10 @@ import javafx.beans.property.SimpleBooleanProperty;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpTransportManager extends ShellSftpTaskManager<SftpTransportMonitor, SftpTransportTask> {
+public class ShellSftpTransportTaskManager extends ShellSftpTaskManager<ShellSftpTransportMonitor, ShellSftpTransportTask> {
 
     public void fileTransport(ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
-        this.tasks.add(new SftpTransportTask(this, localFile, remoteFile, localClient, remoteClient));
+        this.tasks.add(new ShellSftpTransportTask(this, localFile, remoteFile, localClient, remoteClient));
         this.taskSizeChanged();
         this.doTransport();
     }
@@ -46,7 +46,7 @@ public class SftpTransportManager extends ShellSftpTaskManager<SftpTransportMoni
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    SftpTransportTask task = this.tasks.peek();
+                    ShellSftpTransportTask task = this.tasks.peek();
                     if (task == null) {
                         break;
                     }

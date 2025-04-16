@@ -8,10 +8,10 @@ import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
-import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
-import cn.oyzh.easyshell.sftp.transport.SftpTransportMonitor;
-import cn.oyzh.easyshell.sftp.transport.SftpTransportTask;
+import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteTaskManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
+import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTaskManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -330,9 +330,9 @@ public class ShellSftpTransportController extends StageController {
 //     * 初始化传输表
 //     */
 //    private void initTransportTable() {
-//        SftpTransportManager manager1 = this.sourceClient.getTransportManager();
-//        SftpTransportManager manager2 = this.targetClient.getTransportManager();
-//        List<SftpTransportTask> tasks = new ArrayList<>(manager1.getTasks());
+//        ShellSftpTransportTaskManager manager1 = this.sourceClient.getTransportManager();
+//        ShellSftpTransportTaskManager manager2 = this.targetClient.getTransportManager();
+//        List<ShellSftpTransportTask> tasks = new ArrayList<>(manager1.getTasks());
 //        tasks.addAll(manager2.getTasks());
 //        this.transportTable.setItem(tasks.reversed());
 //    }
@@ -517,9 +517,9 @@ public class ShellSftpTransportController extends StageController {
         }
     }
 
-    private SftpTransportManager sourceTransportManager;
+    private ShellSftpTransportTaskManager sourceTransportManager;
 
-    private SftpTransportManager targetTransportManager;
+    private ShellSftpTransportTaskManager targetTransportManager;
 
     /**
      * 初始化文件表格
@@ -549,8 +549,8 @@ public class ShellSftpTransportController extends StageController {
 //            }
 //        });
         // 删除处理器
-        SftpDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
-        SftpDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
+        ShellSftpDeleteTaskManager deleteManager1 = this.sourceClient.getDeleteManager();
+        ShellSftpDeleteTaskManager deleteManager2 = this.targetClient.getDeleteManager();
         // 注册监听器
         deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
         deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));
@@ -597,7 +597,7 @@ public class ShellSftpTransportController extends StageController {
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
         // 检查任务是否执行中
-        SftpTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
+        ShellSftpTransportTaskManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
         if (manager1 != null
                 && !manager1.isCompleted()
                 && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
@@ -605,7 +605,7 @@ public class ShellSftpTransportController extends StageController {
             return;
         }
         // 检查任务是否执行中
-        SftpTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
+        ShellSftpTransportTaskManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
         if (manager2 != null
                 && !manager2.isCompleted()
                 && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
@@ -651,7 +651,7 @@ public class ShellSftpTransportController extends StageController {
      * @param status 状态
      * @param task   任务
      */
-    private void sourceTransportStatusChanged(String status, SftpTransportTask task) {
+    private void sourceTransportStatusChanged(String status, ShellSftpTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -667,7 +667,7 @@ public class ShellSftpTransportController extends StageController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void sourceTransportMonitorChanged(SftpTransportMonitor monitor, SftpTransportTask task) {
+    private void sourceTransportMonitorChanged(ShellSftpTransportMonitor monitor, ShellSftpTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
@@ -699,7 +699,7 @@ public class ShellSftpTransportController extends StageController {
      * @param status 状态
      * @param task   任务
      */
-    private void targetTransportStatusChanged(String status, SftpTransportTask task) {
+    private void targetTransportStatusChanged(String status, ShellSftpTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -715,7 +715,7 @@ public class ShellSftpTransportController extends StageController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void targetTransportMonitorChanged(SftpTransportMonitor monitor, SftpTransportTask task) {
+    private void targetTransportMonitorChanged(ShellSftpTransportMonitor monitor, ShellSftpTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());

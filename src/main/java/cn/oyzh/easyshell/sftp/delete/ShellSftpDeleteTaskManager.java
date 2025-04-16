@@ -24,11 +24,11 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpDeleteManager implements AutoCloseable {
+public class ShellSftpDeleteTaskManager implements AutoCloseable {
 
     private ShellClient client;
 
-    public SftpDeleteManager(ShellClient client) {
+    public ShellSftpDeleteTaskManager(ShellClient client) {
         this.client = client;
     }
 

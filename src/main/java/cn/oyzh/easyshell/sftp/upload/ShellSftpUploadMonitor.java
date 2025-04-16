@@ -1,18 +1,19 @@
-package cn.oyzh.easyshell.sftp.transport;
+package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpMonitor;
 import cn.oyzh.i18n.I18nHelper;
+
+import java.io.File;
 
 /**
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpTransportMonitor extends ShellSftpMonitor {
+public class ShellSftpUploadMonitor extends ShellSftpMonitor {
 
-    private final ShellSftpFile localFile;
+    private final File localFile;
 
     private final String remoteFile;
 
@@ -20,9 +21,9 @@ public class SftpTransportMonitor extends ShellSftpMonitor {
         return remoteFile;
     }
 
-    private final SftpTransportTask task;
+    private final ShellSftpUploadTask task;
 
-    public SftpTransportMonitor(final ShellSftpFile localFile, String remoteFile, SftpTransportTask task) {
+    public ShellSftpUploadMonitor(final File localFile, String remoteFile, ShellSftpUploadTask task) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
         this.task = task;
@@ -43,7 +44,7 @@ public class SftpTransportMonitor extends ShellSftpMonitor {
         if (duration == 0) {
             duration = 1;
         }
-        JulLog.info("file:{} transport finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
+        JulLog.info("file:{} upload finished, cost:{}" + I18nHelper.seconds(), this.getLocalFilePath(), duration);
         this.task.ended(this);
     }
 
@@ -61,8 +62,8 @@ public class SftpTransportMonitor extends ShellSftpMonitor {
 
     @Override
     public synchronized void cancel() {
+        JulLog.warn("file:{} upload canceled, upload:{} total:{}", this.getLocalFilePath(), this.current, this.total);
         this.cancelled = true;
-        JulLog.warn("file:{} transport canceled, transport:{} total:{}", this.getLocalFilePath(), this.current, this.total);
         ThreadUtil.start(() -> this.task.canceled(this), 50);
     }
 
@@ -73,6 +74,6 @@ public class SftpTransportMonitor extends ShellSftpMonitor {
 
     @Override
     public String getFilePath() {
-        return this.localFile.getFilePath();
+        return this.getLocalFilePath();
     }
 }

@@ -1,7 +1,7 @@
 //package cn.oyzh.easyshell.fx.sftp;
 //
 //import cn.oyzh.common.util.CollectionUtil;
-//import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
+//import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
 //import cn.oyzh.fx.gui.menu.MenuItemHelper;
 //import cn.oyzh.fx.plus.controls.table.FXTableView;
 //import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -16,7 +16,7 @@
 // * @author oyzh
 // * @since 2025-03-05
 // */
-//public class SftpUploadTaskTableView extends FXTableView<SftpUploadTask> {
+//public class SftpUploadTaskTableView extends FXTableView<ShellSftpUploadTask> {
 //
 //    @Override
 //    public void initNode() {
@@ -42,20 +42,20 @@
 //
 //    @Override
 //    public List<? extends MenuItem> getMenuItems() {
-//        List<SftpUploadTask> tasks = this.getSelectedItems();
+//        List<ShellSftpUploadTask> tasks = this.getSelectedItems();
 //        if (CollectionUtil.isEmpty(tasks)) {
 //            return Collections.emptyList();
 //        }
-//        List<SftpUploadTask> list = new ArrayList<>(tasks);
+//        List<ShellSftpUploadTask> list = new ArrayList<>(tasks);
 //        List<MenuItem> menuItems = new ArrayList<>();
 //        MenuItem cancelTransport = MenuItemHelper.cancelUpload("12", ()->{
-//            for (SftpUploadTask task :list) {
+//            for (ShellSftpUploadTask task :list) {
 //                task.cancel();
 //            }
 //            this.removeItem(list);
 //        });
 //        MenuItem removeTransport = MenuItemHelper.removeUpload("12", ()->{
-//            for (SftpUploadTask task : list) {
+//            for (ShellSftpUploadTask task : list) {
 //                task.remove();
 //            }
 //            this.removeItem(list);

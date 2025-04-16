@@ -18,11 +18,11 @@ import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSftpAttr;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.sftp.ShellSftpManager;
-import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
+import cn.oyzh.easyshell.sftp.ShellSftpChannelManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteTaskManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
-import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
-import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTaskManager;
+import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
@@ -489,29 +489,29 @@ public class ShellClient {
         return this.shell;
     }
 
-    private ShellSftpManager sftpManager;
+    private ShellSftpChannelManager sftpManager;
 
-    public ShellSftpManager getSftpManager() {
+    public ShellSftpChannelManager getSftpManager() {
         if (this.sftpManager == null) {
-            this.sftpManager = new ShellSftpManager();
+            this.sftpManager = new ShellSftpChannelManager();
         }
         return this.sftpManager;
     }
 
-    private SftpUploadManager uploadManager;
+    private ShellSftpUploadManager uploadManager;
 
-    public SftpUploadManager getUploadManager() {
+    public ShellSftpUploadManager getUploadManager() {
         if (this.uploadManager == null) {
-            this.uploadManager = new SftpUploadManager();
+            this.uploadManager = new ShellSftpUploadManager();
         }
         return uploadManager;
     }
 
-    private SftpDeleteManager deleteManager;
+    private ShellSftpDeleteTaskManager deleteManager;
 
-    public SftpDeleteManager getDeleteManager() {
+    public ShellSftpDeleteTaskManager getDeleteManager() {
         if (this.deleteManager == null) {
-            this.deleteManager = new SftpDeleteManager(this);
+            this.deleteManager = new ShellSftpDeleteTaskManager(this);
         }
         return deleteManager;
     }
@@ -525,11 +525,11 @@ public class ShellClient {
         return downloadManager;
     }
 
-    private SftpTransportManager transportManager;
+    private ShellSftpTransportTaskManager transportManager;
 
-    public SftpTransportManager getTransportManager() {
+    public ShellSftpTransportTaskManager getTransportManager() {
         if (this.transportManager == null) {
-            this.transportManager = new SftpTransportManager();
+            this.transportManager = new ShellSftpTransportTaskManager();
         }
         return transportManager;
     }
