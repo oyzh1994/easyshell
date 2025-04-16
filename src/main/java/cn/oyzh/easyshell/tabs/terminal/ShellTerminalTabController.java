@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 public class ShellTerminalTabController extends RichTabController {
 
     /**
-     * 软件信息
+     * 根节点
      */
     @FXML
     private FXVBox root;
@@ -47,5 +47,4 @@ public class ShellTerminalTabController extends RichTabController {
             MessageBox.exception(ex);
         }
     }
-
 }

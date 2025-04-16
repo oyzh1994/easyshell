@@ -22,7 +22,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "docker/dockerPort.fxml"
+        value = FXConst.FXML_PATH + "docker/shellDockerPort.fxml"
 )
 public class ShellDockerPortController extends StageController {
 

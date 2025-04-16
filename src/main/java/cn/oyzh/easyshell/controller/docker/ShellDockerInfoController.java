@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "docker/dockerInfo.fxml"
+        value = FXConst.FXML_PATH + "docker/shellDockerInfo.fxml"
 )
 public class ShellDockerInfoController extends StageController {
 
