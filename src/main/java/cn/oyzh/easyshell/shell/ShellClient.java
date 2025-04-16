@@ -340,6 +340,10 @@ public class ShellClient {
                 this.session = null;
                 this.state.set(ShellConnState.CLOSED);
             }
+            // 销毁转发器
+            if (this.jumpForwarder != null) {
+                this.jumpForwarder.destroy();
+            }
             // 从监听器队列移除
             ShellClientChecker.remove(this);
         } catch (Exception ex) {

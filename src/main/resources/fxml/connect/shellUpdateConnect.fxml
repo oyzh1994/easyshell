@@ -360,7 +360,7 @@
         <!--                </FXHBox>-->
         <!--            </FXVBox>-->
         <!--        </FXTab>-->
-        <FXTab text="%base.jumpHosts" fx:id="jumpTab">
+        <FXTab text="%base.jumpHosts">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXHBox realHeight="30">
                     <AddHostSVGGlyph onMousePrimaryClicked="#addHost">
@@ -400,7 +400,7 @@
                 <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 50" flexHeight="100% - 50">
                     <columns>
                         <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
-                        <FXTableColumn flexWidth="100% - 254" valueName="host" text="%base.host"/>
+                        <FXTableColumn flexWidth="100% - 253" valueName="host" text="%base.host"/>
                         <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
                     </columns>
                     <FXVBox.margin>

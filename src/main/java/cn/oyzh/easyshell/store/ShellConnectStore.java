@@ -79,6 +79,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 }
                 this.sshConfigStore.deleteByIid(model.getId());
                 this.sshConfigStore.replace(jumpConfigs);
+            } else if (jumpConfigs != null) {
+                this.sshConfigStore.deleteByIid(model.getId());
             }
 
             // x11处理
