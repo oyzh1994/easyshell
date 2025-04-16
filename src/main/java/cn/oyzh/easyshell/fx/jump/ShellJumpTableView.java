@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @author oyzh
- * @since 2025-04-03
+ * @since 2025-04-15
  */
 public class ShellJumpTableView extends FXTableView<ShellJumpConfig> {
 

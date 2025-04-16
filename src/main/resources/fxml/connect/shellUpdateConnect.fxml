@@ -37,6 +37,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
         realHeight="480">
@@ -360,6 +361,42 @@
         <!--                </FXHBox>-->
         <!--            </FXVBox>-->
         <!--        </FXTab>-->
+        <FXTab text="%base.tunneling">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox realHeight="30">
+                    <AddSVGGlyph onMousePrimaryClicked="#addTunneling">
+                        <FXHBox.margin>
+                            <Insets left="30" top="7"/>
+                        </FXHBox.margin>
+                    </AddSVGGlyph>
+                    <EditSVGGlyph onMousePrimaryClicked="#updateTunneling">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
+                        </FXHBox.margin>
+                    </EditSVGGlyph>
+                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteTunneling">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
+                        </FXHBox.margin>
+                    </DeleteSVGGlyph>
+                    <FXVBox.margin>
+                        <Insets top="10"/>
+                    </FXVBox.margin>
+                </FXHBox>
+                <ShellTunnelingTableView fx:id="tunnelingTableView" flexWidth="100% - 50" flexHeight="100% - 50">
+                    <columns>
+                        <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
+                        <FXTableColumn flexWidth="50% - 176" valueName="localHost" text="%base.localHost"/>
+                        <FXTableColumn prefWidth="100" valueName="localPort" text="%base.localPort"/>
+                        <FXTableColumn flexWidth="50% - 176" valueName="remoteHost" text="%base.remoteHost"/>
+                        <FXTableColumn prefWidth="100" valueName="remotePort" text="%base.remotePort"/>
+                    </columns>
+                    <FXVBox.margin>
+                        <Insets left="30" top="7"/>
+                    </FXVBox.margin>
+                </ShellTunnelingTableView>
+            </FXVBox>
+        </FXTab>
         <FXTab text="%base.jumpHosts">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXHBox realHeight="30">

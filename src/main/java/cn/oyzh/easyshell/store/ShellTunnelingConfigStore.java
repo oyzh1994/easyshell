@@ -1,32 +1,27 @@
 package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.ssh.domain.SSHConnect;
+import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
- * shell ssh配置存储
- *
  * @author oyzh
- * @since 2025/03/15
+ * @since 2025-04-16
  */
-public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
+public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingConfig> {
 
     /**
      * 当前实例
      */
-    public static final ShellJumpConfigStore INSTANCE = new ShellJumpConfigStore();
+    public static final ShellTunnelingConfigStore INSTANCE = new ShellTunnelingConfigStore();
 
-    public boolean replace(List<ShellJumpConfig> models) {
+    public boolean replace(List<ShellTunnelingConfig> models) {
         try {
-            for (ShellJumpConfig model : models) {
+            for (ShellTunnelingConfig model : models) {
                 this.replace(model);
             }
             return true;
@@ -36,7 +31,7 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
         return false;
     }
 
-    public boolean replace(ShellJumpConfig model) {
+    public boolean replace(ShellTunnelingConfig model) {
         if (super.exist(model.getId())) {
             return super.update(model);
         }
@@ -44,8 +39,8 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
     }
 
     @Override
-    protected Class<ShellJumpConfig> modelClass() {
-        return ShellJumpConfig.class;
+    protected Class<ShellTunnelingConfig> modelClass() {
+        return ShellTunnelingConfig.class;
     }
 
     /**
@@ -69,20 +64,10 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
      * @param iid shell连接id
      * @return ssh配置
      */
-    public List<ShellJumpConfig> listByIid(String iid) {
+    public List<ShellTunnelingConfig> listByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }
-        List<ShellJumpConfig> configs = super.selectList(QueryParam.of("iid", iid));
-        // 过滤历史原因造成的无效配置
-        List<ShellJumpConfig> results = new ArrayList<>();
-        for (ShellJumpConfig config : configs) {
-            if (StringUtil.isNotBlank(config.getUser(), config.getHost())) {
-                results.add(config);
-            }
-        }
-        // 执行排序
-        results.sort(Comparator.comparingInt(SSHConnect::getOrder));
-        return results;
+        return super.selectList(QueryParam.of("iid", iid));
     }
 }

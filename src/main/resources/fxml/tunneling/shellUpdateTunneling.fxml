@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeCombobox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController" realWidth="750"
+        realHeight="450">
+    <InfoLabel text="%base.name">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="tunnelingName" tipText="%base.nameTip" require="true" realHeight="30"
+                        flexWidth="100% - 180" maxLen="1024">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.type">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ShellTunnelingTypeCombobox fx:id="tunnelingType" initIndex="0" require="true" realHeight="30"
+                                flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ShellTunnelingTypeCombobox>
+    <InfoLabel text="%base.localHost">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <ClearableTextField fx:id="localHost" tipText="%base.hostTip" require="true" realHeight="30"
+                            flexWidth="100% - 285" maxLen="1024">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </ClearableTextField>
+        <PortTextField realWidth="100" fx:id="localPort" realHeight="30" value="1080">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </PortTextField>
+    </FXHBox>
+    <InfoLabel text="%base.remoteHost">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <ClearableTextField fx:id="remoteHost" tipText="%base.hostTip" require="true" realHeight="30"
+                            flexWidth="100% - 285" maxLen="1024">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </ClearableTextField>
+        <PortTextField realWidth="100" fx:id="remotePort" realHeight="30" value="22">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </PortTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#update">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>
