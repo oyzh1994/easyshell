@@ -6,11 +6,11 @@ import cn.oyzh.easyshell.controller.docker.DockerInspectController;
 import cn.oyzh.easyshell.controller.docker.DockerLogsController;
 import cn.oyzh.easyshell.controller.docker.DockerPortController;
 import cn.oyzh.easyshell.controller.docker.DockerResourceController;
-import cn.oyzh.easyshell.docker.DockerContainer;
-import cn.oyzh.easyshell.docker.DockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerContainer;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.docker.DockerParser;
-import cn.oyzh.easyshell.docker.DockerPort;
-import cn.oyzh.easyshell.docker.DockerResource;
+import cn.oyzh.easyshell.docker.ShellDockerPort;
+import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -31,19 +31,19 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-12
  */
-public class DockerContainerTableView extends FXTableView<DockerContainer> {
+public class DockerContainerTableView extends FXTableView<ShellDockerContainer> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);
     }
 
-    private DockerExec exec;
+    private ShellDockerExec exec;
 
-    public void setExec(DockerExec exec) {
+    public void setExec(ShellDockerExec exec) {
         this.exec = exec;
     }
 
-    public DockerExec getExec() {
+    public ShellDockerExec getExec() {
         return exec;
     }
 
@@ -60,7 +60,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
         }
     }
 
-    private List<DockerContainer> containers;
+    private List<ShellDockerContainer> containers;
 
     public void loadContainer() {
         String output;
@@ -92,7 +92,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
         }
     }
 
-    private List<DockerContainer> doFilter(List<DockerContainer> files) {
+    private List<ShellDockerContainer> doFilter(List<ShellDockerContainer> files) {
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
                     .filter(f -> {
@@ -109,7 +109,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void deleteContainer(boolean force) {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.deleteContainer() + " " + container.getNames())) {
             return;
         }
@@ -136,7 +136,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (container == null) {
             return Collections.emptyList();
         }
@@ -178,7 +178,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void startContainer() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames())) {
             return;
         }
@@ -198,7 +198,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void stopContainer() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.stopContainer() + " " + container.getNames())) {
             return;
         }
@@ -218,7 +218,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void killContainer() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames())) {
             return;
         }
@@ -238,7 +238,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void restartContainer() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.restartContainer() + " " + container.getNames())) {
             return;
         }
@@ -258,7 +258,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void pauseContainer() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames())) {
             return;
         }
@@ -278,7 +278,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void unpauseContainer() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames())) {
             return;
         }
@@ -312,7 +312,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void containerInspect() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_inspect(container.getContainerId());
@@ -333,14 +333,14 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void containerResource() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_resource(container.getContainerId());
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-                    DockerResource resource = DockerParser.resource(output);
+                    ShellDockerResource resource = DockerParser.resource(output);
                     FXUtil.runLater(() -> {
                         StageAdapter adapter = StageManager.parseStage(DockerResourceController.class);
                         adapter.setProp("exec", this.exec);
@@ -357,7 +357,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void containerLogs() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_logs(container.getContainerId());
@@ -378,7 +378,7 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void containerRename() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), container.getNames());
         if (StringUtil.isBlank(newName) || StringUtil.equalsIgnoreCase(container.getNames(), newName)) {
             return;
@@ -400,11 +400,11 @@ public class DockerContainerTableView extends FXTableView<DockerContainer> {
     }
 
     public void containerPorts() {
-        DockerContainer container = this.getSelectedItem();
+        ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_port(container.getContainerId());
-                List<DockerPort> ports = DockerParser.port(output);
+                List<ShellDockerPort> ports = DockerParser.port(output);
                 FXUtil.runLater(() -> {
                     StageAdapter adapter = StageManager.parseStage(DockerPortController.class);
                     adapter.setProp("ports", ports);

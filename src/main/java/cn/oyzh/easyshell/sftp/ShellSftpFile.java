@@ -81,7 +81,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SftpFile implements ObjectCopier<SftpFile> {
+public class ShellSftpFile implements ObjectCopier<ShellSftpFile> {
 
     private ChannelSftp.LsEntry entry;
 
@@ -165,13 +165,13 @@ public class SftpFile implements ObjectCopier<SftpFile> {
 
     private String parentPath;
 
-    public SftpFile(String parentPath, ChannelSftp.LsEntry entry) {
+    public ShellSftpFile(String parentPath, ChannelSftp.LsEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
         this.updatePermissions();
     }
 
-    public SftpFile(String parentPath, String fileName, SftpATTRS attrs) {
+    public ShellSftpFile(String parentPath, String fileName, SftpATTRS attrs) {
         this.parentPath = parentPath;
         this.fileName = fileName;
         this.attrs = attrs;
@@ -381,7 +381,7 @@ public class SftpFile implements ObjectCopier<SftpFile> {
         if (fileName.startsWith("/")) {
             return fileName;
         }
-        return SftpUtil.concat(this.parentPath, fileName);
+        return ShellSftpUtil.concat(this.parentPath, fileName);
     }
 
     private StringProperty permissionsProperty;
@@ -484,7 +484,7 @@ public class SftpFile implements ObjectCopier<SftpFile> {
     }
 
     @Override
-    public void copy(SftpFile t1) {
+    public void copy(ShellSftpFile t1) {
         if (t1.entry != null) {
             this.entry = t1.entry;
         }

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.docker.DockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerHistory;
 import cn.oyzh.easyshell.fx.docker.DockerHistoryTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -35,7 +35,7 @@ public class DockerHistoryController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        List<DockerHistory> histories = this.getProp("histories");
+        List<ShellDockerHistory> histories = this.getProp("histories");
         this.historyTable.setItem(histories);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

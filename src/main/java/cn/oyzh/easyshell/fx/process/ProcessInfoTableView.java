@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.fx.process;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.process.ProcessExec;
-import cn.oyzh.easyshell.process.ProcessInfo;
+import cn.oyzh.easyshell.process.ShellProcessExec;
+import cn.oyzh.easyshell.process.ShellProcessInfo;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-29
  */
-public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
+public class ProcessInfoTableView extends FXTableView<ShellProcessInfo> {
 
     /**
      * 当前用户
@@ -54,15 +54,15 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
     /**
      * 数据列表
      */
-    private List<ProcessInfo> dataList;
+    private List<ShellProcessInfo> dataList;
 
-    private ProcessExec exec;
+    private ShellProcessExec exec;
 
-    public ProcessExec getExec() {
+    public ShellProcessExec getExec() {
         return exec;
     }
 
-    public void setExec(ProcessExec exec) {
+    public void setExec(ShellProcessExec exec) {
         this.exec = exec;
     }
 
@@ -82,7 +82,7 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        ProcessInfo info = this.getSelectedItem();
+        ShellProcessInfo info = this.getSelectedItem();
         if (info == null) {
             return Collections.emptyList();
         }
@@ -111,7 +111,7 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
      *
      * @param info 进程信息
      */
-    protected void killProcess(ProcessInfo info) {
+    protected void killProcess(ShellProcessInfo info) {
         if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.killProcess() + "?")) {
             String output = this.exec.kill(info.getPid());
             if (StringUtil.isNotBlank(output)) {
@@ -128,7 +128,7 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
      *
      * @param info 进程信息
      */
-    protected void forceKillProcess(ProcessInfo info) {
+    protected void forceKillProcess(ShellProcessInfo info) {
         if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.forceKillProcess() + "?")) {
             String output = this.exec.forceKill(info.getPid());
             if (StringUtil.isNotBlank(output)) {
@@ -146,7 +146,7 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
      * @param infos 数据
      * @return 过滤后的树
      */
-    protected List<ProcessInfo> doFilter(List<ProcessInfo> infos) {
+    protected List<ShellProcessInfo> doFilter(List<ShellProcessInfo> infos) {
         infos = infos.parallelStream()
                 .filter(f -> {
                     // 用户
@@ -173,16 +173,16 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
      *
      * @param infos 数据列表
      */
-    public void updateData(List<ProcessInfo> infos) {
+    public void updateData(List<ShellProcessInfo> infos) {
         if (this.isItemEmpty()) {
             this.dataList = new CopyOnWriteArrayList<>(infos);
         } else {
             // 删除列表
-            List<ProcessInfo> delList = new ArrayList<>();
-            List<ProcessInfo> addList = new ArrayList<>();
+            List<ShellProcessInfo> delList = new ArrayList<>();
+            List<ShellProcessInfo> addList = new ArrayList<>();
             // 寻找新增进程
-            for (ProcessInfo info : infos) {
-                Optional<ProcessInfo> p = this.dataList.parallelStream()
+            for (ShellProcessInfo info : infos) {
+                Optional<ShellProcessInfo> p = this.dataList.parallelStream()
                         .filter(f -> info.getPid() == f.getPid())
                         .findAny();
                 if (p.isEmpty()) {
@@ -190,8 +190,8 @@ public class ProcessInfoTableView extends FXTableView<ProcessInfo> {
                 }
             }
             // 寻找删除进程，更新已有进程
-            for (ProcessInfo info : this.dataList) {
-                Optional<ProcessInfo> p = infos.parallelStream()
+            for (ShellProcessInfo info : this.dataList) {
+                Optional<ShellProcessInfo> p = infos.parallelStream()
                         .filter(f -> info.getPid() == f.getPid())
                         .findAny();
                 if (p.isPresent()) {

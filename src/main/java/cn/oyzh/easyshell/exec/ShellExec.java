@@ -40,7 +40,7 @@ public class ShellExec implements AutoCloseable {
         return this.client.exec("lscpu");
     }
 
-    public List<DiskInfo> disk_info() {
+    public List<ShellDiskInfo> disk_info() {
         if (this.client.isWindows()) {
             String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
             return ShellExecParser.diskForWindows(output);

@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.exec;
  * @author oyzh
  * @since 2025-03-18
  */
-public class DiskInfo {
+public class ShellDiskInfo {
 
     private String fileSystem;
 

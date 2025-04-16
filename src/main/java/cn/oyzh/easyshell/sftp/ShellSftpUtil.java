@@ -9,7 +9,7 @@ import com.jcraft.jsch.SftpException;
  * @since 2025-03-06
  */
 
-public class SftpUtil {
+public class ShellSftpUtil {
 
     public static String concat(String src, String name) {
         if (src.endsWith("/") && name.startsWith("/")) {
@@ -22,7 +22,7 @@ public class SftpUtil {
     }
 
     public static String getOwner(int uid, ShellClient client) {
-        SftpAttr attr = client.getAttr();
+        ShellSftpAttr attr = client.getAttr();
         String ownerName = attr.getOwner(uid);
         if (ownerName == null) {
             ownerName = client.exec_id_un(uid);
@@ -32,7 +32,7 @@ public class SftpUtil {
     }
 
     public static String getGroup(int gid, ShellClient client) {
-        SftpAttr attr = client.getAttr();
+        ShellSftpAttr attr = client.getAttr();
         String groupName = attr.getGroup(gid);
         if (groupName == null) {
             groupName = client.exec_id_gn(gid);
@@ -55,7 +55,7 @@ public class SftpUtil {
      * @param sftp sftp操作器
      * @throws SftpException 异常
      */
-    public static void realpath(SftpFile file, ShellSftp sftp) throws SftpException {
+    public static void realpath(ShellSftpFile file, ShellSftp sftp) throws SftpException {
         // 读取链接文件
         if (file != null && file.isLink()) {
             String linkPath = sftp.realpath(file.getPath());

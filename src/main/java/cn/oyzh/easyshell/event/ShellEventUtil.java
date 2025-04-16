@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.event;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
@@ -32,7 +31,7 @@ import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
-import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.EventUtil;
@@ -281,7 +280,7 @@ public class ShellEventUtil {
      *
      * @param file 文件
      */
-    public static void showFileInfo(SftpFile file) {
+    public static void showFileInfo(ShellSftpFile file) {
         ShellShowFileInfoEvent event = new ShellShowFileInfoEvent();
         event.data(file);
         EventUtil.post(event);
@@ -292,7 +291,7 @@ public class ShellEventUtil {
      *
      * @param file 文件
      */
-    public static void fileSaved(SftpFile file) {
+    public static void fileSaved(ShellSftpFile file) {
         ShellSftpFileSavedEvent event = new ShellSftpFileSavedEvent();
         event.data(file);
         EventUtil.post(event);

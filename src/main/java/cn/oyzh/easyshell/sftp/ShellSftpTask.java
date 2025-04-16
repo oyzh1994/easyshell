@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author oyzh
  * @since 2025-03-21
  */
-public abstract class SftpTask<M extends SftpMonitor> {
+public abstract class ShellSftpTask<M extends ShellSftpMonitor> {
 
 //    /**
 //     * 执行线程

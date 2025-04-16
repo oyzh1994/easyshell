@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
-import cn.oyzh.easyshell.docker.DockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.fx.docker.DockerContainerStatusComboBox;
 import cn.oyzh.easyshell.fx.docker.DockerContainerTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -38,7 +38,7 @@ public class ShellDockerContainerTabController extends SubTabController {
 
     private boolean initialized = false;
 
-    public void init(DockerExec exec) {
+    public void init(ShellDockerExec exec) {
         if (this.initialized) {
             return;
         }

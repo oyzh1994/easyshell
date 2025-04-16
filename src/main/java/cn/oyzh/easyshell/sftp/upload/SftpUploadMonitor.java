@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.SftpMonitor;
+import cn.oyzh.easyshell.sftp.ShellSftpMonitor;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpUploadMonitor extends SftpMonitor {
+public class SftpUploadMonitor extends ShellSftpMonitor {
 
     private final File localFile;
 

@@ -1,7 +1,7 @@
 //package cn.oyzh.easyshell.controller.sftp;
 //
-//import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
-//import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;
+//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
+//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
 //import cn.oyzh.easyshell.shell.ShellClient;
 //import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -33,7 +33,7 @@
 //    /**
 //     * 下载管理器
 //     */
-//    private SftpDownloadManager downloadManager;
+//    private ShellSftpDownloadTaskManager downloadManager;
 //
 //    @Override
 //    protected void bindListeners() {
@@ -57,7 +57,7 @@
 ////    @FXML
 ////    private void cancelTask() {
 ////        try {
-////            SftpDownloadTask task = this.downloadTable.getSelectedItem();
+////            ShellSftpDownloadTask task = this.downloadTable.getSelectedItem();
 ////            if (task != null) {
 ////                if (task.isFinished()) {
 ////                    if (MessageBox.confirm(ShellI18nHelper.fileTip13())) {
@@ -79,7 +79,7 @@
 ////    @FXML
 ////    private void removeTask() {
 ////        try {
-////            SftpDownloadTask task = this.downloadTable.getSelectedItem();
+////            ShellSftpDownloadTask task = this.downloadTable.getSelectedItem();
 ////            if (task != null && MessageBox.confirm(ShellI18nHelper.fileTip12())) {
 ////                this.downloadManager.remove(task);
 ////                this.downloadTable.removeItem(task);

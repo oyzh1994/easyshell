@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.SftpFile;
-import cn.oyzh.easyshell.sftp.SftpManager;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpTaskManager;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.beans.property.BooleanProperty;
@@ -15,10 +15,10 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class SftpDownloadManager extends SftpManager<SftpDownloadMonitor, SftpDownloadTask> {
+public class ShellSftpDownloadTaskManager extends ShellSftpTaskManager<ShellSftpDownloadMonitor, ShellSftpDownloadTask> {
 
-    public void fileDownload(File localFile, SftpFile remoteFile, ShellClient client) {
-        this.tasks.add(new SftpDownloadTask(this, localFile, remoteFile, client));
+    public void fileDownload(File localFile, ShellSftpFile remoteFile, ShellClient client) {
+        this.tasks.add(new ShellSftpDownloadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doDownload();
     }
@@ -30,7 +30,7 @@ public class SftpDownloadManager extends SftpManager<SftpDownloadMonitor, SftpDo
     }
 
 //    public void updateDownloading() {
-//        for (SftpDownloadTask task : this.tasks) {
+//        for (ShellSftpDownloadTask task : this.tasks) {
 //            if (task.isDownloading() || task.isInPreparation()) {
 //                this.downloadingProperty.set(true);
 //                return;
@@ -58,7 +58,7 @@ public class SftpDownloadManager extends SftpManager<SftpDownloadMonitor, SftpDo
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    SftpDownloadTask task = this.tasks.peek();
+                    ShellSftpDownloadTask task = this.tasks.peek();
                     if (task == null) {
                         break;
                     }

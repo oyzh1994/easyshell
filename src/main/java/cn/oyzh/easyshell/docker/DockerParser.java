@@ -16,12 +16,12 @@ public class DockerParser {
     private DockerParser() {
     }
 
-    public static List<DockerContainer> ps(String output) {
+    public static List<ShellDockerContainer> ps(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
         JulLog.info(output);
-        List<DockerContainer> containers = new ArrayList<>();
+        List<ShellDockerContainer> containers = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
             String[] columns = line.split("\t");
@@ -33,7 +33,7 @@ public class DockerParser {
             String ports = columns[5];
             String names = columns[6];
 
-            DockerContainer container = new DockerContainer();
+            ShellDockerContainer container = new ShellDockerContainer();
             container.setContainerId(containerId);
             container.setImage(image);
             container.setPorts(ports);
@@ -47,12 +47,12 @@ public class DockerParser {
         return containers;
     }
 
-    public static List<DockerImage> images(String output) {
+    public static List<ShellDockerImage> images(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
         JulLog.info(output);
-        List<DockerImage> images = new ArrayList<>();
+        List<ShellDockerImage> images = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
             String[] columns = line.split("\t");
@@ -62,7 +62,7 @@ public class DockerParser {
             String created = columns[3];
             String size = columns[4];
 
-            DockerImage image = new DockerImage();
+            ShellDockerImage image = new ShellDockerImage();
             image.setTag(tag);
             image.setSize(size);
             image.setImageId(imageId);
@@ -74,13 +74,13 @@ public class DockerParser {
         return images;
     }
 
-    public static DockerResource resource(String output) {
+    public static ShellDockerResource resource(String output) {
         if (StringUtil.isBlank(output)) {
             return null;
         }
         output = output.replaceAll("\n", "");
         JulLog.info("docker resource:{}", output);
-        DockerResource dockerResource = new DockerResource();
+        ShellDockerResource dockerResource = new ShellDockerResource();
         String[] cols = output.replace("\n", "").split("\t");
         if (cols.length > 0) {
             dockerResource.setMemory(Long.parseLong(cols[0]));
@@ -103,19 +103,19 @@ public class DockerParser {
         return dockerResource;
     }
 
-    public static List<DockerPort> port(String output) {
+    public static List<ShellDockerPort> port(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
         JulLog.info(output);
-        List<DockerPort> ports = new ArrayList<>();
+        List<ShellDockerPort> ports = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
             String[] cols = line.split("->");
             String outerPort = cols[0];
             String innerPort = cols[1];
 
-            DockerPort port = new DockerPort();
+            ShellDockerPort port = new ShellDockerPort();
             port.setInnerPort(innerPort);
             port.setOuterPort(outerPort);
 
@@ -124,12 +124,12 @@ public class DockerParser {
         return ports;
     }
 
-    public static List<DockerHistory> history(String output) {
+    public static List<ShellDockerHistory> history(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
         JulLog.info(output);
-        List<DockerHistory> histories = new ArrayList<>();
+        List<ShellDockerHistory> histories = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) {
             String[] columns = line.split("\r\t");
@@ -143,7 +143,7 @@ public class DockerParser {
             } else {
                 comment = "";
             }
-            DockerHistory history = new DockerHistory();
+            ShellDockerHistory history = new ShellDockerHistory();
             history.setSize(size);
             history.setImageId(imageId);
             history.setComment(comment);

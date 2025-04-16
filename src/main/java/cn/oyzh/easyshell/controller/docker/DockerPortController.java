@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.docker.DockerPort;
+import cn.oyzh.easyshell.docker.ShellDockerPort;
 import cn.oyzh.easyshell.fx.docker.DockerPortTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -35,7 +35,7 @@ public class DockerPortController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        List<DockerPort> ports = this.getProp("ports");
+        List<ShellDockerPort> ports = this.getProp("ports");
         this.portTable.setItem(ports);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

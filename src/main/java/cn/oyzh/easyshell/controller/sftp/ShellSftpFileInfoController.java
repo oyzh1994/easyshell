@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -58,7 +58,7 @@ public class ShellSftpFileInfoController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        SftpFile file = this.getProp("file");
+        ShellSftpFile file = this.getProp("file");
         this.group.setText(file.getGroup());
         this.owner.setText(file.getOwner());
         this.name.setText(file.getName());

@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
-import cn.oyzh.easyshell.server.ServerExec;
-import cn.oyzh.easyshell.server.ServerMonitor;
+import cn.oyzh.easyshell.server.ShellServerExec;
+import cn.oyzh.easyshell.server.ShellServerMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -41,7 +41,7 @@ public class ShellMonitorTabController extends SubTabController {
     /**
      *
      */
-    private ServerExec serverExec;
+    private ShellServerExec serverExec;
 
     public ShellClient getClient() {
         return client;
@@ -96,7 +96,7 @@ public class ShellMonitorTabController extends SubTabController {
      *
      * @param monitor 监控信息
      */
-    public void init(ServerMonitor monitor) {
+    public void init(ShellServerMonitor monitor) {
         this.initCpuChart(monitor);
         this.initMemoryChart(monitor);
         this.initDiskChart(monitor);
@@ -108,7 +108,7 @@ public class ShellMonitorTabController extends SubTabController {
      *
      * @param monitor 监控信息
      */
-    private void initCpuChart(ServerMonitor monitor) {
+    private void initCpuChart(ShellServerMonitor monitor) {
         XYChart.Series<String, Double> data = this.cpuChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -127,7 +127,7 @@ public class ShellMonitorTabController extends SubTabController {
      *
      * @param monitor 监控信息
      */
-    private void initMemoryChart(ServerMonitor monitor) {
+    private void initMemoryChart(ShellServerMonitor monitor) {
         XYChart.Series<String, Double> data = this.memoryChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -146,7 +146,7 @@ public class ShellMonitorTabController extends SubTabController {
      *
      * @param monitor 监控信息
      */
-    private void initDiskChart(ServerMonitor monitor) {
+    private void initDiskChart(ShellServerMonitor monitor) {
         XYChart.Series<String, Double> read = this.diskChart.getChartData(0);
         XYChart.Series<String, Double> write = this.diskChart.getChartData(1);
         if (read == null) {
@@ -172,7 +172,7 @@ public class ShellMonitorTabController extends SubTabController {
      *
      * @param monitor 监控信息
      */
-    private void initNetworkChart(ServerMonitor monitor) {
+    private void initNetworkChart(ShellServerMonitor monitor) {
         XYChart.Series<String, Double> out = this.networkChart.getChartData(0);
         XYChart.Series<String, Double> in = this.networkChart.getChartData(1);
         if (out == null) {
@@ -231,7 +231,7 @@ public class ShellMonitorTabController extends SubTabController {
             JulLog.info("render monitor started.");
             if (this.client != null) {
                 // 获取数据
-                ServerMonitor monitor = this.serverExec.monitor();
+                ShellServerMonitor monitor = this.serverExec.monitor();
                 this.init(monitor);
             }
             JulLog.info("render monitor finished.");

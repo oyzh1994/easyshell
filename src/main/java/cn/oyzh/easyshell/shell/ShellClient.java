@@ -5,23 +5,22 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.docker.DockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.process.ProcessExec;
-import cn.oyzh.easyshell.server.ServerExec;
-import cn.oyzh.easyshell.sftp.SftpAttr;
-import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.process.ShellProcessExec;
+import cn.oyzh.easyshell.server.ShellServerExec;
+import cn.oyzh.easyshell.sftp.ShellSftpAttr;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpManager;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
-import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
+import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.store.ShellKeyStore;
@@ -517,11 +516,11 @@ public class ShellClient {
         return deleteManager;
     }
 
-    private SftpDownloadManager downloadManager;
+    private ShellSftpDownloadTaskManager downloadManager;
 
-    public SftpDownloadManager getDownloadManager() {
+    public ShellSftpDownloadTaskManager getDownloadManager() {
         if (this.downloadManager == null) {
-            this.downloadManager = new SftpDownloadManager();
+            this.downloadManager = new ShellSftpDownloadTaskManager();
         }
         return downloadManager;
     }
@@ -659,16 +658,16 @@ public class ShellClient {
         return this.shellConnect.connectTimeOutMs();
     }
 
-    private SftpAttr attr;
+    private ShellSftpAttr attr;
 
-    public SftpAttr getAttr() {
+    public ShellSftpAttr getAttr() {
         if (this.attr == null) {
-            this.attr = new SftpAttr();
+            this.attr = new ShellSftpAttr();
         }
         return this.attr;
     }
 
-    public void delete(SftpFile file) {
+    public void delete(ShellSftpFile file) {
         this.getDeleteManager().fileDelete(file);
     }
 
@@ -676,11 +675,11 @@ public class ShellClient {
         this.getUploadManager().fileUpload(localFile, remoteFile, this);
     }
 
-    public void download(File localFile, SftpFile remoteFile) throws SftpException {
+    public void download(File localFile, ShellSftpFile remoteFile) throws SftpException {
         this.getDownloadManager().fileDownload(localFile, remoteFile, this);
     }
 
-    public void transport(SftpFile localFile, String remoteFile, ShellClient remoteClient) {
+    public void transport(ShellSftpFile localFile, String remoteFile, ShellClient remoteClient) {
         this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
     }
 
@@ -710,11 +709,11 @@ public class ShellClient {
         }
     }
 
-    private DockerExec dockerExec;
+    private ShellDockerExec dockerExec;
 
-    public DockerExec dockerExec() {
+    public ShellDockerExec dockerExec() {
         if (this.dockerExec == null) {
-            this.dockerExec = new DockerExec(this);
+            this.dockerExec = new ShellDockerExec(this);
             try {
                 if (this.isWindows()) {
                     String output = this.exec("where docker.exe");
@@ -742,11 +741,11 @@ public class ShellClient {
         return this.dockerExec;
     }
 
-    private ServerExec serverExec;
+    private ShellServerExec serverExec;
 
-    public ServerExec serverExec() {
+    public ShellServerExec serverExec() {
         if (this.serverExec == null) {
-            this.serverExec = new ServerExec(this);
+            this.serverExec = new ShellServerExec(this);
         }
         return this.serverExec;
     }
@@ -760,11 +759,11 @@ public class ShellClient {
         return this.shellExec;
     }
 
-    private ProcessExec processExec;
+    private ShellProcessExec processExec;
 
-    public ProcessExec processExec() {
+    public ShellProcessExec processExec() {
         if (this.processExec == null) {
-            this.processExec = new ProcessExec(this);
+            this.processExec = new ShellProcessExec(this);
         }
         return this.processExec;
     }

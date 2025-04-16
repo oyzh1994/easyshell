@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.shell.ShellChannel;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
@@ -83,12 +82,12 @@ public class ShellSftp extends ShellChannel {
         }
     }
 
-    public List<SftpFile> lsFileNormal(String path) throws SftpException {
-        List<SftpFile> files = this.lsFile(path);
-        return files.stream().filter(SftpFile::isNormal).collect(Collectors.toList());
+    public List<ShellSftpFile> lsFileNormal(String path) throws SftpException {
+        List<ShellSftpFile> files = this.lsFile(path);
+        return files.stream().filter(ShellSftpFile::isNormal).collect(Collectors.toList());
     }
 
-    public List<SftpFile> lsFile(String path) throws SftpException {
+    public List<ShellSftpFile> lsFile(String path) throws SftpException {
         return this.lsFile(path, null);
     }
 
@@ -104,25 +103,25 @@ public class ShellSftp extends ShellChannel {
         }
     }
 
-    public List<SftpFile> lsFile(String path, ShellClient client) throws SftpException {
+    public List<ShellSftpFile> lsFile(String path, ShellClient client) throws SftpException {
         if (this.client.isWindows()) {
             path = ShellUtil.reverseWindowsFilePath(path);
         }
         this.cd(path);
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
-        List<SftpFile> files = new ArrayList<>();
+        List<ShellSftpFile> files = new ArrayList<>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            SftpFile file = new SftpFile(path, lsEntry);
+            ShellSftpFile file = new ShellSftpFile(path, lsEntry);
             // 读取链接文件
-            SftpUtil.realpath(file, this);
+            ShellSftpUtil.realpath(file, this);
             files.add(file);
             if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
                 if (client.isWindows()) {
                     file.setOwner("-");
                     file.setGroup("-");
                 } else {
-                    String ownerName = SftpUtil.getOwner(file.getUid(), client);
-                    String groupName = SftpUtil.getGroup(file.getGid(), client);
+                    String ownerName = ShellSftpUtil.getOwner(file.getUid(), client);
+                    String groupName = ShellSftpUtil.getGroup(file.getGid(), client);
                     file.setOwner(ownerName);
                     file.setGroup(groupName);
                 }

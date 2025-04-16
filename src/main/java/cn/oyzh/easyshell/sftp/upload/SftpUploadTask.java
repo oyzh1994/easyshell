@@ -5,8 +5,8 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.SftpTask;
-import cn.oyzh.easyshell.sftp.SftpUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpTask;
+import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
@@ -18,7 +18,7 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-15
  */
-public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
+public class SftpUploadTask extends ShellSftpTask<SftpUploadMonitor> {
 
     /**
      * 上传状态
@@ -130,7 +130,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
             // 处理文件
             if (ArrayUtil.isNotEmpty(files)) {
                 // 远程文件夹
-                String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
+                String remoteDir = ShellSftpUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
                 this.client.openSftp().mkdirRecursive(remoteDir);
                 // 添加文件
@@ -138,7 +138,7 @@ public class SftpUploadTask extends SftpTask<SftpUploadMonitor> {
                     if (file.isDirectory()) {
                         this.addMonitorRecursive(file, remoteDir);
                     } else {
-                        String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
+                        String remoteFile1 = ShellSftpUtil.concat(remoteDir, file.getName());
                         this.addMonitorRecursive(file, remoteFile1);
                     }
                 }

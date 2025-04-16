@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class ShellExecParser {
 
-    public static List<DiskInfo> diskForLinux(String output) {
+    public static List<ShellDiskInfo> diskForLinux(String output) {
         try {
             String[] lines = output.split("\n");
-            List<DiskInfo> list = new ArrayList<>();
+            List<ShellDiskInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                DiskInfo info = new DiskInfo();
+                ShellDiskInfo info = new ShellDiskInfo();
                 info.setFileSystem(cols[0]);
                 info.setSize(cols[1]);
                 info.setUsed(cols[2]);
@@ -35,14 +35,14 @@ public class ShellExecParser {
         return Collections.emptyList();
     }
 
-    public static List<DiskInfo> diskForMacos(String output) {
+    public static List<ShellDiskInfo> diskForMacos(String output) {
         try {
             String[] lines = output.split("\n");
-            List<DiskInfo> list = new ArrayList<>();
+            List<ShellDiskInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                DiskInfo info = new DiskInfo();
+                ShellDiskInfo info = new ShellDiskInfo();
                 info.setFileSystem(cols[0]);
                 info.setSize(cols[1]);
                 info.setUsed(cols[2]);
@@ -58,14 +58,14 @@ public class ShellExecParser {
         return Collections.emptyList();
     }
 
-    public static List<DiskInfo> diskForWindows(String output) {
+    public static List<ShellDiskInfo> diskForWindows(String output) {
         try {
             String[] lines = output.split("\n");
-            List<DiskInfo> list = new ArrayList<>();
+            List<ShellDiskInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length - 1; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+", -1);
-                DiskInfo info = new DiskInfo();
+                ShellDiskInfo info = new ShellDiskInfo();
                 long free = Long.parseLong(cols[0]);
                 long size = Long.parseLong(cols[2]);
                 long used = size - free;

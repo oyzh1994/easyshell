@@ -8,7 +8,7 @@ import cn.oyzh.common.object.ObjectCopier;
  * @author oyzh
  * @since 25/03/29
  */
-public class ProcessInfo implements ObjectCopier<ProcessInfo> {
+public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
 
     private String user;
 
@@ -101,7 +101,7 @@ public class ProcessInfo implements ObjectCopier<ProcessInfo> {
     }
 
     @Override
-    public void copy(ProcessInfo t1) {
+    public void copy(ShellProcessInfo t1) {
         this.rss = t1.rss;
         this.time = t1.time;
         this.user = t1.user;

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
  * @author oyzh
  * @since 2025-03-13
  */
-public class DockerExec implements AutoCloseable {
+public class ShellDockerExec implements AutoCloseable {
 
     private ShellClient client;
 
@@ -17,7 +17,7 @@ public class DockerExec implements AutoCloseable {
 //
 //    private static final String history_format = "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
 
-    public DockerExec(ShellClient client) {
+    public ShellDockerExec(ShellClient client) {
         this.client = client;
     }
 
@@ -144,7 +144,7 @@ public class DockerExec implements AutoCloseable {
         return builder.toString();
     }
 
-    public String docker_update(DockerResource resource, String id) {
+    public String docker_update(ShellDockerResource resource, String id) {
         StringBuilder builder = new StringBuilder("docker update");
         if (resource.getMemory() > 0) {
             builder.append(" --memory ").append(resource.getMemory()).append("m");

@@ -4,7 +4,7 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.function.WeakConsumer;
 import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -32,7 +32,7 @@ public class SftpDeleteManager implements AutoCloseable {
         this.client = client;
     }
 
-    private final Queue<SftpFile> files = new ArrayDeque<>();
+    private final Queue<ShellSftpFile> files = new ArrayDeque<>();
 
     private final List<WeakRunnable> deleteEndedCallbacks = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class SftpDeleteManager implements AutoCloseable {
         }
     }
 
-    public void fileDelete(SftpFile file) {
+    public void fileDelete(ShellSftpFile file) {
         this.files.add(file);
         this.doDelete();
     }
@@ -82,7 +82,7 @@ public class SftpDeleteManager implements AutoCloseable {
         try {
             this.setDeleting(true);
             while (!this.isEmpty()) {
-                SftpFile deleteFile = this.files.peek();
+                ShellSftpFile deleteFile = this.files.peek();
                 if (deleteFile == null) {
                     break;
                 }

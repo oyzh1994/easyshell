@@ -16,16 +16,16 @@ import java.util.Map;
  * @author oyzh
  * @since 25/03/29
  */
-public class ProcessParser {
+public class ShellProcessParser {
 
-    public static List<ProcessInfo> psForLinux(String output) {
+    public static List<ShellProcessInfo> psForLinux(String output) {
         try {
             String[] lines = output.split("\n");
-            List<ProcessInfo> list = new ArrayList<>();
+            List<ShellProcessInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                ProcessInfo info = new ProcessInfo();
+                ShellProcessInfo info = new ShellProcessInfo();
                 info.setUser(cols[0]);
                 info.setPid(Integer.parseInt(cols[1]));
                 info.setCpuUsage(Double.parseDouble(cols[2]));
@@ -45,14 +45,14 @@ public class ProcessParser {
         return Collections.emptyList();
     }
 
-    public static List<ProcessInfo> psForUnix(String output) {
+    public static List<ShellProcessInfo> psForUnix(String output) {
         try {
             String[] lines = output.split("\n");
-            List<ProcessInfo> list = new ArrayList<>();
+            List<ShellProcessInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                ProcessInfo info = new ProcessInfo();
+                ShellProcessInfo info = new ShellProcessInfo();
                 info.setUser(cols[0]);
                 info.setPid(Integer.parseInt(cols[1]));
                 info.setCpuUsage(Double.parseDouble(cols[2]));
@@ -72,14 +72,14 @@ public class ProcessParser {
         return Collections.emptyList();
     }
 
-    public static List<ProcessInfo> psForMacos(String output) {
+    public static List<ShellProcessInfo> psForMacos(String output) {
         try {
             String[] lines = output.split("\n");
-            List<ProcessInfo> list = new ArrayList<>();
+            List<ShellProcessInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                ProcessInfo info = new ProcessInfo();
+                ShellProcessInfo info = new ShellProcessInfo();
                 info.setUser(cols[0]);
                 info.setPid(Integer.parseInt(cols[1]));
                 info.setCpuUsage(Double.parseDouble(cols[2]));
@@ -99,14 +99,14 @@ public class ProcessParser {
         return Collections.emptyList();
     }
 
-//    public static List<ProcessInfo> psForWindows(String output) {
+//    public static List<ShellProcessInfo> psForWindows(String output) {
 //        try {
 //            String[] lines = output.split("\n");
-//            List<ProcessInfo> list = new ArrayList<>();
+//            List<ShellProcessInfo> list = new ArrayList<>();
 //            for (int i = 0; i < lines.length; i++) {
 //                String line = lines[i];
 //                List<String> cols = List.of(line.split(","));
-//                ProcessInfo info = new ProcessInfo();
+//                ShellProcessInfo info = new ShellProcessInfo();
 //                info.setUser(cols.get(0));
 //                info.setPid(Integer.parseInt(cols.get(1)));
 //                String cpuUsage = cols.get(2);
@@ -128,16 +128,16 @@ public class ProcessParser {
 //        return Collections.emptyList();
 //    }
 
-    public static List<ProcessInfo> psForWindows(String output, Map<String, ProcessAttr> attrs, long totalMemory) {
+    public static List<ShellProcessInfo> psForWindows(String output, Map<String, ShellProcessAttr> attrs, long totalMemory) {
         try {
             String[] lines = output.split("\n");
-            List<ProcessInfo> list = new ArrayList<>();
+            List<ShellProcessInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 List<String> cols = ShellUtil.splitWindowsCommandResult(line);
                 String pid = cols.getFirst();
-                ProcessInfo info = new ProcessInfo();
-                ProcessAttr attr = attrs.get(pid);
+                ShellProcessInfo info = new ShellProcessInfo();
+                ShellProcessAttr attr = attrs.get(pid);
                 if (attr == null) {
                     info.setStat("N/A");
                     info.setUser("N/A");
@@ -153,7 +153,7 @@ public class ProcessParser {
                     double usage = Double.parseDouble(cpuUsage);
                     usage = Math.abs(usage);
                     if (attr == null) {
-                        attr = new ProcessAttr();
+                        attr = new ShellProcessAttr();
                         usage = attr.calcCpuUsage(usage);
                         attrs.put(pid, attr);
                         info.setCpuUsage(usage);

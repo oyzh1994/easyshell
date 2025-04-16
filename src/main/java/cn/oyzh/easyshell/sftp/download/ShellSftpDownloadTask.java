@@ -6,8 +6,8 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.SftpFile;
-import cn.oyzh.easyshell.sftp.SftpTask;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
@@ -21,19 +21,19 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-15
  */
-public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
+public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonitor> {
 
     /**
      * 下载状态
      */
-    private SftpDownloadStatus status;
+    private ShellSftpDownloadStatus status;
 
     /**
      * 更新状态
      *
      * @param status 状态
      */
-    private void updateStatus(SftpDownloadStatus status) {
+    private void updateStatus(ShellSftpDownloadStatus status) {
         this.status = status;
         switch (status) {
             case FAILED -> this.statusProperty.set(I18nHelper.failed());
@@ -47,11 +47,11 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 
     private final File localFile;
 
-    private final SftpFile remoteFile;
+    private final ShellSftpFile remoteFile;
 
     private final ShellClient client;
 
-    private final SftpDownloadManager manager;
+    private final ShellSftpDownloadTaskManager manager;
 
     @Override
     public String getSrcPath() {
@@ -63,7 +63,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
         return this.localFile.getName();
     }
 
-    public SftpDownloadTask(SftpDownloadManager manager, File localFile, SftpFile remoteFile, ShellClient client) {
+    public ShellSftpDownloadTask(ShellSftpDownloadTaskManager manager, File localFile, ShellSftpFile remoteFile, ShellClient client) {
         this.client = client;
         this.manager = manager;
         this.localFile = localFile;
@@ -73,9 +73,9 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 //        this.executeThread = ThreadUtil.start(() -> {
 //            try {
 //                sftp.setHolding(true);
-//                this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
+//                this.updateStatus(ShellSftpDownloadStatus.IN_PREPARATION);
 //                this.addMonitorRecursive(localFile, remoteFile, sftp);
-//                this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
+//                this.updateStatus(ShellSftpDownloadStatus.DOWNLOAD_ING);
 //                this.calcTotalSize();
 //                this.updateTotal();
 //                this.doDownload();
@@ -86,7 +86,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 //                this.updateTotal();
 //                // 如果是非取消和失败，则设置为结束
 //                if (!this.isCancelled() && !this.isFailed()) {
-//                    this.updateStatus(SftpDownloadStatus.FINISHED);
+//                    this.updateStatus(ShellSftpDownloadStatus.FINISHED);
 //                }
 //            }
 //        });
@@ -97,9 +97,9 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      */
     public void download() {
         try {
-            this.updateStatus(SftpDownloadStatus.IN_PREPARATION);
+            this.updateStatus(ShellSftpDownloadStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(SftpDownloadStatus.DOWNLOAD_ING);
+            this.updateStatus(ShellSftpDownloadStatus.DOWNLOAD_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doDownload();
@@ -109,7 +109,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(SftpDownloadStatus.FINISHED);
+                this.updateStatus(ShellSftpDownloadStatus.FINISHED);
             }
         }
     }
@@ -121,7 +121,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      * @param remoteFile 远程文件
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, SftpFile remoteFile) throws SftpException {
+    protected void addMonitorRecursive(File localFile, ShellSftpFile remoteFile) throws SftpException {
         // 已取消则跳过
         if (this.isCancelled()) {
             return;
@@ -130,14 +130,14 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
         // 文件夹
         if (remoteFile.isDir()) {
             // 列举文件
-            List<SftpFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
+            List<ShellSftpFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
                 File localDir = new File(localFile.getPath(), remoteFile.getFileName());
                 FileUtil.mkdir(localDir);
                 // 添加文件
-                for (SftpFile file : files) {
+                for (ShellSftpFile file : files) {
                     file.setParentPath(remoteFile.getFilePath());
                     if (file.isDir()) {
                         this.addMonitorRecursive(localDir, file);
@@ -149,7 +149,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
             }
         } else {// 文件
 //            this.updateTotal();
-            this.monitors.add(new SftpDownloadMonitor(localFile, remoteFile, this));
+            this.monitors.add(new ShellSftpDownloadMonitor(localFile, remoteFile, this));
         }
     }
 
@@ -158,7 +158,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      */
     private void doDownload() {
         while (!this.isEmpty()) {
-            SftpDownloadMonitor monitor = this.takeMonitor();
+            ShellSftpDownloadMonitor monitor = this.takeMonitor();
             if (monitor == null) {
                 break;
             }
@@ -191,7 +191,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 //    @Override
 //    protected void updateTotal() {
 ////        if (this.monitors.isEmpty() && !this.isInPreparation()) {
-////            this.updateStatus(SftpDownloadStatus.FINISHED);
+////            this.updateStatus(ShellSftpDownloadStatus.FINISHED);
 ////        }
 //        super.updateTotal();
 //        this.manager.updateDownloading();
@@ -201,7 +201,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     public void cancel() {
         super.cancel();
         this.manager.remove(this);
-        this.updateStatus(SftpDownloadStatus.CANCELED);
+        this.updateStatus(ShellSftpDownloadStatus.CANCELED);
     }
 
     @Override
@@ -211,22 +211,22 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
 
     @Override
     public boolean isFailed() {
-        return this.status == SftpDownloadStatus.FAILED;
+        return this.status == ShellSftpDownloadStatus.FAILED;
     }
 
     @Override
     public boolean isFinished() {
-        return this.status == SftpDownloadStatus.FINISHED;
+        return this.status == ShellSftpDownloadStatus.FINISHED;
     }
 
     @Override
     public boolean isCancelled() {
-        return this.status == SftpDownloadStatus.CANCELED;
+        return this.status == ShellSftpDownloadStatus.CANCELED;
     }
 
     @Override
     public boolean isInPreparation() {
-        return this.status == SftpDownloadStatus.IN_PREPARATION;
+        return this.status == ShellSftpDownloadStatus.IN_PREPARATION;
     }
 
     /**
@@ -235,11 +235,11 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
      * @return 结果
      */
     public boolean isDownloading() {
-        return this.status == SftpDownloadStatus.DOWNLOAD_ING;
+        return this.status == ShellSftpDownloadStatus.DOWNLOAD_ING;
     }
 
     @Override
-    public void remove(SftpDownloadMonitor monitor) {
+    public void remove(ShellSftpDownloadMonitor monitor) {
         super.remove(monitor);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
@@ -247,23 +247,23 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     }
 
     @Override
-    public void ended(SftpDownloadMonitor monitor) {
+    public void ended(ShellSftpDownloadMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
         if (this.monitors.isEmpty()) {
             this.manager.remove(this);
-            this.updateStatus(SftpDownloadStatus.FINISHED);
+            this.updateStatus(ShellSftpDownloadStatus.FINISHED);
         }
     }
 
     @Override
-    public void failed(SftpDownloadMonitor monitor, Throwable exception) {
+    public void failed(ShellSftpDownloadMonitor monitor, Throwable exception) {
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
     }
 
     @Override
-    public void canceled(SftpDownloadMonitor monitor) {
+    public void canceled(ShellSftpDownloadMonitor monitor) {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
         if (this.monitors.isEmpty()) {
@@ -272,7 +272,7 @@ public class SftpDownloadTask extends SftpTask<SftpDownloadMonitor> {
     }
 
     @Override
-    public void changed(SftpDownloadMonitor monitor) {
+    public void changed(ShellSftpDownloadMonitor monitor) {
         super.changed(monitor);
         this.manager.monitorChanged(monitor, this);
     }

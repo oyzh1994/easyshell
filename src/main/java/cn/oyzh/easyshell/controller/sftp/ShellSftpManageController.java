@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
 //import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView;
-//import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
+//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
 //import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 //import cn.oyzh.easyshell.shell.ShellClient;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -49,7 +49,7 @@
 //    /**
 //     * 下载管理器
 //     */
-//    private SftpDownloadManager downloadManager;
+//    private ShellSftpDownloadTaskManager downloadManager;
 //
 //    @Override
 //    protected void bindListeners() {

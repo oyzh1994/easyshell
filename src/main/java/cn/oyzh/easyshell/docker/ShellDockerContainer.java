@@ -6,7 +6,7 @@ import cn.oyzh.common.util.StringUtil;
  * @author oyzh
  * @since 2025-03-12
  */
-public class DockerContainer {
+public class ShellDockerContainer {
 
     private String containerId;
     private String image;

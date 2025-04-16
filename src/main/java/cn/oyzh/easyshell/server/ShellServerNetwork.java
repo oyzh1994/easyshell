@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.server;
  * @author oyzh
  * @since 2025-03-16
  */
-public class ServerNetwork {
+public class ShellServerNetwork {
 
     private long lastUpdateTime;
 

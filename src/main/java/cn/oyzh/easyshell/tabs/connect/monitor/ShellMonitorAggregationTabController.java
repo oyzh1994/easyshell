@@ -1,6 +1,6 @@
 //package cn.oyzh.easyshell.tabs.connect.monitor;
 //
-//import cn.oyzh.easyshell.server.ServerMonitor;
+//import cn.oyzh.easyshell.server.ShellServerMonitor;
 //import cn.oyzh.fx.gui.tabs.SubTabController;
 //import cn.oyzh.fx.plus.controls.chart.ChartHelper;
 //import cn.oyzh.fx.plus.controls.chart.FXLineChart;
@@ -53,7 +53,7 @@
 //     *
 //     * @param monitor 监控信息
 //     */
-//    public void init(ServerMonitor monitor) {
+//    public void init(ShellServerMonitor monitor) {
 //        this.initCpuChart(monitor);
 //        this.initMemoryChart(monitor);
 //        this.initDiskChart(monitor);
@@ -65,7 +65,7 @@
 //     *
 //     * @param monitor 监控信息
 //     */
-//    private void initCpuChart(ServerMonitor monitor) {
+//    private void initCpuChart(ShellServerMonitor monitor) {
 //        XYChart.Series<String, Double> data = this.cpuChart.getChartData(0);
 //        if (data == null) {
 //            data = new XYChart.Series<>();
@@ -84,7 +84,7 @@
 //     *
 //     * @param monitor 监控信息
 //     */
-//    private void initMemoryChart(ServerMonitor monitor) {
+//    private void initMemoryChart(ShellServerMonitor monitor) {
 //        XYChart.Series<String, Double> data = this.memoryChart.getChartData(0);
 //        if (data == null) {
 //            data = new XYChart.Series<>();
@@ -103,7 +103,7 @@
 //     *
 //     * @param monitor 监控信息
 //     */
-//    private void initDiskChart(ServerMonitor monitor) {
+//    private void initDiskChart(ShellServerMonitor monitor) {
 //        XYChart.Series<String, Double> read = this.diskChart.getChartData(0);
 //        XYChart.Series<String, Double> write = this.diskChart.getChartData(1);
 //        if (read == null) {
@@ -129,7 +129,7 @@
 //     *
 //     * @param monitor 监控信息
 //     */
-//    private void initNetworkChart(ServerMonitor monitor) {
+//    private void initNetworkChart(ShellServerMonitor monitor) {
 //        XYChart.Series<String, Double> out = this.networkChart.getChartData(0);
 //        XYChart.Series<String, Double> in = this.networkChart.getChartData(1);
 //        if (out == null) {

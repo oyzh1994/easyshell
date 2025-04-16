@@ -7,7 +7,7 @@ import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -49,7 +49,7 @@ public class ShellSftpFileEditController extends StageController {
     /**
      * 远程文件
      */
-    private SftpFile file;
+    private ShellSftpFile file;
 
     /**
      * 目标路径

@@ -4,9 +4,9 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.docker.DockerHistoryController;
 import cn.oyzh.easyshell.controller.docker.DockerInspectController;
-import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.docker.DockerHistory;
-import cn.oyzh.easyshell.docker.DockerImage;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerImage;
 import cn.oyzh.easyshell.docker.DockerParser;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -28,19 +28,19 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-12
  */
-public class DockerImageTableView extends FXTableView<DockerImage> {
+public class DockerImageTableView extends FXTableView<ShellDockerImage> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);
     }
 
-    private DockerExec exec;
+    private ShellDockerExec exec;
 
-    public void setExec(DockerExec exec) {
+    public void setExec(ShellDockerExec exec) {
         this.exec = exec;
     }
 
-    public DockerExec getExec() {
+    public ShellDockerExec getExec() {
         return exec;
     }
 //
@@ -57,7 +57,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
 //        }
 //    }
 
-    private List<DockerImage> images;
+    private List<ShellDockerImage> images;
 
     public void loadImage() {
         String output = this.exec.docker_images();
@@ -82,7 +82,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
         }
     }
 
-    private List<DockerImage> doFilter(List<DockerImage> files) {
+    private List<ShellDockerImage> doFilter(List<ShellDockerImage> files) {
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
                     .filter(f -> {
@@ -99,7 +99,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
     }
 
     public void deleteImage(boolean force) {
-        DockerImage image = this.getSelectedItem();
+        ShellDockerImage image = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.deleteImage() + " " + image.getRepository())) {
             return;
         }
@@ -125,7 +125,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
     }
 
     public void imageInspect() {
-        DockerImage image = this.getSelectedItem();
+        ShellDockerImage image = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_inspect(image.getImageId());
@@ -147,11 +147,11 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
     }
 
     public void imageHistory() {
-        DockerImage image = this.getSelectedItem();
+        ShellDockerImage image = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_history(image.getImageId());
-                List<DockerHistory> histories = DockerParser.history(output);
+                List<ShellDockerHistory> histories = DockerParser.history(output);
                 FXUtil.runLater(() -> {
                     StageAdapter adapter = StageManager.parseStage(DockerHistoryController.class);
                     adapter.setProp("histories", histories);
@@ -166,7 +166,7 @@ public class DockerImageTableView extends FXTableView<DockerImage> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        DockerImage image = this.getSelectedItem();
+        ShellDockerImage image = this.getSelectedItem();
         if (image == null) {
             return Collections.emptyList();
         }

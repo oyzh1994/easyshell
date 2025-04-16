@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-15
  */
-public class ServerExec implements AutoCloseable {
+public class ShellServerExec implements AutoCloseable {
 
     /**
      * shell客户端
@@ -27,21 +27,21 @@ public class ServerExec implements AutoCloseable {
     /**
      * 服务器磁盘对象
      */
-    private ServerDisk disk;
+    private ShellServerDisk disk;
 
     /**
      * 服务器网络对象
      */
-    private ServerNetwork network;
+    private ShellServerNetwork network;
 
-    public ServerExec(ShellClient client) {
+    public ShellServerExec(ShellClient client) {
         this.client = client;
-        this.disk = new ServerDisk();
-        this.network = new ServerNetwork();
+        this.disk = new ShellServerDisk();
+        this.network = new ShellServerNetwork();
     }
 
-    public ServerInfo info() {
-        ServerInfo info = new ServerInfo();
+    public ShellServerInfo info() {
+        ShellServerInfo info = new ShellServerInfo();
         String arch = this.arch();
         String uname = this.uname();
         String ulimit = this.ulimit();
@@ -59,8 +59,8 @@ public class ServerExec implements AutoCloseable {
         return info;
     }
 
-//    public ServerMonitor monitor() {
-//        ServerMonitor monitor = this.monitorSimple();
+//    public ShellServerMonitor monitor() {
+//        ShellServerMonitor monitor = this.monitorSimple();
 //        String arch = this.arch();
 //        String uname = this.uname();
 //        String ulimit = this.ulimit();
@@ -74,8 +74,8 @@ public class ServerExec implements AutoCloseable {
 //        return monitor;
 //    }
 
-    public ServerMonitor monitor() {
-        ServerMonitor monitor = new ServerMonitor();
+    public ShellServerMonitor monitor() {
+        ShellServerMonitor monitor = new ShellServerMonitor();
         DownLatch latch = new DownLatch(4);
 
         ThreadUtil.startVirtual(() -> {

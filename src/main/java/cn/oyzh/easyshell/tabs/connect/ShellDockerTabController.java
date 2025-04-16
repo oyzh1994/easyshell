@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.docker.DockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerContainerTabController;
 import cn.oyzh.easyshell.tabs.connect.docker.ShellDockerDaemonTabController;
@@ -89,7 +89,7 @@ public class ShellDockerTabController extends ParentTabController {
         }
         this.initialized = true;
         try {
-            DockerExec exec = this.getClient().dockerExec();
+            ShellDockerExec exec = this.getClient().dockerExec();
             this.containerController.init(exec);
             String output = exec.docker_ps();
             if (ShellUtil.isCommandNotFound(output)) {

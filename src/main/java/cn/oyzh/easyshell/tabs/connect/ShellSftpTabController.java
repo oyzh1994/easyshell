@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
-import cn.oyzh.easyshell.sftp.download.SftpDownloadManager;
-import cn.oyzh.easyshell.sftp.download.SftpDownloadMonitor;
-import cn.oyzh.easyshell.sftp.download.SftpDownloadTask;
+import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadMonitor;
+import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
+import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.SftpUploadTask;
@@ -172,7 +172,7 @@ public class ShellSftpTabController extends SubTabController {
     /**
      * 下载管理器
      */
-    private SftpDownloadManager downloadManager;
+    private ShellSftpDownloadTaskManager downloadManager;
 
     /**
      * 初始化
@@ -381,7 +381,7 @@ public class ShellSftpTabController extends SubTabController {
      * @param status 状态
      * @param task   任务
      */
-    private void downloadStatusChanged(String status, SftpDownloadTask task) {
+    private void downloadStatusChanged(String status, ShellSftpDownloadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -397,7 +397,7 @@ public class ShellSftpTabController extends SubTabController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void downloadMonitorChanged(SftpDownloadMonitor monitor, SftpDownloadTask task) {
+    private void downloadMonitorChanged(ShellSftpDownloadMonitor monitor, ShellSftpDownloadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());

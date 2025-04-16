@@ -4,8 +4,8 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.fx.process.ProcessInfoTableView;
 import cn.oyzh.easyshell.fx.process.ProcessTypeComboBox;
-import cn.oyzh.easyshell.process.ProcessExec;
-import cn.oyzh.easyshell.process.ProcessInfo;
+import cn.oyzh.easyshell.process.ShellProcessExec;
+import cn.oyzh.easyshell.process.ShellProcessInfo;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -87,7 +87,7 @@ public class ShellProcessTabController extends SubTabController {
     /**
      *
      */
-    private ProcessExec processExec;
+    private ShellProcessExec processExec;
 
     /**
      * 初始化自动刷新任务
@@ -127,7 +127,7 @@ public class ShellProcessTabController extends SubTabController {
             JulLog.info("render process started.");
             if (this.client != null) {
                 // 获取数据
-                List<ProcessInfo> processInfos = this.processExec.ps();
+                List<ShellProcessInfo> processInfos = this.processExec.ps();
                 this.getProcessTable().updateData(processInfos);
                 this.getProcessTable().sort();
             }

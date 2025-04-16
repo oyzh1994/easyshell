@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
-import cn.oyzh.easyshell.docker.DockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.fx.docker.DockerImageTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
@@ -40,7 +40,7 @@ public class ShellDockerImageTabController extends SubTabController {
         }
         this.initialized = true;
         try {
-            DockerExec exec = this.client().dockerExec();
+            ShellDockerExec exec = this.client().dockerExec();
             this.imageTable.setExec(exec);
             this.refreshImage();
         } catch (Exception ex) {

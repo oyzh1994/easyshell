@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.process;
 
-import cn.oyzh.easyshell.server.ServerExec;
+import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
@@ -15,11 +15,11 @@ import java.util.Map;
  * @author oyzh
  * @since 25/03/29
  */
-public class ProcessExec implements AutoCloseable {
+public class ShellProcessExec implements AutoCloseable {
 
     private ShellClient client;
 
-    public ProcessExec(ShellClient client) {
+    public ShellProcessExec(ShellClient client) {
         this.client = client;
     }
 
@@ -41,11 +41,11 @@ public class ProcessExec implements AutoCloseable {
     /**
      * 进程属性，仅windows
      */
-    private Map<String, ProcessAttr> processAttr;
+    private Map<String, ShellProcessAttr> processAttr;
 
-    public List<ProcessInfo> ps() {
+    public List<ShellProcessInfo> ps() {
         if (this.client.isWindows()) {
-            ServerExec serverExec = this.client.serverExec();
+            ShellServerExec serverExec = this.client.serverExec();
             if (processAttr == null) {
                 processAttr = new HashMap<>();
             }
@@ -81,25 +81,25 @@ public class ProcessExec implements AutoCloseable {
                 if (user.contains("\\")) {
                     user = user.substring(user.lastIndexOf("\\") + 1);
                 }
-                ProcessAttr attr = this.processAttr.get(pid);
+                ShellProcessAttr attr = this.processAttr.get(pid);
                 if (attr == null) {
-                    attr = new ProcessAttr();
+                    attr = new ShellProcessAttr();
                     this.processAttr.put(pid, attr);
                 } else {
                     attr.setStat(stat);
                     attr.setUser(user);
                 }
             }
-            return ProcessParser.psForWindows(output1, this.processAttr, this.totalMemory);
+            return ShellProcessParser.psForWindows(output1, this.processAttr, this.totalMemory);
         } else if (this.client.isLinux()) {
             String output = this.client.exec("ps -auxe");
-            return ProcessParser.psForLinux(output);
+            return ShellProcessParser.psForLinux(output);
         } else if (this.client.isMacos()) {
             String output = this.client.exec("ps -axo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command");
-            return ProcessParser.psForMacos(output);
+            return ShellProcessParser.psForMacos(output);
         } else if (this.client.isUnix()) {
             String output = this.client.exec("ps -auxe");
-            return ProcessParser.psForUnix(output);
+            return ShellProcessParser.psForUnix(output);
         }
         return Collections.emptyList();
     }

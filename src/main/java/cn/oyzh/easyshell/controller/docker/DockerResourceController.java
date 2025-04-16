@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.docker.DockerExec;
-import cn.oyzh.easyshell.docker.DockerResource;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -68,7 +68,7 @@ public class DockerResourceController extends StageController {
     /**
      * exec对象
      */
-    private DockerExec exec = null;
+    private ShellDockerExec exec = null;
 
     private String containerId;
 
@@ -77,7 +77,7 @@ public class DockerResourceController extends StageController {
         super.onWindowShown(event);
         this.exec = this.getProp("exec");
         this.containerId = this.getProp("id");
-        DockerResource resource = this.getProp("resource");
+        ShellDockerResource resource = this.getProp("resource");
         this.memory.setValue(resource.getMemory() / 1024 / 1024);
         this.memorySwap.setValue(resource.getMemorySwap() / 1024 / 1024);
         this.cpuQuota.setValue(resource.getCpuQuota());
@@ -102,7 +102,7 @@ public class DockerResourceController extends StageController {
             long cpuShares = this.cpuShares.getValue();
             double nanoCpus = this.nanoCpus.getValue();
             long cpuQuota = this.cpuQuota.getValue();
-            DockerResource resource = new DockerResource();
+            ShellDockerResource resource = new ShellDockerResource();
             resource.setMemory(memory);
             resource.setMemorySwap(memorySwap);
             resource.setCpuQuota(cpuQuota);

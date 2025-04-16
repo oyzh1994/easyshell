@@ -5,9 +5,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.SftpFile;
-import cn.oyzh.easyshell.sftp.SftpTask;
-import cn.oyzh.easyshell.sftp.SftpUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpTask;
+import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-15
  */
-public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
+public class SftpTransportTask extends ShellSftpTask<SftpTransportMonitor> {
 
     /**
      * 传输状态
@@ -45,7 +45,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
         this.manager.taskStatusChanged(this.getStatus(), this);
     }
 
-    private SftpFile localFile;
+    private ShellSftpFile localFile;
 
     private String remoteFile;
 
@@ -65,7 +65,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
         return this.remoteFile;
     }
 
-    public SftpTransportTask(SftpTransportManager manager, SftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
+    public SftpTransportTask(SftpTransportManager manager, ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
         this.manager = manager;
         this.localFile = localFile;
         this.remoteFile = remoteFile;
@@ -121,7 +121,7 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
      * @param remoteFile 远程文件
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(SftpFile localFile, String remoteFile) throws SftpException {
+    protected void addMonitorRecursive(ShellSftpFile localFile, String remoteFile) throws SftpException {
         // 已取消则跳过
         if (this.isCancelled()) {
             return;
@@ -132,19 +132,19 @@ public class SftpTransportTask extends SftpTask<SftpTransportMonitor> {
             ShellSftp localSftp = this.localClient.openSftp();
             ShellSftp remoteSftp = this.remoteClient.openSftp();
             // 列举文件
-            List<SftpFile> files = localSftp.lsFileNormal(localFile.getPath());
+            List<ShellSftpFile> files = localSftp.lsFileNormal(localFile.getPath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 远程文件夹
-                String remoteDir = SftpUtil.concat(remoteFile, localFile.getName());
+                String remoteDir = ShellSftpUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
                 remoteSftp.mkdirRecursive(remoteDir);
                 // 添加文件
-                for (SftpFile file : files) {
+                for (ShellSftpFile file : files) {
                     if (file.isDirectory()) {
                         this.addMonitorRecursive(file, remoteDir);
                     } else {
-                        String remoteFile1 = SftpUtil.concat(remoteDir, file.getName());
+                        String remoteFile1 = ShellSftpUtil.concat(remoteDir, file.getName());
                         this.addMonitorRecursive(file, remoteFile1);
                     }
                 }

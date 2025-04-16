@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.easyshell.sftp.SftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -34,7 +34,7 @@ public class ShellSftpFilePermissionController extends StageController {
     /**
      * 远程文件
      */
-    private SftpFile file;
+    private ShellSftpFile file;
 
     /**
      * ssh客户端

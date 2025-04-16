@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.connect.docker;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.docker.DockerInfoController;
 import cn.oyzh.easyshell.controller.docker.DockerVersionController;
-import cn.oyzh.easyshell.docker.DockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -33,7 +33,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerInfo() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
                 String output = exec.docker_info();
@@ -55,7 +55,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerVersion() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
                 String output = exec.docker_version();
@@ -77,7 +77,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerComposeVersion() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
                 String output = exec.docker_compose_version();
@@ -95,7 +95,7 @@ public class ShellDockerExtraTabController extends SubTabController {
             MessageBox.warn(I18nHelper.operationNotSupport());
             return;
         }
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
                 String output = exec.docker_restart();
@@ -111,7 +111,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerPruneContainer() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
             return;
         }
@@ -128,7 +128,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerPruneImage() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
             return;
         }
@@ -145,7 +145,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerPruneNetwork() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
             return;
         }
@@ -161,7 +161,7 @@ public class ShellDockerExtraTabController extends SubTabController {
 
     @FXML
     private void dockerPruneVolume() {
-        DockerExec exec = this.client().dockerExec();
+        ShellDockerExec exec = this.client().dockerExec();
         if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
             return;
         }

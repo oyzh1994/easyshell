@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.process;
  * @author oyzh
  * @since 25/03/30
  */
-public class ProcessAttr {
+public class ShellProcessAttr {
 
     /**
      * pid

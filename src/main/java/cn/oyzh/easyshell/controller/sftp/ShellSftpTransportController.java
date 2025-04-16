@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.fx.ShellConnectComboBox;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.sftp.SftpFile;
-import cn.oyzh.easyshell.sftp.SftpUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.delete.SftpDeleteManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.SftpTransportMonitor;
@@ -25,7 +25,6 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.AnimationUtil;
-import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -253,14 +252,14 @@ public class ShellSftpTransportController extends StageController {
      * 执行传输1
      */
 //    @FXML
-    private void doTransport1(List<SftpFile> files) {
+    private void doTransport1(List<ShellSftpFile> files) {
         try {
-//            List<SftpFile> files = this.sourceFile.getSelectedItems();
+//            List<ShellSftpFile> files = this.sourceFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
             // 检查文件是否存在
-            for (SftpFile file : files) {
+            for (ShellSftpFile file : files) {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
@@ -281,14 +280,14 @@ public class ShellSftpTransportController extends StageController {
      * 执行传输2
      */
 //    @FXML
-    private void doTransport2(List<SftpFile> files) {
+    private void doTransport2(List<ShellSftpFile> files) {
         try {
-//            List<SftpFile> files = this.targetFile.getSelectedItems();
+//            List<ShellSftpFile> files = this.targetFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
             // 检查文件是否存在
-            for (SftpFile file : files) {
+            for (ShellSftpFile file : files) {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
@@ -313,15 +312,15 @@ public class ShellSftpTransportController extends StageController {
      * @param sourceClient 源连接
      * @param targetClient 目标连接
      */
-    private void doTransport(List<SftpFile> files, String remotePath, ShellClient sourceClient, ShellClient targetClient) {
-        for (SftpFile file : files) {
+    private void doTransport(List<ShellSftpFile> files, String remotePath, ShellClient sourceClient, ShellClient targetClient) {
+        for (ShellSftpFile file : files) {
             if (file.isCurrentFile() || file.isReturnDirectory()) {
                 continue;
             }
             if (file.isDirectory()) {
                 sourceClient.transport(file, remotePath, targetClient);
             } else {
-                String remoteFile = SftpUtil.concat(remotePath, file.getName());
+                String remoteFile = ShellSftpUtil.concat(remotePath, file.getName());
                 sourceClient.transport(file, remoteFile, targetClient);
             }
         }

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.docker;
 
-import cn.oyzh.easyshell.docker.DockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerHistory;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 
@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
  * @author oyzh
  * @since 2025-03-14
  */
-public class DockerHistoryTableView extends FXTableView<DockerHistory> {
+public class DockerHistoryTableView extends FXTableView<ShellDockerHistory> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);

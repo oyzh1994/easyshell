@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.docker;
  * @author oyzh
  * @since 2025-03-13
  */
-public class DockerPort {
+public class ShellDockerPort {
 
     private String innerPort;
 
