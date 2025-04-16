@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.shell;
 
-import cn.oyzh.easyshell.terminal.DefaultTermWidget;
+import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.pty4j.PtyProcess;
 import com.techsenger.jeditermfx.core.TtyConnector;
 
@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTermWidget extends DefaultTermWidget {
+public class ShellTermWidget extends ShellDefaultTermWidget {
 
     @Override
     public TtyConnector createTtyConnector(Charset charset) throws IOException {

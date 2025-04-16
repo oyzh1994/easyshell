@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellConnectComboBox;
-import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
-import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
+import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
+import cn.oyzh.easyshell.fx.sftp.ShellSftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
@@ -122,13 +122,13 @@ public class ShellSftpTransportController extends StageController {
      * 来源文件
      */
     @FXML
-    private SftpTransportFileTableView sourceFile;
+    private ShellSftpTransportFileTableView sourceFile;
 
     /**
      * 目标文件
      */
     @FXML
-    private SftpTransportFileTableView targetFile;
+    private ShellSftpTransportFileTableView targetFile;
 
 //    /**
 //     * 文件传输表
@@ -152,13 +152,13 @@ public class ShellSftpTransportController extends StageController {
      * 来源当前位置
      */
     @FXML
-    private SftpLocationTextField sourceLocation;
+    private ShellSftpLocationTextField sourceLocation;
 
     /**
      * 目标当前位置
      */
     @FXML
-    private SftpLocationTextField targetLocation;
+    private ShellSftpLocationTextField targetLocation;
 
 //    /**
 //     * 隐藏来源文件

@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 25/03/29
  */
-public class ProcessTypeComboBox extends FXComboBox<String> {
+public class ShellProcessTypeComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.allUser());

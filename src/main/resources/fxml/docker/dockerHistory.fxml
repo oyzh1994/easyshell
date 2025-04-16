@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.docker.DockerHistoryTableView?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerHistoryTableView?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox prefWidth="800" prefHeight="650" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.controller.docker.DockerHistoryController">
-    <DockerHistoryTableView flexWidth="100%" flexHeight="100%" fx:id="historyTable">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerHistoryController">
+    <ShellDockerHistoryTableView flexWidth="100%" flexHeight="100%" fx:id="historyTable">
         <columns>
             <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
             <FXTableColumn prefWidth="220" valueName="created" text="%base.created"/>
@@ -14,5 +14,5 @@
             <FXTableColumn prefWidth="100" flexWidth="100% - 690" valueName="size" text="%base.size"/>
             <FXTableColumn prefWidth="120" valueName="comment" text="%base.comment"/>
         </columns>
-    </DockerHistoryTableView>
+    </ShellDockerHistoryTableView>
 </FXVBox>

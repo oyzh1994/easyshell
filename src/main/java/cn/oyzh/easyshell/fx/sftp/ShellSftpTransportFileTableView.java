@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-03-05
  */
-public class SftpTransportFileTableView extends SftpFileBaseTableView {
+public class ShellSftpTransportFileTableView extends ShellSftpFileBaseTableView {
 
     @Override
     public void loadFile() {

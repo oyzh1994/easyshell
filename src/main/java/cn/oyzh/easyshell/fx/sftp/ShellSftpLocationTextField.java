@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-27
  */
-public class SftpLocationTextField extends FXTextField {
+public class ShellSftpLocationTextField extends FXTextField {
 
     {
         // 覆盖默认菜单
@@ -53,18 +53,18 @@ public class SftpLocationTextField extends FXTextField {
      *
      * @return 皮肤
      */
-    public SftpLocationTextFieldSkin skin() {
-        SftpLocationTextFieldSkin skin = (SftpLocationTextFieldSkin) this.getSkin();
+    public ShellSftpLocationTextFieldSkin skin() {
+        ShellSftpLocationTextFieldSkin skin = (ShellSftpLocationTextFieldSkin) this.getSkin();
         if (skin == null) {
             this.setSkin(this.createDefaultSkin());
-            skin = (SftpLocationTextFieldSkin) this.getSkin();
+            skin = (ShellSftpLocationTextFieldSkin) this.getSkin();
         }
         return skin;
     }
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new SftpLocationTextFieldSkin(this);
+        return new ShellSftpLocationTextFieldSkin(this);
     }
 
     public void setOnJumpLocation(Consumer<String> onJumpLocation) {

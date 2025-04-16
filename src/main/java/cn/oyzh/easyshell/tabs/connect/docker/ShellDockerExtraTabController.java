@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.DockerInfoController;
-import cn.oyzh.easyshell.controller.docker.DockerVersionController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
@@ -41,7 +41,7 @@ public class ShellDockerExtraTabController extends SubTabController {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
                     FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(DockerInfoController.class);
+                        StageAdapter adapter = StageManager.parseStage(ShellDockerInfoController.class);
                         adapter.setProp("info", output);
                         adapter.display();
                     });
@@ -63,7 +63,7 @@ public class ShellDockerExtraTabController extends SubTabController {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
                     FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(DockerVersionController.class);
+                        StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class);
                         adapter.setProp("version", output);
                         adapter.display();
                     });

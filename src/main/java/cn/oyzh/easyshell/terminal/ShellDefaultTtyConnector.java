@@ -17,8 +17,8 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class DefaultTtyConnector extends PtyProcessTtyConnector   {
-//public class DefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
+public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
+//public class ShellDefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
 //    protected int maxLogSize = 200;
 //
@@ -38,7 +38,7 @@ public class DefaultTtyConnector extends PtyProcessTtyConnector   {
 //
 //    protected int logStart;
 
-    public DefaultTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    public ShellDefaultTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
-import cn.oyzh.easyshell.fx.process.ProcessInfoTableView;
-import cn.oyzh.easyshell.fx.process.ProcessTypeComboBox;
+import cn.oyzh.easyshell.fx.process.ShellProcessInfoTableView;
+import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox;
 import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.process.ShellProcessInfo;
 import cn.oyzh.easyshell.shell.ShellClient;
@@ -46,19 +46,19 @@ public class ShellProcessTabController extends SubTabController {
      * 用户类型
      */
     @FXML
-    private ProcessTypeComboBox processType;
+    private ShellProcessTypeComboBox processType;
 
     /**
      * 进程信息
      */
     @FXML
-    private ProcessInfoTableView processTable;
+    private ShellProcessInfoTableView processTable;
 
     /**
      * 进程信息(windows)
      */
     @FXML
-    private ProcessInfoTableView winProcessTable;
+    private ShellProcessInfoTableView winProcessTable;
 
     public ShellClient getClient() {
         return client;
@@ -160,7 +160,7 @@ public class ShellProcessTabController extends SubTabController {
         });
     }
 
-    private ProcessInfoTableView getProcessTable() {
+    private ShellProcessInfoTableView getProcessTable() {
         if (this.client.isWindows()) {
             return this.winProcessTable;
         }

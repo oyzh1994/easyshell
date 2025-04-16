@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
-import cn.oyzh.easyshell.terminal.DefaultTermWidget;
-import cn.oyzh.easyshell.terminal.DefaultTtyConnector;
+import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -27,8 +27,8 @@ public class ShellTerminalTabController extends RichTabController {
     private FXVBox root;
 
     private void initWidget() throws IOException {
-        DefaultTermWidget widget = new DefaultTermWidget();
-        DefaultTtyConnector connector = (DefaultTtyConnector) widget.createTtyConnector();
+        ShellDefaultTermWidget widget = new ShellDefaultTermWidget();
+        ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) widget.createTtyConnector();
         widget.openSession(connector);
         widget.onTermination(exitCode -> widget.close());
         widget.addHyperlinkFilter(new DefaultHyperlinkFilter());

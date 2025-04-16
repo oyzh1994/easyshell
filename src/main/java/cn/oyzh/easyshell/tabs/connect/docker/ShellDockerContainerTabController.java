@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.fx.docker.DockerContainerStatusComboBox;
-import cn.oyzh.easyshell.fx.docker.DockerContainerTableView;
+import cn.oyzh.easyshell.fx.docker.ShellDockerContainerStatusComboBox;
+import cn.oyzh.easyshell.fx.docker.ShellDockerContainerTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -31,10 +31,10 @@ public class ShellDockerContainerTabController extends SubTabController {
     private ClearableTextField filterContainer;
 
     @FXML
-    private DockerContainerTableView containerTable;
+    private ShellDockerContainerTableView containerTable;
 
     @FXML
-    private DockerContainerStatusComboBox containerStatus;
+    private ShellDockerContainerStatusComboBox containerStatus;
 
     private boolean initialized = false;
 

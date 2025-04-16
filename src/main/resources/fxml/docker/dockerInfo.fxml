@@ -8,7 +8,7 @@
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.controller.docker.DockerInfoController" prefWidth="900" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerInfoController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
         <CopySVGGlyph onMousePrimaryClicked="#copyInfo">
             <FXHBox.margin>

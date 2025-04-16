@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.docker.ShellDockerPort;
-import cn.oyzh.easyshell.fx.docker.DockerPortTableView;
+import cn.oyzh.easyshell.docker.ShellDockerHistory;
+import cn.oyzh.easyshell.fx.docker.ShellDockerHistoryTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -14,7 +14,7 @@ import javafx.stage.WindowEvent;
 import java.util.List;
 
 /**
- * docker容器端口业务
+ * docker镜像历史业务
  *
  * @author oyzh
  * @since 2025/03/14
@@ -22,27 +22,27 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "docker/dockerPort.fxml"
+        value = FXConst.FXML_PATH + "docker/dockerHistory.fxml"
 )
-public class DockerPortController extends StageController {
+public class ShellDockerHistoryController extends StageController {
 
     /**
-     * 端口表
+     * 历史表
      */
     @FXML
-    private DockerPortTableView portTable;
+    private ShellDockerHistoryTableView historyTable;
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        List<ShellDockerPort> ports = this.getProp("ports");
-        this.portTable.setItem(ports);
+        List<ShellDockerHistory> histories = this.getProp("histories");
+        this.historyTable.setItem(histories);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.dockerPorts();
+        return I18nHelper.imageHistory();
     }
 }

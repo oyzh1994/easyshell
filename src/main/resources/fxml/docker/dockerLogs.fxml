@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.docker.DockerLogsController" prefWidth="900" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerLogsController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
         <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="22"
                             prefWidth="300">

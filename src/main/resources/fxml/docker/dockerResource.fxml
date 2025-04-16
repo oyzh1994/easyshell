@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.docker.DockerResourceController" prefWidth="650" realHeight="550">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerResourceController" prefWidth="650" realHeight="550">
     <InfoLabel text="%base.memory">
         <VBox.margin>
             <Insets left="30" top="10"/>

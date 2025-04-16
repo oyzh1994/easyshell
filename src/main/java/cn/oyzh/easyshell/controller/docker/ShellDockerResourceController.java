@@ -27,7 +27,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "docker/dockerResource.fxml"
 )
-public class DockerResourceController extends StageController {
+public class ShellDockerResourceController extends StageController {
 
     /**
      * 内存

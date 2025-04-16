@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.connect.docker;
 
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.fx.docker.DockerImageTableView;
+import cn.oyzh.easyshell.fx.docker.ShellDockerImageTableView;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -30,7 +30,7 @@ public class ShellDockerImageTabController extends SubTabController {
     private ClearableTextField filterImage;
 
     @FXML
-    private DockerImageTableView imageTable;
+    private ShellDockerImageTableView imageTable;
 
     private boolean initialized = false;
 

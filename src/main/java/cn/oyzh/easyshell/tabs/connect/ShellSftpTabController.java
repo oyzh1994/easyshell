@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.connect;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
-import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
-import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
+import cn.oyzh.easyshell.fx.sftp.ShellSftpFileConnectTableView;
+import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
@@ -52,7 +52,7 @@ public class ShellSftpTabController extends SubTabController {
      * 当前位置
      */
     @FXML
-    private SftpLocationTextField location;
+    private ShellSftpLocationTextField location;
 
     /**
      * 上传组件
@@ -112,7 +112,7 @@ public class ShellSftpTabController extends SubTabController {
      * 文件表格
      */
     @FXML
-    private SftpFileConnectTableView fileTable;
+    private ShellSftpFileConnectTableView fileTable;
 
     /**
      * 文件过滤

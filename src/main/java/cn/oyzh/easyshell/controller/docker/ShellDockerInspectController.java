@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.controller.docker;
 
+import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -8,14 +10,13 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * docker容器日志业务
+ * docker信息业务
  *
  * @author oyzh
  * @since 2025/03/13
@@ -23,15 +24,15 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "docker/dockerLogs.fxml"
+        value = FXConst.FXML_PATH + "docker/dockerInspect.fxml"
 )
-public class DockerLogsController extends StageController {
+public class ShellDockerInspectController extends StageController {
 
     /**
-     * 日志
+     * 信息
      */
     @FXML
-    private RichDataTextAreaPane data;
+    private ShellJsonTextAreaPane data;
 
     /**
      * 过滤
@@ -40,7 +41,7 @@ public class DockerLogsController extends StageController {
     private ClearableTextField filter;
 
     @FXML
-    private void copyLogs() {
+    private void copyInspect() {
         ClipboardUtil.copy(this.data.getText());
         MessageBox.okToast(I18nHelper.operationSuccess());
     }
@@ -57,16 +58,22 @@ public class DockerLogsController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        String logs = this.getProp("logs");
-        this.data.setText(logs);
+        String inspect = this.getProp("inspect");
+        Boolean image = this.getProp("image");
+        this.data.setText(inspect);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+        if (BooleanUtil.isTrue(image)) {
+            this.stage.title(I18nHelper.imageInspect());
+        } else {
+            this.stage.title(I18nHelper.containerInspect());
+        }
     }
 
-    @Override
-    public String getViewTitle() {
-        return I18nHelper.logs();
-    }
+//    @Override
+//    public String getViewTitle() {
+//        return I18nHelper.info();
+//    }
 
     /**
      * 搜索索引

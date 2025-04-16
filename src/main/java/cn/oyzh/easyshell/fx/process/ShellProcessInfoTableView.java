@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-29
  */
-public class ProcessInfoTableView extends FXTableView<ShellProcessInfo> {
+public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
 
     /**
      * 当前用户

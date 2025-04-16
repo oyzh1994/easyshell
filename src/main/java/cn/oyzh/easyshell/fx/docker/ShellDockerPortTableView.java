@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
  * @author oyzh
  * @since 2025-03-14
  */
-public class DockerPortTableView extends FXTableView<ShellDockerPort> {
+public class ShellDockerPortTableView extends FXTableView<ShellDockerPort> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);

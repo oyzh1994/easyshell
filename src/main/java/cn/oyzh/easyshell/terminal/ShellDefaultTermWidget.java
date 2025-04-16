@@ -29,18 +29,18 @@ import java.util.function.IntConsumer;
  * @author oyzh
  * @since 2025-03-04
  */
-public class DefaultTermWidget extends JediTermFxWidget {
+public class ShellDefaultTermWidget extends JediTermFxWidget {
 
     /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
-    public DefaultTermWidget() {
+    public ShellDefaultTermWidget() {
         super(new ShellSettingsProvider());
     }
 
-    public DefaultTermWidget(SettingsProvider provider) {
+    public ShellDefaultTermWidget(SettingsProvider provider) {
         super(provider);
     }
 
@@ -101,7 +101,7 @@ public class DefaultTermWidget extends JediTermFxWidget {
     public TtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new DefaultTtyConnector(process, charset, Arrays.asList(command));
+        return new ShellDefaultTtyConnector(process, charset, Arrays.asList(command));
     }
 
     protected Map<String, String> getEnvironments() {
@@ -124,7 +124,7 @@ public class DefaultTermWidget extends JediTermFxWidget {
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
             JediTermFxWidget session = this.createTerminalSession(ttyConnector);
-            if (ttyConnector instanceof DefaultTtyConnector loggingConnector) {
+            if (ttyConnector instanceof ShellDefaultTtyConnector loggingConnector) {
                 loggingConnector.setWidget(session);
             }
             session.start();
@@ -138,8 +138,8 @@ public class DefaultTermWidget extends JediTermFxWidget {
     }
 
     @Override
-    public DefaultTtyConnector getTtyConnector() {
-        return (DefaultTtyConnector) super.getTtyConnector();
+    public ShellDefaultTtyConnector getTtyConnector() {
+        return (ShellDefaultTtyConnector) super.getTtyConnector();
     }
 
     public double getWidth() {

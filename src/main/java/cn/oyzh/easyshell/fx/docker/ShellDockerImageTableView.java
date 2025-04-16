@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.fx.docker;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.DockerHistoryController;
-import cn.oyzh.easyshell.controller.docker.DockerInspectController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerHistoryController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.docker.ShellDockerHistory;
 import cn.oyzh.easyshell.docker.ShellDockerImage;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-12
  */
-public class DockerImageTableView extends FXTableView<ShellDockerImage> {
+public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);
@@ -133,7 +133,7 @@ public class DockerImageTableView extends FXTableView<ShellDockerImage> {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
                     FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(DockerInspectController.class);
+                        StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class);
                         adapter.setProp("inspect", output);
                         adapter.setProp("image", true);
                         adapter.display();
@@ -153,7 +153,7 @@ public class DockerImageTableView extends FXTableView<ShellDockerImage> {
                 String output = this.exec.docker_history(image.getImageId());
                 List<ShellDockerHistory> histories = DockerParser.history(output);
                 FXUtil.runLater(() -> {
-                    StageAdapter adapter = StageManager.parseStage(DockerHistoryController.class);
+                    StageAdapter adapter = StageManager.parseStage(ShellDockerHistoryController.class);
                     adapter.setProp("histories", histories);
                     adapter.display();
                 });

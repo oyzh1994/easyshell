@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.terminal.DefaultTtyConnector;
+import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTtyConnector extends DefaultTtyConnector {
+public class ShellTtyConnector extends ShellDefaultTtyConnector {
 
     private InputStreamReader shellReader;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.docker.DockerImageTableView?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerImageTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteForceSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
@@ -36,7 +36,7 @@
                 </FXHBox.margin>
             </DeleteForceSVGGlyph>
         </FXHBox>
-        <DockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
+        <ShellDockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
                 <FXTableColumn realWidth="120" valueName="imageId" text="%base.id"/>
                 <FXTableColumn realWidth="320" valueName="repository" text="%base.repository"/>
@@ -44,6 +44,6 @@
                 <FXTableColumn realWidth="220" valueName="created" text="%base.createTime"/>
                 <FXTableColumn realWidth="150" valueName="size" text="%base.size"/>
             </columns>
-        </DockerImageTableView>
+        </ShellDockerImageTableView>
     </FXVBox>
 </FXTab>
