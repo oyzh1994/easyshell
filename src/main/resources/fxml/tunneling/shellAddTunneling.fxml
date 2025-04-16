@@ -42,7 +42,7 @@
     </InfoLabel>
     <FXHBox>
         <ClearableTextField fx:id="localHost" tipText="%base.hostTip" require="true" realHeight="30"
-                            flexWidth="100% - 285" maxLen="1024">
+                            flexWidth="100% - 285" text="127.0.0.1" maxLen="1024">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>

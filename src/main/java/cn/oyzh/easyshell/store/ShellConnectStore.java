@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 
@@ -25,17 +26,22 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     /**
      * xx配置存储
      */
-    public final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
+    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
     /**
-     * ssh配置存储
+     * 跳板配置存储
      */
-    public final ShellJumpConfigStore sshConfigStore = ShellJumpConfigStore.INSTANCE;
+    private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
+
+    /**
+     * 隧道配置存储
+     */
+    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
     /**
      * 代理配置存储
      */
-    public final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
+    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     public synchronized List<ShellConnect> load() {
         return super.selectList();
@@ -50,8 +56,9 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         List<ShellConnect> connects = this.load();
         for (ShellConnect connect : connects) {
             connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
-            connect.setJumpConfigs(this.sshConfigStore.listByIid(connect.getId()));
+            connect.setJumpConfigs(this.jumpConfigStore.listByIid(connect.getId()));
             connect.setProxyConfig(this.proxyConfigStore.getByIid(connect.getId()));
+            connect.setTunnelingConfigs(this.tunnelingConfigStore.listByIid(connect.getId()));
         }
         return connects;
     }
@@ -77,10 +84,22 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 for (ShellJumpConfig jumpConfig : jumpConfigs) {
                     jumpConfig.setIid(model.getId());
                 }
-                this.sshConfigStore.deleteByIid(model.getId());
-                this.sshConfigStore.replace(jumpConfigs);
+                this.jumpConfigStore.deleteByIid(model.getId());
+                this.jumpConfigStore.replace(jumpConfigs);
             } else if (jumpConfigs != null) {
-                this.sshConfigStore.deleteByIid(model.getId());
+                this.jumpConfigStore.deleteByIid(model.getId());
+            }
+
+            // 隧道处理
+            List<ShellTunnelingConfig> tunnelingConfigs = model.getTunnelingConfigs();
+            if (CollectionUtil.isNotEmpty(tunnelingConfigs)) {
+                for (ShellTunnelingConfig tunnelingConfig : tunnelingConfigs) {
+                    tunnelingConfig.setIid(model.getId());
+                }
+                this.tunnelingConfigStore.deleteByIid(model.getId());
+                this.tunnelingConfigStore.replace(tunnelingConfigs);
+            } else if (tunnelingConfigs != null) {
+                this.tunnelingConfigStore.deleteByIid(model.getId());
             }
 
             // x11处理

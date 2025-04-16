@@ -537,6 +537,8 @@ public class ShellUpdateConnectController extends StageController {
             this.shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // 跳板机配置
             this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
+            // 隧道配置
+            this.shellConnect.setTunnelingConfigs(this.tunnelingTableView.getItems());
             // ssh配置
 //            this.shellConnect.setSshConfig(this.getSSHConfig());
 //            this.shellConnect.setSshForward(this.sshForward.isSelected());
@@ -673,6 +675,8 @@ public class ShellUpdateConnectController extends StageController {
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 跳板机配置
         this.jumpTableView.init(iid);
+        // 隧道配置
+        this.tunnelingTableView.init(iid);
 //        // ssh配置
 //        this.sshForward.setSelected(this.shellConnect.isSSHForward());
 //        ShellSSHConfig sshConfig = this.sshConfigStore.getByIid(iid);
@@ -872,6 +876,7 @@ public class ShellUpdateConnectController extends StageController {
     @FXML
     private void addTunneling() {
         StageAdapter adapter = StageManager.parseStage(ShellAddTunnelingController.class);
+        adapter.setProp("host", this.shellConnect.hostIp());
         adapter.showAndWait();
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
@@ -904,5 +909,4 @@ public class ShellUpdateConnectController extends StageController {
     private void deleteTunneling() {
         this.tunnelingTableView.removeSelectedItem();
     }
-
 }

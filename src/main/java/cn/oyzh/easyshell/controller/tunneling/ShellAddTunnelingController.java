@@ -134,6 +134,10 @@ public class ShellAddTunnelingController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
+        String host = this.getProp("host");
+        if (host != null) {
+            this.remoteHost.setText(host);
+        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

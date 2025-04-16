@@ -151,6 +151,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     private ShellProxyConfig proxyConfig;
 
+    /**
+     * 隧道信息
+     */
+    private List<ShellTunnelingConfig> tunnelingConfigs;
+
     public Boolean getEnableProxy() {
         return enableProxy;
     }
@@ -277,6 +282,8 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.certificate = shellConnect.certificate;
         // 跳板机
         this.jumpConfigs = shellConnect.jumpConfigs;
+        // 隧道
+        this.tunnelingConfigs = shellConnect.tunnelingConfigs;
 //        this.sshForward = shellConnect.sshForward;
         // x11
         this.x11Config = shellConnect.x11Config;
@@ -284,6 +291,15 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // 背景
         this.backgroundImage = shellConnect.backgroundImage;
         this.enableBackground = shellConnect.enableBackground;
+    }
+
+    /**
+     * 是否开启ssh隧道
+     *
+     * @return 结果
+     */
+    public boolean isTunnelingForward() {
+        return CollectionUtil.isNotEmpty(this.tunnelingConfigs);
     }
 
     /**
@@ -477,5 +493,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setJumpConfigs(List<ShellJumpConfig> jumpConfigs) {
         this.jumpConfigs = jumpConfigs;
+    }
+
+    public List<ShellTunnelingConfig> getTunnelingConfigs() {
+        return tunnelingConfigs;
+    }
+
+    public void setTunnelingConfigs(List<ShellTunnelingConfig> tunnelingConfigs) {
+        this.tunnelingConfigs = tunnelingConfigs;
     }
 }

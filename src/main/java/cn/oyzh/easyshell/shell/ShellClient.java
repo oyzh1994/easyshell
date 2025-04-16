@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
@@ -33,6 +34,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
+import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -82,6 +84,11 @@ public class ShellClient {
      * ssh跳板转发器
      */
     private SSHJumpForwarder jumpForwarder;
+
+    /**
+     * ssh隧道转发器
+     */
+    private SSHTunnelingForwarder tunnelForwarder;
 
     /**
      * shell密钥存储
@@ -218,6 +225,20 @@ public class ShellClient {
     }
 
     /**
+     * 初始化隧道
+     */
+    private void initTunneling() {
+        // 开启隧道转发
+        if (this.shellConnect.isTunnelingForward()) {
+            if (this.tunnelForwarder == null) {
+                this.tunnelForwarder = new SSHTunnelingForwarder();
+            }
+            // 执行转发
+            this.tunnelForwarder.forward(this.shellConnect.getTunnelingConfigs(), this.session);
+        }
+    }
+
+    /**
      * 初始化客户端
      */
     private void initClient() throws JSchException {
@@ -335,12 +356,17 @@ public class ShellClient {
                 this.downloadManager.close();
                 this.downloadManager = null;
             }
+            // 销毁隧道转发器
+            if (this.tunnelForwarder != null) {
+                this.tunnelForwarder.destroy();
+            }
+            // 销毁回话
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;
                 this.state.set(ShellConnState.CLOSED);
             }
-            // 销毁转发器
+            // 销毁跳板转发器
             if (this.jumpForwarder != null) {
                 this.jumpForwarder.destroy();
             }
@@ -379,6 +405,8 @@ public class ShellClient {
             // 判断连接结果
             if (this.session.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
+                // 初始化隧道
+                this.initTunneling();
                 // 添加到状态监听器队列
                 ShellClientChecker.push(this);
             } else if (this.state.get() == ShellConnState.FAILED) {
