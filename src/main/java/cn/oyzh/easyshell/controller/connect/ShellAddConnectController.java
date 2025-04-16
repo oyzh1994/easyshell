@@ -5,10 +5,13 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
 import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
+import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
+import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
@@ -18,6 +21,7 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
+import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -312,6 +316,12 @@ public class ShellAddConnectController extends StageController {
     private ShellJumpTableView jumpTableView;
 
     /**
+     * 隧道配置
+     */
+    @FXML
+    private ShellTunnelingTableView tunnelingTableView;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -509,6 +519,8 @@ public class ShellAddConnectController extends StageController {
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
+            // 隧道配置
+            shellConnect.setTunnelingConfigs(this.tunnelingTableView.getItems());
             // ssh配置
 //            shellConnect.setSshConfig(this.getSSHConfig());
 //            shellConnect.setSshForward(this.sshForward.isSelected());
@@ -774,5 +786,44 @@ public class ShellAddConnectController extends StageController {
         TableViewUtil.moveDown(this.jumpTableView);
         this.jumpTableView.refresh();
         this.jumpTableView.updateOrder();
+    }
+
+    /**
+     * 添加隧道
+     */
+    @FXML
+    private void addTunneling() {
+        StageAdapter adapter = StageManager.parseStage(ShellAddTunnelingController.class);
+        adapter.showAndWait();
+        ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
+        if (tunnelingConfig != null) {
+            this.tunnelingTableView.addItem(tunnelingConfig);
+        }
+    }
+
+    /**
+     * 编辑隧道
+     */
+    @FXML
+    private void updateTunneling() {
+        ShellTunnelingConfig config = this.tunnelingTableView.getSelectedItem();
+        if (config == null) {
+            return;
+        }
+        StageAdapter adapter = StageManager.parseStage(ShellUpdateTunnelingController.class);
+        adapter.setProp("config", config);
+        adapter.showAndWait();
+        ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
+        if (tunnelingConfig != null) {
+            this.tunnelingTableView.refresh();
+        }
+    }
+
+    /**
+     * 删除隧道
+     */
+    @FXML
+    private void deleteTunneling() {
+        this.tunnelingTableView.removeSelectedItem();
     }
 }

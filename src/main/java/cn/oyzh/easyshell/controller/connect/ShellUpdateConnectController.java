@@ -876,7 +876,6 @@ public class ShellUpdateConnectController extends StageController {
     @FXML
     private void addTunneling() {
         StageAdapter adapter = StageManager.parseStage(ShellAddTunnelingController.class);
-        adapter.setProp("host", this.shellConnect.hostIp());
         adapter.showAndWait();
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
