@@ -35,7 +35,7 @@ public class DockerPortController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        List<DockerPort> ports = this.getWindowProp("ports");
+        List<DockerPort> ports = this.getProp("ports");
         this.portTable.setItem(ports);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

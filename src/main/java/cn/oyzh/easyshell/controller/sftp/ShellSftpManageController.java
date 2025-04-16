@@ -68,7 +68,7 @@
 //
 //    @Override
 //    public void onWindowShown(WindowEvent event) {
-//        ShellClient client = this.getWindowProp("client");
+//        ShellClient client = this.getProp("client");
 //        this.uploadManager = client.getUploadManager();
 //        this.downloadManager = client.getDownloadManager();
 //        this.initUploadTable();

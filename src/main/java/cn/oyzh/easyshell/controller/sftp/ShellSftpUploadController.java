@@ -47,7 +47,7 @@
 //
 //    @Override
 //    public void onWindowShown(WindowEvent event) {
-//        ShellClient client = this.getWindowProp("client");
+//        ShellClient client = this.getProp("client");
 //        this.uploadManager = client.getSftpUploadManager();
 //        this.initUploadTable();
 //        super.onWindowShown(event);

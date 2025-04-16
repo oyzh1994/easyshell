@@ -57,7 +57,7 @@ public class DockerLogsController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        String logs = this.getWindowProp("logs");
+        String logs = this.getProp("logs");
         this.data.setText(logs);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

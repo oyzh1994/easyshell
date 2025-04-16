@@ -140,14 +140,14 @@ public class ShellClient {
         }
     }
 
-    /**
-     * 获取连接状态
-     *
-     * @return 连接状态
-     */
-    public ShellConnState state() {
-        return this.stateProperty().get();
-    }
+//    /**
+//     * 获取连接状态
+//     *
+//     * @return 连接状态
+//     */
+//    public ShellConnState state() {
+//        return this.stateProperty().get();
+//    }
 
     /**
      * 连接状态属性

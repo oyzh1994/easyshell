@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * shell ssh配置存储
+ * shell跳板配置存储
  *
  * @author oyzh
  * @since 2025/03/15
@@ -67,7 +67,7 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
      * 根据shell连接id获取配置
      *
      * @param iid shell连接id
-     * @return ssh配置
+     * @return ssh跳板配置
      */
     public List<ShellJumpConfig> listByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {

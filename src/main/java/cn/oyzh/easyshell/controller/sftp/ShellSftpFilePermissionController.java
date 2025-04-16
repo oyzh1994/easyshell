@@ -184,8 +184,8 @@ public class ShellSftpFilePermissionController extends StageController {
         super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
-        this.file = this.getWindowProp("file");
-        this.client = this.getWindowProp("client");
+        this.file = this.getProp("file");
+        this.client = this.getProp("client");
         this.fileName.setText(this.file.getName());
         this.ownerName.setText(this.file.getOwner());
         this.groupName.setText(this.file.getGroup());

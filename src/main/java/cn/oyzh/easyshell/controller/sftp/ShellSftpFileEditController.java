@@ -163,8 +163,8 @@ public class ShellSftpFileEditController extends StageController {
         super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
-        this.file = this.getWindowProp("file");
-        this.client = this.getWindowProp("client");
+        this.file = this.getProp("file");
+        this.client = this.getProp("client");
         // 目标路径
         this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "_" + this.file.getFileName();
         this.init();

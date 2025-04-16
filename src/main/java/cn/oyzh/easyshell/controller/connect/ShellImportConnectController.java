@@ -154,7 +154,7 @@ public class ShellImportConnectController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.importFile = this.getWindowProp("file");
+        this.importFile = this.getProp("file");
         if (this.importFile != null) {
             this.selectFile.disable();
             this.parseFile();

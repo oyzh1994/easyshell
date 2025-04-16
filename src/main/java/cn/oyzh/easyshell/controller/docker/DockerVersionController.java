@@ -40,7 +40,7 @@ public class DockerVersionController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        String inspect = this.getWindowProp("version");
+        String inspect = this.getProp("version");
         this.version.setText(inspect);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

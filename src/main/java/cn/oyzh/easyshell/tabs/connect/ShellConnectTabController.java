@@ -18,10 +18,10 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * shell命令行tab内容组件
+ * shell连接tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2025/04/16
  */
 public class ShellConnectTabController extends ParentTabController {
 

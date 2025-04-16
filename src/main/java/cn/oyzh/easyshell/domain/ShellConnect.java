@@ -277,6 +277,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.termType = shellConnect.termType;
         this.connectTimeOut = shellConnect.connectTimeOut;
         // 认证
+        this.keyId = shellConnect.keyId;
         this.password = shellConnect.password;
         this.authMethod = shellConnect.authMethod;
         this.certificate = shellConnect.certificate;

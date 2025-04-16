@@ -19,7 +19,7 @@
 <?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellAddHostController" realWidth="750"
-        realHeight="450">
+        realHeight="250">
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -37,7 +37,7 @@
         </VBox.margin>
     </InfoLabel>
     <ShellConnectComboBox fx:id="host" require="true" realHeight="30"
-                          flexWidth="100% - 180">
+                          flexWidth="100% - 180" tipText="%base.chooseTip">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

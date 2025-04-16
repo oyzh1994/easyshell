@@ -114,7 +114,7 @@ public class ShellUpdateKeyController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.key = this.getWindowProp("key");
+        this.key = this.getProp("key");
         this.name.setText(this.key.getName());
         this.keyType.setText(this.key.getType());
         this.publicKey.setText(this.key.getPublicKey());

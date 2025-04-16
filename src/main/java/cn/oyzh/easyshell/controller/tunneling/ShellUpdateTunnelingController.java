@@ -138,7 +138,7 @@ public class ShellUpdateTunnelingController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.config = this.getWindowProp("config");
+        this.config = this.getProp("config");
         this.tunnelingName.setText(this.config.getName());
         this.tunnelingType.setType(this.config.getType());
         this.localHost.setText(this.config.getLocalHost());

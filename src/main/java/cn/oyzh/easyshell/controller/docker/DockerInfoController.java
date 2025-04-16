@@ -40,7 +40,7 @@ public class DockerInfoController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        String inspect = this.getWindowProp("info");
+        String inspect = this.getProp("info");
         this.data.setText(inspect);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

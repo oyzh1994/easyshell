@@ -24,7 +24,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     public static final ShellConnectStore INSTANCE = new ShellConnectStore();
 
     /**
-     * xx配置存储
+     * x11配置存储
      */
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 

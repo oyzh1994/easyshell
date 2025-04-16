@@ -538,6 +538,7 @@ public class ShellAddConnectController extends StageController {
             if (this.connectStore.replace(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
+                this.setProp("connect", shellConnect);
                 this.closeWindow();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
@@ -630,7 +631,7 @@ public class ShellAddConnectController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.group = this.getWindowProp("group");
+        this.group = this.getProp("group");
         // linux隐藏x11
         if (OSUtil.isLinux()) {
             NodeGroupUtil.disappear(this.getStage(), "x11");

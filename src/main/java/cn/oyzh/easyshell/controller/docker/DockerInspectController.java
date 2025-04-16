@@ -58,8 +58,8 @@ public class DockerInspectController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        String inspect = this.getWindowProp("inspect");
-        Boolean image = this.getWindowProp("image");
+        String inspect = this.getProp("inspect");
+        Boolean image = this.getProp("image");
         this.data.setText(inspect);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

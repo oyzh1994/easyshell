@@ -189,7 +189,7 @@ public class ShellUpdateJumpController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.config = this.getWindowProp("config");
+        this.config = this.getProp("config");
         this.sshName.setText(this.config.getName());
         this.sshHost.setText(this.config.getHost());
         this.sshUser.setText(this.config.getUser());

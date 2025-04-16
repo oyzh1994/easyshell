@@ -75,9 +75,9 @@ public class DockerResourceController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.exec = this.getWindowProp("exec");
-        this.containerId = this.getWindowProp("id");
-        DockerResource resource = this.getWindowProp("resource");
+        this.exec = this.getProp("exec");
+        this.containerId = this.getProp("id");
+        DockerResource resource = this.getProp("resource");
         this.memory.setValue(resource.getMemory() / 1024 / 1024);
         this.memorySwap.setValue(resource.getMemorySwap() / 1024 / 1024);
         this.cpuQuota.setValue(resource.getCpuQuota());

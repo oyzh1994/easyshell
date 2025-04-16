@@ -58,7 +58,7 @@ public class ShellSftpFileInfoController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        SftpFile file = this.getWindowProp("file");
+        SftpFile file = this.getProp("file");
         this.group.setText(file.getGroup());
         this.owner.setText(file.getOwner());
         this.name.setText(file.getName());

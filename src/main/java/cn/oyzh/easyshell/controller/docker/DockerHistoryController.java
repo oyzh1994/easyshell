@@ -35,7 +35,7 @@ public class DockerHistoryController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        List<DockerHistory> histories = this.getWindowProp("histories");
+        List<DockerHistory> histories = this.getProp("histories");
         this.historyTable.setItem(histories);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

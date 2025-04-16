@@ -67,7 +67,7 @@ public class ShellCopyIdKeyController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.keys = this.getWindowProp("keys");
+        this.keys = this.getProp("keys");
         StringBuilder sb = new StringBuilder();
         for (ShellKey key : keys) {
             sb.append(",").append(key.getName());
