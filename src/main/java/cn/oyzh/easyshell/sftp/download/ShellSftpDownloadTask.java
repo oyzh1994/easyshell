@@ -51,7 +51,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
 
     private final ShellClient client;
 
-    private final ShellSftpDownloadTaskManager manager;
+    private final ShellSftpDownloadManager manager;
 
     @Override
     public String getSrcPath() {
@@ -63,7 +63,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
         return this.localFile.getName();
     }
 
-    public ShellSftpDownloadTask(ShellSftpDownloadTaskManager manager, File localFile, ShellSftpFile remoteFile, ShellClient client) {
+    public ShellSftpDownloadTask(ShellSftpDownloadManager manager, File localFile, ShellSftpFile remoteFile, ShellClient client) {
         this.client = client;
         this.manager = manager;
         this.localFile = localFile;

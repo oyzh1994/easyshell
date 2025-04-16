@@ -19,9 +19,9 @@ import cn.oyzh.easyshell.sftp.ShellSftpAttr;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpChannelManager;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteTaskManager;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTaskManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
+import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
@@ -507,29 +507,29 @@ public class ShellClient {
         return uploadManager;
     }
 
-    private ShellSftpDeleteTaskManager deleteManager;
+    private ShellSftpDeleteManager deleteManager;
 
-    public ShellSftpDeleteTaskManager getDeleteManager() {
+    public ShellSftpDeleteManager getDeleteManager() {
         if (this.deleteManager == null) {
-            this.deleteManager = new ShellSftpDeleteTaskManager(this);
+            this.deleteManager = new ShellSftpDeleteManager(this);
         }
         return deleteManager;
     }
 
-    private ShellSftpDownloadTaskManager downloadManager;
+    private ShellSftpDownloadManager downloadManager;
 
-    public ShellSftpDownloadTaskManager getDownloadManager() {
+    public ShellSftpDownloadManager getDownloadManager() {
         if (this.downloadManager == null) {
-            this.downloadManager = new ShellSftpDownloadTaskManager();
+            this.downloadManager = new ShellSftpDownloadManager();
         }
         return downloadManager;
     }
 
-    private ShellSftpTransportTaskManager transportManager;
+    private ShellSftpTransportManager transportManager;
 
-    public ShellSftpTransportTaskManager getTransportManager() {
+    public ShellSftpTransportManager getTransportManager() {
         if (this.transportManager == null) {
-            this.transportManager = new ShellSftpTransportTaskManager();
+            this.transportManager = new ShellSftpTransportManager();
         }
         return transportManager;
     }

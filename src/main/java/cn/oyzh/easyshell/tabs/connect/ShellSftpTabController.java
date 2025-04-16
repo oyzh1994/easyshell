@@ -6,10 +6,10 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.SftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.SftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteTaskManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
+import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadMonitor;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
@@ -162,7 +162,7 @@ public class ShellSftpTabController extends SubTabController {
     /**
      * 删除管理器
      */
-    private ShellSftpDeleteTaskManager deleteManager;
+    private ShellSftpDeleteManager deleteManager;
 
     /**
      * 上传管理器
@@ -172,7 +172,7 @@ public class ShellSftpTabController extends SubTabController {
     /**
      * 下载管理器
      */
-    private ShellSftpDownloadTaskManager downloadManager;
+    private ShellSftpDownloadManager downloadManager;
 
     /**
      * 初始化

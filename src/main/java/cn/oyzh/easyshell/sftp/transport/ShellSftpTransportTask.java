@@ -53,7 +53,7 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
 
     private final ShellClient remoteClient;
 
-    private final ShellSftpTransportTaskManager manager;
+    private final ShellSftpTransportManager manager;
 
     @Override
     public String getSrcPath() {
@@ -65,7 +65,7 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
         return this.remoteFile;
     }
 
-    public ShellSftpTransportTask(ShellSftpTransportTaskManager manager, ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
+    public ShellSftpTransportTask(ShellSftpTransportManager manager, ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
         this.manager = manager;
         this.localFile = localFile;
         this.remoteFile = remoteFile;

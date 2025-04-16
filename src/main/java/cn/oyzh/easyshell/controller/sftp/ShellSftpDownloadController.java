@@ -1,6 +1,6 @@
 //package cn.oyzh.easyshell.controller.sftp;
 //
-//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTaskManager;
+//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
 //import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
 //import cn.oyzh.easyshell.shell.ShellClient;
 //import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
@@ -33,7 +33,7 @@
 //    /**
 //     * 下载管理器
 //     */
-//    private ShellSftpDownloadTaskManager downloadManager;
+//    private ShellSftpDownloadManager downloadManager;
 //
 //    @Override
 //    protected void bindListeners() {

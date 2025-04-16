@@ -8,9 +8,9 @@ import cn.oyzh.easyshell.fx.sftp.SftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteTaskManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTaskManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportMonitor;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
@@ -330,8 +330,8 @@ public class ShellSftpTransportController extends StageController {
 //     * 初始化传输表
 //     */
 //    private void initTransportTable() {
-//        ShellSftpTransportTaskManager manager1 = this.sourceClient.getTransportManager();
-//        ShellSftpTransportTaskManager manager2 = this.targetClient.getTransportManager();
+//        ShellSftpTransportManager manager1 = this.sourceClient.getTransportManager();
+//        ShellSftpTransportManager manager2 = this.targetClient.getTransportManager();
 //        List<ShellSftpTransportTask> tasks = new ArrayList<>(manager1.getTasks());
 //        tasks.addAll(manager2.getTasks());
 //        this.transportTable.setItem(tasks.reversed());
@@ -517,9 +517,9 @@ public class ShellSftpTransportController extends StageController {
         }
     }
 
-    private ShellSftpTransportTaskManager sourceTransportManager;
+    private ShellSftpTransportManager sourceTransportManager;
 
-    private ShellSftpTransportTaskManager targetTransportManager;
+    private ShellSftpTransportManager targetTransportManager;
 
     /**
      * 初始化文件表格
@@ -549,8 +549,8 @@ public class ShellSftpTransportController extends StageController {
 //            }
 //        });
         // 删除处理器
-        ShellSftpDeleteTaskManager deleteManager1 = this.sourceClient.getDeleteManager();
-        ShellSftpDeleteTaskManager deleteManager2 = this.targetClient.getDeleteManager();
+        ShellSftpDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
+        ShellSftpDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
         // 注册监听器
         deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
         deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));
@@ -597,7 +597,7 @@ public class ShellSftpTransportController extends StageController {
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
         // 检查任务是否执行中
-        ShellSftpTransportTaskManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
+        ShellSftpTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
         if (manager1 != null
                 && !manager1.isCompleted()
                 && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
@@ -605,7 +605,7 @@ public class ShellSftpTransportController extends StageController {
             return;
         }
         // 检查任务是否执行中
-        ShellSftpTransportTaskManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
+        ShellSftpTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
         if (manager2 != null
                 && !manager2.isCompleted()
                 && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
