@@ -1,9 +1,9 @@
 package com.techsenger.jeditermfx.app.debug;
 
-import com.techsenger.jeditermfx.core.StyledTextConsumerAdapter;
-import com.techsenger.jeditermfx.core.TextStyle;
-import com.techsenger.jeditermfx.core.model.CharBuffer;
-import com.techsenger.jeditermfx.core.model.TerminalTextBuffer;
+import com.techsenger.jeditermfx.terminal.StyledTextConsumerAdapter;
+import com.techsenger.jeditermfx.terminal.TextStyle;
+import com.techsenger.jeditermfx.terminal.model.CharBuffer;
+import com.techsenger.jeditermfx.terminal.model.TerminalTextBuffer;
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 

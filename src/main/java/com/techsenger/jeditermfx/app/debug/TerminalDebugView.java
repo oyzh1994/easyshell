@@ -1,7 +1,7 @@
 package com.techsenger.jeditermfx.app.debug;
 
 import com.techsenger.jeditermfx.app.pty.LoggingTtyConnector;
-import com.techsenger.jeditermfx.ui.TerminalSession;
+import com.techsenger.jeditermfx.terminal.ui.TerminalSession;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;

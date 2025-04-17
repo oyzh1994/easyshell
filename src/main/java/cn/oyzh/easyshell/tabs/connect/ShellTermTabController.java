@@ -13,7 +13,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
 import com.techsenger.jeditermfx.core.util.TermSize;
-import com.techsenger.jeditermfx.ui.DefaultHyperlinkFilter;
+import com.techsenger.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;

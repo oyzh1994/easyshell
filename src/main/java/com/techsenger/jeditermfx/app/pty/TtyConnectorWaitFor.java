@@ -1,7 +1,7 @@
 package com.techsenger.jeditermfx.app.pty;
 
 import cn.oyzh.common.log.JulLog;
-import com.techsenger.jeditermfx.core.TtyConnector;
+import com.techsenger.jeditermfx.terminal.TtyConnector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;

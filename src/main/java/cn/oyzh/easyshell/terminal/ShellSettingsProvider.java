@@ -6,9 +6,9 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
-import com.techsenger.jeditermfx.core.emulator.ColorPalette;
-import com.techsenger.jeditermfx.ui.TerminalActionPresentation;
-import com.techsenger.jeditermfx.ui.settings.DefaultSettingsProvider;
+import com.techsenger.jeditermfx.terminal.emulator.ColorPalette;
+import com.techsenger.jeditermfx.terminal.ui.TerminalActionPresentation;
+import com.techsenger.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 
-import static com.techsenger.jeditermfx.core.util.Platform.isMacOS;
+import static com.techsenger.jeditermfx.core.Platform.isMacOS;
 
 /**
  * @author oyzh

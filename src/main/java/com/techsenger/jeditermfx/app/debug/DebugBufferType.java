@@ -2,7 +2,7 @@ package com.techsenger.jeditermfx.app.debug;
 
 import com.techsenger.jeditermfx.app.pty.LoggingTtyConnector;
 import com.techsenger.jeditermfx.app.pty.LoggingTtyConnector.TerminalState;
-import com.techsenger.jeditermfx.ui.TerminalSession;
+import com.techsenger.jeditermfx.terminal.ui.TerminalSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
 import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.techsenger.jeditermfx.core.util.TermSize;
-import com.techsenger.jeditermfx.ui.JediTermFxWidget;
+import com.techsenger.jeditermfx.terminal.ui.JediTermFxWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jetbrains.annotations.NotNull;
 

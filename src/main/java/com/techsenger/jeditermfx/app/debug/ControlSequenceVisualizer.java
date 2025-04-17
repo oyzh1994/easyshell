@@ -1,6 +1,6 @@
 package com.techsenger.jeditermfx.app.debug;
 
-import com.techsenger.jeditermfx.core.util.CharUtils;
+import com.techsenger.jeditermfx.terminal.util.CharUtils;
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 

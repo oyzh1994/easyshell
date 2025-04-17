@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.pty4j.PtyProcess;
-import com.techsenger.jeditermfx.core.TtyConnector;
+import com.techsenger.jeditermfx.terminal.TtyConnector;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

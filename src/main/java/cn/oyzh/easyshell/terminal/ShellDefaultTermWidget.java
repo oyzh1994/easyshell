@@ -9,11 +9,11 @@ import cn.oyzh.fx.plus.node.NodeUtil;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import com.techsenger.jeditermfx.app.pty.TtyConnectorWaitFor;
-import com.techsenger.jeditermfx.core.TtyConnector;
-import com.techsenger.jeditermfx.core.util.Platform;
+import com.techsenger.jeditermfx.terminal.TtyConnector;
+import com.techsenger.jeditermfx.core.Platform;
 import com.techsenger.jeditermfx.core.util.TermSize;
-import com.techsenger.jeditermfx.ui.JediTermFxWidget;
-import com.techsenger.jeditermfx.ui.settings.SettingsProvider;
+import com.techsenger.jeditermfx.terminal.ui.JediTermFxWidget;
+import com.techsenger.jeditermfx.terminal.ui.settings.SettingsProvider;
 import kotlin.text.Charsets;
 
 import java.io.IOException;

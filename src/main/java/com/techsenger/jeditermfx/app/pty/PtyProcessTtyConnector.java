@@ -2,7 +2,7 @@ package com.techsenger.jeditermfx.app.pty;
 
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
-import com.techsenger.jeditermfx.core.ProcessTtyConnector;
+import com.techsenger.jeditermfx.terminal.ProcessTtyConnector;
 import com.techsenger.jeditermfx.core.util.TermSize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

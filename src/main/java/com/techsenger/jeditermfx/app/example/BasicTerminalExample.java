@@ -1,8 +1,8 @@
 package com.techsenger.jeditermfx.app.example;
 
-import com.techsenger.jeditermfx.core.TtyConnector;
-import com.techsenger.jeditermfx.ui.JediTermFxWidget;
-import com.techsenger.jeditermfx.ui.settings.DefaultSettingsProvider;
+import com.techsenger.jeditermfx.terminal.TtyConnector;
+import com.techsenger.jeditermfx.terminal.ui.JediTermFxWidget;
+import com.techsenger.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
