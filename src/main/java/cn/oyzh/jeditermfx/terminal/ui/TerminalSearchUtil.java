@@ -1,11 +1,11 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.StyledTextConsumer;
 import cn.oyzh.jeditermfx.terminal.SubstringFinder;
-import cn.oyzh.jeditermfx.terminal.TextStyle;
-import cn.oyzh.jeditermfx.terminal.model.CharBuffer;
-import cn.oyzh.jeditermfx.terminal.model.SubCharBuffer;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTextBuffer;
+import com.jediterm.terminal.StyledTextConsumer;
+import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.model.CharBuffer;
+import com.jediterm.terminal.model.SubCharBuffer;
+import com.jediterm.terminal.model.TerminalTextBuffer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

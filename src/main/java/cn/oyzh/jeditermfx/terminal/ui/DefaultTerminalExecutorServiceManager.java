@@ -1,6 +1,6 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.TerminalExecutorServiceManager;
+import com.jediterm.terminal.TerminalExecutorServiceManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;

@@ -1,14 +1,15 @@
 package cn.oyzh.jeditermfx.terminal.ui.settings;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.terminal.HyperlinkStyle;
-import cn.oyzh.jeditermfx.terminal.TerminalColor;
-import cn.oyzh.jeditermfx.terminal.TextStyle;
-import cn.oyzh.jeditermfx.terminal.emulator.ColorPalette;
-import cn.oyzh.jeditermfx.terminal.emulator.ColorPaletteImpl;
-import cn.oyzh.jeditermfx.terminal.model.LinesBuffer;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTypeAheadSettings;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalActionPresentation;
+import com.jediterm.terminal.HyperlinkStyle;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.emulator.ColorPalette;
+import com.jediterm.terminal.emulator.ColorPaletteImpl;
+import com.jediterm.terminal.model.LinesBuffer;
+import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -17,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 
-import static cn.oyzh.jeditermfx.core.Platform.isMacOS;
-import static cn.oyzh.jeditermfx.core.Platform.isWindows;
 import static cn.oyzh.jeditermfx.terminal.ui.FxTransformers.fromFxToTerminalColor;
 
 public class DefaultSettingsProvider implements SettingsProvider {
@@ -30,7 +29,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getCopyActionPresentation() {
-        KeyCombination keyCombination = isMacOS()
+        KeyCombination keyCombination = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.C, KeyCombination.META_DOWN)
                 // CTRL + C is used for signal; use CTRL + SHIFT + C instead
                 : new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
@@ -39,7 +38,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getPasteActionPresentation() {
-        KeyCombination keyCombination = isMacOS()
+        KeyCombination keyCombination = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.V, KeyCombination.META_DOWN)
                 // CTRL + V is used for signal; use CTRL + SHIFT + V instead
                 : new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
@@ -48,7 +47,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getClearBufferActionPresentation() {
-        return new TerminalActionPresentation("Clear Buffer", isMacOS()
+        return new TerminalActionPresentation("Clear Buffer", OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.K, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
     }
@@ -67,21 +66,21 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getLineUpActionPresentation() {
-        return new TerminalActionPresentation("Line Up", isMacOS()
+        return new TerminalActionPresentation("Line Up", OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getLineDownActionPresentation() {
-        return new TerminalActionPresentation("Line Down", isMacOS()
+        return new TerminalActionPresentation("Line Down", OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getFindActionPresentation() {
-        return new TerminalActionPresentation("Find", isMacOS()
+        return new TerminalActionPresentation("Find", OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
     }
@@ -93,15 +92,15 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public ColorPalette getTerminalColorPalette() {
-        return isWindows() ? ColorPaletteImpl.WINDOWS_PALETTE : ColorPaletteImpl.XTERM_PALETTE;
+        return OSUtil.isWindows() ? ColorPaletteImpl.WINDOWS_PALETTE : ColorPaletteImpl.XTERM_PALETTE;
     }
 
     @Override
     public Font getTerminalFont() {
         String fontName;
-        if (isWindows()) {
+        if (OSUtil.isWindows()) {
             fontName = "Consolas";
-        } else if (isMacOS()) {
+        } else if (OSUtil.isMacOS()) {
             fontName = "Menlo";
         } else {
             fontName = "Monospaced";
@@ -133,7 +132,8 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
-        return HyperlinkStyle.HighlightMode.HOVER_WITH_BOTH_COLORS;
+        return HyperlinkStyle.HighlightMode.HOVER;
+//        return HyperlinkStyle.HighlightMode.HOVER_WITH_BOTH_COLORS;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package cn.oyzh.jeditermfx.terminal.ui.settings;
 
-import cn.oyzh.jeditermfx.terminal.HyperlinkStyle;
-import cn.oyzh.jeditermfx.terminal.TerminalColor;
-import cn.oyzh.jeditermfx.terminal.TextStyle;
-import cn.oyzh.jeditermfx.terminal.emulator.ColorPalette;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTypeAheadSettings;
+import com.jediterm.terminal.HyperlinkStyle;
+import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.emulator.ColorPalette;
+import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 

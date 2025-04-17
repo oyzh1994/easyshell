@@ -16,10 +16,10 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.HyperlinkFilter;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.LinkInfo;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.LinkResult;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.LinkResultItem;
+import com.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
+import com.jediterm.terminal.model.hyperlinks.LinkInfo;
+import com.jediterm.terminal.model.hyperlinks.LinkResult;
+import com.jediterm.terminal.model.hyperlinks.LinkResultItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

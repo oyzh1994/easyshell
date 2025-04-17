@@ -1,7 +1,8 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.Questioner;
-import cn.oyzh.jeditermfx.terminal.Terminal;
+
+import com.jediterm.terminal.Questioner;
+import com.jediterm.terminal.Terminal;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

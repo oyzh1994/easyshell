@@ -1,8 +1,9 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.Terminal;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTextBuffer;
+
+import com.jediterm.terminal.Terminal;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.model.TerminalTextBuffer;
 
 /**
  * @author traff

@@ -1,6 +1,6 @@
 package cn.oyzh.jeditermfx.app.debug;
 
-import cn.oyzh.jeditermfx.terminal.util.CharUtils;
+import com.jediterm.terminal.util.CharUtils;
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 

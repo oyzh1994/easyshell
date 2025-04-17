@@ -1,9 +1,9 @@
 package cn.oyzh.jeditermfx.app.pty;
 
+import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.ProcessTtyConnector;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
-import cn.oyzh.jeditermfx.terminal.ProcessTtyConnector;
-import cn.oyzh.jeditermfx.core.util.TermSize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

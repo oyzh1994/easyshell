@@ -3,16 +3,16 @@ package cn.oyzh.jeditermfx.app;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugView;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
-import cn.oyzh.jeditermfx.terminal.Terminal;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
-import cn.oyzh.jeditermfx.core.compatibility.Point;
-import cn.oyzh.jeditermfx.terminal.model.SelectionUtil;
-import cn.oyzh.jeditermfx.terminal.model.TerminalSelection;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalPanel;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import com.jediterm.core.compatibility.Point;
+import com.jediterm.terminal.model.SelectionUtil;
+import com.jediterm.terminal.Terminal;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.model.TerminalSelection;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -138,8 +138,10 @@ public abstract class AbstractTerminalApplication extends Application {
             TerminalSelection selection = terminalPanel.getSelection();
             if (selection != null) {
                 Pair<Point, Point> points = selection.pointsForRun(widget.getTerminal().getTerminalWidth());
-                JulLog.info(selection + " : '" + SelectionUtil.getSelectedText(points.getFirst(), points.getSecond(),
+                JulLog.info(selection + " : '" + SelectionUtil.getSelectionText(points.getFirst(), points.getSecond(),
                                 terminalPanel.getTerminalTextBuffer()) + "'");
+//                JulLog.info(selection + " : '" + SelectionUtil.getSelectedText(points.getFirst(), points.getSecond(),
+//                        terminalPanel.getTerminalTextBuffer()) + "'");
             } else {
                 JulLog.info("No selection");
             }

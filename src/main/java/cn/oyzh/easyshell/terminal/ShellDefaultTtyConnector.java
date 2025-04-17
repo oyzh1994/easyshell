@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
+import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import cn.oyzh.jeditermfx.core.util.TermSize;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jetbrains.annotations.NotNull;

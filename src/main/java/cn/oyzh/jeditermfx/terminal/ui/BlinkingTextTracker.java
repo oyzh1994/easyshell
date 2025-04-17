@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.TextStyle;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 class BlinkingTextTracker {

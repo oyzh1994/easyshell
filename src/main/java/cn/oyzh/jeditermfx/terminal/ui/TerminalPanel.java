@@ -1,45 +1,43 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.core.Color;
-import cn.oyzh.jeditermfx.terminal.CursorShape;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.jeditermfx.terminal.DefaultTerminalCopyPasteHandler;
-import cn.oyzh.jeditermfx.terminal.HyperlinkStyle;
-import cn.oyzh.jeditermfx.terminal.RequestOrigin;
-import cn.oyzh.jeditermfx.terminal.StyledTextConsumer;
 import cn.oyzh.jeditermfx.terminal.SubstringFinder;
-import cn.oyzh.jeditermfx.terminal.TerminalColor;
-import cn.oyzh.jeditermfx.core.TerminalCoordinates;
 import cn.oyzh.jeditermfx.terminal.TerminalCopyPasteHandler;
-import cn.oyzh.jeditermfx.terminal.TerminalDisplay;
-import cn.oyzh.jeditermfx.terminal.TerminalOutputStream;
-import cn.oyzh.jeditermfx.terminal.TerminalStarter;
-import cn.oyzh.jeditermfx.terminal.TextStyle;
-import cn.oyzh.jeditermfx.terminal.TextStyle.Option;
-import cn.oyzh.jeditermfx.core.compatibility.Point;
-import cn.oyzh.jeditermfx.terminal.emulator.ColorPalette;
-import cn.oyzh.jeditermfx.terminal.emulator.charset.CharacterSets;
-import cn.oyzh.jeditermfx.terminal.emulator.mouse.MouseFormat;
-import cn.oyzh.jeditermfx.terminal.emulator.mouse.MouseMode;
-import cn.oyzh.jeditermfx.terminal.emulator.mouse.TerminalMouseListener;
-import cn.oyzh.jeditermfx.terminal.model.CharBuffer;
-import cn.oyzh.jeditermfx.terminal.model.JediTerminal;
-import cn.oyzh.jeditermfx.terminal.model.LinesBuffer;
-import cn.oyzh.jeditermfx.terminal.model.SelectionUtil;
-import cn.oyzh.jeditermfx.terminal.model.StyleState;
-import cn.oyzh.jeditermfx.terminal.model.TerminalLine;
-import cn.oyzh.jeditermfx.terminal.model.TerminalLineIntervalHighlighting;
-import cn.oyzh.jeditermfx.terminal.model.TerminalModelListener;
-import cn.oyzh.jeditermfx.terminal.model.TerminalSelection;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTextBuffer;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.LinkInfo;
-import cn.oyzh.jeditermfx.core.typeahead.TerminalTypeAheadManager;
-import cn.oyzh.jeditermfx.terminal.util.CharUtils;
-import cn.oyzh.jeditermfx.core.util.TermSize;
 import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.LinkInfoEx;
 import cn.oyzh.jeditermfx.terminal.ui.input.FxMouseEvent;
 import cn.oyzh.jeditermfx.terminal.ui.input.FxMouseWheelEvent;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import com.jediterm.core.TerminalCoordinates;
+import com.jediterm.core.typeahead.TerminalTypeAheadManager;
+import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.CursorShape;
+import com.jediterm.terminal.HyperlinkStyle;
+import com.jediterm.terminal.RequestOrigin;
+import com.jediterm.terminal.StyledTextConsumer;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TerminalDisplay;
+import com.jediterm.terminal.TerminalOutputStream;
+import com.jediterm.terminal.TerminalStarter;
+import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.emulator.ColorPalette;
+import com.jediterm.terminal.emulator.charset.CharacterSets;
+import com.jediterm.terminal.emulator.mouse.MouseFormat;
+import com.jediterm.terminal.emulator.mouse.MouseMode;
+import com.jediterm.terminal.emulator.mouse.TerminalMouseListener;
+import com.jediterm.terminal.model.CharBuffer;
+import com.jediterm.terminal.model.JediTerminal;
+import com.jediterm.terminal.model.LinesBuffer;
+import com.jediterm.terminal.model.SelectionUtil;
+import com.jediterm.terminal.model.StyleState;
+import com.jediterm.terminal.model.TerminalLine;
+import com.jediterm.terminal.model.TerminalLineIntervalHighlighting;
+import com.jediterm.terminal.model.TerminalModelListener;
+import com.jediterm.terminal.model.TerminalSelection;
+import com.jediterm.terminal.model.TerminalTextBuffer;
+import com.jediterm.terminal.model.hyperlinks.LinkInfo;
+import com.jediterm.terminal.util.CharUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -101,7 +99,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static cn.oyzh.jeditermfx.core.Platform.isWindows;
 
 public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
@@ -165,7 +162,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
     private MouseMode myMouseMode = MouseMode.MOUSE_REPORTING_NONE;
 
-    private Point mySelectionStartPoint = null;
+    private com.jediterm.core.compatibility.Point mySelectionStartPoint = null;
 
     private final ObjectProperty<TerminalSelection> mySelection = new SimpleObjectProperty<>(null);
 
@@ -252,7 +249,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         setScrollBarRangeProperties(0, 80, 0, 80);
         updateScrolling(true);
         terminalTextBuffer.addModelListener(this::repaint);
-        terminalTextBuffer.addTypeAheadModelListener(this::repaint);
+//        terminalTextBuffer.addTypeAheadModelListener(this::repaint);
         terminalTextBuffer.addHistoryBufferListener(() -> myHistoryBufferLineCountChanged.set(true));
         mySelection.addListener((ov, oldV, newV) -> updateSelectedText());
     }
@@ -412,13 +409,13 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         if (!isLocalMouseAction(e)) {
             return;
         }
-        final Point charCoords = panelToCharCoords(createPoint(e));
+        final com.jediterm.core.compatibility.Point charCoords = panelToCharCoords(createPoint(e));
         if (mySelection.get() == null) {
             // prevent unlikely case where drag started outside terminal panel
             if (mySelectionStartPoint == null) {
                 mySelectionStartPoint = charCoords;
             }
-            updateSelection(new TerminalSelection(new Point(mySelectionStartPoint)), false);
+            updateSelection(new TerminalSelection(new com.jediterm.core.compatibility.Point(mySelectionStartPoint)), false);
         }
         repaint();
         mySelection.get().updateEnd(charCoords);
@@ -449,9 +446,9 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                 // do nothing
             } else if (count == 2) {
                 // select word
-                final Point charCoords = panelToCharCoords(point);
-                Point start = SelectionUtil.getPreviousSeparator(charCoords, myTerminalTextBuffer);
-                Point stop = SelectionUtil.getNextSeparator(charCoords, myTerminalTextBuffer);
+                final com.jediterm.core.compatibility.Point charCoords = panelToCharCoords(point);
+                com.jediterm.core.compatibility.Point start = SelectionUtil.getPreviousSeparator(charCoords, myTerminalTextBuffer);
+                com.jediterm.core.compatibility.Point stop = SelectionUtil.getNextSeparator(charCoords, myTerminalTextBuffer);
                 var sel = new TerminalSelection(start);
                 sel.updateEnd(stop);
                 updateSelection(sel, true);
@@ -460,7 +457,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                 }
             } else if (count == 3) {
                 // select line
-                final Point charCoords = panelToCharCoords(point);
+                final com.jediterm.core.compatibility.Point charCoords = panelToCharCoords(point);
                 int startLine = charCoords.y;
                 while (startLine > -getScrollBuffer().getLineCount()
                         && myTerminalTextBuffer.getLine(startLine - 1).isWrapped()) {
@@ -471,8 +468,8 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                         && myTerminalTextBuffer.getLine(endLine).isWrapped()) {
                     endLine++;
                 }
-                var sel = new TerminalSelection(new Point(0, startLine));
-                sel.updateEnd(new Point(myTermSize.getColumns(), endLine));
+                var sel = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, startLine));
+                sel.updateEnd(new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), endLine));
                 updateSelection(sel, true);
                 if (mySettingsProvider.copyOnSelect()) {
                     handleCopyOnSelect();
@@ -550,8 +547,9 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         }
         myLinkHoverConsumer = linkHoverConsumer;
         if (linkStyle != null
-                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER_WITH_ORIGINAL_COLOR
-                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER_WITH_CUSTOM_COLOR) {
+                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER) {
+//                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER_WITH_ORIGINAL_COLOR
+//                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER_WITH_CUSTOM_COLOR) {
             updateHoveredHyperlink(linkStyle.getLinkInfo());
         } else {
             updateHoveredHyperlink(null);
@@ -672,9 +670,9 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     protected void selectFindResultItem(SubstringFinder.FindResult.FindItem item) {
         int historyLineCount = getTerminalTextBuffer().getHistoryLinesCount();
         int screenLineCount = getTerminalTextBuffer().getScreenLinesCount();
-        var selection = new TerminalSelection(new Point(item.getStart().x,
+        var selection = new TerminalSelection(new com.jediterm.core.compatibility.Point(item.getStart().x,
                 item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
-                new Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
+                new com.jediterm.core.compatibility.Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
         updateSelection(selection, true);
         JulLog.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
                 item.getEnd().x, item.getEnd().y);
@@ -776,9 +774,9 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         return mySettingsProvider.getTerminalFont();
     }
 
-    private @NotNull Point panelToCharCoords(final Point2D p) {
+    private @NotNull com.jediterm.core.compatibility.Point panelToCharCoords(final Point2D p) {
         Cell cell = panelPointToCell(p);
-        return new Point(cell.getColumn(), cell.getLine());
+        return new com.jediterm.core.compatibility.Point(cell.getColumn(), cell.getLine());
     }
 
     private @NotNull Cell panelPointToCell(@NotNull Point2D p) {
@@ -790,13 +788,14 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         return new Cell(y, x);
     }
 
-    private void copySelection(@Nullable Point selectionStart,
-                               @Nullable Point selectionEnd,
+    private void copySelection(@Nullable com.jediterm.core.compatibility.Point selectionStart,
+                               @Nullable com.jediterm.core.compatibility.Point selectionEnd,
                                boolean useSystemSelectionClipboardIfAvailable) {
         if (selectionStart == null || selectionEnd == null) {
             return;
         }
-        String selectedText = SelectionUtil.getSelectedText(selectionStart, selectionEnd, myTerminalTextBuffer);
+        String selectedText = SelectionUtil.getSelectionText(selectionStart, selectionEnd, myTerminalTextBuffer);
+//        String selectedText = SelectionUtil.getSelectedText(selectionStart, selectionEnd, myTerminalTextBuffer);
         if (selectedText.length() != 0) {
             myCopyPasteHandler.setContents(selectedText, useSystemSelectionClipboardIfAvailable);
         }
@@ -810,7 +809,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         try {
             // Sanitize clipboard text to use CR as the line separator.
             // See https://github.com/JetBrains/jediterm/issues/136.
-            if (!isWindows()) {
+            if (!OSUtil.isWindows()) {
                 // On Windows, Java automatically does this CRLF->LF sanitization, but
                 // other terminals on Unix typically also do this sanitization, so
                 // maybe JediTerm also should.
@@ -1108,7 +1107,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     }
 
     private boolean inSelection(int x, int y) {
-        return mySelection.get() != null && mySelection.get().contains(new Point(x, y));
+        return mySelection.get() != null && mySelection.get().contains(new com.jediterm.core.compatibility.Point(x, y));
     }
 
     public int getPixelWidth() {
@@ -1132,43 +1131,43 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     }
 
     @Override
-    public @NotNull Color getWindowForeground() {
+    public @NotNull com.jediterm.core.Color getWindowForeground() {
         return toForeground(mySettingsProvider.getDefaultForeground());
     }
 
     @Override
-    public @NotNull Color getWindowBackground() {
+    public @NotNull com.jediterm.core.Color getWindowBackground() {
         return toBackground(mySettingsProvider.getDefaultBackground());
     }
 
     private @NotNull javafx.scene.paint.Color getEffectiveForeground(@NotNull TextStyle style) {
-        Color color = style.hasOption(Option.INVERSE) ? getBackground(style) : getForeground(style);
+        com.jediterm.core.Color color = style.hasOption(TextStyle.Option.INVERSE) ? getBackground(style) : getForeground(style);
         return FxTransformers.toFxColor(color);
     }
 
     private @NotNull javafx.scene.paint.Color getEffectiveBackground(@NotNull TextStyle style) {
-        Color color = style.hasOption(Option.INVERSE) ? getForeground(style) : getBackground(style);
+        com.jediterm.core.Color color = style.hasOption(TextStyle.Option.INVERSE) ? getForeground(style) : getBackground(style);
         return FxTransformers.toFxColor(color);
     }
 
-    private @NotNull Color getForeground(@NotNull TextStyle style) {
+    private @NotNull com.jediterm.core.Color getForeground(@NotNull TextStyle style) {
         TerminalColor foreground = style.getForeground();
         return foreground != null ? toForeground(foreground) : getWindowForeground();
     }
 
-    private @NotNull Color toForeground(@NotNull TerminalColor terminalColor) {
+    private com.jediterm.core.@NotNull Color toForeground(@NotNull TerminalColor terminalColor) {
         if (terminalColor.isIndexed()) {
             return getPalette().getForeground(terminalColor);
         }
         return terminalColor.toColor();
     }
 
-    private @NotNull Color getBackground(@NotNull TextStyle style) {
+    private @NotNull com.jediterm.core.Color getBackground(@NotNull TextStyle style) {
         TerminalColor background = style.getBackground();
         return background != null ? toBackground(background) : getWindowBackground();
     }
 
-    private @NotNull Color toBackground(@NotNull TerminalColor terminalColor) {
+    private com.jediterm.core.@NotNull Color toBackground(@NotNull TerminalColor terminalColor) {
         if (terminalColor.isIndexed()) {
             return getPalette().getBackground(terminalColor);
         }
@@ -1182,20 +1181,20 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     public void addTerminalMouseListener(final TerminalMouseListener listener) {
         this.canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
-                Point p = panelToCharCoords(createPoint(e));
+                com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mousePressed(p.x, p.y, new FxMouseEvent(e));
             }
         });
         this.canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
-                Point p = panelToCharCoords(createPoint(e));
+                com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseReleased(p.x, p.y, new FxMouseEvent(e));
             }
         });
         this.canvas.addEventHandler(ScrollEvent.SCROLL, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 updateSelection(null, true);
-                Point p = panelToCharCoords(createPoint(e));
+                com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseWheelMoved(p.x, p.y, new FxMouseWheelEvent(e));
             }
             if (myTerminalTextBuffer.isUsingAlternateBuffer() && mySettingsProvider.sendArrowKeysInAlternativeMode()) {
@@ -1214,13 +1213,13 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         });
         this.canvas.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
-                Point p = panelToCharCoords(createPoint(e));
+                com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseMoved(p.x, p.y, new FxMouseEvent(e));
             }
         });
         this.canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
-                Point p = panelToCharCoords(createPoint(e));
+                com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseDragged(p.x, p.y, new FxMouseEvent(e));
             }
         });
@@ -1390,7 +1389,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     @NotNull
     private TextStyle getInversedStyle(@NotNull TextStyle style) {
         TextStyle.Builder builder = new TextStyle.Builder(style);
-        builder.setOption(Option.INVERSE, !style.hasOption(Option.INVERSE));
+        builder.setOption(TextStyle.Option.INVERSE, !style.hasOption(TextStyle.Option.INVERSE));
         if (style.getForeground() == null) {
             builder.setForeground(myStyleState.getDefaultForeground());
         }
@@ -1418,43 +1417,55 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines),
                 this.canvas.getHeight() - yCoord);
         double width = Math.min(textLength * this.myCharSize.getWidth(), this.canvas.getWidth() - xCoord);
-        boolean shouldUnderline = style.hasOption(Option.UNDERLINED);
+        boolean shouldUnderline = style.hasOption(TextStyle.Option.UNDERLINED);
         if (style instanceof HyperlinkStyle) {
             HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
             switch (mySettingsProvider.getHyperlinkHighlightingMode()) {
-                case ALWAYS_WITH_ORIGINAL_COLOR:
+                case ALWAYS:
                     style = provideOriginalStyle(hyperlinkStyle);
                     shouldUnderline = true;
                     break;
-                case ALWAYS_WITH_CUSTOM_COLOR:
-                    style = hyperlinkStyle.getCustomStyle();
-                    shouldUnderline = true;
-                    break;
-                case NEVER_WITH_ORIGINAL_COLOR:
+//                case ALWAYS_WITH_ORIGINAL_COLOR:
+//                    style = provideOriginalStyle(hyperlinkStyle);
+//                    shouldUnderline = true;
+//                    break;
+//                case ALWAYS_WITH_CUSTOM_COLOR:
+//                    style = hyperlinkStyle.getCustomStyle();
+//                    shouldUnderline = true;
+//                    break;
+                case NEVER:
                     style = provideOriginalStyle(hyperlinkStyle);
-                    shouldUnderline = style.hasOption(Option.UNDERLINED);
+                    shouldUnderline = style.hasOption(TextStyle.Option.UNDERLINED);
                     break;
-                case NEVER_WITH_CUSTOM_COLOR:
-                    style = hyperlinkStyle.getCustomStyle();
-                    shouldUnderline = hyperlinkStyle.getPrevTextStyle().hasOption(Option.UNDERLINED);
-                    break;
-                case HOVER_WITH_ORIGINAL_COLOR:
+//                case NEVER_WITH_ORIGINAL_COLOR:
+//                    style = provideOriginalStyle(hyperlinkStyle);
+//                    shouldUnderline = style.hasOption(Option.UNDERLINED);
+//                    break;
+//                case NEVER_WITH_CUSTOM_COLOR:
+//                    style = hyperlinkStyle.getCustomStyle();
+//                    shouldUnderline = hyperlinkStyle.getPrevTextStyle().hasOption(Option.UNDERLINED);
+//                    break;
+                case HOVER:
                     style = provideOriginalStyle(hyperlinkStyle);
                     shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
                     break;
-                case HOVER_WITH_CUSTOM_COLOR:
-                    style = hyperlinkStyle.getCustomStyle();
-                    shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
-                    break;
-                case HOVER_WITH_BOTH_COLORS:
-                    if (isHoveredHyperlink(hyperlinkStyle)) {
-                        style = hyperlinkStyle.getCustomStyle();
-                        shouldUnderline = true;
-                    } else {
-                        style = provideOriginalStyle(hyperlinkStyle);
-                        shouldUnderline = false;
-                    }
-                    break;
+//                case HOVER_WITH_ORIGINAL_COLOR:
+//                    style = provideOriginalStyle(hyperlinkStyle);
+//                    shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
+//                    break;
+//                case HOVER_WITH_CUSTOM_COLOR:
+//                    style = hyperlinkStyle.getCustomStyle();
+//                    shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
+//                    break;
+//                case HOVER_WITH_BOTH_COLORS:
+//                    if (isHoveredHyperlink(hyperlinkStyle)) {
+//                        style = hyperlinkStyle.getCustomStyle();
+//                        shouldUnderline = true;
+//                    } else {
+//                        style = provideOriginalStyle(hyperlinkStyle);
+//                        shouldUnderline = false;
+//                    }
+//                    break;
                 default:
                     throw new AssertionError();
             }
@@ -1484,8 +1495,10 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
      * @return
      */
     private @NotNull TextStyle provideOriginalStyle(@NotNull HyperlinkStyle link) {
-        if (link.getOriginalStyle() != null) {
-            return link.getOriginalStyle();
+        if (link.getPrevTextStyle() != null) {
+            return link.getPrevTextStyle();
+//        if (link.getOriginalStyle() != null) {
+//            return link.getOriginalStyle();
         } else {
             return link;
         }
@@ -1503,7 +1516,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         // workaround to fix Swing bad rendering of bold special chars on Linux
         // TODO required for italic?
         CharBuffer renderingBuffer;
-        if (mySettingsProvider.DECCompatibilityMode() && style.hasOption(Option.BOLD)) {
+        if (mySettingsProvider.DECCompatibilityMode() && style.hasOption(TextStyle.Option.BOLD)) {
             renderingBuffer = CharUtils.heavyDecCompatibleBuffer(buf);
         } else {
             renderingBuffer = buf;
@@ -1625,7 +1638,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
     private @NotNull javafx.scene.paint.Color getStyleForeground(@NotNull TextStyle style) {
         javafx.scene.paint.Color foreground = getEffectiveForeground(style);
-        if (style.hasOption(Option.DIM)) {
+        if (style.hasOption(TextStyle.Option.DIM)) {
             javafx.scene.paint.Color background = getEffectiveBackground(style);
             foreground = new javafx.scene.paint.Color((foreground.getRed() + background.getRed()) / 2,
                     (foreground.getGreen() + background.getGreen()) / 2,
@@ -1636,8 +1649,8 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     }
 
     protected @NotNull Font getFontToDisplay(char[] text, int start, int end, @NotNull TextStyle style) {
-        boolean bold = style.hasOption(Option.BOLD);
-        boolean italic = style.hasOption(Option.ITALIC);
+        boolean bold = style.hasOption(TextStyle.Option.BOLD);
+        boolean italic = style.hasOption(TextStyle.Option.ITALIC);
         // workaround to fix Swing bad rendering of bold special chars on Linux
         if (bold && mySettingsProvider.DECCompatibilityMode() && CharacterSets.isDecBoxChar(text[start])) {
             return myNormalFont;
@@ -1898,8 +1911,8 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     }
 
     public void selectAll() {
-        var selection = new TerminalSelection(new Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
-                new Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
+        var selection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
+                new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
         updateSelection(selection, true);
     }
 
@@ -1922,10 +1935,10 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
     @Nullable
     private String getSelectedText() {
         if (mySelection.get() != null) {
-            Pair<Point, Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
+            Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
             if (points.getFirst() != null || points.getSecond() != null) {
-                return SelectionUtil
-                        .getSelectedText(points.getFirst(), points.getSecond(), myTerminalTextBuffer);
+                return SelectionUtil.getSelectionText(points.getFirst(), points.getSecond(), myTerminalTextBuffer);
+//                return SelectionUtil.getSelectedText(points.getFirst(), points.getSecond(), myTerminalTextBuffer);
             }
         }
         return null;
@@ -2139,7 +2152,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
      */
     public void handleCopy(boolean unselect, boolean useSystemSelectionClipboardIfAvailable) {
         if (mySelection.get() != null) {
-            Pair<Point, Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
+            Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
             copySelection(points.getFirst(), points.getSecond(), useSystemSelectionClipboardIfAvailable);
             if (unselect) {
                 updateSelection(null, true);

@@ -1,9 +1,8 @@
 package cn.oyzh.jeditermfx.app.debug;
-
-import cn.oyzh.jeditermfx.terminal.StyledTextConsumerAdapter;
-import cn.oyzh.jeditermfx.terminal.TextStyle;
-import cn.oyzh.jeditermfx.terminal.model.CharBuffer;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTextBuffer;
+import com.jediterm.terminal.StyledTextConsumerAdapter;
+import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.model.CharBuffer;
+import com.jediterm.terminal.model.TerminalTextBuffer;
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,8 +1,8 @@
 package cn.oyzh.jeditermfx.app.example;
 
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
+import com.jediterm.terminal.TtyConnector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

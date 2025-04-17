@@ -1,6 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.model;
 
-import cn.oyzh.jeditermfx.core.util.TermSize;
+
+import com.jediterm.core.util.TermSize;
 
 public interface TerminalResizeListener {
 

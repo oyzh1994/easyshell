@@ -1,14 +1,14 @@
 package cn.oyzh.jeditermfx.app;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.OSUtil;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugUtil;
 import cn.oyzh.jeditermfx.app.pty.LoggingTtyConnector;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTextBuffer;
-import cn.oyzh.jeditermfx.core.Platform;
 import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
@@ -37,7 +37,7 @@ public final class JediTermFx extends AbstractTerminalApplication {
         try {
             var envs = configureEnvironmentVariables();
             String[] command;
-            if (Platform.isWindows()) {
+            if (OSUtil.isWindows()) {
 //                command = new String[]{"cmd.exe"};
                 command = new String[]{"powershell.exe"};
             } else {
@@ -45,7 +45,7 @@ public final class JediTermFx extends AbstractTerminalApplication {
                 if (shell == null) {
                     shell = "/bin/bash";
                 }
-                if (Platform.isMacOS()) {
+                if (OSUtil.isMacOS()) {
                     command = new String[]{shell, "--login"};
                 } else {
                     command = new String[]{shell};
@@ -70,10 +70,10 @@ public final class JediTermFx extends AbstractTerminalApplication {
 
     private final Map<String, String> configureEnvironmentVariables() {
         HashMap envs = new HashMap<String, String>(System.getenv());
-        if (Platform.isMacOS()) {
+        if (OSUtil.isMacOS()) {
             envs.put("LC_CTYPE", Charsets.UTF_8.name());
         }
-        if (!Platform.isWindows()) {
+        if (!OSUtil.isWindows()) {
             envs.put("TERM", "xterm-256color");
         }
         return envs;

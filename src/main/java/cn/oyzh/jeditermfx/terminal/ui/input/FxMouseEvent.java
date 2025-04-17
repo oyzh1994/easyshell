@@ -1,8 +1,8 @@
 package cn.oyzh.jeditermfx.terminal.ui.input;
 
-import cn.oyzh.jeditermfx.terminal.emulator.mouse.MouseButtonCodes;
-import cn.oyzh.jeditermfx.terminal.emulator.mouse.MouseButtonModifierFlags;
-import cn.oyzh.jeditermfx.core.input.MouseEvent;
+import com.jediterm.core.input.MouseEvent;
+import com.jediterm.terminal.emulator.mouse.MouseButtonCodes;
+import com.jediterm.terminal.emulator.mouse.MouseButtonModifierFlags;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 

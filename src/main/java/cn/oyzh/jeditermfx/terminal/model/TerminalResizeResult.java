@@ -1,6 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.model;
 
-import cn.oyzh.jeditermfx.core.util.CellPosition;
+
+import com.jediterm.core.util.CellPosition;
 
 public class TerminalResizeResult {
 

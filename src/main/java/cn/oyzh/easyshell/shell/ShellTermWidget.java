@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+import com.jediterm.terminal.TtyConnector;
 import com.pty4j.PtyProcess;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

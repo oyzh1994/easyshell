@@ -6,12 +6,11 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.node.NodeUtil;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
-import cn.oyzh.jeditermfx.core.Platform;
-import cn.oyzh.jeditermfx.core.util.TermSize;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
 import kotlin.text.Charsets;
@@ -106,10 +105,10 @@ public class ShellDefaultTermWidget extends JediTermFxWidget {
 
     protected Map<String, String> getEnvironments() {
         HashMap<String, String> envs = new HashMap<>(System.getenv());
-        if (Platform.isMacOS()) {
+        if (OSUtil.isMacOS()) {
             envs.put("LC_CTYPE", Charsets.UTF_8.name());
         }
-        if (Platform.isWindows()) {
+        if (OSUtil.isWindows()) {
             envs.put("TERM", "xterm-256color");
         }
         return envs;

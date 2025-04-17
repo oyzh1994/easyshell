@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.core.Platform;
+import cn.oyzh.common.system.OSUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,7 +93,7 @@ public class DefaultTerminalCopyPasteHandler implements TerminalCopyPasteHandler
     }
 
     private static void logException(@NotNull String message, @NotNull Exception e) {
-        if (Platform.isWindows() && e instanceof IllegalStateException) {
+        if (OSUtil.isWindows() && e instanceof IllegalStateException) {
             JulLog.debug(message, e);
         } else {
             JulLog.warn(message, e);

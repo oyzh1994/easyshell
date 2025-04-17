@@ -1,8 +1,8 @@
 package cn.oyzh.jeditermfx.terminal;
 
-import cn.oyzh.jeditermfx.core.compatibility.Point;
-import cn.oyzh.jeditermfx.terminal.model.CharBuffer;
-import cn.oyzh.jeditermfx.terminal.model.SubCharBuffer;
+import com.jediterm.core.compatibility.Point;
+import com.jediterm.terminal.model.CharBuffer;
+import com.jediterm.terminal.model.SubCharBuffer;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.core.Color;
-import cn.oyzh.jeditermfx.terminal.TerminalColor;
+import com.jediterm.core.Color;
+import com.jediterm.terminal.TerminalColor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 

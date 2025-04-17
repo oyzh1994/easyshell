@@ -1,11 +1,11 @@
 package cn.oyzh.jeditermfx.app.example;
 
 import cn.oyzh.common.log.JulLog;
+import com.jediterm.core.Platform;
+import com.jediterm.terminal.TtyConnector;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
-import cn.oyzh.jeditermfx.core.Platform;
 import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;

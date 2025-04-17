@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.TerminalDisplay;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
+import com.jediterm.terminal.TerminalDisplay;
+import com.jediterm.terminal.TtyConnector;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

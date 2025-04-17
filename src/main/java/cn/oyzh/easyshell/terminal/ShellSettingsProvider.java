@@ -1,14 +1,15 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.jeditermfx.terminal.emulator.ColorPalette;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalActionPresentation;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
+import com.jediterm.terminal.emulator.ColorPalette;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 
-import static cn.oyzh.jeditermfx.core.Platform.isMacOS;
 
 /**
  * @author oyzh
@@ -37,7 +37,7 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getCopyActionPresentation() {
-        KeyCombination keyCombination = isMacOS()
+        KeyCombination keyCombination = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.C, KeyCombination.META_DOWN)
                 // CTRL + C is used for signal; use CTRL + SHIFT + C instead
                 : new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
@@ -46,7 +46,7 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getPasteActionPresentation() {
-        KeyCombination keyCombination = isMacOS()
+        KeyCombination keyCombination = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.V, KeyCombination.META_DOWN)
                 // CTRL + V is used for signal; use CTRL + SHIFT + V instead
                 : new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
@@ -55,7 +55,7 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getClearBufferActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.clearBuffer(), isMacOS()
+        return new TerminalActionPresentation(I18nHelper.clearBuffer(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.L, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
     }
@@ -74,21 +74,21 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public @NotNull TerminalActionPresentation getLineUpActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.lineUp(), isMacOS()
+        return new TerminalActionPresentation(I18nHelper.lineUp(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getLineDownActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.lineDown(), isMacOS()
+        return new TerminalActionPresentation(I18nHelper.lineDown(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getFindActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.find(), isMacOS()
+        return new TerminalActionPresentation(I18nHelper.find(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
     }

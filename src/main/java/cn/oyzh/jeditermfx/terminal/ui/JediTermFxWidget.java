@@ -1,26 +1,26 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.core.Color;
-import cn.oyzh.jeditermfx.terminal.ProcessTtyConnector;
 import cn.oyzh.jeditermfx.terminal.SubstringFinder;
-import cn.oyzh.jeditermfx.terminal.Terminal;
-import cn.oyzh.jeditermfx.terminal.TerminalDisplay;
-import cn.oyzh.jeditermfx.terminal.TerminalExecutorServiceManager;
-import cn.oyzh.jeditermfx.terminal.TerminalMode;
-import cn.oyzh.jeditermfx.terminal.TerminalStarter;
-import cn.oyzh.jeditermfx.terminal.TtyBasedArrayDataStream;
-import cn.oyzh.jeditermfx.terminal.TtyConnector;
-import cn.oyzh.jeditermfx.terminal.model.JediTermDebouncerImpl;
-import cn.oyzh.jeditermfx.terminal.model.JediTerminal;
-import cn.oyzh.jeditermfx.terminal.model.StyleState;
-import cn.oyzh.jeditermfx.terminal.model.TerminalTextBuffer;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.HyperlinkFilter;
-import cn.oyzh.jeditermfx.terminal.model.hyperlinks.TextProcessing;
-import cn.oyzh.jeditermfx.core.typeahead.TerminalTypeAheadManager;
-import cn.oyzh.jeditermfx.core.typeahead.TypeAheadTerminalModel;
 import cn.oyzh.jeditermfx.terminal.model.JediTermTypeAheadModel;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import com.jediterm.core.Color;
+import com.jediterm.core.typeahead.TerminalTypeAheadManager;
+import com.jediterm.core.typeahead.TypeAheadTerminalModel;
+import com.jediterm.terminal.ProcessTtyConnector;
+import com.jediterm.terminal.Terminal;
+import com.jediterm.terminal.TerminalDisplay;
+import com.jediterm.terminal.TerminalExecutorServiceManager;
+import com.jediterm.terminal.TerminalMode;
+import com.jediterm.terminal.TerminalStarter;
+import com.jediterm.terminal.TtyBasedArrayDataStream;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.model.JediTermDebouncerImpl;
+import com.jediterm.terminal.model.JediTerminal;
+import com.jediterm.terminal.model.StyleState;
+import com.jediterm.terminal.model.TerminalTextBuffer;
+import com.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
+import com.jediterm.terminal.model.hyperlinks.TextProcessing;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -103,6 +103,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
         myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
         myTerminal = createTerminal(myTerminalPanel, terminalTextBuffer, styleState);
         myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
+        myTypeAheadTerminalModel.addTypeAheadModelListener(myTerminalPanel::repaint);
         myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
         JediTermDebouncerImpl typeAheadDebouncer =
                 new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY,
