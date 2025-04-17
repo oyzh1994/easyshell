@@ -14,7 +14,7 @@ import javafx.scene.layout.Priority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class FindComponent {
+final class JediTermFindComponent {
 
     private final HBox pane = new HBox();
 
@@ -26,7 +26,7 @@ final class FindComponent {
     private final CheckBox ignoreCaseCheckBox = new CheckBox(I18nHelper.ignoreCase());
 //    private final CheckBox ignoreCaseCheckBox = new CheckBox("Ignore Case");
 
-    public FindComponent(JediTermFxWidget jediTermWidget) {
+    public JediTermFindComponent(JediTermFxWidget jediTermWidget) {
         this.ignoreCaseCheckBox.setSelected(true);
         Button next = new Button("\u25BC");
         next.setOnAction(e -> onResultUpdated(jediTermWidget.getTerminalPanel().selectNextFindResultItem()));

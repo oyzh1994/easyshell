@@ -1,15 +1,12 @@
-package com.techsenger.jeditermfx.terminal.ui.model;
+package com.techsenger.jeditermfx.terminal.model;
 
 import com.techsenger.jeditermfx.terminal.Terminal;
 import com.techsenger.jeditermfx.terminal.TextStyle;
-import com.techsenger.jeditermfx.terminal.model.CharBuffer;
-import com.techsenger.jeditermfx.terminal.model.TerminalLine;
-import com.techsenger.jeditermfx.terminal.model.TerminalTextBuffer;
 import com.techsenger.jeditermfx.core.typeahead.TypeAheadTerminalModel;
 import com.techsenger.jeditermfx.terminal.ui.settings.SettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
-public class DefaultTypeAheadTerminalModel implements TypeAheadTerminalModel {
+public class JediTermTypeAheadModel implements TypeAheadTerminalModel {
 
     private final @NotNull Terminal myTerminal;
 
@@ -21,7 +18,7 @@ public class DefaultTypeAheadTerminalModel implements TypeAheadTerminalModel {
 
     private boolean isPredictionsApplied = false;
 
-    public DefaultTypeAheadTerminalModel(@NotNull Terminal terminal, @NotNull TerminalTextBuffer textBuffer,
+    public JediTermTypeAheadModel(@NotNull Terminal terminal, @NotNull TerminalTextBuffer textBuffer,
                                   @NotNull SettingsProvider settingsProvider) {
         myTerminal = terminal;
         myTerminalTextBuffer = textBuffer;

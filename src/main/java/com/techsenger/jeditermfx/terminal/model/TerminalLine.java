@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,10 @@ import java.util.stream.Collectors;
 public final class TerminalLine {
 
     private TextEntries myTextEntries = new TextEntries();
-
     private boolean myWrapped = false;
-
     private final List<TerminalLineIntervalHighlighting> myCustomHighlightings = new CopyOnWriteArrayList<>();
-
-    private TerminalLine myTypeAheadLine;
+    private final AtomicInteger myModificationCount = new AtomicInteger(0);
+    TerminalLine myTypeAheadLine;
 
     public TerminalLine() {
     }
@@ -43,7 +42,7 @@ public final class TerminalLine {
 
     public @NotNull String getText() {
         StringBuilder result = new StringBuilder(myTextEntries.myLength);
-        for (TextEntry textEntry : myTextEntries) {
+        for (TerminalLine.TextEntry textEntry : myTextEntries) {
             // NUL can only be at the end
             if (textEntry.getText().isNul()) {
                 break;
@@ -71,6 +70,13 @@ public final class TerminalLine {
         return x < text.length() ? text.charAt(x) : CharUtils.EMPTY_CHAR;
     }
 
+    /**
+     * @return total length of text entries.
+     */
+    public int length() {
+        return myTextEntries.length();
+    }
+
     public boolean isWrapped() {
         return myWrapped;
     }
@@ -82,7 +88,6 @@ public final class TerminalLine {
     public void clear(@NotNull TextEntry filler) {
         myTextEntries.clear();
         myTextEntries.add(filler);
-        setWrapped(false);
     }
 
     public void writeString(int x, @NotNull CharBuffer str, @NotNull TextStyle style) {
@@ -93,16 +98,9 @@ public final class TerminalLine {
         insertCharacters(x, style, str);
     }
 
-    public TerminalLine getTypeAheadLine() {
-        return myTypeAheadLine;
-    }
-
-    public void setTypeAheadLine(TerminalLine typeAheadLine) {
-        this.myTypeAheadLine = typeAheadLine;
-    }
-
     private void writeCharacters(int x, @NotNull TextStyle style, @NotNull CharBuffer characters) {
         int len = myTextEntries.length();
+
         if (x >= len) {
             // fill the gap
             if (x - len > 0) {
@@ -121,7 +119,9 @@ public final class TerminalLine {
             writeCharacters(x, style, characters);
             return;
         }
+
         Pair<char[], TextStyle[]> pair = toBuf(myTextEntries, length + characters.length());
+
         for (int i = length - 1; i >= x; i--) {
             pair.getFirst()[i + characters.length()] = pair.getFirst()[i];
             pair.getSecond()[i + characters.length()] = pair.getSecond()[i];
@@ -133,18 +133,21 @@ public final class TerminalLine {
         myTextEntries = collectFromBuffer(pair.getFirst(), pair.getSecond());
     }
 
-    private static TextEntries merge(int x, @NotNull CharBuffer str, @NotNull TextStyle style,
-                                     @NotNull TextEntries entries, int lineLength) {
+    private static TextEntries merge(int x, @NotNull CharBuffer str, @NotNull TextStyle style, @NotNull TextEntries entries, int lineLength) {
         Pair<char[], TextStyle[]> pair = toBuf(entries, lineLength);
+
         for (int i = 0; i < str.length(); i++) {
             pair.getFirst()[i + x] = str.charAt(i);
             pair.getSecond()[i + x] = style;
         }
+
         return collectFromBuffer(pair.getFirst(), pair.getSecond());
     }
 
     private static Pair<char[], TextStyle[]> toBuf(TextEntries entries, int lineLength) {
         Pair<char[], TextStyle[]> pair = new Pair<>(new char[lineLength], new TextStyle[lineLength]);
+
+
         int p = 0;
         for (TextEntry entry : entries) {
             for (int i = 0; i < entry.getLength(); i++) {
@@ -158,8 +161,10 @@ public final class TerminalLine {
 
     private static TextEntries collectFromBuffer(char[] buf, @NotNull TextStyle[] styles) {
         TextEntries result = new TextEntries();
+
         TextStyle curStyle = styles[0];
         int start = 0;
+
         for (int i = 1; i < buf.length; i++) {
             if (styles[i] != curStyle) {
                 result.add(new TextEntry(curStyle, new CharBuffer(buf, start, i - start)));
@@ -167,7 +172,9 @@ public final class TerminalLine {
                 start = i;
             }
         }
+
         result.add(new TextEntry(curStyle, new CharBuffer(buf, start, buf.length - start)));
+
         return result;
     }
 
@@ -177,14 +184,14 @@ public final class TerminalLine {
 
     public void deleteCharacters(int x, @NotNull TextStyle style) {
         deleteCharacters(x, myTextEntries.length() - x, style);
-        // delete to the end of line : line is no more wrapped
-        setWrapped(false);
     }
 
     public void deleteCharacters(int x, int count, @NotNull TextStyle style) {
         int p = 0;
         TextEntries newEntries = new TextEntries();
+
         int remaining = count;
+
         for (TextEntry entry : myTextEntries) {
             if (remaining == 0) {
                 newEntries.add(entry);
@@ -214,14 +221,17 @@ public final class TerminalLine {
         if (count > 0 && style != TextStyle.EMPTY) { // apply style to the end of the line
             newEntries.add(new TextEntry(style, new CharBuffer(CharUtils.NUL_CHAR, count)));
         }
+
         myTextEntries = newEntries;
     }
 
     public void insertBlankCharacters(int x, int count, int maxLen, @NotNull TextStyle style) {
         int len = myTextEntries.length();
         len = Math.min(len + count, maxLen);
+
         char[] buf = new char[len];
         TextStyle[] styles = new TextStyle[len];
+
         int p = 0;
         for (TextEntry entry : myTextEntries) {
             for (int i = 0; i < entry.getLength() && p < len; i++) {
@@ -242,6 +252,7 @@ public final class TerminalLine {
                 break;
             }
         }
+
         // if not inserted yet (ie. x > len)
         for (; p < x && p < len; p++) {
             buf[p] = CharUtils.EMPTY_CHAR;
@@ -253,6 +264,7 @@ public final class TerminalLine {
             styles[p] = style;
             p++;
         }
+
         myTextEntries = collectFromBuffer(buf, styles);
     }
 
@@ -267,12 +279,14 @@ public final class TerminalLine {
 
     public @Nullable TextStyle getStyleAt(int x) {
         int i = 0;
+
         for (TextEntry te : myTextEntries) {
             if (x >= i && x < i + te.getLength()) {
                 return te.getStyle();
             }
             i += te.getLength();
         }
+
         return null;
     }
 
@@ -300,9 +314,8 @@ public final class TerminalLine {
         consumer.consumeQueue(x, y, nulIndex < 0 ? x : nulIndex, startRow);
     }
 
-    private void processIntersection(int startTextOffset, int y, @NotNull TextEntry te,
-                                     @NotNull StyledTextConsumer consumer, int startRow,
-                                     @NotNull TerminalLineIntervalHighlighting highlighting) {
+    private void processIntersection(int startTextOffset, int y, @NotNull TextEntry te, @NotNull StyledTextConsumer consumer,
+                                     int startRow, @NotNull TerminalLineIntervalHighlighting highlighting) {
         CharBuffer text = te.getText();
         int endTextOffset = startTextOffset + text.length();
         int[] offsets = new int[]{startTextOffset, endTextOffset, highlighting.getStartOffset(), highlighting.getEndOffset()};
@@ -333,6 +346,7 @@ public final class TerminalLine {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -361,17 +375,22 @@ public final class TerminalLine {
         myTextEntries.add(entry);
     }
 
-    @SuppressWarnings("unused") // used by IntelliJ
-    public @NotNull TerminalLineIntervalHighlighting addCustomHighlighting(int startOffset, int length,
-                                                                           @NotNull TextStyle textStyle) {
-        TerminalLineIntervalHighlighting highlighting =
-                new TerminalLineIntervalHighlighting(this, startOffset, length, textStyle) {
+    int getModificationCount() {
+        return myModificationCount.get();
+    }
 
-                    @Override
-                    protected void doDispose() {
-                        myCustomHighlightings.remove(this);
-                    }
-                };
+    void incrementAndGetModificationCount() {
+        myModificationCount.incrementAndGet();
+    }
+
+    @SuppressWarnings("unused") // used by IntelliJ
+    public @NotNull TerminalLineIntervalHighlighting addCustomHighlighting(int startOffset, int length, @NotNull TextStyle textStyle) {
+        TerminalLineIntervalHighlighting highlighting = new TerminalLineIntervalHighlighting(this, startOffset, length, textStyle) {
+            @Override
+            protected void doDispose() {
+                myCustomHighlightings.remove(this);
+            }
+        };
         myCustomHighlightings.add(highlighting);
         return highlighting;
     }
@@ -387,9 +406,7 @@ public final class TerminalLine {
     }
 
     public static class TextEntry {
-
         private final TextStyle myStyle;
-
         private final CharBuffer myText;
 
         public TextEntry(@NotNull TextStyle style, @NotNull CharBuffer text) {
@@ -420,7 +437,6 @@ public final class TerminalLine {
     }
 
     private static class TextEntries implements Iterable<TextEntry> {
-
         private final List<TextEntry> myTextEntries = new ArrayList<>();
 
         private int myLength = 0;

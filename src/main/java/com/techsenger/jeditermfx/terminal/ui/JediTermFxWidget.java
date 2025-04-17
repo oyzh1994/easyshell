@@ -18,7 +18,7 @@ import com.techsenger.jeditermfx.terminal.model.hyperlinks.HyperlinkFilter;
 import com.techsenger.jeditermfx.terminal.model.hyperlinks.TextProcessing;
 import com.techsenger.jeditermfx.core.typeahead.TerminalTypeAheadManager;
 import com.techsenger.jeditermfx.core.typeahead.TypeAheadTerminalModel;
-import com.techsenger.jeditermfx.terminal.ui.model.DefaultTypeAheadTerminalModel;
+import com.techsenger.jeditermfx.terminal.model.JediTermTypeAheadModel;
 import com.techsenger.jeditermfx.terminal.ui.settings.SettingsProvider;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
@@ -55,11 +55,11 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
 
     private final AtomicReference<Session> myRunningSession = new AtomicReference<>();
 
-    private final DefaultTypeAheadTerminalModel myTypeAheadTerminalModel;
+    private final JediTermTypeAheadModel myTypeAheadTerminalModel;
 
     private final TerminalTypeAheadManager myTypeAheadManager;
 
-    private FindComponent myFindComponent;
+    private JediTermFindComponent myFindComponent;
 
 //TODO
 //  @SuppressWarnings("removal")
@@ -101,7 +101,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
         myTextProcessing.setTerminalTextBuffer(terminalTextBuffer);
         myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
         myTerminal = createTerminal(myTerminalPanel, terminalTextBuffer, styleState);
-        myTypeAheadTerminalModel = new DefaultTypeAheadTerminalModel(myTerminal, terminalTextBuffer, settingsProvider);
+        myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
         myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
         JediTermDebouncerImpl typeAheadDebouncer =
                 new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY,
@@ -344,8 +344,8 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
         myTerminalPanel.getCanvas().requestFocus();
     }
 
-    protected @NotNull FindComponent createFindComponent() {
-        return new FindComponent(this);
+    protected @NotNull JediTermFindComponent createFindComponent() {
+        return new JediTermFindComponent(this);
     }
 
     protected void addFindResultMarkers() {
