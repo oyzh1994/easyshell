@@ -3,7 +3,6 @@ package cn.oyzh.jeditermfx.terminal;
 import cn.oyzh.jeditermfx.core.compatibility.Point;
 import cn.oyzh.jeditermfx.terminal.model.CharBuffer;
 import cn.oyzh.jeditermfx.terminal.model.SubCharBuffer;
-import cn.oyzh.jeditermfx.terminal.ui.FindResult;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -267,5 +266,38 @@ public class SubstringFinder {
             this.y = y;
             this.buf = buf;
         }
+    }
+
+    /**
+     *
+     * @author Pavel Castornii
+     */
+    public static interface FindResult {
+
+        public static interface FindItem {
+
+            @NotNull
+            public String getText();
+
+            /**
+             * Returns one-based index in the result list.
+             * @return
+             */
+            public int getIndex();
+
+            public Point getStart();
+
+            public Point getEnd();
+        }
+
+        public @Nullable List<Pair<Integer, Integer>> getRanges(CharBuffer characters);
+
+        public @NotNull List<FindItem> getItems();
+
+        public @NotNull SubstringFinder.FindResult.FindItem selectedItem();
+
+        public @NotNull SubstringFinder.FindResult.FindItem nextFindItem();
+
+        public @NotNull SubstringFinder.FindResult.FindItem prevFindItem();
     }
 }

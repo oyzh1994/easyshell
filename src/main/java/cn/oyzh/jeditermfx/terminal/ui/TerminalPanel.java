@@ -7,6 +7,7 @@ import cn.oyzh.jeditermfx.terminal.DefaultTerminalCopyPasteHandler;
 import cn.oyzh.jeditermfx.terminal.HyperlinkStyle;
 import cn.oyzh.jeditermfx.terminal.RequestOrigin;
 import cn.oyzh.jeditermfx.terminal.StyledTextConsumer;
+import cn.oyzh.jeditermfx.terminal.SubstringFinder;
 import cn.oyzh.jeditermfx.terminal.TerminalColor;
 import cn.oyzh.jeditermfx.core.TerminalCoordinates;
 import cn.oyzh.jeditermfx.terminal.TerminalCopyPasteHandler;
@@ -214,7 +215,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
     private TerminalCoordinates myCoordsAccessor;
 
-    private FindResult myFindResult;
+    private SubstringFinder.FindResult myFindResult;
 
     private final BooleanProperty findResultHighlighted = new SimpleBooleanProperty(true);
 
@@ -638,7 +639,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         myCoordsAccessor = coordAccessor;
     }
 
-    public void setFindResult(@Nullable FindResult findResult) {
+    public void setFindResult(@Nullable SubstringFinder.FindResult findResult) {
         myFindResult = findResult;
         if (myFindResult != null && !myFindResult.getItems().isEmpty()) {
             selectFindResultItem(myFindResult.selectedItem());
@@ -646,21 +647,21 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         repaint();
     }
 
-    public FindResult getFindResult() {
+    public SubstringFinder.FindResult getFindResult() {
         return myFindResult;
     }
 
-    public @Nullable FindResult selectPrevFindResultItem() {
+    public @Nullable SubstringFinder.FindResult selectPrevFindResultItem() {
         return selectPrevOrNextFindResultItem(false);
     }
 
-    public @Nullable FindResult selectNextFindResultItem() {
+    public @Nullable SubstringFinder.FindResult selectNextFindResultItem() {
         return selectPrevOrNextFindResultItem(true);
     }
 
-    protected @Nullable FindResult selectPrevOrNextFindResultItem(boolean next) {
+    protected @Nullable SubstringFinder.FindResult selectPrevOrNextFindResultItem(boolean next) {
         if (myFindResult != null && !myFindResult.getItems().isEmpty()) {
-            FindResult.FindItem item = next ? myFindResult.nextFindItem() : myFindResult.prevFindItem();
+            SubstringFinder.FindResult.FindItem item = next ? myFindResult.nextFindItem() : myFindResult.prevFindItem();
             selectFindResultItem(item);
             repaint();
             return myFindResult;
@@ -668,7 +669,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
         return null;
     }
 
-    protected void selectFindResultItem(FindResult.FindItem item) {
+    protected void selectFindResultItem(SubstringFinder.FindResult.FindItem item) {
         int historyLineCount = getTerminalTextBuffer().getHistoryLinesCount();
         int screenLineCount = getTerminalTextBuffer().getScreenLinesCount();
         var selection = new TerminalSelection(new Point(item.getStart().x,

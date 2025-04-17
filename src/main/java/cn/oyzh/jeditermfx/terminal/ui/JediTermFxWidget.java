@@ -3,6 +3,7 @@ package cn.oyzh.jeditermfx.terminal.ui;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.jeditermfx.core.Color;
 import cn.oyzh.jeditermfx.terminal.ProcessTtyConnector;
+import cn.oyzh.jeditermfx.terminal.SubstringFinder;
 import cn.oyzh.jeditermfx.terminal.Terminal;
 import cn.oyzh.jeditermfx.terminal.TerminalDisplay;
 import cn.oyzh.jeditermfx.terminal.TerminalExecutorServiceManager;
@@ -312,7 +313,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
             pane.requestFocus();
             Runnable settingsChanged = () -> {
                 removeFindResultMarkers();
-                FindResult results = TerminalSearchUtil.searchInTerminalTextBuffer(getTerminalTextBuffer(),
+                SubstringFinder.FindResult results = TerminalSearchUtil.searchInTerminalTextBuffer(getTerminalTextBuffer(),
                         myFindComponent.getTextField().getText(), myFindComponent.getIgnoreCaseCheckBox().isSelected());
                 myTerminalPanel.setFindResult(results);
                 myFindComponent.onResultUpdated(results);
@@ -349,7 +350,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
     }
 
     protected void addFindResultMarkers() {
-        FindResult result = myTerminalPanel.getFindResult();
+        SubstringFinder.FindResult result = myTerminalPanel.getFindResult();
         if (result != null) {
             var scrollBar = myTerminalPanel.getScrollBar();
             StackPane track = (StackPane) scrollBar.lookup(".track");
@@ -358,7 +359,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
             Color color = mySettingsProvider.getTerminalColorPalette()
                     .getBackground(Objects.requireNonNull(mySettingsProvider.getFoundPatternColor().getBackground()));
             var fxColor = FxTransformers.toFxColor(color);
-            for (FindResult.FindItem r : result.getItems()) {
+            for (SubstringFinder.FindResult.FindItem r : result.getItems()) {
                 var marker = new ScrollBarMark(fxColor);
                 var position = FxScrollBarUtils.getValueFor(r.getStart().y, screenLineCount + historyLineCount,
                         scrollBar.getMin(), scrollBar.getMax());

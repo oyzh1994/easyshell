@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.fx.plus.keyboard.KeyListener;
-import com.jediterm.terminal.SubstringFinder;
+import cn.oyzh.jeditermfx.terminal.SubstringFinder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -2,6 +2,7 @@ package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.jeditermfx.terminal.SubstringFinder;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -73,16 +74,16 @@ final class JediTermFindComponent {
         return ignoreCaseCheckBox;
     }
 
-    private void updateLabel(@Nullable FindResult result) {
+    private void updateLabel(@Nullable SubstringFinder.FindResult result) {
         if (result == null) {
             label.setText("");
         } else if (!result.getItems().isEmpty()) {
-            FindResult.FindItem selectedItem = result.selectedItem();
+            SubstringFinder.FindResult.FindItem selectedItem = result.selectedItem();
             label.setText(selectedItem.getIndex() + " of " + result.getItems().size());
         }
     }
 
-    void onResultUpdated(FindResult results) {
+    void onResultUpdated(SubstringFinder.FindResult results) {
         updateLabel(results);
     }
 

@@ -472,4 +472,12 @@ public final class TerminalLine {
             myLength = 0;
         }
     }
+
+    public TerminalLine getTypeAheadLine() {
+        return myTypeAheadLine;
+    }
+
+    public void setTypeAheadLine(TerminalLine myTypeAheadLine) {
+        this.myTypeAheadLine = myTypeAheadLine;
+    }
 }

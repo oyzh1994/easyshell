@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 class TerminalSearchUtil {
 
-    static @Nullable FindResult searchInTerminalTextBuffer(@NotNull TerminalTextBuffer textBuffer,
+    static @Nullable SubstringFinder.FindResult searchInTerminalTextBuffer(@NotNull TerminalTextBuffer textBuffer,
                                                                            @NotNull String pattern, boolean ignoreCase) {
         if (pattern.isEmpty()) {
             return null;
