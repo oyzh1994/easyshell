@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
-import com.techsenger.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
+import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
 import javafx.fxml.FXML;
 
 import java.io.IOException;

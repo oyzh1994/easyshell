@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.terminal;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.ReflectUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;
-import com.techsenger.jeditermfx.core.Color;
-import com.techsenger.jeditermfx.terminal.TerminalColor;
-import com.techsenger.jeditermfx.terminal.emulator.ColorPalette;
-import com.techsenger.jeditermfx.terminal.emulator.ColorPaletteImpl;
+import cn.oyzh.jeditermfx.core.Color;
+import cn.oyzh.jeditermfx.terminal.TerminalColor;
+import cn.oyzh.jeditermfx.terminal.emulator.ColorPalette;
+import cn.oyzh.jeditermfx.terminal.emulator.ColorPaletteImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;

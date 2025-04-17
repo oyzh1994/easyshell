@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.terminal;
 import cn.oyzh.common.log.JulLog;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
-import com.techsenger.jeditermfx.app.pty.PtyProcessTtyConnector;
-import com.techsenger.jeditermfx.core.util.TermSize;
-import com.techsenger.jeditermfx.terminal.ui.JediTermFxWidget;
+import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
+import cn.oyzh.jeditermfx.core.util.TermSize;
+import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jetbrains.annotations.NotNull;
 
