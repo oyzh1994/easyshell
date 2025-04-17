@@ -96,10 +96,17 @@ public class ShellCopyIdKeyController extends StageController {
         }
         ShellClient client = ShellClientUtil.newClient(connect);
         StageManager.showMask(() -> {
-            this.message.appendLine("client connecting");
-            client.start(3000);
-            if (!client.isConnected()) {
-                this.message.appendLine("client not connected");
+            try {
+                this.message.appendLine("client connecting");
+                client.start(3000);
+                if (!client.isConnected()) {
+                    this.message.appendLine("client not connected");
+                    MessageBox.warn(I18nHelper.connectFail());
+                    return;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                this.message.appendLine("client connect fail");
                 MessageBox.warn(I18nHelper.connectFail());
                 return;
             }

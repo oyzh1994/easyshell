@@ -13,12 +13,12 @@
        fx:controller="cn.oyzh.easyshell.tabs.connect.server.ShellServerMemoryTabController" text="%base.memory">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
-            <CopySVGGlyph onMousePrimaryClicked="#copyInfo">
+            <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyInfo">
                 <FXHBox.margin>
                     <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
-            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+            <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
                     <Insets left="10" top="7"/>
                 </FXHBox.margin>

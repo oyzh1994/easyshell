@@ -23,34 +23,34 @@
             </ClearableTextField>
             <RefreshSVGGlyph onMousePrimaryClicked="#refreshContainer">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteContainer">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
             <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteContainerForce">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteForceSVGGlyph>
-            <ShellDockerContainerStatusComboBox initIndex="0" fx:id="containerStatus">
+            <ShellDockerContainerStatusComboBox realHeight="24" initIndex="0" fx:id="containerStatus">
                 <FXHBox.margin>
-                    <Insets left="5" top="5"/>
+                    <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </ShellDockerContainerStatusComboBox>
         </FXHBox>
         <ShellDockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FXTableColumn realWidth="110" valueName="containerId" text="%base.id"/>
-                <FXTableColumn realWidth="100" valueName="image" text="%base.image"/>
-                <FXTableColumn flexWidth="100% - 812" valueName="command" text="%base.cmd"/>
-                <FXTableColumn realWidth="200" valueName="created" text="%base.createTime"/>
-                <FXTableColumn realWidth="120" valueName="status" text="%base.status"/>
-                <FXTableColumn realWidth="160" valueName="ports" text="%base.port"/>
-                <FXTableColumn realWidth="100" valueName="names" text="%base.name"/>
+                <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
+                <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
+                <FXTableColumn flexWidth="100% - 794" valueName="command" text="%base.cmd"/>
+                <FXTableColumn prefWidth="200" valueName="created" text="%base.createTime"/>
+                <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
+                <FXTableColumn prefWidth="160" valueName="ports" text="%base.port"/>
+                <FXTableColumn prefWidth="100" valueName="names" text="%base.name"/>
             </columns>
         </ShellDockerContainerTableView>
     </FXVBox>

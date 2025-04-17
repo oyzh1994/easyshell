@@ -8,6 +8,7 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.ProcessSVGGlyph?>
+<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <FXTab fx:id="root" text="%base.process1" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellProcessTabController">
     <graphic>
@@ -17,26 +18,33 @@
         <FXHBox prefHeight="30" flexWidth="100%">
             <ClearableTextField prefWidth="300" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
                 <FXHBox.margin>
-                    <Insets left="5" top="3"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </ClearableTextField>
             <ShellProcessTypeComboBox initIndex="0" fx:id="processType">
                 <FXHBox.margin>
-                    <Insets left="5" top="5"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </ShellProcessTypeComboBox>
+            <SwitchToggleSwitch unselectedText="%base.disableRefresh" selectedText="%base.enableRefresh"
+                                fx:id="refreshBtn" selected="true">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </SwitchToggleSwitch>
         </FXHBox>
-        <ShellProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="processTable" managedBindVisible="true">
+        <ShellProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="processTable"
+                                   managedBindVisible="true">
             <columns>
                 <FXTableColumn valueName="user" text="%base.user" prefWidth="100"/>
                 <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>
-                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="80"/>
-                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="80"/>
+                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="90"/>
+                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="90"/>
                 <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
                 <FXTableColumn valueName="stat" text="%base.stat" prefWidth="80"/>
                 <FXTableColumn valueName="start" text="%base.startAt" prefWidth="80"/>
                 <FXTableColumn valueName="time" text="%base.time" prefWidth="80"/>
-                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 675"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 695"/>
             </columns>
         </ShellProcessInfoTableView>
         <ShellProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="winProcessTable" visible="false"
@@ -44,12 +52,12 @@
             <columns>
                 <FXTableColumn valueName="user" text="%base.user" prefWidth="150"/>
                 <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>
-                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="80"/>
-                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="80"/>
+                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="90"/>
+                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="90"/>
                 <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
                 <FXTableColumn valueName="stat" text="%base.stat" prefWidth="100"/>
                 <FXTableColumn valueName="start" text="%base.startAt" prefWidth="150"/>
-                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 735"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 755"/>
             </columns>
         </ShellProcessInfoTableView>
     </FXVBox>

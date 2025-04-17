@@ -11,20 +11,21 @@
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXTab fx:id="winHosts" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinHostsTabController" text="C:\Windows\System32\drivers\etc\HOSTS">
+       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinHostsTabController"
+       text="C:\Windows\System32\drivers\etc\HOSTS">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
-            <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
-            <CopySVGGlyph onMousePrimaryClicked="#copy">
+            <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
-            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+            <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>

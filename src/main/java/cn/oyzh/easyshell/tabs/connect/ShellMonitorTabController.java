@@ -10,7 +10,10 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.chart.ChartHelper;
 import cn.oyzh.fx.plus.controls.chart.FXLineChart;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.XYChart;
@@ -39,13 +42,15 @@ public class ShellMonitorTabController extends SubTabController {
     private ShellClient client;
 
     /**
-     *
+     * 服务执行对象
      */
     private ShellServerExec serverExec;
 
-    public ShellClient getClient() {
-        return client;
-    }
+    /**
+     * 刷新按钮
+     */
+    @FXML
+    private FXToggleSwitch refreshBtn;
 
     /**
      * 设置客户端
@@ -246,7 +251,19 @@ public class ShellMonitorTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
+                if (this.refreshBtn.isSelected()) {
+                    this.initRefreshTask();
+                }
+            } else {
+                this.closeRefreshTask();
+            }
+        });
+        // 刷新
+        this.refreshBtn.selectedChanged((observableValue, aBoolean, t1) -> {
+            if (t1) {
                 this.initRefreshTask();
+            } else {
+                this.closeRefreshTask();
             }
         });
     }

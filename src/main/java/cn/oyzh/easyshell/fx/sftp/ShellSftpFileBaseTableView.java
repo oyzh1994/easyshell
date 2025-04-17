@@ -269,6 +269,12 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         menuItems.add(MenuItemHelper.separator());
         if (files.size() == 1) {
             ShellSftpFile file = files.getFirst();
+            // 编辑文件
+            FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
+            if (!this.fileEditable(file)) {
+                editFile.setDisable(true);
+            }
+            menuItems.add(editFile);
             // 文件信息
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
             menuItems.add(fileInfo);
@@ -501,29 +507,36 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
     }
 
     /**
-     * 编辑文件
+     * 文件是否可编辑
      *
      * @param file 文件
+     * @return 结果
      */
-    public void editFile(ShellSftpFile file) {
-        if (this.checkInvalid(file)) {
-            return;
-        }
+    protected boolean fileEditable(ShellSftpFile file) {
         if (!file.isFile()) {
-            return;
+            return false;
         }
         if (file.size() > 500 * 1024) {
-            return;
+            return false;
         }
         // 检查类型
         String extName = FileNameUtil.extName(file.getFileName());
-        if (!StringUtil.equalsAnyIgnoreCase(extName,
+        return StringUtil.equalsAnyIgnoreCase(extName,
                 "txt", "text", "log", "yaml", "java",
                 "xml", "json", "htm", "html", "xhtml",
                 "php", "css", "c", "cpp", "rs",
                 "js", "csv", "sql", "md", "ini",
                 "cfg", "sh", "bat", "py", "asp",
-                "aspx", "env", "tsv", "conf")) {
+                "aspx", "env", "tsv", "conf");
+    }
+
+    /**
+     * 编辑文件
+     *
+     * @param file 文件
+     */
+    public void editFile(ShellSftpFile file) {
+        if (!this.fileEditable(file)) {
             return;
         }
         StageAdapter adapter = StageManager.parseStage(ShellSftpFileEditController.class);

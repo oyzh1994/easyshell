@@ -7,7 +7,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+<FXTab xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerExtraTabController" text="%base.extra">
     <FXVBox flexWidth="100%" flexHeight="100%">

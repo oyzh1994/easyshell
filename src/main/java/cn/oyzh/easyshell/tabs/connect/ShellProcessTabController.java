@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -59,6 +60,12 @@ public class ShellProcessTabController extends SubTabController {
      */
     @FXML
     private ShellProcessInfoTableView winProcessTable;
+
+    /**
+     * 刷新按钮
+     */
+    @FXML
+    private FXToggleSwitch refreshBtn;
 
     public ShellClient getClient() {
         return client;
@@ -143,7 +150,11 @@ public class ShellProcessTabController extends SubTabController {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
-                this.initRefreshTask();
+                if (this.refreshBtn.isSelected()) {
+                    this.initRefreshTask();
+                }
+            } else {
+                this.closeRefreshTask();
             }
         });
         // 用户
@@ -157,6 +168,14 @@ public class ShellProcessTabController extends SubTabController {
         // 过滤
         this.filterProcess.addTextChangeListener((observable, oldValue, newValue) -> {
             this.getProcessTable().setFilterText(newValue);
+        });
+        // 刷新
+        this.refreshBtn.selectedChanged((observableValue, aBoolean, t1) -> {
+            if (t1) {
+                this.initRefreshTask();
+            } else {
+                this.closeRefreshTask();
+            }
         });
     }
 

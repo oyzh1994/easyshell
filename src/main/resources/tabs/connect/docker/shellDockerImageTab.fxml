@@ -22,27 +22,27 @@
             </ClearableTextField>
             <RefreshSVGGlyph onMousePrimaryClicked="#refreshImage">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
             <DeleteSVGGlyph onMousePrimaryClicked="#deleteImage">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
             <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteImageForce">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteForceSVGGlyph>
         </FXHBox>
         <ShellDockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FXTableColumn realWidth="120" valueName="imageId" text="%base.id"/>
-                <FXTableColumn realWidth="320" valueName="repository" text="%base.repository"/>
-                <FXTableColumn flexWidth="100% - 820" valueName="tag" text="%base.tag"/>
-                <FXTableColumn realWidth="220" valueName="created" text="%base.createTime"/>
-                <FXTableColumn realWidth="150" valueName="size" text="%base.size"/>
+                <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
+                <FXTableColumn prefWidth="320" valueName="repository" text="%base.repository"/>
+                <FXTableColumn flexWidth="100% - 814" valueName="tag" text="%base.tag"/>
+                <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
+                <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
             </columns>
         </ShellDockerImageTableView>
     </FXVBox>

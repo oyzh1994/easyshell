@@ -16,22 +16,22 @@
        fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigEnvironmentTabController" text="/etc/environment">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
-            <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
-            <ApplySVGGlyph onMousePrimaryClicked="#apply">
+            <ApplySVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </ApplySVGGlyph>
-            <CopySVGGlyph onMousePrimaryClicked="#copy">
+            <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
-            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+            <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
