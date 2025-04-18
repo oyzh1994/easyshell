@@ -2387,4 +2387,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     private Point2D createPoint(ScrollEvent e) {
         return new Point2D(e.getX(), e.getY());
     }
+
+    @Override
+    public void requestFocus() {
+        super.requestFocus();
+        this.canvas.requestFocus();
+    }
 }
