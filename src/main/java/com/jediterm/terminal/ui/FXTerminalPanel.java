@@ -311,12 +311,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void init(@NotNull ScrollBar scrollBar) {
+        initFont();
+
         this.scrollBar = scrollBar;
         this.canvas.heightProperty().bind(this.heightProperty().subtract(2));
         this.canvas.widthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
         this.setChild(this.canvas, scrollBar);
-
-        initFont();
 
 //        this.setPrefSize(this.getPixelWidth(), this.getPixelHeight());
         this.setFocusTraversable(true);
@@ -1209,21 +1209,21 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void addTerminalMouseListener(final TerminalMouseListener listener) {
-        this.canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+        this.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mousePressed(p.x, p.y, new FXMouseEvent(e));
             }
         });
 
-        this.canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
+        this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseReleased(p.x, p.y, new FXMouseEvent(e));
             }
         });
 
-        this.canvas.addEventFilter(ScrollEvent.SCROLL, e -> {
+        this.addEventFilter(ScrollEvent.SCROLL, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 updateSelection(null, true);
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
@@ -1244,14 +1244,14 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         });
 
-        this.canvas.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
+        this.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseMoved(p.x, p.y, new FXMouseEvent(e));
             }
         });
 
-        this.canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+        this.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseDragged(p.x, p.y, new FXMouseEvent(e));
