@@ -1,14 +1,14 @@
 package cn.oyzh.jeditermfx.terminal.ui.hyperlinks;
 
+import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
-import com.jediterm.terminal.ui.TerminalAction;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public final class LinkInfoEx extends LinkInfo {
