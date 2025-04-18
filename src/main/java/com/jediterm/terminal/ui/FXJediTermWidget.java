@@ -7,7 +7,6 @@ import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermDefaultSearchComponent;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermSearchComponent;
 import cn.oyzh.jeditermfx.terminal.ui.PreConnectHandler;
-import cn.oyzh.jeditermfx.terminal.ui.ScrollBarMark;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalWidgetListener;
@@ -30,8 +29,8 @@ import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.model.hyperlinks.AsyncHyperlinkFilter;
 import com.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
 import com.jediterm.terminal.model.hyperlinks.TextProcessing;
-import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollBar;
@@ -43,10 +42,8 @@ import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
@@ -60,6 +57,8 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     protected final FXTerminalPanel myTerminalPanel;
 
+    private final ScrollBar myScrollBar;
+
     protected final JediTerminal myTerminal;
 
     private final AtomicReference<Session> myRunningSession = new AtomicReference<>();
@@ -69,9 +68,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
     private final TerminalTypeAheadManager myTypeAheadManager;
 
     private JediTermSearchComponent myFindComponent;
-//    private JediTermFindComponent myFindComponent;
 
-    //TODO
     @SuppressWarnings("removal")
     private final PreConnectHandler myPreConnectHandler;
 
@@ -95,22 +92,28 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     private volatile TerminalExecutorServiceManager myExecutorServiceManager;
 
-    private final Set<ScrollBarMark> findResultMarkers = new HashSet<>();
+//    private final Set<ScrollBarMark> findResultMarkers = new HashSet<>();
 
     public FXJediTermWidget(@NotNull SettingsProvider settingsProvider) {
         this(80, 24, settingsProvider);
     }
 
     public FXJediTermWidget(int columns, int lines, SettingsProvider settingsProvider) {
+
         mySettingsProvider = settingsProvider;
+
         StyleState styleState = createDefaultStyle();
+
         myTextProcessing = new TextProcessing(settingsProvider.getHyperlinkColor(),
                 settingsProvider.getHyperlinkHighlightingMode());
+
         TerminalTextBuffer terminalTextBuffer = new TerminalTextBuffer(columns, lines, styleState,
                 settingsProvider.getBufferMaxLinesCount(), myTextProcessing);
         myTextProcessing.setTerminalTextBuffer(terminalTextBuffer);
+
         myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
         myTerminal = createTerminal(myTerminalPanel, terminalTextBuffer, styleState);
+
         myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
         myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
         JediTermDebouncerImpl typeAheadDebouncer =
@@ -120,18 +123,23 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         myTypeAheadTerminalModel.addTypeAheadModelListener(myTerminalPanel::repaint);
 
         myTerminal.setModeEnabled(TerminalMode.AltSendsEscape, mySettingsProvider.altSendsEscape());
+
         myTerminalPanel.addTerminalMouseListener(myTerminal);
         myTerminalPanel.setNextProvider(this);
         myTerminalPanel.setCoordAccessor(myTerminal);
 
         myPreConnectHandler = createPreConnectHandler(myTerminal);
         myTerminalPanel.addCustomKeyListener(myPreConnectHandler);
-//        myInnerPanel = new StackPane();
+        myScrollBar = createScrollBar();
+
         this.setFocusTraversable(false);
         var canvasPane = myTerminalPanel;
         VBox.setVgrow(canvasPane, Priority.ALWAYS);
         this.addChild(canvasPane);
-        myTerminalPanel.init(myTerminalPanel.scrollBar);
+
+        myScrollBar.setOrientation(Orientation.VERTICAL);
+
+        myTerminalPanel.init(myScrollBar);
     }
 
     @Override
@@ -139,13 +147,8 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         return this.myTerminalPanel;
     }
 
-    @Override
-    public Dimension2D getPreferredSize() {
-        return new Dimension2D(this.getWidth(), this.getHeight());
-    }
-
     protected ScrollBar createScrollBar() {
-        var scrollBar = new ScrollBar();
+        ScrollBar scrollBar = new ScrollBar();
         return scrollBar;
     }
 
@@ -155,13 +158,13 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         return styleState;
     }
 
-    protected FXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider,
-                                                  @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
+    protected FXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
         return new FXTerminalPanel(settingsProvider, terminalTextBuffer, styleState);
     }
 
     protected @NotNull JediTerminal createTerminal(@NotNull TerminalDisplay display,
-                                                   @NotNull TerminalTextBuffer textBuffer, @NotNull StyleState initialStyleState) {
+                                                   @NotNull TerminalTextBuffer textBuffer,
+                                                   @NotNull StyleState initialStyleState) {
         return new JediTerminal(display, textBuffer, initialStyleState);
     }
 
@@ -321,12 +324,12 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         if (myFindComponent == null) {
             myFindComponent = createSearchComponent();
 
-            final Pane pane = myFindComponent.getComponent();
-            StackPane.setAlignment(pane, Pos.TOP_RIGHT);
+            final Pane component = myFindComponent.getComponent();
+            this.addChild(component);
+            StackPane.setAlignment(component, Pos.TOP_RIGHT);
             ScrollBar scrollBar = (ScrollBar) myTerminalPanel.getChildren().get(1);
-            StackPane.setMargin(pane, new Insets(0, scrollBar.getWidth(), 0, 0));
-            this.addChild(pane);
-            pane.requestFocus();
+            StackPane.setMargin(component, new Insets(0, scrollBar.getWidth(), 0, 0));
+            component.requestFocus();
 
             JediTermSearchComponentListener listener = new JediTermSearchComponentListener() {
                 @Override
@@ -336,7 +339,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
                 @Override
                 public void hideSearchComponent() {
-                    myFindComponent.getComponent().getChildren().clear();
+                    removeChild(component);
                     myFindComponent = null;
                     myTerminalPanel.setFindResult(null);
                     myTerminalPanel.requestFocus();
@@ -376,6 +379,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         SubstringFinder.FindResult results = TerminalSearchUtil.searchInTerminalTextBuffer(getTerminalTextBuffer(), text, ignoreCase);
         myTerminalPanel.setFindResult(results);
         myFindComponent.onResultUpdated(results);
+        myScrollBar.requestLayout();
     }
 
     @Override

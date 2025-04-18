@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.tabs.terminal;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
 import javafx.fxml.FXML;
@@ -24,17 +23,13 @@ public class ShellTerminalTabController extends RichTabController {
      * 根节点
      */
     @FXML
-    private FXVBox root;
+    private ShellDefaultTermWidget term;
 
     private void initWidget() throws IOException {
-        ShellDefaultTermWidget widget = new ShellDefaultTermWidget();
-        ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) widget.createTtyConnector();
-        widget.openSession(connector);
-        widget.onTermination(exitCode -> widget.close());
-        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
-        widget.getComponent().prefWidthProperty().bind(this.root.widthProperty());
-        widget.getComponent().prefHeightProperty().bind(this.root.heightProperty());
-        this.root.setChild(widget.getComponent());
+        ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) term.createTtyConnector();
+        term.openSession(connector);
+        term.onTermination(exitCode -> term.close());
+        term.addHyperlinkFilter(new DefaultHyperlinkFilter());
     }
 
     @Override

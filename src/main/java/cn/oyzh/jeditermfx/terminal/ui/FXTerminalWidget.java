@@ -3,7 +3,6 @@ package cn.oyzh.jeditermfx.terminal.ui;
 import com.jediterm.terminal.TerminalDisplay;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXJediTermWidget;
-import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
@@ -23,8 +22,6 @@ public interface FXTerminalWidget {
     void requestFocus();
 
     boolean canOpenSession();
-
-    Dimension2D getPreferredSize();
 
     TerminalDisplay getTerminalDisplay();
 

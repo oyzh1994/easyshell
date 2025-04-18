@@ -137,7 +137,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     private final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
     //we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
-    public final ScrollBar scrollBar = new ScrollBar();
+    private ScrollBar scrollBar;
 
     /**
      * From TerminalTextBuffer: scrollOrigin row where a scrolling window starts, should be in the range
@@ -263,9 +263,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         var css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
         this.getStylesheets().add(css);
-        this.canvas.heightProperty().bind(this.heightProperty().subtract(2));
-        this.canvas.widthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
-        this.setChild(canvas, scrollBar);
 
         setScrollBarRangeProperties(0, 80, 0, 80);
 
@@ -313,6 +310,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void init(@NotNull ScrollBar scrollBar) {
+        this.scrollBar = scrollBar;
+        this.canvas.heightProperty().bind(this.heightProperty().subtract(2));
+        this.canvas.widthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
+        this.setChild(this.canvas, scrollBar);
+
         initFont();
 
 //        this.setPrefSize(this.getPixelWidth(), this.getPixelHeight());
@@ -1765,6 +1767,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void setScrollBarRangeProperties(int value, int extent, int min, int max) {
+        if (this.scrollBar == null) {
+            return;
+        }
         this.scrollBar.setVisibleAmount(extent);
         this.scrollBar.setMin(min);
         this.scrollBar.setMax(max);
