@@ -2,7 +2,7 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
-import cn.oyzh.jeditermfx.terminal.model.JediTermTypeAheadModel;
+import cn.oyzh.jeditermfx.terminal.model.FXJediTermTypeAheadModel;
 import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermDefaultSearchComponent;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermSearchComponent;
@@ -63,7 +63,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     private final AtomicReference<Session> myRunningSession = new AtomicReference<>();
 
-    private final JediTermTypeAheadModel myTypeAheadTerminalModel;
+    private final FXJediTermTypeAheadModel myTypeAheadTerminalModel;
 
     private final TerminalTypeAheadManager myTypeAheadManager;
 
@@ -114,7 +114,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
         myTerminal = createTerminal(myTerminalPanel, terminalTextBuffer, styleState);
 
-        myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
+        myTypeAheadTerminalModel = new FXJediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
         myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
         JediTermDebouncerImpl typeAheadDebouncer =
                 new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY, getExecutorServiceManager());

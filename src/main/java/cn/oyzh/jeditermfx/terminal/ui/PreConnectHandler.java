@@ -68,7 +68,7 @@ public final class PreConnectHandler implements Questioner, BiConsumer<EventType
             boolean release = false;
             switch (e.getCode()) {
                 case KeyCode.BACK_SPACE:
-                    if (myAnswer.length() > 0) {
+                    if (!myAnswer.isEmpty()) {
                         myTerminal.backspace();
                         myTerminal.eraseInLine(0);
                         myAnswer.deleteCharAt(myAnswer.length() - 1);

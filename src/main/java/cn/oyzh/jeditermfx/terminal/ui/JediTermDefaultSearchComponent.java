@@ -9,6 +9,7 @@ import com.jediterm.terminal.SubstringFinder;
 import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.jediterm.terminal.ui.JediTermSearchComponentListener;
 import javafx.event.EventType;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,12 +30,11 @@ public final class JediTermDefaultSearchComponent extends FXFlowPane implements 
 
     private final ClearableTextField myTextField = new ClearableTextField();
     private final FXLabel label = new FXLabel();
-    private final FXCheckBox ignoreCaseCheckBox = new FXCheckBox(I18nHelper.ignoreCase());
+    private final FXCheckBox ignoreCaseCheckBox = new FXCheckBox(I18nHelper.ignoreCase(), true);
     private final List<JediTermSearchComponentListener> myListeners = new CopyOnWriteArrayList<>();
     private final JediTermSearchComponentListener myMulticaster = createMulticaster();
 
     public JediTermDefaultSearchComponent(FXJediTermWidget jediTermWidget) {
-        ignoreCaseCheckBox.setSelected(true);
         Button next = createNextButton();
         next.setOnAction(e -> this.myMulticaster.selectNextFindResult());
 
@@ -44,11 +44,11 @@ public final class JediTermDefaultSearchComponent extends FXFlowPane implements 
         Button close = new Button("✕");
         close.setOnAction(e -> this.setVisible(false));
 
-        var charSize = jediTermWidget.getTerminalPanel().getCharSize();
+        Dimension2D charSize = jediTermWidget.getTerminalPanel().getCharSize();
         myTextField.setPromptText(I18nHelper.pleaseInputContent());
         this.setMaxSize(charSize.getWidth() * 60, charSize.getHeight() + 3);
-        myTextField.setPrefHeight(24);
         myTextField.setEditable(true);
+        myTextField.setPrefHeight(24);
 
         updateLabel(null);
 
@@ -130,6 +130,7 @@ public final class JediTermDefaultSearchComponent extends FXFlowPane implements 
 
     @Override
     public void requestFocus() {
+        super.requestFocus();
         myTextField.requestFocus();
     }
 

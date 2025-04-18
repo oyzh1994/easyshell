@@ -25,7 +25,7 @@ public interface FXTerminalWidget {
 
     TerminalDisplay getTerminalDisplay();
 
-    void addListener(cn.oyzh.jeditermfx.terminal.ui.TerminalWidgetListener listener);
+    void addListener(TerminalWidgetListener listener);
 
     void removeListener(TerminalWidgetListener listener);
 }

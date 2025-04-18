@@ -15,7 +15,7 @@
  */
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.common.log.JulLog;
+import cn.oyzh.fx.plus.FXConst;
 import com.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
 import com.jediterm.terminal.model.hyperlinks.LinkResult;
@@ -23,8 +23,6 @@ import com.jediterm.terminal.model.hyperlinks.LinkResultItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -63,16 +61,7 @@ public class DefaultHyperlinkFilter implements HyperlinkFilter {
             String url = m.group();
             item = new LinkResultItem(textStartOffset + m.start(), textStartOffset + m.end(), new LinkInfo(() -> {
                 try {
-                    var d = Desktop.getDesktop();
-                    if (d != null) {
-                        EventQueue.invokeLater(() -> {
-                            try {
-                                d.browse(new URI(url));
-                            } catch (Exception ex) {
-                                JulLog.error("Error opening url: {}", url, ex);
-                            }
-                        });
-                    }
+                    FXConst.getHostServices().showDocument(url);
                 } catch (Exception e) {
                     //pass
                 }

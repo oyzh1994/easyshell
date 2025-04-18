@@ -71,9 +71,11 @@ public class TerminalAction {
                 return a.isEnabled(e) && a.actionPerformed(e);
             }
         }
+
         if (actionProvider.getNextProvider() != null) {
             return processEvent(actionProvider.getNextProvider(), e);
         }
+
         return false;
     }
 
@@ -98,16 +100,20 @@ public class TerminalAction {
 
     private @NotNull MenuItem toMenuItem() {
         var itemText = myPresentation.getName();
+
         if (myMnemonicKeyCode != null) {
             var key = myMnemonicKeyCode.getName();
             itemText = itemText.replace(key, "_" + key);
         }
+
         MenuItem menuItem = new MenuItem(itemText);
         if (!myPresentation.getKeyCombinations().isEmpty()) {
             menuItem.setAccelerator(myPresentation.getKeyCombinations().get(0));
         }
+
         menuItem.setOnAction(actionEvent -> actionPerformed(null));
         menuItem.setDisable(!isEnabled(null));
+
         return menuItem;
     }
 
