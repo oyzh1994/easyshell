@@ -1088,43 +1088,63 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return builder.build();
     }
 
-    private void drawInputMethodUncommitedChars(GraphicsContext graphicsContext) {
+    private void drawInputMethodUncommitedChars(GraphicsContext gfx) {
         if (hasUncommittedChars()) {
             double xCoord = (myCursor.getCoordX() + 1) * myCharSize.getWidth() + getInsetX();
+
             double y = myCursor.getCoordY() + 1;
+
             double yCoord = y * myCharSize.getHeight() - 3;
+
             double len = myInputMethodUncommittedChars.length() * myCharSize.getWidth();
-            graphicsContext.setFill(this.windowBackground());
-            graphicsContext.fillRect(xCoord, (y - 1) * myCharSize.getHeight() - 3, len, myCharSize.getHeight());
-            graphicsContext.setFill(this.windowForeground());
-            graphicsContext.setFont(myNormalFont);
-            graphicsContext.fillText(myInputMethodUncommittedChars, xCoord, yCoord);
-            graphicsContext.save();
-            graphicsContext.setLineWidth(1);
-            graphicsContext.setLineCap(StrokeLineCap.ROUND);
-            graphicsContext.setLineJoin(StrokeLineJoin.ROUND);
-            graphicsContext.setMiterLimit(0);
-            graphicsContext.setLineDashes(0, 2, 0, 2);
-            graphicsContext.setLineDashOffset(0);
-            graphicsContext.strokeLine(xCoord, yCoord, xCoord + len, yCoord);
-            graphicsContext.restore();
+
+            gfx.setFill(this.windowBackground());
+            gfx.fillRect(xCoord, (y - 1) * myCharSize.getHeight() - 3, len, myCharSize.getHeight());
+
+            gfx.setFill(this.windowForeground());
+            gfx.setFont(myNormalFont);
+            gfx.fillText(myInputMethodUncommittedChars, xCoord, yCoord);
+
+            gfx.save();
+            gfx.setLineWidth(1);
+            gfx.setLineCap(StrokeLineCap.ROUND);
+            gfx.setLineJoin(StrokeLineJoin.ROUND);
+            gfx.setMiterLimit(0);
+            gfx.setLineDashes(0, 2, 0, 2);
+            gfx.setLineDashOffset(0);
+
+            gfx.strokeLine(xCoord, yCoord, xCoord + len, yCoord);
+            gfx.restore();
         }
     }
 
     private boolean hasUncommittedChars() {
-        return myInputMethodUncommittedChars != null && myInputMethodUncommittedChars.length() > 0;
+        return myInputMethodUncommittedChars != null && !myInputMethodUncommittedChars.isEmpty();
     }
 
     private boolean inSelection(int x, int y) {
         return mySelection.get() != null && mySelection.get().contains(new com.jediterm.core.compatibility.Point(x, y));
     }
 
+    // also called from com.intellij.terminal.JBTerminalPanel
+    public void handleKeyEvent(@NotNull KeyEvent e) {
+        if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+            for (BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener : myCustomKeyListeners) {
+                keyListener.accept(e.getEventType(), e);
+            }
+        } else if (e.getEventType() == KeyEvent.KEY_TYPED) {
+            for (BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener : myCustomKeyListeners) {
+                keyListener.accept(e.getEventType(), e);
+            }
+        }
+    }
+
     public double getPixelWidth() {
-        return Math.round(myCharSize.getWidth() * myTermSize.getColumns() + getInsetX());
+        return myCharSize.getWidth() * myTermSize.getColumns() + getInsetX();
     }
 
     public double getPixelHeight() {
-        return Math.round(myCharSize.getHeight() * myTermSize.getRows());
+        return myCharSize.getHeight() * myTermSize.getRows();
     }
 
     private int getColumnCount() {
@@ -1188,19 +1208,21 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void addTerminalMouseListener(final TerminalMouseListener listener) {
-        this.canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mousePressed(p.x, p.y, new FXMouseEvent(e));
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+
+        this.canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseReleased(p.x, p.y, new FXMouseEvent(e));
             }
         });
-        this.canvas.addEventHandler(ScrollEvent.SCROLL, e -> {
+
+        this.canvas.addEventFilter(ScrollEvent.SCROLL, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 updateSelection(null, true);
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
@@ -1220,13 +1242,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 e.consume();
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+
+        this.canvas.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseMoved(p.x, p.y, new FXMouseEvent(e));
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+
+        this.canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseDragged(p.x, p.y, new FXMouseEvent(e));
@@ -1254,9 +1278,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         // cursor state
         private boolean myCursorIsShown; // blinking state
 
-        private @NotNull CursorShape myDefaultCursorShape = CursorShape.BLINK_BLOCK;
-
         private final Point myCursorCoordinates = new Point();
+
+        private @NotNull CursorShape myDefaultCursorShape = CursorShape.BLINK_BLOCK;
 
         private @Nullable CursorShape myShape;
 
