@@ -1210,19 +1210,21 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void addTerminalMouseListener(final TerminalMouseListener listener) {
-        this.canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+        this.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mousePressed(p.x, p.y, new FXMouseEvent(e));
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+
+        this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseReleased(p.x, p.y, new FXMouseEvent(e));
             }
         });
-        this.canvas.addEventHandler(ScrollEvent.SCROLL, e -> {
+
+        this.addEventFilter(ScrollEvent.SCROLL, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 updateSelection(null, true);
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
@@ -1242,13 +1244,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 e.consume();
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+
+        this.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseMoved(p.x, p.y, new FXMouseEvent(e));
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+
+        this.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseDragged(p.x, p.y, new FXMouseEvent(e));
@@ -1276,9 +1280,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         // cursor state
         private boolean myCursorIsShown; // blinking state
 
-        private @NotNull CursorShape myDefaultCursorShape = CursorShape.BLINK_BLOCK;
-
         private final Point myCursorCoordinates = new Point();
+
+        private @NotNull CursorShape myDefaultCursorShape = CursorShape.BLINK_BLOCK;
 
         private @Nullable CursorShape myShape;
 
@@ -1329,7 +1333,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         }
 
         public void changeStateIfNeeded() {
-            if (!canvas.isFocused()) {
+            if (!FXTerminalPanel.this.isFocused()) {
                 return;
             }
             long currentTime = System.currentTimeMillis();
@@ -1352,13 +1356,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             if (!myShouldDrawCursor) {
                 return TerminalCursorState.HIDDEN;
             }
-            if (!canvas.isFocused()) {
+            if (!FXTerminalPanel.this.isFocused()) {
                 return TerminalCursorState.NO_FOCUS;
             }
             return computeBlinkingState();
         }
 
-        void drawCursor(String c, GraphicsContext graphicsContext, TextStyle style) {
+        void drawCursor(String c, GraphicsContext gfx, TextStyle style) {
             TerminalCursorState state = computeCursorState();
 
             // hidden: do nothing
@@ -1376,40 +1380,39 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             CharBuffer buf = new CharBuffer(c);
             double xCoord = x * myCharSize.getWidth() + getInsetX();
             double yCoord = y * myCharSize.getHeight();
-            double textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(),
-                    mySettingsProvider.ambiguousCharsAreDoubleWidth());
+            double textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(), mySettingsProvider.ambiguousCharsAreDoubleWidth());
             double height = Math.min(myCharSize.getHeight(), canvas.getHeight() - yCoord);
             double width = Math.min(textLength * FXTerminalPanel.this.myCharSize.getWidth(), canvas.getWidth() - xCoord);
             int lineStrokeSize = 2;
 
-            var fgColor = getEffectiveForeground(style);
+            javafx.scene.paint.Color fgColor = getEffectiveForeground(style);
             TextStyle inversedStyle = getInversedStyle(style);
-            var inverseBg = getEffectiveBackground(inversedStyle);
+            javafx.scene.paint.Color inverseBg = getEffectiveBackground(inversedStyle);
 
             switch (getEffectiveShape()) {
                 case BLINK_BLOCK:
                 case STEADY_BLOCK:
                     if (state == TerminalCursorState.SHOWING) {
-                        graphicsContext.setFill(inverseBg);
-                        graphicsContext.fillRect(xCoord, yCoord, width, height);
+                        gfx.setFill(inverseBg);
+                        gfx.fillRect(xCoord, yCoord, width, height);
                         drawCharacters(x, y, inversedStyle, buf, graphicsContext);
                     } else {
-                        graphicsContext.setStroke(fgColor);
-                        graphicsContext.setLineWidth(1.0);
-                        graphicsContext.strokeRect(xCoord, yCoord, width, height);
+                        gfx.setStroke(fgColor);
+                        gfx.setLineWidth(1.0);
+                        gfx.strokeRect(xCoord, yCoord, width, height);
                     }
                     break;
 
                 case BLINK_UNDERLINE:
                 case STEADY_UNDERLINE:
-                    graphicsContext.setFill(fgColor);
-                    graphicsContext.fillRect(xCoord, yCoord + height, width, lineStrokeSize);
+                    gfx.setFill(fgColor);
+                    gfx.fillRect(xCoord, yCoord + height, width, lineStrokeSize);
                     break;
 
                 case BLINK_VERTICAL_BAR:
                 case STEADY_VERTICAL_BAR:
-                    graphicsContext.setFill(fgColor);
-                    graphicsContext.fillRect(xCoord, yCoord, lineStrokeSize, height);
+                    gfx.setFill(fgColor);
+                    gfx.fillRect(xCoord, yCoord, lineStrokeSize, height);
                     break;
             }
         }
@@ -1447,92 +1450,58 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return builder.build();
     }
 
-    private void drawCharacters(int x, int y, TextStyle style, CharBuffer buf, GraphicsContext graphicsContext) {
-        drawCharacters(x, y, style, buf, graphicsContext, true);
+    private void drawCharacters(int x, int y, TextStyle style, CharBuffer buf, GraphicsContext gfx) {
+        drawCharacters(x, y, style, buf, gfx, true);
     }
 
-    private void drawCharacters(int x, int y, TextStyle style, CharBuffer buf, GraphicsContext graphicsContext, boolean includeSpaceBetweenLines) {
+    private void drawCharacters(int x, int y, TextStyle style, CharBuffer buf, GraphicsContext gfx,
+                                boolean includeSpaceBetweenLines) {
         if (myTextBlinkingTracker.shouldBlinkNow(style)) {
             style = getInversedStyle(style);
         }
+
         double xCoord = x * myCharSize.getWidth() + getInsetX();
-        double yCoord = y * myCharSize.getHeight() + (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines / 2);
+        double yCoord = y * myCharSize.getHeight() + (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines / 2.0);
+
         if (xCoord < 0 || xCoord > this.canvas.getWidth() || yCoord < 0 || yCoord > this.canvas.getHeight()) {
             return;
         }
-        int textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(),
-                mySettingsProvider.ambiguousCharsAreDoubleWidth());
-        double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines),
-                this.canvas.getHeight() - yCoord);
+
+        int textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(), mySettingsProvider.ambiguousCharsAreDoubleWidth());
+        double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), this.canvas.getHeight() - yCoord);
         double width = Math.min(textLength * this.myCharSize.getWidth(), this.canvas.getWidth() - xCoord);
-        boolean shouldUnderline = style.hasOption(TextStyle.Option.UNDERLINED);
+
         if (style instanceof HyperlinkStyle) {
             HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
-            switch (mySettingsProvider.getHyperlinkHighlightingMode()) {
-                case ALWAYS:
-                    style = provideOriginalStyle(hyperlinkStyle);
-                    shouldUnderline = true;
-                    break;
-//                case ALWAYS_WITH_ORIGINAL_COLOR:
-//                    style = provideOriginalStyle(hyperlinkStyle);
-//                    shouldUnderline = true;
-//                    break;
-//                case ALWAYS_WITH_CUSTOM_COLOR:
-//                    style = hyperlinkStyle.getCustomStyle();
-//                    shouldUnderline = true;
-//                    break;
-                case NEVER:
-                    style = provideOriginalStyle(hyperlinkStyle);
-                    shouldUnderline = style.hasOption(TextStyle.Option.UNDERLINED);
-                    break;
-//                case NEVER_WITH_ORIGINAL_COLOR:
-//                    style = provideOriginalStyle(hyperlinkStyle);
-//                    shouldUnderline = style.hasOption(Option.UNDERLINED);
-//                    break;
-//                case NEVER_WITH_CUSTOM_COLOR:
-//                    style = hyperlinkStyle.getCustomStyle();
-//                    shouldUnderline = hyperlinkStyle.getPrevTextStyle().hasOption(Option.UNDERLINED);
-//                    break;
-                case HOVER:
-                    style = provideOriginalStyle(hyperlinkStyle);
-                    shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
-                    break;
-//                case HOVER_WITH_ORIGINAL_COLOR:
-//                    style = provideOriginalStyle(hyperlinkStyle);
-//                    shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
-//                    break;
-//                case HOVER_WITH_CUSTOM_COLOR:
-//                    style = hyperlinkStyle.getCustomStyle();
-//                    shouldUnderline = (isHoveredHyperlink(hyperlinkStyle)) ? true : false;
-//                    break;
-//                case HOVER_WITH_BOTH_COLORS:
-//                    if (isHoveredHyperlink(hyperlinkStyle)) {
-//                        style = hyperlinkStyle.getCustomStyle();
-//                        shouldUnderline = true;
-//                    } else {
-//                        style = provideOriginalStyle(hyperlinkStyle);
-//                        shouldUnderline = false;
-//                    }
-//                    break;
-                default:
-                    throw new AssertionError();
+
+            if (hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.ALWAYS || (isHoveredHyperlink(hyperlinkStyle) && hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.HOVER)) {
+
+                // substitute text style with the hyperlink highlight style if applicable
+                style = hyperlinkStyle.getHighlightStyle();
             }
         }
+
         javafx.scene.paint.Color backgroundColor = getEffectiveBackground(style);
-        graphicsContext.setFill(backgroundColor);
-        graphicsContext.fillRect(xCoord, yCoord, width, height);
+        gfx.setFill(backgroundColor);
+        gfx.fillRect(xCoord,
+                yCoord,
+                width,
+                height);
+
         if (buf.isNul()) {
             return; // nothing more to do
         }
-        var color = getStyleForeground(style);
-        graphicsContext.setFill(color);
-        graphicsContext.setStroke(color);
-        drawChars(x, y, buf, style);
+
+        gfx.setFill(getStyleForeground(style));
+
+        drawChars(x, y, buf, style, gfx);
+
+        boolean shouldUnderline = style.hasOption(TextStyle.Option.UNDERLINED);
         if (shouldUnderline) {
-            double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2 - myDescent;
+            double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - myDescent;
             double lineY = baseLine + 3;
-            graphicsContext.setLineWidth(1.0);
-            graphicsContext.strokeLine(xCoord, lineY, (x + textLength) * myCharSize.getWidth() + getInsetX(), lineY);
+            gfx.setLineWidth(1.0);
+            gfx.strokeLine(xCoord, lineY, (x + textLength) * myCharSize.getWidth() + getInsetX(), lineY);
         }
     }
 
@@ -1560,7 +1529,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      * Draw every char in separate terminal cell to guaranty equal width for different lines.
      * Nevertheless, to improve kerning we draw word characters as one block for monospaced fonts.
      */
-    private void drawChars(int x, int y, @NotNull CharBuffer buf, @NotNull TextStyle style) {
+    private void drawChars(int x, int y, @NotNull CharBuffer buf, @NotNull TextStyle style, @NotNull GraphicsContext gfx) {
         // workaround to fix Swing bad rendering of bold special chars on Linux
         // TODO required for italic?
         CharBuffer renderingBuffer;
@@ -1569,6 +1538,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         } else {
             renderingBuffer = buf;
         }
+
         BreakIterator iterator = BreakIterator.getCharacterInstance();
         char[] text = renderingBuffer.clone().getBuf();
         iterator.setText(new String(text));
@@ -1582,30 +1552,21 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 continue; // nothing to draw
             }
             Font font = getFontToDisplay(text, startOffset, effectiveEndOffset, style);
-            graphicsContext.setFont(font);
+            gfx.setFont(font);
             var str = new String(text, startOffset, effectiveEndOffset - startOffset);
-            //var fontMetrics = FxFontMetrics.create(font, str);
-            //double descent = fontMetrics.getDescent();
             double descent = myDescent;
-            double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2 - descent;
+            double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - descent;
             double charWidth = myCharSize.getWidth();
             double xCoord = (x + startOffset) * charWidth + getInsetX();
-            double yCoord = y * myCharSize.getHeight() + mySpaceBetweenLines / 2;
-            graphicsContext.save();
-            graphicsContext.beginPath();
-            //Important! JavaFX clip bug. It is necessary to use integers for setting clip shape otherwise clip will be slow
-            //see https://bugs.openjdk.org/browse/JDK-8335184
-            graphicsContext.rect(
-                    Math.round(xCoord),
-                    Math.round(yCoord),
-                    Math.round(this.canvas.getWidth() - xCoord),
-                    Math.round(this.canvas.getHeight() - yCoord));
-            graphicsContext.closePath();
-            graphicsContext.clip();
+            double yCoord = y * myCharSize.getHeight() + mySpaceBetweenLines / 2.0;
+            gfx.save();
+            gfx.beginPath();
+            gfx.rect(Math.round(xCoord), Math.round(yCoord), Math.round(this.getWidth() - xCoord), Math.round(this.getHeight() - yCoord));
+            gfx.closePath();
+            gfx.clip();
+
             int emptyCells = endOffset - startOffset;
             if (emptyCells >= 2) {
-                //int drawnWidth = gfx.getFontMetrics(font).charsWidth(text, startOffset, effectiveEndOffset - startOffset);
-                //double drawnWidth = fontMetrics.getWidth();
                 double drawnWidth = myCharSize.getWidth();
                 double emptySpace = Math.max(0, emptyCells * charWidth - drawnWidth);
                 // paint a Unicode symbol closer to the center
@@ -1614,8 +1575,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             xCoord = Math.round(xCoord);
             baseLine = Math.round(baseLine);
             //JulLog.debug("Drawing {} at {}:{}", str, xCoord, baseLine);
-            graphicsContext.fillText(str, xCoord, baseLine);
-            graphicsContext.restore();
+            gfx.fillText(str, xCoord, baseLine);
+            gfx.restore();
+
             startOffset = endOffset;
         }
     }
