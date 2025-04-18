@@ -2,13 +2,10 @@ package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
-import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.SubstringFinder;
 import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.jediterm.terminal.ui.JediTermSearchComponentListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,13 +15,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public final class JediTermDefaultSearchComponent extends FXHBox implements JediTermSearchComponent {
 

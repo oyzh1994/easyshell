@@ -2,17 +2,17 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.event.Event;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.jeditermfx.terminal.ui.BlinkingTextTracker;
 import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
 import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
 import cn.oyzh.jeditermfx.terminal.ui.FXTransformers;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
 import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.LinkInfoEx;
 import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseEvent;
 import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseWheelEvent;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
-import cn.oyzh.jeditermfx.terminal.ui.BlinkingTextTracker;
 import com.jediterm.core.TerminalCoordinates;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.util.TermSize;
@@ -44,13 +44,13 @@ import com.jediterm.terminal.model.TerminalModelListener;
 import com.jediterm.terminal.model.TerminalSelection;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
+import com.jediterm.terminal.model.hyperlinks.TextProcessing;
 import com.jediterm.terminal.util.CharUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -78,7 +78,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -93,10 +92,11 @@ import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.EventQueue;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyListener;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.text.AttributedCharacterIterator;
@@ -112,32 +112,32 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 
-public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider {
+public class FXTerminalPanel extends FXHBox implements TerminalDisplay, TerminalActionProvider {
 
     private static final long serialVersionUID = -1048763516632093014L;
 
     public static final double SCROLL_SPEED = 0.05;
 
-    private static class CanvasPane extends Pane {
-
-        private final Canvas canvas;
-
-        public CanvasPane(Canvas canvas) {
-            this.canvas = canvas;
-            getChildren().addAll(canvas);
-            canvas.widthProperty().bind(this.widthProperty());
-            canvas.heightProperty().bind(this.heightProperty());
-        }
-    }
+//    private static class CanvasPane extends Pane {
+//
+//        private final Canvas canvas;
+//
+//        public CanvasPane(Canvas canvas) {
+//            this.canvas = canvas;
+//            getChildren().addAll(canvas);
+//            canvas.widthProperty().bind(this.widthProperty());
+//            canvas.heightProperty().bind(this.heightProperty());
+//        }
+//    }
 
     private final Canvas canvas = new Canvas();
 
-    private final CanvasPane canvasPane = new CanvasPane(canvas);
+//    private final CanvasPane canvasPane = new CanvasPane(canvas);
 
     private final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
     //we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
-    private final ScrollBar scrollBar = new ScrollBar();
+    public final ScrollBar scrollBar = new ScrollBar();
 
     /**
      * From TerminalTextBuffer: scrollOrigin row where a scrolling window starts, should be in the range
@@ -147,7 +147,7 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
 
     private boolean scrollBarThumbVisible = true;
 
-    private final HBox pane = new HBox(canvasPane, scrollBar);
+//    private final HBox pane = new HBox(canvasPane, scrollBar);
 
     private ContextMenu popup;
 
@@ -260,44 +260,24 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         myTermSize = new TermSize(terminalTextBuffer.getWidth(), terminalTextBuffer.getHeight());
         myMaxFPS = mySettingsProvider.maxRefreshRate();
         myCopyPasteHandler = createCopyPasteHandler();
+
         var css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
-        this.pane.getStylesheets().add(css);
+        this.getStylesheets().add(css);
+        this.canvas.heightProperty().bind(this.heightProperty().subtract(2));
+        this.canvas.widthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
+        this.setChild(canvas, scrollBar);
+
         setScrollBarRangeProperties(0, 80, 0, 80);
+
         updateScrolling(true);
+
         terminalTextBuffer.addModelListener(this::repaint);
-//        terminalTextBuffer.addTypeAheadModelListener(this::repaint);
         terminalTextBuffer.addHistoryBufferListener(() -> myHistoryBufferLineCountChanged.set(true));
         mySelection.addListener((ov, oldV, newV) -> updateSelectedText());
-    }
-
-    public ObjectProperty<TerminalSelection> selectionProperty() {
-        return mySelection;
-    }
-
-    /**
-     * Returns selected text property. The text is determined only when the user has finished making a selection.
-     * This is done for performance reasons.
-     *
-     * @return
-     */
-    public ReadOnlyStringProperty selectedTextProperty() {
-        return selectedText.getReadOnlyProperty();
-    }
-
-    public BooleanProperty findResultHighlightedProperty() {
-        return findResultHighlighted;
-    }
-
-    public Pane getPane() {
-        return pane;
-    }
-
-    public ScrollBar getScrollBar() {
-        return this.scrollBar;
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
+        TextProcessing textProcessing = terminalTextBuffer.getTextProcessing$core();
+        if (textProcessing != null) {
+            textProcessing.addHyperlinkListener(this::repaint);
+        }
     }
 
     void setTypeAheadManager(@NotNull TerminalTypeAheadManager typeAheadManager) {
@@ -309,8 +289,17 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         return new DefaultTerminalCopyPasteHandler();
     }
 
+    public void repaint() {
+        needRepaint.set(true);
+    }
+
+    private void doRepaint() {
+        this.paintComponent(this.graphicsContext);
+    }
+
     protected void reinitFontAndResize() {
         initFont();
+
         sizeTerminalFromComponent();
     }
 
@@ -319,18 +308,20 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         myBoldFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
         myItalicFont = Font.font(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
         myBoldItalicFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
+
         establishFontMetrics();
     }
 
-    public void init() {
+    public void init(@NotNull ScrollBar scrollBar) {
         initFont();
-        HBox.setHgrow(canvasPane, Priority.ALWAYS);
-        this.canvasPane.setPrefHeight(getPixelHeight());
-        this.canvasPane.setPrefWidth(getPixelWidth());
+
+        HBox.setHgrow(canvas, Priority.ALWAYS);
+//        this.canvas.setHeight(getPixelHeight());
+//        this.canvas.setWidth(getPixelWidth());
         this.canvas.setFocusTraversable(true);
         this.canvas.setCache(true);
         this.canvas.requestFocus();
-        this.scrollBar.setOrientation(Orientation.VERTICAL);
+        scrollBar.setOrientation(Orientation.VERTICAL);
         if (mySettingsProvider.useAntialiasing()) {
             //Important! FontSmoothingType.LCD is very slow
             graphicsContext.setFontSmoothingType(FontSmoothingType.GRAY);
@@ -395,10 +386,10 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         });
         this.canvas.inputMethodRequestsProperty().set(new MyInputMethodRequests());
         this.canvas.setOnInputMethodTextChanged(e -> processInputMethodEvent(e));
-        this.canvasPane.widthProperty().addListener((ov, oldV, newV) -> {
+        this.canvas.widthProperty().addListener((ov, oldV, newV) -> {
             sizeTerminalFromComponent();
         });
-        this.canvasPane.heightProperty().addListener((ov, oldV, newV) -> {
+        this.canvas.heightProperty().addListener((ov, oldV, newV) -> {
             sizeTerminalFromComponent();
         });
         myFillCharacterBackgroundIncludingLineSpacing
@@ -502,7 +493,7 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
             popup.setOnHidden(popupEvent -> {
                 popup = null;
             });
-            popup.show(this.canvasPane, e.getScreenX(), e.getScreenY());
+            popup.show(this.canvas, e.getScreenX(), e.getScreenY());
         }
         repaint();
     }
@@ -528,14 +519,6 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
 
     private boolean isFollowLinkEvent(@NotNull MouseEvent e) {
         return myCursorType == Cursor.HAND && e.getButton() == MouseButton.PRIMARY;
-    }
-
-    private Point2D createPoint(MouseEvent e) {
-        return new Point2D(e.getX(), e.getY());
-    }
-
-    private Point2D createPoint(ScrollEvent e) {
-        return new Point2D(e.getX(), e.getY());
     }
 
     protected void handleMouseWheelEvent(@NotNull ScrollEvent e) {
@@ -609,10 +592,6 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         return null;
     }
 
-    public void repaint() {
-        this.needRepaint.set(true);
-    }
-
     private void updateCursor(Cursor cursorType) {
         if (cursorType != myCursorType) {
             myCursorType = cursorType;
@@ -661,7 +640,7 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         repaint();
     }
 
-    public SubstringFinder.FindResult getFindResult() {
+    public @Nullable SubstringFinder.FindResult getFindResult() {
         return myFindResult;
     }
 
@@ -759,19 +738,19 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         }
     }
 
-    public void pageUp() {
+    private void pageUp() {
         moveScrollBar(-myTermSize.getRows());
     }
 
-    public void pageDown() {
+    private void pageDown() {
         moveScrollBar(myTermSize.getRows());
     }
 
-    public void scrollUp() {
+    private void scrollUp() {
         moveScrollBar(-1);
     }
 
-    public void scrollDown() {
+    private void scrollDown() {
         moveScrollBar(1);
     }
 
@@ -847,9 +826,9 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
     }
 
     public @Nullable TermSize getTerminalSizeFromComponent() {
-        int columns = ((int) Math.round(this.canvasPane.getWidth()) - getInsetX())
+        int columns = ((int) Math.round(this.canvas.getWidth()) - getInsetX())
                 / (int) Math.round(myCharSize.getWidth());
-        int rows = (int) Math.round(this.canvasPane.getHeight()) / (int) Math.round(myCharSize.getHeight());
+        int rows = (int) Math.round(this.canvas.getHeight()) / (int) Math.round(myCharSize.getHeight());
         return rows > 0 && columns > 0 ? new TermSize(columns, rows) : null;
     }
 
@@ -884,8 +863,8 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
     @Override
     public void onResize(@NotNull TermSize newTermSize, @NotNull RequestOrigin origin) {
         myTermSize = newTermSize;
-        this.canvasPane.setPrefHeight(getPixelHeight());
-        this.canvasPane.setPrefWidth(getPixelWidth());
+//        this.canvas.setWidth(getPixelHeight());
+//        this.canvas.setHeight(getPixelWidth());
         Platform.runLater(() -> updateScrolling(true));
     }
 
@@ -947,17 +926,17 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         return Character.isLetterOrDigit(character);
     }
 
-    public @NotNull javafx.scene.paint.Color getBackground() {
+    public @NotNull javafx.scene.paint.Color windowBackground() {
         return FXTransformers.toFxColor(getWindowBackground());
     }
 
-    public @NotNull javafx.scene.paint.Color getForeground() {
+    public @NotNull javafx.scene.paint.Color windowForeground() {
         return FXTransformers.toFxColor(getWindowForeground());
     }
 
-    private void doRepaint() {
+    public void paintComponent(GraphicsContext graphicsContext) {
         resetColorCache();
-        graphicsContext.setFill(getBackground());
+        graphicsContext.setFill(this.windowBackground());
         graphicsContext.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         this.fixScrollBarThumbVisibility();
         try {
@@ -1109,9 +1088,9 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
             double y = myCursor.getCoordY() + 1;
             double yCoord = y * myCharSize.getHeight() - 3;
             double len = myInputMethodUncommittedChars.length() * myCharSize.getWidth();
-            graphicsContext.setFill(getBackground());
+            graphicsContext.setFill(this.windowBackground());
             graphicsContext.fillRect(xCoord, (y - 1) * myCharSize.getHeight() - 3, len, myCharSize.getHeight());
-            graphicsContext.setFill(getForeground());
+            graphicsContext.setFill(this.windowForeground());
             graphicsContext.setFont(myNormalFont);
             graphicsContext.fillText(myInputMethodUncommittedChars, xCoord, yCoord);
             graphicsContext.save();
@@ -1694,7 +1673,7 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
 
     private void drawMargins(double width, double height) {
         //TODO
-        graphicsContext.setFill(getBackground());
+        graphicsContext.setFill(this.windowBackground());
         graphicsContext.fillRect(0, height, this.canvas.getWidth(), this.canvas.getHeight() - height);
         graphicsContext.fillRect(width, 0, this.canvas.getWidth() - width, this.canvas.getHeight());
     }
@@ -2385,5 +2364,13 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
 
     public Dimension2D getCharSize() {
         return myCharSize;
+    }
+
+    private Point2D createPoint(MouseEvent e) {
+        return new Point2D(e.getX(), e.getY());
+    }
+
+    private Point2D createPoint(ScrollEvent e) {
+        return new Point2D(e.getX(), e.getY());
     }
 }

@@ -5,14 +5,13 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.plus.node.NodeUtil;
+import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
-import com.jediterm.terminal.TtyConnector;
 import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
-import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
-import com.jediterm.terminal.ui.FXJediTermWidget;
 import kotlin.text.Charsets;
 
 import java.io.IOException;
@@ -141,13 +140,13 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         return (ShellDefaultTtyConnector) super.getTtyConnector();
     }
 
-    public double getWidth() {
-        return NodeUtil.getWidth(this.getComponent());
-    }
-
-    public double getHeight() {
-        return NodeUtil.getHeight(this.getComponent());
-    }
+//    public double getWidth() {
+//        return NodeUtil.getWidth(this.getComponent());
+//    }
+//
+//    public double getHeight() {
+//        return NodeUtil.getHeight(this.getComponent());
+//    }
 
     public TermSize getTermSize() {
         return this.getTtyConnector().getTermSize();

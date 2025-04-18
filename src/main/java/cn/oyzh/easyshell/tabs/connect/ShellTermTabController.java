@@ -80,8 +80,10 @@ public class ShellTermTabController extends SubTabController {
         }
         // 处理背景
         // 对画板设置透明度
-        Pane terminalPane = (Pane) this.widget.getTerminalPanel().getPane().getChildren().getFirst();
-        Canvas canvas = (Canvas) terminalPane.getChildrenUnmodifiable().getFirst();
+        Pane terminalPane = this.widget.getTerminalPanel();
+        Canvas canvas = (Canvas) terminalPane.getChildren().getFirst();
+//        Pane terminalPane = (Pane) this.widget.getTerminalPanel().getChildren().getFirst();
+//        Canvas canvas = (Canvas) terminalPane.getChildrenUnmodifiable().getFirst();
         canvas.setOpacity(0.7);
         // 背景图片
         String url = connect.getBackgroundImageUrl();
