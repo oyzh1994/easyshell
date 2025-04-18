@@ -2,5 +2,5 @@ package cn.oyzh.jeditermfx.terminal.ui;
 
 public interface TerminalWidgetListener {
 
-    void allSessionsClosed(TerminalWidget widget);
+    void allSessionsClosed(FXTerminalWidget widget);
 }

@@ -28,6 +28,12 @@
             <artifactId>jediterm-core</artifactId>
             <version>3.50</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-ui -->
+        <dependency>
+            <groupId>org.jetbrains.jediterm</groupId>
+            <artifactId>jediterm-ui</artifactId>
+            <version>3.50</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>jediterm</groupId>-->
 <!--            <artifactId>core</artifactId>-->

@@ -2,7 +2,8 @@ package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.jeditermfx.terminal.SubstringFinder;
+import com.jediterm.terminal.SubstringFinder;
+import com.jediterm.terminal.ui.JediTermFxWidget;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,7 +16,7 @@ import javafx.scene.layout.Priority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class JediTermFindComponent {
+public final class JediTermFindComponent {
 
     private final HBox pane = new HBox();
 
@@ -35,7 +36,7 @@ final class JediTermFindComponent {
         prev.setOnAction(e -> onResultUpdated(jediTermWidget.getTerminalPanel().selectPrevFindResultItem()));
         Button close = new Button("\u2715");
         close.setOnAction(e -> jediTermWidget.hideFindComponent());
-        var charSize = jediTermWidget.myTerminalPanel.myCharSize;
+        var charSize = jediTermWidget.getTerminalPanel().getCharSize();
         this.textField.setPromptText(I18nHelper.pleaseInputContent());
         HBox.setHgrow(textField, Priority.ALWAYS);
         pane.setMaxSize(charSize.getWidth() * 60, 30);
@@ -66,11 +67,11 @@ final class JediTermFindComponent {
         });
     }
 
-    TextField getTextField() {
+    public TextField getTextField() {
         return textField;
     }
 
-    CheckBox getIgnoreCaseCheckBox() {
+    public CheckBox getIgnoreCaseCheckBox() {
         return ignoreCaseCheckBox;
     }
 
@@ -83,11 +84,11 @@ final class JediTermFindComponent {
         }
     }
 
-    void onResultUpdated(SubstringFinder.FindResult results) {
+    public void onResultUpdated(SubstringFinder.FindResult results) {
         updateLabel(results);
     }
 
-    @NotNull Pane getPane() {
+    public @NotNull Pane getPane() {
         return this.pane;
     }
 

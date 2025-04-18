@@ -2,6 +2,7 @@ package cn.oyzh.jeditermfx.app;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.pty4j.PtyProcess;
@@ -10,8 +11,7 @@ import cn.oyzh.jeditermfx.app.debug.TerminalDebugUtil;
 import cn.oyzh.jeditermfx.app.pty.LoggingTtyConnector;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
-import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
-import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.ui.JediTermFxWidget;
 import kotlin.collections.ArraysKt;
 import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;

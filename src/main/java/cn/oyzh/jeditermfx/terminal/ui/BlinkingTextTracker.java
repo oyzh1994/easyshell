@@ -2,15 +2,16 @@ package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
 import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.ui.FXTerminalPanel;
 import org.jetbrains.annotations.NotNull;
 
-class BlinkingTextTracker {
+public class BlinkingTextTracker {
 
     private final BlinkTracker slowBlinkTracker = new BlinkTracker();
 
     private final BlinkTracker rapidBlinkTracker = new BlinkTracker();
 
-    void updateState(@NotNull SettingsProvider settingsProvider, @NotNull TerminalPanel panel) {
+    public void updateState(@NotNull SettingsProvider settingsProvider, @NotNull FXTerminalPanel panel) {
         if (settingsProvider.enableTextBlinking()) {
             long currentTime = System.currentTimeMillis();
             boolean slowBlinkStateChanged = slowBlinkTracker.update(currentTime, settingsProvider.slowTextBlinkMs());
@@ -21,7 +22,7 @@ class BlinkingTextTracker {
         }
     }
 
-    boolean shouldBlinkNow(@NotNull TextStyle style) {
+    public boolean shouldBlinkNow(@NotNull TextStyle style) {
         return (style.hasOption(TextStyle.Option.SLOW_BLINK) && slowBlinkTracker.inverse) ||
                 (style.hasOption(TextStyle.Option.RAPID_BLINK) && rapidBlinkTracker.inverse);
     }

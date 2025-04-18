@@ -1,13 +1,22 @@
-package cn.oyzh.jeditermfx.terminal.ui;
+package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.terminal.SubstringFinder;
 import cn.oyzh.jeditermfx.terminal.model.JediTermTypeAheadModel;
+import cn.oyzh.jeditermfx.terminal.ui.DefaultTerminalExecutorServiceManager;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
+import cn.oyzh.jeditermfx.terminal.ui.FxScrollBarUtils;
+import cn.oyzh.jeditermfx.terminal.ui.FxTransformers;
+import cn.oyzh.jeditermfx.terminal.ui.JediTermFindComponent;
+import cn.oyzh.jeditermfx.terminal.ui.ScrollBarMark;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalWidgetListener;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
 import com.jediterm.core.Color;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.typeahead.TypeAheadTerminalModel;
 import com.jediterm.terminal.ProcessTtyConnector;
+import com.jediterm.terminal.SubstringFinder;
 import com.jediterm.terminal.Terminal;
 import com.jediterm.terminal.TerminalDisplay;
 import com.jediterm.terminal.TerminalExecutorServiceManager;
@@ -48,9 +57,9 @@ import java.util.function.Consumer;
 /**
  * JediTermFX terminal widget with UI implemented in JavaFX.
  */
-public class JediTermFxWidget implements TerminalSession, TerminalWidget, TerminalActionProvider {
+public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, TerminalActionProvider {
 
-    protected final TerminalPanel myTerminalPanel;
+    protected final FXTerminalPanel myTerminalPanel;
 
     protected final JediTerminal myTerminal;
 
@@ -152,9 +161,9 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
         return styleState;
     }
 
-    protected TerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider,
-                @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
-        return new TerminalPanel(settingsProvider, terminalTextBuffer, styleState);
+    protected FXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider,
+                                                  @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
+        return new FXTerminalPanel(settingsProvider, terminalTextBuffer, styleState);
     }
 
     protected @NotNull JediTerminal createTerminal(@NotNull TerminalDisplay display,
@@ -172,7 +181,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
         return getTerminalPanel();
     }
 
-    public TerminalPanel getTerminalPanel() {
+    public FXTerminalPanel getTerminalPanel() {
         return myTerminalPanel;
     }
 
@@ -338,7 +347,7 @@ public class JediTermFxWidget implements TerminalSession, TerminalWidget, Termin
         }
     }
 
-    protected void hideFindComponent() {
+    public void hideFindComponent() {
         myInnerPanel.getChildren().remove(myFindComponent.getPane());
         removeFindResultMarkers();
         myFindComponent = null;

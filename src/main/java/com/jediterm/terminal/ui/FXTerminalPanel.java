@@ -1,22 +1,28 @@
-package cn.oyzh.jeditermfx.terminal.ui;
+package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.jeditermfx.terminal.DefaultTerminalCopyPasteHandler;
-import cn.oyzh.jeditermfx.terminal.SubstringFinder;
-import cn.oyzh.jeditermfx.terminal.TerminalCopyPasteHandler;
+import cn.oyzh.jeditermfx.terminal.ui.FxFontMetrics;
+import cn.oyzh.jeditermfx.terminal.ui.FxScrollBarUtils;
+import cn.oyzh.jeditermfx.terminal.ui.FxTransformers;
 import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.LinkInfoEx;
 import cn.oyzh.jeditermfx.terminal.ui.input.FxMouseEvent;
 import cn.oyzh.jeditermfx.terminal.ui.input.FxMouseWheelEvent;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
+import cn.oyzh.jeditermfx.terminal.ui.BlinkingTextTracker;
 import com.jediterm.core.TerminalCoordinates;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.CursorShape;
+import com.jediterm.terminal.DefaultTerminalCopyPasteHandler;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.RequestOrigin;
 import com.jediterm.terminal.StyledTextConsumer;
+import com.jediterm.terminal.SubstringFinder;
 import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TerminalCopyPasteHandler;
 import com.jediterm.terminal.TerminalDisplay;
 import com.jediterm.terminal.TerminalOutputStream;
 import com.jediterm.terminal.TerminalStarter;
@@ -100,7 +106,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
+public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
     private static final long serialVersionUID = -1048763516632093014L;
 
@@ -236,15 +242,15 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
     private boolean myIgnoreNextKeyTypedEvent;
 
-    public TerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer,
-                         @NotNull StyleState styleState) {
+    public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer,
+                           @NotNull StyleState styleState) {
         mySettingsProvider = settingsProvider;
         myTerminalTextBuffer = terminalTextBuffer;
         myStyleState = styleState;
         myTermSize = new TermSize(terminalTextBuffer.getWidth(), terminalTextBuffer.getHeight());
         myMaxFPS = mySettingsProvider.maxRefreshRate();
         myCopyPasteHandler = createCopyPasteHandler();
-        var css = TerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
+        var css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
         this.pane.getStylesheets().add(css);
         setScrollBarRangeProperties(0, 80, 0, 80);
         updateScrolling(true);
@@ -327,7 +333,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
                 return;
             }
             myIgnoreNextKeyTypedEvent = false;
-            if (TerminalAction.processEvent(TerminalPanel.this, e) || processTerminalKeyPressed(e)) {
+            if (TerminalAction.processEvent(FXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
                 e.consume();
                 myIgnoreNextKeyTypedEvent = true;
             }
@@ -687,15 +693,15 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
     static class WeakRedrawTimer implements EventHandler<ActionEvent> {
 
-        private WeakReference<TerminalPanel> ref;
+        private WeakReference<FXTerminalPanel> ref;
 
-        public WeakRedrawTimer(TerminalPanel terminalPanel) {
-            this.ref = new WeakReference<TerminalPanel>(terminalPanel);
+        public WeakRedrawTimer(FXTerminalPanel terminalPanel) {
+            this.ref = new WeakReference<FXTerminalPanel>(terminalPanel);
         }
 
         @Override
         public void handle(ActionEvent e) {
-            TerminalPanel terminalPanel = ref.get();
+            FXTerminalPanel terminalPanel = ref.get();
             if (terminalPanel != null) {
                 terminalPanel.myCursor.changeStateIfNeeded();
                 terminalPanel.myTextBlinkingTracker.updateState(terminalPanel.mySettingsProvider, terminalPanel);
@@ -1338,7 +1344,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
             double textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(),
                     mySettingsProvider.ambiguousCharsAreDoubleWidth());
             double height = Math.min(myCharSize.getHeight(), canvas.getHeight() - yCoord);
-            double width = Math.min(textLength * TerminalPanel.this.myCharSize.getWidth(), canvas.getWidth() - xCoord);
+            double width = Math.min(textLength * FXTerminalPanel.this.myCharSize.getWidth(), canvas.getWidth() - xCoord);
             int lineStrokeSize = 2;
             var fgColor = getEffectiveForeground(style);
             TextStyle inversedStyle = getInversedStyle(style);
@@ -1829,7 +1835,7 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 
                 @Override
                 public TerminalActionProvider getNextProvider() {
-                    return TerminalPanel.this;
+                    return FXTerminalPanel.this;
                 }
 
                 @Override
@@ -2316,4 +2322,8 @@ public class TerminalPanel implements TerminalDisplay, TerminalActionProvider {
 //        mySelection.set(null);
 //        selectedText.set(null);
 //    }
+
+    public Dimension2D getCharSize() {
+        return myCharSize;
+    }
 }

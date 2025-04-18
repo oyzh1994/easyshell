@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.app.debug;
 
 import cn.oyzh.jeditermfx.app.pty.LoggingTtyConnector;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalSession;
+import com.jediterm.terminal.ui.TerminalSession;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;

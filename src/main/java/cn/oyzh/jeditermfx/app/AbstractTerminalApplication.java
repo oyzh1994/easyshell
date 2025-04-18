@@ -3,11 +3,11 @@ package cn.oyzh.jeditermfx.app;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugView;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
-import cn.oyzh.jeditermfx.terminal.ui.JediTermFxWidget;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalPanel;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalWidget;
-import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXTerminalPanel;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
+import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.core.compatibility.Point;
 import com.jediterm.terminal.model.SelectionUtil;
 import com.jediterm.terminal.Terminal;
@@ -80,13 +80,13 @@ public abstract class AbstractTerminalApplication extends Application {
         return mb;
     }
 
-    protected void openSession(TerminalWidget terminal) {
+    protected void openSession(FXTerminalWidget terminal) {
         if (terminal.canOpenSession()) {
             openSession(terminal, createTtyConnector());
         }
     }
 
-    public void openSession(TerminalWidget terminal, TtyConnector ttyConnector) {
+    public void openSession(FXTerminalWidget terminal, TtyConnector ttyConnector) {
         JediTermFxWidget session = terminal.createTerminalSession(ttyConnector);
         if (ttyConnector instanceof JediTermFx.LoggingPtyProcessTtyConnector) {
             ((JediTermFx.LoggingPtyProcessTtyConnector) ttyConnector).setWidget(session);
@@ -134,7 +134,7 @@ public abstract class AbstractTerminalApplication extends Application {
         });
         myDumpSelection.setOnAction(e -> {
             JediTermFxWidget widget = myWidget;
-            TerminalPanel terminalPanel = widget.getTerminalPanel();
+            FXTerminalPanel terminalPanel = widget.getTerminalPanel();
             TerminalSelection selection = terminalPanel.getSelection();
             if (selection != null) {
                 Pair<Point, Point> points = selection.pointsForRun(widget.getTerminal().getTerminalWidth());

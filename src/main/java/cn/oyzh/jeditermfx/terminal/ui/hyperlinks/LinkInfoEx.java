@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui.hyperlinks;
 
-import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
+import com.jediterm.terminal.ui.TerminalAction;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import org.jetbrains.annotations.Contract;
