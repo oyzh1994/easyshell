@@ -315,7 +315,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     public void init(@NotNull ScrollBar scrollBar) {
         initFont();
 
-        this.setPrefSize(this.getPixelWidth(), this.getPixelHeight());
+//        this.setPrefSize(this.getPixelWidth(), this.getPixelHeight());
         this.setFocusTraversable(true);
 
         HBox.setHgrow(canvas, Priority.ALWAYS);
