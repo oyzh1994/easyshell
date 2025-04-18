@@ -2,12 +2,12 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.jeditermfx.terminal.ui.FxFontMetrics;
-import cn.oyzh.jeditermfx.terminal.ui.FxScrollBarUtils;
-import cn.oyzh.jeditermfx.terminal.ui.FxTransformers;
+import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
+import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
+import cn.oyzh.jeditermfx.terminal.ui.FXTransformers;
 import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.LinkInfoEx;
-import cn.oyzh.jeditermfx.terminal.ui.input.FxMouseEvent;
-import cn.oyzh.jeditermfx.terminal.ui.input.FxMouseWheelEvent;
+import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseEvent;
+import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseWheelEvent;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
@@ -683,7 +683,7 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         JulLog.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
                 item.getEnd().x, item.getEnd().y);
         if (mySelection.get().getStart().y < getTerminalTextBuffer().getHeight() / 2) {
-            var value = FxScrollBarUtils.getValueFor(item.getStart().y, historyLineCount + screenLineCount,
+            var value = FXScrollBarUtils.getValueFor(item.getStart().y, historyLineCount + screenLineCount,
                     scrollBar.getMin(), scrollBar.getMax());
             this.scrollBar.setValue(value);
         } else {
@@ -872,12 +872,12 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
     }
 
     private void establishFontMetrics() {
-        var fontMetrics = FxFontMetrics.create(myNormalFont, "W");
+        var fontMetrics = FXFontMetrics.create(myNormalFont, "W");
         final float lineSpacing = getLineSpacing();
         double fontMetricsHeight = fontMetrics.getHeight();
         myCharSize = new Dimension2D(Math.round(fontMetrics.getWidth()), Math.round(Math.ceil(fontMetricsHeight * lineSpacing)));
         mySpaceBetweenLines = Math.max(0, (int) Math.round(((myCharSize.getHeight() - fontMetricsHeight) / 2) * 2));
-        fontMetrics = FxFontMetrics.create(myNormalFont, "qpjg");
+        fontMetrics = FXFontMetrics.create(myNormalFont, "qpjg");
         myDescent = fontMetrics.getDescent();
         if (JulLog.isDebugEnabled()) {
             // The magic +2 here is to give lines a tiny bit of extra height to avoid clipping when rendering some Apple
@@ -930,11 +930,11 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
     }
 
     public @NotNull javafx.scene.paint.Color getBackground() {
-        return FxTransformers.toFxColor(getWindowBackground());
+        return FXTransformers.toFxColor(getWindowBackground());
     }
 
     public @NotNull javafx.scene.paint.Color getForeground() {
-        return FxTransformers.toFxColor(getWindowForeground());
+        return FXTransformers.toFxColor(getWindowForeground());
     }
 
     private void doRepaint() {
@@ -1148,12 +1148,12 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
 
     private @NotNull javafx.scene.paint.Color getEffectiveForeground(@NotNull TextStyle style) {
         com.jediterm.core.Color color = style.hasOption(TextStyle.Option.INVERSE) ? getBackground(style) : getForeground(style);
-        return FxTransformers.toFxColor(color);
+        return FXTransformers.toFxColor(color);
     }
 
     private @NotNull javafx.scene.paint.Color getEffectiveBackground(@NotNull TextStyle style) {
         com.jediterm.core.Color color = style.hasOption(TextStyle.Option.INVERSE) ? getForeground(style) : getBackground(style);
-        return FxTransformers.toFxColor(color);
+        return FXTransformers.toFxColor(color);
     }
 
     private @NotNull com.jediterm.core.Color getForeground(@NotNull TextStyle style) {
@@ -1188,20 +1188,20 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         this.canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
-                listener.mousePressed(p.x, p.y, new FxMouseEvent(e));
+                listener.mousePressed(p.x, p.y, new FXMouseEvent(e));
             }
         });
         this.canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
-                listener.mouseReleased(p.x, p.y, new FxMouseEvent(e));
+                listener.mouseReleased(p.x, p.y, new FXMouseEvent(e));
             }
         });
         this.canvas.addEventHandler(ScrollEvent.SCROLL, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 updateSelection(null, true);
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
-                listener.mouseWheelMoved(p.x, p.y, new FxMouseWheelEvent(e));
+                listener.mouseWheelMoved(p.x, p.y, new FXMouseWheelEvent(e));
             }
             if (myTerminalTextBuffer.isUsingAlternateBuffer() && mySettingsProvider.sendArrowKeysInAlternativeMode()) {
                 //Send Arrow keys instead
@@ -1220,13 +1220,13 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         this.canvas.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
-                listener.mouseMoved(p.x, p.y, new FxMouseEvent(e));
+                listener.mouseMoved(p.x, p.y, new FXMouseEvent(e));
             }
         });
         this.canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
             if (mySettingsProvider.enableMouseReporting() && isRemoteMouseAction(e)) {
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
-                listener.mouseDragged(p.x, p.y, new FxMouseEvent(e));
+                listener.mouseDragged(p.x, p.y, new FXMouseEvent(e));
             }
         });
     }

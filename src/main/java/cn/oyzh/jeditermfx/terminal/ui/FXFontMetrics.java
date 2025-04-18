@@ -5,16 +5,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 
-public class FxFontMetrics {
+public class FXFontMetrics {
 
-    public static FxFontMetrics create(Font font, String str) {
+    public static FXFontMetrics create(Font font, String str) {
         var text = new Text(str);
         text.setFont(font);
         text.applyCss();//TODO???
         var width = text.getLayoutBounds().getWidth();
         var height = text.getLayoutBounds().getHeight();
         var descent = text.getLayoutBounds().getHeight() - text.getBaselineOffset();
-        var metrics = new FxFontMetrics(width, height, descent);
+        var metrics = new FXFontMetrics(width, height, descent);
         JulLog.trace("Created metrics: {} for {}", metrics, font);
         return metrics;
     }
@@ -25,7 +25,7 @@ public class FxFontMetrics {
 
     private final double height;
 
-    private FxFontMetrics(double width, double height, double descent) {
+    private FXFontMetrics(double width, double height, double descent) {
         this.descent = descent;
         this.width = width;
         this.height = height;

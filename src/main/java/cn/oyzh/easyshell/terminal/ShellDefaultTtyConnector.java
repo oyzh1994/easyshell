@@ -5,7 +5,7 @@ import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,7 +101,7 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
         super.write(bytes);
     }
 
-    public void setWidget(JediTermFxWidget widget) {
+    public void setWidget(FXJediTermWidget widget) {
 //        this.textBuffer = widget.getTerminalTextBuffer();
     }
 

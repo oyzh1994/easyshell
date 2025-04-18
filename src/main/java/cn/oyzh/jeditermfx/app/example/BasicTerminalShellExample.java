@@ -7,7 +7,7 @@ import com.jediterm.terminal.TtyConnector;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class BasicTerminalShellExample extends Application {
 
-    private @NotNull JediTermFxWidget createTerminalWidget() {
-        JediTermFxWidget widget = new JediTermFxWidget(80, 24, new DefaultSettingsProvider());
+    private @NotNull FXJediTermWidget createTerminalWidget() {
+        FXJediTermWidget widget = new FXJediTermWidget(80, 24, new DefaultSettingsProvider());
         widget.setTtyConnector(createTtyConnector());
         widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
         widget.start();
@@ -48,7 +48,7 @@ public class BasicTerminalShellExample extends Application {
 
     @Override
     public void start(Stage stage) {
-        JediTermFxWidget widget = createTerminalWidget();
+        FXJediTermWidget widget = createTerminalWidget();
         widget.addListener(terminalWidget -> {
             widget.close(); // terminate the current process and dispose all allocated resources
             JulLog.debug("Closed widget");

@@ -12,7 +12,7 @@ import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import kotlin.text.Charsets;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.function.IntConsumer;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellDefaultTermWidget extends JediTermFxWidget {
+public class ShellDefaultTermWidget extends FXJediTermWidget {
 
     /**
      * 设置
@@ -122,7 +122,7 @@ public class ShellDefaultTermWidget extends JediTermFxWidget {
 
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
-            JediTermFxWidget session = this.createTerminalSession(ttyConnector);
+            FXJediTermWidget session = this.createTerminalSession(ttyConnector);
             if (ttyConnector instanceof ShellDefaultTtyConnector loggingConnector) {
                 loggingConnector.setWidget(session);
             }

@@ -2,10 +2,9 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.jeditermfx.terminal.model.JediTermTypeAheadModel;
-import cn.oyzh.jeditermfx.terminal.ui.DefaultTerminalExecutorServiceManager;
 import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
-import cn.oyzh.jeditermfx.terminal.ui.FxScrollBarUtils;
-import cn.oyzh.jeditermfx.terminal.ui.FxTransformers;
+import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
+import cn.oyzh.jeditermfx.terminal.ui.FXTransformers;
 import cn.oyzh.jeditermfx.terminal.ui.JediTermFindComponent;
 import cn.oyzh.jeditermfx.terminal.ui.ScrollBarMark;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalWidgetListener;
@@ -57,7 +56,7 @@ import java.util.function.Consumer;
 /**
  * JediTermFX terminal widget with UI implemented in JavaFX.
  */
-public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, TerminalActionProvider {
+public class FXJediTermWidget implements TerminalSession, FXTerminalWidget, TerminalActionProvider {
 
     protected final FXTerminalPanel myTerminalPanel;
 
@@ -97,11 +96,11 @@ public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, Term
 
     private final Set<ScrollBarMark> findResultMarkers = new HashSet<>();
 
-    public JediTermFxWidget(@NotNull SettingsProvider settingsProvider) {
+    public FXJediTermWidget(@NotNull SettingsProvider settingsProvider) {
         this(80, 24, settingsProvider);
     }
 
-    public JediTermFxWidget(int columns, int lines, SettingsProvider settingsProvider) {
+    public FXJediTermWidget(int columns, int lines, SettingsProvider settingsProvider) {
         mySettingsProvider = settingsProvider;
         StyleState styleState = createDefaultStyle();
         myTextProcessing = new TextProcessing(settingsProvider.getHyperlinkColor(),
@@ -199,7 +198,7 @@ public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, Term
     }
 
     protected @NotNull TerminalExecutorServiceManager createExecutorServiceManager() {
-        return new DefaultTerminalExecutorServiceManager();
+        return new JediTermExecutorServiceManager();
     }
 
     @SuppressWarnings("unused")
@@ -283,7 +282,7 @@ public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, Term
     }
 
     @Override
-    public JediTermFxWidget createTerminalSession(TtyConnector ttyConnector) {
+    public FXJediTermWidget createTerminalSession(TtyConnector ttyConnector) {
         setTtyConnector(ttyConnector);
         return this;
     }
@@ -368,10 +367,10 @@ public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, Term
             int screenLineCount = myTerminalPanel.getTerminalTextBuffer().getScreenLinesCount();
             Color color = mySettingsProvider.getTerminalColorPalette()
                     .getBackground(Objects.requireNonNull(mySettingsProvider.getFoundPatternColor().getBackground()));
-            var fxColor = FxTransformers.toFxColor(color);
+            var fxColor = FXTransformers.toFxColor(color);
             for (SubstringFinder.FindResult.FindItem r : result.getItems()) {
                 var marker = new ScrollBarMark(fxColor);
-                var position = FxScrollBarUtils.getValueFor(r.getStart().y, screenLineCount + historyLineCount,
+                var position = FXScrollBarUtils.getValueFor(r.getStart().y, screenLineCount + historyLineCount,
                         scrollBar.getMin(), scrollBar.getMax());
                 marker.setPosition(position);
                 if (this.findResultMarkers.add(marker)) {
@@ -444,7 +443,7 @@ public class JediTermFxWidget implements TerminalSession, FXTerminalWidget, Term
                 }
                 try {
                     for (TerminalWidgetListener listener : myListeners) {
-                        listener.allSessionsClosed(JediTermFxWidget.this);
+                        listener.allSessionsClosed(FXJediTermWidget.this);
                     }
                 } catch (Exception e) {
                     JulLog.error("Unhandled exception when closing terminal", e);

@@ -3,7 +3,7 @@ package cn.oyzh.jeditermfx.terminal.ui;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.SubstringFinder;
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -28,7 +28,7 @@ public final class JediTermFindComponent {
     private final CheckBox ignoreCaseCheckBox = new CheckBox(I18nHelper.ignoreCase());
 //    private final CheckBox ignoreCaseCheckBox = new CheckBox("Ignore Case");
 
-    public JediTermFindComponent(JediTermFxWidget jediTermWidget) {
+    public JediTermFindComponent(FXJediTermWidget jediTermWidget) {
         this.ignoreCaseCheckBox.setSelected(true);
         Button next = new Button("\u25BC");
         next.setOnAction(e -> onResultUpdated(jediTermWidget.getTerminalPanel().selectNextFindResultItem()));

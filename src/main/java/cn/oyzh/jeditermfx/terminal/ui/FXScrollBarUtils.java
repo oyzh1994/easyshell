@@ -1,6 +1,6 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-public class FxScrollBarUtils {
+public class FXScrollBarUtils {
 
     public static double getValueFor(int lineIndex, int totalLines, double scrollBarMin, double scrollBarMax) {
         double result;

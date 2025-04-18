@@ -1,6 +1,6 @@
 package cn.oyzh.jeditermfx.app.example;
 
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.terminal.TtyConnector;
 import javafx.application.Application;
@@ -24,8 +24,8 @@ public class BasicTerminalExample extends Application {
         writer.write("World\r\n");
     }
 
-    private static @NotNull JediTermFxWidget createTerminalWidget() {
-        JediTermFxWidget widget = new JediTermFxWidget(80, 24, new DefaultSettingsProvider());
+    private static @NotNull FXJediTermWidget createTerminalWidget() {
+        FXJediTermWidget widget = new FXJediTermWidget(80, 24, new DefaultSettingsProvider());
         try (var terminalWriter = new PipedWriter()) {
             widget.setTtyConnector(new ExampleTtyConnector(terminalWriter));
             widget.start();

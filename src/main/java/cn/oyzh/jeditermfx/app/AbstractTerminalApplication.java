@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugView;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
 import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
 import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
@@ -34,7 +34,7 @@ public abstract class AbstractTerminalApplication extends Application {
 
     private Stage myBufferStage;
 
-    private JediTermFxWidget myWidget;
+    private FXJediTermWidget myWidget;
 
     private final MenuItem myShowBuffersAction = new MenuItem("Show buffers");
 
@@ -87,7 +87,7 @@ public abstract class AbstractTerminalApplication extends Application {
     }
 
     public void openSession(FXTerminalWidget terminal, TtyConnector ttyConnector) {
-        JediTermFxWidget session = terminal.createTerminalSession(ttyConnector);
+        FXJediTermWidget session = terminal.createTerminalSession(ttyConnector);
         if (ttyConnector instanceof JediTermFx.LoggingPtyProcessTtyConnector) {
             ((JediTermFx.LoggingPtyProcessTtyConnector) ttyConnector).setWidget(session);
         }
@@ -133,7 +133,7 @@ public abstract class AbstractTerminalApplication extends Application {
             JulLog.info(terminal.getTerminalWidth() + "x" + terminal.getTerminalHeight());
         });
         myDumpSelection.setOnAction(e -> {
-            JediTermFxWidget widget = myWidget;
+            FXJediTermWidget widget = myWidget;
             FXTerminalPanel terminalPanel = widget.getTerminalPanel();
             TerminalSelection selection = terminalPanel.getSelection();
             if (selection != null) {
@@ -161,14 +161,14 @@ public abstract class AbstractTerminalApplication extends Application {
         });
     }
 
-    private static void onTermination(@NotNull JediTermFxWidget widget, @NotNull IntConsumer terminationCallback) {
+    private static void onTermination(@NotNull FXJediTermWidget widget, @NotNull IntConsumer terminationCallback) {
         new TtyConnectorWaitFor(widget.getTtyConnector(),
                 widget.getExecutorServiceManager().getUnboundedExecutorService(),
                 terminationCallback);
     }
 
-    protected JediTermFxWidget createTerminalWidget(@NotNull SettingsProvider settingsProvider) {
-        return new JediTermFxWidget(settingsProvider);
+    protected FXJediTermWidget createTerminalWidget(@NotNull SettingsProvider settingsProvider) {
+        return new FXJediTermWidget(settingsProvider);
     }
 
 //TODO?

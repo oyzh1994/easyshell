@@ -11,7 +11,7 @@ import cn.oyzh.jeditermfx.app.debug.TerminalDebugUtil;
 import cn.oyzh.jeditermfx.app.pty.LoggingTtyConnector;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
-import com.jediterm.terminal.ui.JediTermFxWidget;
+import com.jediterm.terminal.ui.FXJediTermWidget;
 import kotlin.collections.ArraysKt;
 import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
@@ -80,9 +80,9 @@ public final class JediTermFx extends AbstractTerminalApplication {
     }
 
     @NotNull
-    protected JediTermFxWidget createTerminalWidget(@NotNull SettingsProvider settingsProvider) {
+    protected FXJediTermWidget createTerminalWidget(@NotNull SettingsProvider settingsProvider) {
         Intrinsics.checkNotNullParameter(settingsProvider, "settingsProvider");
-        JediTermFxWidget widget = new JediTermFxWidget(settingsProvider);
+        FXJediTermWidget widget = new FXJediTermWidget(settingsProvider);
         widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
         return widget;
     }
@@ -99,7 +99,7 @@ public final class JediTermFx extends AbstractTerminalApplication {
         private final LinkedList<TerminalState> myStates = new LinkedList<>();
 
         @Nullable
-        private JediTermFxWidget myWidget;
+        private FXJediTermWidget myWidget;
 
         private int logStart;
 
@@ -165,7 +165,7 @@ public final class JediTermFx extends AbstractTerminalApplication {
             super.write(bytes);
         }
 
-        public final void setWidget(@NotNull JediTermFxWidget widget) {
+        public final void setWidget(@NotNull FXJediTermWidget widget) {
             Intrinsics.checkNotNullParameter(widget, "widget");
             this.myWidget = widget;
         }

@@ -6,7 +6,7 @@ import com.jediterm.terminal.emulator.mouse.MouseButtonModifierFlags;
 import javafx.scene.input.ScrollEvent;
 import org.jetbrains.annotations.NotNull;
 
-public final class FxMouseWheelEvent extends MouseWheelEvent {
+public final class FXMouseWheelEvent extends MouseWheelEvent {
 
     private static int createButtonCode(@NotNull ScrollEvent fxMouseEvent) {
         if (fxMouseEvent.getDeltaY() > 0) {
@@ -32,7 +32,7 @@ public final class FxMouseWheelEvent extends MouseWheelEvent {
 
     private final ScrollEvent myFxMouseWheelEvent;
 
-    public FxMouseWheelEvent(@NotNull ScrollEvent fxMouseWheelEvent) {
+    public FXMouseWheelEvent(@NotNull ScrollEvent fxMouseWheelEvent) {
         super(createButtonCode(fxMouseWheelEvent), getModifierKeys(fxMouseWheelEvent));
         myFxMouseWheelEvent = fxMouseWheelEvent;
     }

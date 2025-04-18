@@ -6,7 +6,7 @@ import com.jediterm.terminal.emulator.mouse.MouseButtonModifierFlags;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 
-public final class FxMouseEvent extends MouseEvent {
+public final class FXMouseEvent extends MouseEvent {
 
     private static int createButtonCode(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
         // for mouse dragged, button is stored in modifiers
@@ -36,7 +36,7 @@ public final class FxMouseEvent extends MouseEvent {
 
     private final javafx.scene.input.MouseEvent myFxMouseEvent;
 
-    public FxMouseEvent(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
+    public FXMouseEvent(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
         super(createButtonCode(fxMouseEvent), getModifierKeys(fxMouseEvent));
         myFxMouseEvent = fxMouseEvent;
     }

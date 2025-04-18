@@ -5,7 +5,7 @@ import com.jediterm.terminal.TerminalColor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-public final class FxTransformers {
+public final class FXTransformers {
 
     @Contract(value = "null -> null; !null -> new", pure = true)
     public static @Nullable javafx.scene.paint.Color toFxColor(@Nullable Color color) {

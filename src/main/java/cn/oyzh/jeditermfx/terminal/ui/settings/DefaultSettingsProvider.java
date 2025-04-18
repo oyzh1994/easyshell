@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 
-import static cn.oyzh.jeditermfx.terminal.ui.FxTransformers.fromFxToTerminalColor;
+import static cn.oyzh.jeditermfx.terminal.ui.FXTransformers.fromFxToTerminalColor;
 
 public class DefaultSettingsProvider implements SettingsProvider {
 
