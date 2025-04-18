@@ -14,9 +14,13 @@ public interface FXTerminalWidget {
 
     FXJediTermWidget createTerminalSession(TtyConnector ttyConnector);
 
-    Pane getPane();
+    Pane getComponent();
 
     Node getPreferredFocusableNode();
+
+    boolean requestFocusInWindow();
+
+    void requestFocus();
 
     boolean canOpenSession();
 

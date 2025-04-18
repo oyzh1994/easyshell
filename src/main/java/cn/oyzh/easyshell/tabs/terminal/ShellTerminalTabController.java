@@ -32,9 +32,9 @@ public class ShellTerminalTabController extends RichTabController {
         widget.openSession(connector);
         widget.onTermination(exitCode -> widget.close());
         widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
-        widget.getPane().prefWidthProperty().bind(this.root.widthProperty());
-        widget.getPane().prefHeightProperty().bind(this.root.heightProperty());
-        this.root.setChild(widget.getPane());
+        widget.getComponent().prefWidthProperty().bind(this.root.widthProperty());
+        widget.getComponent().prefHeightProperty().bind(this.root.heightProperty());
+        this.root.setChild(widget.getComponent());
     }
 
     @Override

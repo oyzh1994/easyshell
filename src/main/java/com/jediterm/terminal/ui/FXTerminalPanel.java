@@ -2,6 +2,7 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.event.Event;
 import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
 import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
 import cn.oyzh.jeditermfx.terminal.ui.FXTransformers;
@@ -58,6 +59,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
@@ -93,6 +95,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyListener;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.text.AttributedCharacterIterator;
@@ -102,8 +106,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 
 
 public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider {
@@ -198,6 +204,8 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
 
     private boolean myScrollingEnabled = true;
 
+    private final List<BiConsumer<EventType<KeyEvent>, KeyEvent>> myCustomKeyListeners = new CopyOnWriteArrayList<>();
+
     private String myWindowTitle = "Terminal";
 
     private TerminalActionProvider myNextActionProvider;
@@ -225,6 +233,8 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
     private LinkInfo myHoveredHyperlink = null;
 
     private Cursor myCursorType = Cursor.DEFAULT;
+
+    private final TerminalKeyHandler myTerminalKeyHandler = new TerminalKeyHandler();
 
     private LinkInfoEx.HoverConsumer myLinkHoverConsumer;
 
@@ -863,6 +873,14 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
         sizeTerminalFromComponent();
     }
 
+    public void addCustomKeyListener(@NotNull BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener) {
+        myCustomKeyListeners.add(keyListener);
+    }
+
+    public void removeCustomKeyListener(@NotNull BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener) {
+        myCustomKeyListeners.remove(keyListener);
+    }
+
     @Override
     public void onResize(@NotNull TermSize newTermSize, @NotNull RequestOrigin origin) {
         myTermSize = newTermSize;
@@ -1229,6 +1247,11 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
                 listener.mouseDragged(p.x, p.y, new FXMouseEvent(e));
             }
         });
+    }
+
+    @NotNull
+    TerminalKeyHandler getTerminalKeyListener() {
+        return myTerminalKeyHandler;
     }
 
     private enum TerminalCursorState {
@@ -2140,6 +2163,43 @@ public class FXTerminalPanel implements TerminalDisplay, TerminalActionProvider 
             }
         }
         return false;
+    }
+
+    private class TerminalKeyHandler implements BiConsumer<EventType<KeyEvent>, KeyEvent> {
+
+        private boolean myIgnoreNextKeyTypedEvent;
+
+        public TerminalKeyHandler() {
+        }
+
+        public void keyPressed(KeyEvent e) {
+            if (e.isConsumed()) {
+                return;
+            }
+            myIgnoreNextKeyTypedEvent = false;
+            if (TerminalAction.processEvent(FXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
+                e.consume();
+                myIgnoreNextKeyTypedEvent = true;
+            }
+        }
+
+        public void keyTyped(KeyEvent e) {
+            if (e.isConsumed()) {
+                return;
+            }
+            if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
+                e.consume();
+            }
+        }
+
+        @Override
+        public void accept(EventType<KeyEvent> type, KeyEvent keyEvent) {
+            if (type == KeyEvent.KEY_PRESSED) {
+                this.keyPressed(keyEvent);
+            } else if (type == KeyEvent.KEY_TYPED) {
+                this.keyTyped(keyEvent);
+            }
+        }
     }
 
     public void handlePaste() {

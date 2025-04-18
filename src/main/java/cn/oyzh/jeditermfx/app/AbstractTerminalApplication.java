@@ -105,8 +105,8 @@ public abstract class AbstractTerminalApplication extends Application {
         });
         final MenuBar mb = getMenuBar();
         initMenuItems();
-        VBox.setVgrow(myWidget.getPane(), Priority.ALWAYS);
-        var root = new VBox(mb, myWidget.getPane());
+        VBox.setVgrow(myWidget.getComponent(), Priority.ALWAYS);
+        var root = new VBox(mb, myWidget.getComponent());
         Scene scene = new Scene(root, 600, 400);
         stage.setScene(scene);
         stage.centerOnScreen();

@@ -53,7 +53,7 @@ public class ShellTermTabController extends SubTabController {
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
-        this.root.setChild(this.widget.getPane());
+        this.root.setChild(this.widget.getComponent());
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }
 

@@ -142,11 +142,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     }
 
     public double getWidth() {
-        return NodeUtil.getWidth(this.getPane());
+        return NodeUtil.getWidth(this.getComponent());
     }
 
     public double getHeight() {
-        return NodeUtil.getHeight(this.getPane());
+        return NodeUtil.getHeight(this.getComponent());
     }
 
     public TermSize getTermSize() {

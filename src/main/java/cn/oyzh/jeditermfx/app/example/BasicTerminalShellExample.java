@@ -59,7 +59,7 @@ public class BasicTerminalShellExample extends Application {
             widget.getTtyConnector().close(); // terminate the current process
             JulLog.debug("Closed TTY connector");
         });
-        Scene scene = new Scene(widget.getPane(), 600, 400);
+        Scene scene = new Scene(widget.getComponent(), 600, 400);
         stage.setScene(scene);
         stage.show();
     }
