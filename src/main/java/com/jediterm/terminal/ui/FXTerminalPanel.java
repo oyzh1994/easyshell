@@ -325,7 +325,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 //        this.canvas.setHeight(getPixelHeight());
 //        this.canvas.setWidth(getPixelWidth());
         this.canvas.setFocusTraversable(true);
-        this.canvas.setCache(true);
+//        this.canvas.setCache(true);
         this.canvas.requestFocus();
         scrollBar.setOrientation(Orientation.VERTICAL);
         if (mySettingsProvider.useAntialiasing()) {
@@ -353,25 +353,25 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 e.consume();
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_MOVED, (e) -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_MOVED, (e) -> {
             handleHyperlinks(createPoint(e));
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
             doOnMouseDragged(e);
         });
-        this.canvas.addEventHandler(ScrollEvent.SCROLL, e -> {
+        this.canvas.addEventFilter(ScrollEvent.SCROLL, e -> {
             if (isLocalMouseAction(e)) {
                 handleMouseWheelEvent(e);
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
             if (myLinkHoverConsumer != null) {
                 myLinkHoverConsumer.onMouseExited();
                 myLinkHoverConsumer = null;
             }
             updateHoveredHyperlink(null);
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 if (e.getClickCount() == 1) {
                     mySelectionStartPoint = panelToCharCoords(createPoint(e));
@@ -380,18 +380,16 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 }
             }
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             this.canvas.requestFocus();
             if (mySelection.get() != null) {
                 updateSelectedText();
             }
             repaint();
         });
-        this.canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            mouseClicked(e);
-        });
+        this.canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
         this.canvas.inputMethodRequestsProperty().set(new MyInputMethodRequests());
-        this.canvas.setOnInputMethodTextChanged(e -> processInputMethodEvent(e));
+        this.canvas.setOnInputMethodTextChanged(this::processInputMethodEvent);
         this.canvas.widthProperty().addListener((ov, oldV, newV) -> {
             sizeTerminalFromComponent();
         });
@@ -416,6 +414,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             repaint();
         });
         createRepaintTimer();
+
+        // 事件处理
+        this.addEventFilter(KeyEvent.ANY, this::handleKeyEvent);
     }
 
     private void doOnMouseDragged(MouseEvent e) {
@@ -465,6 +466,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 var sel = new TerminalSelection(start);
                 sel.updateEnd(stop);
                 updateSelection(sel, true);
+
                 if (mySettingsProvider.copyOnSelect()) {
                     handleCopyOnSelect();
                 }
@@ -484,17 +486,16 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 var sel = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, startLine));
                 sel.updateEnd(new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), endLine));
                 updateSelection(sel, true);
+
                 if (mySettingsProvider.copyOnSelect()) {
                     handleCopyOnSelect();
                 }
             }
-        } else if (e.getButton() == MouseButton.MIDDLE && mySettingsProvider.pasteOnMiddleMouseClick()
-                && isLocalMouseAction(e)) {
+        } else if (e.getButton() == MouseButton.MIDDLE && mySettingsProvider.pasteOnMiddleMouseClick() && isLocalMouseAction(e)) {
             handlePasteSelection();
         } else if (e.getButton() == MouseButton.SECONDARY) {
             HyperlinkStyle contextHyperlink = findHyperlink(point);
-            TerminalActionProvider provider =
-                    getTerminalActionProvider(contextHyperlink != null ? contextHyperlink.getLinkInfo() : null, e);
+            TerminalActionProvider provider = getTerminalActionProvider(contextHyperlink != null ? contextHyperlink.getLinkInfo() : null, e);
             popup = createPopupMenu(provider);
             popup.setOnHidden(popupEvent -> {
                 popup = null;
@@ -575,8 +576,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             startColumn--;
         }
         int endColumn = initialCell.getColumn();
-        while (endColumn < myTerminalTextBuffer.getWidth() - 1 && style ==
-                myTerminalTextBuffer.getStyleAt(endColumn + 1, initialCell.getLine())) {
+        while (endColumn < myTerminalTextBuffer.getWidth() - 1 && style == myTerminalTextBuffer.getStyleAt(endColumn + 1, initialCell.getLine())) {
             endColumn++;
         }
         return new LineCellInterval(initialCell.getLine(), startColumn, endColumn);
@@ -587,9 +587,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private @Nullable HyperlinkStyle findHyperlink(@Nullable Cell cell) {
-        if (cell != null && cell.getColumn() >= 0 && cell.getColumn() < myTerminalTextBuffer.getWidth()
-                && cell.getLine() >= -myTerminalTextBuffer.getHistoryLinesCount()
-                && cell.getLine() <= myTerminalTextBuffer.getHeight()) {
+        if (cell != null && cell.getColumn() >= 0 && cell.getColumn() < myTerminalTextBuffer.getWidth() && cell.getLine() >= -myTerminalTextBuffer.getHistoryLinesCount() &&
+                cell.getLine() <= myTerminalTextBuffer.getHeight()) {
             TextStyle style = myTerminalTextBuffer.getStyleAt(cell.getColumn(), cell.getLine());
             if (style instanceof HyperlinkStyle) {
                 return (HyperlinkStyle) style;
@@ -691,7 +690,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         private WeakReference<FXTerminalPanel> ref;
 
         public WeakRedrawTimer(FXTerminalPanel terminalPanel) {
-            this.ref = new WeakReference<FXTerminalPanel>(terminalPanel);
+            this.ref = new WeakReference<>(terminalPanel);
         }
 
         @Override
@@ -927,9 +926,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 //    return isMonospaced;
 //  }
 
-    private static boolean isWordCharacter(char character) {
-        return Character.isLetterOrDigit(character);
-    }
+//    private static boolean isWordCharacter(char character) {
+//        return Character.isLetterOrDigit(character);
+//    }
 
     public @NotNull javafx.scene.paint.Color windowBackground() {
         return FXTransformers.toFxColor(getWindowBackground());
@@ -939,69 +938,71 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return FXTransformers.toFxColor(getWindowForeground());
     }
 
-    public void paintComponent(GraphicsContext graphicsContext) {
+    public void paintComponent(GraphicsContext gfx) {
         resetColorCache();
-        graphicsContext.setFill(this.windowBackground());
-        graphicsContext.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+
+        gfx.setFill(this.windowBackground());
+
+        gfx.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         this.fixScrollBarThumbVisibility();
+
         try {
             myTerminalTextBuffer.lock();
             // update myClientScrollOrigin as scrollArea might have been invoked after last WeakRedrawTimer action
             updateScrolling(false);
-            myTerminalTextBuffer.processHistoryAndScreenLines(myClientScrollOrigin, myTermSize.getRows(),
-                    new StyledTextConsumer() {
+            myTerminalTextBuffer.processHistoryAndScreenLines(myClientScrollOrigin, myTermSize.getRows(), new StyledTextConsumer() {
+                final int columnCount = getColumnCount();
 
-                        final int columnCount = getColumnCount();
+                @Override
+                public void consume(int x, int y, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow) {
+                    int row = y - startRow;
+                    drawCharacters(x, row, style, characters, gfx, myFillCharacterBackgroundIncludingLineSpacing);
 
-                        @Override
-                        public void consume(int x, int y, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow) {
-                            int row = y - startRow;
-                            drawCharacters(x, row, style, characters, graphicsContext, myFillCharacterBackgroundIncludingLineSpacing);
-                            if (myFindResult != null && findResultHighlighted.get()) {
-                                List<Pair<Integer, Integer>> ranges = myFindResult.getRanges(characters);
-                                if (ranges != null && !ranges.isEmpty()) {
-                                    TextStyle foundPatternStyle = getFoundPattern(style);
-                                    for (Pair<Integer, Integer> range : ranges) {
-                                        CharBuffer foundPatternChars = characters.subBuffer(range);
-                                        drawCharacters(x + range.getFirst(), row, foundPatternStyle, foundPatternChars, graphicsContext);
-                                    }
-                                }
-                            }
-                            if (mySelection.get() != null) {
-                                Pair<Integer, Integer> interval = mySelection.get()
-                                        .intersect(x, row + myClientScrollOrigin, characters.length());
-                                if (interval != null) {
-                                    TextStyle selectionStyle = getSelectionStyle(style);
-                                    CharBuffer selectionChars = characters.subBuffer(interval.getFirst() - x, interval.getSecond());
-
-                                    drawCharacters(interval.getFirst(), row, selectionStyle, selectionChars, graphicsContext);
-                                }
+                    if (myFindResult != null) {
+                        List<Pair<Integer, Integer>> ranges = myFindResult.getRanges(characters);
+                        if (ranges != null && !ranges.isEmpty()) {
+                            TextStyle foundPatternStyle = getFoundPattern(style);
+                            for (Pair<Integer, Integer> range : ranges) {
+                                CharBuffer foundPatternChars = characters.subBuffer(range);
+                                drawCharacters(x + range.getFirst(), row, foundPatternStyle, foundPatternChars, graphicsContext);
                             }
                         }
+                    }
 
-                        @Override
-                        public void consumeNul(int x, int y, int nulIndex, TextStyle style, CharBuffer characters, int startRow) {
-                            int row = y - startRow;
-                            if (mySelection.get() != null) {
-                                // compute intersection with all NUL areas, non-breaking
-                                Pair<Integer, Integer> interval = mySelection.get()
-                                        .intersect(nulIndex, row + myClientScrollOrigin, columnCount - nulIndex);
-                                if (interval != null) {
-                                    TextStyle selectionStyle = getSelectionStyle(style);
-                                    drawCharacters(x, row, selectionStyle, characters, graphicsContext);
-                                    return;
-                                }
-                            }
-                            drawCharacters(x, row, style, characters, graphicsContext);
-                        }
+                    if (mySelection.get() != null) {
+                        Pair<Integer, Integer> interval = mySelection.get().intersect(x, row + myClientScrollOrigin, characters.length());
+                        if (interval != null) {
+                            TextStyle selectionStyle = getSelectionStyle(style);
+                            CharBuffer selectionChars = characters.subBuffer(interval.getFirst() - x, interval.getSecond());
 
-                        @Override
-                        public void consumeQueue(int x, int y, int nulIndex, int startRow) {
-                            if (x < columnCount) {
-                                consumeNul(x, y, nulIndex, TextStyle.EMPTY, new CharBuffer(CharUtils.EMPTY_CHAR, columnCount - x), startRow);
-                            }
+                            drawCharacters(interval.getFirst(), row, selectionStyle, selectionChars, graphicsContext);
                         }
-                    });
+                    }
+                }
+
+                @Override
+                public void consumeNul(int x, int y, int nulIndex, TextStyle style, CharBuffer characters, int startRow) {
+                    int row = y - startRow;
+                    if (mySelection.get() != null) {
+                        // compute intersection with all NUL areas, non-breaking
+                        Pair<Integer, Integer> interval = mySelection.get().intersect(nulIndex, row + myClientScrollOrigin, columnCount - nulIndex);
+                        if (interval != null) {
+                            TextStyle selectionStyle = getSelectionStyle(style);
+                            drawCharacters(x, row, selectionStyle, characters, graphicsContext);
+                            return;
+                        }
+                    }
+                    drawCharacters(x, row, style, characters, graphicsContext);
+                }
+
+                @Override
+                public void consumeQueue(int x, int y, int nulIndex, int startRow) {
+                    if (x < columnCount) {
+                        consumeNul(x, y, nulIndex, TextStyle.EMPTY, new CharBuffer(CharUtils.EMPTY_CHAR, columnCount - x), startRow);
+                    }
+                }
+            });
+
             int cursorY = myCursor.getCoordY();
             if (cursorY < getRowCount() && !hasUncommittedChars()) {
                 int cursorX = myCursor.getCoordX();
@@ -1017,15 +1018,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 } else {
                     cursorStyle = normalStyle;
                 }
-                myCursor.drawCursor(cursorChar, this.graphicsContext, cursorStyle);
+                myCursor.drawCursor(cursorChar, gfx, cursorStyle);
             }
         } finally {
             myTerminalTextBuffer.unlock();
         }
         resetColorCache();
-        drawInputMethodUncommitedChars(this.graphicsContext);
+        drawInputMethodUncommitedChars(gfx);
 
-        drawMargins(graphicsContext, this.canvas.getWidth(), this.canvas.getHeight());
+        drawMargins(gfx, this.getWidth(), this.getHeight());
     }
 
     /**
