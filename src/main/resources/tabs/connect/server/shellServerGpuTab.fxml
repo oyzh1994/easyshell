@@ -24,7 +24,7 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ReadOnlyTextArea fx:id="gpuInfo" flexWidth="100% - 20" flexHeight="100% - 40">
+        <ReadOnlyTextArea fx:id="gpuInfo" flexWidth="100% - 10" flexHeight="100% - 40">
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
             </FXVBox.margin>

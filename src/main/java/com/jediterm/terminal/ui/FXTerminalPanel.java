@@ -6,6 +6,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.jeditermfx.terminal.ui.BlinkingTextTracker;
 import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
 import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
@@ -66,6 +67,7 @@ import javafx.geometry.Dimension2D;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -82,6 +84,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
@@ -105,7 +108,9 @@ import java.text.BreakIterator;
 import java.text.CharacterIterator;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -122,6 +127,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         public CanvasPane() {
             Canvas canvas = new Canvas();
+            canvas.setCache(true);
+            canvas.setCacheHint(CacheHint.SPEED);
             canvas.widthProperty().bind(this.widthProperty());
             canvas.heightProperty().bind(this.heightProperty());
             this.addChild(canvas);
@@ -939,12 +946,28 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 //        return Character.isLetterOrDigit(character);
 //    }
 
+    /**
+     * 背景色
+     */
+    private Color windowBackground;
+
     public @NotNull javafx.scene.paint.Color windowBackground() {
-        return FXTransformers.toFxColor(getWindowBackground());
+        if (this.windowBackground == null) {
+            this.windowBackground = FXTransformers.toFxColor(getWindowBackground());
+        }
+        return this.windowBackground;
     }
 
+    /**
+     * 前景色
+     */
+    private Color windowForeground;
+
     public @NotNull javafx.scene.paint.Color windowForeground() {
-        return FXTransformers.toFxColor(getWindowForeground());
+        if (this.windowForeground == null) {
+            this.windowForeground = FXTransformers.toFxColor(getWindowForeground());
+        }
+        return this.windowForeground;
     }
 
     public void paintComponent(GraphicsContext gfx) {
@@ -990,7 +1013,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 }
 
                 @Override
-                public void consumeNul(int x, int y, int nulIndex, TextStyle style, CharBuffer characters, int startRow) {
+                public void consumeNul(int x, int y, int nulIndex, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow) {
                     int row = y - startRow;
                     if (mySelection.get() != null) {
                         // compute intersection with all NUL areas, non-breaking
@@ -1179,19 +1202,29 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return toBackground(mySettingsProvider.getDefaultBackground());
     }
 
+
     private @NotNull javafx.scene.paint.Color getEffectiveForeground(@NotNull TextStyle style) {
-        com.jediterm.core.Color color = style.hasOption(TextStyle.Option.INVERSE) ? getBackground(style) : getForeground(style);
-        return FXTransformers.toFxColor(color);
+        return style.hasOption(TextStyle.Option.INVERSE) ? getBackground(style) : getForeground(style);
     }
 
     private @NotNull javafx.scene.paint.Color getEffectiveBackground(@NotNull TextStyle style) {
-        com.jediterm.core.Color color = style.hasOption(TextStyle.Option.INVERSE) ? getForeground(style) : getBackground(style);
-        return FXTransformers.toFxColor(color);
+        return style.hasOption(TextStyle.Option.INVERSE) ? getForeground(style) : getBackground(style);
     }
 
-    private @NotNull com.jediterm.core.Color getForeground(@NotNull TextStyle style) {
-        TerminalColor foreground = style.getForeground();
-        return foreground != null ? toForeground(foreground) : getWindowForeground();
+    /**
+     * 前景色缓存
+     */
+    private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
+
+    private Color getForeground(@NotNull TextStyle style) {
+        Color fxColor = this.foregrounds.get(style);
+        if (fxColor == null) {
+            TerminalColor foreground = style.getForeground();
+            com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
+            fxColor = FXTransformers.toFxColor(color);
+            this.foregrounds.put(style, fxColor);
+        }
+        return fxColor;
     }
 
     private com.jediterm.core.@NotNull Color toForeground(@NotNull TerminalColor terminalColor) {
@@ -1201,9 +1234,20 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return terminalColor.toColor();
     }
 
-    private @NotNull com.jediterm.core.Color getBackground(@NotNull TextStyle style) {
-        TerminalColor background = style.getBackground();
-        return background != null ? toBackground(background) : getWindowBackground();
+    /**
+     * 背景色缓存
+     */
+    private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
+
+    private Color getBackground(@NotNull TextStyle style) {
+        Color fxColor = this.backgrounds.get(style);
+        if (fxColor == null) {
+            TerminalColor background = style.getBackground();
+            com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
+            fxColor = FXTransformers.toFxColor(color);
+            this.backgrounds.put(style, fxColor);
+        }
+        return fxColor;
     }
 
     private com.jediterm.core.@NotNull Color toBackground(@NotNull TerminalColor terminalColor) {
@@ -1482,7 +1526,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 style = hyperlinkStyle.getHighlightStyle();
             }
         }
-
         javafx.scene.paint.Color backgroundColor = getEffectiveBackground(style);
         gfx.setFill(backgroundColor);
         gfx.fillRect(xCoord,
@@ -2381,5 +2424,17 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.scrollBar.setMax(max);
         //value is updated in the end, because we have listener on value.
         this.scrollBar.setValue(value);
+    }
+
+    @Override
+    public void changeTheme(ThemeStyle style) {
+        super.changeTheme(style);
+        // 清除缓存
+        this.foregrounds.clear();
+        this.backgrounds.clear();
+        this.windowBackground = null;
+        this.windowForeground = null;
+        // 执行重绘
+        this.doRepaint();
     }
 }
