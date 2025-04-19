@@ -423,8 +423,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     com.jediterm.core.compatibility.Point start = SelectionUtil.getPreviousSeparator(charCoords, myTerminalTextBuffer);
                     com.jediterm.core.compatibility.Point stop = SelectionUtil.getNextSeparator(charCoords, myTerminalTextBuffer);
                     var sel = new TerminalSelection(start);
-                    updateSelection(sel, true);
                     sel.updateEnd(stop);
+                    updateSelection(sel, true);
 
                     if (mySettingsProvider.copyOnSelect()) {
                         handleCopyOnSelect();
@@ -443,8 +443,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                         endLine++;
                     }
                     var sel = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, startLine));
-                    updateSelection(sel, true);
                     sel.updateEnd(new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), endLine));
+                    updateSelection(sel, true);
 
                     if (mySettingsProvider.copyOnSelect()) {
                         handleCopyOnSelect();
@@ -456,9 +456,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 HyperlinkStyle contextHyperlink = findHyperlink(point);
                 TerminalActionProvider provider = getTerminalActionProvider(contextHyperlink != null ? contextHyperlink.getLinkInfo() : null, e);
                 popup = createPopupMenu(provider);
-                popup.setOnHidden(popupEvent -> {
-                    popup = null;
-                });
                 popup.show(this.canvas, e.getScreenX(), e.getScreenY());
             }
             repaint();
@@ -517,7 +514,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private boolean isFollowLinkEvent(@NotNull MouseEvent e) {
         // TODO: 修复可能出现超链接无法点击事件
-        return e.getButton() == MouseButton.PRIMARY;
+        return e.getClickCount() == 1 && e.getButton() == MouseButton.PRIMARY;
 //        return myCursorType == Cursor.HAND && e.getButton() == MouseButton.PRIMARY;
     }
 
@@ -1802,12 +1799,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected @NotNull ContextMenu createPopupMenu(@NotNull TerminalActionProvider actionProvider) {
+        ContextMenu menu;
         // TODO: 对旧的菜单隐藏
         if (this.popup != null) {
             this.popup.hide();
-            this.popup = null;
+            this.popup.getItems().clear();
+            menu = this.popup;
+        } else {
+            menu = new ContextMenu();
         }
-        ContextMenu menu = new ContextMenu();
         TerminalAction.fillMenu(menu, actionProvider);
         return menu;
     }
