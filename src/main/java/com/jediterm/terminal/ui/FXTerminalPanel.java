@@ -410,8 +410,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 return;
             }
             var point = createPoint(e);
-//            HyperlinkStyle hyperlink = isFollowLinkEvent(e) ? findHyperlink(point) : null;
-            HyperlinkStyle hyperlink = findHyperlink(point);
+            HyperlinkStyle hyperlink = isFollowLinkEvent(e) ? findHyperlink(point) : null;
             if (hyperlink != null) {
                 hyperlink.getLinkInfo().navigate();
             } else if (e.getButton() == MouseButton.PRIMARY && isLocalMouseAction(e)) {
@@ -517,7 +516,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private boolean isFollowLinkEvent(@NotNull MouseEvent e) {
-        return myCursorType == Cursor.HAND && e.getButton() == MouseButton.PRIMARY;
+        // TODO: 修复可能出现超链接无法点击事件
+        return e.getButton() == MouseButton.PRIMARY;
+//        return myCursorType == Cursor.HAND && e.getButton() == MouseButton.PRIMARY;
     }
 
     protected void handleMouseWheelEvent(@NotNull ScrollEvent e, @NotNull ScrollBar scrollBar) {
@@ -1801,6 +1802,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected @NotNull ContextMenu createPopupMenu(@NotNull TerminalActionProvider actionProvider) {
+        // TODO: 对旧的菜单隐藏
+        if (this.popup != null) {
+            this.popup.hide();
+            this.popup = null;
+        }
         ContextMenu menu = new ContextMenu();
         TerminalAction.fillMenu(menu, actionProvider);
         return menu;
