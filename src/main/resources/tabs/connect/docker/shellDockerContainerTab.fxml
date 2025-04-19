@@ -16,7 +16,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerContainerTabController" text="%base.container">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField prefWidth="300" realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
+            <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>
@@ -42,7 +42,7 @@
                 </FXHBox.margin>
             </ShellDockerContainerStatusComboBox>
         </FXHBox>
-        <ShellDockerContainerTableView fx:id="containerTable" flexWidth="100%" flexHeight="100% - 30">
+        <ShellDockerContainerTableView fx:id="containerTable" flexWidth="100% - 10" flexHeight="100% - 40">
             <columns>
                 <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
                 <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
@@ -52,6 +52,9 @@
                 <FXTableColumn prefWidth="160" valueName="ports" text="%base.port"/>
                 <FXTableColumn prefWidth="100" valueName="names" text="%base.name"/>
             </columns>
+            <FXVBox.margin>
+                <Insets left="5" top="5"/>
+            </FXVBox.margin>
         </ShellDockerContainerTableView>
     </FXVBox>
 </FXTab>

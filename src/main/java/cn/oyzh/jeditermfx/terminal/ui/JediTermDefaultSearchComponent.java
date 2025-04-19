@@ -1,20 +1,18 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.pane.FXFlowPane;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.SubstringFinder;
 import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.jediterm.terminal.ui.JediTermSearchComponentListener;
 import javafx.event.EventType;
-import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -26,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 
-public final class JediTermDefaultSearchComponent extends FXFlowPane implements JediTermSearchComponent {
+public final class JediTermDefaultSearchComponent extends FXHBox implements JediTermSearchComponent {
 
     private final ClearableTextField myTextField = new ClearableTextField();
     private final FXLabel label = new FXLabel();
@@ -42,23 +40,25 @@ public final class JediTermDefaultSearchComponent extends FXFlowPane implements 
         prev.setOnAction(e -> this.myMulticaster.selectPrevFindResult());
 
         Button close = new Button("✕");
+        close.setPrefHeight(24);
         close.setOnAction(e -> this.setVisible(false));
 
-        Dimension2D charSize = jediTermWidget.getTerminalPanel().getCharSize();
+        label.setPrefHeight(24);
+        this.setMaxSize(480, 30);
         myTextField.setPromptText(I18nHelper.pleaseInputContent());
-        this.setMaxSize(charSize.getWidth() * 60, charSize.getHeight() + 3);
         myTextField.setEditable(true);
-        myTextField.setPrefHeight(24);
+        myTextField.setMaxHeight(24);
+        myTextField.setMaxWidth(220);
 
         updateLabel(null);
 
-        this.addChild(myTextField);
+        this.getChildren().add(myTextField);
         listenForChanges();
-        this.addChild(ignoreCaseCheckBox);
-        this.addChild(label);
-        this.addChild(next);
-        this.addChild(prev);
-        this.addChild(close);
+        this.getChildren().add(ignoreCaseCheckBox);
+        this.getChildren().add(label);
+        this.getChildren().add(next);
+        this.getChildren().add(prev);
+        this.getChildren().add(close);
 
         this.setOpaque(true);
 
@@ -66,12 +66,13 @@ public final class JediTermDefaultSearchComponent extends FXFlowPane implements 
         this.setAlignment(Pos.CENTER_LEFT);
         this.setStyle("-fx-background-color: -fx-background");
 
-        FlowPane.setMargin(myTextField, new Insets(3, 0, 0, 0));
-        FlowPane.setMargin(ignoreCaseCheckBox, new Insets(0, 5, 0, 5));
-        FlowPane.setMargin(label, new Insets(0, 5, 0, 5));
-        FlowPane.setMargin(next, new Insets(3, 0, 0, 5));
-        FlowPane.setMargin(prev, new Insets(3, 0, 0, 3));
-        FlowPane.setMargin(close, new Insets(3, 5, 0, 3));
+        Insets insets1 = new Insets(3, 0, 0, 3);
+        FXHBox.setMargin(myTextField, new Insets(3, 0, 0, 0));
+        FXHBox.setMargin(ignoreCaseCheckBox, insets1);
+        FXHBox.setMargin(label, insets1);
+        FXHBox.setMargin(next, insets1);
+        FXHBox.setMargin(prev, insets1);
+        FXHBox.setMargin(close, insets1);
         this.focusedProperty().addListener((ov, oldV, newV) -> {
             if (newV) {
                 myTextField.requestFocus();

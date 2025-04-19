@@ -16,24 +16,24 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField prefWidth="300" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
+            <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
                 <FXHBox.margin>
-                    <Insets left="5" top="7"/>
+                    <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </ClearableTextField>
-            <ShellProcessTypeComboBox initIndex="0" fx:id="processType">
+            <ShellProcessTypeComboBox initIndex="0" realHeight="24" fx:id="processType">
                 <FXHBox.margin>
-                    <Insets left="5" top="7"/>
+                    <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </ShellProcessTypeComboBox>
-            <SwitchToggleSwitch unselectedText="%base.disableRefresh" selectedText="%base.enableRefresh"
+            <SwitchToggleSwitch realHeight="24" unselectedText="%base.disableRefresh" selectedText="%base.enableRefresh"
                                 fx:id="refreshBtn" selected="true">
                 <FXHBox.margin>
-                    <Insets left="5" top="7"/>
+                    <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </SwitchToggleSwitch>
         </FXHBox>
-        <ShellProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="processTable"
+        <ShellProcessInfoTableView flexWidth="100% - 10" flexHeight="100% - 40" fx:id="processTable"
                                    managedBindVisible="true">
             <columns>
                 <FXTableColumn valueName="user" text="%base.user" prefWidth="100"/>
@@ -46,8 +46,11 @@
                 <FXTableColumn valueName="time" text="%base.time" prefWidth="80"/>
                 <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 695"/>
             </columns>
+            <FXVBox.margin>
+                <Insets left="5" top="5"/>
+            </FXVBox.margin>
         </ShellProcessInfoTableView>
-        <ShellProcessInfoTableView flexWidth="100%" flexHeight="100% - 30" fx:id="winProcessTable" visible="false"
+        <ShellProcessInfoTableView flexWidth="100% - 10" flexHeight="100% - 30" fx:id="winProcessTable" visible="false"
                                    managedBindVisible="true">
             <columns>
                 <FXTableColumn valueName="user" text="%base.user" prefWidth="150"/>
@@ -59,6 +62,9 @@
                 <FXTableColumn valueName="start" text="%base.startAt" prefWidth="150"/>
                 <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 755"/>
             </columns>
+            <FXVBox.margin>
+                <Insets left="5" top="5"/>
+            </FXVBox.margin>
         </ShellProcessInfoTableView>
     </FXVBox>
 </FXTab>

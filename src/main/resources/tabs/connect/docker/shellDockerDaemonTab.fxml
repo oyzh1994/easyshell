@@ -17,29 +17,29 @@
         <FXHBox flexWidth="100%" prefHeight="30">
             <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
             <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
             <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
             <FXLabel fx:id="filePath">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </FXLabel>
         </FXHBox>
-        <ShellJsonTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 20"
-                               flexHeight="100% - 30">
+        <ShellJsonTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 10"
+                               flexHeight="100% - 40">
             <FXVBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="5" top="5"/>
             </FXVBox.margin>
         </ShellJsonTextAreaPane>
     </FXVBox>

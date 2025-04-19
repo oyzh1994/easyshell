@@ -15,7 +15,7 @@
         <FXHBox prefHeight="30">
             <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
-                    <Insets left="10" top="7"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
@@ -29,7 +29,7 @@
                 <FXTableColumn flexWidth="100% - 515" valueName="mountedOn" text="%base.mountedOn"/>
             </columns>
             <FXVBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="5" top="5"/>
             </FXVBox.margin>
         </ShellDiskInfoTableView>
     </FXVBox>

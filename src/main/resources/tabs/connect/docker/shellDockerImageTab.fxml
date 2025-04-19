@@ -15,7 +15,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerImageTabController" text="%base.image">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <ClearableTextField prefWidth="300" realHeight="24" fx:id="filterImage" tipText="%base.searchKWTip">
+            <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterImage" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>
@@ -36,7 +36,7 @@
                 </FXHBox.margin>
             </DeleteForceSVGGlyph>
         </FXHBox>
-        <ShellDockerImageTableView fx:id="imageTable" flexWidth="100%" flexHeight="100% - 30">
+        <ShellDockerImageTableView fx:id="imageTable" flexWidth="100% - 10" flexHeight="100% - 40">
             <columns>
                 <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
                 <FXTableColumn prefWidth="320" valueName="repository" text="%base.repository"/>
@@ -44,6 +44,9 @@
                 <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
                 <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
             </columns>
+            <FXVBox.margin>
+                <Insets left="5" top="5"/>
+            </FXVBox.margin>
         </ShellDockerImageTableView>
     </FXVBox>
 </FXTab>

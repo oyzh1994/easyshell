@@ -15,18 +15,18 @@
         <FXHBox flexWidth="100%" prefHeight="30">
             <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyInfo">
                 <FXHBox.margin>
-                    <Insets left="10" top="7"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
             <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
-                    <Insets left="10" top="7"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
         <ReadOnlyTextArea fx:id="gpuInfo" flexWidth="100% - 20" flexHeight="100% - 40">
             <FXVBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets left="5" top="5"/>
             </FXVBox.margin>
         </ReadOnlyTextArea>
     </FXVBox>

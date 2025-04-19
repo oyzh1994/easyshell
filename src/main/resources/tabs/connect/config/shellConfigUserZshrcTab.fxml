@@ -17,29 +17,29 @@
         <FXHBox flexWidth="100%" prefHeight="30">
             <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </SaveSVGGlyph>
             <ApplySVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </ApplySVGGlyph>
             <CopySVGGlyph  tipText="%base.copy" onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </CopySVGGlyph>
             <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                 <FXHBox.margin>
-                    <Insets left="10" top="10"/>
+                    <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
         <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 10"
-                               flexHeight="100% - 30">
+                               flexHeight="100% - 40">
             <FXVBox.margin>
-                <Insets left="10"/>
+                <Insets left="5" top="5"/>
             </FXVBox.margin>
         </ShellDataTextAreaPane>
     </FXVBox>
