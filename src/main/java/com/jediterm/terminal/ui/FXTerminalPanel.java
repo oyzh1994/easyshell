@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.jeditermfx.terminal.ui.BlinkingTextTracker;
 import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
@@ -117,23 +118,25 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     public static final double SCROLL_SPEED = 0.05;
 
-//    private static class CanvasPane extends Pane {
-//
-//        private final Canvas canvas;
-//
-//        public CanvasPane(Canvas canvas) {
-//            this.canvas = canvas;
-//            getChildren().addAll(canvas);
-//            canvas.widthProperty().bind(this.widthProperty());
-//            canvas.heightProperty().bind(this.heightProperty());
-//        }
-//    }
+    private static class CanvasPane extends FXPane {
 
-    private final Canvas canvas = new Canvas();
+        public CanvasPane() {
+            Canvas canvas = new Canvas();
+            canvas.widthProperty().bind(this.widthProperty());
+            canvas.heightProperty().bind(this.heightProperty());
+            this.addChild(canvas);
+        }
 
-//    private final CanvasPane canvasPane = new CanvasPane(canvas);
+        public Canvas getCanvas() {
+            return (Canvas) this.getFirstChild();
+        }
 
-    private final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        public GraphicsContext getGraphicsContext2D() {
+            return this.getCanvas().getGraphicsContext2D();
+        }
+    }
+
+    private final CanvasPane canvas = new CanvasPane();
 
     //we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
     private ScrollBar scrollBar;
@@ -283,7 +286,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void doRepaint() {
-        this.paintComponent(this.graphicsContext);
+        this.paintComponent(this.canvas.getGraphicsContext2D());
     }
 
     protected void reinitFontAndResize() {
@@ -305,8 +308,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         initFont();
 
         this.scrollBar = scrollBar;
-        this.canvas.heightProperty().bind(this.heightProperty().subtract(2));
-        this.canvas.widthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
+        this.canvas.prefHeightProperty().bind(this.heightProperty().subtract(2));
+        this.canvas.prefWidthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
         this.setChild(this.canvas, scrollBar);
 
         this.setFocusTraversable(true);
@@ -314,12 +317,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         HBox.setHgrow(canvas, Priority.ALWAYS);
 //        this.canvas.setCache(true);
         scrollBar.setOrientation(Orientation.VERTICAL);
+        GraphicsContext gfx = this.canvas.getGraphicsContext2D();
         if (mySettingsProvider.useAntialiasing()) {
             //Important! FontSmoothingType.LCD is very slow
-            graphicsContext.setFontSmoothingType(FontSmoothingType.GRAY);
-            graphicsContext.setImageSmoothing(true);
+            gfx.setFontSmoothingType(FontSmoothingType.GRAY);
+            gfx.setImageSmoothing(true);
         } else {
-            graphicsContext.setImageSmoothing(false);
+            gfx.setImageSmoothing(false);
         }
         this.canvas.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.isConsumed()) {
@@ -505,7 +509,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return (int) Math.round(swingValue);
     }
 
-    private double resolveJavaFxScrollBarValue(int swingValue) {
+    private double resolveJavaFxScrollBarValue(double swingValue) {
         var normalizedValue = (swingValue - scrollBar.getMin())
                 / ((scrollBar.getMax() - scrollBar.getVisibleAmount()) - scrollBar.getMin());
         var fxValue = scrollBar.getMin() + normalizedValue * (scrollBar.getMax() - scrollBar.getMin());
@@ -519,8 +523,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected void handleMouseWheelEvent(@NotNull ScrollEvent e, @NotNull ScrollBar scrollBar) {
-        var unitsToScroll = getUnitsToScroll(e);
-        if (e.isShiftDown() || unitsToScroll == 0 || Math.abs(e.getDeltaY()) < 0.01) {
+        if (e.isShiftDown() || Math.abs(e.getDeltaY()) < 0.01) {
+            return;
+        }
+        double unitsToScroll = getUnitsToScroll(e);
+        if (unitsToScroll == 0) {
             return;
         }
         moveScrollBar(unitsToScroll);
@@ -538,7 +545,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
             if (linkHoverConsumer != null) {
                 LineCellInterval lineCellInterval = findIntervalWithStyle(cell, linkStyle);
-                linkHoverConsumer.onMouseEntered(this.canvas, getBounds(lineCellInterval));
+                linkHoverConsumer.onMouseEntered(this.canvas.getCanvas(), getBounds(lineCellInterval));
             }
         }
         myLinkHoverConsumer = linkHoverConsumer;
@@ -761,7 +768,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         moveScrollBar(1);
     }
 
-    private void moveScrollBar(int k) {
+    private void moveScrollBar(double k) {
         var newValue = resolveJavaFxScrollBarValue(myClientScrollOrigin + k);
         if (newValue < scrollBar.getMin()) {
             scrollBar.setValue(scrollBar.getMin());
@@ -2359,9 +2366,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.canvas.requestFocus();
     }
 
-    private int getUnitsToScroll(ScrollEvent event) {
+    private double getUnitsToScroll(ScrollEvent event) {
         // Assume that each scroll unit corresponds to 40.0 pixels, which is a typical value.
-        int unitsToScroll = (int) Math.round(event.getDeltaY() / 40.0);
+        double unitsToScroll = Math.round(event.getDeltaY() / 40.0);
         return unitsToScroll * -1;
     }
 
