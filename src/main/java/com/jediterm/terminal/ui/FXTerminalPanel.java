@@ -410,7 +410,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 return;
             }
             var point = createPoint(e);
-            HyperlinkStyle hyperlink = isFollowLinkEvent(e) ? findHyperlink(point) : null;
+//            HyperlinkStyle hyperlink = isFollowLinkEvent(e) ? findHyperlink(point) : null;
+            HyperlinkStyle hyperlink = findHyperlink(point);
             if (hyperlink != null) {
                 hyperlink.getLinkInfo().navigate();
             } else if (e.getButton() == MouseButton.PRIMARY && isLocalMouseAction(e)) {
@@ -690,7 +691,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     static class WeakRedrawTimer implements EventHandler<ActionEvent> {
 
-        private WeakReference<FXTerminalPanel> ref;
+        private final WeakReference<FXTerminalPanel> ref;
 
         public WeakRedrawTimer(FXTerminalPanel terminalPanel) {
             this.ref = new WeakReference<>(terminalPanel);
@@ -797,7 +798,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             return;
         }
         String selectionText = SelectionUtil.getSelectionText(selectionStart, selectionEnd, myTerminalTextBuffer);
-        if (selectionText.length() != 0) {
+        if (!selectionText.isEmpty()) {
             myCopyPasteHandler.setContents(selectionText, useSystemSelectionClipboardIfAvailable);
         }
     }
@@ -1908,7 +1909,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         String selectionText = getSelectionText();
         if (selectionText != null) {
             try {
-                URI uri = new URI(selectionText);
+                URI uri = new URI(selectionText.trim());
                 //noinspection ResultOfMethodCallIgnored
                 uri.toURL();
                 return true;
@@ -1922,10 +1923,14 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     @Nullable
     private String getSelectionText() {
         if (mySelection.get() != null) {
-            Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
-            if (points.getFirst() != null || points.getSecond() != null) {
-                return SelectionUtil
-                        .getSelectionText(points.getFirst(), points.getSecond(), myTerminalTextBuffer);
+            try {
+                Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
+                if (points.getFirst() != null || points.getSecond() != null) {
+                    return SelectionUtil
+                            .getSelectionText(points.getFirst(), points.getSecond(), myTerminalTextBuffer);
+
+                }
+            } catch (Exception ignored) {
 
             }
         }
@@ -1938,7 +1943,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 String selectionText = getSelectionText();
 
                 if (selectionText != null) {
-                    FXConst.getHostServices().showDocument(selectionText);
+                    FXConst.getHostServices().showDocument(selectionText.trim());
                 }
             } catch (Exception e) {
                 //ok then
