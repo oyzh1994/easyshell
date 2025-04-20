@@ -238,42 +238,46 @@ public class SettingController extends StageController {
     private FXToggleSwitch hiddenLeftAfterConnected;
 
     /**
-     * 终端类型
+     * 终端类型-终端
      */
     @FXML
     private ShellTemShellComboBox termType;
 
     /**
-     * 蜂鸣声
+     * 蜂鸣声-终端
      */
     @FXML
     private FXToggleSwitch termBeep;
 
     /**
-     * 最大行数
+     * 最大行数-终端
      */
     @FXML
     private NumberTextField termMaxLineCount;
 
-
     /**
-     * 选中时复制
+     * 选中时复制-终端
      */
     @FXML
     private FXToggleSwitch termCopyOnSelected;
 
     /**
-     * 刷新率
+     * 刷新率-终端
      */
     @FXML
     private ShellTermFpsComboBox termFps;
 
     /**
-     * 光标闪烁
+     * 光标闪烁-终端
      */
     @FXML
     private ShellTermCursorComboBox termCursorBlinks;
 
+    /**
+     * 使用抗锯齿-终端
+     */
+    @FXML
+    private FXToggleSwitch termUseAntialiasing;
 
     /**
      * 配置对象
@@ -340,6 +344,7 @@ public class SettingController extends StageController {
         this.termFps.selectFps(this.setting.getTermRefreshRate());
         this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
         this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
+        this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
         // 连接后收起左侧
         this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
@@ -372,6 +377,7 @@ public class SettingController extends StageController {
             this.setting.setTermMaxLineCount(this.termMaxLineCount.getIntValue());
             this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());
             this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());
+            this.setting.setTermUseAntialiasing(this.termUseAntialiasing.isSelected());
             // 字体相关
             this.setting.setFontSize(fontSize);
             this.setting.setFontFamily(fontFamily);

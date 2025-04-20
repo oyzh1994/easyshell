@@ -5,7 +5,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.domain.AppSetting;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
 
@@ -72,6 +71,12 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean termCopyOnSelected;
 
+    /**
+     * 使用抗锯齿-终端
+     */
+    @Column
+    private Boolean termUseAntialiasing;
+
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
@@ -96,6 +101,7 @@ public class ShellSetting extends AppSetting {
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
             this.termCopyOnSelected = setting.termCopyOnSelected;
+            this.termUseAntialiasing = setting.termUseAntialiasing;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
         }
     }
@@ -203,5 +209,17 @@ public class ShellSetting extends AppSetting {
 
     public void setTermRefreshRate(Integer termRefreshRate) {
         this.termRefreshRate = termRefreshRate;
+    }
+
+    public boolean isTermUseAntialiasing() {
+        return termUseAntialiasing == null ? Boolean.TRUE : termUseAntialiasing;
+    }
+
+    public Boolean getTermUseAntialiasing() {
+        return termUseAntialiasing;
+    }
+
+    public void setTermUseAntialiasing(Boolean termUseAntialiasing) {
+        this.termUseAntialiasing = termUseAntialiasing;
     }
 }

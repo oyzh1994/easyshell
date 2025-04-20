@@ -31,7 +31,7 @@
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="550">
+                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="480">
     <left>
         <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
         </SettingLeftTreeView>
@@ -175,7 +175,7 @@
                     </ShellTemShellComboBox>
                     <FXButton text="%base.test" onMousePrimaryClicked="#testBashPath">
                         <HBox.margin>
-                            <Insets left="5" top="5"/>
+                            <Insets left="3" top="5"/>
                         </HBox.margin>
                     </FXButton>
                 </FXHBox>
@@ -191,16 +191,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </NumberTextField>
-                <InfoLabel text="%base.beep">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXToggleSwitch selected="true" fx:id="termBeep">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXToggleSwitch>
+
                 <InfoLabel text="%base.cursorBlinks">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -211,16 +202,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellTermCursorComboBox>
-                <InfoLabel text="%base.copyOnSelected">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXToggleSwitch selected="true" fx:id="termCopyOnSelected">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXToggleSwitch>
                 <InfoLabel text="%base.refreshRate">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -231,6 +212,28 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellTermFpsComboBox>
+                <InfoLabel text="%base.othersOptions">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXToggleSwitch tipText="%base.beep" selected="true" fx:id="termBeep">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                    <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected">
+                        <FXHBox.margin>
+                            <Insets left="10" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                    <FXToggleSwitch tipText="%base.useAntialiasing" selected="true" fx:id="termUseAntialiasing">
+                        <FXHBox.margin>
+                            <Insets left="10" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                </FXHBox>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="shortcut_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
