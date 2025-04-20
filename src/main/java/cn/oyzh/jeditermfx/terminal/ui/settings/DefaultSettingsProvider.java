@@ -95,7 +95,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
     }
 
     @Override
-    public Font getTerminalFont() {
+    public Font getFXTerminalFont() {
         String fontName;
         if (OSUtil.isWindows()) {
             fontName = "Consolas";

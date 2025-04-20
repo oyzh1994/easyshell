@@ -746,7 +746,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected Font createFont() {
-        return mySettingsProvider.getTerminalFont();
+        return mySettingsProvider.getFXTerminalFont();
     }
 
     private @NotNull com.jediterm.core.compatibility.Point panelToCharCoords(final Point2D p) {

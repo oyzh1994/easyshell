@@ -104,7 +104,7 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
     }
 
     @Override
-    public Font getTerminalFont() {
+    public Font getFXTerminalFont() {
         Font font = FontManager.toFont(this.setting.terminalFontConfig());
         JulLog.debug("Terminal font: {}", font);
         return font;
