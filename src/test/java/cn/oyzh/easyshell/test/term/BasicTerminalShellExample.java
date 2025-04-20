@@ -3,7 +3,7 @@
 //import com.jediterm.terminal.CursorShape;
 //import com.jediterm.terminal.TtyConnector;
 //import com.jediterm.terminal.ui.JediTermWidget;
-//import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
+//import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 //import com.pty4j.PtyProcess;
 //import com.pty4j.PtyProcessBuilder;
 //import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@
 //public class BasicTerminalShellExample {
 //
 //  private static @NotNull JediTermWidget createTerminalWidget() {
-//    JediTermWidget widget = new JediTermWidget(80, 24, new DefaultSettingsProvider());
+//    JediTermWidget widget = new JediTermWidget(80, 24, new FXDefaultSettingsProvider());
 //    widget.getTerminalPanel().setDefaultCursorShape(CursorShape.BLINK_UNDERLINE);
 //    widget.setTtyConnector(createTtyConnector());
 //    widget.start();

@@ -12,7 +12,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
-import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
+import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.core.util.TermSize;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -52,7 +52,7 @@ public class ShellTermTabController extends SubTabController {
         connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
+        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
         this.root.setChild(this.widget.getComponent());
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }

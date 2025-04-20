@@ -7,16 +7,16 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
-import cn.oyzh.jeditermfx.terminal.ui.BlinkingTextTracker;
+import cn.oyzh.jeditermfx.terminal.ui.FXBlinkingTextTracker;
 import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
 import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalAction;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalActionPresentation;
 import cn.oyzh.jeditermfx.terminal.ui.FXTransformers;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
-import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.LinkInfoEx;
+import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.FXLinkInfoEx;
 import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseEvent;
 import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseWheelEvent;
-import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.core.TerminalCoordinates;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.util.TermSize;
@@ -50,6 +50,7 @@ import com.jediterm.terminal.model.TerminalSelection;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
 import com.jediterm.terminal.model.hyperlinks.TextProcessing;
+import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.jediterm.terminal.util.CharUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -117,7 +118,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 
-public class FXTerminalPanel extends FXHBox implements TerminalDisplay, TerminalActionProvider {
+public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, TerminalActionProvider {
 
     private static final long serialVersionUID = -1048763516632093014L;
 
@@ -205,7 +206,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     /*scroll and cursor*/
     final private TerminalCursor myCursor = new TerminalCursor();
 
-    private final BlinkingTextTracker myTextBlinkingTracker = new BlinkingTextTracker();
+    private final FXBlinkingTextTracker myTextBlinkingTracker = new FXBlinkingTextTracker();
 
     private boolean myScrollingEnabled = true;
 
@@ -241,7 +242,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private final TerminalKeyHandler myTerminalKeyHandler = new TerminalKeyHandler();
 
-    private LinkInfoEx.HoverConsumer myLinkHoverConsumer;
+    private FXLinkInfoEx.HoverConsumer myLinkHoverConsumer;
 
     private TerminalTypeAheadManager myTypeAheadManager;
 
@@ -255,7 +256,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private @Nullable TextStyle myCachedFoundPatternColor;
 
-    public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
+    public FXFXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
         mySettingsProvider = settingsProvider;
         myTerminalTextBuffer = terminalTextBuffer;
         myStyleState = styleState;
@@ -263,7 +264,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         myMaxFPS = mySettingsProvider.maxRefreshRate();
         myCopyPasteHandler = createCopyPasteHandler();
 
-        var css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
+        var css = FXFXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
         this.getStylesheets().add(css);
         setScrollBarRangeProperties(0, 80, 0, 80);
         mySelection.addListener((ov, oldV, newV) -> updateSelectedText());
@@ -504,7 +505,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         Cell cell = panelPointToCell(panelPoint);
         HyperlinkStyle linkStyle = findHyperlink(cell);
         LinkInfo linkInfo = linkStyle != null ? linkStyle.getLinkInfo() : null;
-        LinkInfoEx.HoverConsumer linkHoverConsumer = LinkInfoEx.getHoverConsumer(linkInfo);
+        FXLinkInfoEx.HoverConsumer linkHoverConsumer = FXLinkInfoEx.getHoverConsumer(linkInfo);
         if (linkHoverConsumer != myLinkHoverConsumer) {
             if (myLinkHoverConsumer != null) {
                 myLinkHoverConsumer.onMouseExited();
@@ -662,15 +663,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     static class WeakRedrawTimer implements EventHandler<ActionEvent> {
 
-        private final WeakReference<FXTerminalPanel> ref;
+        private final WeakReference<FXFXTerminalPanel> ref;
 
-        public WeakRedrawTimer(FXTerminalPanel terminalPanel) {
+        public WeakRedrawTimer(FXFXTerminalPanel terminalPanel) {
             this.ref = new WeakReference<>(terminalPanel);
         }
 
         @Override
         public void handle(ActionEvent e) {
-            FXTerminalPanel terminalPanel = ref.get();
+            FXFXTerminalPanel terminalPanel = ref.get();
             if (terminalPanel != null) {
                 terminalPanel.myCursor.changeStateIfNeeded();
                 terminalPanel.myTextBlinkingTracker.updateState(terminalPanel.mySettingsProvider, terminalPanel);
@@ -746,7 +747,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected Font createFont() {
-        return mySettingsProvider.getFXTerminalFont();
+        if(this.mySettingsProvider instanceof FXDefaultSettingsProvider fxDefaultSettingsProvider){
+            return fxDefaultSettingsProvider.getFXTerminalFont();
+        }
+        return Font.getDefault();
     }
 
     private @NotNull com.jediterm.core.compatibility.Point panelToCharCoords(final Point2D p) {
@@ -1386,7 +1390,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             double yCoord = y * myCharSize.getHeight();
             double textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(), mySettingsProvider.ambiguousCharsAreDoubleWidth());
             double height = Math.min(myCharSize.getHeight(), getHeight() - yCoord);
-            double width = Math.min(textLength * FXTerminalPanel.this.myCharSize.getWidth(), FXTerminalPanel.this.getWidth() - xCoord);
+            double width = Math.min(textLength * FXFXTerminalPanel.this.myCharSize.getWidth(), FXFXTerminalPanel.this.getWidth() - xCoord);
             int lineStrokeSize = 2;
 
             javafx.scene.paint.Color fgColor = getEffectiveForeground(style);
@@ -1473,7 +1477,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         int textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(), mySettingsProvider.ambiguousCharsAreDoubleWidth());
         double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), getHeight() - yCoord);
-        double width = Math.min(textLength * this.myCharSize.getWidth(), FXTerminalPanel.this.getWidth() - xCoord);
+        double width = Math.min(textLength * this.myCharSize.getWidth(), FXFXTerminalPanel.this.getWidth() - xCoord);
 
         if (style instanceof HyperlinkStyle) {
             HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
@@ -1827,12 +1831,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             menu = new ContextMenu();
             this.popup = menu;
         }
-        TerminalAction.fillMenu(menu, actionProvider);
+        FXTerminalAction.fillMenu(menu, actionProvider);
         return menu;
     }
 
     private @NotNull TerminalActionProvider getTerminalActionProvider(@Nullable LinkInfo linkInfo, @NotNull MouseEvent e) {
-        LinkInfoEx.PopupMenuGroupProvider popupMenuGroupProvider = LinkInfoEx.getPopupMenuGroupProvider(linkInfo);
+        FXLinkInfoEx.PopupMenuGroupProvider popupMenuGroupProvider = FXLinkInfoEx.getPopupMenuGroupProvider(linkInfo);
         if (popupMenuGroupProvider != null) {
             return new TerminalActionProvider() {
                 @Override
@@ -1842,7 +1846,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
                 @Override
                 public TerminalActionProvider getNextProvider() {
-                    return FXTerminalPanel.this;
+                    return FXFXTerminalPanel.this;
                 }
 
                 @Override
@@ -1883,40 +1887,40 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     @Override
     public List<TerminalAction> getActions() {
         return List.of(
-                new TerminalAction(mySettingsProvider.getOpenUrlActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getOpenUrlActionPresentation(), input -> {
                     return openSelectedTextAsURL();
                 }).withEnabledSupplier(this::isSelectedTextUrl),
-                new TerminalAction(mySettingsProvider.getCopyActionPresentation(), this::handleCopy) {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getCopyActionPresentation(), this::handleCopy) {
                     @Override
                     public boolean isEnabled(@Nullable KeyEvent e) {
                         return e != null || mySelection.get() != null;
                     }
                 }.withMnemonicKey(KeyCode.C),
-                new TerminalAction(mySettingsProvider.getPasteActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getPasteActionPresentation(), input -> {
                     handlePaste();
                     return true;
                 }).withMnemonicKey(KeyCode.P).withEnabledSupplier(() -> getClipboardString() != null),
-                new TerminalAction(mySettingsProvider.getSelectAllActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getSelectAllActionPresentation(), input -> {
                     selectAll();
                     return true;
                 }),
-                new TerminalAction(mySettingsProvider.getClearBufferActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getClearBufferActionPresentation(), input -> {
                     clearBuffer();
                     return true;
                 }).withMnemonicKey(KeyCode.K).withEnabledSupplier(() -> !myTerminalTextBuffer.isUsingAlternateBuffer()).separatorBefore(true),
-                new TerminalAction(mySettingsProvider.getPageUpActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getPageUpActionPresentation(), input -> {
                     pageUp();
                     return true;
                 }).withEnabledSupplier(() -> !myTerminalTextBuffer.isUsingAlternateBuffer()).separatorBefore(true),
-                new TerminalAction(mySettingsProvider.getPageDownActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getPageDownActionPresentation(), input -> {
                     pageDown();
                     return true;
                 }).withEnabledSupplier(() -> !myTerminalTextBuffer.isUsingAlternateBuffer()),
-                new TerminalAction(mySettingsProvider.getLineUpActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getLineUpActionPresentation(), input -> {
                     scrollUp();
                     return true;
                 }).withEnabledSupplier(() -> !myTerminalTextBuffer.isUsingAlternateBuffer()).separatorBefore(true),
-                new TerminalAction(mySettingsProvider.getLineDownActionPresentation(), input -> {
+                new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getLineDownActionPresentation(), input -> {
                     scrollDown();
                     return true;
                 }));
@@ -2167,7 +2171,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 return;
             }
             myIgnoreNextKeyTypedEvent = false;
-            if (TerminalAction.processEvent(FXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
+            if (FXTerminalAction.processEvent(FXFXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
                 e.consume();
                 myIgnoreNextKeyTypedEvent = true;
             }

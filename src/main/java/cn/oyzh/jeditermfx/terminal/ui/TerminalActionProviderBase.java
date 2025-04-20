@@ -1,19 +1,19 @@
 //package cn.oyzh.jeditermfx.terminal.ui;
 //
-//import com.jediterm.terminal.ui.TerminalActionProvider;
+//import com.jediterm.terminal.ui.FXTerminalActionProvider;
 //
 ///**
 // * @author traff
 // */
-//public abstract class TerminalActionProviderBase implements TerminalActionProvider {
+//public abstract class TerminalActionProviderBase implements FXTerminalActionProvider {
 //
 //    @Override
-//    public TerminalActionProvider getNextProvider() {
+//    public FXTerminalActionProvider getNextProvider() {
 //        return null;
 //    }
 //
 //    @Override
-//    public void setNextProvider(TerminalActionProvider provider) {
+//    public void setNextProvider(FXTerminalActionProvider provider) {
 //
 //    }
 //}

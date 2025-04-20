@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.app.example;
 
+import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.terminal.ui.FXJediTermWidget;
-import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.terminal.TtyConnector;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -25,7 +25,7 @@ public class BasicTerminalExample extends Application {
     }
 
     private static @NotNull FXJediTermWidget createTerminalWidget() {
-        FXJediTermWidget widget = new FXJediTermWidget(80, 24, new DefaultSettingsProvider());
+        FXJediTermWidget widget = new FXJediTermWidget(80, 24, new FXDefaultSettingsProvider());
         try (var terminalWriter = new PipedWriter()) {
             widget.setTtyConnector(new ExampleTtyConnector(terminalWriter));
             widget.start();

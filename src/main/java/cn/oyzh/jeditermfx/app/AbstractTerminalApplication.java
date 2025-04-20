@@ -3,16 +3,16 @@ package cn.oyzh.jeditermfx.app;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugView;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
-import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
-import com.jediterm.terminal.ui.FXJediTermWidget;
-import com.jediterm.terminal.ui.FXTerminalPanel;
 import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
-import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.core.compatibility.Point;
-import com.jediterm.terminal.model.SelectionUtil;
 import com.jediterm.terminal.Terminal;
 import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.model.SelectionUtil;
 import com.jediterm.terminal.model.TerminalSelection;
+import com.jediterm.terminal.ui.FXJediTermWidget;
+import com.jediterm.terminal.ui.FXFXTerminalPanel;
+import com.jediterm.terminal.ui.settings.SettingsProvider;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -98,7 +98,7 @@ public abstract class AbstractTerminalApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        myWidget = createTerminalWidget(new DefaultSettingsProvider());
+        myWidget = createTerminalWidget(new FXDefaultSettingsProvider());
         stage.setTitle("JediTermFX");
         stage.setOnCloseRequest(e -> {
             System.exit(0);
@@ -134,7 +134,7 @@ public abstract class AbstractTerminalApplication extends Application {
         });
         myDumpSelection.setOnAction(e -> {
             FXJediTermWidget widget = myWidget;
-            FXTerminalPanel terminalPanel = widget.getTerminalPanel();
+            FXFXTerminalPanel terminalPanel = widget.getTerminalPanel();
             TerminalSelection selection = terminalPanel.getSelection();
             if (selection != null) {
                 Pair<Point, Point> points = selection.pointsForRun(widget.getTerminal().getTerminalWidth());

@@ -1,17 +1,17 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
-import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
 import com.jediterm.terminal.TextStyle;
-import com.jediterm.terminal.ui.FXTerminalPanel;
+import com.jediterm.terminal.ui.FXFXTerminalPanel;
+import com.jediterm.terminal.ui.settings.SettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
-public class BlinkingTextTracker {
+public class FXBlinkingTextTracker {
 
     private final BlinkTracker slowBlinkTracker = new BlinkTracker();
 
     private final BlinkTracker rapidBlinkTracker = new BlinkTracker();
 
-    public void updateState(@NotNull SettingsProvider settingsProvider, @NotNull FXTerminalPanel panel) {
+    public void updateState(@NotNull SettingsProvider settingsProvider, @NotNull FXFXTerminalPanel panel) {
         if (settingsProvider.enableTextBlinking()) {
             long currentTime = System.currentTimeMillis();
             boolean slowBlinkStateChanged = slowBlinkTracker.update(currentTime, settingsProvider.slowTextBlinkMs());

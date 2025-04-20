@@ -2,15 +2,13 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
-import cn.oyzh.jeditermfx.terminal.model.FXJediTermTypeAheadModel;
+import cn.oyzh.jeditermfx.terminal.ui.FXJediTermDefaultSearchComponent;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalAction;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalActionPresentation;
 import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
-import cn.oyzh.jeditermfx.terminal.ui.JediTermDefaultSearchComponent;
-import cn.oyzh.jeditermfx.terminal.ui.JediTermSearchComponent;
-import cn.oyzh.jeditermfx.terminal.ui.PreConnectHandler;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalActionProvider;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalWidgetListener;
-import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.FXJediTermSearchComponent;
+import cn.oyzh.jeditermfx.terminal.ui.FXPreConnectHandler;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidgetListener;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.typeahead.TypeAheadTerminalModel;
 import com.jediterm.terminal.ProcessTtyConnector;
@@ -23,12 +21,14 @@ import com.jediterm.terminal.TerminalStarter;
 import com.jediterm.terminal.TtyBasedArrayDataStream;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.model.JediTermDebouncerImpl;
+import com.jediterm.terminal.model.JediTermTypeAheadModel;
 import com.jediterm.terminal.model.JediTerminal;
 import com.jediterm.terminal.model.StyleState;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.model.hyperlinks.AsyncHyperlinkFilter;
 import com.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
 import com.jediterm.terminal.model.hyperlinks.TextProcessing;
+import com.jediterm.terminal.ui.settings.SettingsProvider;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -55,7 +55,7 @@ import java.util.function.Consumer;
  */
 public class FXJediTermWidget extends FXStackPane implements TerminalSession, FXTerminalWidget, TerminalActionProvider {
 
-    protected final FXTerminalPanel myTerminalPanel;
+    protected final FXFXTerminalPanel myTerminalPanel;
 
     private final ScrollBar myScrollBar;
 
@@ -63,14 +63,14 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     private final AtomicReference<Session> myRunningSession = new AtomicReference<>();
 
-    private final FXJediTermTypeAheadModel myTypeAheadTerminalModel;
+    private final JediTermTypeAheadModel myTypeAheadTerminalModel;
 
     private final TerminalTypeAheadManager myTypeAheadManager;
 
-    private JediTermSearchComponent myFindComponent;
+    private FXJediTermSearchComponent myFindComponent;
 
     @SuppressWarnings("removal")
-    private final PreConnectHandler myPreConnectHandler;
+    private final FXPreConnectHandler myPreConnectHandler;
 
     private TtyConnector myTtyConnector;
 
@@ -86,7 +86,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     private final TextProcessing myTextProcessing;
 
-    private final List<TerminalWidgetListener> myListeners = new CopyOnWriteArrayList<>();
+    private final List<FXTerminalWidgetListener> myListeners = new CopyOnWriteArrayList<>();
 
     private final Object myExecutorServiceManagerLock = new Object();
 
@@ -113,7 +113,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
         myTerminal = createTerminal(myTerminalPanel, terminalTextBuffer, styleState);
 
-        myTypeAheadTerminalModel = new FXJediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
+        myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
         myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
         JediTermDebouncerImpl typeAheadDebouncer =
                 new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY, getExecutorServiceManager());
@@ -157,8 +157,8 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         return styleState;
     }
 
-    protected FXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
-        return new FXTerminalPanel(settingsProvider, terminalTextBuffer, styleState);
+    protected FXFXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
+        return new FXFXTerminalPanel(settingsProvider, terminalTextBuffer, styleState);
     }
 
     protected @NotNull JediTerminal createTerminal(@NotNull TerminalDisplay display,
@@ -169,15 +169,15 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
     @Deprecated(forRemoval = true)
-    private PreConnectHandler createPreConnectHandler(JediTerminal terminal) {
-        return new PreConnectHandler(terminal);
+    private FXPreConnectHandler createPreConnectHandler(JediTerminal terminal) {
+        return new FXPreConnectHandler(terminal);
     }
 
     public TerminalDisplay getTerminalDisplay() {
         return getTerminalPanel();
     }
 
-    public FXTerminalPanel getTerminalPanel() {
+    public FXFXTerminalPanel getTerminalPanel() {
         return myTerminalPanel;
     }
 
@@ -312,7 +312,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     @Override
     public List<TerminalAction> getActions() {
-        return List.of(new TerminalAction(mySettingsProvider.getFindActionPresentation(),
+        return List.of(new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getFindActionPresentation(),
                 keyEvent -> {
                     showFindText();
                     return true;
@@ -371,8 +371,8 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         }
     }
 
-    protected @NotNull JediTermSearchComponent createSearchComponent() {
-        return new JediTermDefaultSearchComponent(this);
+    protected @NotNull FXJediTermSearchComponent createSearchComponent() {
+        return new FXJediTermDefaultSearchComponent(this);
     }
 
     private void findText(String text, boolean ignoreCase) {
@@ -436,7 +436,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
                 } catch (Exception ignored) {
                 }
                 try {
-                    for (TerminalWidgetListener listener : myListeners) {
+                    for (FXTerminalWidgetListener listener : myListeners) {
                         listener.allSessionsClosed(FXJediTermWidget.this);
                     }
                 } catch (Exception e) {
@@ -476,12 +476,12 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
     }
 
     @Override
-    public void addListener(TerminalWidgetListener listener) {
+    public void addListener(FXTerminalWidgetListener listener) {
         myListeners.add(listener);
     }
 
     @Override
-    public void removeListener(TerminalWidgetListener listener) {
+    public void removeListener(FXTerminalWidgetListener listener) {
         myListeners.remove(listener);
     }
 }

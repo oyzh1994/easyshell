@@ -1,14 +1,14 @@
 package cn.oyzh.jeditermfx.app.example;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
+import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.core.Platform;
 import com.jediterm.terminal.TtyConnector;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.ui.FXJediTermWidget;
-import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -21,9 +21,9 @@ import java.util.Map;
 public class BasicTerminalShellExample extends Application {
 
     private @NotNull FXJediTermWidget createTerminalWidget() {
-        FXJediTermWidget widget = new FXJediTermWidget(80, 24, new DefaultSettingsProvider());
+        FXJediTermWidget widget = new FXJediTermWidget(80, 24, new FXDefaultSettingsProvider());
         widget.setTtyConnector(createTtyConnector());
-        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
+        widget.addHyperlinkFilter(new FXHyperlinkFilter());
         widget.start();
         return widget;
     }

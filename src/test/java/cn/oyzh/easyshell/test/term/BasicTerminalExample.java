@@ -2,7 +2,7 @@
 //
 //import com.jediterm.terminal.TtyConnector;
 //import com.jediterm.terminal.ui.JediTermWidget;
-//import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
+//import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 //import org.jetbrains.annotations.NotNull;
 //
 //import javax.swing.*;
@@ -22,7 +22,7 @@
 //  }
 //
 //  private static @NotNull JediTermWidget createTerminalWidget() {
-//    JediTermWidget widget = new JediTermWidget(80, 24, new DefaultSettingsProvider());
+//    JediTermWidget widget = new JediTermWidget(80, 24, new FXDefaultSettingsProvider());
 //    PipedWriter terminalWriter = new PipedWriter();
 //    widget.setTtyConnector(new ExampleTtyConnector(terminalWriter));
 //    widget.start();

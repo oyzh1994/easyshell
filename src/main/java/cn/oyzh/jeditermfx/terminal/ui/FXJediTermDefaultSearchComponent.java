@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 
-public final class JediTermDefaultSearchComponent extends FXHBox implements JediTermSearchComponent {
+public final class FXJediTermDefaultSearchComponent extends FXHBox implements FXJediTermSearchComponent {
 
     private final ClearableTextField myTextField = new ClearableTextField();
     private final FXLabel label = new FXLabel();
@@ -32,7 +32,7 @@ public final class JediTermDefaultSearchComponent extends FXHBox implements Jedi
     private final List<JediTermSearchComponentListener> myListeners = new CopyOnWriteArrayList<>();
     private final JediTermSearchComponentListener myMulticaster = createMulticaster();
 
-    public JediTermDefaultSearchComponent(FXJediTermWidget jediTermWidget) {
+    public FXJediTermDefaultSearchComponent(FXJediTermWidget jediTermWidget) {
         Button next = createNextButton();
         next.setOnAction(e -> this.myMulticaster.selectNextFindResult());
 

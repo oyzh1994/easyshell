@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
  */
 @SuppressWarnings("removal")
 @Deprecated(forRemoval = true)
-public final class PreConnectHandler implements Questioner, BiConsumer<EventType<KeyEvent>, KeyEvent> {
+public final class FXPreConnectHandler implements Questioner, BiConsumer<EventType<KeyEvent>, KeyEvent> {
 
     private final Object mySync = new Object();
 
@@ -24,7 +24,7 @@ public final class PreConnectHandler implements Questioner, BiConsumer<EventType
 
     private boolean myVisible;
 
-    public PreConnectHandler(Terminal terminal) {
+    public FXPreConnectHandler(Terminal terminal) {
         this.myTerminal = terminal;
         this.myVisible = true;
     }

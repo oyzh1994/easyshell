@@ -1,7 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui.hyperlinks;
 
-import cn.oyzh.jeditermfx.terminal.ui.TerminalAction;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
+import com.jediterm.terminal.ui.TerminalAction;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
@@ -11,19 +11,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public final class LinkInfoEx extends LinkInfo {
+public final class FXLinkInfoEx extends LinkInfo {
 
     private final PopupMenuGroupProvider myPopupMenuGroupProvider;
 
     private final HoverConsumer myHoverConsumer;
 
-    public LinkInfoEx(@NotNull Runnable navigateCallback) {
+    public FXLinkInfoEx(@NotNull Runnable navigateCallback) {
         this(navigateCallback, null, null);
     }
 
-    private LinkInfoEx(@NotNull Runnable navigateCallback,
-                       @Nullable PopupMenuGroupProvider popupMenuGroupProvider,
-                       @Nullable HoverConsumer hoverConsumer) {
+    private FXLinkInfoEx(@NotNull Runnable navigateCallback,
+                         @Nullable PopupMenuGroupProvider popupMenuGroupProvider,
+                         @Nullable HoverConsumer hoverConsumer) {
         super(navigateCallback);
         myPopupMenuGroupProvider = popupMenuGroupProvider;
         myHoverConsumer = hoverConsumer;
@@ -80,16 +80,16 @@ public final class LinkInfoEx extends LinkInfo {
         }
 
         public @NotNull LinkInfo build() {
-            return new LinkInfoEx(myNavigateCallback, myPopupMenuGroupProvider, myHoverConsumer);
+            return new FXLinkInfoEx(myNavigateCallback, myPopupMenuGroupProvider, myHoverConsumer);
         }
     }
 
     public static @Nullable PopupMenuGroupProvider getPopupMenuGroupProvider(@Nullable LinkInfo linkInfo) {
-        return linkInfo instanceof LinkInfoEx ? ((LinkInfoEx) linkInfo).getPopupMenuGroupProvider() : null;
+        return linkInfo instanceof FXLinkInfoEx ? ((FXLinkInfoEx) linkInfo).getPopupMenuGroupProvider() : null;
     }
 
     @Contract("null -> null")
     public static @Nullable HoverConsumer getHoverConsumer(@Nullable LinkInfo linkInfo) {
-        return linkInfo instanceof LinkInfoEx ? ((LinkInfoEx) linkInfo).getHoverConsumer() : null;
+        return linkInfo instanceof FXLinkInfoEx ? ((FXLinkInfoEx) linkInfo).getHoverConsumer() : null;
     }
 }

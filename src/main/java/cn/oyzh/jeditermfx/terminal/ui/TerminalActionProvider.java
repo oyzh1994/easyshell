@@ -1,16 +1,21 @@
-package cn.oyzh.jeditermfx.terminal.ui;
-
-
-import java.util.List;
-
-/**
- * @author traff
- */
-public interface TerminalActionProvider {
-
-    List<TerminalAction> getActions();
-
-    TerminalActionProvider getNextProvider();
-
-    void setNextProvider(TerminalActionProvider provider);
-}
+//package cn.oyzh.jeditermfx.terminal.ui;
+//
+//
+//import com.jediterm.terminal.ui.TerminalActionProvider;
+//
+///**
+// * @author traff
+// */
+//public interface FXTerminalActionProvider extends TerminalActionProvider {
+//
+//
+//   default TerminalActionProvider getNextProvider(){
+//        return this.getNextProvider();
+//    }
+//
+//    FXTerminalActionProvider getNextProvider();
+//
+//    void setNextProvider(FXTerminalActionProvider var1);
+//
+//
+//}

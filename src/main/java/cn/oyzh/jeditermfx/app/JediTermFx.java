@@ -2,16 +2,16 @@ package cn.oyzh.jeditermfx.app;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.jeditermfx.terminal.ui.settings.SettingsProvider;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.model.TerminalTextBuffer;
-import com.pty4j.PtyProcess;
-import com.pty4j.PtyProcessBuilder;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugUtil;
 import cn.oyzh.jeditermfx.app.pty.LoggingTtyConnector;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import cn.oyzh.jeditermfx.terminal.ui.DefaultHyperlinkFilter;
+import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.ui.FXJediTermWidget;
+import com.jediterm.terminal.ui.settings.SettingsProvider;
+import com.pty4j.PtyProcess;
+import com.pty4j.PtyProcessBuilder;
 import kotlin.collections.ArraysKt;
 import kotlin.jvm.internal.Intrinsics;
 import kotlin.text.Charsets;
@@ -83,7 +83,7 @@ public final class JediTermFx extends AbstractTerminalApplication {
     protected FXJediTermWidget createTerminalWidget(@NotNull SettingsProvider settingsProvider) {
         Intrinsics.checkNotNullParameter(settingsProvider, "settingsProvider");
         FXJediTermWidget widget = new FXJediTermWidget(settingsProvider);
-        widget.addHyperlinkFilter(new DefaultHyperlinkFilter());
+        widget.addHyperlinkFilter(new FXHyperlinkFilter());
         return widget;
     }
 

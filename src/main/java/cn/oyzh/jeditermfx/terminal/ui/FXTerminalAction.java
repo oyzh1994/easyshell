@@ -1,5 +1,7 @@
 package cn.oyzh.jeditermfx.terminal.ui;
 
+import com.jediterm.terminal.ui.TerminalAction;
+import com.jediterm.terminal.ui.TerminalActionProvider;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -17,39 +19,28 @@ import java.util.function.Supplier;
 /**
  * @author traff
  */
-public class TerminalAction {
-
-    private final TerminalActionPresentation myPresentation;
+public class FXTerminalAction extends TerminalAction {
 
     private final Predicate<KeyEvent> myRunnable;
 
-    private Supplier<Boolean> myEnabledSupplier = () -> true;
-
     private KeyCode myMnemonicKeyCode = null;
 
-    private boolean mySeparatorBefore = false;
-
-    private boolean myHidden = false;
-
-    public TerminalAction(@NotNull TerminalActionPresentation presentation, @NotNull Predicate<KeyEvent> runnable) {
-        myPresentation = presentation;
+    public FXTerminalAction(@NotNull FXTerminalActionPresentation presentation, @NotNull Predicate<KeyEvent> runnable) {
+        super(presentation, keyEvent -> true);
         myRunnable = runnable;
     }
 
-    public TerminalAction(@NotNull TerminalActionPresentation presentation) {
-        this(presentation, keyEvent -> true);
-    }
-
-    public @NotNull TerminalActionPresentation getPresentation() {
-        return myPresentation;
-    }
-
-    public @Nullable KeyCode getMnemonicKeyCode() {
+    public @Nullable KeyCode getFXMnemonicKeyCode() {
         return myMnemonicKeyCode;
     }
 
+    @Override
+    public @NotNull FXTerminalActionPresentation getPresentation() {
+        return (FXTerminalActionPresentation) super.getPresentation();
+    }
+
     public boolean matches(KeyEvent e) {
-        for (KeyCombination kc : myPresentation.getKeyCombinations()) {
+        for (KeyCombination kc : this.getPresentation().getKeyCombinations()) {
             if (kc.match(e)) {
                 return true;
             }
@@ -58,7 +49,7 @@ public class TerminalAction {
     }
 
     public boolean isEnabled(@Nullable KeyEvent e) {
-        return myEnabledSupplier.get();
+        return super.isEnabled(null);
     }
 
     public boolean actionPerformed(@Nullable KeyEvent e) {
@@ -67,8 +58,8 @@ public class TerminalAction {
 
     public static boolean processEvent(@NotNull TerminalActionProvider actionProvider, @NotNull KeyEvent e) {
         for (TerminalAction a : actionProvider.getActions()) {
-            if (a.matches(e)) {
-                return a.isEnabled(e) && a.actionPerformed(e);
+            if (a instanceof FXTerminalAction action && action.matches(e)) {
+                return action.isEnabled(e) && action.actionPerformed(e);
             }
         }
 
@@ -79,66 +70,45 @@ public class TerminalAction {
         return false;
     }
 
-    public @NotNull String getName() {
-        return myPresentation.getName();
-    }
-
-    public TerminalAction withMnemonicKey(KeyCode keyCode) {
+    public FXTerminalAction withMnemonicKey(KeyCode keyCode) {
         myMnemonicKeyCode = keyCode;
         return this;
     }
 
-    public TerminalAction withEnabledSupplier(@NotNull Supplier<Boolean> enabledSupplier) {
-        myEnabledSupplier = enabledSupplier;
+    public FXTerminalAction withEnabledSupplier(@NotNull Supplier<Boolean> enabledSupplier) {
+        super.withEnabledSupplier(enabledSupplier);
         return this;
     }
 
-    public TerminalAction separatorBefore(boolean enabled) {
-        mySeparatorBefore = enabled;
+    public FXTerminalAction separatorBefore(boolean enabled) {
+        super.separatorBefore(enabled);
         return this;
     }
 
     private @NotNull MenuItem toMenuItem() {
-        var itemText = myPresentation.getName();
+        var itemText = this.getName();
 
         if (myMnemonicKeyCode != null) {
             var key = myMnemonicKeyCode.getName();
             itemText = itemText.replace(key, "_" + key);
         }
 
+        FXTerminalActionPresentation myPresentation = this.getPresentation();
         MenuItem menuItem = new MenuItem(itemText);
         if (!myPresentation.getKeyCombinations().isEmpty()) {
-            menuItem.setAccelerator(myPresentation.getKeyCombinations().get(0));
+            menuItem.setAccelerator(myPresentation.getKeyCombinations().getFirst());
         }
 
-        menuItem.setOnAction(actionEvent -> actionPerformed(null));
-        menuItem.setDisable(!isEnabled(null));
+        menuItem.setOnAction(actionEvent -> actionPerformed((KeyEvent) null));
+        menuItem.setDisable(!isEnabled((KeyEvent) null));
 
         return menuItem;
     }
 
-    public boolean isSeparated() {
-        return mySeparatorBefore;
-    }
-
-    public boolean isHidden() {
-        return myHidden;
-    }
-
-    public TerminalAction withHidden(boolean hidden) {
-        myHidden = hidden;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "'" + myPresentation.getName() + "'";
-    }
-
     public static void fillMenu(@NotNull ContextMenu menu, @NotNull TerminalActionProvider actionProvider) {
-        buildMenu(actionProvider, new TerminalActionMenuBuilder() {
+        buildMenu(actionProvider, new FXTerminalActionMenuBuilder() {
             @Override
-            public void addAction(@NotNull TerminalAction action) {
+            public void addAction(@NotNull FXTerminalAction action) {
                 menu.getItems().add(action.toMenuItem());
             }
 
@@ -149,7 +119,7 @@ public class TerminalAction {
         });
     }
 
-    public static void buildMenu(@NotNull TerminalActionProvider provider, @NotNull TerminalActionMenuBuilder builder) {
+    public static void buildMenu(@NotNull TerminalActionProvider provider, @NotNull FXTerminalActionMenuBuilder builder) {
         List<TerminalActionProvider> actionProviders = listActionProviders(provider);
         boolean emptyGroup = true;
         for (TerminalActionProvider actionProvider : actionProviders) {
@@ -170,7 +140,7 @@ public class TerminalAction {
     private static @NotNull List<TerminalActionProvider> listActionProviders(@NotNull TerminalActionProvider provider) {
         var providers = new ArrayList<TerminalActionProvider>();
         for (var p = provider; p != null; p = p.getNextProvider()) {
-            providers.add(0, p);
+            providers.addFirst(p);
         }
         return providers;
     }

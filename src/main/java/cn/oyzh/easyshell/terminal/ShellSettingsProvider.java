@@ -7,8 +7,8 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.jeditermfx.terminal.ui.TerminalActionPresentation;
-import cn.oyzh.jeditermfx.terminal.ui.settings.DefaultSettingsProvider;
+import cn.oyzh.jeditermfx.terminal.ui.FXTerminalActionPresentation;
+import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.terminal.emulator.ColorPalette;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -23,7 +23,7 @@ import java.util.Collections;
  * @author oyzh
  * @since 2025-03-08
  */
-public class ShellSettingsProvider extends DefaultSettingsProvider {
+public class ShellSettingsProvider extends FXDefaultSettingsProvider {
 
     /**
      * 程序设置
@@ -31,71 +31,71 @@ public class ShellSettingsProvider extends DefaultSettingsProvider {
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
     @Override
-    public @NotNull TerminalActionPresentation getOpenUrlActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.openAsUrl(), Collections.emptyList());
+    public @NotNull FXTerminalActionPresentation getOpenUrlActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.openAsUrl(), Collections.emptyList());
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getCopyActionPresentation() {
+    public @NotNull FXTerminalActionPresentation getCopyActionPresentation() {
         KeyCombination keyCombination = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.C, KeyCombination.META_DOWN)
                 // CTRL + C is used for signal; use CTRL + SHIFT + C instead
                 : new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new TerminalActionPresentation(I18nHelper.copy(), keyCombination);
+        return new FXTerminalActionPresentation(I18nHelper.copy(), keyCombination);
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getPasteActionPresentation() {
+    public @NotNull FXTerminalActionPresentation getPasteActionPresentation() {
         KeyCombination keyCombination = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.V, KeyCombination.META_DOWN)
                 // CTRL + V is used for signal; use CTRL + SHIFT + V instead
                 : new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new TerminalActionPresentation(I18nHelper.paste(), keyCombination);
+        return new FXTerminalActionPresentation(I18nHelper.paste(), keyCombination);
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getClearBufferActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.clearBuffer(), OSUtil.isMacOS()
+    public @NotNull FXTerminalActionPresentation getClearBufferActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.clearBuffer(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.L, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getPageUpActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.pageUp(),
+    public @NotNull FXTerminalActionPresentation getPageUpActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.pageUp(),
                 new KeyCodeCombination(KeyCode.PAGE_UP, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getPageDownActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.pageDown(),
+    public @NotNull FXTerminalActionPresentation getPageDownActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.pageDown(),
                 new KeyCodeCombination(KeyCode.PAGE_DOWN, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getLineUpActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.lineUp(), OSUtil.isMacOS()
+    public @NotNull FXTerminalActionPresentation getLineUpActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.lineUp(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getLineDownActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.lineDown(), OSUtil.isMacOS()
+    public @NotNull FXTerminalActionPresentation getLineDownActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.lineDown(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getFindActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.find(), OSUtil.isMacOS()
+    public @NotNull FXTerminalActionPresentation getFindActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.find(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
     }
 
     @Override
-    public @NotNull TerminalActionPresentation getSelectAllActionPresentation() {
-        return new TerminalActionPresentation(I18nHelper.selectAll(), Collections.emptyList());
+    public @NotNull FXTerminalActionPresentation getSelectAllActionPresentation() {
+        return new FXTerminalActionPresentation(I18nHelper.selectAll(), Collections.emptyList());
     }
 
     @Override

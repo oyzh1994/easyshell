@@ -25,7 +25,7 @@ public interface FXTerminalWidget {
 
     TerminalDisplay getTerminalDisplay();
 
-    void addListener(TerminalWidgetListener listener);
+    void addListener(FXTerminalWidgetListener listener);
 
-    void removeListener(TerminalWidgetListener listener);
+    void removeListener(FXTerminalWidgetListener listener);
 }

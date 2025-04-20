@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 
 
-public interface JediTermSearchComponent {
+public interface FXJediTermSearchComponent {
     @NotNull Pane getComponent();
 
     void addListener(@NotNull JediTermSearchComponentListener listener);
