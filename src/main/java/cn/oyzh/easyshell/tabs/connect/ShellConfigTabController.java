@@ -61,21 +61,10 @@ public class ShellConfigTabController extends ParentTabController {
             ShellSftp sftp = this.client.openSftp();
             if (this.client.isWindows()) {
                 // 移除linux专属配置
-                this.tabPane.removeTab("sshd");
-                this.tabPane.removeTab("bash");
-                this.tabPane.removeTab("hosts");
-                this.tabPane.removeTab("resolv");
-                this.tabPane.removeTab("profile");
-                this.tabPane.removeTab("userZshrc");
-                this.tabPane.removeTab("userBashrc");
-                this.tabPane.removeTab("userProfile");
-                this.tabPane.removeTab("environment");
-                this.tabPane.removeTab("userBashProfile");
+                this.tabPane.removeTabs("sshd","bash","hosts","resolv", "profile","userZshrc","userBashrc","userProfile", "environment","userBashProfile");
             } else {
                 // 移除windows专属配置
-                this.tabPane.removeTab("winSshd");
-                this.tabPane.removeTab("winHosts");
-                this.tabPane.removeTab("winEnvironment");
+                this.tabPane.removeTabs("winSshd", "winHosts", "winEnvironment");
                 // 如果配置文件不存在，则移除此配置
                 if (!sftp.exist("/etc/environment")) {
                     tabPane.removeTab("environment");

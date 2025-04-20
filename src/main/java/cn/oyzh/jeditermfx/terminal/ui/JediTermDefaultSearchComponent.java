@@ -137,7 +137,7 @@ public final class JediTermDefaultSearchComponent extends FXHBox implements Jedi
 
     @Override
     public void addKeyListener(@NotNull BiConsumer<EventType<KeyEvent>, KeyEvent> listener) {
-        this.myTextField.addEventFilter(KeyEvent.ANY, e -> listener.accept(e.getEventType(), e));
+        this.myTextField.addEventFilter(KeyEvent.KEY_PRESSED, e -> listener.accept(e.getEventType(), e));
     }
 
     private @NotNull JediTermSearchComponentListener createMulticaster() {

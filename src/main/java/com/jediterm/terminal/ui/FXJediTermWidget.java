@@ -338,6 +338,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
                 @Override
                 public void hideSearchComponent() {
+                    component.getChildren().clear();
                     removeChild(component);
                     myFindComponent = null;
                     myTerminalPanel.setFindResult(null);
