@@ -66,6 +66,7 @@ public final class PreConnectHandler implements Questioner, BiConsumer<EventType
         if (myAnswer == null) return;
         synchronized (mySync) {
             boolean release = false;
+
             switch (e.getCode()) {
                 case KeyCode.BACK_SPACE:
                     if (!myAnswer.isEmpty()) {
@@ -79,8 +80,10 @@ public final class PreConnectHandler implements Questioner, BiConsumer<EventType
                     release = true;
                     break;
             }
+
             if (release) mySync.notifyAll();
         }
+
     }
 
     public void keyReleased(KeyEvent e) {

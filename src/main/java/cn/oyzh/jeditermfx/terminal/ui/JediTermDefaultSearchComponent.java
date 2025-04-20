@@ -132,7 +132,7 @@ public final class JediTermDefaultSearchComponent extends FXHBox implements Jedi
     @Override
     public void requestFocus() {
         super.requestFocus();
-        myTextField.requestFocus();
+        this.myTextField.requestFocus();
     }
 
     @Override

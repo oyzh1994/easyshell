@@ -21,7 +21,8 @@ public final class LinkInfoEx extends LinkInfo {
         this(navigateCallback, null, null);
     }
 
-    private LinkInfoEx(@NotNull Runnable navigateCallback, @Nullable PopupMenuGroupProvider popupMenuGroupProvider,
+    private LinkInfoEx(@NotNull Runnable navigateCallback,
+                       @Nullable PopupMenuGroupProvider popupMenuGroupProvider,
                        @Nullable HoverConsumer hoverConsumer) {
         super(navigateCallback);
         myPopupMenuGroupProvider = popupMenuGroupProvider;
@@ -37,12 +38,10 @@ public final class LinkInfoEx extends LinkInfo {
     }
 
     public interface PopupMenuGroupProvider {
-        @NotNull
-        List<TerminalAction> getPopupMenuGroup(@NotNull MouseEvent event);
+        @NotNull List<TerminalAction> getPopupMenuGroup(@NotNull MouseEvent event);
     }
 
     public interface HoverConsumer {
-
         /**
          * Gets called when the mouse cursor enters the link's bounds.
          *

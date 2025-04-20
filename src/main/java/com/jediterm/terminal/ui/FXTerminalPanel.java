@@ -255,8 +255,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private @Nullable TextStyle myCachedFoundPatternColor;
 
-    private boolean myIgnoreNextKeyTypedEvent;
-
     public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
         mySettingsProvider = settingsProvider;
         myTerminalTextBuffer = terminalTextBuffer;
@@ -325,32 +323,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         HBox.setHgrow(canvas, Priority.ALWAYS);
 //        this.canvas.setCache(true);
         scrollBar.setOrientation(Orientation.VERTICAL);
-        GraphicsContext gfx = this.canvas.getGraphicsContext2D();
-        if (mySettingsProvider.useAntialiasing()) {
-            //Important! FontSmoothingType.LCD is very slow
-            gfx.setFontSmoothingType(FontSmoothingType.GRAY);
-            gfx.setImageSmoothing(true);
-        } else {
-            gfx.setImageSmoothing(false);
-        }
-        this.canvas.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (e.isConsumed()) {
-                return;
-            }
-            myIgnoreNextKeyTypedEvent = false;
-            if (TerminalAction.processEvent(FXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
-                e.consume();
-                myIgnoreNextKeyTypedEvent = true;
-            }
-        });
-        this.canvas.addEventFilter(KeyEvent.KEY_TYPED, e -> {
-            if (e.isConsumed()) {
-                return;
-            }
-            if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
-                e.consume();
-            }
-        });
+
         this.canvas.addEventFilter(MouseEvent.MOUSE_MOVED, (e) -> {
             handleHyperlinks(createPoint(e));
         });
@@ -929,38 +902,50 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 //    return isMonospaced;
 //  }
 
-//    private static boolean isWordCharacter(char character) {
-//        return Character.isLetterOrDigit(character);
-//    }
+    private static boolean isWordCharacter(char character) {
+        return Character.isLetterOrDigit(character);
+    }
+
+    protected void setupAntialiasing(GraphicsContext gfx) {
+        if (this.mySettingsProvider.useAntialiasing()) {
+            //Important! FontSmoothingType.LCD is very slow
+            gfx.setFontSmoothingType(FontSmoothingType.GRAY);
+            gfx.setImageSmoothing(true);
+        } else {
+            gfx.setImageSmoothing(false);
+        }
+    }
 
     /**
      * 背景色
      */
-    private Color windowBackground;
+    private Color fxBackground;
 
-    public @NotNull javafx.scene.paint.Color windowBackground() {
-        if (this.windowBackground == null) {
-            this.windowBackground = FXTransformers.toFxColor(getWindowBackground());
+    public @NotNull javafx.scene.paint.Color getFXBackground() {
+        if (this.fxBackground == null) {
+            this.fxBackground = FXTransformers.toFxColor(getWindowBackground());
         }
-        return this.windowBackground;
+        return this.fxBackground;
     }
 
     /**
      * 前景色
      */
-    private Color windowForeground;
+    private Color fxForeground;
 
-    public @NotNull javafx.scene.paint.Color windowForeground() {
-        if (this.windowForeground == null) {
-            this.windowForeground = FXTransformers.toFxColor(getWindowForeground());
+    public @NotNull javafx.scene.paint.Color getFXForeground() {
+        if (this.fxForeground == null) {
+            this.fxForeground = FXTransformers.toFxColor(getWindowForeground());
         }
-        return this.windowForeground;
+        return this.fxForeground;
     }
 
     public void paintComponent(GraphicsContext gfx) {
         resetColorCache();
 
-        gfx.setFill(this.windowBackground());
+        setupAntialiasing(gfx);
+
+        gfx.setFill(this.getFXBackground());
 
         gfx.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         this.fixScrollBarThumbVisibility();
@@ -1105,10 +1090,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
             double len = myInputMethodUncommittedChars.length() * myCharSize.getWidth();
 
-            gfx.setFill(this.windowBackground());
+            gfx.setFill(getFXBackground());
             gfx.fillRect(xCoord, (y - 1) * myCharSize.getHeight() - 3, len, myCharSize.getHeight());
 
-            gfx.setFill(this.windowForeground());
+            gfx.setFill(getFXForeground());
             gfx.setFont(myNormalFont);
 
             gfx.fillText(myInputMethodUncommittedChars, xCoord, yCoord);
@@ -1684,7 +1669,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void drawMargins(GraphicsContext graphicsContext, double width, double height) {
-        graphicsContext.setFill(this.windowBackground());
+        graphicsContext.setFill(getFXBackground());
         graphicsContext.fillRect(0, height, this.getWidth(), this.getHeight() - height);
         graphicsContext.fillRect(width, 0, this.getWidth() - width, this.getHeight());
     }
@@ -1938,7 +1923,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void selectAll() {
-        TerminalSelection  mySelection= new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
+        TerminalSelection mySelection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
         updateSelection(mySelection, true);
     }
@@ -2418,8 +2403,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.dimColors.clear();
         this.foregrounds.clear();
         this.backgrounds.clear();
-        this.windowBackground = null;
-        this.windowForeground = null;
+        this.fxBackground = null;
+        this.fxForeground = null;
         // 执行重绘
         this.doRepaint();
     }

@@ -107,8 +107,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         myTextProcessing = new TextProcessing(settingsProvider.getHyperlinkColor(),
                 settingsProvider.getHyperlinkHighlightingMode());
 
-        TerminalTextBuffer terminalTextBuffer = new TerminalTextBuffer(columns, lines, styleState,
-                settingsProvider.getBufferMaxLinesCount(), myTextProcessing);
+        TerminalTextBuffer terminalTextBuffer = new TerminalTextBuffer(columns, lines, styleState, settingsProvider.getBufferMaxLinesCount(), myTextProcessing);
         myTextProcessing.setTerminalTextBuffer(terminalTextBuffer);
 
         myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
@@ -320,7 +319,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
                 }).withMnemonicKey(KeyCode.F));
     }
 
-    protected void showFindText() {
+    private void showFindText() {
         if (myFindComponent == null) {
             myFindComponent = createSearchComponent();
 

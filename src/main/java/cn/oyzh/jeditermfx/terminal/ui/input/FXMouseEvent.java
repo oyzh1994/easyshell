@@ -7,8 +7,19 @@ import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 
 public final class FXMouseEvent extends MouseEvent {
+    private final javafx.scene.input.MouseEvent myFxMouseEvent;
 
-    private static int createButtonCode(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
+    public FXMouseEvent(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
+        super(createButtonCode(fxMouseEvent), getModifierKeys(fxMouseEvent));
+        myFxMouseEvent = fxMouseEvent;
+    }
+
+    @Override
+    public String toString() {
+        return myFxMouseEvent.toString();
+    }
+
+    static int createButtonCode(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
         // for mouse dragged, button is stored in modifiers
         if (fxMouseEvent.getButton() == MouseButton.PRIMARY) {
             return MouseButtonCodes.LEFT;
@@ -20,7 +31,7 @@ public final class FXMouseEvent extends MouseEvent {
         return MouseButtonCodes.NONE;
     }
 
-    private static int getModifierKeys(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
+    static int getModifierKeys(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
         int modifier = 0;
         if (fxMouseEvent.isControlDown()) {
             modifier |= MouseButtonModifierFlags.MOUSE_BUTTON_CTRL_FLAG;
@@ -32,17 +43,5 @@ public final class FXMouseEvent extends MouseEvent {
             modifier |= MouseButtonModifierFlags.MOUSE_BUTTON_META_FLAG;
         }
         return modifier;
-    }
-
-    private final javafx.scene.input.MouseEvent myFxMouseEvent;
-
-    public FXMouseEvent(@NotNull javafx.scene.input.MouseEvent fxMouseEvent) {
-        super(createButtonCode(fxMouseEvent), getModifierKeys(fxMouseEvent));
-        myFxMouseEvent = fxMouseEvent;
-    }
-
-    @Override
-    public String toString() {
-        return myFxMouseEvent.toString();
     }
 }

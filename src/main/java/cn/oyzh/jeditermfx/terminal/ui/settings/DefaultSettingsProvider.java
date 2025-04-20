@@ -1,6 +1,5 @@
 package cn.oyzh.jeditermfx.terminal.ui.settings;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.jeditermfx.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.HyperlinkStyle;
@@ -8,7 +7,7 @@ import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.emulator.ColorPaletteImpl;
-import com.jediterm.terminal.model.LinesBuffer;
+import com.jediterm.terminal.model.LinesStorage;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -105,9 +104,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
         } else {
             fontName = "Monospaced";
         }
-        var font = Font.font(fontName, getTerminalFontSize());
-        JulLog.debug("Terminal font: {}", font);
-        return font;
+        return Font.font(fontName, getTerminalFontSize());
     }
 
     @Override
@@ -133,7 +130,6 @@ public class DefaultSettingsProvider implements SettingsProvider {
     @Override
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
         return HyperlinkStyle.HighlightMode.HOVER;
-//        return HyperlinkStyle.HighlightMode.HOVER_WITH_BOTH_COLORS;
     }
 
     @Override
@@ -198,7 +194,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
     @Override
     public int getBufferMaxLinesCount() {
-        return LinesBuffer.DEFAULT_MAX_LINES_COUNT;
+        return LinesStorage.DEFAULT_MAX_LINES_COUNT;
     }
 
     @Override

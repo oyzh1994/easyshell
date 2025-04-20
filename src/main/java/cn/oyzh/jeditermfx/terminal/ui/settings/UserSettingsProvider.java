@@ -50,11 +50,9 @@ public interface UserSettingsProvider {
         return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
     }
 
-    @NotNull
-    TextStyle getSelectionColor();
+    @NotNull TextStyle getSelectionColor();
 
-    @NotNull
-    TextStyle getFoundPatternColor();
+    @NotNull TextStyle getFoundPatternColor();
 
     TextStyle getHyperlinkColor();
 
@@ -102,8 +100,7 @@ public interface UserSettingsProvider {
 
     boolean ambiguousCharsAreDoubleWidth();
 
-    @NotNull
-    TerminalTypeAheadSettings getTypeAheadSettings();
+    @NotNull TerminalTypeAheadSettings getTypeAheadSettings();
 
     boolean sendArrowKeysInAlternativeMode();
 }

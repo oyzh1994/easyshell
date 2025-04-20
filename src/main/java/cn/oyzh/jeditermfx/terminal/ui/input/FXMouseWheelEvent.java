@@ -7,6 +7,17 @@ import javafx.scene.input.ScrollEvent;
 import org.jetbrains.annotations.NotNull;
 
 public final class FXMouseWheelEvent extends MouseWheelEvent {
+    private final ScrollEvent myFxMouseWheelEvent;
+
+    public FXMouseWheelEvent(@NotNull ScrollEvent fxMouseWheelEvent) {
+        super(createButtonCode(fxMouseWheelEvent), getModifierKeys(fxMouseWheelEvent));
+        myFxMouseWheelEvent = fxMouseWheelEvent;
+    }
+
+    @Override
+    public String toString() {
+        return myFxMouseWheelEvent.toString();
+    }
 
     private static int createButtonCode(@NotNull ScrollEvent fxMouseEvent) {
         if (fxMouseEvent.getDeltaY() > 0) {
@@ -28,17 +39,5 @@ public final class FXMouseWheelEvent extends MouseWheelEvent {
             modifier |= MouseButtonModifierFlags.MOUSE_BUTTON_META_FLAG;
         }
         return modifier;
-    }
-
-    private final ScrollEvent myFxMouseWheelEvent;
-
-    public FXMouseWheelEvent(@NotNull ScrollEvent fxMouseWheelEvent) {
-        super(createButtonCode(fxMouseWheelEvent), getModifierKeys(fxMouseWheelEvent));
-        myFxMouseWheelEvent = fxMouseWheelEvent;
-    }
-
-    @Override
-    public String toString() {
-        return myFxMouseWheelEvent.toString();
     }
 }

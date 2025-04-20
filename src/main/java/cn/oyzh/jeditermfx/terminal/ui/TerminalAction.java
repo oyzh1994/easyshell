@@ -137,7 +137,6 @@ public class TerminalAction {
 
     public static void fillMenu(@NotNull ContextMenu menu, @NotNull TerminalActionProvider actionProvider) {
         buildMenu(actionProvider, new TerminalActionMenuBuilder() {
-
             @Override
             public void addAction(@NotNull TerminalAction action) {
                 menu.getItems().add(action.toMenuItem());
