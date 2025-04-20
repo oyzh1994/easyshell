@@ -176,9 +176,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private double myDescent = 0;
 
-    private int mySpaceBetweenLines = 0;
+    private double mySpaceBetweenLines = 0;
 
     protected Dimension2D myCharSize;
+
+    private boolean myMonospaced;
 
     private TermSize myTermSize;
 
@@ -255,8 +257,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private boolean myIgnoreNextKeyTypedEvent;
 
-    public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer,
-                           @NotNull StyleState styleState) {
+    public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
         mySettingsProvider = settingsProvider;
         myTerminalTextBuffer = terminalTextBuffer;
         myStyleState = styleState;
@@ -403,15 +404,18 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     updateSelection(null, true);
                     repaint();
                 }
+                if (this.popup != null) {
+                    this.popup.hide();
+                }
             }
         });
 
         this.canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             this.requestFocus();
+            repaint();
             if (mySelection.get() != null) {
                 updateSelectedText();
             }
-            repaint();
         });
 
         this.canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
@@ -420,7 +424,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 this.popup.hide();
                 return;
             }
-            var point = createPoint(e);
+            Point2D point = createPoint(e);
             HyperlinkStyle hyperlink = isFollowLinkEvent(e) ? findHyperlink(point) : null;
             if (hyperlink != null) {
                 hyperlink.getLinkInfo().navigate();
@@ -434,8 +438,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     com.jediterm.core.compatibility.Point start = SelectionUtil.getPreviousSeparator(charCoords, myTerminalTextBuffer);
                     com.jediterm.core.compatibility.Point stop = SelectionUtil.getNextSeparator(charCoords, myTerminalTextBuffer);
                     var sel = new TerminalSelection(start);
-                    sel.updateEnd(stop);
                     updateSelection(sel, true);
+                    sel.updateEnd(stop);
 
                     if (mySettingsProvider.copyOnSelect()) {
                         handleCopyOnSelect();
@@ -454,8 +458,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                         endLine++;
                     }
                     var sel = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, startLine));
-                    sel.updateEnd(new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), endLine));
                     updateSelection(sel, true);
+                    sel.updateEnd(new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), endLine));
 
                     if (mySettingsProvider.copyOnSelect()) {
                         handleCopyOnSelect();
@@ -466,8 +470,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             } else if (e.getButton() == MouseButton.SECONDARY) {
                 HyperlinkStyle contextHyperlink = findHyperlink(point);
                 TerminalActionProvider provider = getTerminalActionProvider(contextHyperlink != null ? contextHyperlink.getLinkInfo() : null, e);
-                popup = createPopupMenu(provider);
-                popup.show(this.canvas, e.getScreenX(), e.getScreenY());
+                ContextMenu popup = createPopupMenu(provider);
+                popup.show((Node) e.getSource(), e.getScreenX(), e.getScreenY());
             }
             repaint();
         });
@@ -489,6 +493,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 myCursor.cursorChanged();
             } else {
                 myCursor.cursorChanged();
+
                 handleHyperlinks(this.canvas);
             }
         });
@@ -502,25 +507,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         // 事件处理
         this.addEventFilter(KeyEvent.ANY, this::handleKeyEvent);
-    }
-
-    /**
-     * There is a difference between JavaFX ScrollBar.value Swing JScrollBar.value. In JavaFX value is calculated
-     * in range [min, max], but in Swing in range [min, max - extent]
-     */
-    private int resolveSwingScrollBarValue() {
-        var normalizedValue = (scrollBar.getValue() - scrollBar.getMin())
-                / (scrollBar.getMax() - scrollBar.getMin());
-        var swingValue = scrollBar.getMin()
-                + normalizedValue * (scrollBar.getMax() - scrollBar.getVisibleAmount() - scrollBar.getMin());
-        return (int) Math.round(swingValue);
-    }
-
-    private double resolveJavaFxScrollBarValue(double swingValue) {
-        var normalizedValue = (swingValue - scrollBar.getMin())
-                / ((scrollBar.getMax() - scrollBar.getVisibleAmount()) - scrollBar.getMin());
-        var fxValue = scrollBar.getMin() + normalizedValue * (scrollBar.getMax() - scrollBar.getMin());
-        return fxValue;
     }
 
     private boolean isFollowLinkEvent(@NotNull MouseEvent e) {
@@ -821,6 +807,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (text == null) {
             return;
         }
+
         try {
             // Sanitize clipboard text to use CR as the line separator.
             // See https://github.com/JetBrains/jediterm/issues/136.
@@ -1061,19 +1048,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         drawMargins(gfx, this.canvas.getWidth(), this.canvas.getHeight());
     }
 
-    /**
-     * Hides/shows thumb in scroll bar.
-     */
-    private void fixScrollBarThumbVisibility() {
-        if (scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() == 0) {
-            this.scrollBar.getStyleClass().add("no-thumb");
-            scrollBarThumbVisible = false;
-        } else if (!scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() != 0) {
-            this.scrollBar.getStyleClass().remove("no-thumb");
-            scrollBarThumbVisible = true;
-        }
-    }
-
     private void resetColorCache() {
         myCachedSelectionColor = null;
         myCachedFoundPatternColor = null;
@@ -1202,7 +1176,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return toBackground(mySettingsProvider.getDefaultBackground());
     }
 
-
     private @NotNull javafx.scene.paint.Color getEffectiveForeground(@NotNull TextStyle style) {
         return style.hasOption(TextStyle.Option.INVERSE) ? getBackground(style) : getForeground(style);
     }
@@ -1216,7 +1189,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      */
     private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
 
-    private Color getForeground(@NotNull TextStyle style) {
+    private @NotNull Color getForeground(@NotNull TextStyle style) {
         Color fxColor = this.foregrounds.get(style);
         if (fxColor == null) {
             TerminalColor foreground = style.getForeground();
@@ -1227,7 +1200,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return fxColor;
     }
 
-    private com.jediterm.core.@NotNull Color toForeground(@NotNull TerminalColor terminalColor) {
+    private @NotNull com.jediterm.core.Color toForeground(@NotNull TerminalColor terminalColor) {
         if (terminalColor.isIndexed()) {
             return getPalette().getForeground(terminalColor);
         }
@@ -1239,7 +1212,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      */
     private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
 
-    private Color getBackground(@NotNull TextStyle style) {
+    private @NotNull Color getBackground(@NotNull TextStyle style) {
         Color fxColor = this.backgrounds.get(style);
         if (fxColor == null) {
             TerminalColor background = style.getBackground();
@@ -1250,7 +1223,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return fxColor;
     }
 
-    private com.jediterm.core.@NotNull Color toBackground(@NotNull TerminalColor terminalColor) {
+    private @NotNull com.jediterm.core.Color toBackground(@NotNull TerminalColor terminalColor) {
         if (terminalColor.isIndexed()) {
             return getPalette().getBackground(terminalColor);
         }
@@ -1526,6 +1499,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 style = hyperlinkStyle.getHighlightStyle();
             }
         }
+
         javafx.scene.paint.Color backgroundColor = getEffectiveBackground(style);
         gfx.setFill(backgroundColor);
         gfx.fillRect(xCoord,
@@ -1673,14 +1647,23 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return false;
     }
 
-    private @NotNull javafx.scene.paint.Color getStyleForeground(@NotNull TextStyle style) {
+    /**
+     * 反转色缓存
+     */
+    private final Map<TextStyle, Color> dimColors = new ConcurrentHashMap<>();
+
+    private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
         javafx.scene.paint.Color foreground = getEffectiveForeground(style);
         if (style.hasOption(TextStyle.Option.DIM)) {
             javafx.scene.paint.Color background = getEffectiveBackground(style);
-            foreground = new javafx.scene.paint.Color((foreground.getRed() + background.getRed()) / 2,
-                    (foreground.getGreen() + background.getGreen()) / 2,
-                    (foreground.getBlue() + background.getBlue()) / 2,
-                    foreground.getOpacity());
+            foreground = this.dimColors.get(style);
+            if (foreground == null) {
+                foreground = new Color((foreground.getRed() + background.getRed()) / 2,
+                        (foreground.getGreen() + background.getGreen()) / 2,
+                        (foreground.getBlue() + background.getBlue()) / 2,
+                        foreground.getOpacity());
+                this.dimColors.put(style, foreground);
+            }
         }
         return foreground;
     }
@@ -1857,6 +1840,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             menu = this.popup;
         } else {
             menu = new ContextMenu();
+            this.popup = menu;
         }
         TerminalAction.fillMenu(menu, actionProvider);
         return menu;
@@ -1866,7 +1850,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         LinkInfoEx.PopupMenuGroupProvider popupMenuGroupProvider = LinkInfoEx.getPopupMenuGroupProvider(linkInfo);
         if (popupMenuGroupProvider != null) {
             return new TerminalActionProvider() {
-
                 @Override
                 public List<TerminalAction> getActions() {
                     return popupMenuGroupProvider.getPopupMenuGroup(e);
@@ -1955,13 +1938,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void selectAll() {
-        var selection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
+        TerminalSelection  mySelection= new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
-        updateSelection(selection, true);
+        updateSelection(mySelection, true);
     }
 
     @NotNull
-    private boolean isSelectedTextUrl() {
+    private Boolean isSelectedTextUrl() {
         String selectionText = getSelectionText();
         if (selectionText != null) {
             try {
@@ -1990,6 +1973,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
             }
         }
+
         return null;
     }
 
@@ -2065,6 +2049,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (hasUncommittedChars()) {
             return false;
         }
+
         try {
             final KeyCode keycode = e.getCode();
             final char keychar = KeyboardUtil.getKeyChar(e);
@@ -2133,6 +2118,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (isAltPressedOnly(e) && mySettingsProvider.altSendsEscape()) {
             return false;
         }
+
         final char[] obuffer;
         obuffer = new char[]{keyChar};
 
@@ -2235,7 +2221,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      * @param unselect                               true to unselect currently selected text
      * @param useSystemSelectionClipboardIfAvailable true to use {@link Toolkit#getSystemSelection()} if available
      */
-    public void handleCopy(boolean unselect, boolean useSystemSelectionClipboardIfAvailable) {
+    private void handleCopy(boolean unselect, boolean useSystemSelectionClipboardIfAvailable) {
         if (mySelection.get() != null) {
             Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
             copySelection(points.getFirst(), points.getSecond(), useSystemSelectionClipboardIfAvailable);
@@ -2261,7 +2247,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      * InputMethod implementation
      * For details read http://docs.oracle.com/javase/7/docs/technotes/guides/imf/api-tutorial.html
      */
-    private void processInputMethodEvent(InputMethodEvent e) {
+    protected void processInputMethodEvent(InputMethodEvent e) {
         if (e.getCommitted() == null) {
             return;
         }
@@ -2311,7 +2297,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private class MyInputMethodRequests implements InputMethodRequests {
-
         @Override
         public Point2D getTextLocation(int i) {
             var x = myCursor.getCoordX() * myCharSize.getWidth() + getInsetX();
@@ -2430,11 +2415,44 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     public void changeTheme(ThemeStyle style) {
         super.changeTheme(style);
         // 清除缓存
+        this.dimColors.clear();
         this.foregrounds.clear();
         this.backgrounds.clear();
         this.windowBackground = null;
         this.windowForeground = null;
         // 执行重绘
         this.doRepaint();
+    }
+
+    /**
+     * There is a difference between JavaFX ScrollBar.value Swing JScrollBar.value. In JavaFX value is calculated
+     * in range [min, max], but in Swing in range [min, max - extent]
+     */
+    private int resolveSwingScrollBarValue() {
+        var normalizedValue = (scrollBar.getValue() - scrollBar.getMin())
+                / (scrollBar.getMax() - scrollBar.getMin());
+        var swingValue = scrollBar.getMin()
+                + normalizedValue * (scrollBar.getMax() - scrollBar.getVisibleAmount() - scrollBar.getMin());
+        return (int) Math.round(swingValue);
+    }
+
+    private double resolveJavaFxScrollBarValue(double swingValue) {
+        var normalizedValue = (swingValue - scrollBar.getMin())
+                / ((scrollBar.getMax() - scrollBar.getVisibleAmount()) - scrollBar.getMin());
+        var fxValue = scrollBar.getMin() + normalizedValue * (scrollBar.getMax() - scrollBar.getMin());
+        return fxValue;
+    }
+
+    /**
+     * Hides/shows thumb in scroll bar.
+     */
+    private void fixScrollBarThumbVisibility() {
+        if (scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() == 0) {
+            this.scrollBar.getStyleClass().add("no-thumb");
+            scrollBarThumbVisible = false;
+        } else if (!scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() != 0) {
+            this.scrollBar.getStyleClass().remove("no-thumb");
+            scrollBarThumbVisible = true;
+        }
     }
 }
