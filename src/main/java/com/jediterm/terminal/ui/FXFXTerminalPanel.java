@@ -396,7 +396,7 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
             this.canvas.requestFocus();
             if (this.popup != null && e.getButton() == MouseButton.PRIMARY) {
                 this.popup.hide();
-                return;
+                this.popup = null;
             }
             Point2D point = createPoint(e);
             HyperlinkStyle hyperlink = isFollowLinkEvent(e) ? findHyperlink(point) : null;
@@ -747,7 +747,7 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
     }
 
     protected Font createFont() {
-        if(this.mySettingsProvider instanceof FXDefaultSettingsProvider fxDefaultSettingsProvider){
+        if (this.mySettingsProvider instanceof FXDefaultSettingsProvider fxDefaultSettingsProvider) {
             return fxDefaultSettingsProvider.getFXTerminalFont();
         }
         return Font.getDefault();

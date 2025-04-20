@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * @author traff
@@ -72,16 +71,6 @@ public class FXTerminalAction extends TerminalAction {
 
     public FXTerminalAction withMnemonicKey(KeyCode keyCode) {
         myMnemonicKeyCode = keyCode;
-        return this;
-    }
-
-    public FXTerminalAction withEnabledSupplier(@NotNull Supplier<Boolean> enabledSupplier) {
-        super.withEnabledSupplier(enabledSupplier);
-        return this;
-    }
-
-    public FXTerminalAction separatorBefore(boolean enabled) {
-        super.separatorBefore(enabled);
         return this;
     }
 
