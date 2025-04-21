@@ -7,10 +7,13 @@ import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyEvent;
 
 /**
  * ssh命令行tab内容组件
@@ -26,9 +29,27 @@ public class ShellDockerImageTabController extends SubTabController {
     @FXML
     private FXTab root;
 
+    /**
+     * 刷新镜像
+     */
+    @FXML
+    private SVGGlyph refreshImage;
+
+    /**
+     * 删除镜像
+     */
+    @FXML
+    private SVGGlyph deleteImage;
+
+    /**
+     * 过滤镜像
+     */
     @FXML
     private ClearableTextField filterImage;
 
+    /**
+     * 镜像table
+     */
     @FXML
     private ShellDockerImageTableView imageTable;
 
@@ -61,6 +82,20 @@ public class ShellDockerImageTabController extends SubTabController {
             this.filterImage.addTextChangeListener((observableValue, aBoolean, t1) -> {
                 this.imageTable.setFilterText(t1);
             });
+            // 快捷键
+            this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (KeyboardUtil.search_keyCombination.match(event)) {
+                    this.filterImage.requestFocus();
+                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
+                    this.refreshImage();
+                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
+                    this.deleteImage();
+                }
+            });
+            // 绑定提示快捷键
+            this.deleteImage.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
+            this.filterImage.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+            this.refreshImage.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

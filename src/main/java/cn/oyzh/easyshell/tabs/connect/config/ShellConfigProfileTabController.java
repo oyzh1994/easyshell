@@ -1,23 +1,8 @@
 package cn.oyzh.easyshell.tabs.connect.config;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.ShellConfigTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
-import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.scene.input.KeyEvent;
-
-import java.io.ByteArrayInputStream;
 
 /**
  * profile信息
@@ -25,7 +10,7 @@ import java.io.ByteArrayInputStream;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellConfigProfileTabController extends SubTabController {
+public class ShellConfigProfileTabController extends ShellBaseConfigTabController {
 
     /**
      * 根节点
@@ -33,102 +18,19 @@ public class ShellConfigProfileTabController extends SubTabController {
     @FXML
     private FXTab profile;
 
-    /**
-     * 数据
-     */
-    @FXML
-    private RichDataTextAreaPane data;
-
-    /**
-     * 刷新
-     */
-    @FXML
-    public void refresh() {
-        ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.cat_profile();
-            this.data.setText(output);
-        });
-    }
-
-    /**
-     * 复制
-     */
-    @FXML
-    private void copy() {
-        ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
-    }
-
-    /**
-     * 保存
-     */
-    @FXML
-    private void save() {
-        String text = this.data.getText();
-        StageManager.showMask(() -> {
-            ShellExec exec = this.client().shellExec();
-            try (ShellSftp sftp = this.client().newSftp()) {
-                // 创建临时文件
-                String tempFile = "/etc/profile.temp";
-                if (!sftp.exist(tempFile)) {
-                    sftp.touch(tempFile);
-                }
-                // 上传内容
-                sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
-                // 把临时文件内容copy到真实文件
-//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/profile");
-                String output = exec.cat_file(tempFile, "/etc/profile");
-                if (!StringUtil.isBlank(output)) {
-                    MessageBox.warn(output);
-                } else {
-                    // 删除临时文件
-                    this.client().openSftp().rm(tempFile);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 应用
-     */
-    @FXML
-    private void apply() {
-        ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.source("/etc/profile");
-            if (!StringUtil.isBlank(output)) {
-                MessageBox.warn(output);
-            }
-        });
-    }
-
-    @FXML
-    private void onDataKeyPressed(KeyEvent event) {
-        if (KeyboardUtil.isCtrlS(event)) {
-            this.save();
-        }
+    @Override
+    protected FXTab contentTab() {
+        return this.profile;
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
-        super.onTabInit(tab);
-        this.profile.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                this.refresh();
-            }
-        });
-    }
-
-    public ShellClient client() {
-        return this.parent().getClient();
+    protected String filePath() {
+        return "/etc/profile";
     }
 
     @Override
-    public ShellConfigTabController parent() {
-        return (ShellConfigTabController) super.parent();
+    protected String fileContent() {
+        ShellExec exec = this.client().shellExec();
+        return exec.cat_profile();
     }
 }

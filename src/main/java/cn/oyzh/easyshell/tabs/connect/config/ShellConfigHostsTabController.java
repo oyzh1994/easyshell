@@ -1,23 +1,8 @@
 package cn.oyzh.easyshell.tabs.connect.config;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.tabs.connect.ShellConfigTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
-import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.scene.input.KeyEvent;
-
-import java.io.ByteArrayInputStream;
 
 /**
  * hosts信息
@@ -25,7 +10,7 @@ import java.io.ByteArrayInputStream;
  * @author oyzh
  * @since 2025/03/18
  */
-public class ShellConfigHostsTabController extends SubTabController {
+public class ShellConfigHostsTabController extends ShellBaseConfigTabController {
 
     /**
      * 根节点
@@ -33,88 +18,19 @@ public class ShellConfigHostsTabController extends SubTabController {
     @FXML
     private FXTab hosts;
 
-    /**
-     * 数据
-     */
-    @FXML
-    private RichDataTextAreaPane data;
+    @Override
+    protected FXTab contentTab() {
+        return this.hosts;
+    }
 
-    /**
-     * 刷新
-     */
-    @FXML
-    public void refresh() {
+    @Override
+    protected String filePath() {
+        return "/etc/hosts";
+    }
+
+    @Override
+    protected String fileContent() {
         ShellExec exec = this.client().shellExec();
-        StageManager.showMask(() -> {
-            String output = exec.cat_hosts();
-            this.data.setText(output);
-        });
-    }
-
-    /**
-     * 复制
-     */
-    @FXML
-    private void copy() {
-        ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
-    }
-
-    /**
-     * 保存
-     */
-    @FXML
-    private void save() {
-        String text = this.data.getText();
-        StageManager.showMask(() -> {
-            ShellExec exec = this.client().shellExec();
-            try (ShellSftp sftp = this.client().newSftp()) {
-                // 创建临时文件
-                String tempFile = "/etc/hosts.temp";
-                if (!sftp.exist(tempFile)) {
-                    sftp.touch(tempFile);
-                }
-                // 上传内容
-                sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
-                // 把临时文件内容copy到真实文件
-//                String output = exec.echo("$(cat " + tempFile + ")", "/etc/hosts");
-                String output = exec.cat_file(tempFile, "/etc/hosts");
-                if (!StringUtil.isBlank(output)) {
-                    MessageBox.warn(output);
-                } else {
-                    // 删除临时文件
-                    this.client().openSftp().rm(tempFile);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    @FXML
-    private void onDataKeyPressed(KeyEvent event) {
-        if (KeyboardUtil.isCtrlS(event)) {
-            this.save();
-        }
-    }
-
-    @Override
-    public void onTabInit(RichTab tab) {
-        super.onTabInit(tab);
-        this.hosts.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                this.refresh();
-            }
-        });
-    }
-
-    public ShellClient client() {
-        return this.parent().getClient();
-    }
-
-    @Override
-    public ShellConfigTabController parent() {
-        return (ShellConfigTabController) super.parent();
+        return exec.cat_hosts();
     }
 }

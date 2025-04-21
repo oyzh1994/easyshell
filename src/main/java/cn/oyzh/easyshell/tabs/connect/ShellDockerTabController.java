@@ -14,6 +14,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -116,6 +117,7 @@ public class ShellDockerTabController extends ParentTabController {
                 this.init();
             }
         });
+
     }
 
     @Override

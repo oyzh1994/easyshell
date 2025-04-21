@@ -20,12 +20,12 @@
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </ClearableTextField>
-            <RefreshSVGGlyph onMousePrimaryClicked="#refreshImage">
+            <RefreshSVGGlyph fx:id="refreshImage" onMousePrimaryClicked="#refreshImage">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
-            <DeleteSVGGlyph onMousePrimaryClicked="#deleteImage">
+            <DeleteSVGGlyph fx:id="deleteImage" onMousePrimaryClicked="#deleteImage">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

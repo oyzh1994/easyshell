@@ -8,10 +8,13 @@ import cn.oyzh.easyshell.tabs.connect.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyEvent;
 
 /**
  * ssh命令行tab内容组件
@@ -27,9 +30,27 @@ public class ShellDockerContainerTabController extends SubTabController {
     @FXML
     private FXTab root;
 
+    /**
+     * 刷新容器
+     */
+    @FXML
+    private SVGGlyph refreshContainer;
+
+    /**
+     * 删除容器
+     */
+    @FXML
+    private SVGGlyph deleteContainer;
+
+    /**
+     * 过滤容器
+     */
     @FXML
     private ClearableTextField filterContainer;
 
+    /**
+     * 容器table
+     */
     @FXML
     private ShellDockerContainerTableView containerTable;
 
@@ -66,6 +87,20 @@ public class ShellDockerContainerTabController extends SubTabController {
             this.containerStatus.selectedIndexChanged((observableValue, aBoolean, t1) -> {
                 this.containerTable.setStatus(t1.byteValue());
             });
+            // 快捷键
+            this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (KeyboardUtil.search_keyCombination.match(event)) {
+                    this.filterContainer.requestFocus();
+                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
+                    this.refreshContainer();
+                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
+                    this.deleteContainer();
+                }
+            });
+            // 绑定提示快捷键
+            this.deleteContainer.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
+            this.filterContainer.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+            this.refreshContainer.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

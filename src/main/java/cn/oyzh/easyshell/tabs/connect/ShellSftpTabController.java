@@ -26,10 +26,12 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyEvent;
 
 import java.io.File;
 import java.util.List;
@@ -101,6 +103,18 @@ public class ShellSftpTabController extends SubTabController {
 //     */
 //    @FXML
 //    private FXToggleSwitch hiddenFile;
+
+    /**
+     * 刷新文件
+     */
+    @FXML
+    private SVGGlyph refreshFile;
+
+    /**
+     * 删除文件
+     */
+    @FXML
+    private SVGGlyph deleteFile;
 
     /**
      * 隐藏文件
@@ -260,6 +274,23 @@ public class ShellSftpTabController extends SubTabController {
             this.location.setOnJumpLocation(path -> {
                 this.fileTable.cd(path);
             });
+            // 快捷键
+            this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (KeyboardUtil.search_keyCombination.match(event)) {
+                    this.filterFile.requestFocus();
+                } else if (KeyboardUtil.hide_keyCombination.match(event)) {
+                    this.hiddenFile();
+                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
+                    this.refreshFile();
+                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
+                    this.deleteFile();
+                }
+            });
+            // 绑定提示快捷键
+            this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
+            this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+            this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
+            this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

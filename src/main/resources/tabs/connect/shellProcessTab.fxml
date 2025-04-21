@@ -15,7 +15,7 @@
         <ProcessSVGGlyph sizeStr="11"/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox prefHeight="30" flexWidth="100%">
+        <FXHBox prefHeight="30" >
             <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>

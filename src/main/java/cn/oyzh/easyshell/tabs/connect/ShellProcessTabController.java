@@ -12,8 +12,10 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyEvent;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -177,6 +179,14 @@ public class ShellProcessTabController extends SubTabController {
                 this.closeRefreshTask();
             }
         });
+        // 快捷键
+        this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.search_keyCombination.match(event)) {
+                this.filterProcess.requestFocus();
+            }
+        });
+        // 绑定提示快捷键
+        this.filterProcess.setTipKeyCombination(KeyboardUtil.search_keyCombination);
     }
 
     private ShellProcessInfoTableView getProcessTable() {

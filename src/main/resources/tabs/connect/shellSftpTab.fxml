@@ -76,7 +76,7 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FolderAddSVGGlyph>
-            <DeleteSVGGlyph onMousePrimaryClicked="#deleteFile">
+            <DeleteSVGGlyph fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

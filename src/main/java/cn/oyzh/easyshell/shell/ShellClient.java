@@ -400,9 +400,11 @@ public class ShellClient {
             // 初始化连接池
             this.state.set(ShellConnState.CONNECTING);
             // 执行连接
-            this.session.connect(timeout);
+            if (this.session != null) {
+                this.session.connect(timeout);
+            }
             // 判断连接结果
-            if (this.session.isConnected()) {
+            if (this.session != null && this.session.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
