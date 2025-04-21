@@ -558,6 +558,12 @@ public class ShellClient {
         return null;
     }
 
+    /**
+     * 执行命令
+     *
+     * @param command 命令
+     * @return 结果
+     */
     public String exec(String command) {
         ChannelExec channel = null;
         try {

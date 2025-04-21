@@ -99,6 +99,18 @@ public class ShellConnectTabController extends ParentTabController {
     public void init(ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
         this.client = new ShellClient(treeItem.value());
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPT) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+                this.client.close();
+                this.closeTab();
+            } else if (t1 == ShellConnState.CLOSED) {
+                ShellEventUtil.connectionClosed(client);
+            } else if (t1 == ShellConnState.CONNECTED) {
+                ShellEventUtil.connectionConnected(client);
+            }
+        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -113,14 +125,6 @@ public class ShellConnectTabController extends ParentTabController {
                 if (this.setting.isHiddenLeftAfterConnected()) {
                     ShellEventUtil.layout1();
                 }
-                // 监听连接状态
-                this.client.addStateListener((observableValue, shellConnState, t1) -> {
-                    if (t1 == ShellConnState.INTERRUPT) {
-                        MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
-                        this.client.close();
-                        this.closeTab();
-                    }
-                });
                 this.termTabController.init();
                 this.serverTabController.setClient(this.client);
                 this.configTabController.setClient(this.client);

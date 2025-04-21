@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
 import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
+import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
@@ -253,6 +254,13 @@ public class ShellEventUtil {
      */
     public static void showKey() {
         EventUtil.post(new ShellShowKeyEvent());
+    }
+
+    /**
+     * 显示消息页面
+     */
+    public static void showMessage() {
+        EventUtil.post(new ShellShowMessageEvent());
     }
 
     /**

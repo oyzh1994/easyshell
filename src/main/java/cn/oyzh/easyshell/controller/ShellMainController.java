@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.controller.main.MessageController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
+import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -167,5 +168,15 @@ public class ShellMainController extends ParentStageController {
     @Override
     public List<SubStageController> getSubControllers() {
         return List.of(this.connectController, this.messageController);
+    }
+
+    /**
+     * 显示消息
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void showMessage(ShellShowMessageEvent event) {
+        this.tabPaneLeft.select(1);
     }
 }

@@ -72,6 +72,15 @@ public class HeaderController extends StageController {
     }
 
     /**
+     * 消息
+     */
+    @FXML
+    private void message() {
+        ShellEventUtil.layout2();
+        ShellEventUtil.showMessage();
+    }
+
+    /**
      * 工具箱
      */
     @FXML
@@ -83,7 +92,7 @@ public class HeaderController extends StageController {
      * 布局
      */
     @FXML
-    private void layout( ) {
+    private void layout() {
         if (!this.layoutPane.isLayout1()) {
             ShellEventUtil.layout2();
         } else {
@@ -93,6 +102,7 @@ public class HeaderController extends StageController {
 
     /**
      * 布局1事件
+     *
      * @param event 事件
      */
     @EventSubscribe
@@ -102,6 +112,7 @@ public class HeaderController extends StageController {
 
     /**
      * 布局2事件
+     *
      * @param event 事件
      */
     @EventSubscribe
@@ -135,7 +146,7 @@ public class HeaderController extends StageController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         if (OSUtil.isWindows() || OSUtil.isLinux()) {
-            this.splitPane.setFlexHeight("100% - 254");
+            this.splitPane.setFlexHeight("100% - 282");
         }
     }
 }
