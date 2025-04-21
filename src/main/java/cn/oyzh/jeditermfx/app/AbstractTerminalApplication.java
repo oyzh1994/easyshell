@@ -197,9 +197,10 @@ public abstract class AbstractTerminalApplication extends Application {
             debugView.stop();
             JulLog.info("Buffer stage closed");
         });
-        myBufferStage.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+        myBufferStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 myBufferStage.close();
+                e.consume();
             }
         });
         myBufferStage.show();

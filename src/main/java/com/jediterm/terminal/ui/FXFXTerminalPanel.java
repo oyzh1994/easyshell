@@ -2187,11 +2187,12 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
         }
 
         @Override
-        public void accept(EventType<KeyEvent> type, KeyEvent keyEvent) {
+        public void accept(EventType<KeyEvent> type, KeyEvent event) {
             if (type == KeyEvent.KEY_PRESSED) {
-                this.keyPressed(keyEvent);
+                this.keyPressed(event);
             } else if (type == KeyEvent.KEY_TYPED) {
-                this.keyTyped(keyEvent);
+                this.keyTyped(event);
+                event.consume();
             }
         }
     }

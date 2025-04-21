@@ -47,9 +47,10 @@ public class ShellSftpLocationTextFieldSkin extends SelectTextFiledSkin {
             this.onJumpLocation(this.getText());
         });
         // 按键监听
-        this.getSkinnable().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+        this.getSkinnable().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 this.onJumpLocation(this.getText());
+                event.consume();
             }
         });
     }

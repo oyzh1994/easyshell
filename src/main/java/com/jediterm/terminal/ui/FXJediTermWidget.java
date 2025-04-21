@@ -360,10 +360,13 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
             myFindComponent.addKeyListener((t, e) -> {
                 if (e.getCode() == KeyCode.ESCAPE) {
                     listener.hideSearchComponent();
+                    e.consume();
                 } else if (e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.DOWN) {
                     listener.selectNextFindResult();
+                    e.consume();
                 } else if (e.getCode() == KeyCode.UP) {
                     listener.selectPrevFindResult();
+                    e.consume();
                 }
             });
         } else {
