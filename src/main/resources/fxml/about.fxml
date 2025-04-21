@@ -2,101 +2,147 @@
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="800" realHeight="600">
-    <InfoLabel text="%base.appName">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXText fx:id="name">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXText>
-    <InfoLabel text="%base.appVer">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXText fx:id="version">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXText>
-    <InfoLabel text="%base.buildType">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXText fx:id="type">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXText>
-    <InfoLabel text="%base.updateDate">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXText fx:id="updateDate">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXText>
-    <InfoLabel text="%base.iconResource">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHyperlink text="https://www.iconfont.cn">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXHyperlink>
-    <InfoLabel text="%base.themeAbility">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHyperlink text="https://github.com/mkpaz/atlantafx">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXHyperlink>
-    <InfoLabel text="%base.richTextAbility">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHyperlink text="https://github.com/FXMisc/RichTextFX">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXHyperlink>
-    <InfoLabel text="%base.packAbility">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHyperlink text="https://github.com/libgdx/packr">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXHyperlink>
-    <InfoLabel text="%base.guiAbility">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHyperlink text="https://github.com/openjfx">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXHyperlink>
+        fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="320">
+    <FXTabPane flexHeight="100% - 45" flexWidth="100%">
+        <FXTab text="%base.info">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.appName">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="name">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+                <InfoLabel text="%base.appVer">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="version">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+                <InfoLabel text="%base.buildType">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="type">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+                <InfoLabel text="%base.updateDate">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="updateDate">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.ability">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.iconResource">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://www.iconfont.cn">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="%base.themeAbility">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/mkpaz/atlantafx">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="%base.richTextAbility">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/FXMisc/RichTextFX">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="%base.guiAbility">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/openjfx">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.dependency">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="JSON">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="%base.terminal">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-core">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="Pty">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/org.jetbrains.pty4j/pty4j">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="%base.database">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/com.h2database/h2">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
     <FXText fx:id="copyright">
         <VBox.margin>
             <Insets left="30" top="15"/>

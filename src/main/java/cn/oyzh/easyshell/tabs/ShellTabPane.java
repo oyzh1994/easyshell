@@ -65,8 +65,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     }
 
     @Override
-    protected void initTabPane() {
-        super.initTabPane();
+    public void initNode() {
+        super.initNode();
         this.initHomeTab();
         // 监听tab
         this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {

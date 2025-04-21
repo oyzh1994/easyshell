@@ -19,7 +19,7 @@
                 <Insets left="10" top="10"/>
             </FXHBox.margin>
         </AddSVGGlyph>
-        <EditSVGGlyph onMousePrimaryClicked="#editKey">
+        <EditSVGGlyph onMousePrimaryClicked="#updateKey">
             <FXHBox.margin>
                 <Insets left="10" top="10"/>
             </FXHBox.margin>

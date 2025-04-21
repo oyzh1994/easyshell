@@ -61,9 +61,9 @@ public class ShellKeyTabController extends RichTabController {
      * 编辑密钥
      */
     @FXML
-    private void editKey() {
+    private void updateKey() {
         ShellKey key = this.keyTable.getSelectedItem();
-        this.keyTable.renameKey(key);
+        this.keyTable.updateKey(key);
     }
 
     /**
