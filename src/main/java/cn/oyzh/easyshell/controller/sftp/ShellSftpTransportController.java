@@ -540,6 +540,7 @@ public class ShellSftpTransportController extends StageController {
 //                this.refreshTargetFile();
 //            }
 //        });
+        this.targetTransportManager.addMonitorFailedCallback(this, this::transportFailed);
         this.targetTransportManager.addMonitorChangedCallback(this, this::targetTransportMonitorChanged);
         this.targetTransportManager.addTaskSizeChangedCallback(this, this::targetTransportTaskSizeChanged);
         this.targetTransportManager.addTaskStatusChangedCallback(this, this::targetTransportStatusChanged);
@@ -627,6 +628,18 @@ public class ShellSftpTransportController extends StageController {
             this.targetClient.close();
         }
         super.onWindowCloseRequest(event);
+    }
+
+    /**
+     * 传输失败
+     *
+     * @param monitor   监听器
+     * @param exception 异常
+     */
+    private void transportFailed(ShellSftpTransportMonitor monitor, Throwable exception) {
+        if (exception != null) {
+            MessageBox.exception(exception, I18nHelper.transportFail() + " " + monitor.getLocalFileName());
+        }
     }
 
     /**

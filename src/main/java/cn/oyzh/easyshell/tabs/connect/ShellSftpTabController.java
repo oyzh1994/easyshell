@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadMonitor;
@@ -201,15 +202,18 @@ public class ShellSftpTabController extends SubTabController {
         this.uploadManager = this.client().getUploadManager();
         this.downloadManager = this.client().getDownloadManager();
         // 上传
-        this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
+        this.uploadManager.addMonitorFailedCallback(this, this::uploadFailed);
         this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
+        this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
         this.uploadManager.addTaskStatusChangedCallback(this, this::uploadStatusChanged);
         // 下载
-        this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
+        this.downloadManager.addMonitorFailedCallback(this, this::downloadFailed);
         this.downloadManager.addMonitorChangedCallback(this, this::downloadMonitorChanged);
+        this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
         this.downloadManager.addTaskStatusChangedCallback(this, this::downloadStatusChanged);
         // 删除
         this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
+        this.deleteManager.addDeleteFailedCallback(this, this::deleteFailed);
         this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
         // 显示隐藏文件
         this.hiddenFile(this.setting.isShowHiddenFile());
@@ -407,6 +411,18 @@ public class ShellSftpTabController extends SubTabController {
     }
 
     /**
+     * 下载失败
+     *
+     * @param monitor   监听器
+     * @param exception 异常
+     */
+    private void downloadFailed(ShellSftpDownloadMonitor monitor, Throwable exception) {
+        if (exception != null) {
+            MessageBox.exception(exception, I18nHelper.downloadFailed() + " " + monitor.getLocalFileName());
+        }
+    }
+
+    /**
      * 下载状态改变事件
      *
      * @param status 状态
@@ -451,6 +467,18 @@ public class ShellSftpTabController extends SubTabController {
             this.downloadBox.display();
         }
         this.updateLayout();
+    }
+
+    /**
+     * 上传失败
+     *
+     * @param monitor   监听器
+     * @param exception 异常
+     */
+    private void uploadFailed(ShellSftpUploadMonitor monitor, Throwable exception) {
+        if (exception != null) {
+            MessageBox.exception(exception, I18nHelper.uploadFailed() + " " + monitor.getLocalFileName());
+        }
     }
 
     /**
@@ -499,6 +527,18 @@ public class ShellSftpTabController extends SubTabController {
             this.uploadBox.display();
         }
         this.updateLayout();
+    }
+
+    /**
+     * 删除失败
+     *
+     * @param file   文件
+     * @param exception 异常
+     */
+    private void deleteFailed(ShellSftpFile file, Throwable exception) {
+        if (exception != null) {
+            MessageBox.exception(exception, I18nHelper.deleteFailed() + " " + file.getFileName());
+        }
     }
 
     /**

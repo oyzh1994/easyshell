@@ -6,9 +6,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpTask;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
@@ -241,34 +241,31 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
     @Override
     public void remove(ShellSftpDownloadMonitor monitor) {
         super.remove(monitor);
-        if (this.monitors.isEmpty()) {
-            this.manager.remove(this);
-        }
+        this.manager.remove(this);
     }
 
     @Override
     public void ended(ShellSftpDownloadMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
-        if (this.monitors.isEmpty()) {
-            this.manager.remove(this);
-            this.updateStatus(ShellSftpDownloadStatus.FINISHED);
-        }
+        this.manager.remove(this);
+        this.updateStatus(ShellSftpDownloadStatus.FINISHED);
     }
 
     @Override
     public void failed(ShellSftpDownloadMonitor monitor, Throwable exception) {
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
+        this.manager.remove(this);
+        this.updateStatus(ShellSftpDownloadStatus.FAILED);
     }
 
     @Override
     public void canceled(ShellSftpDownloadMonitor monitor) {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
-        if (this.monitors.isEmpty()) {
-            this.manager.remove(this);
-        }
+        this.manager.remove(this);
+        this.updateStatus(ShellSftpDownloadStatus.CANCELED);
     }
 
     @Override

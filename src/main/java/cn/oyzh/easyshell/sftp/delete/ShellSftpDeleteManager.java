@@ -1,11 +1,12 @@
 package cn.oyzh.easyshell.sftp.delete;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.function.WeakBiConsumer;
 import cn.oyzh.common.function.WeakConsumer;
 import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Vector;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -38,6 +40,8 @@ public class ShellSftpDeleteManager implements AutoCloseable {
 
     private final List<WeakConsumer<String>> deleteDeletedCallbacks = new ArrayList<>();
 
+    private final List<WeakBiConsumer<ShellSftpFile, Throwable>> deleteFailedCallbacks = new ArrayList<>();
+
     public void addDeleteEndedCallback(Object obj, Runnable deleteEndedCallback) {
         if (deleteEndedCallback != null) {
             this.deleteEndedCallbacks.add(new WeakRunnable(obj, deleteEndedCallback));
@@ -47,6 +51,12 @@ public class ShellSftpDeleteManager implements AutoCloseable {
     public void addDeleteDeletedCallback(Object obj, Consumer<String> deleteDeletedCallback) {
         if (deleteDeletedCallback != null) {
             this.deleteDeletedCallbacks.add(new WeakConsumer<>(obj, deleteDeletedCallback));
+        }
+    }
+
+    public void addDeleteFailedCallback(Object obj, BiConsumer<ShellSftpFile, Throwable> deleteFailedCallback) {
+        if (deleteFailedCallback != null) {
+            this.deleteFailedCallbacks.add(new WeakBiConsumer<>(obj, deleteFailedCallback));
         }
     }
 
@@ -67,6 +77,14 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         if (!this.deleteDeletedCallbacks.isEmpty()) {
             for (WeakConsumer<String> consumer : this.deleteDeletedCallbacks) {
                 consumer.accept(path);
+            }
+        }
+    }
+
+    public void deleteFailed(ShellSftpFile file, Throwable exception) {
+        if (!this.deleteFailedCallbacks.isEmpty()) {
+            for (WeakBiConsumer<ShellSftpFile, Throwable> consumer : this.deleteFailedCallbacks) {
+                consumer.accept(file, exception);
             }
         }
     }
@@ -99,6 +117,8 @@ public class ShellSftpDeleteManager implements AutoCloseable {
                         ex.printStackTrace();
                         JulLog.warn("file:{} delete failed", deleteFile.getPath(), ex);
                         MessageBox.exception(ex);
+                        this.deleteFailed(deleteFile, ex);
+                        break;
                     }
                 } finally {
                     deleteFile.stopWaiting();

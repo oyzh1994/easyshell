@@ -240,34 +240,31 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
     @Override
     public void remove(ShellSftpTransportMonitor monitor) {
         super.remove(monitor);
-        if (this.monitors.isEmpty()) {
-            this.manager.remove(this);
-        }
+        this.manager.remove(this);
     }
 
     @Override
     public void ended(ShellSftpTransportMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
-        if (this.monitors.isEmpty()) {
-            this.manager.remove(this);
-            this.updateStatus(ShellSftpTransportStatus.FINISHED);
-        }
+        this.manager.remove(this);
+        this.updateStatus(ShellSftpTransportStatus.FINISHED);
     }
 
     @Override
     public void failed(ShellSftpTransportMonitor monitor, Throwable exception) {
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
+        this.manager.remove(this);
+        this.updateStatus(ShellSftpTransportStatus.FAILED);
     }
 
     @Override
     public void canceled(ShellSftpTransportMonitor monitor) {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
-        if (this.monitors.isEmpty()) {
-            this.manager.remove(this);
-        }
+        this.manager.remove(this);
+        this.updateStatus(ShellSftpTransportStatus.CANCELED);
     }
 
     @Override
