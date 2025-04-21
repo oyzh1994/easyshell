@@ -118,6 +118,7 @@ public class ShellConnectTabController extends ParentTabController {
                     if (t1 == ShellConnState.INTERRUPT) {
                         MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
                         this.client.close();
+                        this.closeTab();
                     }
                 });
                 this.termTabController.init();

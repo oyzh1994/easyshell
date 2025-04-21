@@ -2334,6 +2334,20 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
 
     public void dispose() {
         myRepaintTimer.stop();
+        this.myTermSize = null;
+        this.myBoldFont = null;
+        this.myFindResult = null;
+        this.myItalicFont = null;
+        this.myNormalFont = null;
+        this.fxBackground = null;
+        this.fxForeground = null;
+        this.dimColors.clear();
+        this.backgrounds.clear();
+        this.foregrounds.clear();
+        this.mySelection.set(null);
+        this.selectedText.set(null);
+        this.myCustomKeyListeners.clear();
+        this.myInputMethodUncommittedChars = null;
     }
 
     private static int getModifiersEx(KeyEvent event) {

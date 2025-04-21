@@ -480,6 +480,7 @@ public class ShellClient {
                 channel.setInputStream(System.in);
                 channel.setOutputStream(System.out);
                 // 设置终端类型
+                channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
                 this.shell = new ShellShell(channel);
             } catch (Exception ex) {
@@ -590,6 +591,8 @@ public class ShellClient {
             if (this.shellConnect.isX11forwarding()) {
                 channel.setXForwarding(true);
             }
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), command);
             channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);

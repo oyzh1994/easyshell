@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.easyshell.shell.ShellTermWidget?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.ShellTermTabController"
-       text="%base.connect" fx:id="root">
+       text="%base.connect">
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
+    <ShellTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
+
+    </ShellTermWidget>
 </FXTab>

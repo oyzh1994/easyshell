@@ -8,52 +8,46 @@ import cn.oyzh.easyshell.shell.ShellTermWidget;
 import cn.oyzh.easyshell.shell.ShellTtyConnector;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.JSchException;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jcraft.jsch.JSchException;
 import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.ui.FXFXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
- * shell命令行tab内容组件
+ * shell终端tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2025/03/11
  */
 public class ShellTermTabController extends SubTabController {
 
     /**
-     * shell命令行文本域
-     */
-    @FXML
-    private FXTab root;
-
-    /**
      * 终端组件
      */
+    @FXML
     private ShellTermWidget widget;
 
     private void initWidget(ShellShell shell) throws IOException {
-        this.widget = new ShellTermWidget();
-        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector(this.client().getCharset());
+        Charset charset = this.client().getCharset();
+        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector(charset);
         connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-        this.root.setChild(this.widget.getComponent());
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }
 
@@ -79,11 +73,9 @@ public class ShellTermTabController extends SubTabController {
             return;
         }
         // 处理背景
+        FXFXTerminalPanel terminalPane = this.widget.getTerminalPanel();
+        Node canvas = terminalPane.getFirstChild();
         // 对画板设置透明度
-        Pane terminalPane = this.widget.getTerminalPanel();
-        Canvas canvas = (Canvas) terminalPane.getChildren().getFirst();
-//        Pane terminalPane = (Pane) this.widget.getTerminalPanel().getChildren().getFirst();
-//        Canvas canvas = (Canvas) terminalPane.getChildrenUnmodifiable().getFirst();
         canvas.setOpacity(0.7);
         // 背景图片
         String url = connect.getBackgroundImageUrl();

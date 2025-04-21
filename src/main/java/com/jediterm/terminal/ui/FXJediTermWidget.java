@@ -308,6 +308,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         }
         myTerminalPanel.dispose();
         getExecutorServiceManager().shutdownWhenAllExecuted();
+        this.myListeners.clear();
     }
 
     @Override

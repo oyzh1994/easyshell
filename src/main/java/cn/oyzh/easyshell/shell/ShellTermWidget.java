@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.shell;
 
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.jediterm.terminal.TtyConnector;
 import com.pty4j.PtyProcess;
@@ -19,5 +20,11 @@ public class ShellTermWidget extends ShellDefaultTermWidget {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
         return new ShellTtyConnector(process, charset, Arrays.asList(command));
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        SystemUtil.gc();
     }
 }

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.event;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.event.client.ShellClientActionEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
@@ -354,6 +355,19 @@ public class ShellEventUtil {
         ShellKeyUpdatedEvent event = new ShellKeyUpdatedEvent();
         event.data(shellKey);
         EventUtil.post(event);
+    }
+
+    /**
+     * 客户端操作
+     *
+     * @param connectName 客户端名称
+     * @param action      操作
+     */
+    public static void clientAction(String connectName, String action) {
+        ShellClientActionEvent event = new ShellClientActionEvent();
+        event.data(connectName);
+        event.setAction(action);
+        EventUtil.postAsync(event);
     }
 
 //    /**
