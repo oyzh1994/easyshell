@@ -284,10 +284,10 @@ public class ShellSftpTabController extends SubTabController {
                     this.filterFile.requestFocus();
                 } else if (KeyboardUtil.hide_keyCombination.match(event)) {
                     this.hiddenFile();
-                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
-                    this.refreshFile();
-                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
-                    this.deleteFile();
+//                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
+//                    this.refreshFile();
+//                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
+//                    this.deleteFile();
                 }
             });
             // 绑定提示快捷键
