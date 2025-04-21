@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.connect.ShellConfigTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -54,6 +55,12 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
     private RichDataTextAreaPane data;
 
     /**
+     * 数据过滤
+     */
+    @FXML
+    private ClearableTextField dataFilter;
+
+    /**
      * 刷新
      */
     @FXML
@@ -78,12 +85,15 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
      */
     @FXML
     private void save() {
+        String filePath = this.filePath();
+        if(StringUtil.isBlank(filePath)) {
+            return;
+        }
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
             try (ShellSftp sftp = this.client().newSftp();
                  ShellSftp sftp1 = this.client().newSftp()) {
-                String filePath = this.filePath();
                 // 创建临时文件
                 String tempFile;
                 if (filePath.startsWith("~")) {
@@ -118,6 +128,10 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
      */
     @FXML
     private void apply() {
+        String filePath = this.filePath();
+        if(StringUtil.isBlank(filePath)) {
+            return;
+        }
         ShellExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
             String output = exec.source(this.filePath());
@@ -160,6 +174,11 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
                     this.apply();
                     event.consume();
                 }
+            } else if (KeyboardUtil.search_keyCombination.match(event)) {
+                if (this.dataFilter != null) {
+                    this.dataFilter.requestFocus();
+                    event.consume();
+                }
             }
         });
         // 快捷键提示
@@ -171,6 +190,13 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
         }
         if (this.apply != null) {
             this.apply.setTipKeyCombination(KeyboardUtil.apply_keyCombination);
+        }
+        if (this.dataFilter != null) {
+            this.dataFilter.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+            // 监听内容，设置高亮
+            this.dataFilter.addTextChangeListener((observableValue, s, t1) -> {
+                this.data.setHighlightText(t1);
+            });
         }
     }
 

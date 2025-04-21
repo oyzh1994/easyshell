@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
+<?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
-<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXTab fx:id="userProfile" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigUserProfileTabController" text="~.profile">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
+            <ClearableTextField prefWidth="220" realHeight="24" fx:id="dataFilter" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="3"/>
+                </FXHBox.margin>
+            </ClearableTextField>
             <SaveSVGGlyph tipText="%base.save" fx:id="save" onMousePrimaryClicked="#save">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>

@@ -3,6 +3,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
@@ -14,6 +15,11 @@
        fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigResolvTabController" text="/etc/resolv.conf">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
+            <ClearableTextField prefWidth="220" realHeight="24" fx:id="dataFilter" tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="5" top="3"/>
+                </FXHBox.margin>
+            </ClearableTextField>
             <SaveSVGGlyph tipText="%base.save" fx:id="save" onMousePrimaryClicked="#save">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
