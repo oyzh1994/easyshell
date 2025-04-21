@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -27,9 +28,13 @@ public class ShellTerminalTabController extends RichTabController {
 
     private void initWidget() throws IOException {
         ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) term.createTtyConnector();
-        term.openSession(connector);
-        term.onTermination(exitCode -> term.close());
-        term.addHyperlinkFilter(new FXHyperlinkFilter());
+        this.term.openSession(connector);
+        this.term.onTermination(exitCode -> term.close());
+        this.term.addHyperlinkFilter(new FXHyperlinkFilter());
+        // macos需要初始化终端类型
+        if (OSUtil.isMacOS()) {
+            connector.write("export TERM=xterm-256color\n");
+        }
     }
 
     @Override

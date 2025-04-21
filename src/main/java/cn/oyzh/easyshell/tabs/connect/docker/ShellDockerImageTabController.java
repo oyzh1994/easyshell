@@ -83,11 +83,11 @@ public class ShellDockerImageTabController extends SubTabController {
 
     @FXML
     private void deleteImage() {
-        this.imageTable.deleteImage(false);
+        this.imageTable.deleteImage(this.imageTable.getSelectedItem(), false);
     }
 
     @FXML
     private void deleteImageForce() {
-        this.imageTable.deleteImage(true);
+        this.imageTable.deleteImage(this.imageTable.getSelectedItem(), true);
     }
 }

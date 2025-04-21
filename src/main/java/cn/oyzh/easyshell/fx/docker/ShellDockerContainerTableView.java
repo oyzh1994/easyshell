@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -21,6 +22,7 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +37,45 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);
+    }
+
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<? extends MenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+        // 快捷键
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.info_keyCombination.match(event)) {// 容器信息
+                this.containerInspect(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.run_keyCombination.match(event)) {// 启动容器
+                this.startContainer(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.delete_keyCombination.match(event)) {// 删除容器
+                this.deleteContainer(this.getSelectedItem(), false);
+                event.consume();
+            } else if (KeyboardUtil.restart_keyCombination.match(event)) {// 重启容器
+                this.restartContainer(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.restart_keyCombination.match(event)) {// 停止容器
+                this.stopContainer(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名容器
+                this.renameContainer(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.pause_keyCombination.match(event)) {// 重命名容器
+                this.pauseContainer(this.getSelectedItem());
+                event.consume();
+            }
+        });
     }
 
     private ShellDockerExec exec;
@@ -108,8 +149,16 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         return files;
     }
 
-    public void deleteContainer(boolean force) {
-        ShellDockerContainer container = this.getSelectedItem();
+    /**
+     * 删除容器
+     *
+     * @param container 容器
+     * @param force     是否强制
+     */
+    public void deleteContainer(ShellDockerContainer container, boolean force) {
+        if (container == null) {
+            return;
+        }
         if (!MessageBox.confirm(I18nHelper.deleteContainer() + " " + container.getNames())) {
             return;
         }
@@ -142,19 +191,23 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         }
 
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem containerInfo = MenuItemHelper.containerInspect("12", this::containerInspect);
+        FXMenuItem containerInfo = MenuItemHelper.containerInspect("12", () -> this.containerInspect(container));
+        containerInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         menuItems.add(containerInfo);
         FXMenuItem containerResource = MenuItemHelper.containerResource("12", this::containerResource);
         menuItems.add(containerResource);
         FXMenuItem containerPorts = MenuItemHelper.containerPorts("12", this::containerPorts);
         menuItems.add(containerPorts);
         if (container.isExited()) {
-            FXMenuItem startContainer = MenuItemHelper.start1Container("12", this::startContainer);
+            FXMenuItem startContainer = MenuItemHelper.start1Container("12", () -> this.startContainer(container));
+            startContainer.setAccelerator(KeyboardUtil.run_keyCombination);
             menuItems.add(startContainer);
         } else {
-            FXMenuItem stopContainer = MenuItemHelper.stopContainer("12", this::stopContainer);
+            FXMenuItem stopContainer = MenuItemHelper.stopContainer("12", () -> this.stopContainer(container));
+            stopContainer.setAccelerator(KeyboardUtil.stop_keyCombination);
             FXMenuItem killContainer = MenuItemHelper.killContainer("12", this::killContainer);
-            FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", this::restartContainer);
+            FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", () -> this.restartContainer(container));
+            restartContainer.setAccelerator(KeyboardUtil.restart_keyCombination);
             menuItems.add(stopContainer);
             menuItems.add(killContainer);
             menuItems.add(restartContainer);
@@ -162,14 +215,16 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer("12", this::unpauseContainer);
                 menuItems.add(unpauseContainer);
             } else {
-                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer("12", this::pauseContainer);
+                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer("12", () -> this.pauseContainer(container));
                 menuItems.add(pauseContainer);
             }
         }
         FXMenuItem containerLogs = MenuItemHelper.containerLogs("12", this::containerLogs);
-        FXMenuItem renameContainer = MenuItemHelper.renameContainer("12", this::containerRename);
-        FXMenuItem deleteContainer = MenuItemHelper.deleteContainer("12", () -> this.deleteContainer(false));
-        FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer("12", () -> this.deleteContainer(true));
+        FXMenuItem renameContainer = MenuItemHelper.renameContainer("12", () -> this.renameContainer(container));
+        renameContainer.setAccelerator(KeyboardUtil.rename_keyCombination);
+        FXMenuItem deleteContainer = MenuItemHelper.deleteContainer("12", () -> this.deleteContainer(container, false));
+        deleteContainer.setAccelerator(KeyboardUtil.delete_keyCombination);
+        FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer("12", () -> this.deleteContainer(container, true));
         menuItems.add(containerLogs);
         menuItems.add(renameContainer);
         menuItems.add(deleteContainer);
@@ -177,8 +232,15 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         return menuItems;
     }
 
-    public void startContainer() {
-        ShellDockerContainer container = this.getSelectedItem();
+    /**
+     * 启动容器
+     *
+     * @param container 容器
+     */
+    public void startContainer(ShellDockerContainer container) {
+        if (container == null || !container.isExited()) {
+            return;
+        }
         if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames())) {
             return;
         }
@@ -197,8 +259,16 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
-    public void stopContainer() {
-        ShellDockerContainer container = this.getSelectedItem();
+
+    /**
+     * 停止容器
+     *
+     * @param container 容器
+     */
+    public void stopContainer(ShellDockerContainer container) {
+        if (container == null) {
+            return;
+        }
         if (!MessageBox.confirm(I18nHelper.stopContainer() + " " + container.getNames())) {
             return;
         }
@@ -237,8 +307,15 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
-    public void restartContainer() {
-        ShellDockerContainer container = this.getSelectedItem();
+    /**
+     * 重启容器
+     *
+     * @param container 容器
+     */
+    public void restartContainer(ShellDockerContainer container) {
+        if (container == null) {
+            return;
+        }
         if (!MessageBox.confirm(I18nHelper.restartContainer() + " " + container.getNames())) {
             return;
         }
@@ -257,8 +334,15 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
-    public void pauseContainer() {
-        ShellDockerContainer container = this.getSelectedItem();
+    /**
+     * 暂停容器
+     *
+     * @param container 容器
+     */
+    public void pauseContainer(ShellDockerContainer container) {
+        if (container == null) {
+            return;
+        }
         if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames())) {
             return;
         }
@@ -297,22 +381,15 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
-    @Override
-    protected void initEvenListener() {
-        super.initEvenListener();
-        // 右键菜单事件
-        this.setOnContextMenuRequested(e -> {
-            List<? extends MenuItem> items = this.getMenuItems();
-            if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
-            } else {
-                this.clearContextMenu();
-            }
-        });
-    }
-
-    public void containerInspect() {
-        ShellDockerContainer container = this.getSelectedItem();
+    /**
+     * 容器审查
+     *
+     * @param container 容器
+     */
+    public void containerInspect(ShellDockerContainer container) {
+        if (container == null) {
+            return;
+        }
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_inspect(container.getContainerId());
@@ -377,8 +454,15 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
-    public void containerRename() {
-        ShellDockerContainer container = this.getSelectedItem();
+    /**
+     * 重命名容器
+     *
+     * @param container 容器
+     */
+    public void renameContainer(ShellDockerContainer container) {
+        if (container == null) {
+            return;
+        }
         String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), container.getNames());
         if (StringUtil.isBlank(newName) || StringUtil.equalsIgnoreCase(container.getNames(), newName)) {
             return;

@@ -92,11 +92,11 @@ public class ShellDockerContainerTabController extends SubTabController {
 
     @FXML
     private void deleteContainer() {
-        this.containerTable.deleteContainer(false);
+        this.containerTable.deleteContainer(this.containerTable.getSelectedItem(), false);
     }
 
     @FXML
     private void deleteContainerForce() {
-        this.containerTable.deleteContainer(true);
+        this.containerTable.deleteContainer(this.containerTable.getSelectedItem(), true);
     }
 }

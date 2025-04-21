@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.docker.DockerParser;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -18,6 +19,7 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +36,30 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         TableViewUtil.copyCellDataOnDoubleClicked(this);
     }
 
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<? extends MenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+        // 快捷键
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.info_keyCombination.match(event)) {// 镜像信息
+                this.imageInspect(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.delete_keyCombination.match(event)) {// 删除镜像
+                this.deleteImage(this.getSelectedItem(), false);
+                event.consume();
+            }
+        });
+    }
+
     private ShellDockerExec exec;
 
     public void setExec(ShellDockerExec exec) {
@@ -43,19 +69,6 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
     public ShellDockerExec getExec() {
         return exec;
     }
-//
-//    private byte status;
-//
-//    public byte getStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(byte status) {
-//        if (status != this.status) {
-//            this.status = status;
-//            this.loadImage();
-//        }
-//    }
 
     private List<ShellDockerImage> images;
 
@@ -98,8 +111,16 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         return files;
     }
 
-    public void deleteImage(boolean force) {
-        ShellDockerImage image = this.getSelectedItem();
+    /**
+     * 删除镜像
+     *
+     * @param image 镜像
+     * @param force 是否强制
+     */
+    public void deleteImage(ShellDockerImage image, boolean force) {
+        if (image == null) {
+            return;
+        }
         if (!MessageBox.confirm(I18nHelper.deleteImage() + " " + image.getRepository())) {
             return;
         }
@@ -124,8 +145,15 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         });
     }
 
-    public void imageInspect() {
-        ShellDockerImage image = this.getSelectedItem();
+    /**
+     * 镜像审查
+     *
+     * @param image 镜像
+     */
+    public void imageInspect(ShellDockerImage image) {
+        if (image == null) {
+            return;
+        }
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_inspect(image.getImageId());
@@ -171,10 +199,12 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
             return Collections.emptyList();
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", this::imageInspect);
+        FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", () -> this.imageInspect(image));
+        imageInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
-        FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(false));
-        FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(true));
+        FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(image, false));
+        deleteImage.setAccelerator(KeyboardUtil.delete_keyCombination);
+        FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(image, true));
         menuItems.add(imageInfo);
         menuItems.add(imageHistory);
         menuItems.add(deleteImage);
@@ -182,17 +212,4 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         return menuItems;
     }
 
-    @Override
-    protected void initEvenListener() {
-        super.initEvenListener();
-        // 右键菜单事件
-        this.setOnContextMenuRequested(e -> {
-            List<? extends MenuItem> items = this.getMenuItems();
-            if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
-            } else {
-                this.clearContextMenu();
-            }
-        });
-    }
 }

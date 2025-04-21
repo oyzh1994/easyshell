@@ -7,8 +7,10 @@ import cn.oyzh.easyshell.process.ShellProcessInfo;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +24,27 @@ import java.util.stream.Collectors;
  * @since 2025-03-29
  */
 public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
+
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<? extends MenuItem> menuItems = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(menuItems)) {
+                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+        // 快捷键
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.stop_keyCombination.match(event)) {// 杀死进程
+                this.killProcess(this.getSelectedItem());
+                event.consume();
+            }
+        });
+    }
 
     /**
      * 当前用户
@@ -67,20 +90,6 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
     }
 
     @Override
-    protected void initEvenListener() {
-        super.initEvenListener();
-        // 右键菜单事件
-        this.setOnContextMenuRequested(e -> {
-            List<? extends MenuItem> menuItems = this.getMenuItems();
-            if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
-            } else {
-                this.clearContextMenu();
-            }
-        });
-    }
-
-    @Override
     public List<? extends MenuItem> getMenuItems() {
         ShellProcessInfo info = this.getSelectedItem();
         if (info == null) {
@@ -88,6 +97,7 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
         }
         List<MenuItem> menuItems = new ArrayList<>();
         MenuItem killProcess = MenuItemHelper.killProcess("12", () -> this.killProcess(info));
+        killProcess.setAccelerator(KeyboardUtil.stop_keyCombination);
         menuItems.add(killProcess);
         MenuItem forceKillProcess = MenuItemHelper.forceKillProcess("12", () -> this.forceKillProcess(info));
         menuItems.add(forceKillProcess);
@@ -112,6 +122,9 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      * @param info 进程信息
      */
     protected void killProcess(ShellProcessInfo info) {
+        if (info == null) {
+            return;
+        }
         if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.killProcess() + "?")) {
             String output = this.exec.kill(info.getPid());
             if (StringUtil.isNotBlank(output)) {
@@ -129,6 +142,9 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      * @param info 进程信息
      */
     protected void forceKillProcess(ShellProcessInfo info) {
+        if (info == null) {
+            return;
+        }
         if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.forceKillProcess() + "?")) {
             String output = this.exec.forceKill(info.getPid());
             if (StringUtil.isNotBlank(output)) {

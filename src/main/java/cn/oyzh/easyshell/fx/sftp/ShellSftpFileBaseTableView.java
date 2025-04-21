@@ -11,9 +11,9 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
+import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.event.EventSubscribe;
@@ -21,6 +21,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -33,6 +34,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
@@ -71,6 +73,26 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
         // 初始化鼠标多选辅助类
         TableViewMouseSelectHelper.install(this);
+        // 快捷键
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            // 删除
+            if (KeyboardUtil.delete_keyCombination.match(event)) {
+                this.deleteFile(this.getSelectedItems());
+                event.consume();
+            } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名
+                this.renameFile(this.getSelectedItems());
+                event.consume();
+            } else if (KeyboardUtil.refresh_keyCombination.match(event)) {// 刷新
+                this.loadFile();
+                event.consume();
+            } else if (KeyboardUtil.info_keyCombination.match(event)) {// 文件信息
+                this.fileInfo(this.getSelectedItem());
+                event.consume();
+            } else if (KeyboardUtil.edit_keyCombination.match(event)) {// 刷新
+                this.editFile(this.getSelectedItem());
+                event.consume();
+            }
+        });
     }
 
     private String filterText;
@@ -274,15 +296,18 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
             if (!this.fileEditable(file)) {
                 editFile.setDisable(true);
             }
+            editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
             menuItems.add(editFile);
             // 文件信息
-            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.showFileInfo(file));
+            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
+            fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
             menuItems.add(fileInfo);
             // 复制路径
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
             menuItems.add(copyFilePath);
             // 重命名文件
-            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(file));
+            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
+            renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
             menuItems.add(renameFile);
             // 文件权限
             FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
@@ -291,15 +316,24 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         }
         // 刷新文件
         FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
+        refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
         menuItems.add(refreshFile);
         // 删除文件
         FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
         menuItems.add(deleteFile);
         return menuItems;
     }
 
-    protected void showFileInfo(ShellSftpFile file) {
-        ShellEventUtil.showFileInfo(file);
+    /**
+     * 显示文件信息
+     *
+     * @param file 文件
+     */
+    protected void fileInfo(ShellSftpFile file) {
+        if (file != null && !this.checkInvalid(file)) {
+            ShellEventUtil.showFileInfo(file);
+        }
     }
 
     protected void copyFilePath(ShellSftpFile file) {
@@ -462,11 +496,20 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         }
     }
 
-    public void renameFile(ShellSftpFile file) {
+    /**
+     * 重命名文件
+     *
+     * @param files 文件列表
+     */
+    public void renameFile(List<ShellSftpFile> files) {
         try {
-            if (this.checkInvalid(file)) {
+            if (files == null || files.size() != 1) {
                 return;
             }
+            if (this.checkInvalid(files)) {
+                return;
+            }
+            ShellSftpFile file = files.getFirst();
             String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
             String name = file.getFileName();
             if (newName == null || StringUtil.equals(name, newName)) {

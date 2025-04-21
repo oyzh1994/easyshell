@@ -122,9 +122,9 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
             FXJediTermWidget session = this.createTerminalSession(ttyConnector);
-            if (ttyConnector instanceof ShellDefaultTtyConnector loggingConnector) {
-                loggingConnector.setWidget(session);
-            }
+//            if (ttyConnector instanceof ShellDefaultTtyConnector loggingConnector) {
+//                loggingConnector.setWidget(session);
+//            }
             session.start();
         }
     }

@@ -46,32 +46,29 @@ public class FXHyperlinkFilter implements HyperlinkFilter {
     @Nullable
     @Override
     public LinkResult apply(String line) {
-        if (!canContainUrl(line)) return null;
+        if (!canContainUrl(line)) {
+            return null;
+        }
         int textStartOffset = 0;
         Matcher m = URL_PATTERN.matcher(line);
-        LinkResultItem item = null;
         List<LinkResultItem> items = null;
         while (m.find()) {
-            if (item != null) {
-                if (items == null) {
-                    items = new ArrayList<>(2);
-                    items.add(item);
-                }
-            }
             String url = m.group();
-            item = new LinkResultItem(textStartOffset + m.start(), textStartOffset + m.end(), new LinkInfo(() -> {
-                try {
-                    FXConst.getHostServices().showDocument(url);
-                } catch (Exception e) {
-                    //pass
-                }
-            }));
-            if (items != null) {
-                items.add(item);
+            LinkInfo linkInfo = new LinkInfo(() -> this.openUrl(url));
+            LinkResultItem item = new LinkResultItem(textStartOffset + m.start(), textStartOffset + m.end(), linkInfo);
+            if (items == null) {
+                items = new ArrayList<>();
             }
+            items.add(item);
         }
-        return items != null ? new LinkResult(items)
-                : item != null ? new LinkResult(item)
-                : null;
+        return items != null ? new LinkResult(items) : null;
+    }
+
+    private void openUrl(@NotNull String url) {
+        try {
+            FXConst.getHostServices().showDocument(url);
+        } catch (Exception e) {
+            //pass
+        }
     }
 }

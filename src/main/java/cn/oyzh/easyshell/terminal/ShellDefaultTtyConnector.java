@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
-import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import com.jediterm.terminal.ui.FXJediTermWidget;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,9 +100,9 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
         super.write(bytes);
     }
 
-    public void setWidget(FXJediTermWidget widget) {
-//        this.textBuffer = widget.getTerminalTextBuffer();
-    }
+//    public void setWidget(FXJediTermWidget widget) {
+////        this.textBuffer = widget.getTerminalTextBuffer();
+//    }
 
     private SimpleObjectProperty<TermSize> terminalSizeProperty;
 
