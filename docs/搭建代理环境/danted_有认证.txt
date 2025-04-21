@@ -1,10 +1,11 @@
 以ubuntu为例
+# 1. 安装依赖
 apt update
 apt install danted -y
-# 创建认证用户，注意是系统用户，后面认证要用到
+# 2. 创建认证用户，注意是系统用户，后面认证要用到
 useradd -r test
-passwd test
-# 配置文件
+passwd 123456
+# 3. 配置文件
 vim /etc/danted.conf
 # 内部网络接口和监听端口
 internal: eth0 port = 1080
@@ -28,3 +29,5 @@ socks pass {
     log: connect disconnect error
     method: username
 }
+# 4. 重启服务
+systemctl restart danted

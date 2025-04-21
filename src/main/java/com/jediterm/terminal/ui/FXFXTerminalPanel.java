@@ -547,7 +547,12 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
     }
 
     private void handleHyperlinks(Node component) {
-        handleHyperlinks(component.localToScreen(0, 0));
+        if (component != null) {
+            Point2D point = component.localToScreen(0, 0);
+            if (point != null) {
+                handleHyperlinks(point);
+            }
+        }
     }
 
     private @Nullable HyperlinkStyle findHyperlink(@NotNull Point2D p) {
@@ -2334,7 +2339,7 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
 
     public void dispose() {
         myRepaintTimer.stop();
-        this.myTermSize = null;
+//        this.myTermSize = null;
         this.myBoldFont = null;
         this.myFindResult = null;
         this.myItalicFont = null;

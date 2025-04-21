@@ -1,9 +1,10 @@
 以ubuntu为例
+# 1. 安装依赖
 apt update
 apt install squid apache2-utils -y
-# 首次创建认证用户，后面会提示输入密码(非首次去掉-c参数)
+# 2. 首次创建认证用户，后面会提示输入密码(非首次去掉-c参数)
 htpasswd -c /etc/tinyproxy/proxyusers proxyuser
-# 配置文件
+# 3. 配置文件
 vim /etc/squid/squid.conf
 # 设置认证用户
 auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
@@ -12,3 +13,5 @@ acl authenticated proxy_auth REQUIRED
 http_access allow authenticated
 # 设置监听端口
 http_port 8889
+# 4. 重启服务
+systemctl restart squid

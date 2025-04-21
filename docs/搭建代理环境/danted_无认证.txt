@@ -1,7 +1,8 @@
 以ubuntu为例
+# 1. 安装依赖
 apt update
 apt install danted -y
-# 配置文件
+# 2. 配置文件
 vim /etc/danted.conf
 # 内部网络接口和监听端口
 internal: eth0 port = 1080
@@ -24,3 +25,5 @@ socks pass {
     from: 0.0.0.0/0 to: 0.0.0.0/0
     log: connect disconnect error
 }
+# 3. 重启服务
+systemctl restart danted

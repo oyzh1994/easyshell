@@ -103,7 +103,6 @@ public class ShellConnectTabController extends ParentTabController {
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPT) {
                 MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
-                this.client.close();
                 this.closeTab();
             } else if (t1 == ShellConnState.CLOSED) {
                 ShellEventUtil.connectionClosed(client);
