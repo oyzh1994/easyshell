@@ -14,7 +14,7 @@
 
     <properties>
         <jna.version>5.17.0</jna.version>
-        <pty4j.version>0.13.2</pty4j.version>
+        <pty4j.version>0.13.4</pty4j.version>
         <annotations.version>26.0.2</annotations.version>
         <purejavacomm.version>0.0.11.1</purejavacomm.version>
         <kotlin.stdlib.version>2.1.20</kotlin.stdlib.version>
@@ -24,9 +24,9 @@
     <!-- 声明仓库 -->
     <repositories>
         <repository>
-            <id>jetbrains</id>
-            <name>jetbrains</name>
-            <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
+            <id>aliyun</id>
+            <name>aliyun</name>
+            <url>https://maven.aliyun.com/repository/public/</url>
         </repository>
         <repository>
             <id>center</id>
@@ -34,9 +34,9 @@
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
-            <id>aliyun</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public/</url>
+            <id>jetbrains</id>
+            <name>jetbrains</name>
+            <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
         </repository>
         <repository>
             <id>sonatype</id>

@@ -68,9 +68,31 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     public static void main(String[] args) {
         try {
+            // 渲染模式
+//            System.setProperty("prism.order", "es2");
+            // 垂直同步
+//            System.setProperty("prism.vsync", "false");
+            // 路径缓存大小
+//            System.setProperty("prism.glyphCacheWidth", "1024");
+//            System.setProperty("prism.glyphCacheHeight", "1024");
+//            // 调试模式
+//            System.setProperty("prism.debug", "true");
+//            // 详细模式
+//            System.setProperty("javafx.verbose", "true");
+            // 打印分配
+//            System.setProperty("prism.printallocs", "true");
+//            // 图形缓存
+//            System.setProperty("prism.cache", "false");
+//            System.setProperty("prism.cacheshapes", "false");
+            // 脏区域重绘
+//            System.setProperty("prism.dirtyopts", "false");
+            // 纹理尺寸
+//            System.setProperty("prism.maxTextureSize", "1024");
+            // 禁用区域缓存
+//            System.setProperty("prism.disableRegionCaching", "true");
             // 抗锯齿优化
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("prism.lcdtext", "false");
+//            System.setProperty("prism.text", "t2k");
+//            System.setProperty("prism.lcdtext", "false");
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
