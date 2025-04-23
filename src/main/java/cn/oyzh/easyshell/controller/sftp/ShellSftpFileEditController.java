@@ -41,7 +41,6 @@ import java.io.FileInputStream;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
-        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "sftp/shellSftpFileEdit.fxml"
 )
 public class ShellSftpFileEditController extends StageController {
