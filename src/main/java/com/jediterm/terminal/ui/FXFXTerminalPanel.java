@@ -1669,8 +1669,12 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
         if (bold && mySettingsProvider.DECCompatibilityMode() && CharacterSets.isDecBoxChar(text[start])) {
             return myNormalFont;
         }
-        return bold ? (italic ? myBoldItalicFont : myBoldFont)
+        Font font = bold ? (italic ? myBoldItalicFont : myBoldFont)
                 : (italic ? myItalicFont : myNormalFont);
+        if (font == null) {
+            return Font.getDefault();
+        }
+        return font;
     }
 
     private ColorPalette getPalette() {

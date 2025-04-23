@@ -1,0 +1,9 @@
+# 1. 安装依赖
+apt install -y socat
+# 2. 建立串口通道
+socat -d -d pty,raw,echo=0 pty,raw,echo=0
+# 3. 绑定输出流到shell(看具体通道)
+socat exec:'bash -li',pty,stderr,setsid,sigint,sane /dev/pts/2
+# 4. 设置输入通道权限
+sudo chmod 666 /dev/pts/1
+

@@ -24,6 +24,11 @@
     <!-- 声明仓库 -->
     <repositories>
         <repository>
+            <id>jetbrains</id>
+            <name>jetbrains</name>
+            <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
+        </repository>
+        <repository>
             <id>aliyun</id>
             <name>aliyun</name>
             <url>https://maven.aliyun.com/repository/public/</url>
@@ -32,11 +37,6 @@
             <id>center</id>
             <name>center</name>
             <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>jetbrains</id>
-            <name>jetbrains</name>
-            <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
         </repository>
         <repository>
             <id>sonatype</id>
@@ -225,8 +225,7 @@
         <dependency>
             <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
-            <version>2.10.4</version>
-            <scope>test</scope>
+            <version>2.11.0</version>
         </dependency>
     </dependencies>
 
