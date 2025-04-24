@@ -37,7 +37,7 @@ public class SerialClient implements AutoCloseable {
         this.serialPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, shellConnect.connectTimeOutMs(), shellConnect.connectTimeOutMs());
     }
 
-    public boolean start() throws IOException {
+    public void start() throws IOException {
         if (this.serialPort == null) {
             this.iniSerialPort();
         }
@@ -48,9 +48,7 @@ public class SerialClient implements AutoCloseable {
                     this.serialPort.getLastErrorCode(),
                     this.serialPort.getLastErrorLocation()
             );
-            return false;
         }
-        return true;
     }
 
     /**

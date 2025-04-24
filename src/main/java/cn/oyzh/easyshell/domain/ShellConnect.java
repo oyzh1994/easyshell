@@ -618,6 +618,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "local".equalsIgnoreCase(this.type);
     }
 
+    public boolean isTelnetType() {
+        return "telnet".equalsIgnoreCase(this.type);
+    }
+
     public boolean isSerialType() {
         return "serial".equalsIgnoreCase(this.type);
     }

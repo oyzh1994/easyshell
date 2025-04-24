@@ -47,6 +47,8 @@ public class ShellAddGuidController extends StageController {
                 ShellViewFactory.addConnect(group);
             } else if ("local".equals(this.type.selectedUserData())) {
                 ShellViewFactory.addLocalConnect(group);
+            } else if ("telnet".equals(this.type.selectedUserData())) {
+                ShellViewFactory.addTelnetConnect(group);
             } else {
                 ShellViewFactory.addSerialConnect(group);
             }

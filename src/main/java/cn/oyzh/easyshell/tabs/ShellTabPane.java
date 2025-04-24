@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
+import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
@@ -172,6 +173,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellConnectTab(event.data());
         } else if (event.connect().isLocalType()) {
             tab = new ShellLocalTab(event.data());
+        } else if (event.connect().isTelnetType()) {
+            tab = new ShellTelnetTab(event.data());
         } else {
             tab = new ShellSerialTab(event.data());
         }

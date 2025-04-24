@@ -229,6 +229,13 @@
 <!--            <artifactId>log4j-jcl</artifactId>-->
 <!--            <version>${log4j.version}</version>-->
 <!--        </dependency>-->
+
+            <!-- Apache Commons Net -->
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>3.9.0</version>
+            </dependency>
     </dependencies>
 
     <build>
