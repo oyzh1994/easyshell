@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.controller.jump;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.fx.ShellConnectComboBox;
+import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -40,7 +40,7 @@ public class ShellAddHostController extends StageController {
      * 主机
      */
     @FXML
-    private ShellConnectComboBox host;
+    private ShellSSHConnectComboBox host;
 
     /**
      * 密钥存储

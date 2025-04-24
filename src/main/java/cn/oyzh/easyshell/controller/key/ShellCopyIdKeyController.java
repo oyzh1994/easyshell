@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.key;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.fx.ShellConnectComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
@@ -11,7 +11,6 @@ import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -40,7 +39,7 @@ public class ShellCopyIdKeyController extends StageController {
      * 连接列表
      */
     @FXML
-    private ShellConnectComboBox host;
+    private ShellSSHConnectComboBox host;
 
     /**
      * 密钥信息

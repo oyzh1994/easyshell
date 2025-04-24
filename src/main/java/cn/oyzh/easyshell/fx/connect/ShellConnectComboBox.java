@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx;
+package cn.oyzh.easyshell.fx.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import java.util.List;
 
 /**
- * docker状态选择框
+ * 连接下拉框
  *
  * @author oyzh
  * @since 25/03/21

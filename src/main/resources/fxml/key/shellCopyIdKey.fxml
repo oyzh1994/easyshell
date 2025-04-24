@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellConnectComboBox?>
-<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.button.ExecuteButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
@@ -10,7 +10,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.CloseButton?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController" realWidth="750"
         realHeight="480">
@@ -19,12 +18,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ShellConnectComboBox fx:id="host" require="true" realHeight="30"
-                          flexWidth="100% - 180">
+    <ShellSSHConnectComboBox fx:id="host" require="true" realHeight="30"
+                             flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ShellConnectComboBox>
+    </ShellSSHConnectComboBox>
     <InfoLabel text="%base.keys1">
         <VBox.margin>
             <Insets left="30" top="10"/>
