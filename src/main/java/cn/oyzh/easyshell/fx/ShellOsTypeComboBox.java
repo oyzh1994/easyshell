@@ -33,7 +33,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Centos");
         this.addItem("Windows");
         this.addItem("Debian");
-        this.addItem("Apple");
+        this.addItem("Macos");
         this.addItem("Arch");
         this.addItem("Raspberrypi");
         this.addItem("Deepin");
@@ -70,7 +70,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             return new LinuxSVGGlyph();
         }
         return switch (name) {
-            case "Apple" -> new AppleSVGGlyph();
+            case "Macos" -> new AppleSVGGlyph();
             case "Ubuntu" -> new UbuntuSVGGlyph();
             case "Centos" -> new CentosSVGGlyph();
             case "Windows" -> new WindowsSVGGlyph();

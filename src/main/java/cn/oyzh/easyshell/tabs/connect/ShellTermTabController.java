@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellShell;
 import cn.oyzh.easyshell.shell.ShellTermWidget;
 import cn.oyzh.easyshell.shell.ShellTtyConnector;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
@@ -16,13 +16,6 @@ import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.ui.FXFXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -64,50 +57,9 @@ public class ShellTermTabController extends SubTabController {
      */
     private void initBackground() {
         ShellConnect connect = this.client().getShellConnect();
-        if (!connect.isEnableBackground()) {
-            return;
-        }
-        // 背景失效
-        if (connect.isBackgroundImageInvalid()) {
-            MessageBox.warn(ShellI18nHelper.connectTip7());
-            return;
-        }
+        FXFXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
-        FXFXTerminalPanel terminalPane = this.widget.getTerminalPanel();
-        Node canvas = terminalPane.getFirstChild();
-        // 对画板设置透明度
-        canvas.setOpacity(0.7);
-        // 背景图片
-        String url = connect.getBackgroundImageUrl();
-        Image backgroundImage = new Image(url);
-//            int imgH = (int) backgroundImage.getHeight();
-//            int imgW = (int) backgroundImage.getWidth();
-//            PixelReader reader = backgroundImage.getPixelReader();
-//            WritableImage image = new WritableImage(imgW, imgH);
-//            PixelWriter writer = image.getPixelWriter();
-//            for (int y = 0; y < imgH; y++) {
-//                for (int x = 0; x < imgW; x++) {
-//                    try {
-//                        Color color1 = reader.getColor(x, y);
-//                        Color color2 = new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 0.8);
-//                        writer.setColor(x, y, color2);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-        // 生成背景
-        BackgroundSize backgroundSize = new BackgroundSize(
-                BackgroundSize.AUTO, BackgroundSize.AUTO, false, false,
-                true, true);
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT,
-                backgroundSize);
-        // 创建 Background 对象
-        Background background = new Background(backgroundImg);
-        terminalPane.setBackground(background);
+        ShellConnectUtil.initBackground(connect, terminalPanel);
     }
 
     public void init() throws IOException, JSchException {

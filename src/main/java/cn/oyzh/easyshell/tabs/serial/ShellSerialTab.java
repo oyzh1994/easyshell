@@ -9,10 +9,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * shell终端tab
+ * 串口tab
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025/04/24
  */
 public class ShellSerialTab extends RichTab {
 

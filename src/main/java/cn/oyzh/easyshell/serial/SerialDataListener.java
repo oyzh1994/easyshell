@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.serial;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
-import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author oyzh
@@ -15,13 +15,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class SerialDataListener implements SerialPortDataListener {
 
-    private final WeakReference<SerialPort> serialPort;
-
-    private final Queue<Character> characters = new ConcurrentLinkedQueue<Character>();
-
-    public SerialDataListener(SerialPort serialPort) {
-        this.serialPort = new WeakReference<>(serialPort);
-    }
+    /**
+     * 数据队列
+     */
+    private final Queue<Character> characters = new ArrayDeque<>();
 
     @Override
     public int getListeningEvents() {
@@ -30,7 +27,7 @@ public class SerialDataListener implements SerialPortDataListener {
 
     @Override
     public void serialEvent(SerialPortEvent event) {
-        SerialPort serialPort = this.serialPort.get();
+        SerialPort serialPort = (SerialPort) event.getSource();
         if (serialPort == null) {
             return;
         }
@@ -39,10 +36,11 @@ public class SerialDataListener implements SerialPortDataListener {
         }
         // 同样使用循环读取法读取所有数据
         while (serialPort.bytesAvailable() != 0) {
-            byte[] newData = new byte[serialPort.bytesAvailable()];
-            int numRead = serialPort.readBytes(newData, newData.length);
-            ThreadUtil.sleep(5);
-            String str = new String(newData);
+            byte[] bytes = new byte[serialPort.bytesAvailable()];
+            serialPort.readBytes(bytes, bytes.length);
+            ThreadUtil.sleep(1);
+            String str = new String(bytes);
+            JulLog.info("串口返回数据:{}", str);
             char[] chars = str.toCharArray();
             for (char aChar : chars) {
                 this.characters.add(aChar);

@@ -114,4 +114,12 @@ public class SerialClient implements AutoCloseable {
     public Charset getCharset() {
         return CharsetUtil.fromName(this.shellConnect.getCharset());
     }
+
+    public Integer getLastErrorCode() {
+        return this.serialPort == null ? null : this.serialPort.getLastErrorCode();
+    }
+
+    public Integer getLastErrorLocation() {
+        return this.serialPort == null ? null : this.serialPort.getLastErrorLocation();
+    }
 }
