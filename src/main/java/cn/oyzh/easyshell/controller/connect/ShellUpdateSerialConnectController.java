@@ -161,8 +161,8 @@ public class ShellUpdateSerialConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setConnectTimeOut(3);
             // 串口信息
+            shellConnect.setType("serial");
             shellConnect.setPortName(portName);
-            shellConnect.setPortName(this.portName.getTextTrim());
             shellConnect.setBaudRate(this.baudRate.getBaudRate());
             shellConnect.setParityBits(this.parityBits.getParityBits());
             shellConnect.setFlowControl(this.flowControl.getFlowControl());
@@ -215,12 +215,14 @@ public class ShellUpdateSerialConnectController extends StageController {
             this.shellConnect.setOsType(osType);
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
+            this.shellConnect.setConnectTimeOut(connectTimeOut);
+            // 串口设置
             this.shellConnect.setBaudRate(baudRate);
+            this.shellConnect.setPortName(portName);
             this.shellConnect.setParityBits(parityBits);
             this.shellConnect.setNumDataBits(numDataBits);
             this.shellConnect.setNumStopBits(numStopBits);
             this.shellConnect.setFlowControl(flowControl);
-            this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 背景配置
             this.shellConnect.setBackgroundImage(backgroundImage);
             this.shellConnect.setEnableBackground(enableBackground);
@@ -260,17 +262,16 @@ public class ShellUpdateSerialConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.charset.setValue(this.shellConnect.getCharset());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
-        String iid = this.shellConnect.getId();
         // 背景配置
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 串口处理
         this.portName.setText(this.shellConnect.getPortName());
         this.baudRate.setText(this.shellConnect.getBaudRate() + "");
-        this.parityBits.select(this.shellConnect.getParityBits() + "");
+        this.parityBits.init(this.shellConnect.getParityBits());
         this.flowControl.init(this.shellConnect.getFlowControl());
         this.numStopBits.init(this.shellConnect.getNumStopBits());
-        this.numDataBits.select(this.shellConnect.getNumDataBits() + "");
+        this.numDataBits.init(this.shellConnect.getNumDataBits());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

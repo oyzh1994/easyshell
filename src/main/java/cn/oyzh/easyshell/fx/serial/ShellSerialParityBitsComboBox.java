@@ -33,4 +33,20 @@ public class ShellSerialParityBitsComboBox extends FXComboBox<String> {
         }
         return SerialPort.SPACE_PARITY;
     }
+
+    public void init(int val) {
+        if (val == SerialPort.NO_PARITY) {
+            this.select(0);
+        } else if (val == SerialPort.EVEN_PARITY) {
+            this.select(1);
+        } else if (val == SerialPort.ODD_PARITY) {
+            this.select(2);
+        } else if (val == SerialPort.MARK_PARITY) {
+            this.select(3);
+        } else if (val == SerialPort.SPACE_PARITY) {
+            this.select(4);
+        } else {
+            this.selectFirst();
+        }
+    }
 }

@@ -162,8 +162,8 @@ public class ShellAddSerialConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setConnectTimeOut(3);
             // 串口信息
+            shellConnect.setType("serial");
             shellConnect.setPortName(portName);
-            shellConnect.setPortName(this.portName.getTextTrim());
             shellConnect.setBaudRate(this.baudRate.getBaudRate());
             shellConnect.setParityBits(this.parityBits.getParityBits());
             shellConnect.setFlowControl(this.flowControl.getFlowControl());
@@ -217,12 +217,14 @@ public class ShellAddSerialConnectController extends StageController {
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
+            shellConnect.setConnectTimeOut(connectTimeOut);
+            // 串口设置
+            shellConnect.setPortName(portName);
             shellConnect.setBaudRate(baudRate);
             shellConnect.setParityBits(parityBits);
             shellConnect.setNumDataBits(numDataBits);
             shellConnect.setNumStopBits(numStopBits);
             shellConnect.setFlowControl(flowControl);
-            shellConnect.setConnectTimeOut(connectTimeOut);
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);
             shellConnect.setEnableBackground(enableBackground);
@@ -230,7 +232,7 @@ public class ShellAddSerialConnectController extends StageController {
             shellConnect.setType("serial");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
+            if (this.connectStore.insert(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.setProp("connect", shellConnect);

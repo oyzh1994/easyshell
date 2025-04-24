@@ -38,6 +38,9 @@ public class SerialClient implements AutoCloseable {
     }
 
     public boolean start() throws IOException {
+        if (this.serialPort == null) {
+            this.iniSerialPort();
+        }
         // 打开串口
         if (!this.serialPort.openPort()) {
             JulLog.warn("无法打开串口:{}, 错误码:{} 位置:{} ",
@@ -56,7 +59,7 @@ public class SerialClient implements AutoCloseable {
      * @param data 数据
      */
     public void write(byte[] data) {
-        if (data != null) {
+        if (data != null && this.serialPort != null) {
             this.serialPort.writeBytes(data, data.length);
         }
     }
@@ -88,7 +91,9 @@ public class SerialClient implements AutoCloseable {
     }
 
     public void addDataListener(SerialDataListener listener) {
-        this.serialPort.addDataListener(listener);
+        if (this.serialPort != null) {
+            this.serialPort.addDataListener(listener);
+        }
     }
 
     public SerialPort getSerialPort() {
@@ -100,7 +105,10 @@ public class SerialClient implements AutoCloseable {
     }
 
     public boolean isConnected() {
-        return this.serialPort.isOpen();
+        if (this.serialPort != null) {
+            return this.serialPort.isOpen();
+        }
+        return false;
     }
 
     public Charset getCharset() {
