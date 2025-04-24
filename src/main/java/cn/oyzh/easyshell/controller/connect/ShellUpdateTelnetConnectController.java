@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -71,6 +72,12 @@ public class ShellUpdateTelnetConnectController extends StageController {
      */
     @FXML
     private ClearableTextField name;
+
+    /**
+     * 终端类型
+     */
+    @FXML
+    private ShellTermTypeComboBox termType;
 
     /**
      * 备注
@@ -186,8 +193,6 @@ public class ShellUpdateTelnetConnectController extends StageController {
         }
         String userName = this.userName.getTextTrim();
         if (!this.userName.validate()) {
-//            this.userName.requestFocus();
-//            ValidatorUtil.validFail(this.userName);
             return;
         }
         String password = this.password.getPassword();
@@ -197,43 +202,45 @@ public class ShellUpdateTelnetConnectController extends StageController {
                 this.tabPane.select(this.backgroundTab);
                 return;
             }
-            // 名称未填，则直接以host为名称
-            if (StringUtil.isBlank(this.name.getTextTrim())) {
-                this.name.setText(host.replace(":", "_"));
-            }
-            try {
-                String name = this.name.getTextTrim();
-                String remark = this.remark.getTextTrim();
-                String osType = this.osType.getSelectedItem();
-                String charset = this.charset.getCharsetName();
-                int connectTimeOut = this.connectTimeOut.getIntValue();
-                String backgroundImage = this.backgroundImage.getText();
-                boolean enableBackground = this.enableBackground.isSelected();
+        }
+        // 名称未填，则直接以host为名称
+        if (StringUtil.isBlank(this.name.getTextTrim())) {
+            this.name.setText(host.replace(":", "_"));
+        }
+        try {
+            String name = this.name.getTextTrim();
+            String remark = this.remark.getTextTrim();
+            String osType = this.osType.getSelectedItem();
+            String charset = this.charset.getCharsetName();
+            String termType = this.termType.getSelectedItem();
+            int connectTimeOut = this.connectTimeOut.getIntValue();
+            String backgroundImage = this.backgroundImage.getText();
+            boolean enableBackground = this.enableBackground.isSelected();
 
-                this.shellConnect.setName(name);
-                this.shellConnect.setOsType(osType);
-                this.shellConnect.setRemark(remark);
-                this.shellConnect.setCharset(charset);
-                this.shellConnect.setHost(host.trim());
-                this.shellConnect.setConnectTimeOut(connectTimeOut);
-                // 认证信息
-                this.shellConnect.setUser(userName.trim());
-                this.shellConnect.setPassword(password.trim());
-                // 背景配置
-                this.shellConnect.setBackgroundImage(backgroundImage);
-                this.shellConnect.setEnableBackground(enableBackground);
-                // 保存数据
-                if (this.connectStore.replace(this.shellConnect)) {
-                    ShellEventUtil.connectUpdated(this.shellConnect);
-                    MessageBox.okToast(I18nHelper.operationSuccess());
-                    this.closeWindow();
-                } else {
-                    MessageBox.warn(I18nHelper.operationFail());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
+            this.shellConnect.setName(name);
+            this.shellConnect.setOsType(osType);
+            this.shellConnect.setRemark(remark);
+            this.shellConnect.setCharset(charset);
+            this.shellConnect.setHost(host.trim());
+            this.shellConnect.setTermType(termType);
+            this.shellConnect.setConnectTimeOut(connectTimeOut);
+            // 认证信息
+            this.shellConnect.setUser(userName.trim());
+            this.shellConnect.setPassword(password.trim());
+            // 背景配置
+            this.shellConnect.setBackgroundImage(backgroundImage);
+            this.shellConnect.setEnableBackground(enableBackground);
+            // 保存数据
+            if (this.connectStore.replace(this.shellConnect)) {
+                ShellEventUtil.connectUpdated(this.shellConnect);
+                MessageBox.okToast(I18nHelper.operationSuccess());
+                this.closeWindow();
+            } else {
+                MessageBox.warn(I18nHelper.operationFail());
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 

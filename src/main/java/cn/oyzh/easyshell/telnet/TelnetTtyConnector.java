@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.telnet;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
@@ -45,10 +46,60 @@ public class TelnetTtyConnector extends ShellDefaultTtyConnector {
                 this.doRead(buf, offset, len);
             }
             return len;
+//            return len <= 0 ? 1 : len;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return 0;
+//        try {
+//            int len = 0;
+//            while (!this.client.isEmpty()) {
+//                Character charset = this.client.takeChar();
+//                if (charset == null) {
+//                    break;
+//                }
+//                buf[len++] = charset;
+//                // 已填充满则结束
+//                if (len >= length) {
+//                    break;
+//                }
+//            }
+//            // 填充其他数据为0
+//            if (len == 0) {
+//                Arrays.fill(buf, 0, buf.length, (char) 0);
+//            } else if (len != length) {
+//                Arrays.fill(buf, len, length, (char) 0);
+//            }
+//            return len == 0 ? 1 : len;
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+    }
+
+    /**
+     * 是否已输入用户名
+     */
+    private boolean inputUser = false;
+
+    /**
+     * 是否已输入密码
+     */
+    private boolean inputPasswd = false;
+
+    @Override
+    protected void doRead(char[] buf, int offset, int len) throws IOException {
+        super.doRead(buf, offset, len);
+        String line = new String(buf, offset, len);
+        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:")) {
+            this.inputUser = true;
+            this.shellWriter.write(this.client.getShellConnect().getUser() + "\r\n");
+            this.shellWriter.flush();
+        } else if (this.inputUser && !this.inputPasswd && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
+            this.inputPasswd = true;
+            this.shellWriter.write(this.client.getShellConnect().getPassword() + "\r\n");
+            this.shellWriter.flush();
+        }
     }
 
     @Override
@@ -60,7 +111,6 @@ public class TelnetTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        super.write(bytes);
         String str = new String(bytes, this.myCharset);
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);

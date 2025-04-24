@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -92,16 +93,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellOsTypeComboBox>
-                <InfoLabel text="%base.charset">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
                 <InfoLabel text="%base.connectTimeout">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -131,6 +122,30 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.terminal">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
+                <InfoLabel text="%base.terminal">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermTypeComboBox fx:id="termType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermTypeComboBox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.background" fx:id="backgroundTab">
