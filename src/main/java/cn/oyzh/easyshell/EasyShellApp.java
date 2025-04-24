@@ -7,7 +7,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
@@ -16,7 +15,6 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
-import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
 import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
@@ -261,22 +259,22 @@ public class EasyShellApp extends FXApplication implements EventListener {
         });
     }
 
-    /**
-     * 显示添加连接
-     */
-    @EventSubscribe
-    private void addConnect(ShellShowAddConnectEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageAdapter adapter = StageManager.parseStage(ShellAddConnectController.class);
-                adapter.setProp("group", event.data());
-                adapter.display();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+//    /**
+//     * 显示添加连接
+//     */
+//    @EventSubscribe
+//    private void addConnect(ShellShowAddConnectEvent event) {
+//        FXUtil.runLater(() -> {
+//            try {
+//                StageAdapter adapter = StageManager.parseStage(ShellAddConnectController.class);
+//                adapter.setProp("group", event.data());
+//                adapter.display();
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        });
+//    }
 
     /**
      * 显示修改连接

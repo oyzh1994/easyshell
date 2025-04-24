@@ -9,23 +9,22 @@ import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
+import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
-import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -61,7 +60,7 @@ import java.io.File;
  * ssh连接新增业务
  *
  * @author oyzh
- * @since 2020/9/15
+ * @since 2025/03/15
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
@@ -533,6 +532,8 @@ public class ShellAddConnectController extends StageController {
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // 分组及类型
+            shellConnect.setType("ssh");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {

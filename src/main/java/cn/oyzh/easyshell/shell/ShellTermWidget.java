@@ -26,7 +26,7 @@ public class ShellTermWidget extends ShellDefaultTermWidget {
     public SerialTtyConnector createSerialTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new SerialTtyConnector(process, charset, Arrays.asList(command), this);
+        return new SerialTtyConnector(process, charset, Arrays.asList(command));
     }
 
     @Override

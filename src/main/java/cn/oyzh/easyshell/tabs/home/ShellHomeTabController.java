@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.home;
 
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.i18n.I18nHelper;
@@ -54,7 +55,8 @@ public class ShellHomeTabController extends RichTabController {
      */
     @FXML
     private void addConnect() {
-        ShellEventUtil.showAddConnect();
+//        ShellEventUtil.showAddConnect();
+        ShellViewFactory.addGuid(null);
     }
 
     /**

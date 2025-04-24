@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -142,7 +143,8 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      * 添加连接
      */
     private void addConnect() {
-        ShellEventUtil.showAddConnect(this.value);
+//        ShellEventUtil.showAddConnect(this.value);
+        ShellViewFactory.addGuid(this.value);
     }
 
     @Override

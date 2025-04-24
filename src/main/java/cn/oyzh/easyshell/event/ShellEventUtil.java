@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.event;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.client.ShellClientActionEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
@@ -22,7 +21,6 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
-import cn.oyzh.easyshell.event.window.ShellShowAddConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
 import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
@@ -220,12 +218,12 @@ public class ShellEventUtil {
         EventUtil.post(new ShellShowSettingEvent());
     }
 
-    /**
-     * 显示添加连接页面
-     */
-    public static void showAddConnect() {
-        showAddConnect(null);
-    }
+//    /**
+//     * 显示添加连接页面
+//     */
+//    public static void showAddConnect() {
+//        showAddConnect(null);
+//    }
 
     /**
      * 显示修改连接页面
@@ -238,16 +236,16 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 显示添加连接页面
-     *
-     * @param group 分组
-     */
-    public static void showAddConnect(ShellGroup group) {
-        ShellShowAddConnectEvent event = new ShellShowAddConnectEvent();
-        event.data(group);
-        EventUtil.post(event);
-    }
+//    /**
+//     * 显示添加连接页面
+//     *
+//     * @param group 分组
+//     */
+//    public static void showAddConnect(ShellGroup group) {
+//        ShellShowAddConnectEvent event = new ShellShowAddConnectEvent();
+//        event.data(group);
+//        EventUtil.post(event);
+//    }
 
     /**
      * 显示密钥管理

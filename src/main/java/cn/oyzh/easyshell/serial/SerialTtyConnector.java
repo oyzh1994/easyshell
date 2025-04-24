@@ -1,9 +1,6 @@
 package cn.oyzh.easyshell.serial;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.shell.ShellShell;
-import cn.oyzh.easyshell.shell.ShellTermWidget;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -11,8 +8,6 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -32,7 +27,7 @@ public class SerialTtyConnector extends ShellDefaultTtyConnector {
 
     public void initSerial() throws IOException {
         // 替换为你的虚拟串口设备路径
-        String portName = "/dev/pts/1";
+        String portName = "/dev/ttys001";
 
         // 获取指定名称的串口
         SerialPort serialPort = SerialPort.getCommPort(portName);
@@ -43,19 +38,14 @@ public class SerialTtyConnector extends ShellDefaultTtyConnector {
         serialPort.setNumDataBits(8);
         serialPort.setNumStopBits(SerialPort.ONE_STOP_BIT);
         serialPort.setParity(SerialPort.EVEN_PARITY);
-//        serialPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
         serialPort.setFlowControl(SerialPort.FLOW_CONTROL_RTS_ENABLED |
                 SerialPort.FLOW_CONTROL_CTS_ENABLED);
 
-        serialPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 5000, 5000);
         // 打开串口
         if (!serialPort.openPort()) {
             System.err.println("无法打开串口: " + portName);
             return;
         }
-        ThreadUtil.sleep(1000);
-//        serialPort.getOutputStream().write("pwd".getBytes());
-//        ThreadUtil.sleep(1000);
 
         serialPort.addDataListener(new SerialPortDataListener() {
 
@@ -124,25 +114,14 @@ public class SerialTtyConnector extends ShellDefaultTtyConnector {
 //        this.shellWriter = new OutputStreamWriter(serialPort.getOutputStream(), this.myCharset);
     }
 
-    private ShellTermWidget widget;
 
-    public SerialTtyConnector(PtyProcess process, Charset charset, List<String> commandLines, ShellTermWidget widget) {
+    public SerialTtyConnector(PtyProcess process, Charset charset, List<String> commandLines ) {
         super(process, charset, commandLines);
-        this.widget = widget;
     }
 
     @Override
     public int read(char[] buf, int offset, int length) throws IOException {
         try {
-////            ThreadUtil.sleep(1000);
-////            int len;
-////            ByteArrayOutputStream arrayOutputStream;
-////            if (this.shellWriter == null) {
-////                len = super.read(buf, offset, length);
-////            } else {
-////                len = this.shellReader.read(buf, offset, length);
-////            }
-//
             int len = 0;
             while (!charsets.isEmpty()) {
                 Character charset = charsets.poll();
@@ -168,45 +147,25 @@ public class SerialTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-//        super.write(str);
-        JulLog.warn("shell write : {}", str);
-//        if(!str.endsWith("\n")){
-//
-//        }else{
-//        this.shellWriter.write(str);
-//        if(str.endsWith("\r")){
-//            this.shellWriter.flush();
-//        }
+        JulLog.debug("shell write : {}", str);
         byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-        serialPort.writeBytes(bytes, bytes.length);
-
-//        }
-
-//        super.write(str);
+        this.serialPort.writeBytes(bytes, bytes.length);
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
-//        super.write(bytes);
+        super.write(bytes);
         String str = new String(bytes, this.myCharset);
-        JulLog.warn("shell write : {}", str);
-//        this.shellWriter.write(str);
-//        if(str.endsWith("\r")){
-//
-//                this.shellWriter.flush();
-//            }
-        serialPort.writeBytes(bytes, bytes.length);
+        JulLog.debug("shell write : {}", str);
+        this.serialPort.writeBytes(bytes, bytes.length);
 
-//        super.write(bytes);
     }
 
     @Override
     public void close() {
         super.close();
         if (serialPort != null) {
-
             serialPort.closePort();
-
         }
     }
 }

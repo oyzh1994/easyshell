@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.domain;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
-import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -156,6 +155,50 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     private List<ShellTunnelingConfig> tunnelingConfigs;
 
+    /**
+     * 连接类型
+     * ssh ssh
+     * serial 串口
+     */
+    @Column
+    private String type;
+
+    /**
+     * 波特率
+     */
+    @Column
+    private int baudRate;
+
+    /**
+     * 端口
+     */
+    @Column
+    private String portName;
+
+    /**
+     * 校验位
+     */
+    @Column
+    private int parityBits;
+
+    /**
+     * 数据位
+     */
+    @Column
+    private int numDataBits;
+
+    /**
+     * 停止位
+     */
+    @Column
+    private int numStopBits;
+
+    /**
+     * 流控
+     */
+    @Column
+    private int flowControl;
+
     public Boolean getEnableProxy() {
         return enableProxy;
     }
@@ -266,32 +309,39 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     @Override
-    public void copy(ShellConnect shellConnect) {
-        this.name = shellConnect.name;
-        this.host = shellConnect.host;
-        this.user = shellConnect.user;
-        this.remark = shellConnect.remark;
-        this.osType = shellConnect.osType;
-        this.groupId = shellConnect.groupId;
-        this.charset = shellConnect.charset;
-        this.termType = shellConnect.termType;
-        this.connectTimeOut = shellConnect.connectTimeOut;
+    public void copy(ShellConnect t1) {
+        this.name = t1.name;
+        this.host = t1.host;
+        this.user = t1.user;
+        this.remark = t1.remark;
+        this.osType = t1.osType;
+        this.groupId = t1.groupId;
+        this.charset = t1.charset;
+        this.termType = t1.termType;
+        this.connectTimeOut = t1.connectTimeOut;
         // 认证
-        this.keyId = shellConnect.keyId;
-        this.password = shellConnect.password;
-        this.authMethod = shellConnect.authMethod;
-        this.certificate = shellConnect.certificate;
+        this.keyId = t1.keyId;
+        this.password = t1.password;
+        this.authMethod = t1.authMethod;
+        this.certificate = t1.certificate;
         // 跳板机
-        this.jumpConfigs = shellConnect.jumpConfigs;
+        this.jumpConfigs = t1.jumpConfigs;
         // 隧道
-        this.tunnelingConfigs = shellConnect.tunnelingConfigs;
+        this.tunnelingConfigs = t1.tunnelingConfigs;
 //        this.sshForward = shellConnect.sshForward;
         // x11
-        this.x11Config = shellConnect.x11Config;
-        this.x11forwarding = shellConnect.x11forwarding;
+        this.x11Config = t1.x11Config;
+        this.x11forwarding = t1.x11forwarding;
         // 背景
-        this.backgroundImage = shellConnect.backgroundImage;
-        this.enableBackground = shellConnect.enableBackground;
+        this.backgroundImage = t1.backgroundImage;
+        this.enableBackground = t1.enableBackground;
+        // 串口
+        this.baudRate = t1.baudRate;
+        this.portName = t1.portName;
+        this.parityBits = t1.parityBits;
+        this.numDataBits = t1.numDataBits;
+        this.numStopBits = t1.numStopBits;
+        this.flowControl = t1.flowControl;
     }
 
     /**
@@ -502,5 +552,61 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setTunnelingConfigs(List<ShellTunnelingConfig> tunnelingConfigs) {
         this.tunnelingConfigs = tunnelingConfigs;
+    }
+
+    public int getBaudRate() {
+        return baudRate;
+    }
+
+    public void setBaudRate(int baudRate) {
+        this.baudRate = baudRate;
+    }
+
+    public String getPortName() {
+        return portName;
+    }
+
+    public void setPortName(String portName) {
+        this.portName = portName;
+    }
+
+    public int getNumDataBits() {
+        return numDataBits;
+    }
+
+    public void setNumDataBits(int numDataBits) {
+        this.numDataBits = numDataBits;
+    }
+
+    public int getNumStopBits() {
+        return numStopBits;
+    }
+
+    public void setNumStopBits(int numStopBits) {
+        this.numStopBits = numStopBits;
+    }
+
+    public int getFlowControl() {
+        return flowControl;
+    }
+
+    public void setFlowControl(int flowControl) {
+        this.flowControl = flowControl;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getParityBits() {
+        return parityBits;
+    }
+
+    public void setParityBits(int parityBits) {
+        this.parityBits = parityBits;
     }
 }
