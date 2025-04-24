@@ -15,6 +15,7 @@
     <properties>
         <jna.version>5.17.0</jna.version>
         <pty4j.version>0.13.4</pty4j.version>
+        <jediterm.version>3.50</jediterm.version>
         <annotations.version>26.0.2</annotations.version>
         <purejavacomm.version>0.0.11.1</purejavacomm.version>
         <kotlin.stdlib.version>2.1.20</kotlin.stdlib.version>
@@ -27,6 +28,11 @@
             <id>jetbrains</id>
             <name>jetbrains</name>
             <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
+        </repository>
+        <repository>
+            <id>aliyun-jetbrains</id>
+            <name>aliyun-jetbrains</name>
+            <url>https://maven.aliyun.com/repository/jetbrains/</url>
         </repository>
         <repository>
             <id>aliyun</id>
@@ -43,11 +49,6 @@
             <name>sonatype</name>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>codehaus</id>
-            <name>codehaus</name>
-            <url>https://codehaus-mirror.ibiblio.org/maven2/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -55,13 +56,13 @@
         <dependency>
             <groupId>org.jetbrains.jediterm</groupId>
             <artifactId>jediterm-core</artifactId>
-            <version>3.50</version>
+            <version>${jediterm.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-ui -->
         <dependency>
             <groupId>org.jetbrains.jediterm</groupId>
             <artifactId>jediterm-ui</artifactId>
-            <version>3.50</version>
+            <version>${jediterm.version}</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>jediterm</groupId>-->
@@ -113,6 +114,13 @@
         <dependency>
             <groupId>cn.oyzh</groupId>
             <artifactId>fx-rich</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->
+        <dependency>
+            <groupId>com.fazecast</groupId>
+            <artifactId>jSerialComm</artifactId>
+            <version>2.11.0</version>
         </dependency>
 
         <!-- json类库 -->
@@ -221,12 +229,6 @@
 <!--            <artifactId>log4j-jcl</artifactId>-->
 <!--            <version>${log4j.version}</version>-->
 <!--        </dependency>-->
-
-        <dependency>
-            <groupId>com.fazecast</groupId>
-            <artifactId>jSerialComm</artifactId>
-            <version>2.11.0</version>
-        </dependency>
     </dependencies>
 
     <build>
