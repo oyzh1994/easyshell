@@ -45,6 +45,8 @@ public class ShellAddGuidController extends StageController {
         try {
             if ("ssh".equals(this.type.selectedUserData())) {
                 ShellViewFactory.addConnect(group);
+            } else if ("local".equals(this.type.selectedUserData())) {
+                ShellViewFactory.addLocalConnect(group);
             } else {
                 ShellViewFactory.addSerialConnect(group);
             }

@@ -120,6 +120,7 @@ public class ShellSerialTabController extends RichTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.getClient().close();
+        this.widget.close();
         // 展开左侧
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();

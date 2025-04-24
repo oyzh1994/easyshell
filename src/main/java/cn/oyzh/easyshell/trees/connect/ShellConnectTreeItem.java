@@ -79,7 +79,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
-        if (this.isSerialType()) {
+        if (this.isLocalType() || this.isSerialType()) {
             transportFile.setDisable(true);
         }
 
@@ -97,9 +97,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isSSHType();
     }
 
+    public boolean isLocalType() {
+        return value.isLocalType();
+    }
+
     public boolean isSerialType() {
         return value.isSerialType();
     }
+
 
 //    /**
 //     * 取消连接
@@ -189,6 +194,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //        adapter.display();
         if (this.value.isSSHType()) {
             ShellViewFactory.updateConnect(this.value);
+        } else if (this.value.isLocalType()) {
+            ShellViewFactory.updateLocalConnect(this.value);
         } else {
             ShellViewFactory.updateSerialConnect(this.value);
         }

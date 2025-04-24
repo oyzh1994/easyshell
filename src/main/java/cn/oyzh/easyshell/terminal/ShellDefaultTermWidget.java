@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -150,5 +151,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
 
     public TermSize getTermSize() {
         return this.getTtyConnector().getTermSize();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        SystemUtil.gcLater();
     }
 }

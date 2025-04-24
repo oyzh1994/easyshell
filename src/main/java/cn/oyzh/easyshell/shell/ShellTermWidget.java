@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.shell;
 
-import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.serial.SerialTtyConnector;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.jediterm.terminal.TtyConnector;
@@ -27,11 +26,5 @@ public class ShellTermWidget extends ShellDefaultTermWidget {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
         return new SerialTtyConnector(process, charset, Arrays.asList(command));
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        SystemUtil.gc();
     }
 }

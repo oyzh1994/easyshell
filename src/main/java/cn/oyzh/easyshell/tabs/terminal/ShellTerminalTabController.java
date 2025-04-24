@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.io.IOException;
@@ -24,13 +25,13 @@ public class ShellTerminalTabController extends RichTabController {
      * 根节点
      */
     @FXML
-    private ShellDefaultTermWidget term;
+    private ShellDefaultTermWidget widget;
 
     private void initWidget() throws IOException {
-        ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) term.createTtyConnector();
-        this.term.openSession(connector);
-        this.term.onTermination(exitCode -> term.close());
-        this.term.addHyperlinkFilter(new FXHyperlinkFilter());
+        ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) this.widget.createTtyConnector();
+        this.widget.openSession(connector);
+        this.widget.onTermination(exitCode -> this.widget.close());
+        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
         // macos需要初始化终端类型
         if (OSUtil.isMacOS()) {
             connector.write("export TERM=xterm-256color\n");
@@ -46,5 +47,11 @@ public class ShellTerminalTabController extends RichTabController {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.widget.close();
     }
 }

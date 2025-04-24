@@ -2,8 +2,10 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
+import cn.oyzh.easyshell.controller.connect.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
@@ -39,6 +41,17 @@ public class ShellViewFactory {
         }
     }
 
+    public static void addLocalConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddLocalConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
     public static void addSerialConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddSerialConnectController.class);
@@ -54,6 +67,17 @@ public class ShellViewFactory {
     public static void updateConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void updateLocalConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateLocalConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.serial;
+package cn.oyzh.easyshell.local;
 
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.pty4j.PtyProcess;
@@ -11,12 +11,13 @@ import java.util.Arrays;
  * @author oyzh
  * @since 2025-04-24
  */
-public class SerialTermWidget extends ShellDefaultTermWidget {
+public class LocalTermWidget extends ShellDefaultTermWidget {
 
     @Override
-    public SerialTtyConnector createTtyConnector(Charset charset) throws IOException {
+    public LocalTtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new SerialTtyConnector(process, charset, Arrays.asList(command));
+        return new LocalTtyConnector(process, charset, Arrays.asList(command));
     }
+
 }

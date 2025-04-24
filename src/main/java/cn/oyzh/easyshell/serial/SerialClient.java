@@ -79,10 +79,10 @@ public class SerialClient implements AutoCloseable {
     public void close() {
         try {
             if (this.serialPort != null) {
+                this.serialPort.flushDataListener();
                 this.serialPort.removeDataListener();
                 IOUtil.close(this.serialPort.getInputStream());
                 IOUtil.close(this.serialPort.getOutputStream());
-                this.serialPort.flushDataListener();
                 this.serialPort.closePort();
             }
         } catch (Exception ex) {

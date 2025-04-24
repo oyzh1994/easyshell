@@ -610,11 +610,15 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.parityBits = parityBits;
     }
 
-    public boolean isSerialType() {
-        return "serial".equalsIgnoreCase(this.type);
-    }
-
     public boolean isSSHType() {
         return StringUtil.isBlank(this.type) || "ssh".equalsIgnoreCase(this.type);
+    }
+
+    public boolean isLocalType() {
+        return "local".equalsIgnoreCase(this.type);
+    }
+
+    public boolean isSerialType() {
+        return "serial".equalsIgnoreCase(this.type);
     }
 }

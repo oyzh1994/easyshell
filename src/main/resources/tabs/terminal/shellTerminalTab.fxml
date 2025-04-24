@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget?>
-<ShellDefaultTermWidget fx:id="term" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<ShellDefaultTermWidget fx:id="widget" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.terminal.ShellTerminalTabController">
 </ShellDefaultTermWidget>
