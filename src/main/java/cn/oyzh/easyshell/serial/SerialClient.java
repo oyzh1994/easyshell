@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.serial;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * @author oyzh
@@ -86,7 +88,7 @@ public class SerialClient implements AutoCloseable {
     }
 
     public void addDataListener(SerialDataListener listener) {
-       this.serialPort.addDataListener(listener) ;
+        this.serialPort.addDataListener(listener);
     }
 
     public SerialPort getSerialPort() {
@@ -95,5 +97,13 @@ public class SerialClient implements AutoCloseable {
 
     public ShellConnect getShellConnect() {
         return shellConnect;
+    }
+
+    public boolean isConnected() {
+        return this.serialPort.isOpen();
+    }
+
+    public Charset getCharset() {
+        return CharsetUtil.fromName(this.shellConnect.getCharset());
     }
 }

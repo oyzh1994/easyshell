@@ -12,10 +12,12 @@ import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.connect.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
+import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import javafx.collections.ListChangeListener;
@@ -164,7 +166,13 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionOpened(ShellConnectOpenedEvent event) {
-        ShellConnectTab tab = new ShellConnectTab(event.data());
+        ShellConnect connect = event.connect();
+        FXTab tab = this.getTab(ShellConnectTab.class);
+        if (connect.isSSHType()) {
+            tab = new ShellConnectTab(event.data());
+        } else {
+            tab = new ShellSerialTab(event.data());
+        }
         super.addTab(tab);
         if (!tab.isSelected()) {
             this.select(tab);

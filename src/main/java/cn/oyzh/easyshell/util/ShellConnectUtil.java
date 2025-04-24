@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.serial.SerialClient;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -57,28 +58,30 @@ public class ShellConnectUtil {
     public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
         StageManager.showMask(adapter, () -> {
             try {
-//                adapter.disable();
-//                adapter.waitCursor();
-//                adapter.appendTitle("==" + I18nHelper.connectTesting());
-                if (shellConnect.getName() == null) {
-                    shellConnect.setName(I18nHelper.testConnection());
-                }
-                ShellClient client = new ShellClient(shellConnect);
-                // 开始连接
-                client.start(5_000);
-                if (client.isConnected()) {
-                    client.close();
-                    MessageBox.okToast(I18nHelper.connectSuccess());
+                if (shellConnect.isSSHType()) {
+                    ShellClient client = new ShellClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
                 } else {
-                    MessageBox.warn(I18nHelper.connectFail());
+                    SerialClient client = new SerialClient(shellConnect);
+                    // 开始连接
+                    client.start();
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-//            } finally {
-//                adapter.enable();
-//                adapter.defaultCursor();
-//                adapter.restoreTitle();
             }
         });
     }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.easyshell.serial.SerialTermWidget?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.serial.ShellSerialTabController"
+       text="%base.serialPort">
+    <graphic>
+        <LinuxSVGGlyph sizeStr="11"/>
+    </graphic>
+    <SerialTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
+
+    </SerialTermWidget>
+</FXTab>

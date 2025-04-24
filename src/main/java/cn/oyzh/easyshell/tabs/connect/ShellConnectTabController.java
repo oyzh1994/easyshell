@@ -34,10 +34,6 @@ public class ShellConnectTabController extends ParentTabController {
         return client;
     }
 
-    public void setClient(ShellClient client) {
-        this.client = client;
-    }
-
     public ShellConnectTreeItem getTreeItem() {
         return treeItem;
     }
