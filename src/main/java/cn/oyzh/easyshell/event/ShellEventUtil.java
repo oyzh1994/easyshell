@@ -30,7 +30,6 @@ import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
-import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -225,16 +224,16 @@ public class ShellEventUtil {
 //        showAddConnect(null);
 //    }
 
-    /**
-     * 显示修改连接页面
-     *
-     * @param connect shell连接
-     */
-    public static void showUpdateConnect(ShellConnect connect) {
-        ShellShowUpdateConnectEvent event = new ShellShowUpdateConnectEvent();
-        event.data(connect);
-        EventUtil.post(event);
-    }
+//    /**
+//     * 显示修改连接页面
+//     *
+//     * @param connect shell连接
+//     */
+//    public static void showUpdateConnect(ShellConnect connect) {
+//        ShellShowUpdateConnectEvent event = new ShellShowUpdateConnectEvent();
+//        event.data(connect);
+//        EventUtil.post(event);
+//    }
 
 //    /**
 //     * 显示添加连接页面

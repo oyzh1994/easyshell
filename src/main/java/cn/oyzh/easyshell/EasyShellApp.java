@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
@@ -21,7 +20,6 @@ import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
-import cn.oyzh.easyshell.event.window.ShellShowUpdateConnectEvent;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
@@ -276,22 +274,22 @@ public class EasyShellApp extends FXApplication implements EventListener {
 //        });
 //    }
 
-    /**
-     * 显示修改连接
-     */
-    @EventSubscribe
-    private void updateConnect(ShellShowUpdateConnectEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
-                adapter.setProp("shellConnect", event.data());
-                adapter.display();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+//    /**
+//     * 显示修改连接
+//     */
+//    @EventSubscribe
+//    private void updateConnect(ShellShowUpdateConnectEvent event) {
+//        FXUtil.runLater(() -> {
+//            try {
+//                StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
+//                adapter.setProp("shellConnect", event.data());
+//                adapter.display();
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        });
+//    }
 
     /**
      * 显示工具页面

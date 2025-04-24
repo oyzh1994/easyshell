@@ -1,17 +1,15 @@
 package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -81,6 +79,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
+        if (this.isSerialType()) {
+            transportFile.setDisable(true);
+        }
+
 //            items.add(connect);
         items.add(editConnect);
         items.add(renameConnect);
@@ -89,6 +91,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         items.add(deleteConnect);
 //        }
         return items;
+    }
+
+    public boolean isSSHType() {
+        return value.isSSHType();
+    }
+
+    public boolean isSerialType() {
+        return value.isSerialType();
     }
 
 //    /**
@@ -174,9 +184,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //        }
 //        // 关闭所有连接
 //        ShellEventUtil.connectEdit(this.value);
-        StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
-        adapter.setProp("shellConnect", this.value());
-        adapter.display();
+//        StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
+//        adapter.setProp("shellConnect", this.value());
+//        adapter.display();
+        if (this.value.isSSHType()) {
+            ShellViewFactory.updateConnect(this.value);
+        } else {
+            ShellViewFactory.updateSerialConnect(this.value);
+        }
     }
 
     /**

@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.connect;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.serial.SerialTtyConnector;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.shell.ShellShell;
 import cn.oyzh.easyshell.shell.ShellTermWidget;
@@ -44,10 +43,8 @@ public class ShellTermTabController extends SubTabController {
 
     private void initWidget(ShellShell shell) throws IOException {
         Charset charset = this.client().getCharset();
-//        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector(charset);
-//        connector.initShell(shell);
-        SerialTtyConnector connector = (SerialTtyConnector) this.widget.createSerialTtyConnector(charset);
-        connector.initSerial();
+        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector(charset);
+        connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
