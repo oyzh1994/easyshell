@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.telnet;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
+import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.IOException;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellTelnetClient extends org.apache.commons.net.telnet.TelnetClient implements BaseClient {
+public class ShellTelnetClient extends TelnetClient implements BaseClient {
 
     private final ShellConnect shellConnect;
 
