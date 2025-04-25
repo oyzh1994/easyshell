@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.button.CalcButton?>
 <?import cn.oyzh.fx.gui.button.ClearButton?>
+<?import cn.oyzh.fx.gui.button.ExecuteButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.ExecuteButton?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <FXTabPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolController" realWidth="850" realHeight="600">
     <FXTab text="Telnet">
@@ -24,7 +26,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox>
-                <ClearableTextField text="192.168.22.138" fx:id="telnetHost" flexWidth="100% - 225" realHeight="30" tipText="%base.contentTip1">
+                <ClearableTextField text="192.168.22.138" fx:id="telnetHost" flexWidth="100% - 265" realHeight="30" tipText="%base.contentTip1">
                     <FXHBox.margin>
                         <Insets left="30" top="5"/>
                     </FXHBox.margin>
@@ -35,12 +37,29 @@
                     </FXHBox.margin>
                 </PortTextField>
             </FXHBox>
+            <InfoLabel text="%base.connectTimeout">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox>
+                <NumberTextField realHeight="30" flexWidth="100% - 180" min="1" max="30" fx:id="telnetTimeout" value="3" require="true">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </NumberTextField>
+                <FXLabel text="%base.second">
+                    <HBox.margin>
+                        <Insets left="10" top="9"/>
+                    </HBox.margin>
+                </FXLabel>
+            </FXHBox>
             <InfoLabel text="%base.info">
                 <VBox.margin>
                     <Insets left="30" top="20"/>
                 </VBox.margin>
             </InfoLabel>
-            <ReadOnlyTextArea fx:id="telnetArea" flexWidth="100% - 140" flexHeight="100% - 240">
+            <ReadOnlyTextArea fx:id="telnetArea" flexWidth="100% - 180" flexHeight="100% - 310">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
@@ -51,6 +70,32 @@
                         <Insets left="30" top="20"/>
                     </HBox.margin>
                 </ExecuteButton>
+            </FXHBox>
+        </FXVBox>
+    </FXTab>
+    <FXTab text="%base.cache">
+        <FXVBox flexHeight="100%" flexWidth="100%">
+            <InfoLabel text="%base.info">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <ReadOnlyTextArea fx:id="cacheArea" flexWidth="100% - 180" flexHeight="100% - 150">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </ReadOnlyTextArea>
+            <FXHBox flexWidth="100%" realHeight="50">
+                <CalcButton onAction="#calcCache" realHeight="30">
+                    <HBox.margin>
+                        <Insets left="30" top="20"/>
+                    </HBox.margin>
+                </CalcButton>
+                <ClearButton onAction="#clearCache" prefHeight="30">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </ClearButton>
             </FXHBox>
         </FXVBox>
     </FXTab>
@@ -76,32 +121,6 @@
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </FXHyperlink>
-        </FXVBox>
-    </FXTab>
-    <FXTab text="%base.cache">
-        <FXVBox flexHeight="100%" flexWidth="100%">
-            <InfoLabel text="%base.info">
-                <VBox.margin>
-                    <Insets left="30" top="20"/>
-                </VBox.margin>
-            </InfoLabel>
-            <ReadOnlyTextArea fx:id="cacheArea" flexWidth="100% - 140" flexHeight="100% - 150">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </ReadOnlyTextArea>
-            <FXHBox flexWidth="100%" realHeight="50">
-                <CalcButton onAction="#calcCache" realHeight="30">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </CalcButton>
-                <ClearButton onAction="#clearCache" prefHeight="30">
-                    <HBox.margin>
-                        <Insets left="10" top="20"/>
-                    </HBox.margin>
-                </ClearButton>
-            </FXHBox>
         </FXVBox>
     </FXTab>
 </FXTabPane>

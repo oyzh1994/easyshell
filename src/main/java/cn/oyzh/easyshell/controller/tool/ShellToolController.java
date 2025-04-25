@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -22,6 +23,7 @@ import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
@@ -51,6 +53,12 @@ public class ShellToolController extends StageController {
      */
     @FXML
     private PortTextField telnetPort;
+
+    /**
+     * telnet超时
+     */
+    @FXML
+    private NumberTextField telnetTimeout;
 
     /**
      * telnet文本域
@@ -161,12 +169,14 @@ public class ShellToolController extends StageController {
     private void execTelnet() {
         StageManager.showMask(() -> {
             try {
+                // 超时时间
+                int timeout = this.telnetTimeout.getIntValue();
                 // 清除记录
                 this.telnetArea.clear();
                 // 创建客户端
                 TelnetClient client = new TelnetClient();
                 // 设置超时
-                client.setConnectTimeout(3000);
+                client.setConnectTimeout(timeout * 1000);
                 // 执行连接
                 client.connect(this.telnetHost.getTextTrim(), this.telnetPort.getIntValue());
                 // 连接成功
@@ -188,14 +198,16 @@ public class ShellToolController extends StageController {
                                 ThreadUtil.sleep(5);
                             }
                         } catch (Exception ex) {
-                            ex.printStackTrace();
-                            this.telnetArea.appendLine(ex.getMessage());
+                            if (!(ex instanceof InterruptedIOException)) {
+                                ex.printStackTrace();
+                                this.telnetArea.appendLine(ex.getMessage());
+                            }
                         } finally {
                             latch.countDown();
                         }
                     });
                     // 设置等待超时
-                    if (!latch.await(3, TimeUnit.SECONDS)) {
+                    if (!latch.await(timeout, TimeUnit.SECONDS)) {
                         thread.interrupt();
                     }
                     // 断开连接

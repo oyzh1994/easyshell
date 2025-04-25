@@ -68,6 +68,13 @@ public class ShellTelnetTabController extends RichTabController {
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
+//        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+//            try {
+//                this.client.setPtySize(newValue.getColumns(), newValue.getRows());
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
     }
 
     /**
