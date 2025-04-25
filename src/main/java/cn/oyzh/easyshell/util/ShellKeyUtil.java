@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import com.jcraft.jsch.SftpException;
 
 import java.io.ByteArrayInputStream;
@@ -199,7 +199,7 @@ public class ShellKeyUtil {
      * @param client shell客户端
      * @return 结果
      */
-    public static boolean sshCopyId(List<ShellKey> keys, ShellClient client) {
+    public static boolean sshCopyId(List<ShellKey> keys, SSHClient client) {
         try {
             // ssh已知公钥文件
             String sshFile;

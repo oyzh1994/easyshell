@@ -6,7 +6,7 @@ import com.jcraft.jsch.ChannelShell;
  * @author oyzh
  * @since 2023/8/16
  */
-public class ShellShell extends ShellChannel {
+public class ShellShell extends SSHChannel {
 
     public ShellShell(ChannelShell channel) {
         super(channel);

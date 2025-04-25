@@ -11,12 +11,12 @@ import java.util.Arrays;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTermWidget extends ShellDefaultTermWidget {
+public class SSHTermWidget extends ShellDefaultTermWidget {
 
     @Override
-    public ShellTtyConnector createTtyConnector(Charset charset) throws IOException {
+    public SSHTtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new ShellTtyConnector(process, charset, Arrays.asList(command));
+        return new SSHTtyConnector(process, charset, Arrays.asList(command));
     }
 }

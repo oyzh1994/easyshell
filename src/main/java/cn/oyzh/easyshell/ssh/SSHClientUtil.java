@@ -12,10 +12,10 @@ import com.jcraft.jsch.ProxySOCKS5;
  * @author oyzh
  * @since 2025-03-21
  */
-public class ShellClientUtil {
+public class SSHClientUtil {
 
-    public static ShellClient newClient(ShellConnect connect) {
-        return new ShellClient(connect);
+    public static SSHClient newClient(ShellConnect connect) {
+        return new SSHClient(connect);
     }
 
     /**

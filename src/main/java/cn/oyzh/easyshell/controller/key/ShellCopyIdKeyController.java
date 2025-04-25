@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.key;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
-import cn.oyzh.easyshell.ssh.ShellClient;
-import cn.oyzh.easyshell.ssh.ShellClientUtil;
+import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.SSHClientUtil;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -93,7 +93,7 @@ public class ShellCopyIdKeyController extends StageController {
             ValidatorUtil.validFail(this.host);
             return;
         }
-        ShellClient client = ShellClientUtil.newClient(connect);
+        SSHClient client = SSHClientUtil.newClient(connect);
         StageManager.showMask(() -> {
             try {
                 this.message.appendLine("client connecting");

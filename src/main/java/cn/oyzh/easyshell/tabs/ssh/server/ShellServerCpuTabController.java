@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh.server;
 
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -65,7 +65,7 @@ public class ShellServerCpuTabController extends SubTabController {
         });
     }
 
-    public ShellClient client() {
+    public SSHClient client() {
         return this.parent().getClient();
     }
 

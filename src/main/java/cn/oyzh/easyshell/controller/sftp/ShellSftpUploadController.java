@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 //import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
-//import cn.oyzh.easyshell.shell.ShellClient;
+//import cn.oyzh.easyshell.shell.SSHClient;
 //import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.fx.plus.FXConst;
@@ -47,7 +47,7 @@
 //
 //    @Override
 //    public void onWindowShown(WindowEvent event) {
-//        ShellClient client = this.getProp("client");
+//        SSHClient client = this.getProp("client");
 //        this.uploadManager = client.getSftpUploadManager();
 //        this.initUploadTable();
 //        super.onWindowShown(event);

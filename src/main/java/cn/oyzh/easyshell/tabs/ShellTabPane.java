@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
@@ -152,7 +152,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    private ShellSSHTab getConnectTab(ShellClient client) {
+    private ShellSSHTab getConnectTab(SSHClient client) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellSSHTab tab1 && tab1.client() == client) {
                 return tab1;

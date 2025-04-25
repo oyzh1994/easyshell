@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.server.ShellServerInfo;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellServerCpuTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellServerDiskTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellServerGpuTabController;
@@ -36,9 +36,9 @@ public class ShellServerTabController extends ParentTabController {
     /**
      * shell客户端
      */
-    private ShellClient client;
+    private SSHClient client;
 
-    public ShellClient getClient() {
+    public SSHClient getClient() {
         return client;
     }
 
@@ -47,7 +47,7 @@ public class ShellServerTabController extends ParentTabController {
      *
      * @param client 客户端
      */
-    public void setClient(ShellClient client) {
+    public void setClient(SSHClient client) {
         this.client = client;
         this.serverExec = this.client.serverExec();
     }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.docker;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 
 /**
  * @author oyzh
@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.ssh.ShellClient;
  */
 public class ShellDockerExec implements AutoCloseable {
 
-    private ShellClient client;
+    private SSHClient client;
 
 //    private static final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
 //
@@ -17,7 +17,7 @@ public class ShellDockerExec implements AutoCloseable {
 //
 //    private static final String history_format = "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
 
-    public ShellDockerExec(ShellClient client) {
+    public ShellDockerExec(SSHClient client) {
         this.client = client;
     }
 

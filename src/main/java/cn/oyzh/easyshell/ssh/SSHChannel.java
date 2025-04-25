@@ -13,7 +13,7 @@ import java.io.OutputStream;
  * @author oyzh
  * @since 2025/03/08
  */
-public class ShellChannel implements AutoCloseable {
+public class SSHChannel implements AutoCloseable {
 
     private Channel channel;
 
@@ -21,7 +21,7 @@ public class ShellChannel implements AutoCloseable {
         return this.channel;
     }
 
-    public ShellChannel(Channel channel) {
+    public SSHChannel(Channel channel) {
         this.channel = channel;
     }
 

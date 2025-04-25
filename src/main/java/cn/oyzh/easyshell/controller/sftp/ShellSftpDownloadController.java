@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
 //import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
-//import cn.oyzh.easyshell.shell.ShellClient;
+//import cn.oyzh.easyshell.shell.SSHClient;
 //import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.fx.plus.FXConst;
@@ -47,7 +47,7 @@
 //
 //    @Override
 //    public void onWindowShown(WindowEvent event) {
-//        ShellClient client = this.getProp("client");
+//        SSHClient client = this.getProp("client");
 //        this.downloadManager = client.getSftpDownloadManager();
 ////        this.downloadTable.setItem(downloadManager.getTasks());
 //        this.initDownloadTable();

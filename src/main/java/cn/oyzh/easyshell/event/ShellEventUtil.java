@@ -31,7 +31,7 @@ import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
@@ -75,7 +75,7 @@ public class ShellEventUtil {
      *
      * @param client shell客户端
      */
-    public static void connectionClosed(ShellClient client) {
+    public static void connectionClosed(SSHClient client) {
         ShellConnectionClosedEvent event = new ShellConnectionClosedEvent();
         event.data(client);
         EventUtil.post(event);
@@ -86,7 +86,7 @@ public class ShellEventUtil {
      *
      * @param client shell客户端
      */
-    public static void connectionConnected(ShellClient client) {
+    public static void connectionConnected(SSHClient client) {
         ShellConnectionConnectedEvent event = new ShellConnectionConnectedEvent();
         event.data(client);
         EventUtil.post(event);

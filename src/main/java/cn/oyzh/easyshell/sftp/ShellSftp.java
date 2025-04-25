@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.sftp;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.ShellChannel;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.SSHChannel;
 import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSftp extends ShellChannel {
+public class ShellSftp extends SSHChannel {
 
-    private ShellClient client;
+    private SSHClient client;
 
-    public ShellSftp(ChannelSftp channel, ShellClient client) {
+    public ShellSftp(ChannelSftp channel, SSHClient client) {
         super(channel);
         this.client = client;
     }
@@ -103,7 +103,7 @@ public class ShellSftp extends ShellChannel {
         }
     }
 
-    public List<ShellSftpFile> lsFile(String path, ShellClient client) throws SftpException {
+    public List<ShellSftpFile> lsFile(String path, SSHClient client) throws SftpException {
         if (this.client.isWindows()) {
             path = ShellUtil.reverseWindowsFilePath(path);
         }

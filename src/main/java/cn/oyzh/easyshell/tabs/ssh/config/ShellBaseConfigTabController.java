@@ -4,7 +4,7 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellConfigTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -200,7 +200,7 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
         }
     }
 
-    public ShellClient client() {
+    public SSHClient client() {
         return this.parent().getClient();
     }
 

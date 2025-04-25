@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -132,7 +132,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
         });
     }
 
-    public ShellClient client() {
+    public SSHClient client() {
         return this.parent().getClient();
     }
 

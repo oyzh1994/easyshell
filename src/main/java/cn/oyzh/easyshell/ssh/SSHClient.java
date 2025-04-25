@@ -58,7 +58,7 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellClient implements BaseClient {
+public class SSHClient implements BaseClient {
 
     /**
      * shell信息
@@ -109,21 +109,21 @@ public class ShellClient implements BaseClient {
      */
     private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
-    public ShellClient(ShellConnect shellConnect) {
+    public SSHClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
 
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<SSHConnState> state = new ReadOnlyObjectWrapper<>();
 
     /**
      * 获取状态
      *
      * @return 状态
      */
-    public ShellConnState getState() {
+    public SSHConnState getState() {
         return this.state.get();
     }
 
@@ -131,10 +131,10 @@ public class ShellClient implements BaseClient {
      * 更新状态
      */
     public void updateState() {
-        ShellConnState state = this.getState();
-        if (state == ShellConnState.CONNECTED) {
+        SSHConnState state = this.getState();
+        if (state == SSHConnState.CONNECTED) {
             if (this.session == null || !this.session.isConnected()) {
-                this.state.set(ShellConnState.INTERRUPT);
+                this.state.set(SSHConnState.INTERRUPT);
             }
         }
     }
@@ -144,7 +144,7 @@ public class ShellClient implements BaseClient {
 //     *
 //     * @return 连接状态
 //     */
-//    public ShellConnState state() {
+//    public SSHConnState state() {
 //        return this.stateProperty().get();
 //    }
 
@@ -153,7 +153,7 @@ public class ShellClient implements BaseClient {
      *
      * @return 连接状态属性
      */
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+    public ReadOnlyObjectProperty<SSHConnState> stateProperty() {
         return this.state.getReadOnlyProperty();
     }
 
@@ -162,7 +162,7 @@ public class ShellClient implements BaseClient {
      *
      * @param stateListener 监听器
      */
-    public void addStateListener(ChangeListener<ShellConnState> stateListener) {
+    public void addStateListener(ChangeListener<SSHConnState> stateListener) {
         if (stateListener != null) {
             this.stateProperty().addListener(stateListener);
         }
@@ -217,7 +217,7 @@ public class ShellClient implements BaseClient {
                 throw new SSHException("proxy is enable but proxy config is null");
             }
             // 初始化代理
-            Proxy proxy = ShellClientUtil.newProxy(proxyConfig);
+            Proxy proxy = SSHClientUtil.newProxy(proxyConfig);
             // 设置代理
             this.session.setProxy(proxy);
         }
@@ -361,14 +361,14 @@ public class ShellClient implements BaseClient {
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;
-                this.state.set(ShellConnState.CLOSED);
+                this.state.set(SSHConnState.CLOSED);
             }
             // 销毁跳板转发器
             if (this.jumpForwarder != null) {
                 this.jumpForwarder.destroy();
             }
             // 从监听器队列移除
-            ShellClientChecker.remove(this);
+            SSHClientChecker.remove(this);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -385,27 +385,27 @@ public class ShellClient implements BaseClient {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 初始化连接池
-            this.state.set(ShellConnState.CONNECTING);
+            this.state.set(SSHConnState.CONNECTING);
             // 执行连接
             if (this.session != null) {
                 this.session.connect(timeout);
             }
             // 判断连接结果
             if (this.session != null && this.session.isConnected()) {
-                this.state.set(ShellConnState.CONNECTED);
+                this.state.set(SSHConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
                 // 添加到状态监听器队列
-                ShellClientChecker.push(this);
-            } else if (this.state.get() == ShellConnState.FAILED) {
+                SSHClientChecker.push(this);
+            } else if (this.state.get() == SSHConnState.FAILED) {
                 this.state.set(null);
             } else {
-                this.state.set(ShellConnState.FAILED);
+                this.state.set(SSHConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
             JulLog.info("shellClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            this.state.set(ShellConnState.FAILED);
+            this.state.set(SSHConnState.FAILED);
             JulLog.warn("shellClient start error", ex);
             throw new ShellException(ex);
         }
@@ -418,7 +418,7 @@ public class ShellClient implements BaseClient {
      */
     public boolean isConnecting() {
         if (!this.isClosed()) {
-            return this.state.get() == ShellConnState.CONNECTING;
+            return this.state.get() == SSHConnState.CONNECTING;
         }
         return false;
     }
@@ -587,7 +587,7 @@ public class ShellClient implements BaseClient {
                 channel.setXForwarding(true);
             }
             // 操作
-            ShellClientActionUtil.forAction(this.connectName(), command);
+            SSHClientActionUtil.forAction(this.connectName(), command);
             channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);
@@ -677,7 +677,7 @@ public class ShellClient implements BaseClient {
         this.getDownloadManager().fileDownload(localFile, remoteFile, this);
     }
 
-    public void transport(ShellSftpFile localFile, String remoteFile, ShellClient remoteClient) {
+    public void transport(ShellSftpFile localFile, String remoteFile, SSHClient remoteClient) {
         this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
     }
 

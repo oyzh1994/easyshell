@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.fx.docker.ShellDockerImageTableView;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -107,7 +107,7 @@ public class ShellDockerImageTabController extends SubTabController {
         return (ShellDockerTabController) super.parent();
     }
 
-    public ShellClient client() {
+    public SSHClient client() {
         return this.parent().getClient();
     }
 

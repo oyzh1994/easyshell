@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTtyConnector extends ShellDefaultTtyConnector {
+public class SSHTtyConnector extends ShellDefaultTtyConnector {
 
     private InputStreamReader shellReader;
 
@@ -25,7 +25,7 @@ public class ShellTtyConnector extends ShellDefaultTtyConnector {
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-    public ShellTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    public SSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

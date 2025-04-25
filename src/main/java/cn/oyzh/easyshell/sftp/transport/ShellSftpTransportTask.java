@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 
@@ -49,9 +49,9 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
 
     private String remoteFile;
 
-    private final ShellClient localClient;
+    private final SSHClient localClient;
 
-    private final ShellClient remoteClient;
+    private final SSHClient remoteClient;
 
     private final ShellSftpTransportManager manager;
 
@@ -65,7 +65,7 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
         return this.remoteFile;
     }
 
-    public ShellSftpTransportTask(ShellSftpTransportManager manager, ShellSftpFile localFile, String remoteFile, ShellClient localClient, ShellClient remoteClient) {
+    public ShellSftpTransportTask(ShellSftpTransportManager manager, ShellSftpFile localFile, String remoteFile, SSHClient localClient, SSHClient remoteClient) {
         this.manager = manager;
         this.localFile = localFile;
         this.remoteFile = remoteFile;
