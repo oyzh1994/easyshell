@@ -2,31 +2,30 @@ package cn.oyzh.easyshell.shell;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.server.ShellServerExec;
-import cn.oyzh.easyshell.sftp.ShellSftpAttr;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpAttr;
 import cn.oyzh.easyshell.sftp.ShellSftpChannelManager;
+import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
+import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
-import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.X11Manager;
@@ -49,7 +48,6 @@ import javafx.beans.value.ChangeListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -766,10 +764,6 @@ public class ShellClient implements BaseClient {
             this.processExec = new ShellProcessExec(this);
         }
         return this.processExec;
-    }
-
-    public Charset getCharset() {
-        return CharsetUtil.fromName(this.shellConnect.getCharset());
     }
 
     private String osType;

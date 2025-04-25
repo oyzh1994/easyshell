@@ -1,11 +1,9 @@
 package cn.oyzh.easyshell.telnet;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * @author oyzh
@@ -21,12 +19,8 @@ public class TelnetClient extends org.apache.commons.net.telnet.TelnetClient imp
 
     @Override
     public void start(int timeout) throws IOException {
-        this.setDefaultTimeout(timeout);
         this.setConnectTimeout(timeout);
-        String charset = this.shellConnect.getCharset();
-        if (StringUtil.isNotEmpty(charset)) {
-            this.setCharset(Charset.forName(charset));
-        }
+        this.setCharset(BaseClient.super.getCharset());
         super.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort());
     }
 

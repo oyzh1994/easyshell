@@ -1,14 +1,12 @@
 package cn.oyzh.easyshell.serial;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * @author oyzh
@@ -112,11 +110,6 @@ public class SerialClient implements BaseClient {
             return this.serialPort.isOpen();
         }
         return false;
-    }
-
-    @Override
-    public Charset getCharset() {
-        return CharsetUtil.fromName(this.shellConnect.getCharset());
     }
 
     public Integer getLastErrorCode() {

@@ -34,9 +34,15 @@ public class ShellTermTabController extends SubTabController {
     @FXML
     private ShellTermWidget widget;
 
-    private void initWidget(ShellShell shell) throws IOException {
+    /**
+     * 初始化组件
+     *
+     * @throws IOException 异常
+     */
+    private void initWidget() throws IOException {
+        ShellShell shell = this.client().getShell();
         Charset charset = this.client().getCharset();
-        ShellTtyConnector connector = (ShellTtyConnector) this.widget.createTtyConnector(charset);
+        ShellTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
@@ -45,10 +51,10 @@ public class ShellTermTabController extends SubTabController {
     }
 
     private void initShellSize() {
-        int sizeW = (int) this.widget.getWidth();
-        int sizeH = (int) this.widget.getHeight();
+        int sizeW = (int) this.widget.getTerminalPanel().getWidth();
+        int sizeH = (int) this.widget.getTerminalPanel().getHeight();
         TermSize termSize = this.widget.getTermSize();
-        ShellShell shell = this.client().openShell();
+        ShellShell shell = this.client().getShell();
         shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
@@ -65,7 +71,7 @@ public class ShellTermTabController extends SubTabController {
     public void init() throws IOException, JSchException {
         ShellClient client = this.client();
         ShellShell shell = client.openShell();
-        this.initWidget(shell);
+        this.initWidget();
         shell.connect(client.connectTimeout());
         if (!shell.isConnected()) {
             MessageBox.warn(I18nHelper.connectFail());
