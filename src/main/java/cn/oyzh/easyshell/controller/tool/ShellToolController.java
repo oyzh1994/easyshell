@@ -1,20 +1,28 @@
 package cn.oyzh.easyshell.controller.tool;
 
+import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -32,6 +40,30 @@ import java.util.concurrent.atomic.LongAdder;
 )
 public class ShellToolController extends StageController {
 
+    /**
+     * telnet地址
+     */
+    @FXML
+    private ClearableTextField telnetHost;
+
+    /**
+     * telnet端口
+     */
+    @FXML
+    private PortTextField telnetPort;
+
+    /**
+     * telnet文本域
+     */
+    @FXML
+    private FXTextArea telnetArea;
+
+    /**
+     * 缓存文本域
+     */
+    @FXML
+    private FXTextArea cacheArea;
+
     @Override
     public void onWindowShown(WindowEvent event) {
         this.stage.switchOnTab();
@@ -44,27 +76,19 @@ public class ShellToolController extends StageController {
     }
 
     /**
-     * 缓存文本域
-     */
-    @FXML
-    private FXTextArea cacheArea;
-
-    /**
      * 计算缓存
      */
     @FXML
     private void calcCache() {
-        this.disable();
-        this.cacheArea.setText("calc cache start.");
-        ThreadUtil.start(() -> {
+        StageManager.showMask(() -> {
             try {
+                this.cacheArea.setText("calc cache start.");
                 File dir = new File(ShellConst.getCachePath());
                 this.doCalcCache(dir, new AtomicInteger(0), new LongAdder());
             } finally {
                 this.cacheArea.appendLine("calc cache finish.");
-                this.enable();
             }
-        }, 100);
+        });
     }
 
     /**
@@ -95,16 +119,15 @@ public class ShellToolController extends StageController {
      */
     @FXML
     private void clearCache() {
-        this.cacheArea.setText("clear cache start.");
-        ThreadUtil.start(() -> {
+        StageManager.showMask(() -> {
             try {
+                this.cacheArea.setText("clear cache start.");
                 File dir = new File(ShellConst.getCachePath());
                 this.doClearCache(dir, new AtomicInteger(0), new LongAdder());
             } finally {
                 this.cacheArea.appendLine("clear cache finish.");
-                this.enable();
             }
-        }, 100);
+        });
     }
 
     /**
@@ -129,5 +152,63 @@ public class ShellToolController extends StageController {
                 }
             }
         }
+    }
+
+    /**
+     * 执行telnet
+     */
+    @FXML
+    private void execTelnet() {
+        StageManager.showMask(() -> {
+            try {
+                // 清除记录
+                this.telnetArea.clear();
+                // 创建客户端
+                TelnetClient client = new TelnetClient();
+                // 设置超时
+                client.setConnectTimeout(3000);
+                // 执行连接
+                client.connect(this.telnetHost.getTextTrim(), this.telnetPort.getIntValue());
+                // 连接成功
+                if (client.isConnected()) {
+                    DownLatch latch = DownLatch.of();
+                    Thread thread = ThreadUtil.start(() -> {
+                        try {
+                            // 读取数据
+                            InputStreamReader reader = new InputStreamReader(client.getInputStream());
+                            int len;
+                            char[] buffer = new char[1024];
+                            while (true) {
+                                len = reader.read(buffer, 0, buffer.length);
+                                if (len == -1) {
+                                    break;
+                                }
+                                String str = new String(buffer, 0, len);
+                                this.telnetArea.appendText(str);
+                                ThreadUtil.sleep(5);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            this.telnetArea.appendLine(ex.getMessage());
+                        } finally {
+                            latch.countDown();
+                        }
+                    });
+                    // 设置等待超时
+                    if (!latch.await(3, TimeUnit.SECONDS)) {
+                        thread.interrupt();
+                    }
+                    // 断开连接
+                    client.disconnect();
+                } else {// 连接失败
+                    // 断开连接
+                    client.disconnect();
+                    MessageBox.warn(I18nHelper.connectFail());
+                }
+            } catch (Exception ex) {
+                this.telnetArea.appendLine(ex.getMessage());
+                MessageBox.warn(I18nHelper.connectFail());
+            }
+        });
     }
 }
