@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.serial.SerialClient;
 import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.telnet.TelnetClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -76,10 +77,20 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
+                } else if (shellConnect.isTelnetType()) {
+                    TelnetClient client = new TelnetClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
                 } else {
                     SerialClient client = new SerialClient(shellConnect);
                     // 开始连接
-                    client.start();
+                    client.start(5_000);
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());
@@ -97,7 +108,7 @@ public class ShellConnectUtil {
     /**
      * 初始化背景
      */
-    public static void initBackground(ShellConnect connect,FXFXTerminalPanel terminalPanel) {
+    public static void initBackground(ShellConnect connect, FXFXTerminalPanel terminalPanel) {
         if (!connect.isEnableBackground()) {
             return;
         }

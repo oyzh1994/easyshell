@@ -4,7 +4,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -72,12 +71,6 @@ public class ShellUpdateTelnetConnectController extends StageController {
      */
     @FXML
     private ClearableTextField name;
-
-    /**
-     * 终端类型
-     */
-    @FXML
-    private ShellTermTypeComboBox termType;
 
     /**
      * 备注
@@ -212,7 +205,6 @@ public class ShellUpdateTelnetConnectController extends StageController {
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
-            String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             boolean enableBackground = this.enableBackground.isSelected();
@@ -222,7 +214,6 @@ public class ShellUpdateTelnetConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
-            this.shellConnect.setTermType(termType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             this.shellConnect.setUser(userName.trim());

@@ -1,0 +1,11 @@
+# 1. 安装依赖
+apt install -y telnetd
+# 2. 启用配置
+vim /etc/inetd.conf
+telnet  stream  tcp  nowait  root  /usr/sbin/tcpd  /usr/sbin/in.telnetd
+# 3. 关闭防火墙(或者自己添加端口)
+systemctl stop ufw
+systemctl disable ufw
+# 4. 启动并启用telnet服务
+systemctl start inetd
+systemctl enable inetd

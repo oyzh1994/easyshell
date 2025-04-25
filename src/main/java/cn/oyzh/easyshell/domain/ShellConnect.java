@@ -313,6 +313,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.name = t1.name;
         this.host = t1.host;
         this.user = t1.user;
+        this.type = t1.type;
         this.remark = t1.remark;
         this.osType = t1.osType;
         this.groupId = t1.groupId;

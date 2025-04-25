@@ -49,7 +49,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.auth">
+                <InfoLabel text="%base.password">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -73,7 +73,7 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="22">
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="23">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
@@ -93,6 +93,16 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellOsTypeComboBox>
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
                 <InfoLabel text="%base.connectTimeout">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -122,30 +132,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
-            </FXVBox>
-        </FXTab>
-        <FXTab text="%base.terminal">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.charset">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <InfoLabel text="%base.terminal">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ShellTermTypeComboBox fx:id="termType" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellTermTypeComboBox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.background" fx:id="backgroundTab">

@@ -1,0 +1,7 @@
+# 1. 安装依赖
+apt install -y telnetd
+# 2. 处理错误(安装不了的时候可选操作)
+apt --fix-broken install
+# 3. 启动并启用telnet服务
+systemctl start inetd
+systemctl enable inetd

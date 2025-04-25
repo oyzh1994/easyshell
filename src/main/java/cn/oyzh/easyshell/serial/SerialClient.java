@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.BaseClient;
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025-04-24
  */
-public class SerialClient implements AutoCloseable {
+public class SerialClient implements BaseClient {
 
     private SerialPort serialPort;
 
@@ -21,9 +22,11 @@ public class SerialClient implements AutoCloseable {
 
     public SerialClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
-
     }
 
+    /**
+     * 初始化串口
+     */
     protected void iniSerialPort() {
         // 获取指定名称的串口
         this.serialPort = SerialPort.getCommPort(shellConnect.getPortName());
@@ -34,13 +37,14 @@ public class SerialClient implements AutoCloseable {
         this.serialPort.setNumDataBits(shellConnect.getNumDataBits());
         this.serialPort.setNumStopBits(shellConnect.getNumStopBits());
         this.serialPort.setFlowControl(shellConnect.getFlowControl());
-        this.serialPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, shellConnect.connectTimeOutMs(), shellConnect.connectTimeOutMs());
     }
 
-    public void start() throws IOException {
+    @Override
+    public void start(int timeout) throws IOException {
         if (this.serialPort == null) {
             this.iniSerialPort();
         }
+        this.serialPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, timeout, timeout);
         // 打开串口
         if (!this.serialPort.openPort()) {
             JulLog.warn("无法打开串口:{}, 错误码:{} 位置:{} ",
@@ -98,6 +102,7 @@ public class SerialClient implements AutoCloseable {
         return serialPort;
     }
 
+    @Override
     public ShellConnect getShellConnect() {
         return shellConnect;
     }
@@ -109,6 +114,7 @@ public class SerialClient implements AutoCloseable {
         return false;
     }
 
+    @Override
     public Charset getCharset() {
         return CharsetUtil.fromName(this.shellConnect.getCharset());
     }

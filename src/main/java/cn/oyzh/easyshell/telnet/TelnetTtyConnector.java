@@ -46,35 +46,10 @@ public class TelnetTtyConnector extends ShellDefaultTtyConnector {
                 this.doRead(buf, offset, len);
             }
             return len;
-//            return len <= 0 ? 1 : len;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return 0;
-//        try {
-//            int len = 0;
-//            while (!this.client.isEmpty()) {
-//                Character charset = this.client.takeChar();
-//                if (charset == null) {
-//                    break;
-//                }
-//                buf[len++] = charset;
-//                // 已填充满则结束
-//                if (len >= length) {
-//                    break;
-//                }
-//            }
-//            // 填充其他数据为0
-//            if (len == 0) {
-//                Arrays.fill(buf, 0, buf.length, (char) 0);
-//            } else if (len != length) {
-//                Arrays.fill(buf, len, length, (char) 0);
-//            }
-//            return len == 0 ? 1 : len;
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return 0;
     }
 
     /**

@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
+import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSftpAttr;
@@ -59,13 +60,14 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellClient {
+public class ShellClient implements BaseClient {
 
     /**
      * shell信息
      */
     private final ShellConnect shellConnect;
 
+    @Override
     public ShellConnect getShellConnect() {
         return shellConnect;
     }
@@ -314,9 +316,7 @@ public class ShellClient {
         this.initProxy();
     }
 
-    /**
-     * 关闭客户端
-     */
+    @Override
     public void close() {
         try {
             if (this.shell != null) {
@@ -376,18 +376,7 @@ public class ShellClient {
         }
     }
 
-    /**
-     * 开始连接客户端
-     */
-    public void start() {
-        this.start(this.connectTimeout());
-    }
-
-    /**
-     * 开始连接客户端
-     *
-     * @param timeout 超时时间
-     */
+    @Override
     public void start(int timeout) {
         if (this.isConnected() || this.isConnecting()) {
             return;
