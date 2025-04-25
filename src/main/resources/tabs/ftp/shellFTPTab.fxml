@@ -24,11 +24,6 @@
         fx:controller="cn.oyzh.easyshell.tabs.ftp.ShellFTPTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
     <FXHBox prefHeight="30" flexWidth="100%">
-        <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
-            <FXHBox.margin>
-                <Insets left="5" top="7"/>
-            </FXHBox.margin>
-        </HomeSVGGlyph>
         <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
@@ -44,18 +39,6 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </RefreshSVGGlyph>
-        <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"
-                            onMousePrimaryClicked="#uploadFile">
-            <FXHBox.margin>
-                <Insets left="5" top="7"/>
-            </FXHBox.margin>
-        </FileUploadSVGGlyph>
-        <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"
-                              onMousePrimaryClicked="#uploadFolder">
-            <FXHBox.margin>
-                <Insets left="5" top="7"/>
-            </FXHBox.margin>
-        </FolderUploadSVGGlyph>
         <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
@@ -89,7 +72,6 @@
                            text="%base.name"/>
             <FXTableColumn prefWidth="110" valueName="size" text="%base.size"/>
             <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
-            <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
             <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
             <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
             <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>

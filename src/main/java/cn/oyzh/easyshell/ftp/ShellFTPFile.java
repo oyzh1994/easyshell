@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.ftp;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
@@ -79,11 +80,10 @@ import java.util.Calendar;
  */
 public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile> {
 
-
     /**
      * 链接属性
      */
-    private FTPFile file;
+    private final FTPFile file;
 
     public void setIcon(SVGGlyph icon) {
         this.icon = icon;
@@ -92,6 +92,7 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile> 
     private String parentPath;
 
     public ShellFTPFile(String parentPath, FTPFile file) {
+        this.file = file;
         this.parentPath = parentPath;
     }
 
@@ -375,6 +376,7 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile> 
     public String getFilePath() {
         return ShellSftpUtil.concat(this.parentPath, this.getFileName());
     }
+
     public int getOrder() {
         if (this.isReturnDirectory()) {
             return -10;
@@ -397,5 +399,20 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile> 
 
     public void setFileName(String newName) {
         this.file.setName(newName);
+    }
+
+    public String getModifyTime() {
+        if (this.isReturnDirectory() || this.isCurrentFile()) {
+            return "";
+        }
+        return DateHelper.formatDateTime(this.getTimestamp().getTime());
+    }
+
+    public String getOwner() {
+        return file.getUser();
+    }
+
+    public String getPermissions() {
+        return ShellFTPUtil.getPermissionsString(this.file);
     }
 }

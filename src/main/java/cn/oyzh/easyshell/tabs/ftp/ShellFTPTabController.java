@@ -136,17 +136,17 @@ public class ShellFTPTabController extends RichTabController {
     @FXML
     private FXHBox deleteBox;
 
-    /**
-     * 上传文件按钮
-     */
-    @FXML
-    private SVGGlyph uploadFile;
-
-    /**
-     * 上传文件夹按钮
-     */
-    @FXML
-    private SVGGlyph uploadDir;
+//    /**
+//     * 上传文件按钮
+//     */
+//    @FXML
+//    private SVGGlyph uploadFile;
+//
+//    /**
+//     * 上传文件夹按钮
+//     */
+//    @FXML
+//    private SVGGlyph uploadDir;
 
     /**
      * 设置
@@ -233,8 +233,8 @@ public class ShellFTPTabController extends RichTabController {
                     System.clearProperty(ShellConst.SFTP_VISIBLE);
                 }
             });
-            // 绑定属性
-            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
+//            // 绑定属性
+//            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
             // 监听位置
             this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
