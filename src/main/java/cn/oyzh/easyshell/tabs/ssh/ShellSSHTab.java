@@ -22,7 +22,7 @@ public class ShellSSHTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/ssh/shellConnectTab.fxml";
+        return "/tabs/ssh/shellSSHTab.fxml";
     }
 
     @Override
