@@ -14,18 +14,18 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class SSHTtyConnector extends ShellDefaultTtyConnector {
+public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     private InputStreamReader shellReader;
 
     private OutputStreamWriter shellWriter;
 
-    public void initShell(SSHShell shell) throws IOException {
+    public void initShell(ShellSSHShell shell) throws IOException {
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-    public SSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    public ShellSSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

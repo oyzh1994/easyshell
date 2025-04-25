@@ -9,11 +9,11 @@ import java.io.IOException;
  * @author oyzh
  * @since 2025-04-24
  */
-public class TelnetClient extends org.apache.commons.net.telnet.TelnetClient implements BaseClient {
+public class ShellTelnetClient extends org.apache.commons.net.telnet.TelnetClient implements BaseClient {
 
     private final ShellConnect shellConnect;
 
-    public TelnetClient(ShellConnect shellConnect) {
+    public ShellTelnetClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
 

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.telnet;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.telnet.TelnetClient;
+import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -76,7 +76,7 @@ public class ShellTelnetTab extends RichTab {
      *
      * @return shell客户端
      */
-    public TelnetClient client() {
+    public ShellTelnetClient client() {
         return this.controller().getClient();
     }
 }

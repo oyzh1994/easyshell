@@ -5,9 +5,9 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.telnet.TelnetClient;
-import cn.oyzh.easyshell.telnet.TelnetTermWidget;
-import cn.oyzh.easyshell.telnet.TelnetTtyConnector;
+import cn.oyzh.easyshell.telnet.ShellTelnetClient;
+import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
+import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -34,14 +34,14 @@ public class ShellTelnetTabController extends RichTabController {
      * 终端组件
      */
     @FXML
-    private TelnetTermWidget widget;
+    private ShellTelnetTermWidget widget;
 
     /**
      * telnet客户端
      */
-    private TelnetClient client;
+    private ShellTelnetClient client;
 
-    public TelnetClient getClient() {
+    public ShellTelnetClient getClient() {
         return client;
     }
 
@@ -63,7 +63,7 @@ public class ShellTelnetTabController extends RichTabController {
      */
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
-        TelnetTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.initTelnet(this.client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
@@ -87,7 +87,7 @@ public class ShellTelnetTabController extends RichTabController {
      */
     public void init(ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
-        this.client = new TelnetClient(treeItem.value());
+        this.client = new ShellTelnetClient(treeItem.value());
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {

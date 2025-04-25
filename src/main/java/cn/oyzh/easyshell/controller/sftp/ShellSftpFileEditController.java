@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -57,7 +57,7 @@ public class ShellSftpFileEditController extends StageController {
     /**
      * ssh客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
     /**
      * 数据

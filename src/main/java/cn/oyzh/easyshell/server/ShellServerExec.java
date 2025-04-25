@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +22,7 @@ public class ShellServerExec implements AutoCloseable {
     /**
      * shell客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
     /**
      * 服务器磁盘对象
@@ -34,7 +34,7 @@ public class ShellServerExec implements AutoCloseable {
      */
     private ShellServerNetwork network;
 
-    public ShellServerExec(SSHClient client) {
+    public ShellServerExec(ShellSSHClient client) {
         this.client = client;
         this.disk = new ShellServerDisk();
         this.network = new ShellServerNetwork();

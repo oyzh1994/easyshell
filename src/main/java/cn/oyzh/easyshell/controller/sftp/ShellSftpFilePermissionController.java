@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -39,7 +39,7 @@ public class ShellSftpFilePermissionController extends StageController {
     /**
      * ssh客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
     /**
      * 文件名称

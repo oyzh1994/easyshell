@@ -5,8 +5,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.local.LocalTermWidget;
-import cn.oyzh.easyshell.local.LocalTtyConnector;
+import cn.oyzh.easyshell.local.ShellLocalTermWidget;
+import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -30,7 +30,7 @@ public class ShellLocalTabController extends RichTabController {
      * 根节点
      */
     @FXML
-    private LocalTermWidget widget;
+    private ShellLocalTermWidget widget;
 
     /**
      * 当前连接
@@ -44,7 +44,7 @@ public class ShellLocalTabController extends RichTabController {
 
     private void initWidget() throws IOException {
         Charset charset = Charset.forName(this.shellConnect.getCharset());
-        LocalTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());

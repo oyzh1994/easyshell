@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -113,15 +113,15 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
 //        }
     }
 
-    public SSHClient getClient() {
+    public ShellSSHClient getClient() {
         return client;
     }
 
-    public void setClient(SSHClient client) {
+    public void setClient(ShellSSHClient client) {
         this.client = client;
     }
 
-    protected SSHClient client;
+    protected ShellSSHClient client;
 
     /**
      * 位置属性

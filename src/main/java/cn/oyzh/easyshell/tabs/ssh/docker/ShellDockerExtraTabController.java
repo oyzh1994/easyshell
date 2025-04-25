@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -27,7 +27,7 @@ public class ShellDockerExtraTabController extends SubTabController {
         return (ShellDockerTabController) super.parent();
     }
 
-    public SSHClient client() {
+    public ShellSSHClient client() {
         return this.parent().getClient();
     }
 

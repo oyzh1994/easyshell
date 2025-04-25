@@ -10,7 +10,7 @@ import cn.oyzh.event.Event;
  */
 public class ShellConnectOpenedEvent extends Event<ShellConnectTreeItem>  {
 
-//    public SSHClient client() {
+//    public ShellSSHClient client() {
 //        return this.data().client();
 //    }
 

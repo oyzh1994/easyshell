@@ -58,7 +58,7 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-public class SSHClient implements BaseClient {
+public class ShellSSHClient implements BaseClient {
 
     /**
      * shell信息
@@ -109,21 +109,21 @@ public class SSHClient implements BaseClient {
      */
     private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
-    public SSHClient(ShellConnect shellConnect) {
+    public ShellSSHClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
 
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<SSHConnState> state = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ShellSSHConnState> state = new ReadOnlyObjectWrapper<>();
 
     /**
      * 获取状态
      *
      * @return 状态
      */
-    public SSHConnState getState() {
+    public ShellSSHConnState getState() {
         return this.state.get();
     }
 
@@ -131,10 +131,10 @@ public class SSHClient implements BaseClient {
      * 更新状态
      */
     public void updateState() {
-        SSHConnState state = this.getState();
-        if (state == SSHConnState.CONNECTED) {
+        ShellSSHConnState state = this.getState();
+        if (state == ShellSSHConnState.CONNECTED) {
             if (this.session == null || !this.session.isConnected()) {
-                this.state.set(SSHConnState.INTERRUPT);
+                this.state.set(ShellSSHConnState.INTERRUPT);
             }
         }
     }
@@ -144,7 +144,7 @@ public class SSHClient implements BaseClient {
 //     *
 //     * @return 连接状态
 //     */
-//    public SSHConnState state() {
+//    public ShellSSHConnState state() {
 //        return this.stateProperty().get();
 //    }
 
@@ -153,7 +153,7 @@ public class SSHClient implements BaseClient {
      *
      * @return 连接状态属性
      */
-    public ReadOnlyObjectProperty<SSHConnState> stateProperty() {
+    public ReadOnlyObjectProperty<ShellSSHConnState> stateProperty() {
         return this.state.getReadOnlyProperty();
     }
 
@@ -162,7 +162,7 @@ public class SSHClient implements BaseClient {
      *
      * @param stateListener 监听器
      */
-    public void addStateListener(ChangeListener<SSHConnState> stateListener) {
+    public void addStateListener(ChangeListener<ShellSSHConnState> stateListener) {
         if (stateListener != null) {
             this.stateProperty().addListener(stateListener);
         }
@@ -217,7 +217,7 @@ public class SSHClient implements BaseClient {
                 throw new SSHException("proxy is enable but proxy config is null");
             }
             // 初始化代理
-            Proxy proxy = SSHClientUtil.newProxy(proxyConfig);
+            Proxy proxy = ShellSSHClientUtil.newProxy(proxyConfig);
             // 设置代理
             this.session.setProxy(proxy);
         }
@@ -361,14 +361,14 @@ public class SSHClient implements BaseClient {
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;
-                this.state.set(SSHConnState.CLOSED);
+                this.state.set(ShellSSHConnState.CLOSED);
             }
             // 销毁跳板转发器
             if (this.jumpForwarder != null) {
                 this.jumpForwarder.destroy();
             }
             // 从监听器队列移除
-            SSHClientChecker.remove(this);
+            ShellSSHClientChecker.remove(this);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -385,27 +385,27 @@ public class SSHClient implements BaseClient {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 初始化连接池
-            this.state.set(SSHConnState.CONNECTING);
+            this.state.set(ShellSSHConnState.CONNECTING);
             // 执行连接
             if (this.session != null) {
                 this.session.connect(timeout);
             }
             // 判断连接结果
             if (this.session != null && this.session.isConnected()) {
-                this.state.set(SSHConnState.CONNECTED);
+                this.state.set(ShellSSHConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
                 // 添加到状态监听器队列
-                SSHClientChecker.push(this);
-            } else if (this.state.get() == SSHConnState.FAILED) {
+                ShellSSHClientChecker.push(this);
+            } else if (this.state.get() == ShellSSHConnState.FAILED) {
                 this.state.set(null);
             } else {
-                this.state.set(SSHConnState.FAILED);
+                this.state.set(ShellSSHConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
             JulLog.info("shellClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            this.state.set(SSHConnState.FAILED);
+            this.state.set(ShellSSHConnState.FAILED);
             JulLog.warn("shellClient start error", ex);
             throw new ShellException(ex);
         }
@@ -418,7 +418,7 @@ public class SSHClient implements BaseClient {
      */
     public boolean isConnecting() {
         if (!this.isClosed()) {
-            return this.state.get() == SSHConnState.CONNECTING;
+            return this.state.get() == ShellSSHConnState.CONNECTING;
         }
         return false;
     }
@@ -448,13 +448,13 @@ public class SSHClient implements BaseClient {
         return this.shellConnect.getName();
     }
 
-    private SSHShell shell;
+    private ShellSSHShell shell;
 
-    public SSHShell getShell() {
+    public ShellSSHShell getShell() {
         return shell;
     }
 
-    public SSHShell openShell() {
+    public ShellSSHShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
@@ -471,7 +471,7 @@ public class SSHClient implements BaseClient {
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
-                this.shell = new SSHShell(channel);
+                this.shell = new ShellSSHShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -587,7 +587,7 @@ public class SSHClient implements BaseClient {
                 channel.setXForwarding(true);
             }
             // 操作
-            SSHClientActionUtil.forAction(this.connectName(), command);
+            ShellSSHClientActionUtil.forAction(this.connectName(), command);
             channel.setCommand(extCommand);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);
@@ -677,7 +677,7 @@ public class SSHClient implements BaseClient {
         this.getDownloadManager().fileDownload(localFile, remoteFile, this);
     }
 
-    public void transport(ShellSftpFile localFile, String remoteFile, SSHClient remoteClient) {
+    public void transport(ShellSftpFile localFile, String remoteFile, ShellSSHClient remoteClient) {
         this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
     }
 

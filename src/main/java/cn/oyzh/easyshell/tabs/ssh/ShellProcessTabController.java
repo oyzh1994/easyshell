@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.process.ShellProcessInfoTableView;
 import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox;
 import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.process.ShellProcessInfo;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -37,7 +37,7 @@ public class ShellProcessTabController extends SubTabController {
     /**
      * shell客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
     /**
      * 过滤
@@ -69,7 +69,7 @@ public class ShellProcessTabController extends SubTabController {
     @FXML
     private FXToggleSwitch refreshBtn;
 
-    public SSHClient getClient() {
+    public ShellSSHClient getClient() {
         return client;
     }
 
@@ -78,7 +78,7 @@ public class ShellProcessTabController extends SubTabController {
      *
      * @param client 客户端
      */
-    public void setClient(SSHClient client) {
+    public void setClient(ShellSSHClient client) {
         this.client = client;
         this.processExec = this.client.processExec();
         if (this.client.isWindows()) {

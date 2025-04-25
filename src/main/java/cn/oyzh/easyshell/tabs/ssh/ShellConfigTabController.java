@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigBashTabController;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigHostsTabController;
@@ -48,14 +48,14 @@ public class ShellConfigTabController extends ParentTabController {
     /**
      * shell客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
     /**
      * 设置客户端
      *
      * @param client 客户端
      */
-    public void setClient(SSHClient client) {
+    public void setClient(ShellSSHClient client) {
         this.client = client;
         try {
             ShellSftp sftp = this.client.openSftp();
@@ -113,7 +113,7 @@ public class ShellConfigTabController extends ParentTabController {
         }
     }
 
-    public SSHClient getClient() {
+    public ShellSSHClient getClient() {
         return client;
     }
 

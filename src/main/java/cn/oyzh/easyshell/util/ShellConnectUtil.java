@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
-import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.telnet.TelnetClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -33,7 +33,7 @@ public class ShellConnectUtil {
      * @param client shell客户端
      * @param async  是否异步
      */
-    public static void close(SSHClient client, boolean async) {
+    public static void close(ShellSSHClient client, boolean async) {
         try {
             if (client != null && client.isConnected()) {
                 Runnable func = client::close;
@@ -68,7 +68,7 @@ public class ShellConnectUtil {
         StageManager.showMask(adapter, () -> {
             try {
                 if (shellConnect.isSSHType()) {
-                    SSHClient client = new SSHClient(shellConnect);
+                    ShellSSHClient client = new ShellSSHClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {
@@ -78,7 +78,7 @@ public class ShellConnectUtil {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
                 } else if (shellConnect.isTelnetType()) {
-                    TelnetClient client = new TelnetClient(shellConnect);
+                    ShellTelnetClient client = new ShellTelnetClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

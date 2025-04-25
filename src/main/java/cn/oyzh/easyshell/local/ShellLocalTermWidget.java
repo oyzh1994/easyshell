@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh;
+package cn.oyzh.easyshell.local;
 
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.pty4j.PtyProcess;
@@ -9,14 +9,15 @@ import java.util.Arrays;
 
 /**
  * @author oyzh
- * @since 2025-03-04
+ * @since 2025-04-24
  */
-public class SSHTermWidget extends ShellDefaultTermWidget {
+public class ShellLocalTermWidget extends ShellDefaultTermWidget {
 
     @Override
-    public SSHTtyConnector createTtyConnector(Charset charset) throws IOException {
+    public ShellLocalTtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new SSHTtyConnector(process, charset, Arrays.asList(command));
+        return new ShellLocalTtyConnector(process, charset, Arrays.asList(command));
     }
+
 }

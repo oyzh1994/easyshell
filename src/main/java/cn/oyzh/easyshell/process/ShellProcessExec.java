@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.process;
 
 import cn.oyzh.easyshell.server.ShellServerExec;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.util.Collections;
@@ -17,9 +17,9 @@ import java.util.Map;
  */
 public class ShellProcessExec implements AutoCloseable {
 
-    private SSHClient client;
+    private ShellSSHClient client;
 
-    public ShellProcessExec(SSHClient client) {
+    public ShellProcessExec(ShellSSHClient client) {
         this.client = client;
     }
 

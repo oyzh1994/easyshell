@@ -39,7 +39,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //     */
 //    @Getter
 //    @Accessors(chain = true, fluent = true)
-//    private SSHClient client;
+//    private ShellSSHClient client;
 //
 //    /**
 //     * 已取消操作标志位
@@ -264,7 +264,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      */
     public void value(ShellConnect value) {
         this.value = value;
-//        this.client = new SSHClient(value);
+//        this.client = new ShellSSHClient(value);
 //        this.client.addStateListener((observable, o, n) -> this.refresh());
         super.setValue(new ShellConnectTreeItemValue(this));
     }

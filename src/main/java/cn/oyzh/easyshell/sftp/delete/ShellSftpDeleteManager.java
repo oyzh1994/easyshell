@@ -7,7 +7,7 @@ import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -28,9 +28,9 @@ import java.util.function.Consumer;
  */
 public class ShellSftpDeleteManager implements AutoCloseable {
 
-    private SSHClient client;
+    private ShellSSHClient client;
 
-    public ShellSftpDeleteManager(SSHClient client) {
+    public ShellSftpDeleteManager(ShellSSHClient client) {
         this.client = client;
     }
 

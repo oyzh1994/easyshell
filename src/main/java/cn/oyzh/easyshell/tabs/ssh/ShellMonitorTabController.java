@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.server.ShellServerMonitor;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.chart.ChartHelper;
@@ -37,7 +37,7 @@ public class ShellMonitorTabController extends SubTabController {
     /**
      * shell客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
     /**
      * 服务执行对象
@@ -55,7 +55,7 @@ public class ShellMonitorTabController extends SubTabController {
      *
      * @param client 客户端
      */
-    public void setClient(SSHClient client) {
+    public void setClient(ShellSSHClient client) {
         this.client = client;
         this.serverExec = this.client.serverExec();
     }

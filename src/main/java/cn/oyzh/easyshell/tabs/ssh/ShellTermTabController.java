@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.ssh.SSHShell;
-import cn.oyzh.easyshell.ssh.SSHTermWidget;
-import cn.oyzh.easyshell.ssh.SSHTtyConnector;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHShell;
+import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
+import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -32,7 +32,7 @@ public class ShellTermTabController extends SubTabController {
      * 终端组件
      */
     @FXML
-    private SSHTermWidget widget;
+    private ShellSSHTermWidget widget;
 
     /**
      * 初始化组件
@@ -40,9 +40,9 @@ public class ShellTermTabController extends SubTabController {
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
-        SSHShell shell = this.client().getShell();
+        ShellSSHShell shell = this.client().getShell();
         Charset charset = this.client().getCharset();
-        SSHTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.initShell(shell);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
@@ -54,7 +54,7 @@ public class ShellTermTabController extends SubTabController {
         int sizeW = (int) this.widget.getTerminalPanel().getWidth();
         int sizeH = (int) this.widget.getTerminalPanel().getHeight();
         TermSize termSize = this.widget.getTermSize();
-        SSHShell shell = this.client().getShell();
+        ShellSSHShell shell = this.client().getShell();
         shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
@@ -69,8 +69,8 @@ public class ShellTermTabController extends SubTabController {
     }
 
     public void init() throws IOException, JSchException {
-        SSHClient client = this.client();
-        SSHShell shell = client.openShell();
+        ShellSSHClient client = this.client();
+        ShellSSHShell shell = client.openShell();
         this.initWidget();
         shell.connect(client.connectTimeout());
         if (!shell.isConnected()) {
@@ -93,7 +93,7 @@ public class ShellTermTabController extends SubTabController {
         return (ShellSSHTabController) super.parent();
     }
 
-    public SSHClient client() {
+    public ShellSSHClient client() {
         return this.parent().getClient();
     }
 }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.connection;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ShellConnectionConnectedEvent extends Event<SSHClient> implements EventFormatter {
+public class ShellConnectionConnectedEvent extends Event<ShellSSHClient> implements EventFormatter {
 
     @Override
     public String eventFormat() {

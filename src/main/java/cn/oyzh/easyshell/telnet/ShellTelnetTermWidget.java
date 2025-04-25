@@ -11,12 +11,12 @@ import java.util.Arrays;
  * @author oyzh
  * @since 2025-04-24
  */
-public class TelnetTermWidget extends ShellDefaultTermWidget {
+public class ShellTelnetTermWidget extends ShellDefaultTermWidget {
 
     @Override
-    public TelnetTtyConnector createTtyConnector(Charset charset) throws IOException {
+    public ShellTelnetTtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new TelnetTtyConnector(process, charset, Arrays.asList(command));
+        return new ShellTelnetTtyConnector(process, charset, Arrays.asList(command));
     }
 }

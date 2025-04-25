@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025-03-27
  */
-public class SSHClientChecker {
+public class ShellSSHClientChecker {
 
     /**
      * 监测任务
@@ -23,14 +23,14 @@ public class SSHClientChecker {
     /**
      * 客户端列表
      */
-    private static final List<SSHClient> CLIENTS = new CopyOnWriteArrayList<>();
+    private static final List<ShellSSHClient> CLIENTS = new CopyOnWriteArrayList<>();
 
     /**
      * 添加客户端
      *
      * @param client 客户端
      */
-    public static void push(SSHClient client) {
+    public static void push(ShellSSHClient client) {
         CLIENTS.add(client);
         doCheck();
     }
@@ -39,7 +39,7 @@ public class SSHClientChecker {
      * 移除客户端
      * @param client 客户端
      */
-    public static void remove(SSHClient client) {
+    public static void remove(ShellSSHClient client) {
         CLIENTS.remove(client);
     }
 
@@ -50,8 +50,8 @@ public class SSHClientChecker {
         if (taskFuture == null) {
             // 创建任务
             taskFuture = TaskManager.startInterval("client:check", () -> {
-                List<SSHClient> closedList = null;
-                for (SSHClient client : CLIENTS) {
+                List<ShellSSHClient> closedList = null;
+                for (ShellSSHClient client : CLIENTS) {
                     client.updateState();
                     // 如果客户端已关闭，则从队列里面移除
                     if (client.isClosed()) {

@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.ssh.SSHConnState;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -28,9 +28,9 @@ public class ShellSSHTabController extends ParentTabController {
     /**
      * shell客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
-    public SSHClient getClient() {
+    public ShellSSHClient getClient() {
         return client;
     }
 
@@ -94,15 +94,15 @@ public class ShellSSHTabController extends ParentTabController {
      */
     public void init(ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
-        this.client = new SSHClient(treeItem.value());
+        this.client = new ShellSSHClient(treeItem.value());
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
-            if (t1 == SSHConnState.INTERRUPT) {
+            if (t1 == ShellSSHConnState.INTERRUPT) {
                 MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
                 this.closeTab();
-            } else if (t1 == SSHConnState.CLOSED) {
+            } else if (t1 == ShellSSHConnState.CLOSED) {
                 ShellEventUtil.connectionClosed(client);
-            } else if (t1 == SSHConnState.CONNECTED) {
+            } else if (t1 == ShellSSHConnState.CONNECTED) {
                 ShellEventUtil.connectionConnected(client);
             }
         });

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget?>
-<?import cn.oyzh.easyshell.local.LocalTermWidget?>
-<LocalTermWidget fx:id="widget" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
-                 xmlns:fx="http://javafx.com/fxml"
-                 fx:controller="cn.oyzh.easyshell.tabs.local.ShellLocalTabController">
-</LocalTermWidget>
+<?import cn.oyzh.easyshell.local.ShellLocalTermWidget?>
+<ShellLocalTermWidget fx:id="widget" styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+                      xmlns:fx="http://javafx.com/fxml"
+                      fx:controller="cn.oyzh.easyshell.tabs.local.ShellLocalTabController">
+</ShellLocalTermWidget>

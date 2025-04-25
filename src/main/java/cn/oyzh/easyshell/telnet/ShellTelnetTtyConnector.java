@@ -15,21 +15,21 @@ import java.util.List;
  * @author oyzh
  * @since 2025-04-24
  */
-public class TelnetTtyConnector extends ShellDefaultTtyConnector {
+public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
 
-    private TelnetClient client;
+    private ShellTelnetClient client;
 
     private InputStreamReader shellReader;
 
     private OutputStreamWriter shellWriter;
 
-    public void initTelnet(TelnetClient client) {
+    public void initTelnet(ShellTelnetClient client) {
         this.client = client;
         this.shellReader = new InputStreamReader(client.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(client.getOutputStream(), this.myCharset);
     }
 
-    public TelnetTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    public ShellTelnetTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.ssh.SSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerContainerTabController;
 import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerDaemonTabController;
 import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerExtraTabController;
@@ -60,9 +60,9 @@ public class ShellDockerTabController extends ParentTabController {
     /**
      * shell客户端
      */
-    private SSHClient client;
+    private ShellSSHClient client;
 
-    public SSHClient getClient() {
+    public ShellSSHClient getClient() {
         return client;
     }
 
@@ -71,7 +71,7 @@ public class ShellDockerTabController extends ParentTabController {
      *
      * @param client 客户端
      */
-    public void setClient(SSHClient client) {
+    public void setClient(ShellSSHClient client) {
         this.client = client;
     }
 
