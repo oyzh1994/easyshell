@@ -11,9 +11,9 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -113,15 +113,15 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
 //        }
     }
 
-    public ShellSSHClient getClient() {
+    protected ShellSftpClient client;
+
+    public ShellSftpClient getClient() {
         return client;
     }
 
-    public void setClient(ShellSSHClient client) {
+    public void setClient(ShellSftpClient client) {
         this.client = client;
     }
-
-    protected ShellSSHClient client;
 
     /**
      * 位置属性

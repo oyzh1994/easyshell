@@ -87,7 +87,7 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
-                } else {
+                } else if(shellConnect.isSerialType()) {
                     ShellSerialClient client = new ShellSerialClient(shellConnect);
                     // 开始连接
                     client.start(5_000);

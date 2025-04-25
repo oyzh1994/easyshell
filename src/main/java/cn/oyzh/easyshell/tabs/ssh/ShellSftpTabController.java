@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
@@ -197,10 +198,10 @@ public class ShellSftpTabController extends SubTabController {
             return;
         }
         this.initialized = true;
-        this.fileTable.setClient(this.client());
-        this.deleteManager = this.client().getDeleteManager();
-        this.uploadManager = this.client().getUploadManager();
-        this.downloadManager = this.client().getDownloadManager();
+        this.fileTable.setClient(this.sftpClient());
+        this.deleteManager = this.sftpClient().getDeleteManager();
+        this.uploadManager = this.sftpClient().getUploadManager();
+        this.downloadManager = this.sftpClient().getDownloadManager();
         // 上传
         this.uploadManager.addMonitorFailedCallback(this, this::uploadFailed);
         this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
@@ -308,6 +309,10 @@ public class ShellSftpTabController extends SubTabController {
 
     public ShellSSHClient client() {
         return this.parent().getClient();
+    }
+
+    public ShellSftpClient sftpClient() {
+        return this.client().getSftpClient();
     }
 
     @FXML

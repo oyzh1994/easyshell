@@ -14,13 +14,9 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
-import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -29,8 +25,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
 
 /**
  * telnet连接新增业务
@@ -41,9 +35,9 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellAddTelnetConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellAddSftpConnect.fxml"
 )
-public class ShellAddTelnetConnectController extends StageController {
+public class ShellAddSftpConnectController extends StageController {
 
     /**
      * 用户名
@@ -104,24 +98,6 @@ public class ShellAddTelnetConnectController extends StageController {
      */
     @FXML
     private ShellOsTypeComboBox osType;
-
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ClearableTextField backgroundImage;
 
     /**
      * 分组
@@ -190,13 +166,6 @@ public class ShellAddTelnetConnectController extends StageController {
             return;
         }
         String password = this.password.getPassword();
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -208,8 +177,6 @@ public class ShellAddTelnetConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
-            boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -220,11 +187,8 @@ public class ShellAddTelnetConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
             // 分组及类型
-            shellConnect.setType("telnet");
+            shellConnect.setType("sftp");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {
@@ -255,14 +219,6 @@ public class ShellAddTelnetConnectController extends StageController {
                 }
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
     }
 
     @Override
@@ -280,16 +236,5 @@ public class ShellAddTelnetConnectController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
-    }
-
-    /**
-     * 选择背景图片
-     */
-    @FXML
-    private void chooseBackgroundImage() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
-        if (file != null) {
-            this.backgroundImage.setText(file.getPath());
-        }
     }
 }

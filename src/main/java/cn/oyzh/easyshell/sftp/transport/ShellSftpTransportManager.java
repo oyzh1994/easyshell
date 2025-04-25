@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.sftp.transport;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpManager;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,7 +15,7 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 public class ShellSftpTransportManager extends ShellSftpManager<ShellSftpTransportMonitor, ShellSftpTransportTask> {
 
-    public void fileTransport(ShellSftpFile localFile, String remoteFile, ShellSSHClient localClient, ShellSSHClient remoteClient) {
+    public void fileTransport(ShellSftpFile localFile, String remoteFile, ShellSftpClient localClient, ShellSftpClient remoteClient) {
         this.tasks.add(new ShellSftpTransportTask(this, localFile, remoteFile, localClient, remoteClient));
         this.taskSizeChanged();
         this.doTransport();

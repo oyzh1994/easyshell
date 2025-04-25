@@ -17,12 +17,7 @@ import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpAttr;
-import cn.oyzh.easyshell.sftp.ShellSftpChannelManager;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
-import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
@@ -36,18 +31,15 @@ import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -137,6 +129,15 @@ public class ShellSSHClient implements BaseClient {
                 this.state.set(ShellSSHConnState.INTERRUPT);
             }
         }
+    }
+
+    private ShellSftpClient sftpClient;
+
+    public ShellSftpClient getSftpClient() {
+        if (this.sftpClient == null) {
+            this.sftpClient = new ShellSftpClient(this.shellConnect, this.session);
+        }
+        return this.sftpClient;
     }
 
 //    /**
@@ -333,26 +334,26 @@ public class ShellSSHClient implements BaseClient {
                 this.dockerExec.close();
                 this.dockerExec = null;
             }
-            if (this.sftpManager != null) {
-                this.sftpManager.close();
-                this.sftpManager = null;
-            }
-            if (this.deleteManager != null) {
-                this.deleteManager.close();
-                this.deleteManager = null;
-            }
-            if (this.uploadManager != null) {
-                this.uploadManager.close();
-                this.uploadManager = null;
-            }
-            if (this.transportManager != null) {
-                this.transportManager.close();
-                this.transportManager = null;
-            }
-            if (this.downloadManager != null) {
-                this.downloadManager.close();
-                this.downloadManager = null;
-            }
+//            if (this.sftpManager != null) {
+//                this.sftpManager.close();
+//                this.sftpManager = null;
+//            }
+//            if (this.deleteManager != null) {
+//                this.deleteManager.close();
+//                this.deleteManager = null;
+//            }
+//            if (this.uploadManager != null) {
+//                this.uploadManager.close();
+//                this.uploadManager = null;
+//            }
+//            if (this.transportManager != null) {
+//                this.transportManager.close();
+//                this.transportManager = null;
+//            }
+//            if (this.downloadManager != null) {
+//                this.downloadManager.close();
+//                this.downloadManager = null;
+//            }
             // 销毁隧道转发器
             if (this.tunnelForwarder != null) {
                 this.tunnelForwarder.destroy();
@@ -479,72 +480,73 @@ public class ShellSSHClient implements BaseClient {
         return this.shell;
     }
 
-    private ShellSftpChannelManager sftpManager;
-
-    public ShellSftpChannelManager getSftpManager() {
-        if (this.sftpManager == null) {
-            this.sftpManager = new ShellSftpChannelManager();
-        }
-        return this.sftpManager;
-    }
-
-    private ShellSftpUploadManager uploadManager;
-
-    public ShellSftpUploadManager getUploadManager() {
-        if (this.uploadManager == null) {
-            this.uploadManager = new ShellSftpUploadManager();
-        }
-        return uploadManager;
-    }
-
-    private ShellSftpDeleteManager deleteManager;
-
-    public ShellSftpDeleteManager getDeleteManager() {
-        if (this.deleteManager == null) {
-            this.deleteManager = new ShellSftpDeleteManager(this);
-        }
-        return deleteManager;
-    }
-
-    private ShellSftpDownloadManager downloadManager;
-
-    public ShellSftpDownloadManager getDownloadManager() {
-        if (this.downloadManager == null) {
-            this.downloadManager = new ShellSftpDownloadManager();
-        }
-        return downloadManager;
-    }
-
-    private ShellSftpTransportManager transportManager;
-
-    public ShellSftpTransportManager getTransportManager() {
-        if (this.transportManager == null) {
-            this.transportManager = new ShellSftpTransportManager();
-        }
-        return transportManager;
-    }
-
+    //    private ShellSftpChannelManager sftpManager;
+//
+//    public ShellSftpChannelManager getSftpManager() {
+//        if (this.sftpManager == null) {
+//            this.sftpManager = new ShellSftpChannelManager();
+//        }
+//        return this.sftpManager;
+//    }
+//
+//    private ShellSftpUploadManager uploadManager;
+//
+//    public ShellSftpUploadManager getUploadManager() {
+//        if (this.uploadManager == null) {
+//            this.uploadManager = new ShellSftpUploadManager();
+//        }
+//        return uploadManager;
+//    }
+//
+//    private ShellSftpDeleteManager deleteManager;
+//
+//    public ShellSftpDeleteManager getDeleteManager() {
+//        if (this.deleteManager == null) {
+//            this.deleteManager = new ShellSftpDeleteManager(this);
+//        }
+//        return deleteManager;
+//    }
+//
+//    private ShellSftpDownloadManager downloadManager;
+//
+//    public ShellSftpDownloadManager getDownloadManager() {
+//        if (this.downloadManager == null) {
+//            this.downloadManager = new ShellSftpDownloadManager();
+//        }
+//        return downloadManager;
+//    }
+//
+//    private ShellSftpTransportManager transportManager;
+//
+//    public ShellSftpTransportManager getTransportManager() {
+//        if (this.transportManager == null) {
+//            this.transportManager = new ShellSftpTransportManager();
+//        }
+//        return transportManager;
+//    }
+//
     public ShellSftp openSftp() {
-        if (!this.getSftpManager().hasAvailable()) {
-            ShellSftp sftp = this.newSftp();
-            if (sftp != null) {
-                this.getSftpManager().push(sftp);
-                return sftp;
-            }
-        }
-        return this.getSftpManager().take();
+//        if (!this.getSftpManager().hasAvailable()) {
+//            ShellSftp sftp = this.newSftp();
+//            if (sftp != null) {
+//                this.getSftpManager().push(sftp);
+//                return sftp;
+//            }
+//        }
+//        return this.getSftpManager().take();
+      return this.getSftpClient().openSftp();
     }
-
+//
     public ShellSftp newSftp() {
-        try {
-            ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-            ShellSftp sftp = new ShellSftp(channel, this);
-            sftp.connect(this.connectTimeout());
-            return sftp;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+//        try {
+//            ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
+//            ShellSftp sftp = new ShellSftp(channel, this.osType);
+//            sftp.connect(this.connectTimeout());
+//            return sftp;
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+        return this.getSftpClient().newSftp();
     }
 
     /**
@@ -665,21 +667,21 @@ public class ShellSSHClient implements BaseClient {
         return this.attr;
     }
 
-    public void delete(ShellSftpFile file) {
-        this.getDeleteManager().fileDelete(file);
-    }
-
-    public void upload(File localFile, String remoteFile) throws SftpException {
-        this.getUploadManager().fileUpload(localFile, remoteFile, this);
-    }
-
-    public void download(File localFile, ShellSftpFile remoteFile) throws SftpException {
-        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
-    }
-
-    public void transport(ShellSftpFile localFile, String remoteFile, ShellSSHClient remoteClient) {
-        this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
-    }
+//    public void delete(ShellSftpFile file) {
+//        this.getDeleteManager().fileDelete(file);
+//    }
+//
+//    public void upload(File localFile, String remoteFile) throws SftpException {
+//        this.getUploadManager().fileUpload(localFile, remoteFile, this);
+//    }
+//
+//    public void download(File localFile, ShellSftpFile remoteFile) throws SftpException {
+//        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
+//    }
+//
+//    public void transport(ShellSftpFile localFile, String remoteFile, ShellSSHClient remoteClient) {
+//        this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
+//    }
 
     /**
      * 环境变量
@@ -711,7 +713,7 @@ public class ShellSSHClient implements BaseClient {
 
     public ShellDockerExec dockerExec() {
         if (this.dockerExec == null) {
-            this.dockerExec = new ShellDockerExec(this);
+            this.dockerExec = new ShellDockerExec(this.getSftpClient());
             try {
                 if (this.isWindows()) {
                     String output = this.exec("where docker.exe");

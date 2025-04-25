@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpManager;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -16,7 +17,7 @@ import java.io.File;
  */
 public class ShellSftpUploadManager extends ShellSftpManager<ShellSftpUploadMonitor, ShellSftpUploadTask> {
 
-    public void fileUpload(File localFile, String remoteFile, ShellSSHClient client) {
+    public void fileUpload(File localFile, String remoteFile, ShellSftpClient client) {
         this.tasks.add(new ShellSftpUploadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doUpload();

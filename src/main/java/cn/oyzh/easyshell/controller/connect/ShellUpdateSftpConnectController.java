@@ -1,9 +1,7 @@
 package cn.oyzh.easyshell.controller.connect;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -14,15 +12,10 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
-import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -30,10 +23,8 @@ import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
-
 /**
- * telnet连接新增业务
+ * telnet连接修改业务
  *
  * @author oyzh
  * @since 2025/04/24
@@ -41,9 +32,9 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellAddTelnetConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellUpdateSftpConnect.fxml"
 )
-public class ShellAddTelnetConnectController extends StageController {
+public class ShellUpdateSftpConnectController extends StageController {
 
     /**
      * 用户名
@@ -62,6 +53,11 @@ public class ShellAddTelnetConnectController extends StageController {
      */
     @FXML
     private FXTabPane tabPane;
+
+    /**
+     * ssh信息
+     */
+    private ShellConnect shellConnect;
 
     /**
      * 名称
@@ -106,29 +102,6 @@ public class ShellAddTelnetConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ClearableTextField backgroundImage;
-
-    /**
-     * 分组
-     */
-    private ShellGroup group;
-
-    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -169,6 +142,7 @@ public class ShellAddTelnetConnectController extends StageController {
             shellConnect.setType("telnet");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
+            shellConnect.setId(this.shellConnect.getId());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -177,10 +151,10 @@ public class ShellAddTelnetConnectController extends StageController {
     }
 
     /**
-     * 添加ssh信息
+     * 修改ssh信息
      */
     @FXML
-    private void add() {
+    private void update() {
         String host = this.getHost();
         if (host == null) {
             return;
@@ -190,47 +164,30 @@ public class ShellAddTelnetConnectController extends StageController {
             return;
         }
         String password = this.password.getPassword();
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
         }
         try {
-            ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
-            boolean enableBackground = this.enableBackground.isSelected();
 
-            shellConnect.setName(name);
-            shellConnect.setOsType(osType);
-            shellConnect.setRemark(remark);
-            shellConnect.setCharset(charset);
-            shellConnect.setHost(host.trim());
-            shellConnect.setConnectTimeOut(connectTimeOut);
+            this.shellConnect.setName(name);
+            this.shellConnect.setOsType(osType);
+            this.shellConnect.setRemark(remark);
+            this.shellConnect.setCharset(charset);
+            this.shellConnect.setHost(host.trim());
+            this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
-            shellConnect.setUser(userName.trim());
-            shellConnect.setPassword(password.trim());
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
-            // 分组及类型
-            shellConnect.setType("telnet");
-            shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
+            this.shellConnect.setUser(userName.trim());
+            this.shellConnect.setPassword(password.trim());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
-                ShellEventUtil.connectAdded(shellConnect);
+            if (this.connectStore.replace(this.shellConnect)) {
+                ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
-                this.setProp("connect", shellConnect);
                 this.closeWindow();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
@@ -255,41 +212,28 @@ public class ShellAddTelnetConnectController extends StageController {
                 }
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+        this.shellConnect = this.getProp("shellConnect");
+        this.name.setText(this.shellConnect.getName());
+        this.hostIp.setText(this.shellConnect.hostIp());
+        this.remark.setText(this.shellConnect.getRemark());
+        this.osType.select(this.shellConnect.getOsType());
+        this.hostPort.setValue(this.shellConnect.hostPort());
+        this.charset.setValue(this.shellConnect.getCharset());
+        this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
+        // 认证处理
+        this.userName.setText(this.shellConnect.getUser());
+        this.password.setText(this.shellConnect.getPassword());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.connectAddTitle();
-    }
-
-    /**
-     * 选择背景图片
-     */
-    @FXML
-    private void chooseBackgroundImage() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
-        if (file != null) {
-            this.backgroundImage.setText(file.getPath());
-        }
+        return I18nHelper.connectUpdateTitle();
     }
 }

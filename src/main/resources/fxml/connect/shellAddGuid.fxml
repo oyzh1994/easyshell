@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
-        realHeight="320">
+        realHeight="380">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">
@@ -36,6 +36,11 @@
         <FXToggleGroup fx:id="type"/>
     </fx:define>
     <FXRadioButton toggleGroup="$type" text="SSH" selected="true" userData="ssh">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="Sftp" userData="sftp">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpManager;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -17,7 +18,7 @@ import java.io.File;
  */
 public class ShellSftpDownloadManager extends ShellSftpManager<ShellSftpDownloadMonitor, ShellSftpDownloadTask> {
 
-    public void fileDownload(File localFile, ShellSftpFile remoteFile, ShellSSHClient client) {
+    public void fileDownload(File localFile, ShellSftpFile remoteFile, ShellSftpClient client) {
         this.tasks.add(new ShellSftpDownloadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doDownload();

@@ -6,13 +6,14 @@ import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSftpClientUtil;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportMonitor;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
@@ -193,12 +194,12 @@ public class ShellSftpTransportController extends StageController {
     /**
      * 来源客户端
      */
-    private ShellSSHClient sourceClient;
+    private ShellSftpClient sourceClient;
 
     /**
      * 目标客户端
      */
-    private ShellSSHClient targetClient;
+    private ShellSftpClient targetClient;
 
     /**
      * 源名称
@@ -312,7 +313,7 @@ public class ShellSftpTransportController extends StageController {
      * @param sourceClient 源连接
      * @param targetClient 目标连接
      */
-    private void doTransport(List<ShellSftpFile> files, String remotePath, ShellSSHClient sourceClient, ShellSSHClient targetClient) {
+    private void doTransport(List<ShellSftpFile> files, String remotePath, ShellSftpClient sourceClient, ShellSftpClient targetClient) {
         for (ShellSftpFile file : files) {
             if (file.isCurrentFile() || file.isReturnDirectory()) {
                 continue;
@@ -478,7 +479,7 @@ public class ShellSftpTransportController extends StageController {
                     try {
                         // 检查来源
                         if (this.sourceClient == null || this.sourceClient.isClosed()) {
-                            this.sourceClient = ShellSSHClientUtil.newClient(sourceInfo);
+                            this.sourceClient = ShellSftpClientUtil.newClient(sourceInfo);
                             this.sourceClient.start(2500);
                         }
                         if (!this.sourceClient.isConnected()) {
@@ -490,7 +491,7 @@ public class ShellSftpTransportController extends StageController {
                         }
                         // 检查目标
                         if (this.targetClient == null || this.targetClient.isClosed()) {
-                            this.targetClient = ShellSSHClientUtil.newClient(targetInfo);
+                            this.targetClient = ShellSftpClientUtil.newClient(targetInfo);
                             this.targetClient.start(2500);
                         }
                         if (!this.targetClient.isConnected()) {

@@ -7,7 +7,6 @@ import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -21,6 +20,7 @@ import java.util.Queue;
 import java.util.Vector;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author oyzh
@@ -28,10 +28,10 @@ import java.util.function.Consumer;
  */
 public class ShellSftpDeleteManager implements AutoCloseable {
 
-    private ShellSSHClient client;
+    private Supplier<ShellSftp> sftpSupplier;
 
-    public ShellSftpDeleteManager(ShellSSHClient client) {
-        this.client = client;
+    public ShellSftpDeleteManager(Supplier<ShellSftp> sftpSupplier) {
+        this.sftpSupplier = sftpSupplier;
     }
 
     private final Queue<ShellSftpFile> files = new ArrayDeque<>();
@@ -104,7 +104,7 @@ public class ShellSftpDeleteManager implements AutoCloseable {
                 if (deleteFile == null) {
                     break;
                 }
-                ShellSftp sftp = this.client.openSftp();
+                ShellSftp sftp = this.sftpSupplier.get();
                 try {
                     deleteFile.startWaiting();
                     if (deleteFile.isDir()) {
@@ -174,7 +174,7 @@ public class ShellSftpDeleteManager implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        this.client = null;
+        this.sftpSupplier = null;
         this.deleteEndedCallbacks.clear();
         this.deleteDeletedCallbacks.clear();
     }
