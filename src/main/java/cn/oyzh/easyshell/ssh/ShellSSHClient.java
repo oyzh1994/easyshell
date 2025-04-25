@@ -270,8 +270,6 @@ public class ShellSSHClient extends ShellClient {
         }
         // 设置配置
         this.session.setConfig(config);
-        // 超时连接
-        this.session.setTimeout(this.shellConnect.connectTimeOutMs());
         // 初始化代理
         this.initProxy();
     }
@@ -326,12 +324,14 @@ public class ShellSSHClient extends ShellClient {
             return;
         }
         try {
+            // 初始化连接池
+            this.state.set(ShellSSHConnState.CONNECTING);
             // 初始化客户端
             this.initClient();
             // 开始连接时间
             long starTime = System.currentTimeMillis();
-            // 初始化连接池
-            this.state.set(ShellSSHConnState.CONNECTING);
+            // 连接超时
+            this.session.setTimeout(timeout);
             // 执行连接
             if (this.session != null) {
                 this.session.connect(timeout);
@@ -349,10 +349,10 @@ public class ShellSSHClient extends ShellClient {
                 this.state.set(ShellSSHConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
-            JulLog.info("shellClient connected used:{}ms.", (endTime - starTime));
+            JulLog.info("shellSSHClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
             this.state.set(ShellSSHConnState.FAILED);
-            JulLog.warn("shellClient start error", ex);
+            JulLog.warn("shellSSHClient start error", ex);
             throw new ShellException(ex);
         }
     }

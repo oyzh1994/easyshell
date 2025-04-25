@@ -1,7 +1,9 @@
-package cn.oyzh.easyshell.tabs.ssh;
+package cn.oyzh.easyshell.tabs.sftp;
 
 import cn.oyzh.easyshell.ShellConst;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpFileConnectTableView;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
@@ -15,21 +17,21 @@ import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
-import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.AnimationUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -44,13 +46,13 @@ import java.util.List;
  * @author oyzh
  * @since 2025/03/11
  */
-public class ShellSftpTabController extends SubTabController {
+public class ShellSftpTabController extends RichTabController {
 
     /**
-     * tab
+     * 根节点
      */
     @FXML
-    private FXTab root;
+    private FXVBox root;
 
     /**
      * 当前位置
@@ -93,18 +95,6 @@ public class ShellSftpTabController extends SubTabController {
      */
     @FXML
     private FXProgressTextBar downloadProgress;
-
-//    /**
-//     * 文件管理组件
-//     */
-//    @FXML
-//    private SVGGlyph sftpBox;
-
-//    /**
-//     * 隐藏文件
-//     */
-//    @FXML
-//    private FXToggleSwitch hiddenFile;
 
     /**
      * 刷新文件
@@ -190,58 +180,87 @@ public class ShellSftpTabController extends SubTabController {
      */
     private ShellSftpDownloadManager downloadManager;
 
+    private ShellSftpClient client;
+
+    private ShellConnect shellConnect;
+
+    public ShellConnect getShellConnect() {
+        return shellConnect;
+    }
+
     /**
      * 初始化
      */
-    private void init() {
-        if (this.initialized) {
-            return;
-        }
-        this.initialized = true;
-        this.fileTable.setClient(this.sftpClient());
-        this.deleteManager = this.sftpClient().getDeleteManager();
-        this.uploadManager = this.sftpClient().getUploadManager();
-        this.downloadManager = this.sftpClient().getDownloadManager();
-        // 上传
-        this.uploadManager.addMonitorFailedCallback(this, this::uploadFailed);
-        this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
-        this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
-        this.uploadManager.addTaskStatusChangedCallback(this, this::uploadStatusChanged);
-        // 下载
-        this.downloadManager.addMonitorFailedCallback(this, this::downloadFailed);
-        this.downloadManager.addMonitorChangedCallback(this, this::downloadMonitorChanged);
-        this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
-        this.downloadManager.addTaskStatusChangedCallback(this, this::downloadStatusChanged);
-        // 删除
-        this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
-        this.deleteManager.addDeleteFailedCallback(this, this::deleteFailed);
-        this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
-        // 显示隐藏文件
-        this.hiddenFile(this.setting.isShowHiddenFile());
-        // 上传回调
-        this.fileTable.setUploadFileCallback(files -> {
-            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.uploadBox);
-        });
-        // 下载回调
-        this.fileTable.setDownloadFileCallback(files -> {
-            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.downloadBox);
+    public void init(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
+        this.client = new ShellSftpClient(shellConnect);
+        StageManager.showMask(() -> {
+            try {
+                if (!this.client.isConnected()) {
+                    this.client.start();
+                }
+                if (!this.client.isConnected()) {
+                    MessageBox.warn(I18nHelper.connectFail());
+                    this.closeTab();
+                    return;
+                }
+                // 收起左侧
+                if (this.setting.isHiddenLeftAfterConnected()) {
+                    ShellEventUtil.layout1();
+                }
+                this.fileTable.setClient(this.client);
+                this.deleteManager = this.client.getDeleteManager();
+                this.uploadManager = this.client.getUploadManager();
+                this.downloadManager = this.client.getDownloadManager();
+                // 上传
+                this.uploadManager.addMonitorFailedCallback(this, this::uploadFailed);
+                this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
+                this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
+                this.uploadManager.addTaskStatusChangedCallback(this, this::uploadStatusChanged);
+                // 下载
+                this.downloadManager.addMonitorFailedCallback(this, this::downloadFailed);
+                this.downloadManager.addMonitorChangedCallback(this, this::downloadMonitorChanged);
+                this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
+                this.downloadManager.addTaskStatusChangedCallback(this, this::downloadStatusChanged);
+                // 删除
+                this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
+                this.deleteManager.addDeleteFailedCallback(this, this::deleteFailed);
+                this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
+                // 显示隐藏文件
+                this.hiddenFile(this.setting.isShowHiddenFile());
+                // 上传回调
+                this.fileTable.setUploadFileCallback(files -> {
+                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.uploadBox);
+                });
+                // 下载回调
+                this.fileTable.setDownloadFileCallback(files -> {
+                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.downloadBox);
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+                this.closeTab();
+            }
         });
     }
 
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.client().close();
+        this.client.close();
+        // 展开左侧
+        if (this.setting.isHiddenLeftAfterConnected()) {
+            ShellEventUtil.layout2();
+        }
     }
 
     @Override
     public void onTabInit(RichTab tab) {
         try {
             super.onTabInit(tab);
-            this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
                     System.setProperty(ShellConst.SFTP_VISIBLE, "1");
-                    this.init();
                 } else {
                     System.clearProperty(ShellConst.SFTP_VISIBLE);
                 }
@@ -256,17 +275,6 @@ public class ShellSftpTabController extends SubTabController {
                     this.location.text(t1);
                 }
             });
-//            // 隐藏文件
-//            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
-//            this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
-//                try {
-//                    this.fileTable.setShowHiddenFile(t1);
-//                    this.setting.setShowHiddenFile(t1);
-//                    this.settingStore.update(this.setting);
-//                } catch (Exception ex) {
-//                    MessageBox.exception(ex);
-//                }
-//            });
             // 文件过滤
             this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
                 try {
@@ -280,15 +288,11 @@ public class ShellSftpTabController extends SubTabController {
                 this.fileTable.cd(path);
             });
             // 快捷键
-            this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
                 } else if (KeyboardUtil.hide_keyCombination.match(event)) {
                     this.hiddenFile();
-//                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
-//                    this.refreshFile();
-//                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
-//                    this.deleteFile();
                 }
             });
             // 绑定提示快捷键
@@ -302,17 +306,8 @@ public class ShellSftpTabController extends SubTabController {
         }
     }
 
-    @Override
-    public ShellSSHTabController parent() {
-        return (ShellSSHTabController) super.parent();
-    }
-
-    public ShellSSHClient client() {
-        return this.parent().getClient();
-    }
-
-    public ShellSftpClient sftpClient() {
-        return this.client().getSftpClient();
+    public ShellSftpClient client() {
+        return this.client;
     }
 
     @FXML
@@ -537,7 +532,7 @@ public class ShellSftpTabController extends SubTabController {
     /**
      * 删除失败
      *
-     * @param file   文件
+     * @param file      文件
      * @param exception 异常
      */
     private void deleteFailed(ShellSftpFile file, Throwable exception) {

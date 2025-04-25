@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
+import cn.oyzh.easyshell.tabs.sftp.ShellSftpTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
@@ -176,6 +177,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellLocalTab(event.data());
         } else if (connect.isTelnetType()) {
             tab = new ShellTelnetTab(event.data());
+        } else if (connect.isSftpType()) {
+            tab = new ShellSftpTab(event.data());
         } else {
             tab = new ShellSerialTab(event.data());
         }

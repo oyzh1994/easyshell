@@ -23,13 +23,13 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellSftpClient extends ShellClient   {
+public class ShellSftpClient extends ShellClient {
 
     public ShellSftpClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
 
-    public ShellSftpClient(ShellConnect shellConnect,Session session) {
+    public ShellSftpClient(ShellConnect shellConnect, Session session) {
         this.shellConnect = shellConnect;
         this.session = session;
     }
@@ -42,8 +42,8 @@ public class ShellSftpClient extends ShellClient   {
             JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
         }
         // 连接信息
-        String hostIp = this.shellConnect.hostIp();
         int port = this.shellConnect.hostPort();
+        String hostIp = this.shellConnect.hostIp();
         // 创建会话
         this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         // 设置密码
@@ -54,8 +54,6 @@ public class ShellSftpClient extends ShellClient   {
         config.put("StrictHostKeyChecking", "no");
         // 设置配置
         this.session.setConfig(config);
-        // 超时连接
-        this.session.setTimeout(this.shellConnect.connectTimeOutMs());
     }
 
     @Override
@@ -103,12 +101,15 @@ public class ShellSftpClient extends ShellClient   {
             long starTime = System.currentTimeMillis();
             // 执行连接
             if (this.session != null) {
+                // 连接超时
+                this.session.setTimeout(timeout);
+                // 连接
                 this.session.connect(timeout);
             }
             long endTime = System.currentTimeMillis();
-            JulLog.info("shellClient connected used:{}ms.", (endTime - starTime));
+            JulLog.info("shellSftpClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            JulLog.warn("shellClient start error", ex);
+            JulLog.warn("shellSftpClient start error", ex);
             throw new ShellException(ex);
         }
     }
