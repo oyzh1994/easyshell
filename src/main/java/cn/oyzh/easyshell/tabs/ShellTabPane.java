@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
+import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
@@ -179,6 +180,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellTelnetTab(event.data());
         } else if (connect.isSFTPType()) {
             tab = new ShellSFTPTab(event.data());
+        } else if (connect.isFTPType()) {
+            tab = new ShellFTPTab(event.data());
         } else {
             tab = new ShellSerialTab(event.data());
         }
