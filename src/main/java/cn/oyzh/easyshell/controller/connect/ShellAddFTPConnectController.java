@@ -35,9 +35,9 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellAddSftpConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellAddFTPConnect.fxml"
 )
-public class ShellAddSftpConnectController extends StageController {
+public class ShellAddFTPConnectController extends StageController {
 
     /**
      * 用户名

@@ -5,17 +5,19 @@ import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
 import cn.oyzh.easyshell.controller.connect.ShellAddLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddSftpConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateSftpConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
@@ -92,9 +94,20 @@ public class ShellViewFactory {
         }
     }
 
-    public static void addSftpConnect(ShellGroup group) {
+    public static void addSFTPConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddSftpConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddSFTPConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void addFTPConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddFTPConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -147,9 +160,20 @@ public class ShellViewFactory {
         }
     }
 
-    public static void updateSftpConnect(ShellConnect connect) {
+    public static void updateSFTPConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateSftpConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSFTPConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void updateFTPConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateFTPConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

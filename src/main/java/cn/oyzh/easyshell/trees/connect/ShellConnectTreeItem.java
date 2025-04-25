@@ -198,8 +198,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateLocalConnect(this.value);
         } else if (this.value.isTelnetType()) {
             ShellViewFactory.updateTelnetConnect(this.value);
-        } else if (this.value.isSftpType()) {
-            ShellViewFactory.updateSftpConnect(this.value);
+        } else if (this.value.isSFTPType()) {
+            ShellViewFactory.updateSFTPConnect(this.value);
+        } else if (this.value.isFTPType()) {
+            ShellViewFactory.updateFTPConnect(this.value);
         } else if(this.value.isSerialType()) {
             ShellViewFactory.updateSerialConnect(this.value);
         }

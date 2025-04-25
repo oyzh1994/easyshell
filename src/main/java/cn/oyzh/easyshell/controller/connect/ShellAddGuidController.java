@@ -50,7 +50,9 @@ public class ShellAddGuidController extends StageController {
             } else if ("telnet".equals(this.type.selectedUserData())) {
                 ShellViewFactory.addTelnetConnect(group);
             } else if ("sftp".equals(this.type.selectedUserData())) {
-                ShellViewFactory.addSftpConnect(group);
+                ShellViewFactory.addSFTPConnect(group);
+            } else if ("ftp".equals(this.type.selectedUserData())) {
+                ShellViewFactory.addFTPConnect(group);
             } else {
                 ShellViewFactory.addSerialConnect(group);
             }

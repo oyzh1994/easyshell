@@ -46,7 +46,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/25
  */
-public class ShellSftpTabController extends RichTabController {
+public class ShellSFTPTabController extends RichTabController {
 
     /**
      * 根节点

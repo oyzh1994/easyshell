@@ -627,7 +627,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "serial".equalsIgnoreCase(this.type);
     }
 
-    public boolean isSftpType() {
+    public boolean isSFTPType() {
         return "sftp".equalsIgnoreCase(this.type);
+    }
+
+    public boolean isFTPType() {
+        return "ftp".equalsIgnoreCase(this.type);
     }
 }

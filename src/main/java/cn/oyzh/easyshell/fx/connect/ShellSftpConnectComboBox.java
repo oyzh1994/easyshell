@@ -27,7 +27,7 @@ public class ShellSftpConnectComboBox extends FXComboBox<ShellConnect> {
             }
         });
         List<ShellConnect> connects = ShellConnectStore.INSTANCE.load();
-        connects = connects.stream().filter(s -> s.isSSHType() || s.isSftpType()).collect(Collectors.toList());
+        connects = connects.stream().filter(s -> s.isSSHType() || s.isSFTPType()).collect(Collectors.toList());
         this.setItem(connects);
     }
 }

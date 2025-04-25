@@ -14,15 +14,15 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellSftpTab extends RichTab {
+public class ShellSFTPTab extends RichTab {
 
-    public ShellSftpTab(ShellConnectTreeItem item) {
+    public ShellSFTPTab(ShellConnectTreeItem item) {
         this.init(item);
     }
 
     @Override
     protected String url() {
-        return "/tabs/sftp/shellSftpTab.fxml";
+        return "/tabs/sftp/shellSFTPTab.fxml";
     }
 
     @Override
@@ -58,8 +58,8 @@ public class ShellSftpTab extends RichTab {
     }
 
     @Override
-    public ShellSftpTabController controller() {
-        return (ShellSftpTabController) super.controller();
+    public ShellSFTPTabController controller() {
+        return (ShellSFTPTabController) super.controller();
     }
 
     /**
