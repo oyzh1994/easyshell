@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.serial.SerialClient;
+import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.ssh.SSHClient;
 import cn.oyzh.easyshell.telnet.TelnetClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -88,7 +88,7 @@ public class ShellConnectUtil {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
                 } else {
-                    SerialClient client = new SerialClient(shellConnect);
+                    ShellSerialClient client = new ShellSerialClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

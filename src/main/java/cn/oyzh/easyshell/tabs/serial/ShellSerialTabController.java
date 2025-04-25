@@ -4,9 +4,9 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.serial.SerialClient;
-import cn.oyzh.easyshell.serial.SerialTermWidget;
-import cn.oyzh.easyshell.serial.SerialTtyConnector;
+import cn.oyzh.easyshell.serial.ShellSerialClient;
+import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
+import cn.oyzh.easyshell.serial.ShellSerialTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -34,14 +34,14 @@ public class ShellSerialTabController extends RichTabController {
      * 终端组件
      */
     @FXML
-    private SerialTermWidget widget;
+    private ShellSerialTermWidget widget;
 
     /**
      * serial客户端
      */
-    private SerialClient client;
+    private ShellSerialClient client;
 
-    public SerialClient getClient() {
+    public ShellSerialClient getClient() {
         return client;
     }
 
@@ -63,7 +63,7 @@ public class ShellSerialTabController extends RichTabController {
      */
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
-        SerialTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellSerialTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.initSerial(this.client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
@@ -87,7 +87,7 @@ public class ShellSerialTabController extends RichTabController {
      */
     public void init(ShellConnectTreeItem treeItem) {
         this.treeItem = treeItem;
-        this.client = new SerialClient(treeItem.value());
+        this.client = new ShellSerialClient(treeItem.value());
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {

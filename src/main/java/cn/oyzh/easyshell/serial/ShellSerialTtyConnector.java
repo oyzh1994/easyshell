@@ -13,19 +13,19 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class SerialTtyConnector extends ShellDefaultTtyConnector {
+public class ShellSerialTtyConnector extends ShellDefaultTtyConnector {
 
-    private SerialClient client;
+    private ShellSerialClient client;
 
-    private SerialDataListener listener;
+    private ShellSerialDataListener listener;
 
-    public void initSerial(SerialClient client) {
+    public void initSerial(ShellSerialClient client) {
         this.client = client;
-        this.listener = new SerialDataListener();
+        this.listener = new ShellSerialDataListener();
         this.client.addDataListener(this.listener);
     }
 
-    public SerialTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    public ShellSerialTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 

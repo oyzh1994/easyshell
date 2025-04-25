@@ -13,7 +13,7 @@ import java.util.Queue;
  * @author oyzh
  * @since 2025-04-24
  */
-public class SerialDataListener implements SerialPortDataListener {
+public class ShellSerialDataListener implements SerialPortDataListener {
 
     /**
      * 数据队列

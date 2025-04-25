@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.serial.SerialTermWidget?>
+<?import cn.oyzh.easyshell.serial.ShellSerialTermWidget?>
 <?import cn.oyzh.easyshell.telnet.TelnetTermWidget?>
 <TelnetTermWidget fx:id="widget" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
                   fx:controller="cn.oyzh.easyshell.tabs.telnet.ShellTelnetTabController">

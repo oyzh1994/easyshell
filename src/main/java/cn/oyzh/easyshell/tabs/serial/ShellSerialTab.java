@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.serial;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.serial.SerialClient;
+import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -76,7 +76,7 @@ public class ShellSerialTab extends RichTab {
      *
      * @return shell客户端
      */
-    public SerialClient client() {
+    public ShellSerialClient client() {
         return this.controller().getClient();
     }
 }

@@ -12,13 +12,13 @@ import java.io.IOException;
  * @author oyzh
  * @since 2025-04-24
  */
-public class SerialClient implements BaseClient {
+public class ShellSerialClient implements BaseClient {
 
     private SerialPort serialPort;
 
     private final ShellConnect shellConnect;
 
-    public SerialClient(ShellConnect shellConnect) {
+    public ShellSerialClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
 
@@ -90,7 +90,7 @@ public class SerialClient implements BaseClient {
         }
     }
 
-    public void addDataListener(SerialDataListener listener) {
+    public void addDataListener(ShellSerialDataListener listener) {
         if (this.serialPort != null) {
             this.serialPort.addDataListener(listener);
         }
