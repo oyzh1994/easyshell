@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTabPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellConnectTabController"
+           fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTabController"
            rotateGraphic="true" side="RIGHT">
     <fx:include fx:id="termTab" source="shellTermTab.fxml"/>
     <fx:include fx:id="sftpTab" source="shellSftpTab.fxml"/>

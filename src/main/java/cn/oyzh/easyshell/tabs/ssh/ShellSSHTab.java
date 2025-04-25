@@ -14,15 +14,15 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellConnectTab extends RichTab {
+public class ShellSSHTab extends RichTab {
 
-    public ShellConnectTab(ShellConnectTreeItem item) {
+    public ShellSSHTab(ShellConnectTreeItem item) {
         this.init(item);
     }
 
     @Override
     protected String url() {
-        return "/tabs/connect/shellConnectTab.fxml";
+        return "/tabs/ssh/shellConnectTab.fxml";
     }
 
     @Override
@@ -59,8 +59,8 @@ public class ShellConnectTab extends RichTab {
     }
 
     @Override
-    public ShellConnectTabController controller() {
-        return (ShellConnectTabController) super.controller();
+    public ShellSSHTabController controller() {
+        return (ShellSSHTabController) super.controller();
     }
 
     /**

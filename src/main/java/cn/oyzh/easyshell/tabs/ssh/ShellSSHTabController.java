@@ -23,7 +23,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/16
  */
-public class ShellConnectTabController extends ParentTabController {
+public class ShellSSHTabController extends ParentTabController {
 
     /**
      * shell客户端

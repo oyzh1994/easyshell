@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.shell.ShellClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
-import cn.oyzh.easyshell.tabs.ssh.ShellConnectTab;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
@@ -152,9 +152,9 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    private ShellConnectTab getConnectTab(ShellClient client) {
+    private ShellSSHTab getConnectTab(ShellClient client) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellConnectTab tab1 && tab1.client() == client) {
+            if (tab instanceof ShellSSHTab tab1 && tab1.client() == client) {
                 return tab1;
             }
         }
@@ -171,7 +171,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         FXTab tab;
         ShellConnect connect = event.connect();
         if (connect.isSSHType()) {
-            tab = new ShellConnectTab(event.data());
+            tab = new ShellSSHTab(event.data());
         } else if (connect.isLocalType()) {
             tab = new ShellLocalTab(event.data());
         } else if (connect.isTelnetType()) {
@@ -192,7 +192,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionClosed(ShellConnectionClosedEvent event) {
-        ShellConnectTab tab = this.getConnectTab(event.data());
+        ShellSSHTab tab = this.getConnectTab(event.data());
         if (tab != null) {
             tab.closeTab();
         }
@@ -208,7 +208,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         ShellConnect connect = event.data();
         List<Tab> closeTabs = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellConnectTab tab1) {
+            if (tab instanceof ShellSSHTab tab1) {
                 if (tab1.shellConnect() == connect) {
                     closeTabs.add(tab);
                 }

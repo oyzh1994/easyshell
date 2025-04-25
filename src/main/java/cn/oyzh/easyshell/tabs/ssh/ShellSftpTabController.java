@@ -302,8 +302,8 @@ public class ShellSftpTabController extends SubTabController {
     }
 
     @Override
-    public ShellConnectTabController parent() {
-        return (ShellConnectTabController) super.parent();
+    public ShellSSHTabController parent() {
+        return (ShellSSHTabController) super.parent();
     }
 
     public ShellClient client() {
