@@ -448,13 +448,13 @@ public class SSHClient implements BaseClient {
         return this.shellConnect.getName();
     }
 
-    private ShellShell shell;
+    private SSHShell shell;
 
-    public ShellShell getShell() {
+    public SSHShell getShell() {
         return shell;
     }
 
-    public ShellShell openShell() {
+    public SSHShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
@@ -471,7 +471,7 @@ public class SSHClient implements BaseClient {
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
-                this.shell = new ShellShell(channel);
+                this.shell = new SSHShell(channel);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

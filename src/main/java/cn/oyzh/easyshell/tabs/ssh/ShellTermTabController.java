@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ssh.SSHClient;
-import cn.oyzh.easyshell.ssh.ShellShell;
+import cn.oyzh.easyshell.ssh.SSHShell;
 import cn.oyzh.easyshell.ssh.SSHTermWidget;
 import cn.oyzh.easyshell.ssh.SSHTtyConnector;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -40,7 +40,7 @@ public class ShellTermTabController extends SubTabController {
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
-        ShellShell shell = this.client().getShell();
+        SSHShell shell = this.client().getShell();
         Charset charset = this.client().getCharset();
         SSHTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.initShell(shell);
@@ -54,7 +54,7 @@ public class ShellTermTabController extends SubTabController {
         int sizeW = (int) this.widget.getTerminalPanel().getWidth();
         int sizeH = (int) this.widget.getTerminalPanel().getHeight();
         TermSize termSize = this.widget.getTermSize();
-        ShellShell shell = this.client().getShell();
+        SSHShell shell = this.client().getShell();
         shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
@@ -70,7 +70,7 @@ public class ShellTermTabController extends SubTabController {
 
     public void init() throws IOException, JSchException {
         SSHClient client = this.client();
-        ShellShell shell = client.openShell();
+        SSHShell shell = client.openShell();
         this.initWidget();
         shell.connect(client.connectTimeout());
         if (!shell.isConnected()) {
