@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import com.jcraft.jsch.SftpException;
 
 import java.io.ByteArrayInputStream;

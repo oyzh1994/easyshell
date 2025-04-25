@@ -7,7 +7,7 @@ import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.ShellSftp;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;

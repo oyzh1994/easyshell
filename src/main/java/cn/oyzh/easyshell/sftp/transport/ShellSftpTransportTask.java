@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 

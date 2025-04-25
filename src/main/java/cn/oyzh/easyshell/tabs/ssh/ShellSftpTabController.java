@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;

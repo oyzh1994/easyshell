@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.shell;
+package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;

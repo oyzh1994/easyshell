@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.shell;
+package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.pty4j.PtyProcess;

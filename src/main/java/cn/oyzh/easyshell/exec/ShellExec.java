@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.exec;
 
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.util.List;

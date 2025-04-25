@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigBashTabController;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigEnvironmentTabController;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigHostsTabController;

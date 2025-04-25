@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.shell;
+package cn.oyzh.easyshell.ssh;
 
 /**
  * shell连接状态

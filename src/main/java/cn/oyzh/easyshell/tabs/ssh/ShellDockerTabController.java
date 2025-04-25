@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerContainerTabController;
 import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerDaemonTabController;
 import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerExtraTabController;

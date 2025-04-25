@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.process;
 
 import cn.oyzh.easyshell.server.ShellServerExec;
-import cn.oyzh.easyshell.shell.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.util.Collections;

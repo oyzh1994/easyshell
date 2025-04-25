@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.shell.ShellClient;
-import cn.oyzh.easyshell.shell.ShellShell;
-import cn.oyzh.easyshell.shell.ShellTermWidget;
-import cn.oyzh.easyshell.shell.ShellTtyConnector;
+import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellShell;
+import cn.oyzh.easyshell.ssh.ShellTermWidget;
+import cn.oyzh.easyshell.ssh.ShellTtyConnector;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
