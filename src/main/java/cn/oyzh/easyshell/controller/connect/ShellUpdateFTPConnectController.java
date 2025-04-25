@@ -139,7 +139,7 @@ public class ShellUpdateFTPConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("telnet");
+            shellConnect.setType("ftp");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());

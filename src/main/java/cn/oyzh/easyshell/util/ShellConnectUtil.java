@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -79,6 +80,16 @@ public class ShellConnectUtil {
                     }
                 } else if (shellConnect.isTelnetType()) {
                     ShellTelnetClient client = new ShellTelnetClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+                } else if (shellConnect.isSFTPType()) {
+                    ShellSftpClient client = new ShellSftpClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

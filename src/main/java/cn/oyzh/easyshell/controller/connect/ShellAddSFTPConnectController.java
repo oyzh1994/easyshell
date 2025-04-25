@@ -142,7 +142,7 @@ public class ShellAddSFTPConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("telnet");
+            shellConnect.setType("sftp");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             // 认证信息
