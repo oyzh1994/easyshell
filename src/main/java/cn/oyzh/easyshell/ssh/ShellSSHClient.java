@@ -330,10 +330,11 @@ public class ShellSSHClient extends ShellClient {
             this.initClient();
             // 开始连接时间
             long starTime = System.currentTimeMillis();
-            // 连接超时
-            this.session.setTimeout(timeout);
             // 执行连接
             if (this.session != null) {
+                // 连接超时
+                this.session.setTimeout(timeout);
+                // 连接
                 this.session.connect(timeout);
             }
             // 判断连接结果

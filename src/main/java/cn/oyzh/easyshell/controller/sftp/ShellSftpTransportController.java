@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSftpTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
@@ -14,7 +14,6 @@ import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportMonitor;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
-import cn.oyzh.easyshell.ssh.ShellSSHClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -75,7 +74,7 @@ public class ShellSftpTransportController extends StageController {
      * 来源信息
      */
     @FXML
-    private ShellSSHConnectComboBox sourceInfo;
+    private ShellSftpConnectComboBox sourceInfo;
 
 //    /**
 //     * 来源字符集
@@ -93,7 +92,7 @@ public class ShellSftpTransportController extends StageController {
      * 目标信息
      */
     @FXML
-    private ShellSSHConnectComboBox targetInfo;
+    private ShellSftpConnectComboBox targetInfo;
 
 //    /**
 //     * 目标字符集

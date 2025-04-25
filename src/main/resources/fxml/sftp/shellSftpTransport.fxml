@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox?>
+<?import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSftpTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
@@ -69,11 +69,11 @@
                             <Insets left="30" top="15"/>
                         </VBox.margin>
                     </FXLabel>
-                    <ShellSSHConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
+                    <ShellSftpConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
                         <VBox.margin>
                             <Insets left="30" top="5"/>
                         </VBox.margin>
-                    </ShellSSHConnectComboBox>
+                    </ShellSftpConnectComboBox>
                     <!--                    <FXLabel text="%base.charset" realHeight="30">-->
                     <!--                        <VBox.margin>-->
                     <!--                            <Insets left="30" top="15"/>-->
@@ -127,11 +127,11 @@
                             <Insets left="30" top="15"/>
                         </VBox.margin>
                     </FXLabel>
-                    <ShellSSHConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                    <ShellSftpConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
                         <VBox.margin>
                             <Insets left="30" top="5"/>
                         </VBox.margin>
-                    </ShellSSHConnectComboBox>
+                    </ShellSftpConnectComboBox>
                     <!--                    <FXLabel text="%base.charset" realHeight="30">-->
                     <!--                        <VBox.margin>-->
                     <!--                            <Insets left="30" top="15"/>-->

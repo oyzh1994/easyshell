@@ -596,7 +596,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     public String getType() {
-        return type;
+        return StringUtil.isBlank(this.type) ? "ssh" : type;
     }
 
     public void setType(String type) {

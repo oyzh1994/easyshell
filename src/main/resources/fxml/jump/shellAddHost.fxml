@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox?>
+<?import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -29,12 +29,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ShellSSHConnectComboBox fx:id="host" require="true" realHeight="30"
+    <ShellSftpConnectComboBox fx:id="host" require="true" realHeight="30"
                              flexWidth="100% - 180" tipText="%base.chooseTip">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ShellSSHConnectComboBox>
+    </ShellSftpConnectComboBox>
     <FXHBox flexWidth="100%" realHeight="50">
         <TestButton onAction="#testConnect" iconSizePercent="0.8">
             <HBox.margin>

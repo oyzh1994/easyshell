@@ -40,7 +40,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="Sftp" userData="sftp">
+    <FXRadioButton toggleGroup="$type" text="SFTP" userData="sftp">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
