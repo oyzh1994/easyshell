@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.test;
 
-import cn.oyzh.easyshell.x11.X11Manager;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import org.junit.Test;
 
 public class XServerTest {
 
     @Test
     public void test1() {
-        X11Manager.startXServer();
+        ShellX11Manager.startXServer();
         System.out.println("1111");
     }
 }

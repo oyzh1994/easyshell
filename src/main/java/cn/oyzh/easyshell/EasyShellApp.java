@@ -23,7 +23,7 @@ import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
-import cn.oyzh.easyshell.x11.X11Manager;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
@@ -157,7 +157,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
     public void stop() {
         super.stop();
         // 关闭x11服务
-        X11Manager.stopXServer();
+        ShellX11Manager.stopXServer();
         EventListener.super.unregister();
     }
 

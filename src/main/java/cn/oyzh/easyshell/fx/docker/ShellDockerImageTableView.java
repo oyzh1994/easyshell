@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.docker.ShellDockerHistory;
 import cn.oyzh.easyshell.docker.ShellDockerImage;
-import cn.oyzh.easyshell.docker.DockerParser;
+import cn.oyzh.easyshell.docker.ShellDockerParser;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -74,7 +74,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
 
     public void loadImage() {
         String output = this.exec.docker_images();
-        this.images = DockerParser.images(output);
+        this.images = ShellDockerParser.images(output);
         this.setItem(this.doFilter(this.images));
     }
 
@@ -179,7 +179,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_history(image.getImageId());
-                List<ShellDockerHistory> histories = DockerParser.history(output);
+                List<ShellDockerHistory> histories = ShellDockerParser.history(output);
                 FXUtil.runLater(() -> {
                     StageAdapter adapter = StageManager.parseStage(ShellDockerHistoryController.class);
                     adapter.setProp("histories", histories);

@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
-import cn.oyzh.easyshell.x11.X11Util;
+import cn.oyzh.easyshell.x11.ShellX11Util;
 import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
@@ -641,9 +641,9 @@ public class SettingController extends StageController {
         String bin;
         if (OSUtil.isWindows()) {
             // 寻找存在的二进制命令
-            bin = X11Util.findExist(dir, setting.x11Binary());
+            bin = ShellX11Util.findExist(dir, setting.x11Binary());
         } else {
-            bin = X11Util.findExist(dir, "/bin/", setting.x11Binary());
+            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
         }
         if (bin != null) {
             MessageBox.info(I18nHelper.testSuccess());

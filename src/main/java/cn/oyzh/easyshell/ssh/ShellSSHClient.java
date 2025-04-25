@@ -28,7 +28,7 @@ import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
-import cn.oyzh.easyshell.x11.X11Manager;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
@@ -300,7 +300,7 @@ public class ShellSSHClient implements BaseClient {
                 this.session.setX11Port(x11Config.getPort());
                 // 本地转发，启动x11服务
                 if (x11Config.isLocal()) {
-                    X11Manager.startXServer();
+                    ShellX11Manager.startXServer();
                 }
             } else {
                 throw new RuntimeException("X11forwarding is enable but x11config is null");

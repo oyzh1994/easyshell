@@ -11,9 +11,9 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-12
  */
-public class DockerParser {
+public class ShellDockerParser {
 
-    private DockerParser() {
+    private ShellDockerParser() {
     }
 
     public static List<ShellDockerContainer> ps(String output) {

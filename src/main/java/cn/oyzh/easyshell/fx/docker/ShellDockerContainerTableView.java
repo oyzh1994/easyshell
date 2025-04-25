@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.controller.docker.ShellDockerPortController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerResourceController;
 import cn.oyzh.easyshell.docker.ShellDockerContainer;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.docker.DockerParser;
+import cn.oyzh.easyshell.docker.ShellDockerParser;
 import cn.oyzh.easyshell.docker.ShellDockerPort;
 import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -112,7 +112,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         } else {
             output = this.exec.docker_ps_exited();
         }
-        this.containers = DockerParser.ps(output);
+        this.containers = ShellDockerParser.ps(output);
         this.setItem(this.doFilter(this.containers));
     }
 
@@ -417,7 +417,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-                    ShellDockerResource resource = DockerParser.resource(output);
+                    ShellDockerResource resource = ShellDockerParser.resource(output);
                     FXUtil.runLater(() -> {
                         StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class);
                         adapter.setProp("exec", this.exec);
@@ -488,7 +488,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_port(container.getContainerId());
-                List<ShellDockerPort> ports = DockerParser.port(output);
+                List<ShellDockerPort> ports = ShellDockerParser.port(output);
                 FXUtil.runLater(() -> {
                     StageAdapter adapter = StageManager.parseStage(ShellDockerPortController.class);
                     adapter.setProp("ports", ports);

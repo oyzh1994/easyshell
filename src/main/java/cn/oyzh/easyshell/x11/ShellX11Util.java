@@ -9,7 +9,7 @@ import cn.oyzh.common.file.FileUtil;
  * @since 2025/03/09
  */
 
-public class X11Util {
+public class ShellX11Util {
 
     public static String findExist(String workdir, String[] x11Binary) {
         return findExist(workdir, "/", x11Binary);

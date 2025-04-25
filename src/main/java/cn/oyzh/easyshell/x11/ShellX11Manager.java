@@ -17,7 +17,7 @@ import java.io.File;
  * @author oyzh
  * @since 2025/03/08
  */
-public class X11Manager {
+public class ShellX11Manager {
 
     /**
      * x11进程
@@ -62,7 +62,7 @@ public class X11Manager {
         ThreadUtil.start(() -> {
             try {
                 // 寻找存在的二进制命令
-                String bin = X11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
+                String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
                 // 命令
                 StringBuilder command = new StringBuilder("cmd.exe /c start ");
                 // 二进制程序名称
@@ -154,7 +154,7 @@ public class X11Manager {
         ThreadUtil.start(() -> {
             try {
                 // 寻找存在的二进制命令
-                String bin = X11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
+                String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
                 // 工作目录
                 File dir = new File(setting.x11WorkDir());
                 // 构建进程
@@ -208,6 +208,6 @@ public class X11Manager {
 
     static {
         // 注册钩子
-        RuntimeUtil.addShutdownHook(new Thread(X11Manager::stopXServer));
+        RuntimeUtil.addShutdownHook(new Thread(ShellX11Manager::stopXServer));
     }
 }
