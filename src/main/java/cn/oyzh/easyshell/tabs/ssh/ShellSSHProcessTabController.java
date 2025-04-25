@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025/03/29
  */
-public class ShellProcessTabController extends SubTabController {
+public class ShellSSHProcessTabController extends SubTabController {
 
     /**
      * tab

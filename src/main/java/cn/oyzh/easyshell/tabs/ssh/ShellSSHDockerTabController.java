@@ -25,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/07/21
  */
-public class ShellDockerTabController extends ParentTabController {
+public class ShellSSHDockerTabController extends ParentTabController {
 
     /**
      * docker面板

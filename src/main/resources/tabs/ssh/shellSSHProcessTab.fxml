@@ -10,7 +10,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ProcessSVGGlyph?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <FXTab fx:id="root" text="%base.process1" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellProcessTabController">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHProcessTabController">
     <graphic>
         <ProcessSVGGlyph sizeStr="11"/>
     </graphic>

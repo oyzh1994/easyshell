@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -23,8 +23,8 @@ import javafx.fxml.FXML;
 public class ShellDockerExtraTabController extends SubTabController {
 
     @Override
-    public ShellDockerTabController parent() {
-        return (ShellDockerTabController) super.parent();
+    public ShellSSHDockerTabController parent() {
+        return (ShellSSHDockerTabController) super.parent();
     }
 
     public ShellSSHClient client() {

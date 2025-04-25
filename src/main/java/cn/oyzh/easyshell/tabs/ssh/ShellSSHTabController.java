@@ -44,7 +44,7 @@ public class ShellSSHTabController extends ParentTabController {
      * 终端
      */
     @FXML
-    private ShellTermTabController termTabController;
+    private ShellSSHTermTabController termTabController;
 
     /**
      * 文件
@@ -56,31 +56,31 @@ public class ShellSSHTabController extends ParentTabController {
      * 服务器信息
      */
     @FXML
-    private ShellServerTabController serverTabController;
+    private ShellSSHServerTabController serverTabController;
 
     /**
      * docker
      */
     @FXML
-    private ShellDockerTabController dockerTabController;
+    private ShellSSHDockerTabController dockerTabController;
 
     /**
      * 进程
      */
     @FXML
-    private ShellProcessTabController processTabController;
+    private ShellSSHProcessTabController processTabController;
 
     /**
      * 监控
      */
     @FXML
-    private ShellMonitorTabController monitorTabController;
+    private ShellSSHMonitorTabController monitorTabController;
 
     /**
      * 配置
      */
     @FXML
-    private ShellConfigTabController configTabController;
+    private ShellSSHConfigTabController configTabController;
 
     /**
      * 设置

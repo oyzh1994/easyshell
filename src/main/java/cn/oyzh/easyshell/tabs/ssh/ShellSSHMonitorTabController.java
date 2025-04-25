@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025/03/16
  */
-public class ShellMonitorTabController extends SubTabController {
+public class ShellSSHMonitorTabController extends SubTabController {
 
     /**
      * tab

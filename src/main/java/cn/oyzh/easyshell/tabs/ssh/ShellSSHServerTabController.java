@@ -25,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/12
  */
-public class ShellServerTabController extends ParentTabController {
+public class ShellSSHServerTabController extends ParentTabController {
 
     /**
      * tab

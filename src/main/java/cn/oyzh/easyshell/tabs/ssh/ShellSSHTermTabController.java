@@ -26,7 +26,7 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025/03/11
  */
-public class ShellTermTabController extends SubTabController {
+public class ShellSSHTermTabController extends SubTabController {
 
     /**
      * 终端组件

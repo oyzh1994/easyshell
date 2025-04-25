@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.fx.docker.ShellDockerImageTableView;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -103,8 +103,8 @@ public class ShellDockerImageTabController extends SubTabController {
     }
 
     @Override
-    public ShellDockerTabController parent() {
-        return (ShellDockerTabController) super.parent();
+    public ShellSSHDockerTabController parent() {
+        return (ShellSSHDockerTabController) super.parent();
     }
 
     public ShellSSHClient client() {

@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -142,7 +142,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
     }
 
     @Override
-    public ShellDockerTabController parent() {
-        return (ShellDockerTabController) super.parent();
+    public ShellSSHDockerTabController parent() {
+        return (ShellSSHDockerTabController) super.parent();
     }
 }

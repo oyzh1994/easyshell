@@ -31,7 +31,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/03/16
  */
-public class ShellConfigTabController extends ParentTabController {
+public class ShellSSHConfigTabController extends ParentTabController {
 
     /**
      * tab

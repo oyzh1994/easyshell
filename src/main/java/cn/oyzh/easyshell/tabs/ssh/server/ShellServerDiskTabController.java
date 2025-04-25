@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.exec.ShellDiskInfo;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellDiskInfoTableView;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.ShellServerTabController;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -60,8 +60,8 @@ public class ShellServerDiskTabController extends SubTabController {
     }
 
     @Override
-    public ShellServerTabController parent() {
-        return (ShellServerTabController) super.parent();
+    public ShellSSHServerTabController parent() {
+        return (ShellSSHServerTabController) super.parent();
     }
 
     public void init() {

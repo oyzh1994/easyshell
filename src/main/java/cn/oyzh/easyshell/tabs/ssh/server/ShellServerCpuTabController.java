@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh.server;
 
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.ShellServerTabController;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -70,7 +70,7 @@ public class ShellServerCpuTabController extends SubTabController {
     }
 
     @Override
-    public ShellServerTabController parent() {
-        return (ShellServerTabController) super.parent();
+    public ShellSSHServerTabController parent() {
+        return (ShellSSHServerTabController) super.parent();
     }
 }

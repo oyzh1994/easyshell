@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.ShellConfigTabController;
+import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -210,8 +210,8 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
     }
 
     @Override
-    public ShellConfigTabController parent() {
-        return (ShellConfigTabController) super.parent();
+    public ShellSSHConfigTabController parent() {
+        return (ShellSSHConfigTabController) super.parent();
     }
 
     /**
