@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -16,7 +15,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * shell终端
@@ -30,22 +28,6 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
 
     public ShellFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
-    }
-
-    /**
-     * 初始化客户端
-     */
-    private void initClient() throws JSchException {
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
-        }
-        // 连接信息
-        int port = this.shellConnect.hostPort();
-        String hostIp = this.shellConnect.hostIp();
-        // 配置参数
-        Properties config = new Properties();
-        // 去掉首次连接确认
-        config.put("StrictHostKeyChecking", "no");
     }
 
     @Override
@@ -62,10 +44,16 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             return;
         }
         try {
-            // 初始化客户端
-            this.initClient();
+            // 连接信息
+            int port = this.shellConnect.hostPort();
+            String hostIp = this.shellConnect.hostIp();
             // 开始连接时间
             long starTime = System.currentTimeMillis();
+            super.setConnectTimeout(timeout);
+            super.connect(hostIp, port);
+            if (this.isConnected()) {
+                super.login(this.shellConnect.getUser(), this.shellConnect.getPassword());
+            }
             long endTime = System.currentTimeMillis();
             JulLog.info("shellSftpClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
@@ -96,6 +84,7 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             ex.printStackTrace();
         }
     }
+
     public void delete(String filePath) {
         try {
             super.deleteFile(filePath);

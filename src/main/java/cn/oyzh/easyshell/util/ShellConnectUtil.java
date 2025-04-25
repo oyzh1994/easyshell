@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -90,6 +91,16 @@ public class ShellConnectUtil {
                     }
                 } else if (shellConnect.isSFTPType()) {
                     ShellSftpClient client = new ShellSftpClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+                } else if (shellConnect.isFTPType()) {
+                    ShellFTPClient client = new ShellFTPClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

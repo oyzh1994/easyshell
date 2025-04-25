@@ -188,7 +188,7 @@ public class ShellAddFTPConnectController extends StageController {
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             // 分组及类型
-            shellConnect.setType("sftp");
+            shellConnect.setType("ftp");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {

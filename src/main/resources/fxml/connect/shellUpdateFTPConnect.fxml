@@ -72,7 +72,7 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="22">
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="21">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
