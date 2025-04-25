@@ -5,7 +5,7 @@ import cn.oyzh.common.function.WeakBiConsumer;
 import cn.oyzh.common.function.WeakConsumer;
 import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
@@ -28,9 +28,9 @@ import java.util.function.Supplier;
  */
 public class ShellSftpDeleteManager implements AutoCloseable {
 
-    private Supplier<ShellSftp> sftpSupplier;
+    private Supplier<ShellSftpChannel> sftpSupplier;
 
-    public ShellSftpDeleteManager(Supplier<ShellSftp> sftpSupplier) {
+    public ShellSftpDeleteManager(Supplier<ShellSftpChannel> sftpSupplier) {
         this.sftpSupplier = sftpSupplier;
     }
 
@@ -104,7 +104,7 @@ public class ShellSftpDeleteManager implements AutoCloseable {
                 if (deleteFile == null) {
                     break;
                 }
-                ShellSftp sftp = this.sftpSupplier.get();
+                ShellSftpChannel sftp = this.sftpSupplier.get();
                 try {
                     deleteFile.startWaiting();
                     if (deleteFile.isDir()) {
@@ -132,7 +132,7 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         }
     }
 
-    private void rmdirRecursive(String path, ShellSftp sftp) throws SftpException {
+    private void rmdirRecursive(String path, ShellSftpChannel sftp) throws SftpException {
         Vector<ChannelSftp.LsEntry> entries = sftp.ls(path);
         for (ChannelSftp.LsEntry entry : entries) {
             String filename = entry.getFilename();
@@ -148,12 +148,12 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         this.rmdir(path, sftp);
     }
 
-    private void rm(String path, ShellSftp sftp) throws SftpException {
+    private void rm(String path, ShellSftpChannel sftp) throws SftpException {
         sftp.rm(path);
         this.deleteDeleted(path);
     }
 
-    private void rmdir(String path, ShellSftp sftp) throws SftpException {
+    private void rmdir(String path, ShellSftpChannel sftp) throws SftpException {
         sftp.rmdir(path);
         this.deleteDeleted(path);
     }

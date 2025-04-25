@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.sftp;
 
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -39,7 +39,7 @@ public class ShellSftpFilePermissionController extends StageController {
     /**
      * ssh客户端
      */
-    private ShellSSHClient client;
+    private ShellSftpClient client;
 
     /**
      * 文件名称
@@ -167,7 +167,7 @@ public class ShellSftpFilePermissionController extends StageController {
                     perms.append("-");
                 }
                 int permission = ShellUtil.permissionToInt(perms.toString());
-                ShellSftp sftp = this.client.openSftp();
+                ShellSftpChannel sftp = this.client.openSftp();
                 sftp.chmod(permission, this.file.getFilePath());
                 SftpATTRS attrs = sftp.stat(file.getFilePath());
                 this.file.setAttrs(attrs);

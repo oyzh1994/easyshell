@@ -3,7 +3,8 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -54,7 +55,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
         }
         StageManager.showMask(() -> {
             try {
-                ShellSftp sftp = this.client().openSftp();
+                ShellSftpChannel sftp = this.sftpClient().openSftp();
                 String filePath = this.filePath.getText();
                 if (sftp.exist(filePath)) {
                     ShellExec exec = this.client().shellExec();
@@ -85,7 +86,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSftp sftp = this.client().openSftp()) {
+            try (ShellSftpChannel sftp = this.sftpClient().openSftp()) {
                 sftp.setUsing(true);
                 // 创建json文件
                 String jsonFile = this.filePath.getText();
@@ -106,7 +107,7 @@ public class ShellDockerDaemonTabController extends SubTabController {
                     MessageBox.warn(output);
                 } else {
                     // 删除临时文件
-                    this.client().openSftp().rm(tempFile);
+                    this.sftpClient().openSftp().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -134,6 +135,10 @@ public class ShellDockerDaemonTabController extends SubTabController {
 
     public ShellSSHClient client() {
         return this.parent().getClient();
+    }
+
+    public ShellSftpClient sftpClient() {
+        return this.client().getSftpClient();
     }
 
     @Override

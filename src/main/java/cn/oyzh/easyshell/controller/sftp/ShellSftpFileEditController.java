@@ -7,9 +7,9 @@ import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -55,9 +55,9 @@ public class ShellSftpFileEditController extends StageController {
     private String destPath;
 
     /**
-     * ssh客户端
+     * sftp客户端
      */
-    private ShellSSHClient client;
+    private ShellSftpClient client;
 
     /**
      * 数据
@@ -102,7 +102,7 @@ public class ShellSftpFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                ShellSftp sftp = this.client.openSftp();
+                ShellSftpChannel sftp = this.client.openSftp();
                 sftp.put(new FileInputStream(this.destPath), file.getFilePath());
                 SftpATTRS attrs = sftp.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
@@ -121,7 +121,7 @@ public class ShellSftpFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                ShellSftp sftp = this.client.openSftp();
+                ShellSftpChannel sftp = this.client.openSftp();
                 sftp.get(this.file.getFilePath(), this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());

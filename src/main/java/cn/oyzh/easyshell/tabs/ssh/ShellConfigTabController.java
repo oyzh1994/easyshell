@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigBashTabController;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigEnvironmentTabController;
@@ -58,7 +58,7 @@ public class ShellConfigTabController extends ParentTabController {
     public void setClient(ShellSSHClient client) {
         this.client = client;
         try {
-            ShellSftp sftp = this.client.openSftp();
+            ShellSftpChannel sftp = this.client.getSftpClient().openSftp();
             if (this.client.isWindows()) {
                 // 移除linux专属配置
                 this.tabPane.removeTabs("sshd","bash","hosts","resolv", "profile","userZshrc","userBashrc","userProfile", "environment","userBashProfile");

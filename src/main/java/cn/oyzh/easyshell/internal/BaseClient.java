@@ -34,6 +34,24 @@ public interface BaseClient extends AutoCloseable {
     ShellConnect getShellConnect();
 
     /**
+     * 获取连接名称
+     *
+     * @return 名称
+     */
+    default String connectName() {
+        return this.getShellConnect().getName();
+    }
+
+    /**
+     * 获取连接超时
+     *
+     * @return 连接超时
+     */
+    default int connectTimeout() {
+        return this.getShellConnect().connectTimeOutMs();
+    }
+
+    /**
      * 获取字符集
      *
      * @return 字符集

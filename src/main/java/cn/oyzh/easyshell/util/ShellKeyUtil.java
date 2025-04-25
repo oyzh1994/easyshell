@@ -2,7 +2,8 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import com.jcraft.jsch.SftpException;
 
@@ -201,14 +202,15 @@ public class ShellKeyUtil {
      */
     public static boolean sshCopyId(List<ShellKey> keys, ShellSSHClient client) {
         try {
+            ShellSftpClient sftpClient = client.getSftpClient();
             // ssh已知公钥文件
             String sshFile;
             // windows
             if (client.isWindows()) {
                 sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
                 // 检查文件夹
-                if (!client.openSftp().exist(sshFile)) {
-                    client.openSftp().mkdir(sshFile);
+                if (!sftpClient.openSftp().exist(sshFile)) {
+                    sftpClient.openSftp().mkdir(sshFile);
                 }
                 sshFile = sshFile + "authorized_keys";
             } else {
@@ -218,14 +220,14 @@ public class ShellKeyUtil {
                 // 远程临时公钥
                 String remoteFile = client.getUserHome() + key.getId() + ".pub";
                 // 上传
-                ShellSftp sftp = client.newSftp();
+                ShellSftpChannel sftp = sftpClient.newSftp();
                 sftp.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile);
                 IOUtil.close(sftp);
                 // 追加到已知公钥
                 client.shellExec().append_file(remoteFile, sshFile);
                 try {
                     // 删除临时公钥文件
-                    client.openSftp().rm(remoteFile);
+                    sftpClient.openSftp().rm(remoteFile);
                 } catch (Exception ignored) {
                 }
             }

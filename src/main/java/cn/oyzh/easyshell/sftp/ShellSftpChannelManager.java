@@ -10,10 +10,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class ShellSftpChannelManager {
 
-    private final List<ShellSftp> sftpList = new CopyOnWriteArrayList<>();
+    private final List<ShellSftpChannel> sftpList = new CopyOnWriteArrayList<>();
 
     public boolean hasAvailable() {
-        for (ShellSftp shellSftp : this.sftpList) {
+        for (ShellSftpChannel shellSftp : this.sftpList) {
             if (shellSftp.isClosed() || !shellSftp.isConnected() || shellSftp.isUsing() || shellSftp.isHolding()) {
                 continue;
             }
@@ -22,10 +22,10 @@ public class ShellSftpChannelManager {
         return false;
     }
 
-    public ShellSftp take() {
-        List<ShellSftp> removes = new ArrayList<>();
+    public ShellSftpChannel take() {
+        List<ShellSftpChannel> removes = new ArrayList<>();
         try {
-            for (ShellSftp shellSftp : this.sftpList) {
+            for (ShellSftpChannel shellSftp : this.sftpList) {
                 if (shellSftp.isClosed() || !shellSftp.isConnected()) {
                     removes.add(shellSftp);
                     continue;
@@ -41,9 +41,9 @@ public class ShellSftpChannelManager {
         return null;
     }
 
-    public void push(ShellSftp sftp) {
-        List<ShellSftp> removes = new ArrayList<>();
-        for (ShellSftp shellSftp : this.sftpList) {
+    public void push(ShellSftpChannel sftp) {
+        List<ShellSftpChannel> removes = new ArrayList<>();
+        for (ShellSftpChannel shellSftp : this.sftpList) {
             if (shellSftp.isClosed() || !shellSftp.isConnected()) {
                 removes.add(shellSftp);
             }
@@ -53,7 +53,7 @@ public class ShellSftpChannelManager {
     }
 
     public void close() {
-        for (ShellSftp shellSftp : this.sftpList) {
+        for (ShellSftpChannel shellSftp : this.sftpList) {
             shellSftp.close();
         }
         this.sftpList.clear();

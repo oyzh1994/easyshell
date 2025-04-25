@@ -5,7 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpTask;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
@@ -165,7 +165,7 @@ public class ShellSftpUploadTask extends ShellSftpTask<ShellSftpUploadMonitor> {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp sftp = this.client.newSftp();
+            ShellSftpChannel sftp = this.client.newSftp();
             try {
                 sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor);
             } catch (Exception ex) {

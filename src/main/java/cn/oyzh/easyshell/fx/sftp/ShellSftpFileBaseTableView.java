@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
@@ -154,7 +154,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
 //        this.locationProperty.set(location);
 //    }
 
-    public ShellSftp sftp() {
+    public ShellSftpChannel sftp() {
         return this.client.openSftp();
     }
 
@@ -170,7 +170,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
     }
 
     protected synchronized void loadFileInner() throws SftpException {
-        ShellSftp sftp = this.sftp();
+        ShellSftpChannel sftp = this.sftp();
         try {
             String currPath = this.getLocation();
             if (currPath == null) {
@@ -607,7 +607,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
             return;
         }
         String filePath = ShellSftpUtil.concat(this.getLocation(), name);
-        ShellSftp sftp = this.sftp();
+        ShellSftpChannel sftp = this.sftp();
         sftp.touch(filePath);
         SftpATTRS attrs = sftp.stat(filePath);
         ShellSftpFile file = new ShellSftpFile(this.getLocation(), name, attrs);
@@ -644,7 +644,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
             return;
         }
         String filePath = ShellSftpUtil.concat(this.getLocation(), name);
-        ShellSftp sftp = this.sftp();
+        ShellSftpChannel sftp = this.sftp();
         sftp.mkdir(filePath);
         SftpATTRS attrs = sftp.stat(filePath);
         ShellSftpFile file = new ShellSftpFile(this.getLocation(), name, attrs);

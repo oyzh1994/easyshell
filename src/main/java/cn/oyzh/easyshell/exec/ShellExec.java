@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.exec;
 
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
@@ -232,7 +233,7 @@ public class ShellExec implements AutoCloseable {
      * @param permission 权限
      * @param filePath   文件路径
      * @return 结果
-     * @see cn.oyzh.easyshell.sftp.ShellSftp#chmod(int, String)
+     * @see ShellSftpChannel#chmod(int, String)
      */
     @Deprecated
     public String chmod(String permission, String filePath) {

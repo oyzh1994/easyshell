@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.sftp;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHChannel;
 import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelSftp;
@@ -24,11 +23,11 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSftp extends ShellSSHChannel {
+public class ShellSftpChannel extends ShellSSHChannel {
 
     private String osType;
 
-    public ShellSftp(ChannelSftp channel, String osType) {
+    public ShellSftpChannel(ChannelSftp channel, String osType) {
         super(channel);
         this.osType = osType;
     }

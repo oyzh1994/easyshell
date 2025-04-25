@@ -12,11 +12,8 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.server.ShellServerExec;
-import cn.oyzh.easyshell.sftp.ShellSftp;
-import cn.oyzh.easyshell.sftp.ShellSftpAttr;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
@@ -30,17 +27,13 @@ import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.util.SSHHolder;
-import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
-import com.jcraft.jsch.Session;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -50,26 +43,7 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellSSHClient implements BaseClient {
-
-    /**
-     * shell信息
-     */
-    private final ShellConnect shellConnect;
-
-    @Override
-    public ShellConnect getShellConnect() {
-        return shellConnect;
-    }
-
-    /**
-     * shell会话
-     */
-    private Session session;
-
-    public Session getSession() {
-        return session;
-    }
+public class ShellSSHClient extends ShellClient {
 
     /**
      * ssh跳板转发器
@@ -139,15 +113,6 @@ public class ShellSSHClient implements BaseClient {
         }
         return this.sftpClient;
     }
-
-//    /**
-//     * 获取连接状态
-//     *
-//     * @return 连接状态
-//     */
-//    public ShellSSHConnState state() {
-//        return this.stateProperty().get();
-//    }
 
     /**
      * 连接状态属性
@@ -273,16 +238,12 @@ public class ShellSSHClient implements BaseClient {
             }
             String keyName = "key_" + key.getId();
             // 添加认证
-//            if (!SSHHolder.JSCH.getIdentityNames().contains(keyName)) {
             SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
-//            }
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
         // 配置参数
         Properties config = new Properties();
-//        // 设置终端类型
-//        config.put("term", "xterm-256color");
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
         // 启用X11转发
@@ -334,26 +295,6 @@ public class ShellSSHClient implements BaseClient {
                 this.dockerExec.close();
                 this.dockerExec = null;
             }
-//            if (this.sftpManager != null) {
-//                this.sftpManager.close();
-//                this.sftpManager = null;
-//            }
-//            if (this.deleteManager != null) {
-//                this.deleteManager.close();
-//                this.deleteManager = null;
-//            }
-//            if (this.uploadManager != null) {
-//                this.uploadManager.close();
-//                this.uploadManager = null;
-//            }
-//            if (this.transportManager != null) {
-//                this.transportManager.close();
-//                this.transportManager = null;
-//            }
-//            if (this.downloadManager != null) {
-//                this.downloadManager.close();
-//                this.downloadManager = null;
-//            }
             // 销毁隧道转发器
             if (this.tunnelForwarder != null) {
                 this.tunnelForwarder.destroy();
@@ -367,6 +308,10 @@ public class ShellSSHClient implements BaseClient {
             // 销毁跳板转发器
             if (this.jumpForwarder != null) {
                 this.jumpForwarder.destroy();
+            }
+            // 销毁sftp客户端
+            if (this.sftpClient != null) {
+                this.sftpClient.close();
             }
             // 从监听器队列移除
             ShellSSHClientChecker.remove(this);
@@ -445,10 +390,6 @@ public class ShellSSHClient implements BaseClient {
         return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
     }
 
-    public String connectName() {
-        return this.shellConnect.getName();
-    }
-
     private ShellSSHShell shell;
 
     public ShellSSHShell getShell() {
@@ -480,240 +421,19 @@ public class ShellSSHClient implements BaseClient {
         return this.shell;
     }
 
-    //    private ShellSftpChannelManager sftpManager;
-//
-//    public ShellSftpChannelManager getSftpManager() {
-//        if (this.sftpManager == null) {
-//            this.sftpManager = new ShellSftpChannelManager();
-//        }
-//        return this.sftpManager;
+//    public ShellSftpChannel openSftp() {
+//        return this.getSftpClient().openSftp();
 //    }
 //
-//    private ShellSftpUploadManager uploadManager;
-//
-//    public ShellSftpUploadManager getUploadManager() {
-//        if (this.uploadManager == null) {
-//            this.uploadManager = new ShellSftpUploadManager();
-//        }
-//        return uploadManager;
+//    public ShellSftpChannel newSftp() {
+//        return this.getSftpClient().newSftp();
 //    }
-//
-//    private ShellSftpDeleteManager deleteManager;
-//
-//    public ShellSftpDeleteManager getDeleteManager() {
-//        if (this.deleteManager == null) {
-//            this.deleteManager = new ShellSftpDeleteManager(this);
-//        }
-//        return deleteManager;
-//    }
-//
-//    private ShellSftpDownloadManager downloadManager;
-//
-//    public ShellSftpDownloadManager getDownloadManager() {
-//        if (this.downloadManager == null) {
-//            this.downloadManager = new ShellSftpDownloadManager();
-//        }
-//        return downloadManager;
-//    }
-//
-//    private ShellSftpTransportManager transportManager;
-//
-//    public ShellSftpTransportManager getTransportManager() {
-//        if (this.transportManager == null) {
-//            this.transportManager = new ShellSftpTransportManager();
-//        }
-//        return transportManager;
-//    }
-//
-    public ShellSftp openSftp() {
-//        if (!this.getSftpManager().hasAvailable()) {
-//            ShellSftp sftp = this.newSftp();
-//            if (sftp != null) {
-//                this.getSftpManager().push(sftp);
-//                return sftp;
-//            }
-//        }
-//        return this.getSftpManager().take();
-      return this.getSftpClient().openSftp();
-    }
-//
-    public ShellSftp newSftp() {
-//        try {
-//            ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-//            ShellSftp sftp = new ShellSftp(channel, this.osType);
-//            sftp.connect(this.connectTimeout());
-//            return sftp;
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-        return this.getSftpClient().newSftp();
-    }
-
-    /**
-     * 执行命令
-     *
-     * @param command 命令
-     * @return 结果
-     */
-    public String exec(String command) {
-        ChannelExec channel = null;
-        try {
-            String extCommand = null;
-            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which", "where")) {
-                extCommand = command;
-            } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
-                extCommand = "/usr/bin/" + command;
-            } else if (this.isWindows()) {
-                // 初始化环境
-                if (this.environment.isEmpty()) {
-                    this.initEnvironment();
-                }
-                extCommand = command;
-            } else if (this.isLinux() || this.isMacos()) {
-                // 初始化环境
-                if (this.environment.isEmpty()) {
-                    this.initEnvironment();
-                }
-                String exportPath = this.getExportPath();
-                extCommand = "export PATH=$PATH" + exportPath + " && " + command;
-            } else if (this.isUnix()) {
-                extCommand = command;
-            }
-            channel = (ChannelExec) this.session.openChannel("exec");
-            // 客户端转发
-            if (this.shellConnect.isJumpForward()) {
-                channel.setAgentForwarding(true);
-            }
-            // x11转发
-            if (this.shellConnect.isX11forwarding()) {
-                channel.setXForwarding(true);
-            }
-            // 操作
-            ShellSSHClientActionUtil.forAction(this.connectName(), command);
-            channel.setCommand(extCommand);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            channel.setOutputStream(stream);
-            channel.setErrStream(stream);
-            channel.connect();
-            while (channel.isConnected()) {
-                Thread.sleep(5);
-            }
-            String result;
-            // 如果远程是windows，则要检查下字符集是否要指定
-            if (this.remoteCharset != null) {
-                result = stream.toString(this.remoteCharset);
-            } else {
-                result = stream.toString();
-            }
-            stream.close();
-            if (StringUtil.endsWith(result, "\r\n")) {
-                result = result.substring(0, result.length() - 2);
-            } else if (StringUtil.endWithAny(result, "\n", "\r")) {
-                result = result.substring(0, result.length() - 1);
-            }
-            return result;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (channel != null) {
-                channel.disconnect();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取path变量
-     *
-     * @return 结果
-     */
-    public String getExportPath() {
-        StringBuilder builder = new StringBuilder();
-//        // 初始化环境
-//        if (this.environment.isEmpty()) {
-//            this.initEnvironment();
-//        }
-        if (this.isWindows()) {
-            for (String string : this.environment) {
-                builder.append(string).append(";");
-            }
-            builder.deleteCharAt(builder.length() - 1);
-        } else {
-            for (String string : this.environment) {
-                builder.append(":").append(string);
-            }
-        }
-        return builder.toString();
-    }
-
-    public String exec_id_un(int uid) {
-        return this.exec("id -un " + uid);
-    }
-
-    public String exec_id_gn(int gid) {
-        return this.exec("id -gn " + gid);
-    }
-
-    public int connectTimeout() {
-        return this.shellConnect.connectTimeOutMs();
-    }
-
-    private ShellSftpAttr attr;
-
-    public ShellSftpAttr getAttr() {
-        if (this.attr == null) {
-            this.attr = new ShellSftpAttr();
-        }
-        return this.attr;
-    }
-
-//    public void delete(ShellSftpFile file) {
-//        this.getDeleteManager().fileDelete(file);
-//    }
-//
-//    public void upload(File localFile, String remoteFile) throws SftpException {
-//        this.getUploadManager().fileUpload(localFile, remoteFile, this);
-//    }
-//
-//    public void download(File localFile, ShellSftpFile remoteFile) throws SftpException {
-//        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
-//    }
-//
-//    public void transport(ShellSftpFile localFile, String remoteFile, ShellSSHClient remoteClient) {
-//        this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
-//    }
-
-    /**
-     * 环境变量
-     */
-    private final List<String> environment = new ArrayList<>();
-
-    /**
-     * 初始化环境
-     */
-    private void initEnvironment() {
-        if (this.isWindows()) {
-            this.environment.add("C:/Windows/System");
-            this.environment.add("C:/Windows/System32");
-            this.environment.add("C:/Windows/SysWOW64");
-            this.environment.add("C:/Program Files");
-            this.environment.add("C:/Program Files (x86)");
-            JulLog.info("remote charset: {}", this.getRemoteCharset());
-        } else {
-            this.environment.add("/bin");
-            this.environment.add("/sbin");
-            this.environment.add("/usr/bin");
-            this.environment.add("/usr/sbin");
-            this.environment.add("/usr/local/bin");
-            this.environment.add("/usr/local/sbin");
-        }
-    }
 
     private ShellDockerExec dockerExec;
 
     public ShellDockerExec dockerExec() {
         if (this.dockerExec == null) {
-            this.dockerExec = new ShellDockerExec(this.getSftpClient());
+            this.dockerExec = new ShellDockerExec(this);
             try {
                 if (this.isWindows()) {
                     String output = this.exec("where docker.exe");
@@ -730,7 +450,7 @@ public class ShellSSHClient implements BaseClient {
                     } else if (!ShellUtil.isCommandNotFound(output)) {
                         String env = output.substring(0, output.lastIndexOf("/"));
                         this.environment.add(env);
-                    } else if (this.isMacos() && this.openSftp().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                    } else if (this.isMacos() && this.getSftpClient().openSftp().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
                         this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
                     }
                 }
@@ -768,40 +488,6 @@ public class ShellSSHClient implements BaseClient {
         return this.processExec;
     }
 
-    private String osType;
-
-    private String osType() {
-        if (this.osType == null) {
-            String output = this.exec("which");
-            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "which")) {
-                this.osType = "Windows";
-            } else {
-                this.osType = this.exec("uname");
-            }
-        }
-        return this.osType;
-    }
-
-    public boolean isMacos() {
-        return StringUtil.containsIgnoreCase(this.osType(), "Darwin");
-    }
-
-    public boolean isLinux() {
-        return StringUtil.containsIgnoreCase(this.osType(), "Linux");
-    }
-
-    public boolean isUnix() {
-        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix");
-    }
-
-    public boolean isFreeBSD() {
-        return StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
-    }
-
-    public boolean isWindows() {
-        return StringUtil.equals(this.osType(), "Windows");
-    }
-
     private String whoami;
 
     public String whoami() {
@@ -813,44 +499,5 @@ public class ShellSSHClient implements BaseClient {
         }
         return this.whoami;
     }
-
-//    @Deprecated
-//    public String getUserBase() {
-//        if (this.isMacos()) {
-//            return "/Users/" + this.whoami() + "/";
-//        }
-//        return "/" + this.whoami() + "/";
-//    }
-
-    private String userHome;
-
-    public String getUserHome() {
-        if (this.userHome == null) {
-            if (this.isWindows()) {
-                this.userHome = this.exec("echo %HOME%");
-                this.userHome += "\\";
-            } else {
-                this.userHome = this.exec("echo $HOME");
-                this.userHome += "/";
-            }
-        }
-        return this.userHome;
-    }
-
-    private String remoteCharset;
-
-    public String getRemoteCharset() {
-        if (this.remoteCharset == null) {
-            String output = this.exec("chcp");
-            this.remoteCharset = ShellUtil.getCharsetFromChcp(output);
-        }
-        return this.remoteCharset;
-    }
-
-    public String getFileSeparator() {
-        if (this.isWindows()) {
-            return "\\";
-        }
-        return "/";
-    }
 }
+

@@ -88,8 +88,6 @@ public class ShellCopyIdKeyController extends StageController {
     private void copyKeys() {
         ShellConnect connect = this.host.getSelectedItem();
         if (connect == null) {
-//            this.host.requestFocus();
-//            MessageBox.warn(I18nHelper.pleaseSelectConnect());
             ValidatorUtil.validFail(this.host);
             return;
         }

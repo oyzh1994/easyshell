@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.docker;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 
 /**
  * @author oyzh
@@ -9,15 +9,9 @@ import cn.oyzh.easyshell.sftp.ShellSftpClient;
  */
 public class ShellDockerExec implements AutoCloseable {
 
-    private ShellSftpClient client;
+    private ShellSSHClient client;
 
-//    private static final String image_format = "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
-//
-//    private static final String container_format = "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
-//
-//    private static final String history_format = "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
-
-    public ShellDockerExec(ShellSftpClient client) {
+    public ShellDockerExec(ShellSSHClient client) {
         this.client = client;
     }
 
@@ -223,7 +217,7 @@ public class ShellDockerExec implements AutoCloseable {
         } else if (this.client.isWindows()) {
             try {
                 String daemonFile = this.client.getUserHome() + ".docker\\daemon.json";
-                if (this.client.openSftp().exist(daemonFile)) {
+                if (this.client.getSftpClient().openSftp().exist(daemonFile)) {
                     return daemonFile;
                 }
             } catch (Exception e) {

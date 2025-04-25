@@ -3,7 +3,8 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellConfigTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -92,8 +93,8 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSftp sftp = this.client().newSftp();
-                 ShellSftp sftp1 = this.client().newSftp()) {
+            try (ShellSftpChannel sftp = this.sftpClient().newSftp();
+                 ShellSftpChannel sftp1 = this.sftpClient().newSftp()) {
                 // 创建临时文件
                 String tempFile;
                 if (filePath.startsWith("~")) {
@@ -202,6 +203,10 @@ public abstract class ShellBaseConfigTabController extends SubTabController {
 
     public ShellSSHClient client() {
         return this.parent().getClient();
+    }
+
+    public ShellSftpClient sftpClient() {
+        return this.client().getSftpClient();
     }
 
     @Override

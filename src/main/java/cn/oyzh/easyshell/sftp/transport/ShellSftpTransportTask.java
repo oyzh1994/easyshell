@@ -5,7 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.ShellSftp;
+import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpTask;
@@ -129,8 +129,8 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
         this.manager.taskStatusChanged(this.getStatus(), this);
         // 文件夹
         if (localFile.isDirectory()) {
-            ShellSftp localSftp = this.localClient.openSftp();
-            ShellSftp remoteSftp = this.remoteClient.openSftp();
+            ShellSftpChannel localSftp = this.localClient.openSftp();
+            ShellSftpChannel remoteSftp = this.remoteClient.openSftp();
             // 列举文件
             List<ShellSftpFile> files = localSftp.lsFileNormal(localFile.getPath());
             // 处理文件
@@ -171,8 +171,8 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftp localSftp = this.localClient.newSftp();
-            ShellSftp remoteSftp = this.remoteClient.newSftp();
+            ShellSftpChannel localSftp = this.localClient.newSftp();
+            ShellSftpChannel remoteSftp = this.remoteClient.newSftp();
             try {
                 InputStream input = localSftp.get(monitor.getLocalFilePath());
                 OutputStream output = remoteSftp.put(monitor.getRemoteFile(), monitor);
