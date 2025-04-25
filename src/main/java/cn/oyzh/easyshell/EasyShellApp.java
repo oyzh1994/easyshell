@@ -4,29 +4,15 @@ import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
-import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
-import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
-import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
-import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
-import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
-import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventListener;
-import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tray.DesktopTrayItem;
 import cn.oyzh.fx.gui.tray.QuitTrayItem;
 import cn.oyzh.fx.gui.tray.SettingTrayItem;
@@ -40,13 +26,11 @@ import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nManager;
 import javafx.stage.Stage;
 
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 
 /**
@@ -191,9 +175,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 设置标题
             TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
             // 打开主页
-            TrayManager.addMenuItem(new DesktopTrayItem("12", this::showMain));
+            TrayManager.addMenuItem(new DesktopTrayItem("12", ShellViewFactory::main));
             // 打开设置
-            TrayManager.addMenuItem(new SettingTrayItem("12", () -> this.showSetting(null)));
+            TrayManager.addMenuItem(new SettingTrayItem("12", ShellViewFactory::setting));
             // 退出程序
             TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
                 JulLog.warn("exit app by tray.");
@@ -203,7 +187,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             TrayManager.onMouseClicked(e -> {
                 // 单击鼠标主键，显示主页
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    this.showMain();
+                    ShellViewFactory.main();
                 }
             });
             // 显示托盘
@@ -213,185 +197,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
         }
     }
 
-    /**
-     * 显示主页
-     */
-    private void showMain() {
-        FXUtil.runLater(() -> {
-            try {
-                StageAdapter adapter = StageManager.getStage(MainController.class);
-                if (adapter != null) {
-                    JulLog.info("front main.");
-                    adapter.toFront();
-                } else {
-                    JulLog.info("show main.");
-                    StageManager.showStage(MainController.class);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
 
-    /**
-     * 显示设置
-     */
-    @EventSubscribe
-    private void showSetting(ShellShowSettingEvent event) {
-        FXUtil.runLater(() -> {
-            try {
 
-                StageAdapter adapter = StageManager.getStage(SettingController.class);
-                if (adapter != null) {
-                    JulLog.info("front setting.");
-                    adapter.toFront();
-                } else {
-                    JulLog.info("show setting.");
-                    StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
 
-//    /**
-//     * 显示添加连接
-//     */
-//    @EventSubscribe
-//    private void addConnect(ShellShowAddConnectEvent event) {
-//        FXUtil.runLater(() -> {
-//            try {
-//                StageAdapter adapter = StageManager.parseStage(ShellAddConnectController.class);
-//                adapter.setProp("group", event.data());
-//                adapter.display();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            }
-//        });
-//    }
 
-//    /**
-//     * 显示修改连接
-//     */
-//    @EventSubscribe
-//    private void updateConnect(ShellShowUpdateConnectEvent event) {
-//        FXUtil.runLater(() -> {
-//            try {
-//                StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
-//                adapter.setProp("shellConnect", event.data());
-//                adapter.display();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            }
-//        });
-//    }
 
-    /**
-     * 显示工具页面
-     */
-    @EventSubscribe
-    private void tool(ShellShowToolEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageManager.showStage(ShellToolController.class, StageManager.getPrimaryStage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 显示关于页面
-     */
-    @EventSubscribe
-    private void about(ShellShowAboutEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageManager.showStage(AboutController.class, StageManager.getPrimaryStage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 显示导出连接页面
-     */
-    @EventSubscribe
-    private void exportConnect(ShellShowExportConnectEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageManager.showStage(ShellExportConnectController.class, StageManager.getPrimaryStage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 显示导入连接页面
-     */
-    @EventSubscribe
-    private void importConnect(ShellShowImportConnectEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageAdapter adapter = StageManager.parseStage(ShellImportConnectController.class, StageManager.getPrimaryStage());
-                adapter.setProp("file", event.data());
-                adapter.display();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 显示文件信息页面
-     */
-    @EventSubscribe
-    private void fileInfo(ShellShowFileInfoEvent event) {
-        FXUtil.runLater(() -> {
-            try {
-                StageAdapter adapter = StageManager.parseStage(ShellSftpFileInfoController.class, StageManager.getPrimaryStage());
-                adapter.setProp("file", event.data());
-                adapter.display();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 显示传输数据
-     */
-    @EventSubscribe
-    private void transportData(ShellShowTransportFileEvent event) {
-        // 判断窗口是否存在
-        List<StageAdapter> list = StageManager.listStage(ShellSftpTransportController.class);
-        for (StageAdapter adapter : list) {
-            if (adapter.getProp("sourceConnect") == event.data()) {
-                adapter.toFront();
-                return;
-            }
-        }
-        FXUtil.runLater(() -> {
-            try {
-                StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class, null);
-                adapter.setProp("sourceConnect", event.data());
-                adapter.display();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
 }

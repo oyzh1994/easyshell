@@ -98,11 +98,13 @@ public class ConnectController extends SubStageController {
 
     @FXML
     private void importConnect() {
-        ShellEventUtil.showImportConnect(null);
+//        ShellEventUtil.showImportConnect(null);
+        ShellViewFactory.importConnect(null);
     }
 
     @FXML
     private void exportConnect() {
-        ShellEventUtil.showExportConnect();
+//        ShellEventUtil.showExportConnect();
+        ShellViewFactory.exportConnect();
     }
 }

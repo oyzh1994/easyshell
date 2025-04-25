@@ -207,7 +207,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      * 传输文件
      */
     private void transportFile() {
-        ShellEventUtil.showTransportFile(this.value);
+        ShellViewFactory.transportData(this.value);
     }
 
     /**

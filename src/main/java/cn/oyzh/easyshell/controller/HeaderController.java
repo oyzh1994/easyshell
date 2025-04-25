@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -34,7 +35,8 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void setting() {
-        ShellEventUtil.showSetting();
+//        ShellEventUtil.showSetting();
+        ShellViewFactory.setting();
     }
 
     /**
@@ -42,7 +44,8 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void about() {
-        ShellEventUtil.showAbout();
+//        ShellEventUtil.showAbout();
+        ShellViewFactory.about();
     }
 
     /**
@@ -60,7 +63,8 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void transport() {
-        ShellEventUtil.showTransportFile();
+//        ShellEventUtil.showTransportFile();
+        ShellViewFactory.transportData(null);
     }
 
     /**
@@ -85,7 +89,8 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void tool() {
-        ShellEventUtil.showTool();
+//        ShellEventUtil.showTool();
+        ShellViewFactory.tool();
     }
 
     /**

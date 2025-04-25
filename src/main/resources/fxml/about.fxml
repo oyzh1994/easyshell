@@ -115,7 +115,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-core">
+                <FXHyperlink text="https://mvnrepository.com/artifact/org.jetbrains.jediterm">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

@@ -20,16 +20,9 @@ import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
-import cn.oyzh.easyshell.event.window.ShellShowAboutEvent;
-import cn.oyzh.easyshell.event.window.ShellShowExportConnectEvent;
-import cn.oyzh.easyshell.event.window.ShellShowFileInfoEvent;
-import cn.oyzh.easyshell.event.window.ShellShowImportConnectEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
-import cn.oyzh.easyshell.event.window.ShellShowSettingEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
-import cn.oyzh.easyshell.event.window.ShellShowToolEvent;
-import cn.oyzh.easyshell.event.window.ShellShowTransportFileEvent;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -192,30 +185,30 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 显示导出连接页面
-     */
-    public static void showExportConnect() {
-        EventUtil.post(new ShellShowExportConnectEvent());
-    }
+//    /**
+//     * 显示导出连接页面
+//     */
+//    public static void showExportConnect() {
+//        EventUtil.post(new ShellShowExportConnectEvent());
+//    }
 
-    /**
-     * 显示导入连接页面
-     *
-     * @param file 文件
-     */
-    public static void showImportConnect(File file) {
-        ShellShowImportConnectEvent event = new ShellShowImportConnectEvent();
-        event.data(file);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 显示设置页面
-     */
-    public static void showSetting() {
-        EventUtil.post(new ShellShowSettingEvent());
-    }
+//    /**
+//     * 显示导入连接页面
+//     *
+//     * @param file 文件
+//     */
+//    public static void showImportConnect(File file) {
+//        ShellShowImportConnectEvent event = new ShellShowImportConnectEvent();
+//        event.data(file);
+//        EventUtil.post(event);
+//    }
+//
+//    /**
+//     * 显示设置页面
+//     */
+//    public static void showSetting() {
+//        EventUtil.post(new ShellShowSettingEvent());
+//    }
 
 //    /**
 //     * 显示添加连接页面
@@ -260,19 +253,19 @@ public class ShellEventUtil {
         EventUtil.post(new ShellShowMessageEvent());
     }
 
-    /**
-     * 显示工具页面
-     */
-    public static void showTool() {
-        EventUtil.post(new ShellShowToolEvent());
-    }
-
-    /**
-     * 显示关于页面
-     */
-    public static void showAbout() {
-        EventUtil.post(new ShellShowAboutEvent());
-    }
+//    /**
+//     * 显示工具页面
+//     */
+//    public static void showTool() {
+//        EventUtil.post(new ShellShowToolEvent());
+//    }
+//
+//    /**
+//     * 显示关于页面
+//     */
+//    public static void showAbout() {
+//        EventUtil.post(new ShellShowAboutEvent());
+//    }
 
     /**
      * 连接已导入事件
@@ -281,16 +274,16 @@ public class ShellEventUtil {
         EventUtil.post(new ShellConnectImportedEvent());
     }
 
-    /**
-     * 显示文件信息页面
-     *
-     * @param file 文件
-     */
-    public static void showFileInfo(ShellSftpFile file) {
-        ShellShowFileInfoEvent event = new ShellShowFileInfoEvent();
-        event.data(file);
-        EventUtil.post(event);
-    }
+//    /**
+//     * 显示文件信息页面
+//     *
+//     * @param file 文件
+//     */
+//    public static void showFileInfo(ShellSftpFile file) {
+//        ShellShowFileInfoEvent event = new ShellShowFileInfoEvent();
+//        event.data(file);
+//        EventUtil.post(event);
+//    }
 
     /**
      * 文件已保存事件
@@ -322,23 +315,23 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 显示传输文件页面
-     */
-    public static void showTransportFile() {
-        showTransportFile(null);
-    }
+//    /**
+//     * 显示传输文件页面
+//     */
+//    public static void showTransportFile() {
+//        showTransportFile(null);
+//    }
 
-    /**
-     * 显示传输数据页面
-     *
-     * @param connect shell连接
-     */
-    public static void showTransportFile(ShellConnect connect) {
-        ShellShowTransportFileEvent event = new ShellShowTransportFileEvent();
-        event.data(connect);
-        EventUtil.post(event);
-    }
+//    /**
+//     * 显示传输数据页面
+//     *
+//     * @param connect shell连接
+//     */
+//    public static void showTransportFile(ShellConnect connect) {
+//        ShellShowTransportFileEvent event = new ShellShowTransportFileEvent();
+//        event.data(connect);
+//        EventUtil.post(event);
+//    }
 
     /**
      * 密钥已新增事件

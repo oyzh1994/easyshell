@@ -69,7 +69,8 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      * 导出连接
      */
     private void exportConnect() {
-        ShellEventUtil.showExportConnect();
+//        ShellEventUtil.showExportConnect();
+        ShellViewFactory.exportConnect();
     }
 
     /**
@@ -86,14 +87,16 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
             return;
         }
         File file = CollectionUtil.getFirst(files);
-        ShellEventUtil.showImportConnect(file);
+//        ShellEventUtil.showImportConnect(file);
+        ShellViewFactory.importConnect(file);
     }
 
     /**
      * 导入连接
      */
     private void importConnect() {
-        ShellEventUtil.showImportConnect(null);
+//        ShellEventUtil.showImportConnect(null);
+        ShellViewFactory.importConnect(null);
     }
 
     /**

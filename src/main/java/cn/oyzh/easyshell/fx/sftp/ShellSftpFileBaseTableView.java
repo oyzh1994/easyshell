@@ -8,7 +8,6 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftp;
@@ -16,6 +15,7 @@ import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -332,7 +332,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
      */
     protected void fileInfo(ShellSftpFile file) {
         if (file != null && !this.checkInvalid(file)) {
-            ShellEventUtil.showFileInfo(file);
+            ShellViewFactory.fileInfo(file);
         }
     }
 
