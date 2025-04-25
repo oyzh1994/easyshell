@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerImageTabController" text="%base.image">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerImageTabController" text="%base.image">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
             <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterImage" tipText="%base.searchKWTip">

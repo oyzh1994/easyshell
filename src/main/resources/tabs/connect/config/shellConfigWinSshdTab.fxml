@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab fx:id="winSshd" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigWinSshdTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.config.ShellConfigWinSshdTabController"
        text="C:\ProgramData\ssh\sshd_config">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">

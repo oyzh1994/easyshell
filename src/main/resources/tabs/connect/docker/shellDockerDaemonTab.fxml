@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerDaemonTabController" text="%base.config">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerDaemonTabController" text="%base.config">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox prefHeight="30">
             <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">

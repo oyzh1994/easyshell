@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerContainerTabController" text="%base.container">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerContainerTabController" text="%base.container">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
             <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterContainer" tipText="%base.searchKWTip">

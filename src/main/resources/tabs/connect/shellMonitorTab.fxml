@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <FXTab fx:id="root" text="%base.monitor" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellMonitorTabController">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellMonitorTabController">
     <graphic>
         <MonitorSVGGlyph sizeStr="11"/>
     </graphic>

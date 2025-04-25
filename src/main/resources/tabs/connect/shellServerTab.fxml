@@ -7,7 +7,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <FXTab fx:id="root" text="%base.server" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellServerTabController">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellServerTabController">
     <graphic>
         <ServerSVGGlyph sizeStr="11"/>
     </graphic>

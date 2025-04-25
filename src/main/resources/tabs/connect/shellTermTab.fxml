@@ -3,7 +3,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.easyshell.shell.ShellTermWidget?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellTermTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellTermTabController"
        text="%base.connect">
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>

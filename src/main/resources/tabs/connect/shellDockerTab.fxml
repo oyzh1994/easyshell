@@ -3,7 +3,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTab fx:id="docker" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellDockerTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellDockerTabController"
        text="Docker">
     <graphic>
         <DockerSVGGlyph sizeStr="11"/>

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.docker.ShellDockerExtraTabController" text="%base.extra">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerExtraTabController" text="%base.extra">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <InfoLabel text="%base.base">
             <FXVBox.margin>

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab fx:id="resolv" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.config.ShellConfigResolvTabController" text="/etc/resolv.conf">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.config.ShellConfigResolvTabController" text="/etc/resolv.conf">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
             <ClearableTextField prefWidth="220" realHeight="24" fx:id="dataFilter" tipText="%base.searchKWTip">

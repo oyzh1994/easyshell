@@ -4,7 +4,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.connect.ShellConfigTabController" text="%base.config">
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellConfigTabController" text="%base.config">
     <graphic>
         <ConfigurationSVGGlyph sizeStr="11"/>
     </graphic>
