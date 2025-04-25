@@ -24,11 +24,11 @@
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 64">
-            <fx:include fx:id="disk" source="server/shellServerDiskTab.fxml"/>
-            <fx:include fx:id="network" source="server/shellServerNetworkTab.fxml"/>
-            <fx:include fx:id="memory" source="server/shellServerMemoryTab.fxml"/>
-            <fx:include fx:id="cpu" source="server/shellServerCpuTab.fxml"/>
-            <fx:include fx:id="gpu" source="server/shellServerGpuTab.fxml"/>
+            <fx:include fx:id="disk" source="server/shellSSHServerDiskTab.fxml"/>
+            <fx:include fx:id="network" source="server/shellSSHServerNetworkTab.fxml"/>
+            <fx:include fx:id="memory" source="server/shellSSHServerMemoryTab.fxml"/>
+            <fx:include fx:id="cpu" source="server/shellSSHServerCpuTab.fxml"/>
+            <fx:include fx:id="gpu" source="server/shellSSHServerGpuTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

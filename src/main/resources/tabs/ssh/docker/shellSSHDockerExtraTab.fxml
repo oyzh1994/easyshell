@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerExtraTabController" text="%base.extra">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <InfoLabel text="%base.base">
+            <FXVBox.margin>
+                <Insets left="30" top="10"/>
+            </FXVBox.margin>
+        </InfoLabel>
+        <FXHBox flexWidth="100%">
+            <FXButton onMousePrimaryClicked="#dockerInfo" text="Docker Info">
+                <FXHBox.margin>
+                    <Insets left="30" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+            <FXButton onMousePrimaryClicked="#dockerVersion" text="Docker Version">
+                <FXHBox.margin>
+                    <Insets left="10" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+        </FXHBox>
+        <InfoLabel text="%base.clear">
+            <FXVBox.margin>
+                <Insets left="30" top="10"/>
+            </FXVBox.margin>
+        </InfoLabel>
+        <FXHBox flexWidth="100%">
+            <FXButton onMousePrimaryClicked="#dockerPruneContainer" text="%base.container">
+                <FXHBox.margin>
+                    <Insets left="30" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+            <FXButton onMousePrimaryClicked="#dockerPruneImage" text="%base.image">
+                <FXHBox.margin>
+                    <Insets left="10" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+            <FXButton onMousePrimaryClicked="#dockerPruneVolume" text="%base.volume">
+                <FXHBox.margin>
+                    <Insets left="10" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+            <FXButton onMousePrimaryClicked="#dockerPruneNetwork" text="%base.network">
+                <FXHBox.margin>
+                    <Insets left="10" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+        </FXHBox>
+        <InfoLabel text="%base.extra">
+            <FXVBox.margin>
+                <Insets left="30" top="10"/>
+            </FXVBox.margin>
+        </InfoLabel>
+        <FXHBox flexWidth="100%">
+            <FXButton onMousePrimaryClicked="#dockerComposeVersion" text="Docker Compose Version">
+                <FXHBox.margin>
+                    <Insets left="30" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+            <FXButton onMousePrimaryClicked="#dockerRestart" text="Docker Restart">
+                <FXHBox.margin>
+                    <Insets left="10" top="5"/>
+                </FXHBox.margin>
+            </FXButton>
+        </FXHBox>
+    </FXVBox>
+</FXTab>

@@ -3,11 +3,11 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.easyshell.server.ShellServerExec;
 import cn.oyzh.easyshell.server.ShellServerInfo;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.server.ShellServerCpuTabController;
-import cn.oyzh.easyshell.tabs.ssh.server.ShellServerDiskTabController;
-import cn.oyzh.easyshell.tabs.ssh.server.ShellServerGpuTabController;
-import cn.oyzh.easyshell.tabs.ssh.server.ShellServerMemoryTabController;
-import cn.oyzh.easyshell.tabs.ssh.server.ShellServerNetworkTabController;
+import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerCpuTabController;
+import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerDiskTabController;
+import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerGpuTabController;
+import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerMemoryTabController;
+import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerNetworkTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -20,7 +20,7 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * 服务器信息tab内容组件
+ * 服务信息tab内容组件
  *
  * @author oyzh
  * @since 2025/04/12
@@ -62,31 +62,31 @@ public class ShellSSHServerTabController extends ParentTabController {
      * cpu信息
      */
     @FXML
-    private ShellServerCpuTabController cpuController;
+    private ShellSSHServerCpuTabController cpuController;
 
     /**
      * 磁盘信息
      */
     @FXML
-    private ShellServerDiskTabController diskController;
+    private ShellSSHServerDiskTabController diskController;
 
     /**
      * 网络信息
      */
     @FXML
-    private ShellServerNetworkTabController networkController;
+    private ShellSSHServerNetworkTabController networkController;
 
     /**
      * 内存信息
      */
     @FXML
-    private ShellServerMemoryTabController memoryController;
+    private ShellSSHServerMemoryTabController memoryController;
 
     /**
      * 显卡信息
      */
     @FXML
-    private ShellServerGpuTabController gpuController;
+    private ShellSSHServerGpuTabController gpuController;
 
     /**
      *

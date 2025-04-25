@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerContainerTabController;
-import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerDaemonTabController;
-import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerExtraTabController;
-import cn.oyzh.easyshell.tabs.ssh.docker.ShellDockerImageTabController;
+import cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerContainerTabController;
+import cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerDaemonTabController;
+import cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerExtraTabController;
+import cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerImageTabController;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -37,25 +37,25 @@ public class ShellSSHDockerTabController extends ParentTabController {
      * 容器
      */
     @FXML
-    private ShellDockerContainerTabController containerController;
+    private ShellSSHDockerContainerTabController containerController;
 
     /**
      * 镜像
      */
     @FXML
-    private ShellDockerImageTabController imageController;
+    private ShellSSHDockerImageTabController imageController;
 
     /**
      * 配置文件
      */
     @FXML
-    private ShellDockerDaemonTabController daemonController;
+    private ShellSSHDockerDaemonTabController daemonController;
 
     /**
      * 额外
      */
     @FXML
-    private ShellDockerExtraTabController extraController;
+    private ShellSSHDockerExtraTabController extraController;
 
     /**
      * shell客户端

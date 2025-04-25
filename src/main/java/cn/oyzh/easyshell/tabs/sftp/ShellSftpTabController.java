@@ -44,7 +44,7 @@ import java.util.List;
  * sftp组件
  *
  * @author oyzh
- * @since 2025/03/11
+ * @since 2025/04/25
  */
 public class ShellSftpTabController extends RichTabController {
 
@@ -159,11 +159,6 @@ public class ShellSftpTabController extends RichTabController {
      * 设置储存
      */
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
-
-    /**
-     * 初始化标志位
-     */
-    private boolean initialized = false;
 
     /**
      * 删除管理器

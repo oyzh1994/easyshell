@@ -2,19 +2,19 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigBashTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigEnvironmentTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigHostsTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigProfileTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigResolvTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigSshdTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigUserBashProfileTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigUserBashrcTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigUserProfileTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigUserZshrcTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigWinEnvironmentTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigWinHostsTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellConfigWinSshdTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigBashTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigEnvironmentTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigHostsTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigProfileTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigResolvTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigSshdTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserBashProfileTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserBashrcTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserProfileTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserZshrcTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigWinEnvironmentTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigWinHostsTabController;
+import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigWinSshdTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -26,7 +26,7 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * 服务器配置tab内容组件
+ * 服务配置tab内容组件
  *
  * @author oyzh
  * @since 2025/03/16
@@ -121,79 +121,79 @@ public class ShellSSHConfigTabController extends ParentTabController {
      * 全局配置文件
      */
     @FXML
-    private ShellConfigProfileTabController profileController;
+    private ShellSSHConfigProfileTabController profileController;
 
     /**
      * 全局环境配置文件
      */
     @FXML
-    private ShellConfigEnvironmentTabController environmentController;
+    private ShellSSHConfigEnvironmentTabController environmentController;
 
     /**
      * 全局bash配置文件
      */
     @FXML
-    private ShellConfigBashTabController bashController;
+    private ShellSSHConfigBashTabController bashController;
 
     /**
      * 域名解析配置文件
      */
     @FXML
-    private ShellConfigHostsTabController hostsController;
+    private ShellSSHConfigHostsTabController hostsController;
 
     /**
      * 网络解析配置文件
      */
     @FXML
-    private ShellConfigResolvTabController resolvController;
+    private ShellSSHConfigResolvTabController resolvController;
 
     /**
      * ssh配置文件
      */
     @FXML
-    private ShellConfigSshdTabController sshdController;
+    private ShellSSHConfigSshdTabController sshdController;
 
     /**
      * 用户配置文件
      */
     @FXML
-    private ShellConfigUserProfileTabController userProfileController;
+    private ShellSSHConfigUserProfileTabController userProfileController;
 
     /**
      * 用户bash配置文件
      */
     @FXML
-    private ShellConfigUserBashProfileTabController userBashProfileController;
+    private ShellSSHConfigUserBashProfileTabController userBashProfileController;
 
     /**
      * 用户bashrc配置文件
      */
     @FXML
-    private ShellConfigUserBashrcTabController userBashrcController;
+    private ShellSSHConfigUserBashrcTabController userBashrcController;
 
     /**
      * 用户zshrc配置文件
      */
     @FXML
-    private ShellConfigUserZshrcTabController userZshrcController;
+    private ShellSSHConfigUserZshrcTabController userZshrcController;
 
     /**
      * 域名解析配置文件，windows
      */
     @FXML
-    private ShellConfigWinHostsTabController winHostsController;
+    private ShellSSHConfigWinHostsTabController winHostsController;
 
     /**
      * ssh配置文件，windows
      */
     @FXML
-    private ShellConfigWinSshdTabController winSshdController;
+    private ShellSSHConfigWinSshdTabController winSshdController;
 
     /**
      * 环境配置，windows
      */
     @FXML
-    private ShellConfigWinEnvironmentTabController winEnvironmentController;
+    private ShellSSHConfigWinEnvironmentTabController winEnvironmentController;
 
     /**
      * 初始化标志位

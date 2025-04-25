@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * 服务器监控tab内容组件
+ * 服务监控tab内容组件
  *
  * @author oyzh
  * @since 2025/03/16

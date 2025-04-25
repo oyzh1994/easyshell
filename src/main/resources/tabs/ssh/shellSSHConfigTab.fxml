@@ -9,18 +9,18 @@
         <ConfigurationSVGGlyph sizeStr="11"/>
     </graphic>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100%">
-        <fx:include fx:id="profile" source="config/shellConfigProfileTab.fxml"/>
-        <fx:include fx:id="environment" source="config/shellConfigEnvironmentTab.fxml"/>
-        <fx:include fx:id="bash" source="config/shellConfigBashTab.fxml"/>
-        <fx:include fx:id="hosts" source="config/shellConfigHostsTab.fxml"/>
-        <fx:include fx:id="resolv" source="config/shellConfigResolvTab.fxml"/>
-        <fx:include fx:id="sshd" source="config/shellConfigSshdTab.fxml"/>
-        <fx:include fx:id="userProfile" source="config/shellConfigUserProfileTab.fxml"/>
-        <fx:include fx:id="userBashProfile" source="config/shellConfigUserBashProfileTab.fxml"/>
-        <fx:include fx:id="userBashrc" source="config/shellConfigUserBashrcTab.fxml"/>
-        <fx:include fx:id="userZshrc" source="config/shellConfigUserZshrcTab.fxml"/>
-        <fx:include fx:id="winHosts" source="config/shellConfigWinHostsTab.fxml"/>
-        <fx:include fx:id="winSshd" source="config/shellConfigWinSshdTab.fxml"/>
-        <fx:include fx:id="winEnvironment" source="config/shellConfigWinEnvironmentTab.fxml"/>
+        <fx:include fx:id="profile" source="config/shellSSHConfigProfileTab.fxml"/>
+        <fx:include fx:id="environment" source="config/shellSSHConfigEnvironmentTab.fxml"/>
+        <fx:include fx:id="bash" source="config/shellSSHConfigBashTab.fxml"/>
+        <fx:include fx:id="hosts" source="config/shellSSHConfigHostsTab.fxml"/>
+        <fx:include fx:id="resolv" source="config/shellSSHConfigResolvTab.fxml"/>
+        <fx:include fx:id="sshd" source="config/shellSSHConfigSshdTab.fxml"/>
+        <fx:include fx:id="userProfile" source="config/shellSSHConfigUserProfileTab.fxml"/>
+        <fx:include fx:id="userBashProfile" source="config/shellSSHConfigUserBashProfileTab.fxml"/>
+        <fx:include fx:id="userBashrc" source="config/shellSSHConfigUserBashrcTab.fxml"/>
+        <fx:include fx:id="userZshrc" source="config/shellSSHConfigUserZshrcTab.fxml"/>
+        <fx:include fx:id="winHosts" source="config/shellSSHConfigWinHostsTab.fxml"/>
+        <fx:include fx:id="winSshd" source="config/shellSSHConfigWinSshdTab.fxml"/>
+        <fx:include fx:id="winEnvironment" source="config/shellSSHConfigWinEnvironmentTab.fxml"/>
     </FXTabPane>
 </FXTab>

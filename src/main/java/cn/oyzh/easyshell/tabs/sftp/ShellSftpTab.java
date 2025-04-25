@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * shell终端tab
+ * sftp tab
  *
  * @author oyzh
  * @since 2023/7/21
