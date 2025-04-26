@@ -248,7 +248,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
                         }
                         return true;
                     })
-                    .sorted(Comparator.comparingInt(ShellSftpFile::getOrder))
+                    .sorted(Comparator.comparingInt(ShellSftpFile::getFileOrder))
                     .collect(Collectors.toList());
         }
 //        return files;
@@ -363,7 +363,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
             // 鼠标按键
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 ShellSftpFile file = files.getFirst();
-                if (file.isDir()) {
+                if (file.isDirectory()) {
                     this.intoDir(file);
                 } else if (file.isFile()) {
                     this.editFile(file);
@@ -410,7 +410,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
             return;
         }
         ShellSftpFile file = files.getFirst();
-        if (!file.isDir()) {
+        if (!file.isDirectory()) {
             return;
         }
         this.intoDir(file);
@@ -447,10 +447,10 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         }
         if (files.size() == 1) {
             ShellSftpFile file = files.getFirst();
-            if (file.isDir() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
+            if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
                 return;
             }
-            if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
+            if (!file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
                 return;
             }
         } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {

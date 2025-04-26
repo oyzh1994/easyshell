@@ -155,6 +155,7 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
         this.file.setName(newName);
     }
 
+    @Override
     public String getModifyTime() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";

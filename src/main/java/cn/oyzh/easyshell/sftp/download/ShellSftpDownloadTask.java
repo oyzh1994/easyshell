@@ -128,7 +128,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
         }
         this.manager.taskStatusChanged(this.getStatus(), this);
         // 文件夹
-        if (remoteFile.isDir()) {
+        if (remoteFile.isDirectory()) {
             // 列举文件
             List<ShellSftpFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
             // 处理文件
@@ -139,7 +139,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
                 // 添加文件
                 for (ShellSftpFile file : files) {
                     file.setParentPath(remoteFile.getFilePath());
-                    if (file.isDir()) {
+                    if (file.isDirectory()) {
                         this.addMonitorRecursive(localDir, file);
                     } else {
                         File localFile1 = new File(localDir, file.getFileName());

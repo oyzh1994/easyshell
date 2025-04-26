@@ -87,6 +87,8 @@ public interface ShellFile {
 
     String getPermissions();
 
+    String getModifyTime();
+
     default int getFileOrder() {
         if (this.isReturnDirectory()) {
             return -10;
@@ -279,6 +281,9 @@ public interface ShellFile {
     }
 
     default boolean isHiddenFile() {
+        if (this.isReturnDirectory() || this.isCurrentFile()) {
+            return false;
+        }
         return this.getFileName().startsWith(".");
     }
 

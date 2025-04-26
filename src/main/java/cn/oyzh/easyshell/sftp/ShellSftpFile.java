@@ -127,6 +127,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
 
     private SVGGlyph icon;
 
+    @Override
     public SVGGlyph getIcon() {
         if (this.icon == null) {
             this.icon = ShellFile.super.getIcon();
@@ -135,7 +136,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
     }
 
     public String getSize() {
-        if (this.isDir() || this.isReturnDirectory() || this.isCurrentFile()) {
+        if (this.isDirectory() || this.isReturnDirectory() || this.isCurrentFile()) {
             return "-";
         }
         return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
@@ -153,6 +154,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         return fileName;
     }
 
+    @Override
     public String getFileName() {
         if (this.fileName == null) {
             return this.entry.getFilename();
@@ -160,6 +162,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         return this.fileName;
     }
 
+    @Override
     public String getFilePath() {
         if (this.linkPath != null) {
             return this.linkPath;
@@ -184,6 +187,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         this.permissionsProperty().set(this.getAttrs().getPermissionsString());
     }
 
+    @Override
     public String getPermissions() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
@@ -199,6 +203,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         return DateHelper.formatDateTime(new Date(aTime * 1000L));
     }
 
+    @Override
     public String getModifyTime() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
@@ -213,47 +218,6 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
 
     public int getGid() {
         return this.getAttrs().getGId();
-    }
-
-    public boolean isHiddenFile() {
-        if (this.isReturnDirectory() || this.isCurrentFile()) {
-            return false;
-        }
-        return this.getFileName().startsWith(".");
-    }
-
-    public boolean isCurrentFile() {
-        return ".".equals(this.getName());
-    }
-
-    public boolean isReturnDirectory() {
-        return "..".equals(this.getName());
-    }
-
-    public int getOrder() {
-        if (this.isReturnDirectory()) {
-            return -10;
-        }
-        if (this.isDir()) {
-            if (this.isHiddenFile()) {
-                return -9;
-            }
-            return -8;
-        }
-        if (this.isHiddenFile()) {
-            return -7;
-        }
-        return 0;
-    }
-
-    public boolean isDir() {
-        if (this.isLink()) {
-            if (this.linkAttrs != null) {
-                return this.linkAttrs.isDir();
-            }
-            return false;
-        }
-        return this.getAttrs().isDir();
     }
 
     public boolean isFile() {
@@ -295,7 +259,13 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
     }
 
     public boolean isDirectory() {
-        return this.isDir();
+        if (this.isLink()) {
+            if (this.linkAttrs != null) {
+                return this.linkAttrs.isDir();
+            }
+            return false;
+        }
+        return this.getAttrs().isDir();
     }
 
     public String getPath() {
@@ -356,6 +326,6 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
      * @return 结果
      */
     public boolean isRoot() {
-        return this.isDir() && "/".equals(this.getFilePath());
+        return this.isDirectory() && "/".equals(this.getFilePath());
     }
 }

@@ -63,7 +63,7 @@ public class ShellSftpFileInfoController extends StageController {
         this.owner.setText(file.getOwner());
         this.name.setText(file.getName());
         this.permissions.setText(file.getPermissions());
-        if (file.isDir()) {
+        if (file.isDirectory()) {
             NodeGroupUtil.disappear(this.getStage(), "size");
         } else {
             this.size.setText(file.getSize());
