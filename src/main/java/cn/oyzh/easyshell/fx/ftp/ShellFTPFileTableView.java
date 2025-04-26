@@ -404,6 +404,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
                     // 执行删除
                     this.client.delete(file);
                 }
+                this.files.removeAll(files);
                 this.refreshFile();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -487,10 +488,15 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
     }
 
-    public void mkdir(String name) throws SftpException {
-
+    public void mkdir(String filePath) throws SftpException {
+        String dirPath = ShellSftpUtil.concat(this.getLocation(), filePath);
+        this.client.mkdir(dirPath);
+        ShellFTPFile file = this.client.finfo(dirPath);
+        this.files.add(file);
+        this.refreshFile();
     }
 
-    public void cd(String path) {
+    public void cd(String filePath) {
+        this.client.cd(filePath);
     }
 }

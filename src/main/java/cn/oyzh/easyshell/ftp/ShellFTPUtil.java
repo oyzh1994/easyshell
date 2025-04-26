@@ -1,8 +1,30 @@
 package cn.oyzh.easyshell.ftp;
 
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.IOException;
+
 public class ShellFTPUtil {
+
+    public static void deleteDirectory(FTPClient ftpClient, String directory) throws IOException {
+        FTPFile[] files = ftpClient.listFiles(directory);
+        if (files != null) {
+            for (FTPFile file : files) {
+                String filePath = directory + "/" + file.getName();
+                if (file.isDirectory()) {
+                    // 递归删除子文件夹
+                    deleteDirectory(ftpClient, filePath);
+                } else {
+                    // 删除文件
+                    ftpClient.deleteFile(filePath);
+                }
+            }
+        }
+        // 删除空文件夹
+        ftpClient.removeDirectory(directory);
+    }
+
 
     public static String getPermissionsString(FTPFile file) {
         StringBuilder permissions = new StringBuilder();

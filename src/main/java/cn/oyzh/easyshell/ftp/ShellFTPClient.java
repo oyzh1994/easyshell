@@ -79,7 +79,11 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
 
     public void delete(ShellFTPFile file) {
         try {
-            super.deleteFile(file.getFilePath());
+            if (file.isDirectory()) {
+                ShellFTPUtil.deleteDirectory(this, file.getFilePath());
+            } else {
+                super.deleteFile(file.getFilePath());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -169,5 +173,13 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public void cd(String filePath) {
+        try {
+            this.changeWorkingDirectory(filePath);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
