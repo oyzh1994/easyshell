@@ -129,7 +129,13 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         Thread task = ThreadUtil.startVirtual(() -> {
             try {
                 this.setFileType(FTPClient.BINARY_FILE_TYPE);
-                super.storeFile(remoteFile, new FileInputStream(localFile));
+                if (localFile.isDirectory()) {
+                    String remoteDir = ShellSftpUtil.concat(remotePath, localFile.getName());
+                    this.mkdir(remoteDir);
+                    ShellFTPUtil.uploadFolder(this, localFile, remoteDir);
+                } else {
+                    super.storeFile(remoteFile, new FileInputStream(localFile));
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
@@ -140,18 +146,22 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
     }
 
     public void download(File localFile, ShellFTPFile remoteFile) throws SftpException {
-        ShellFTPDownloadFile uploadFile = new ShellFTPDownloadFile();
-        try {
-            uploadFile.setSize(remoteFile.getSize());
-            uploadFile.setRemotePath(remoteFile.getFilePath());
-            uploadFile.setLocalPath(localFile.getAbsolutePath());
-            this.downloadFiles.add(uploadFile);
-            super.retrieveFile(remoteFile.getFilePath(), new FileOutputStream(localFile));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            this.downloadFiles.remove(uploadFile);
-        }
+        ShellFTPDownloadFile downloadFile = new ShellFTPDownloadFile();
+        downloadFile.setSize(remoteFile.getSize());
+        downloadFile.setRemotePath(remoteFile.getFilePath());
+        downloadFile.setLocalPath(localFile.getAbsolutePath());
+        this.downloadFiles.add(downloadFile);
+        Thread task = ThreadUtil.startVirtual(() -> {
+            try {
+                this.setFileType(FTPClient.BINARY_FILE_TYPE);
+                super.retrieveFile(remoteFile.getFilePath(), new FileOutputStream(localFile));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                this.downloadFiles.remove(downloadFile);
+            }
+        });
+        downloadFile.setTask(task);
     }
 
     public List<ShellFTPFile> lsFile(String filePath) {

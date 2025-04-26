@@ -6,12 +6,22 @@ public class ShellFTPDownloadFile {
 
     private long size;
 
+    private Thread task;
+
     private String localPath;
 
     private String remotePath;
 
     public String getLocalPath() {
         return localPath;
+    }
+
+    public Thread getTask() {
+        return task;
+    }
+
+    public void setTask(Thread task) {
+        this.task = task;
     }
 
     public long getSize() {
@@ -36,5 +46,9 @@ public class ShellFTPDownloadFile {
 
     public String getFileSize(){
         return NumberUtil.formatSize(this.size,2);
+    }
+
+    public void cancel(){
+        this.task.interrupt();
     }
 }

@@ -47,4 +47,8 @@ public class ShellFTPUploadFile {
     public String getFileSize(){
         return NumberUtil.formatSize(this.size,2);
     }
+
+    public void cancel(){
+        this.task.interrupt();
+    }
 }
