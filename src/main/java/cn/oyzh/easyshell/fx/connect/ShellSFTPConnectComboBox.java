@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 25/04/25
  */
-public class ShellSftpConnectComboBox extends FXComboBox<ShellConnect> {
+public class ShellSFTPConnectComboBox extends FXComboBox<ShellConnect> {
 
     {
         this.setConverter(new SimpleStringConverter<>() {

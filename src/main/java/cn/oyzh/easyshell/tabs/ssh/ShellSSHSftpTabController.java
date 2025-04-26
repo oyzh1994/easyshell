@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSFTPDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
 import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadMonitor;
 import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadTask;
@@ -178,7 +178,7 @@ public class ShellSSHSftpTabController extends SubTabController {
     /**
      * 删除管理器
      */
-    private ShellSftpDeleteManager deleteManager;
+    private ShellSFTPDeleteManager deleteManager;
 
     /**
      * 上传管理器

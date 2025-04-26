@@ -26,14 +26,14 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
     /**
      * 下载状态
      */
-    private ShellSftpDownloadStatus status;
+    private ShellSFTPDownloadStatus status;
 
     /**
      * 更新状态
      *
      * @param status 状态
      */
-    private void updateStatus(ShellSftpDownloadStatus status) {
+    private void updateStatus(ShellSFTPDownloadStatus status) {
         this.status = status;
         switch (status) {
             case FAILED -> this.statusProperty.set(I18nHelper.failed());
@@ -73,9 +73,9 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 //        this.executeThread = ThreadUtil.start(() -> {
 //            try {
 //                sftp.setHolding(true);
-//                this.updateStatus(ShellSftpDownloadStatus.IN_PREPARATION);
+//                this.updateStatus(ShellSFTPDownloadStatus.IN_PREPARATION);
 //                this.addMonitorRecursive(localFile, remoteFile, sftp);
-//                this.updateStatus(ShellSftpDownloadStatus.DOWNLOAD_ING);
+//                this.updateStatus(ShellSFTPDownloadStatus.DOWNLOAD_ING);
 //                this.calcTotalSize();
 //                this.updateTotal();
 //                this.doDownload();
@@ -86,7 +86,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 //                this.updateTotal();
 //                // 如果是非取消和失败，则设置为结束
 //                if (!this.isCancelled() && !this.isFailed()) {
-//                    this.updateStatus(ShellSftpDownloadStatus.FINISHED);
+//                    this.updateStatus(ShellSFTPDownloadStatus.FINISHED);
 //                }
 //            }
 //        });
@@ -97,9 +97,9 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
      */
     public void download() {
         try {
-            this.updateStatus(ShellSftpDownloadStatus.IN_PREPARATION);
+            this.updateStatus(ShellSFTPDownloadStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(ShellSftpDownloadStatus.DOWNLOAD_ING);
+            this.updateStatus(ShellSFTPDownloadStatus.DOWNLOAD_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doDownload();
@@ -109,7 +109,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(ShellSftpDownloadStatus.FINISHED);
+                this.updateStatus(ShellSFTPDownloadStatus.FINISHED);
             }
         }
     }
@@ -191,7 +191,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 //    @Override
 //    protected void updateTotal() {
 ////        if (this.monitors.isEmpty() && !this.isInPreparation()) {
-////            this.updateStatus(ShellSftpDownloadStatus.FINISHED);
+////            this.updateStatus(ShellSFTPDownloadStatus.FINISHED);
 ////        }
 //        super.updateTotal();
 //        this.manager.updateDownloading();
@@ -201,7 +201,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
     public void cancel() {
         super.cancel();
         this.manager.remove(this);
-        this.updateStatus(ShellSftpDownloadStatus.CANCELED);
+        this.updateStatus(ShellSFTPDownloadStatus.CANCELED);
     }
 
     @Override
@@ -211,22 +211,22 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 
     @Override
     public boolean isFailed() {
-        return this.status == ShellSftpDownloadStatus.FAILED;
+        return this.status == ShellSFTPDownloadStatus.FAILED;
     }
 
     @Override
     public boolean isFinished() {
-        return this.status == ShellSftpDownloadStatus.FINISHED;
+        return this.status == ShellSFTPDownloadStatus.FINISHED;
     }
 
     @Override
     public boolean isCancelled() {
-        return this.status == ShellSftpDownloadStatus.CANCELED;
+        return this.status == ShellSFTPDownloadStatus.CANCELED;
     }
 
     @Override
     public boolean isInPreparation() {
-        return this.status == ShellSftpDownloadStatus.IN_PREPARATION;
+        return this.status == ShellSFTPDownloadStatus.IN_PREPARATION;
     }
 
     /**
@@ -235,7 +235,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
      * @return 结果
      */
     public boolean isDownloading() {
-        return this.status == ShellSftpDownloadStatus.DOWNLOAD_ING;
+        return this.status == ShellSFTPDownloadStatus.DOWNLOAD_ING;
     }
 
     @Override
@@ -249,7 +249,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
         this.manager.remove(this);
-        this.updateStatus(ShellSftpDownloadStatus.FINISHED);
+        this.updateStatus(ShellSFTPDownloadStatus.FINISHED);
     }
 
     @Override
@@ -257,7 +257,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
         this.manager.remove(this);
-        this.updateStatus(ShellSftpDownloadStatus.FAILED);
+        this.updateStatus(ShellSFTPDownloadStatus.FAILED);
     }
 
     @Override
@@ -265,7 +265,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
         this.manager.remove(this);
-        this.updateStatus(ShellSftpDownloadStatus.CANCELED);
+        this.updateStatus(ShellSFTPDownloadStatus.CANCELED);
     }
 
     @Override

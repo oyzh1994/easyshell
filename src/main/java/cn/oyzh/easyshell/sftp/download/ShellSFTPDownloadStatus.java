@@ -1,13 +1,13 @@
-package cn.oyzh.easyshell.sftp.transport;
+package cn.oyzh.easyshell.sftp.download;
 
 /**
  * @author oyzh
  * @since 2025-03-15
  */
-public enum ShellSftpTransportStatus {
+public enum ShellSFTPDownloadStatus {
 
     IN_PREPARATION,
-    TRANSPORT_ING,
+    DOWNLOAD_ING,
     FINISHED,
     FAILED,
     CANCELED

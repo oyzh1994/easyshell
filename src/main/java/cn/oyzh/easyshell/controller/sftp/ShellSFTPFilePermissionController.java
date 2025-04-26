@@ -27,7 +27,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "sftp/shellSftpFilePermission.fxml"
+        value = FXConst.FXML_PATH + "sftp/shellSFTPFilePermission.fxml"
 )
 public class ShellSFTPFilePermissionController extends StageController {
 

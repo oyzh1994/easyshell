@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.key;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellSFTPConnectComboBox;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClientUtil;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
@@ -39,7 +39,7 @@ public class ShellCopyIdKeyController extends StageController {
      * 连接列表
      */
     @FXML
-    private ShellSftpConnectComboBox host;
+    private ShellSFTPConnectComboBox host;
 
     /**
      * 密钥信息

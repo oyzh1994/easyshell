@@ -26,11 +26,11 @@ import java.util.function.Supplier;
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpDeleteManager implements AutoCloseable {
+public class ShellSFTPDeleteManager implements AutoCloseable {
 
     private Supplier<ShellSFTPChannel> sftpSupplier;
 
-    public ShellSftpDeleteManager(Supplier<ShellSFTPChannel> sftpSupplier) {
+    public ShellSFTPDeleteManager(Supplier<ShellSFTPChannel> sftpSupplier) {
         this.sftpSupplier = sftpSupplier;
     }
 

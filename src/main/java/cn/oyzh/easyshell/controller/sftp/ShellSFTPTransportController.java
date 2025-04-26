@@ -2,14 +2,14 @@ package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellSFTPConnectComboBox;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPClientUtil;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSFTPDeleteManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportMonitor;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportTask;
@@ -74,7 +74,7 @@ public class ShellSFTPTransportController extends StageController {
      * 来源信息
      */
     @FXML
-    private ShellSftpConnectComboBox sourceInfo;
+    private ShellSFTPConnectComboBox sourceInfo;
 
 //    /**
 //     * 来源字符集
@@ -92,7 +92,7 @@ public class ShellSFTPTransportController extends StageController {
      * 目标信息
      */
     @FXML
-    private ShellSftpConnectComboBox targetInfo;
+    private ShellSFTPConnectComboBox targetInfo;
 
 //    /**
 //     * 目标字符集
@@ -550,8 +550,8 @@ public class ShellSFTPTransportController extends StageController {
 //            }
 //        });
         // 删除处理器
-        ShellSftpDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
-        ShellSftpDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
+        ShellSFTPDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
+        ShellSFTPDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
         // 注册监听器
         deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
         deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.sftp;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
+import cn.oyzh.easyshell.sftp.delete.ShellSFTPDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
@@ -150,11 +150,11 @@ public class ShellSFTPClient extends ShellClient {
         return uploadManager;
     }
 
-    private ShellSftpDeleteManager deleteManager;
+    private ShellSFTPDeleteManager deleteManager;
 
-    public ShellSftpDeleteManager getDeleteManager() {
+    public ShellSFTPDeleteManager getDeleteManager() {
         if (this.deleteManager == null) {
-            this.deleteManager = new ShellSftpDeleteManager(this::newSftp);
+            this.deleteManager = new ShellSFTPDeleteManager(this::newSftp);
         }
         return deleteManager;
     }
