@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -167,9 +166,8 @@ public class ShellSFTPFilePermissionController extends StageController {
                     perms.append("-");
                 }
                 int permission = ShellUtil.permissionToInt(perms.toString());
-                ShellSFTPChannel sftp = this.client.openSFTP();
-                sftp.chmod(permission, this.file.getFilePath());
-                SftpATTRS attrs = sftp.stat(file.getFilePath());
+                this.client.chmod(permission, this.file.getFilePath());
+                SftpATTRS attrs = this.client.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
                 this.closeWindow();
             } catch (Exception ex) {

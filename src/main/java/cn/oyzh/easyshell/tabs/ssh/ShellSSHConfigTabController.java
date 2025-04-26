@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigBashTabController;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigEnvironmentTabController;
@@ -58,7 +58,7 @@ public class ShellSSHConfigTabController extends ParentTabController {
     public void setClient(ShellSSHClient client) {
         this.client = client;
         try {
-            ShellSFTPChannel sftp = this.client.getSftpClient().openSFTP();
+            ShellSFTPClient sftpClient = this.client.getSftpClient();
             if (this.client.isWindows()) {
                 // 移除linux专属配置
                 this.tabPane.removeTabs("sshd","bash","hosts","resolv", "profile","userZshrc","userBashrc","userProfile", "environment","userBashProfile");
@@ -66,44 +66,44 @@ public class ShellSSHConfigTabController extends ParentTabController {
                 // 移除windows专属配置
                 this.tabPane.removeTabs("winSshd", "winHosts", "winEnvironment");
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist("/etc/environment")) {
+                if (!sftpClient.exist("/etc/environment")) {
                     tabPane.removeTab("environment");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist("/etc/bash.bashrc")) {
+                if (!sftpClient.exist("/etc/bash.bashrc")) {
                     tabPane.removeTab("bash");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist("/etc/hosts")) {
+                if (!sftpClient.exist("/etc/hosts")) {
                     tabPane.removeTab("hosts");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist("/etc/profile")) {
+                if (!sftpClient.exist("/etc/profile")) {
                     tabPane.removeTab("profile");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist("/etc/resolv.conf")) {
+                if (!sftpClient.exist("/etc/resolv.conf")) {
                     tabPane.removeTab("resolv");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist("/etc/ssh/sshd_config")) {
+                if (!sftpClient.exist("/etc/ssh/sshd_config")) {
                     tabPane.removeTab("sshd");
                 }
                 String userHome = this.client.getUserHome();
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist(userHome + ".profile")) {
+                if (!sftpClient.exist(userHome + ".profile")) {
                     tabPane.removeTab("userProfile");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist(userHome + ".zshrc")) {
+                if (!sftpClient.exist(userHome + ".zshrc")) {
                     tabPane.removeTab("userZshrc");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist(userHome + ".bashrc")) {
+                if (!sftpClient.exist(userHome + ".bashrc")) {
                     tabPane.removeTab("userBashrc");
                 }
                 // 如果配置文件不存在，则移除此配置
-                if (!sftp.exist(userHome + ".bash_profile")) {
+                if (!sftpClient.exist(userHome + ".bash_profile")) {
                     tabPane.removeTab("userBashProfile");
                 }
             }

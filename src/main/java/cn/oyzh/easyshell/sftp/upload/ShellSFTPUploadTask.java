@@ -4,8 +4,6 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -132,7 +130,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
                 // 远程文件夹
                 String remoteDir = ShellFileUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                this.client.openSFTP().mkdirRecursive(remoteDir);
+                this.client.mkdirRecursive(remoteDir);
                 // 添加文件
                 for (File file : files) {
                     if (file.isDirectory()) {
@@ -165,9 +163,8 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSFTPChannel sftp = this.client.newSFTP();
             try {
-                sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor);
+                this.client.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor);
             } catch (Exception ex) {
                 if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     JulLog.warn("upload canceled");
@@ -177,8 +174,6 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
                     this.failed(monitor, ex);
                     break;
                 }
-            } finally {
-                IOUtil.close(sftp);
             }
             ThreadUtil.sleep(5);
         }

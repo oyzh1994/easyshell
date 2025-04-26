@@ -38,17 +38,35 @@ public class ShellSFTPUtil {
     /**
      * 读取链接路径
      *
-     * @param file 文件
-     * @param sftp sftp操作器
+     * @param file   文件
+     * @param client 客户端
      * @throws SftpException 异常
      */
-    public static void realpath(ShellSFTPFile file, ShellSFTPChannel sftp) throws SftpException {
+    public static void realpath(ShellSFTPFile file, ShellSFTPClient client) throws SftpException {
         // 读取链接文件
         if (file != null && file.isLink()) {
-            String linkPath = sftp.realpath(file.getFilePath());
+            String linkPath = client.realpath(file.getFilePath());
             if (linkPath != null) {
                 file.setLinkPath(linkPath);
-                file.setLinkAttrs(sftp.stat(linkPath));
+                file.setLinkAttrs(client.stat(linkPath));
+            }
+        }
+    }
+
+    /**
+     * 读取链接路径
+     *
+     * @param file    文件
+     * @param channel sftp通道
+     * @throws SftpException 异常
+     */
+    public static void realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
+        // 读取链接文件
+        if (file != null && file.isLink()) {
+            String linkPath = channel.realpath(file.getFilePath());
+            if (linkPath != null) {
+                file.setLinkPath(linkPath);
+                file.setLinkAttrs(channel.stat(linkPath));
             }
         }
     }

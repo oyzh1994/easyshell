@@ -217,7 +217,7 @@ public class ShellDockerExec implements AutoCloseable {
         } else if (this.client.isWindows()) {
             try {
                 String daemonFile = this.client.getUserHome() + ".docker\\daemon.json";
-                if (this.client.getSftpClient().openSFTP().exist(daemonFile)) {
+                if (this.client.getSftpClient().exist(daemonFile)) {
                     return daemonFile;
                 }
             } catch (Exception e) {

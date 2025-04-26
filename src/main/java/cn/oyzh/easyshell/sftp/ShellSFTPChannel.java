@@ -90,9 +90,9 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         return files.stream().filter(ShellSFTPFile::isNormal).collect(Collectors.toList());
     }
 
-    public List<ShellSFTPFile> lsFile(String path) throws SftpException {
-        return this.lsFile(path, null);
-    }
+//    public List<ShellSFTPFile> lsFile(String path) throws SftpException {
+//        return this.lsFile(path, null);
+//    }
 
     public String realpath(String path) throws SftpException {
         try {
@@ -106,7 +106,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         }
     }
 
-    public List<ShellSFTPFile> lsFile(String path, ShellSFTPClient client) throws SftpException {
+    public List<ShellSFTPFile> lsFile(String path) throws SftpException {
         if (this.isWindows()) {
             path = ShellUtil.reverseWindowsFilePath(path);
         }
@@ -314,6 +314,10 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         this.put(src, dest, null, ChannelSftp.OVERWRITE);
     }
 
+    public OutputStream put(String dest, SftpProgressMonitor monitor) throws SftpException {
+        return this.put(dest, monitor, ChannelSftp.OVERWRITE);
+    }
+
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         try {
             this.setUsing(true);
@@ -339,8 +343,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         }
     }
 
-    public OutputStream put(String dest, SftpProgressMonitor monitor) throws SftpException {
-        return this.put(dest, monitor, ChannelSftp.OVERWRITE);
+    public void get(String src, String dest) throws SftpException {
+        this.get(src, dest, null, ChannelSftp.OVERWRITE);
     }
 
     public OutputStream put(String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
@@ -353,10 +357,6 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         } finally {
             this.setUsing(false);
         }
-    }
-
-    public void get(String src, String dest) throws SftpException {
-        this.get(src, dest, null, ChannelSftp.OVERWRITE);
     }
 
     @Override

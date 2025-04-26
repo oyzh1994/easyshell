@@ -5,7 +5,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
@@ -129,16 +128,14 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
         this.manager.taskStatusChanged(this.getStatus(), this);
         // 文件夹
         if (localFile.isDirectory()) {
-            ShellSFTPChannel localSftp = this.localClient.openSFTP();
-            ShellSFTPChannel remoteSftp = this.remoteClient.openSFTP();
             // 列举文件
-            List<ShellSFTPFile> files = localSftp.lsFileNormal(localFile.getFilePath());
+            List<ShellSFTPFile> files = this.localClient.lsFileNormal(localFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 远程文件夹
                 String remoteDir = ShellFileUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                remoteSftp.mkdirRecursive(remoteDir);
+                this.remoteClient.mkdirRecursive(remoteDir);
                 // 添加文件
                 for (ShellSFTPFile file : files) {
                     if (file.isDirectory()) {
@@ -171,11 +168,9 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSFTPChannel localSftp = this.localClient.newSFTP();
-            ShellSFTPChannel remoteSftp = this.remoteClient.newSFTP();
             try {
-                InputStream input = localSftp.get(monitor.getLocalFilePath());
-                OutputStream output = remoteSftp.put(monitor.getRemoteFile(), monitor);
+                InputStream input = this.localClient.get(monitor.getLocalFilePath());
+                OutputStream output = this.remoteClient.put(monitor.getRemoteFile(), monitor);
                 input.transferTo(output);
                 IOUtil.close(input);
                 IOUtil.close(output);
@@ -188,9 +183,6 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
                     this.failed(monitor, ex);
                     break;
                 }
-            } finally {
-                IOUtil.close(localSftp);
-                IOUtil.close(remoteSftp);
             }
             ThreadUtil.sleep(5);
         }

@@ -5,8 +5,6 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
@@ -130,7 +128,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
         // 文件夹
         if (remoteFile.isDirectory()) {
             // 列举文件
-            List<ShellSFTPFile> files = this.client.openSFTP().lsFileNormal(remoteFile.getFilePath());
+            List<ShellSFTPFile> files = this.client.lsFileNormal(remoteFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
@@ -169,9 +167,8 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSFTPChannel sftp = this.client.newSFTP();
             try {
-                sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
+                this.client.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {
                 if (ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     JulLog.warn("download canceled");
@@ -181,8 +178,6 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
                     this.failed(monitor, ex);
                     break;
                 }
-            } finally {
-                IOUtil.close(sftp);
             }
             ThreadUtil.sleep(5);
         }

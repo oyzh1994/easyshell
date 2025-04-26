@@ -12,9 +12,14 @@ import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -59,10 +64,10 @@ public class ShellSFTPClient extends ShellClient {
     @Override
     public void close() {
         try {
-            if (this.sftpManager != null) {
-                this.sftpManager.close();
-                this.sftpManager = null;
-            }
+//            if (this.sftpManager != null) {
+//                this.sftpManager.close();
+//                this.sftpManager = null;
+//            }
             if (this.deleteManager != null) {
                 this.deleteManager.close();
                 this.deleteManager = null;
@@ -132,14 +137,14 @@ public class ShellSFTPClient extends ShellClient {
         return this.session == null || !this.session.isConnected();
     }
 
-    private ShellSFTPChannelManager sftpManager;
-
-    public ShellSFTPChannelManager getSftpManager() {
-        if (this.sftpManager == null) {
-            this.sftpManager = new ShellSFTPChannelManager();
-        }
-        return this.sftpManager;
-    }
+//    private ShellSFTPChannelManager sftpManager;
+//
+//    public ShellSFTPChannelManager getSftpManager() {
+//        if (this.sftpManager == null) {
+//            this.sftpManager = new ShellSFTPChannelManager();
+//        }
+//        return this.sftpManager;
+//    }
 
     private ShellSFTPUploadManager uploadManager;
 
@@ -176,19 +181,19 @@ public class ShellSFTPClient extends ShellClient {
         }
         return transportManager;
     }
+//
+//    public ShellSFTPChannel openSFTP() {
+//        if (!this.getSftpManager().hasAvailable()) {
+//            ShellSFTPChannel sftp = this.newSFTP();
+//            if (sftp != null) {
+//                this.getSftpManager().push(sftp);
+//                return sftp;
+//            }
+//        }
+//        return this.getSftpManager().take();
+//    }
 
-    public ShellSFTPChannel openSFTP() {
-        if (!this.getSftpManager().hasAvailable()) {
-            ShellSFTPChannel sftp = this.newSFTP();
-            if (sftp != null) {
-                this.getSftpManager().push(sftp);
-                return sftp;
-            }
-        }
-        return this.getSftpManager().take();
-    }
-
-    public ShellSFTPChannel newSFTP() {
+    protected ShellSFTPChannel newSFTP() {
         try {
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
             ShellSFTPChannel sftp = new ShellSFTPChannel(channel, this.osType);
@@ -231,5 +236,113 @@ public class ShellSFTPClient extends ShellClient {
 
     public void transport(ShellSFTPFile localFile, String remoteFile, ShellSFTPClient remoteClient) {
         this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
+    }
+
+    public void rm(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.rm(filePath);
+        }
+    }
+
+    public void mkdir(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.mkdir(filePath);
+        }
+    }
+
+    public SftpATTRS stat(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.stat(filePath);
+        }
+    }
+
+    public boolean exist(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.exist(filePath);
+        }
+    }
+
+    public String realpath(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.realpath(filePath);
+        }
+    }
+
+    public String pwd() throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.pwd();
+        }
+    }
+
+    public void touch(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.touch(filePath);
+        }
+    }
+
+    public void put(InputStream stream, String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.put(stream, filePath);
+        }
+    }
+
+    public OutputStream put(String dest, SftpProgressMonitor monitor) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.put(dest, monitor);
+        }
+    }
+
+    public void put(String src, String dest, SftpProgressMonitor monitor) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.put(src, dest, monitor);
+        }
+    }
+
+    public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.get(src, dest, monitor, mode);
+        }
+    }
+
+    public InputStream get(String src) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.get(src);
+        }
+    }
+
+    public void get(String src, String dest) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.get(src, dest);
+        }
+    }
+
+    public void chmod(int permission, String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.chmod(permission, filePath);
+        }
+    }
+
+    public List<ShellSFTPFile> lsFile(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.lsFile(filePath);
+        }
+    }
+
+    public void rename(String filePath, String newPath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.rename(filePath, newPath);
+        }
+    }
+
+    public List<ShellSFTPFile> lsFileNormal(String filePath) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.lsFileNormal(filePath);
+        }
+    }
+
+    public void mkdirRecursive(String remoteDir) throws SftpException {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.mkdirRecursive(remoteDir);
+        }
     }
 }

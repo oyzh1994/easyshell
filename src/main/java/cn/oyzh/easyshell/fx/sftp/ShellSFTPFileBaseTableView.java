@@ -7,7 +7,6 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
@@ -150,9 +149,6 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
 //        this.locationProperty.set(location);
 //    }
 
-    public ShellSFTPChannel sftp() {
-        return this.client.openSFTP();
-    }
 
     protected List<ShellSFTPFile> files;
 
@@ -166,18 +162,17 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
     }
 
     protected synchronized void loadFileInner() throws SftpException {
-        ShellSFTPChannel sftp = this.sftp();
         try {
             String currPath = this.getLocation();
             if (currPath == null) {
-                this.setLocation(sftp.pwd());
+                this.setLocation(this.client.pwd());
                 currPath = this.getLocation();
             } else if (currPath.isBlank()) {
                 currPath = "/";
             }
             JulLog.info("current path: {}", currPath);
             // 更新当前列表
-            this.files = sftp.lsFile(currPath, this.client);
+            this.files = this.client.lsFile(currPath);
             // 过滤出来待显示的列表
             List<ShellSFTPFile> files = this.doFilter(this.files);
             // 当前在显示的列表
@@ -209,7 +204,6 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
             this.addItem(addList);
         } catch (Throwable ex) {
             if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4: ", "0: Success")) {
-                sftp.close();
                 this.loadFileInner();
             } else {
                 throw ex;
@@ -505,7 +499,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
             }
             String filePath = ShellFileUtil.concat(file.getParentPath(), name);
             String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
-            this.sftp().rename(filePath, newPath);
+            this.client.rename(filePath, newPath);
             file.setFileName(newName);
             this.refreshFile();
         } catch (Exception ex) {
@@ -527,7 +521,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
     public void cd(String path) {
         if (!StringUtil.isBlank(path)) {
             try {
-                if (this.sftp().exist(path)) {
+                if (this.client.exist(path)) {
                     this.setLocation(path);
                     this.loadFile();
                 }
@@ -568,12 +562,11 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
             return;
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        ShellSFTPChannel sftp = this.sftp();
-        sftp.touch(filePath);
-        SftpATTRS attrs = sftp.stat(filePath);
+        this.client.touch(filePath);
+        SftpATTRS attrs = this.client.stat(filePath);
         ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件
-        ShellSFTPUtil.realpath(file, sftp);
+        ShellSFTPUtil.realpath(file, this.client);
         file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
         file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
         this.files.add(file);
@@ -599,12 +592,11 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
             return;
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        ShellSFTPChannel sftp = this.sftp();
-        sftp.mkdir(filePath);
-        SftpATTRS attrs = sftp.stat(filePath);
+        this.client.mkdir(filePath);
+        SftpATTRS attrs =  this.client.stat(filePath);
         ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件
-        ShellSFTPUtil.realpath(file, sftp);
+        ShellSFTPUtil.realpath(file,  this.client);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");

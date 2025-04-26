@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
@@ -87,14 +86,14 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     @FXML
     private void save() {
         String filePath = this.filePath();
-        if(StringUtil.isBlank(filePath)) {
+        if (StringUtil.isBlank(filePath)) {
             return;
         }
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSFTPChannel sftp = this.sftpClient().newSFTP();
-                 ShellSFTPChannel sftp1 = this.sftpClient().newSFTP()) {
+            ShellSFTPClient sftpClient = this.sftpClient();
+            try {
                 // 创建临时文件
                 String tempFile;
                 if (filePath.startsWith("~")) {
@@ -102,17 +101,17 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
                 } else {
                     tempFile = filePath + ".temp";
                 }
-                if (!sftp1.exist(tempFile)) {
-                    sftp1.touch(tempFile);
+                if (!sftpClient.exist(tempFile)) {
+                    sftpClient.touch(tempFile);
                 }
                 // 上传内容
-                sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
+                sftpClient.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
                 String output = exec.cat_file(tempFile, filePath);
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
-                } else if (sftp1.exist(tempFile)) { // 删除临时文件
-                    sftp1.rm(tempFile);
+                } else if (sftpClient.exist(tempFile)) { // 删除临时文件
+                    sftpClient.rm(tempFile);
                 }
             } catch (Exception ex) {
                 // 忽略No such file错误
@@ -130,7 +129,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     @FXML
     private void apply() {
         String filePath = this.filePath();
-        if(StringUtil.isBlank(filePath)) {
+        if (StringUtil.isBlank(filePath)) {
             return;
         }
         ShellExec exec = this.client().shellExec();

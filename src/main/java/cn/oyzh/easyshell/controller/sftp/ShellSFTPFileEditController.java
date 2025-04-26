@@ -7,9 +7,8 @@ import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -102,9 +101,8 @@ public class ShellSFTPFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                ShellSFTPChannel sftp = this.client.openSFTP();
-                sftp.put(new FileInputStream(this.destPath), file.getFilePath());
-                SftpATTRS attrs = sftp.stat(file.getFilePath());
+                this.client.put(new FileInputStream(this.destPath), file.getFilePath());
+                SftpATTRS attrs = this.client.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
                 ShellEventUtil.fileSaved(this.file);
             } catch (Exception ex) {
@@ -121,8 +119,7 @@ public class ShellSFTPFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                ShellSFTPChannel sftp = this.client.openSFTP();
-                sftp.get(this.file.getFilePath(), this.destPath);
+                this.client.get(this.file.getFilePath(), this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {

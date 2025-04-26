@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
@@ -55,9 +54,8 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         }
         StageManager.showMask(() -> {
             try {
-                ShellSFTPChannel sftp = this.sftpClient().openSFTP();
                 String filePath = this.filePath.getText();
-                if (sftp.exist(filePath)) {
+                if (this.sftpClient().exist(filePath)) {
                     ShellExec exec = this.client().shellExec();
                     String output = exec.cat_docker_daemon(filePath);
                     this.data.setText(output);
@@ -86,20 +84,20 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSFTPChannel sftp = this.sftpClient().openSFTP()) {
-                sftp.setUsing(true);
+            ShellSFTPClient sftpClient = this.sftpClient();
+            try {
                 // 创建json文件
                 String jsonFile = this.filePath.getText();
-                if (!sftp.exist(jsonFile)) {
-                    sftp.touch(jsonFile);
+                if (!sftpClient.exist(jsonFile)) {
+                    sftpClient.touch(jsonFile);
                 }
                 // 创建临时文件
                 String tempFile = this.filePath.getText() + ".temp";
-                if (!sftp.exist(tempFile)) {
-                    sftp.touch(tempFile);
+                if (!sftpClient.exist(tempFile)) {
+                    sftpClient.touch(tempFile);
                 }
                 // 上传内容
-                sftp.put(new ByteArrayInputStream(text.getBytes()), tempFile);
+                sftpClient.put(new ByteArrayInputStream(text.getBytes()), tempFile);
                 // 把临时文件内容copy到真实文件
 //                String output = exec.echo("$(cat " + tempFile + ")", jsonFile);
                 String output = exec.cat_file(tempFile, jsonFile);
@@ -107,7 +105,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                     MessageBox.warn(output);
                 } else {
                     // 删除临时文件
-                    this.sftpClient().openSFTP().rm(tempFile);
+                    this.sftpClient().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
