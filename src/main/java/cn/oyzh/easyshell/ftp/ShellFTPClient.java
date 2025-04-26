@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,13 +135,49 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
     }
 
     /**
+     * 删除文件
+     *
+     * @param file 文件
+     */
+    public void doDelete(ShellFTPFile file) {
+        try {
+            file.startWaiting();
+            if (file.isDirectory()) {
+                ShellFTPUtil.deleteDirectory(this, file.getFilePath());
+                super.removeDirectory(file.getFilePath());
+            } else {
+                super.deleteFile(file.getFilePath());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        } finally {
+            file.stopWaiting();
+        }
+    }
+
+    /**
      * 上传文件
      *
      * @param localFile  本地文件
      * @param remotePath 远程目录
      */
     public void upload(File localFile, String remotePath) {
-        String remoteFile = ShellFileUtil.concat(remotePath, localFile.getName());
+        this.upload(localFile, remotePath, null);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param localFile      本地文件
+     * @param remotePath     远程目录
+     * @param remoteFileName 远程文件名
+     */
+    public void upload(File localFile, String remotePath, String remoteFileName) {
+        if (remoteFileName == null) {
+            remoteFileName = localFile.getName();
+        }
+        String remoteFile = ShellFileUtil.concat(remotePath, remoteFileName);
         ShellFTPUploadFile uploadFile = new ShellFTPUploadFile();
         uploadFile.setRemotePath(remoteFile);
         uploadFile.setSize(localFile.length());
@@ -148,17 +185,7 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         this.uploadFiles.add(uploadFile);
         Thread task = ThreadUtil.startVirtual(() -> {
             try {
-                this.setFileType(FTPClient.BINARY_FILE_TYPE);
-                if (localFile.isDirectory()) {
-                    // 创建根目录
-                    String remoteDir = ShellFileUtil.concat(remotePath, localFile.getName());
-                    this.mkdir(remoteDir);
-                    ShellFTPUtil.uploadFolder(this, localFile, remoteDir);
-                } else {
-                    FileInputStream fis = new FileInputStream(localFile);
-                    super.storeFile(remoteFile, fis);
-                    fis.close();
-                }
+                this.doUpload(localFile, remoteFile);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -170,31 +197,41 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
     }
 
     /**
-     * 下载文件
+     * 执行上传
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
+     * @throws IOException 异常
      */
-    public void download(File localFile, ShellFTPFile remoteFile) {
+    public void doUpload(File localFile, String remoteFile) throws IOException {
+        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        if (localFile.isDirectory()) {
+            // 创建根目录
+            this.mkdir(remoteFile);
+            ShellFTPUtil.uploadFolder(this, localFile, remoteFile);
+        } else {
+            FileInputStream fis = new FileInputStream(localFile);
+            super.storeFile(remoteFile, fis);
+            fis.close();
+        }
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param localPath  本地路径
+     * @param remoteFile 远程文件
+     */
+    public void download(File localPath, ShellFTPFile remoteFile) {
         ShellFTPDownloadFile downloadFile = new ShellFTPDownloadFile();
         downloadFile.setSize(remoteFile.getSize());
+        downloadFile.setLocalPath(localPath.getPath());
         downloadFile.setRemotePath(remoteFile.getFilePath());
-        downloadFile.setLocalPath(localFile.getAbsolutePath());
         this.downloadFiles.add(downloadFile);
+        String localFile = ShellFileUtil.concat(localPath.getPath(), remoteFile.getFileName());
         Thread task = ThreadUtil.startVirtual(() -> {
             try {
-                this.setFileType(FTPClient.BINARY_FILE_TYPE);
-                if (remoteFile.isDirectory()) {
-                    String localDir = ShellFileUtil.concat(localFile.getPath(), remoteFile.getName());
-                    FileUtil.mkdir(localDir);
-                    ShellFTPUtil.downloadFolder(this, remoteFile.getFilePath(), localDir);
-                } else {
-                    String filePath = ShellFileUtil.concat(localFile.getPath(), remoteFile.getName());
-                    FileOutputStream fos = new FileOutputStream(filePath);
-                    super.retrieveFile(remoteFile.getFilePath(), fos);
-                    fos.flush();
-                    fos.close();
-                }
+                this.doDownload(localFile, remoteFile);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -203,6 +240,26 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             }
         });
         downloadFile.setTask(task);
+    }
+
+    /**
+     * 执行下载
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    public void doDownload(String localFile, ShellFTPFile remoteFile) throws IOException {
+        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        if (remoteFile.isDirectory()) {
+            FileUtil.mkdir(localFile);
+            ShellFTPUtil.downloadFolder(this, remoteFile.getFilePath(), localFile);
+        } else {
+            FileOutputStream fos = new FileOutputStream(localFile);
+            super.retrieveFile(remoteFile.getFilePath(), fos);
+            fos.flush();
+            fos.close();
+        }
     }
 
     public List<ShellFTPFile> lsFile(String filePath) {

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.StringUtil;
 
 public class ShellFileUtil {
@@ -65,5 +66,29 @@ public class ShellFileUtil {
     public static boolean hasOthersExecutePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 10 && chars[9] == 'x';
+    }
+
+    /**
+     * 文件是否可编辑
+     *
+     * @param file 文件
+     * @return 结果
+     */
+    public static boolean fileEditable(ShellFile file) {
+        if (!file.isFile()) {
+            return false;
+        }
+        if (file.getFileSize() > 500 * 1024) {
+            return false;
+        }
+        // 检查类型
+        String extName = FileNameUtil.extName(file.getFileName());
+        return StringUtil.equalsAnyIgnoreCase(extName,
+                "txt", "text", "log", "yaml", "java",
+                "xml", "json", "htm", "html", "xhtml",
+                "php", "css", "c", "cpp", "rs",
+                "js", "csv", "sql", "md", "ini",
+                "cfg", "sh", "bat", "py", "asp",
+                "aspx", "env", "tsv", "conf");
     }
 }

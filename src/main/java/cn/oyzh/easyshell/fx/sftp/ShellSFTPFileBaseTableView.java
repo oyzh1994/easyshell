@@ -1,12 +1,10 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
@@ -25,8 +23,6 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -293,7 +289,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
             ShellSFTPFile file = files.getFirst();
             // 编辑文件
             FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
-            if (!this.fileEditable(file)) {
+            if (!ShellFileUtil.fileEditable(file)) {
                 editFile.setDisable(true);
             }
             editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
@@ -507,8 +503,8 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
             }
-            String filePath = ShellFileUtil.concat(this.getLocation(), name);
-            String newPath = ShellFileUtil.concat(this.getLocation(), newName);
+            String filePath = ShellFileUtil.concat(file.getParentPath(), name);
+            String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
             this.sftp().rename(filePath, newPath);
             file.setFileName(newName);
             this.refreshFile();
@@ -542,42 +538,15 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
     }
 
     /**
-     * 文件是否可编辑
-     *
-     * @param file 文件
-     * @return 结果
-     */
-    protected boolean fileEditable(ShellSFTPFile file) {
-        if (!file.isFile()) {
-            return false;
-        }
-        if (file.size() > 500 * 1024) {
-            return false;
-        }
-        // 检查类型
-        String extName = FileNameUtil.extName(file.getFileName());
-        return StringUtil.equalsAnyIgnoreCase(extName,
-                "txt", "text", "log", "yaml", "java",
-                "xml", "json", "htm", "html", "xhtml",
-                "php", "css", "c", "cpp", "rs",
-                "js", "csv", "sql", "md", "ini",
-                "cfg", "sh", "bat", "py", "asp",
-                "aspx", "env", "tsv", "conf");
-    }
-
-    /**
      * 编辑文件
      *
      * @param file 文件
      */
     public void editFile(ShellSFTPFile file) {
-        if (!this.fileEditable(file)) {
+        if (!ShellFileUtil.fileEditable(file)) {
             return;
         }
-        StageAdapter adapter = StageManager.parseStage(ShellSftpFileEditController.class);
-        adapter.setProp("file", file);
-        adapter.setProp("client", this.client);
-        adapter.display();
+        ShellViewFactory.sftpFileEdit(file, this.client);
     }
 
     public void touch() {

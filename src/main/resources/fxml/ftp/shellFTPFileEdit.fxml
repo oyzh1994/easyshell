@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController" prefWidth="1200" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.ftp.ShellFTPFileEditController" prefWidth="1200" realHeight="650">
     <FXHBox prefHeight="30" flexWidth="100%">
         <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
                             tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">

@@ -148,7 +148,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     protected List<ShellFTPFile> files;
 
     public void loadFile() {
-        StageManager.showMask(()->{
+        StageManager.showMask(() -> {
             try {
                 this.loadFileInner();
             } catch (Exception ex) {
@@ -214,6 +214,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         } else {
             this.setItem(this.doFilter(this.files));
         }
+        this.refresh();
     }
 
     protected List<ShellFTPFile> doFilter(List<ShellFTPFile> files) {
@@ -271,6 +272,13 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         menuItems.add(MenuItemHelper.separator());
         if (files.size() == 1) {
             ShellFTPFile file = files.getFirst();
+            // 编辑文件
+            FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
+            if (!ShellFileUtil.fileEditable(file)) {
+                editFile.setDisable(true);
+            }
+            editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
+            menuItems.add(editFile);
             // 文件信息
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
             fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
@@ -282,7 +290,6 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
             renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
             menuItems.add(renameFile);
-            menuItems.add(MenuItemHelper.separator());
             // 文件权限
             FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
             menuItems.add(filePermission);
@@ -350,6 +357,8 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
                 ShellFTPFile file = files.getFirst();
                 if (file.isDirectory()) {
                     this.intoDir(file);
+                } else if (file.isFile()) {
+                    this.editFile(file);
                 }
             }
         } catch (Exception ex) {
@@ -448,9 +457,9 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
                         continue;
                     }
                     // 执行删除
-                    this.client.delete(file);
+                    this.client.doDelete(file);
+                    this.files.remove(file);
                 }
-                this.files.removeAll(files);
                 this.refreshFile();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -485,8 +494,8 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
             }
-            String filePath = ShellFileUtil.concat(this.getLocation(), name);
-            String newPath = ShellFileUtil.concat(this.getLocation(), newName);
+            String filePath = ShellFileUtil.concat(file.getParentPath(), name);
+            String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
             this.client.rename(filePath, newPath);
             file.setFileName(newName);
             this.refreshFile();
@@ -553,6 +562,18 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         this.setLocation(filePath);
         this.client.cd(filePath);
         this.loadFile();
+    }
+
+    /**
+     * 编辑文件
+     *
+     * @param file 文件
+     */
+    public void editFile(ShellFTPFile file) {
+        if (!ShellFileUtil.fileEditable(file)) {
+            return;
+        }
+        ShellViewFactory.ftpFileEdit(file, this.client);
     }
 
     public void uploadFile() {

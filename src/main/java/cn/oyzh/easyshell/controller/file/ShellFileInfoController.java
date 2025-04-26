@@ -14,15 +14,15 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * ssh文件信息业务
+ * 文件信息业务
  *
  * @author oyzh
- * @since 2025/06
+ * @since 2025/03/16
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "sftp/shellSftpFileInfo.fxml"
+        value = FXConst.FXML_PATH + "file/shellFileInfo.fxml"
 )
 public class ShellFileInfoController extends StageController {
 

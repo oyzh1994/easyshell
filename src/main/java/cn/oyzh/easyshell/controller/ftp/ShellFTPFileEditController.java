@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.sftp;
+package cn.oyzh.easyshell.controller.ftp;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
@@ -7,9 +7,8 @@ import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -24,13 +23,12 @@ import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataType;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.SftpATTRS;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.WindowEvent;
 
-import java.io.FileInputStream;
+import java.io.File;
 
 /**
  * ssh文件编辑业务
@@ -40,14 +38,14 @@ import java.io.FileInputStream;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
-        value = FXConst.FXML_PATH + "sftp/shellSftpFileEdit.fxml"
+        value = FXConst.FXML_PATH + "ftp/shellFTPFileEdit.fxml"
 )
-public class ShellSftpFileEditController extends StageController {
+public class ShellFTPFileEditController extends StageController {
 
     /**
      * 远程文件
      */
-    private ShellSFTPFile file;
+    private ShellFTPFile file;
 
     /**
      * 目标路径
@@ -57,7 +55,7 @@ public class ShellSftpFileEditController extends StageController {
     /**
      * sftp客户端
      */
-    private ShellSFTPClient client;
+    private ShellFTPClient client;
 
     /**
      * 数据
@@ -102,10 +100,9 @@ public class ShellSftpFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                ShellSFTPChannel sftp = this.client.openSftp();
-                sftp.put(new FileInputStream(this.destPath), file.getFilePath());
-                SftpATTRS attrs = sftp.stat(file.getFilePath());
-                this.file.setAttrs(attrs);
+                File localFile = new File(this.destPath);
+                this.client.upload(localFile, file.getParentPath(), file.getFileName());
+                file.setSize(localFile.length());
                 ShellEventUtil.fileSaved(this.file);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -121,8 +118,8 @@ public class ShellSftpFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                ShellSFTPChannel sftp = this.client.openSftp();
-                sftp.get(this.file.getFilePath(), this.destPath);
+                File localFile = new File(this.destPath);
+                this.client.doDownload(localFile.getPath(), this.file);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {

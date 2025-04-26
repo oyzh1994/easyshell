@@ -23,9 +23,9 @@ import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
+import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -290,7 +290,7 @@ public class ShellEventUtil {
      *
      * @param file 文件
      */
-    public static void fileSaved(ShellSFTPFile file) {
+    public static void fileSaved(ShellFile file) {
         ShellSftpFileSavedEvent event = new ShellSftpFileSavedEvent();
         event.data(file);
         EventUtil.post(event);
