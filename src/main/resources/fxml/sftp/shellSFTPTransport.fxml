@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox?>
-<?import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
@@ -196,11 +196,11 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </ReturnFolderSVGGlyph>
-                        <ShellSftpLocationTextField prefHeight="22" fx:id="sourceLocation" flexWidth="100% - 220">
+                        <ShellFileLocationTextField prefHeight="22" fx:id="sourceLocation" flexWidth="100% - 220">
                             <FXHBox.margin>
                                 <Insets left="5" top="4"/>
                             </FXHBox.margin>
-                        </ShellSftpLocationTextField>
+                        </ShellFileLocationTextField>
                         <RefreshSVGGlyph onMousePrimaryClicked="#refreshSourceFile">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
@@ -260,11 +260,11 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </ReturnFolderSVGGlyph>
-                        <ShellSftpLocationTextField prefHeight="22" fx:id="targetLocation" flexWidth="100% - 220">
+                        <ShellFileLocationTextField prefHeight="22" fx:id="targetLocation" flexWidth="100% - 220">
                             <FXHBox.margin>
                                 <Insets left="5" top="4"/>
                             </FXHBox.margin>
-                        </ShellSftpLocationTextField>
+                        </ShellFileLocationTextField>
                         <RefreshSVGGlyph onMousePrimaryClicked="#refreshTargetFile">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>

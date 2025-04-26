@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2023/10/9
  */
-public class ShellSftpLocationTextFieldSkin extends SelectTextFiledSkin {
+public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin {
 
     /**
      * 跳转路径事件
@@ -40,7 +40,7 @@ public class ShellSftpLocationTextFieldSkin extends SelectTextFiledSkin {
         }
     }
 
-    public ShellSftpLocationTextFieldSkin(TextField textField) {
+    public ShellFileLocationTextFieldSkin(TextField textField) {
         super(textField);
         // 设置选中事件
         super.setSelectIndexChanged((observable, oldValue, newValue) -> {

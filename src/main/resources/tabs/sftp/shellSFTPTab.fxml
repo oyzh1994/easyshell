@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView?>
-<?import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
@@ -35,11 +35,11 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </ReturnFolderSVGGlyph>
-        <ShellSftpLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 330">
+        <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 330">
             <FXHBox.margin>
                 <Insets left="5" top="4"/>
             </FXHBox.margin>
-        </ShellSftpLocationTextField>
+        </ShellFileLocationTextField>
         <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

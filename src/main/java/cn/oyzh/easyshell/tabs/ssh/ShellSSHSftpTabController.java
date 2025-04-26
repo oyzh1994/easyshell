@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView;
-import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField;
+import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
@@ -56,7 +56,7 @@ public class ShellSSHSftpTabController extends SubTabController {
      * 当前位置
      */
     @FXML
-    private ShellSftpLocationTextField location;
+    private ShellFileLocationTextField location;
 
     /**
      * 上传组件
