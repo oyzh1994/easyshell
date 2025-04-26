@@ -287,5 +287,40 @@ public interface ShellFile {
         return this.getFileName().startsWith(".");
     }
 
+    default boolean hasOwnerReadPermission() {
+        return ShellFileUtil.hasOwnerReadPermission(this.getPermissions());
+    }
+
+    default boolean hasOwnerWritePermission() {
+        return ShellFileUtil.hasOwnerWritePermission(this.getPermissions());
+    }
+
+    default boolean hasOwnerExecutePermission() {
+        return ShellFileUtil.hasOwnerExecutePermission(this.getPermissions());
+    }
+
+    default boolean hasGroupsReadPermission() {
+        return ShellFileUtil.hasGroupsReadPermission(this.getPermissions());
+    }
+
+    default boolean hasGroupsWritePermission() {
+        return ShellFileUtil.hasGroupsWritePermission(this.getPermissions());
+    }
+
+    default boolean hasGroupsExecutePermission() {
+        return ShellFileUtil.hasGroupsExecutePermission(this.getPermissions());
+    }
+
+    default boolean hasOthersReadPermission() {
+        return ShellFileUtil.hasOthersReadPermission(this.getPermissions());
+    }
+
+    default boolean hasOthersWritePermission() {
+        return ShellFileUtil.hasOthersWritePermission(this.getPermissions());
+    }
+
+    default boolean hasOthersExecutePermission() {
+        return ShellFileUtil.hasOthersExecutePermission(this.getPermissions());
+    }
 
 }

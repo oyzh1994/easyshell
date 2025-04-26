@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -277,5 +278,19 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public boolean chmod(int permissions, String filePath) {
+        try {
+            // 构建 SITE CHMOD 命令
+            String command = "SITE CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
+            // 发送命令到 FTP 服务器
+            int replyCode = this.sendCommand(command);
+            // 检查命令执行结果
+            return FTPReply.isPositiveCompletion(replyCode);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 }

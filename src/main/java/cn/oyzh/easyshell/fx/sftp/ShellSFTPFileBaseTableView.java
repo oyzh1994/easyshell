@@ -7,7 +7,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpChannel;
@@ -483,18 +482,10 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
     }
 
     public void filePermission(ShellSftpFile file) {
-        try {
-            if (this.checkInvalid(file)) {
-                return;
-            }
-            StageAdapter adapter = StageManager.parseStage(ShellSftpFilePermissionController.class);
-            adapter.setProp("file", file);
-            adapter.setProp("client", this.client);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
+        if (this.checkInvalid(file)) {
+            return;
         }
+        ShellViewFactory.sftpFilePermission(file, this.client);
     }
 
     /**

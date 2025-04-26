@@ -5,7 +5,6 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.easyshell.util.ShellFileUtil;
-import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
@@ -267,48 +266,12 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         return this.getAttrs().isDir();
     }
 
-    public boolean hasOwnerReadPermission() {
-        return ShellUtil.hasOwnerReadPermission(this.getPermissions());
-    }
-
-    public boolean hasOwnerWritePermission() {
-        return ShellUtil.hasOwnerWritePermission(this.getPermissions());
-    }
-
-    public boolean hasOwnerExecutePermission() {
-        return ShellUtil.hasOwnerExecutePermission(this.getPermissions());
-    }
-
-    public boolean hasGroupsReadPermission() {
-        return ShellUtil.hasGroupsReadPermission(this.getPermissions());
-    }
-
-    public boolean hasGroupsWritePermission() {
-        return ShellUtil.hasGroupsWritePermission(this.getPermissions());
-    }
-
-    public boolean hasGroupsExecutePermission() {
-        return ShellUtil.hasGroupsExecutePermission(this.getPermissions());
-    }
-
-    public boolean hasOthersReadPermission() {
-        return ShellUtil.hasOthersReadPermission(this.getPermissions());
-    }
-
-    public boolean hasOthersWritePermission() {
-        return ShellUtil.hasOthersWritePermission(this.getPermissions());
-    }
-
     public String getLinkPath() {
         return linkPath;
     }
 
     public void setLinkPath(String linkPath) {
         this.linkPath = linkPath;
-    }
-
-    public boolean hasOthersExecutePermission() {
-        return ShellUtil.hasOthersExecutePermission(this.getPermissions());
     }
 
     /**

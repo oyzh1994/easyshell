@@ -283,6 +283,10 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
             menuItems.add(renameFile);
             menuItems.add(MenuItemHelper.separator());
+            // 文件权限
+            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+            menuItems.add(filePermission);
+            menuItems.add(MenuItemHelper.separator());
         }
         // 刷新文件
         FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
@@ -453,6 +457,13 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
                 MessageBox.exception(ex);
             }
         });
+    }
+
+    public void filePermission(ShellFTPFile file) {
+        if (this.checkInvalid(file)) {
+            return;
+        }
+        ShellViewFactory.ftpFilePermission(file, this.client);
     }
 
     /**

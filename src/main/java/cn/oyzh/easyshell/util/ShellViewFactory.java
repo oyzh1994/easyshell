@@ -20,12 +20,15 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
+import cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
+import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -319,4 +322,29 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    public static void ftpFilePermission(ShellFile file, ShellFTPClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFTPFilePermissionController.class);
+            adapter.setProp("file", file);
+            adapter.setProp("client", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void sftpFilePermission(ShellFile file, ShellSftpClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellSftpFilePermissionController.class);
+            adapter.setProp("file", file);
+            adapter.setProp("client", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 }

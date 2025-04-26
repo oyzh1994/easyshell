@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController" prefWidth="800" realHeight="500">
+        fx:controller="cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController" prefWidth="800" realHeight="500">
     <InfoLabel text="%base.fileName">
         <VBox.margin>
             <Insets left="30" top="10"/>
