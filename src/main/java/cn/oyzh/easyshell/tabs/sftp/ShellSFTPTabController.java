@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.event.file.ShellSftpFileDraggedEvent;
+import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
@@ -369,7 +369,7 @@ public class ShellSFTPTabController extends RichTabController {
     }
 
     @EventSubscribe
-    private void draggedFile(ShellSftpFileDraggedEvent event) {
+    private void draggedFile(ShellFileDraggedEvent event) {
         try {
             List<File> files = event.data();
             this.fileTable.uploadFile(files);
@@ -596,7 +596,7 @@ public class ShellSFTPTabController extends RichTabController {
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    private void onFileSaved(ShellSftpFileSavedEvent event) {
+//    private void onFileSaved(ShellFileSavedEvent event) {
 //        this.fileTable.refresh();
 //    }
 

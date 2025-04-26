@@ -10,6 +10,6 @@ import java.util.List;
  * @author oyzh
  * @since 2024/3/29
  */
-public class ShellSftpFileDraggedEvent extends Event<List<File>> {
+public class ShellFileDraggedEvent extends Event<List<File>> {
 
 }

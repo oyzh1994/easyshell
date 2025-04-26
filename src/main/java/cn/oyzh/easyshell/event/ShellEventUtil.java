@@ -11,14 +11,14 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
+import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
-import cn.oyzh.easyshell.event.file.ShellSftpFileDraggedEvent;
-import cn.oyzh.easyshell.event.file.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
@@ -291,7 +291,7 @@ public class ShellEventUtil {
      * @param file 文件
      */
     public static void fileSaved(ShellFile file) {
-        ShellSftpFileSavedEvent event = new ShellSftpFileSavedEvent();
+        ShellFileSavedEvent event = new ShellFileSavedEvent();
         event.data(file);
         EventUtil.post(event);
     }
@@ -302,7 +302,7 @@ public class ShellEventUtil {
      * @param files 文件
      */
     public static void fileDragged(List<File> files) {
-        ShellSftpFileDraggedEvent event = new ShellSftpFileDraggedEvent();
+        ShellFileDraggedEvent event = new ShellFileDraggedEvent();
         event.data(files);
         EventUtil.post(event);
     }

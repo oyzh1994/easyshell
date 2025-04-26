@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/3/29
  */
-public class ShellSftpFileSavedEvent extends Event<ShellFile> {
+public class ShellFileSavedEvent extends Event<ShellFile> {
 
     public String fileName() {
         return this.data().getFileName();

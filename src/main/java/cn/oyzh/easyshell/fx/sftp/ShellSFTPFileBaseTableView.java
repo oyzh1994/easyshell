@@ -5,7 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.file.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -628,7 +628,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
      * @param event 事件
      */
     @EventSubscribe
-    private void onFileSaved(ShellSftpFileSavedEvent event) {
+    private void onFileSaved(ShellFileSavedEvent event) {
         if (this.existFile(event.fileName())) {
             this.refresh();
         }
