@@ -106,10 +106,11 @@ public class ShellSFTPFile implements ObjectCopier<ShellSFTPFile>, ShellFile {
         this.icon = icon;
     }
 
-
     public ShellSFTPFile(String parentPath, ChannelSftp.LsEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
+        this.owner = entry.getLongname().split("\\s+")[2];
+        this.group = entry.getLongname().split("\\s+")[3];
         this.updatePermissions();
     }
 

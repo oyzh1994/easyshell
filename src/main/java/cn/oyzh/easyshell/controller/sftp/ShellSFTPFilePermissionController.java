@@ -167,7 +167,7 @@ public class ShellSFTPFilePermissionController extends StageController {
                     perms.append("-");
                 }
                 int permission = ShellUtil.permissionToInt(perms.toString());
-                ShellSFTPChannel sftp = this.client.openSftp();
+                ShellSFTPChannel sftp = this.client.openSFTP();
                 sftp.chmod(permission, this.file.getFilePath());
                 SftpATTRS attrs = sftp.stat(file.getFilePath());
                 this.file.setAttrs(attrs);

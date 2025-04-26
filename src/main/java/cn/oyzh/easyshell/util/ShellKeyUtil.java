@@ -209,8 +209,8 @@ public class ShellKeyUtil {
             if (client.isWindows()) {
                 sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
                 // 检查文件夹
-                if (!sftpClient.openSftp().exist(sshFile)) {
-                    sftpClient.openSftp().mkdir(sshFile);
+                if (!sftpClient.openSFTP().exist(sshFile)) {
+                    sftpClient.openSFTP().mkdir(sshFile);
                 }
                 sshFile = sshFile + "authorized_keys";
             } else {
@@ -220,14 +220,14 @@ public class ShellKeyUtil {
                 // 远程临时公钥
                 String remoteFile = client.getUserHome() + key.getId() + ".pub";
                 // 上传
-                ShellSFTPChannel sftp = sftpClient.newSftp();
+                ShellSFTPChannel sftp = sftpClient.newSFTP();
                 sftp.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile);
                 IOUtil.close(sftp);
                 // 追加到已知公钥
                 client.shellExec().append_file(remoteFile, sshFile);
                 try {
                     // 删除临时公钥文件
-                    sftpClient.openSftp().rm(remoteFile);
+                    sftpClient.openSFTP().rm(remoteFile);
                 } catch (Exception ignored) {
                 }
             }

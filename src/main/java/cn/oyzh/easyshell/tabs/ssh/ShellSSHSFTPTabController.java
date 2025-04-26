@@ -44,7 +44,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/03/11
  */
-public class ShellSSHSftpTabController extends SubTabController {
+public class ShellSSHSFTPTabController extends SubTabController {
 
     /**
      * tab

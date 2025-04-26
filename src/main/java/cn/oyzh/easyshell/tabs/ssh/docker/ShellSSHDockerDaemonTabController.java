@@ -55,7 +55,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         }
         StageManager.showMask(() -> {
             try {
-                ShellSFTPChannel sftp = this.sftpClient().openSftp();
+                ShellSFTPChannel sftp = this.sftpClient().openSFTP();
                 String filePath = this.filePath.getText();
                 if (sftp.exist(filePath)) {
                     ShellExec exec = this.client().shellExec();
@@ -86,7 +86,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSFTPChannel sftp = this.sftpClient().openSftp()) {
+            try (ShellSFTPChannel sftp = this.sftpClient().openSFTP()) {
                 sftp.setUsing(true);
                 // 创建json文件
                 String jsonFile = this.filePath.getText();
@@ -107,7 +107,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                     MessageBox.warn(output);
                 } else {
                     // 删除临时文件
-                    this.sftpClient().openSftp().rm(tempFile);
+                    this.sftpClient().openSFTP().rm(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

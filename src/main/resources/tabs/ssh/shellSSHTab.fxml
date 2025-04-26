@@ -4,7 +4,7 @@
            fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTabController"
            rotateGraphic="true" side="RIGHT">
     <fx:include fx:id="termTab" source="shellSSHTermTab.fxml"/>
-    <fx:include fx:id="sftpTab" source="shellSSHSftpTab.fxml"/>
+    <fx:include fx:id="sftpTab" source="shellSSHSFTPTab.fxml"/>
     <fx:include fx:id="serverTab" source="shellSSHServerTab.fxml"/>
     <fx:include fx:id="dockerTab" source="shellSSHDockerTab.fxml"/>
     <fx:include fx:id="monitorTab" source="shellSSHMonitorTab.fxml"/>

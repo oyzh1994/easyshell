@@ -132,7 +132,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
                 // 远程文件夹
                 String remoteDir = ShellFileUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
-                this.client.openSftp().mkdirRecursive(remoteDir);
+                this.client.openSFTP().mkdirRecursive(remoteDir);
                 // 添加文件
                 for (File file : files) {
                     if (file.isDirectory()) {
@@ -165,7 +165,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSFTPChannel sftp = this.client.newSftp();
+            ShellSFTPChannel sftp = this.client.newSFTP();
             try {
                 sftp.put(monitor.getLocalFilePath(), monitor.getRemoteFile(), monitor);
             } catch (Exception ex) {

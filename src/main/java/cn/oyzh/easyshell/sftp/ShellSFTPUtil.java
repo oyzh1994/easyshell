@@ -10,6 +10,9 @@ import com.jcraft.jsch.SftpException;
 public class ShellSFTPUtil {
 
     public static String getOwner(int uid, ShellSFTPClient client) {
+        if (client.isWindows()) {
+            return "-";
+        }
         ShellSFTPAttr attr = client.getAttr();
         String ownerName = attr.getOwner(uid);
         if (ownerName == null) {
@@ -20,6 +23,9 @@ public class ShellSFTPUtil {
     }
 
     public static String getGroup(int gid, ShellSFTPClient client) {
+        if (client.isWindows()) {
+            return "-";
+        }
         ShellSFTPAttr attr = client.getAttr();
         String groupName = attr.getGroup(gid);
         if (groupName == null) {

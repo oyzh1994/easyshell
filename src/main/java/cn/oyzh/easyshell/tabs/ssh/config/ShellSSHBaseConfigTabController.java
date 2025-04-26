@@ -93,8 +93,8 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSFTPChannel sftp = this.sftpClient().newSftp();
-                 ShellSFTPChannel sftp1 = this.sftpClient().newSftp()) {
+            try (ShellSFTPChannel sftp = this.sftpClient().newSFTP();
+                 ShellSFTPChannel sftp1 = this.sftpClient().newSFTP()) {
                 // 创建临时文件
                 String tempFile;
                 if (filePath.startsWith("~")) {

@@ -118,17 +118,17 @@ public class ShellSFTPChannel extends ShellSSHChannel {
             // 读取链接文件
             ShellSFTPUtil.realpath(file, this);
             files.add(file);
-            if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
-                if (client.isWindows()) {
-                    file.setOwner("-");
-                    file.setGroup("-");
-                } else {
-                    String ownerName = ShellSFTPUtil.getOwner(file.getUid(), client);
-                    String groupName = ShellSFTPUtil.getGroup(file.getGid(), client);
-                    file.setOwner(ownerName);
-                    file.setGroup(groupName);
-                }
-            }
+//            if (client != null && !file.isReturnDirectory() && !file.isCurrentFile()) {
+//                if (client.isWindows()) {
+//                    file.setOwner("-");
+//                    file.setGroup("-");
+//                } else {
+//                    String ownerName = ShellSFTPUtil.getOwner(file.getUid(), client);
+//                    String groupName = ShellSFTPUtil.getGroup(file.getGid(), client);
+//                    file.setOwner(ownerName);
+//                    file.setGroup(groupName);
+//                }
+//            }
         }
         return files;
     }

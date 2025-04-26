@@ -129,8 +129,8 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
         this.manager.taskStatusChanged(this.getStatus(), this);
         // 文件夹
         if (localFile.isDirectory()) {
-            ShellSFTPChannel localSftp = this.localClient.openSftp();
-            ShellSFTPChannel remoteSftp = this.remoteClient.openSftp();
+            ShellSFTPChannel localSftp = this.localClient.openSFTP();
+            ShellSFTPChannel remoteSftp = this.remoteClient.openSFTP();
             // 列举文件
             List<ShellSFTPFile> files = localSftp.lsFileNormal(localFile.getFilePath());
             // 处理文件
@@ -171,8 +171,8 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSFTPChannel localSftp = this.localClient.newSftp();
-            ShellSFTPChannel remoteSftp = this.remoteClient.newSftp();
+            ShellSFTPChannel localSftp = this.localClient.newSFTP();
+            ShellSFTPChannel remoteSftp = this.remoteClient.newSFTP();
             try {
                 InputStream input = localSftp.get(monitor.getLocalFilePath());
                 OutputStream output = remoteSftp.put(monitor.getRemoteFile(), monitor);

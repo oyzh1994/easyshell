@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SftpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SFTPSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -22,10 +22,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHSftpTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHSFTPTabController"
        text="%base.file" fx:id="root">
     <graphic>
-        <SftpSVGGlyph sizeStr="11"/>
+        <SFTPSVGGlyph sizeStr="11"/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
@@ -109,12 +109,12 @@
             <!--                    <Insets left="10" top="10"/>-->
             <!--                </FXHBox.margin>-->
             <!--            </DownloadBoxSVGGlyph>-->
-            <!--            <SftpSVGGlyph sizeStr="15" fx:id="sftpBox" onMousePrimaryClicked="#showSftpBox"-->
+            <!--            <SFTPSVGGlyph sizeStr="15" fx:id="sftpBox" onMousePrimaryClicked="#showSftpBox"-->
             <!--                          tipText="%shell.file.tip17">-->
             <!--                <FXHBox.margin>-->
             <!--                    <Insets left="30" top="10"/>-->
             <!--                </FXHBox.margin>-->
-            <!--            </SftpSVGGlyph>-->
+            <!--            </SFTPSVGGlyph>-->
         </FXHBox>
         <ShellSFTPFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>

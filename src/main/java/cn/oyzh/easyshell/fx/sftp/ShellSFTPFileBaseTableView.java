@@ -151,7 +151,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
 //    }
 
     public ShellSFTPChannel sftp() {
-        return this.client.openSftp();
+        return this.client.openSFTP();
     }
 
     protected List<ShellSFTPFile> files;
@@ -574,17 +574,11 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> imple
         ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件
         ShellSFTPUtil.realpath(file, sftp);
-        if (this.client.isWindows()) {
-            file.setOwner("-");
-            file.setGroup("-");
-        } else {
-            file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
-            file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
-        }
+        file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
+        file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
         this.files.add(file);
         this.refreshFile();
     }
-
 
     public void mkdir() {
         try {

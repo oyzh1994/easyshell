@@ -102,7 +102,7 @@ public class ShellSFTPFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                ShellSFTPChannel sftp = this.client.openSftp();
+                ShellSFTPChannel sftp = this.client.openSFTP();
                 sftp.put(new FileInputStream(this.destPath), file.getFilePath());
                 SftpATTRS attrs = sftp.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
@@ -121,7 +121,7 @@ public class ShellSFTPFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                ShellSFTPChannel sftp = this.client.openSftp();
+                ShellSFTPChannel sftp = this.client.openSFTP();
                 sftp.get(this.file.getFilePath(), this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());

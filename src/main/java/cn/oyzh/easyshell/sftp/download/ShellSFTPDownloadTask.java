@@ -130,7 +130,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
         // 文件夹
         if (remoteFile.isDirectory()) {
             // 列举文件
-            List<ShellSFTPFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
+            List<ShellSFTPFile> files = this.client.openSFTP().lsFileNormal(remoteFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
@@ -169,7 +169,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSFTPChannel sftp = this.client.newSftp();
+            ShellSFTPChannel sftp = this.client.newSFTP();
             try {
                 sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {

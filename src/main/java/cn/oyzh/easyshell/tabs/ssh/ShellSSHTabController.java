@@ -50,7 +50,7 @@ public class ShellSSHTabController extends ParentTabController {
      * 文件
      */
     @FXML
-    private ShellSSHSftpTabController sftpTabController;
+    private ShellSSHSFTPTabController sftpTabController;
 
     /**
      * 服务器信息

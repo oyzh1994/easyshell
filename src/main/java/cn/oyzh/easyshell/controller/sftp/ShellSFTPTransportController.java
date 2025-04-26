@@ -42,7 +42,7 @@ import java.util.List;
  * @since 2025/03/21
  */
 @StageAttribute(
-        value = FXConst.FXML_PATH + "sftp/shellSftpTransport.fxml"
+        value = FXConst.FXML_PATH + "sftp/shellSFTPTransport.fxml"
 )
 public class ShellSFTPTransportController extends StageController {
 

@@ -154,7 +154,7 @@ public class ShellSFTPClient extends ShellClient {
 
     public ShellSFTPDeleteManager getDeleteManager() {
         if (this.deleteManager == null) {
-            this.deleteManager = new ShellSFTPDeleteManager(this::newSftp);
+            this.deleteManager = new ShellSFTPDeleteManager(this::newSFTP);
         }
         return deleteManager;
     }
@@ -177,9 +177,9 @@ public class ShellSFTPClient extends ShellClient {
         return transportManager;
     }
 
-    public ShellSFTPChannel openSftp() {
+    public ShellSFTPChannel openSFTP() {
         if (!this.getSftpManager().hasAvailable()) {
-            ShellSFTPChannel sftp = this.newSftp();
+            ShellSFTPChannel sftp = this.newSFTP();
             if (sftp != null) {
                 this.getSftpManager().push(sftp);
                 return sftp;
@@ -188,7 +188,7 @@ public class ShellSFTPClient extends ShellClient {
         return this.getSftpManager().take();
     }
 
-    public ShellSFTPChannel newSftp() {
+    public ShellSFTPChannel newSFTP() {
         try {
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
             ShellSFTPChannel sftp = new ShellSFTPChannel(channel, this.osType);
