@@ -111,7 +111,7 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
 
     @Override
     public String getParentPath() {
-        return "";
+        return this.parentPath;
     }
 
     @Override
@@ -171,5 +171,9 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
     @Override
     public String getPermissions() {
         return ShellFTPUtil.getPermissionsString(this.file);
+    }
+
+    public void setParentPath(String parentPath) {
+        this.parentPath = parentPath;
     }
 }

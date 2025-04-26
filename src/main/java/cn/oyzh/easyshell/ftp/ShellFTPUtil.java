@@ -5,10 +5,62 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class ShellFTPUtil {
+
+    /**
+     * 下载文件夹
+     *
+     * @param ftpClient    客户端
+     * @param remoteFolder 远程文件夹
+     * @param localFolder  本地文件夹
+     * @throws IOException 异常
+     */
+    public static void downloadFolder(ShellFTPClient ftpClient, String remoteFolder, String localFolder) throws IOException {
+        // 确保本地文件夹存在
+        File localDir = new File(localFolder);
+        if (!localDir.exists()) {
+            if (!localDir.mkdirs()) {
+                JulLog.error("无法创建本地文件夹: " + localFolder);
+                return;
+            }
+        }
+        // 获取远程文件夹中的所有文件和子文件夹
+        FTPFile[] files = ftpClient.listFiles(remoteFolder);
+        if (files != null) {
+            for (FTPFile file : files) {
+                String remoteFilePath = remoteFolder + "/" + file.getName();
+                String localFilePath = localFolder + File.separator + file.getName();
+
+                if (file.isDirectory()) {
+                    // 处理子文件夹
+                    downloadFolder(ftpClient, remoteFilePath, localFilePath);
+                } else {
+                    // 处理文件
+                    try (OutputStream outputStream = new FileOutputStream(localFilePath);
+                         InputStream inputStream = ftpClient.retrieveFileStream(remoteFilePath)) {
+
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+
+                        boolean success = ftpClient.completePendingCommand();
+                        if (success) {
+                            JulLog.info("文件下载成功: " + localFilePath);
+                        } else {
+                            JulLog.error("文件下载失败: " + localFilePath);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * 上传文件夹
@@ -18,7 +70,8 @@ public class ShellFTPUtil {
      * @param remoteBaseDir 远程目录
      * @throws IOException 异常
      */
-    public static void uploadFolder(ShellFTPClient ftpClient, File localFolder, String remoteBaseDir) throws IOException {
+    public static void uploadFolder(ShellFTPClient ftpClient, File localFolder, String remoteBaseDir) throws
+            IOException {
         if (!localFolder.exists() || !localFolder.isDirectory()) {
             return;
         }

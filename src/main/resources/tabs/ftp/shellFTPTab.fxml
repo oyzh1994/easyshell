@@ -55,16 +55,16 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
-        <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
-            <HBox.margin>
-                <Insets left="5" top="8"/>
-            </HBox.margin>
-        </HiddenSVGPane>
         <BoxSVGGlyph fx:id="manage" onMousePrimaryClicked="#manage">
             <HBox.margin>
                 <Insets left="5" top="8"/>
             </HBox.margin>
         </BoxSVGGlyph>
+        <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
+            <HBox.margin>
+                <Insets left="5" top="8"/>
+            </HBox.margin>
+        </HiddenSVGPane>
         <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
             <FXHBox.margin>
                 <Insets left="5" top="3"/>

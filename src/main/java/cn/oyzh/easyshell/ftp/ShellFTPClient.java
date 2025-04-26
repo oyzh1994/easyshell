@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.ftp;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
+import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
@@ -115,11 +117,13 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
                 file.startWaiting();
                 if (file.isDirectory()) {
                     ShellFTPUtil.deleteDirectory(this, file.getFilePath());
+                    super.removeDirectory(file.getFilePath());
                 } else {
                     super.deleteFile(file.getFilePath());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
+                MessageBox.exception(ex);
             } finally {
                 file.stopWaiting();
                 this.deleteFiles.remove(deleteFile);
@@ -150,10 +154,13 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
                     this.mkdir(remoteDir);
                     ShellFTPUtil.uploadFolder(this, localFile, remoteDir);
                 } else {
-                    super.storeFile(remoteFile, new FileInputStream(localFile));
+                    FileInputStream fis = new FileInputStream(localFile);
+                    super.storeFile(remoteFile, fis);
+                    fis.close();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
+                MessageBox.exception(ex);
             } finally {
                 this.uploadFiles.remove(uploadFile);
             }
@@ -176,9 +183,20 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         Thread task = ThreadUtil.startVirtual(() -> {
             try {
                 this.setFileType(FTPClient.BINARY_FILE_TYPE);
-                super.retrieveFile(remoteFile.getFilePath(), new FileOutputStream(localFile));
+                if (remoteFile.isDirectory()) {
+                    String localDir = ShellFileUtil.concat(localFile.getPath(), remoteFile.getName());
+                    FileUtil.mkdir(localDir);
+                    ShellFTPUtil.downloadFolder(this, remoteFile.getFilePath(), localDir);
+                } else {
+                    String filePath = ShellFileUtil.concat(localFile.getPath(), remoteFile.getName());
+                    FileOutputStream fos = new FileOutputStream(filePath);
+                    super.retrieveFile(remoteFile.getFilePath(), fos);
+                    fos.flush();
+                    fos.close();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
+                MessageBox.exception(ex);
             } finally {
                 this.downloadFiles.remove(downloadFile);
             }
@@ -187,7 +205,6 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
     }
 
     public List<ShellFTPFile> lsFile(String filePath) {
-
         List<ShellFTPFile> list = new ArrayList<>();
         try {
             FTPFile[] files = this.listFiles(filePath);

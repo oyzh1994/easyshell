@@ -3,10 +3,13 @@ package cn.oyzh.easyshell.fx.ftp;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.ftp.ShellFTPDeleteFile;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
+import cn.oyzh.easyshell.ftp.ShellFTPUploadFile;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -25,6 +28,7 @@ import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.KeyEvent;
@@ -107,6 +111,16 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
 
     public void setClient(ShellFTPClient client) {
         this.client = client;
+        this.client.getUploadFiles().addListener((ListChangeListener<ShellFTPUploadFile>) c -> {
+            if (this.client.getUploadFiles().isEmpty()) {
+                this.loadFile();
+            }
+        });
+        this.client.getDeleteFiles().addListener((ListChangeListener<ShellFTPDeleteFile>) c -> {
+            if (this.client.getDeleteFiles().isEmpty()) {
+                this.loadFile();
+            }
+        });
     }
 
     /**
@@ -219,7 +233,6 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
                     .sorted(Comparator.comparingInt(ShellFTPFile::getFileOrder))
                     .collect(Collectors.toList());
         }
-//        return files;
         return new CopyOnWriteArrayList<>(files);
     }
 
@@ -239,12 +252,6 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<ShellFTPFile> files = this.getSelectedItems();
-//        // 发现操作中的文件，则跳过
-//        for (ShellFTPFile file : files) {
-//            if (file.isWaiting()) {
-//                return Collections.emptyList();
-//            }
-//        }
         // 检查是否包含无效文件
         if (this.checkInvalid(files)) {
             return Collections.emptyList();
@@ -272,19 +279,24 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
         refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
         menuItems.add(refreshFile);
+        // 删除文件
+        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
+        menuItems.add(deleteFile);
+        menuItems.add(MenuItemHelper.separator());
         // 上传文件
         FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
         // 上传文件夹
         FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
         menuItems.add(uploadFile);
         menuItems.add(uploadFolder);
-        // 删除文件
-        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
-        menuItems.add(deleteFile);
+        if (!files.isEmpty()) {
+            // 下载文件
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
+            menuItems.add(downloadFile);
+        }
         return menuItems;
     }
-
 
     protected void copyFilePath(ShellFTPFile file) {
         ClipboardUtil.copy(file.getFilePath());
@@ -561,4 +573,35 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
         return true;
     }
+
+    public boolean downloadFile(List<ShellFTPFile> files) {
+        File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
+        if (dir != null && dir.isDirectory() && dir.exists()) {
+            String[] fileArr = dir.list();
+            // 检查文件是否存在
+            if (ArrayUtil.isNotEmpty(fileArr)) {
+                for (String f1 : fileArr) {
+                    Optional<ShellFTPFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
+                    if (file.isPresent()) {
+                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
+                            return false;
+                        }
+                        break;
+                    }
+                }
+            }
+            for (ShellFTPFile file : files) {
+                try {
+                    file.setParentPath(this.getLocation());
+                    this.client.download(dir, file);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

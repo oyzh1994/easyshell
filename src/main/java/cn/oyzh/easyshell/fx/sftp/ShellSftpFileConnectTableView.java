@@ -67,6 +67,9 @@ public class ShellSftpFileConnectTableView extends ShellSftpFileBaseTableView {
 //            }
 //        }
         // 检查是否包含无效文件
+        if (this.checkInvalid(files)) {
+            return Collections.emptyList();
+        }
         // 获取父级菜单
         List<MenuItem> menuItems = new ArrayList<>(super.getMenuItems());
         menuItems.add(MenuItemHelper.separator());
@@ -76,9 +79,6 @@ public class ShellSftpFileConnectTableView extends ShellSftpFileBaseTableView {
         FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
         menuItems.add(uploadFile);
         menuItems.add(uploadFolder);
-        if (this.checkInvalid(files)) {
-            return Collections.emptyList();
-        }
         if (!files.isEmpty()) {
             // 下载文件
             FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
