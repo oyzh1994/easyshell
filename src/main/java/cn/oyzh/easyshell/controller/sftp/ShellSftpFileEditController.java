@@ -7,9 +7,9 @@ import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -47,7 +47,7 @@ public class ShellSftpFileEditController extends StageController {
     /**
      * 远程文件
      */
-    private ShellSftpFile file;
+    private ShellSFTPFile file;
 
     /**
      * 目标路径
@@ -57,7 +57,7 @@ public class ShellSftpFileEditController extends StageController {
     /**
      * sftp客户端
      */
-    private ShellSftpClient client;
+    private ShellSFTPClient client;
 
     /**
      * 数据
@@ -102,7 +102,7 @@ public class ShellSftpFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                ShellSftpChannel sftp = this.client.openSftp();
+                ShellSFTPChannel sftp = this.client.openSftp();
                 sftp.put(new FileInputStream(this.destPath), file.getFilePath());
                 SftpATTRS attrs = sftp.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
@@ -121,7 +121,7 @@ public class ShellSftpFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                ShellSftpChannel sftp = this.client.openSftp();
+                ShellSFTPChannel sftp = this.client.openSftp();
                 sftp.get(this.file.getFilePath(), this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());

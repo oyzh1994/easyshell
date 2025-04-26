@@ -2,10 +2,9 @@ package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpManager;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPManager;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,10 +15,10 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpDownloadManager extends ShellSftpManager<ShellSftpDownloadMonitor, ShellSftpDownloadTask> {
+public class ShellSFTPDownloadManager extends ShellSFTPManager<ShellSFTPDownloadMonitor, ShellSFTPDownloadTask> {
 
-    public void fileDownload(File localFile, ShellSftpFile remoteFile, ShellSftpClient client) {
-        this.tasks.add(new ShellSftpDownloadTask(this, localFile, remoteFile, client));
+    public void fileDownload(File localFile, ShellSFTPFile remoteFile, ShellSFTPClient client) {
+        this.tasks.add(new ShellSFTPDownloadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doDownload();
     }
@@ -31,7 +30,7 @@ public class ShellSftpDownloadManager extends ShellSftpManager<ShellSftpDownload
     }
 
 //    public void updateDownloading() {
-//        for (ShellSftpDownloadTask task : this.tasks) {
+//        for (ShellSFTPDownloadTask task : this.tasks) {
 //            if (task.isDownloading() || task.isInPreparation()) {
 //                this.downloadingProperty.set(true);
 //                return;
@@ -59,7 +58,7 @@ public class ShellSftpDownloadManager extends ShellSftpManager<ShellSftpDownload
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    ShellSftpDownloadTask task = this.tasks.peek();
+                    ShellSFTPDownloadTask task = this.tasks.peek();
                     if (task == null) {
                         break;
                     }

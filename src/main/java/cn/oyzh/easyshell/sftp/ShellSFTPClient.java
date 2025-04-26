@@ -4,9 +4,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
-import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
+import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
+import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
@@ -23,13 +23,13 @@ import java.util.Properties;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellSftpClient extends ShellClient {
+public class ShellSFTPClient extends ShellClient {
 
-    public ShellSftpClient(ShellConnect shellConnect) {
+    public ShellSFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
 
-    public ShellSftpClient(ShellConnect shellConnect, Session session) {
+    public ShellSFTPClient(ShellConnect shellConnect, Session session) {
         this.shellConnect = shellConnect;
         this.session = session;
     }
@@ -132,20 +132,20 @@ public class ShellSftpClient extends ShellClient {
         return this.session == null || !this.session.isConnected();
     }
 
-    private ShellSftpChannelManager sftpManager;
+    private ShellSFTPChannelManager sftpManager;
 
-    public ShellSftpChannelManager getSftpManager() {
+    public ShellSFTPChannelManager getSftpManager() {
         if (this.sftpManager == null) {
-            this.sftpManager = new ShellSftpChannelManager();
+            this.sftpManager = new ShellSFTPChannelManager();
         }
         return this.sftpManager;
     }
 
-    private ShellSftpUploadManager uploadManager;
+    private ShellSFTPUploadManager uploadManager;
 
-    public ShellSftpUploadManager getUploadManager() {
+    public ShellSFTPUploadManager getUploadManager() {
         if (this.uploadManager == null) {
-            this.uploadManager = new ShellSftpUploadManager();
+            this.uploadManager = new ShellSFTPUploadManager();
         }
         return uploadManager;
     }
@@ -159,27 +159,27 @@ public class ShellSftpClient extends ShellClient {
         return deleteManager;
     }
 
-    private ShellSftpDownloadManager downloadManager;
+    private ShellSFTPDownloadManager downloadManager;
 
-    public ShellSftpDownloadManager getDownloadManager() {
+    public ShellSFTPDownloadManager getDownloadManager() {
         if (this.downloadManager == null) {
-            this.downloadManager = new ShellSftpDownloadManager();
+            this.downloadManager = new ShellSFTPDownloadManager();
         }
         return downloadManager;
     }
 
-    private ShellSftpTransportManager transportManager;
+    private ShellSFTPTransportManager transportManager;
 
-    public ShellSftpTransportManager getTransportManager() {
+    public ShellSFTPTransportManager getTransportManager() {
         if (this.transportManager == null) {
-            this.transportManager = new ShellSftpTransportManager();
+            this.transportManager = new ShellSFTPTransportManager();
         }
         return transportManager;
     }
 
-    public ShellSftpChannel openSftp() {
+    public ShellSFTPChannel openSftp() {
         if (!this.getSftpManager().hasAvailable()) {
-            ShellSftpChannel sftp = this.newSftp();
+            ShellSFTPChannel sftp = this.newSftp();
             if (sftp != null) {
                 this.getSftpManager().push(sftp);
                 return sftp;
@@ -188,10 +188,10 @@ public class ShellSftpClient extends ShellClient {
         return this.getSftpManager().take();
     }
 
-    public ShellSftpChannel newSftp() {
+    public ShellSFTPChannel newSftp() {
         try {
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-            ShellSftpChannel sftp = new ShellSftpChannel(channel, this.osType);
+            ShellSFTPChannel sftp = new ShellSFTPChannel(channel, this.osType);
             sftp.connect(this.connectTimeout());
             return sftp;
         } catch (Exception ex) {
@@ -208,16 +208,16 @@ public class ShellSftpClient extends ShellClient {
         return this.exec("id -gn " + gid);
     }
 
-    private ShellSftpAttr attr;
+    private ShellSFTPAttr attr;
 
-    public ShellSftpAttr getAttr() {
+    public ShellSFTPAttr getAttr() {
         if (this.attr == null) {
-            this.attr = new ShellSftpAttr();
+            this.attr = new ShellSFTPAttr();
         }
         return this.attr;
     }
 
-    public void delete(ShellSftpFile file) {
+    public void delete(ShellSFTPFile file) {
         this.getDeleteManager().fileDelete(file);
     }
 
@@ -225,11 +225,11 @@ public class ShellSftpClient extends ShellClient {
         this.getUploadManager().fileUpload(localFile, remoteFile, this);
     }
 
-    public void download(File localFile, ShellSftpFile remoteFile) throws SftpException {
+    public void download(File localFile, ShellSFTPFile remoteFile) throws SftpException {
         this.getDownloadManager().fileDownload(localFile, remoteFile, this);
     }
 
-    public void transport(ShellSftpFile localFile, String remoteFile, ShellSftpClient remoteClient) {
+    public void transport(ShellSFTPFile localFile, String remoteFile, ShellSFTPClient remoteClient) {
         this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
     }
 }

@@ -2,9 +2,8 @@ package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpManager;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPManager;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,10 +14,10 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpUploadManager extends ShellSftpManager<ShellSftpUploadMonitor, ShellSftpUploadTask> {
+public class ShellSFTPUploadManager extends ShellSFTPManager<ShellSFTPUploadMonitor, ShellSFTPUploadTask> {
 
-    public void fileUpload(File localFile, String remoteFile, ShellSftpClient client) {
-        this.tasks.add(new ShellSftpUploadTask(this, localFile, remoteFile, client));
+    public void fileUpload(File localFile, String remoteFile, ShellSFTPClient client) {
+        this.tasks.add(new ShellSFTPUploadTask(this, localFile, remoteFile, client));
         this.taskSizeChanged();
         this.doUpload();
     }
@@ -30,7 +29,7 @@ public class ShellSftpUploadManager extends ShellSftpManager<ShellSftpUploadMoni
     }
 
 //    public void updateUploading() {
-//        for (ShellSftpUploadTask task : this.tasks) {
+//        for (ShellSFTPUploadTask task : this.tasks) {
 //            if (task.isUploading() || task.isInPreparation()) {
 //                this.uploadingProperty.set(true);
 //                return;
@@ -58,7 +57,7 @@ public class ShellSftpUploadManager extends ShellSftpManager<ShellSftpUploadMoni
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    ShellSftpUploadTask task = this.tasks.peek();
+                    ShellSFTPUploadTask task = this.tasks.peek();
                     if (task == null) {
                         break;
                     }

@@ -8,15 +8,15 @@ import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadMonitor;
-import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
-import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
-import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadMonitor;
-import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
+import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadTask;
+import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
+import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadMonitor;
+import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadMonitor;
+import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
+import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
@@ -168,14 +168,14 @@ public class ShellSFTPTabController extends RichTabController {
     /**
      * 上传管理器
      */
-    private ShellSftpUploadManager uploadManager;
+    private ShellSFTPUploadManager uploadManager;
 
     /**
      * 下载管理器
      */
-    private ShellSftpDownloadManager downloadManager;
+    private ShellSFTPDownloadManager downloadManager;
 
-    private ShellSftpClient client;
+    private ShellSFTPClient client;
 
     private ShellConnect shellConnect;
 
@@ -188,7 +188,7 @@ public class ShellSFTPTabController extends RichTabController {
      */
     public void init(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
-        this.client = new ShellSftpClient(shellConnect);
+        this.client = new ShellSFTPClient(shellConnect);
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -301,7 +301,7 @@ public class ShellSFTPTabController extends RichTabController {
         }
     }
 
-    public ShellSftpClient client() {
+    public ShellSFTPClient client() {
         return this.client;
     }
 
@@ -411,7 +411,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param monitor   监听器
      * @param exception 异常
      */
-    private void downloadFailed(ShellSftpDownloadMonitor monitor, Throwable exception) {
+    private void downloadFailed(ShellSFTPDownloadMonitor monitor, Throwable exception) {
         if (exception != null) {
             MessageBox.exception(exception, I18nHelper.downloadFailed() + " " + monitor.getLocalFileName());
         }
@@ -423,7 +423,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param status 状态
      * @param task   任务
      */
-    private void downloadStatusChanged(String status, ShellSftpDownloadTask task) {
+    private void downloadStatusChanged(String status, ShellSFTPDownloadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -439,7 +439,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void downloadMonitorChanged(ShellSftpDownloadMonitor monitor, ShellSftpDownloadTask task) {
+    private void downloadMonitorChanged(ShellSFTPDownloadMonitor monitor, ShellSFTPDownloadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
@@ -470,7 +470,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param monitor   监听器
      * @param exception 异常
      */
-    private void uploadFailed(ShellSftpUploadMonitor monitor, Throwable exception) {
+    private void uploadFailed(ShellSFTPUploadMonitor monitor, Throwable exception) {
         if (exception != null) {
             MessageBox.exception(exception, I18nHelper.uploadFailed() + " " + monitor.getLocalFileName());
         }
@@ -482,7 +482,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param status 状态
      * @param task   任务
      */
-    private void uploadStatusChanged(String status, ShellSftpUploadTask task) {
+    private void uploadStatusChanged(String status, ShellSFTPUploadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -498,7 +498,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void uploadMonitorChanged(ShellSftpUploadMonitor monitor, ShellSftpUploadTask task) {
+    private void uploadMonitorChanged(ShellSFTPUploadMonitor monitor, ShellSFTPUploadTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
@@ -530,7 +530,7 @@ public class ShellSFTPTabController extends RichTabController {
      * @param file      文件
      * @param exception 异常
      */
-    private void deleteFailed(ShellSftpFile file, Throwable exception) {
+    private void deleteFailed(ShellSFTPFile file, Throwable exception) {
         if (exception != null) {
             MessageBox.exception(exception, I18nHelper.deleteFailed() + " " + file.getFileName());
         }

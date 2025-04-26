@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -90,7 +90,7 @@ public class ShellConnectUtil {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
                 } else if (shellConnect.isSFTPType()) {
-                    ShellSftpClient client = new ShellSftpClient(shellConnect);
+                    ShellSFTPClient client = new ShellSFTPClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.sftp;
 
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -29,17 +29,17 @@ import javafx.stage.WindowEvent;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "sftp/shellSftpFilePermission.fxml"
 )
-public class ShellSftpFilePermissionController extends StageController {
+public class ShellSFTPFilePermissionController extends StageController {
 
     /**
      * 远程文件
      */
-    private ShellSftpFile file;
+    private ShellSFTPFile file;
 
     /**
      * ssh客户端
      */
-    private ShellSftpClient client;
+    private ShellSFTPClient client;
 
     /**
      * 文件名称
@@ -167,7 +167,7 @@ public class ShellSftpFilePermissionController extends StageController {
                     perms.append("-");
                 }
                 int permission = ShellUtil.permissionToInt(perms.toString());
-                ShellSftpChannel sftp = this.client.openSftp();
+                ShellSFTPChannel sftp = this.client.openSftp();
                 sftp.chmod(permission, this.file.getFilePath());
                 SftpATTRS attrs = sftp.stat(file.getFilePath());
                 this.file.setAttrs(attrs);

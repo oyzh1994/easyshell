@@ -2,8 +2,8 @@
 //
 //import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
 //import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView;
-//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;
-//import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
+//import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
+//import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
 //import cn.oyzh.easyshell.shell.ShellSSHClient;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.fx.plus.FXConst;
@@ -44,12 +44,12 @@
 //    /**
 //     * 上传管理器
 //     */
-//    private ShellSftpUploadManager uploadManager;
+//    private ShellSFTPUploadManager uploadManager;
 //
 //    /**
 //     * 下载管理器
 //     */
-//    private ShellSftpDownloadManager downloadManager;
+//    private ShellSFTPDownloadManager downloadManager;
 //
 //    @Override
 //    protected void bindListeners() {

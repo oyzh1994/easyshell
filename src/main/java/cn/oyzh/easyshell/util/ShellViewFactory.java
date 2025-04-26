@@ -22,13 +22,13 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFilePermissionController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
+import cn.oyzh.easyshell.controller.sftp.ShellSFTPFilePermissionController;
+import cn.oyzh.easyshell.controller.sftp.ShellSFTPTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -295,7 +295,7 @@ public class ShellViewFactory {
      */
     public static void transportData(ShellConnect sourceConnect) {
         // 判断窗口是否存在
-        List<StageAdapter> list = StageManager.listStage(ShellSftpTransportController.class);
+        List<StageAdapter> list = StageManager.listStage(ShellSFTPTransportController.class);
         for (StageAdapter adapter : list) {
             if (adapter.getProp("sourceConnect") == sourceConnect) {
                 adapter.toFront();
@@ -303,7 +303,7 @@ public class ShellViewFactory {
             }
         }
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class, null);
+            StageAdapter adapter = StageManager.parseStage(ShellSFTPTransportController.class, null);
             adapter.setProp("sourceConnect", sourceConnect);
             adapter.display();
         } catch (Exception ex) {
@@ -335,9 +335,9 @@ public class ShellViewFactory {
         }
     }
 
-    public static void sftpFilePermission(ShellFile file, ShellSftpClient client) {
+    public static void sftpFilePermission(ShellFile file, ShellSFTPClient client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellSftpFilePermissionController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellSFTPFilePermissionController.class);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.display();

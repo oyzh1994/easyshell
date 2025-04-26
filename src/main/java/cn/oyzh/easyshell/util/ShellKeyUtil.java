@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import com.jcraft.jsch.SftpException;
 
@@ -202,7 +202,7 @@ public class ShellKeyUtil {
      */
     public static boolean sshCopyId(List<ShellKey> keys, ShellSSHClient client) {
         try {
-            ShellSftpClient sftpClient = client.getSftpClient();
+            ShellSFTPClient sftpClient = client.getSftpClient();
             // ssh已知公钥文件
             String sshFile;
             // windows
@@ -220,7 +220,7 @@ public class ShellKeyUtil {
                 // 远程临时公钥
                 String remoteFile = client.getUserHome() + key.getId() + ".pub";
                 // 上传
-                ShellSftpChannel sftp = sftpClient.newSftp();
+                ShellSFTPChannel sftp = sftpClient.newSftp();
                 sftp.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile);
                 IOUtil.close(sftp);
                 // 追加到已知公钥

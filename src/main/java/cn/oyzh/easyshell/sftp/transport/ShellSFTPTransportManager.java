@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.sftp.transport;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpManager;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPManager;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,10 +13,10 @@ import javafx.beans.property.SimpleBooleanProperty;
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpTransportManager extends ShellSftpManager<ShellSftpTransportMonitor, ShellSftpTransportTask> {
+public class ShellSFTPTransportManager extends ShellSFTPManager<ShellSFTPTransportMonitor, ShellSFTPTransportTask> {
 
-    public void fileTransport(ShellSftpFile localFile, String remoteFile, ShellSftpClient localClient, ShellSftpClient remoteClient) {
-        this.tasks.add(new ShellSftpTransportTask(this, localFile, remoteFile, localClient, remoteClient));
+    public void fileTransport(ShellSFTPFile localFile, String remoteFile, ShellSFTPClient localClient, ShellSFTPClient remoteClient) {
+        this.tasks.add(new ShellSFTPTransportTask(this, localFile, remoteFile, localClient, remoteClient));
         this.taskSizeChanged();
         this.doTransport();
     }
@@ -46,7 +46,7 @@ public class ShellSftpTransportManager extends ShellSftpManager<ShellSftpTranspo
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
-                    ShellSftpTransportTask task = this.tasks.peek();
+                    ShellSFTPTransportTask task = this.tasks.peek();
                     if (task == null) {
                         break;
                     }

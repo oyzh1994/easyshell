@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.process.ShellProcessExec;
 import cn.oyzh.easyshell.server.ShellServerExec;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
@@ -105,11 +105,11 @@ public class ShellSSHClient extends ShellClient {
         }
     }
 
-    private ShellSftpClient sftpClient;
+    private ShellSFTPClient sftpClient;
 
-    public ShellSftpClient getSftpClient() {
+    public ShellSFTPClient getSftpClient() {
         if (this.sftpClient == null) {
-            this.sftpClient = new ShellSftpClient(this.shellConnect, this.session);
+            this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session);
         }
         return this.sftpClient;
     }
@@ -422,11 +422,11 @@ public class ShellSSHClient extends ShellClient {
         return this.shell;
     }
 
-//    public ShellSftpChannel openSftp() {
+//    public ShellSFTPChannel openSftp() {
 //        return this.getSftpClient().openSftp();
 //    }
 //
-//    public ShellSftpChannel newSftp() {
+//    public ShellSFTPChannel newSftp() {
 //        return this.getSftpClient().newSftp();
 //    }
 

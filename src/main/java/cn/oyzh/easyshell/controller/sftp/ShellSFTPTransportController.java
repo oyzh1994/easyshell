@@ -6,13 +6,13 @@ import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpClientUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPClientUtil;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportMonitor;
-import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
+import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
+import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportMonitor;
+import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportTask;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
@@ -44,7 +44,7 @@ import java.util.List;
 @StageAttribute(
         value = FXConst.FXML_PATH + "sftp/shellSftpTransport.fxml"
 )
-public class ShellSftpTransportController extends StageController {
+public class ShellSFTPTransportController extends StageController {
 
     /**
      * 第一步
@@ -193,12 +193,12 @@ public class ShellSftpTransportController extends StageController {
     /**
      * 来源客户端
      */
-    private ShellSftpClient sourceClient;
+    private ShellSFTPClient sourceClient;
 
     /**
      * 目标客户端
      */
-    private ShellSftpClient targetClient;
+    private ShellSFTPClient targetClient;
 
     /**
      * 源名称
@@ -252,14 +252,14 @@ public class ShellSftpTransportController extends StageController {
      * 执行传输1
      */
 //    @FXML
-    private void doTransport1(List<ShellSftpFile> files) {
+    private void doTransport1(List<ShellSFTPFile> files) {
         try {
-//            List<ShellSftpFile> files = this.sourceFile.getSelectedItems();
+//            List<ShellSFTPFile> files = this.sourceFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
             // 检查文件是否存在
-            for (ShellSftpFile file : files) {
+            for (ShellSFTPFile file : files) {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
@@ -280,14 +280,14 @@ public class ShellSftpTransportController extends StageController {
      * 执行传输2
      */
 //    @FXML
-    private void doTransport2(List<ShellSftpFile> files) {
+    private void doTransport2(List<ShellSFTPFile> files) {
         try {
-//            List<ShellSftpFile> files = this.targetFile.getSelectedItems();
+//            List<ShellSFTPFile> files = this.targetFile.getSelectedItems();
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
             // 检查文件是否存在
-            for (ShellSftpFile file : files) {
+            for (ShellSFTPFile file : files) {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
@@ -312,8 +312,8 @@ public class ShellSftpTransportController extends StageController {
      * @param sourceClient 源连接
      * @param targetClient 目标连接
      */
-    private void doTransport(List<ShellSftpFile> files, String remotePath, ShellSftpClient sourceClient, ShellSftpClient targetClient) {
-        for (ShellSftpFile file : files) {
+    private void doTransport(List<ShellSFTPFile> files, String remotePath, ShellSFTPClient sourceClient, ShellSFTPClient targetClient) {
+        for (ShellSFTPFile file : files) {
             if (file.isCurrentFile() || file.isReturnDirectory()) {
                 continue;
             }
@@ -330,9 +330,9 @@ public class ShellSftpTransportController extends StageController {
 //     * 初始化传输表
 //     */
 //    private void initTransportTable() {
-//        ShellSftpTransportManager manager1 = this.sourceClient.getTransportManager();
-//        ShellSftpTransportManager manager2 = this.targetClient.getTransportManager();
-//        List<ShellSftpTransportTask> tasks = new ArrayList<>(manager1.getTasks());
+//        ShellSFTPTransportManager manager1 = this.sourceClient.getTransportManager();
+//        ShellSFTPTransportManager manager2 = this.targetClient.getTransportManager();
+//        List<ShellSFTPTransportTask> tasks = new ArrayList<>(manager1.getTasks());
 //        tasks.addAll(manager2.getTasks());
 //        this.transportTable.setItem(tasks.reversed());
 //    }
@@ -478,7 +478,7 @@ public class ShellSftpTransportController extends StageController {
                     try {
                         // 检查来源
                         if (this.sourceClient == null || this.sourceClient.isClosed()) {
-                            this.sourceClient = ShellSftpClientUtil.newClient(sourceInfo);
+                            this.sourceClient = ShellSFTPClientUtil.newClient(sourceInfo);
                             this.sourceClient.start(2500);
                         }
                         if (!this.sourceClient.isConnected()) {
@@ -490,7 +490,7 @@ public class ShellSftpTransportController extends StageController {
                         }
                         // 检查目标
                         if (this.targetClient == null || this.targetClient.isClosed()) {
-                            this.targetClient = ShellSftpClientUtil.newClient(targetInfo);
+                            this.targetClient = ShellSFTPClientUtil.newClient(targetInfo);
                             this.targetClient.start(2500);
                         }
                         if (!this.targetClient.isConnected()) {
@@ -517,9 +517,9 @@ public class ShellSftpTransportController extends StageController {
         }
     }
 
-    private ShellSftpTransportManager sourceTransportManager;
+    private ShellSFTPTransportManager sourceTransportManager;
 
-    private ShellSftpTransportManager targetTransportManager;
+    private ShellSFTPTransportManager targetTransportManager;
 
     /**
      * 初始化文件表格
@@ -598,7 +598,7 @@ public class ShellSftpTransportController extends StageController {
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
         // 检查任务是否执行中
-        ShellSftpTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
+        ShellSFTPTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
         if (manager1 != null
                 && !manager1.isCompleted()
                 && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
@@ -606,7 +606,7 @@ public class ShellSftpTransportController extends StageController {
             return;
         }
         // 检查任务是否执行中
-        ShellSftpTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
+        ShellSFTPTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
         if (manager2 != null
                 && !manager2.isCompleted()
                 && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
@@ -636,7 +636,7 @@ public class ShellSftpTransportController extends StageController {
      * @param monitor   监听器
      * @param exception 异常
      */
-    private void transportFailed(ShellSftpTransportMonitor monitor, Throwable exception) {
+    private void transportFailed(ShellSFTPTransportMonitor monitor, Throwable exception) {
         if (exception != null) {
             MessageBox.exception(exception, I18nHelper.transportFail() + " " + monitor.getLocalFileName());
         }
@@ -664,7 +664,7 @@ public class ShellSftpTransportController extends StageController {
      * @param status 状态
      * @param task   任务
      */
-    private void sourceTransportStatusChanged(String status, ShellSftpTransportTask task) {
+    private void sourceTransportStatusChanged(String status, ShellSFTPTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -680,7 +680,7 @@ public class ShellSftpTransportController extends StageController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void sourceTransportMonitorChanged(ShellSftpTransportMonitor monitor, ShellSftpTransportTask task) {
+    private void sourceTransportMonitorChanged(ShellSFTPTransportMonitor monitor, ShellSFTPTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
@@ -712,7 +712,7 @@ public class ShellSftpTransportController extends StageController {
      * @param status 状态
      * @param task   任务
      */
-    private void targetTransportStatusChanged(String status, ShellSftpTransportTask task) {
+    private void targetTransportStatusChanged(String status, ShellSFTPTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
         builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
@@ -728,7 +728,7 @@ public class ShellSftpTransportController extends StageController {
      * @param monitor 监听器
      * @param task    任务
      */
-    private void targetTransportMonitorChanged(ShellSftpTransportMonitor monitor, ShellSftpTransportTask task) {
+    private void targetTransportMonitorChanged(ShellSFTPTransportMonitor monitor, ShellSFTPTransportTask task) {
         StringBuilder builder = new StringBuilder();
         builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
 //        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());

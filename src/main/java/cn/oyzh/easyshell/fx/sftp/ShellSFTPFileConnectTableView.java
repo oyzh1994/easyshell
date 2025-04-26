@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.sftp;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
@@ -42,7 +42,7 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellSftpFile> files = this.getSelectedItems();
+        List<ShellSFTPFile> files = this.getSelectedItems();
 //        if (CollectionUtil.isEmpty(files)) {
 //            // 菜单列表
 //            List<MenuItem> menuItems = new ArrayList<>();
@@ -61,7 +61,7 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 //            return menuItems;
 //        }
 //        // 发现操作中的文件，则跳过
-//        for (ShellSftpFile file : files) {
+//        for (ShellSFTPFile file : files) {
 //            if (file.isWaiting()) {
 //                return Collections.emptyList();
 //            }
@@ -90,7 +90,7 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 //    @Override
 //    protected void onMouseClicked(MouseEvent event) {
 //        try {
-//            List<ShellSftpFile> files = this.getSelectedItems();
+//            List<ShellSFTPFile> files = this.getSelectedItems();
 //            if (files == null) {
 //                return;
 //            }
@@ -98,7 +98,7 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 //                return;
 //            }
 //            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-//                ShellSftpFile file = files.getFirst();
+//                ShellSFTPFile file = files.getFirst();
 //                if (file.isDir()) {
 //                    this.intoDir(file);
 //                } else if (file.isFile()) {
@@ -114,11 +114,11 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 //    }
 
 //    public void copyFilePath() {
-//        List<ShellSftpFile> files = this.getSelectedItems();
+//        List<ShellSFTPFile> files = this.getSelectedItems();
 //        if (files.isEmpty()) {
 //            ClipboardUtil.copy(this.getLocation());
 //        } else if (files.size() == 1) {
-//            ClipboardUtil.copy(ShellSftpUtil.concat(this.getLocation(), files.getFirst().getFileName()));
+//            ClipboardUtil.copy(ShellSFTPUtil.concat(this.getLocation(), files.getFirst().getFileName()));
 //        } else {
 //            MessageBox.warn(I18nHelper.tooManyFiles());
 //        }
@@ -127,24 +127,24 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
     /**
      * 下载回调
      */
-    private Consumer<List<ShellSftpFile>> downloadFileCallback;
+    private Consumer<List<ShellSFTPFile>> downloadFileCallback;
 
-    public Consumer<List<ShellSftpFile>> getDownloadFileCallback() {
+    public Consumer<List<ShellSFTPFile>> getDownloadFileCallback() {
         return downloadFileCallback;
     }
 
-    public void setDownloadFileCallback(Consumer<List<ShellSftpFile>> downloadFileCallback) {
+    public void setDownloadFileCallback(Consumer<List<ShellSFTPFile>> downloadFileCallback) {
         this.downloadFileCallback = downloadFileCallback;
     }
 
-    public boolean downloadFile(List<ShellSftpFile> files) {
+    public boolean downloadFile(List<ShellSFTPFile> files) {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
             String[] fileArr = dir.list();
             // 检查文件是否存在
             if (ArrayUtil.isNotEmpty(fileArr)) {
                 for (String f1 : fileArr) {
-                    Optional<ShellSftpFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
+                    Optional<ShellSFTPFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
                     if (file.isPresent()) {
                         if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
                             return false;
@@ -153,7 +153,7 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
                     }
                 }
             }
-            for (ShellSftpFile file : files) {
+            for (ShellSFTPFile file : files) {
                 try {
                     file.setParentPath(this.getLocation());
                     this.client.download(dir, file);

@@ -5,8 +5,8 @@ import cn.oyzh.common.function.WeakBiConsumer;
 import cn.oyzh.common.function.WeakConsumer;
 import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -28,19 +28,19 @@ import java.util.function.Supplier;
  */
 public class ShellSftpDeleteManager implements AutoCloseable {
 
-    private Supplier<ShellSftpChannel> sftpSupplier;
+    private Supplier<ShellSFTPChannel> sftpSupplier;
 
-    public ShellSftpDeleteManager(Supplier<ShellSftpChannel> sftpSupplier) {
+    public ShellSftpDeleteManager(Supplier<ShellSFTPChannel> sftpSupplier) {
         this.sftpSupplier = sftpSupplier;
     }
 
-    private final Queue<ShellSftpFile> files = new ArrayDeque<>();
+    private final Queue<ShellSFTPFile> files = new ArrayDeque<>();
 
     private final List<WeakRunnable> deleteEndedCallbacks = new ArrayList<>();
 
     private final List<WeakConsumer<String>> deleteDeletedCallbacks = new ArrayList<>();
 
-    private final List<WeakBiConsumer<ShellSftpFile, Throwable>> deleteFailedCallbacks = new ArrayList<>();
+    private final List<WeakBiConsumer<ShellSFTPFile, Throwable>> deleteFailedCallbacks = new ArrayList<>();
 
     public void addDeleteEndedCallback(Object obj, Runnable deleteEndedCallback) {
         if (deleteEndedCallback != null) {
@@ -54,13 +54,13 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         }
     }
 
-    public void addDeleteFailedCallback(Object obj, BiConsumer<ShellSftpFile, Throwable> deleteFailedCallback) {
+    public void addDeleteFailedCallback(Object obj, BiConsumer<ShellSFTPFile, Throwable> deleteFailedCallback) {
         if (deleteFailedCallback != null) {
             this.deleteFailedCallbacks.add(new WeakBiConsumer<>(obj, deleteFailedCallback));
         }
     }
 
-    public void fileDelete(ShellSftpFile file) {
+    public void fileDelete(ShellSFTPFile file) {
         this.files.add(file);
         this.doDelete();
     }
@@ -81,9 +81,9 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         }
     }
 
-    public void deleteFailed(ShellSftpFile file, Throwable exception) {
+    public void deleteFailed(ShellSFTPFile file, Throwable exception) {
         if (!this.deleteFailedCallbacks.isEmpty()) {
-            for (WeakBiConsumer<ShellSftpFile, Throwable> consumer : this.deleteFailedCallbacks) {
+            for (WeakBiConsumer<ShellSFTPFile, Throwable> consumer : this.deleteFailedCallbacks) {
                 consumer.accept(file, exception);
             }
         }
@@ -100,11 +100,11 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         try {
             this.setDeleting(true);
             while (!this.isEmpty()) {
-                ShellSftpFile deleteFile = this.files.peek();
+                ShellSFTPFile deleteFile = this.files.peek();
                 if (deleteFile == null) {
                     break;
                 }
-                ShellSftpChannel sftp = this.sftpSupplier.get();
+                ShellSFTPChannel sftp = this.sftpSupplier.get();
                 try {
                     deleteFile.startWaiting();
                     if (deleteFile.isDirectory()) {
@@ -132,7 +132,7 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         }
     }
 
-    private void rmdirRecursive(String path, ShellSftpChannel sftp) throws SftpException {
+    private void rmdirRecursive(String path, ShellSFTPChannel sftp) throws SftpException {
         Vector<ChannelSftp.LsEntry> entries = sftp.ls(path);
         for (ChannelSftp.LsEntry entry : entries) {
             String filename = entry.getFilename();
@@ -148,12 +148,12 @@ public class ShellSftpDeleteManager implements AutoCloseable {
         this.rmdir(path, sftp);
     }
 
-    private void rm(String path, ShellSftpChannel sftp) throws SftpException {
+    private void rm(String path, ShellSFTPChannel sftp) throws SftpException {
         sftp.rm(path);
         this.deleteDeleted(path);
     }
 
-    private void rmdir(String path, ShellSftpChannel sftp) throws SftpException {
+    private void rmdir(String path, ShellSFTPChannel sftp) throws SftpException {
         sftp.rmdir(path);
         this.deleteDeleted(path);
     }

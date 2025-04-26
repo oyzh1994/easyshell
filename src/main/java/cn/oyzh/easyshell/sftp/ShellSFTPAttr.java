@@ -7,7 +7,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSftpAttr {
+public class ShellSFTPAttr {
 
     private Map<Integer, String> owner;
 

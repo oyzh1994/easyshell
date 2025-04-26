@@ -17,7 +17,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
+public class ShellSFTPFile implements ObjectCopier<ShellSFTPFile>, ShellFile {
 
     private ChannelSftp.LsEntry entry;
 
@@ -107,13 +107,13 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
     }
 
 
-    public ShellSftpFile(String parentPath, ChannelSftp.LsEntry entry) {
+    public ShellSFTPFile(String parentPath, ChannelSftp.LsEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
         this.updatePermissions();
     }
 
-    public ShellSftpFile(String parentPath, String fileName, SftpATTRS attrs) {
+    public ShellSFTPFile(String parentPath, String fileName, SftpATTRS attrs) {
         this.parentPath = parentPath;
         this.fileName = fileName;
         this.attrs = attrs;
@@ -236,7 +236,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
     }
 
     @Override
-    public void copy(ShellSftpFile t1) {
+    public void copy(ShellSFTPFile t1) {
         if (t1.entry != null) {
             this.entry = t1.entry;
         }

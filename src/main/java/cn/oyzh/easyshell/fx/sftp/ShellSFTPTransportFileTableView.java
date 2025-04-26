@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -29,19 +29,19 @@ public class ShellSFTPTransportFileTableView extends ShellSFTPFileBaseTableView 
         });
     }
 
-    private Consumer<List<ShellSftpFile>> transportCallback;
+    private Consumer<List<ShellSFTPFile>> transportCallback;
 
-    public Consumer<List<ShellSftpFile>> getTransportCallback() {
+    public Consumer<List<ShellSFTPFile>> getTransportCallback() {
         return transportCallback;
     }
 
-    public void setTransportCallback(Consumer<List<ShellSftpFile>> transportCallback) {
+    public void setTransportCallback(Consumer<List<ShellSFTPFile>> transportCallback) {
         this.transportCallback = transportCallback;
     }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellSftpFile> files = this.getSelectedItems();
+        List<ShellSFTPFile> files = this.getSelectedItems();
         // 检查是否包含无效文件
         if (this.checkInvalid(files)) {
             return super.getMenuItems();
@@ -61,7 +61,7 @@ public class ShellSFTPTransportFileTableView extends ShellSFTPFileBaseTableView 
      *
      * @param files 文件列表
      */
-    private void transportFile(List<ShellSftpFile> files) {
+    private void transportFile(List<ShellSFTPFile> files) {
         if (files == null || files.isEmpty()) {
             return;
         }

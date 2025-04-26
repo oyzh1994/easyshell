@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -55,7 +55,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         }
         StageManager.showMask(() -> {
             try {
-                ShellSftpChannel sftp = this.sftpClient().openSftp();
+                ShellSFTPChannel sftp = this.sftpClient().openSftp();
                 String filePath = this.filePath.getText();
                 if (sftp.exist(filePath)) {
                     ShellExec exec = this.client().shellExec();
@@ -86,7 +86,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellExec exec = this.client().shellExec();
-            try (ShellSftpChannel sftp = this.sftpClient().openSftp()) {
+            try (ShellSFTPChannel sftp = this.sftpClient().openSftp()) {
                 sftp.setUsing(true);
                 // 创建json文件
                 String jsonFile = this.filePath.getText();
@@ -137,7 +137,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         return this.parent().getClient();
     }
 
-    public ShellSftpClient sftpClient() {
+    public ShellSFTPClient sftpClient() {
         return this.client().getSftpClient();
     }
 

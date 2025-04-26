@@ -8,12 +8,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2025-03-07
  */
-public class ShellSftpChannelManager {
+public class ShellSFTPChannelManager {
 
-    private final List<ShellSftpChannel> sftpList = new CopyOnWriteArrayList<>();
+    private final List<ShellSFTPChannel> sftpList = new CopyOnWriteArrayList<>();
 
     public boolean hasAvailable() {
-        for (ShellSftpChannel shellSftp : this.sftpList) {
+        for (ShellSFTPChannel shellSftp : this.sftpList) {
             if (shellSftp.isClosed() || !shellSftp.isConnected() || shellSftp.isUsing() || shellSftp.isHolding()) {
                 continue;
             }
@@ -22,10 +22,10 @@ public class ShellSftpChannelManager {
         return false;
     }
 
-    public ShellSftpChannel take() {
-        List<ShellSftpChannel> removes = new ArrayList<>();
+    public ShellSFTPChannel take() {
+        List<ShellSFTPChannel> removes = new ArrayList<>();
         try {
-            for (ShellSftpChannel shellSftp : this.sftpList) {
+            for (ShellSFTPChannel shellSftp : this.sftpList) {
                 if (shellSftp.isClosed() || !shellSftp.isConnected()) {
                     removes.add(shellSftp);
                     continue;
@@ -41,9 +41,9 @@ public class ShellSftpChannelManager {
         return null;
     }
 
-    public void push(ShellSftpChannel sftp) {
-        List<ShellSftpChannel> removes = new ArrayList<>();
-        for (ShellSftpChannel shellSftp : this.sftpList) {
+    public void push(ShellSFTPChannel sftp) {
+        List<ShellSFTPChannel> removes = new ArrayList<>();
+        for (ShellSFTPChannel shellSftp : this.sftpList) {
             if (shellSftp.isClosed() || !shellSftp.isConnected()) {
                 removes.add(shellSftp);
             }
@@ -53,7 +53,7 @@ public class ShellSftpChannelManager {
     }
 
     public void close() {
-        for (ShellSftpChannel shellSftp : this.sftpList) {
+        for (ShellSFTPChannel shellSftp : this.sftpList) {
             shellSftp.close();
         }
         this.sftpList.clear();

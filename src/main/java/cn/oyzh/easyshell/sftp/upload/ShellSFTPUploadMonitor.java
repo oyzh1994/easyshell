@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.sftp.upload;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpMonitor;
+import cn.oyzh.easyshell.sftp.ShellSFTPMonitor;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpUploadMonitor extends ShellSftpMonitor {
+public class ShellSFTPUploadMonitor extends ShellSFTPMonitor {
 
     private final File localFile;
 
@@ -21,9 +21,9 @@ public class ShellSftpUploadMonitor extends ShellSftpMonitor {
         return remoteFile;
     }
 
-    private final ShellSftpUploadTask task;
+    private final ShellSFTPUploadTask task;
 
-    public ShellSftpUploadMonitor(final File localFile, String remoteFile, ShellSftpUploadTask task) {
+    public ShellSFTPUploadMonitor(final File localFile, String remoteFile, ShellSFTPUploadTask task) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
         this.task = task;

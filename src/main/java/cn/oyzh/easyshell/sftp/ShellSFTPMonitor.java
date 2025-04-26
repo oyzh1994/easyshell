@@ -6,7 +6,7 @@ import com.jcraft.jsch.SftpProgressMonitor;
  * @author oyzh
  * @since 2025-03-21
  */
-public abstract class ShellSftpMonitor implements SftpProgressMonitor {
+public abstract class ShellSFTPMonitor implements SftpProgressMonitor {
 
     protected long total;
 

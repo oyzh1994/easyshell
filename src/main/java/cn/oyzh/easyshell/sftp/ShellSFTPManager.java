@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
  * @author oyzh
  * @since 2025-03-21
  */
-public class ShellSftpManager<M extends ShellSftpMonitor, T extends ShellSftpTask<M>> implements AutoCloseable {
+public class ShellSFTPManager<M extends ShellSFTPMonitor, T extends ShellSFTPTask<M>> implements AutoCloseable {
 
     /**
      * 任务列表

@@ -1,7 +1,7 @@
 //package cn.oyzh.easyshell.fx.sftp;
 //
 //import cn.oyzh.common.util.CollectionUtil;
-//import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadTask;
+//import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadTask;
 //import cn.oyzh.fx.gui.menu.MenuItemHelper;
 //import cn.oyzh.fx.plus.controls.table.FXTableView;
 //import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -16,7 +16,7 @@
 // * @author oyzh
 // * @since 2025-03-05
 // */
-//public class SftpDownloadTaskTableView extends FXTableView<ShellSftpDownloadTask> {
+//public class SftpDownloadTaskTableView extends FXTableView<ShellSFTPDownloadTask> {
 //
 //    @Override
 //    public void initNode() {
@@ -42,19 +42,19 @@
 //
 //    @Override
 //    public List<? extends MenuItem> getMenuItems() {
-//        List<ShellSftpDownloadTask> tasks = this.getSelectedItems();
+//        List<ShellSFTPDownloadTask> tasks = this.getSelectedItems();
 //        if (CollectionUtil.isEmpty(tasks)) {
 //            return Collections.emptyList();
 //        }
 //        List<MenuItem> menuItems = new ArrayList<>();
 //        MenuItem cancelTransport = MenuItemHelper.cancelDownload("12", ()->{
-//            for (ShellSftpDownloadTask task : tasks) {
+//            for (ShellSFTPDownloadTask task : tasks) {
 //                task.cancel();
 //            }
 //            this.removeItem(tasks);
 //        });
 //        MenuItem removeTransport = MenuItemHelper.removeDownload("12", ()->{
-//            for (ShellSftpDownloadTask task : tasks) {
+//            for (ShellSFTPDownloadTask task : tasks) {
 //                task.remove();
 //            }
 //            this.removeItem(tasks);

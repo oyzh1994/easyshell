@@ -9,10 +9,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileEditController;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpUtil;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> implements FXEventListener {
+public class ShellSFTPFileBaseTableView extends FXTableView<ShellSFTPFile> implements FXEventListener {
 
     @Override
     public void initNode() {
@@ -113,13 +113,13 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
 //        }
     }
 
-    protected ShellSftpClient client;
+    protected ShellSFTPClient client;
 
-    public ShellSftpClient getClient() {
+    public ShellSFTPClient getClient() {
         return client;
     }
 
-    public void setClient(ShellSftpClient client) {
+    public void setClient(ShellSFTPClient client) {
         this.client = client;
     }
 
@@ -154,11 +154,11 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
 //        this.locationProperty.set(location);
 //    }
 
-    public ShellSftpChannel sftp() {
+    public ShellSFTPChannel sftp() {
         return this.client.openSftp();
     }
 
-    protected List<ShellSftpFile> files;
+    protected List<ShellSFTPFile> files;
 
     public void loadFile() {
         try {
@@ -170,7 +170,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
     }
 
     protected synchronized void loadFileInner() throws SftpException {
-        ShellSftpChannel sftp = this.sftp();
+        ShellSFTPChannel sftp = this.sftp();
         try {
             String currPath = this.getLocation();
             if (currPath == null) {
@@ -183,16 +183,16 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
             // 更新当前列表
             this.files = sftp.lsFile(currPath, this.client);
             // 过滤出来待显示的列表
-            List<ShellSftpFile> files = this.doFilter(this.files);
+            List<ShellSFTPFile> files = this.doFilter(this.files);
             // 当前在显示的列表
-            List<ShellSftpFile> items = this.getItems();
+            List<ShellSFTPFile> items = this.getItems();
             // 删除列表
-            List<ShellSftpFile> delList = new ArrayList<>();
+            List<ShellSFTPFile> delList = new ArrayList<>();
             // 新增列表
-            List<ShellSftpFile> addList = new ArrayList<>();
+            List<ShellSFTPFile> addList = new ArrayList<>();
             // 遍历已有集合，如果不在待显示列表，则删除，否则更新
-            for (ShellSftpFile file : items) {
-                Optional<ShellSftpFile> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+            for (ShellSFTPFile file : items) {
+                Optional<ShellSFTPFile> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
                 if (optional.isEmpty()) {
                     delList.add(file);
                 } else {
@@ -200,8 +200,8 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
                 }
             }
             // 遍历待显示列表，如果不在已显示列表，则新增
-            for (ShellSftpFile file : files) {
-                Optional<ShellSftpFile> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+            for (ShellSFTPFile file : files) {
+                Optional<ShellSFTPFile> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
                 if (optional.isEmpty()) {
                     addList.add(file);
                 }
@@ -229,7 +229,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
         }
     }
 
-    protected List<ShellSftpFile> doFilter(List<ShellSftpFile> files) {
+    protected List<ShellSFTPFile> doFilter(List<ShellSFTPFile> files) {
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
                     .filter(f -> {
@@ -247,15 +247,15 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
                         }
                         return true;
                     })
-                    .sorted(Comparator.comparingInt(ShellSftpFile::getFileOrder))
+                    .sorted(Comparator.comparingInt(ShellSFTPFile::getFileOrder))
                     .collect(Collectors.toList());
         }
 //        return files;
         return new CopyOnWriteArrayList<>(files);
     }
 
-    protected boolean checkInvalid(List<ShellSftpFile> files) {
-        for (ShellSftpFile file : files) {
+    protected boolean checkInvalid(List<ShellSFTPFile> files) {
+        for (ShellSFTPFile file : files) {
             if (this.checkInvalid(file)) {
                 return true;
             }
@@ -263,15 +263,15 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
         return false;
     }
 
-    protected boolean checkInvalid(ShellSftpFile file) {
+    protected boolean checkInvalid(ShellSFTPFile file) {
         return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
     }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellSftpFile> files = this.getSelectedItems();
+        List<ShellSFTPFile> files = this.getSelectedItems();
 //        // 发现操作中的文件，则跳过
-//        for (ShellSftpFile file : files) {
+//        for (ShellSFTPFile file : files) {
 //            if (file.isWaiting()) {
 //                return Collections.emptyList();
 //            }
@@ -290,7 +290,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
         menuItems.add(mkdir);
         menuItems.add(MenuItemHelper.separator());
         if (files.size() == 1) {
-            ShellSftpFile file = files.getFirst();
+            ShellSFTPFile file = files.getFirst();
             // 编辑文件
             FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
             if (!this.fileEditable(file)) {
@@ -330,13 +330,13 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
      *
      * @param file 文件
      */
-    protected void fileInfo(ShellSftpFile file) {
+    protected void fileInfo(ShellSFTPFile file) {
         if (file != null && !this.checkInvalid(file)) {
             ShellViewFactory.fileInfo(file);
         }
     }
 
-    protected void copyFilePath(ShellSftpFile file) {
+    protected void copyFilePath(ShellSFTPFile file) {
         ClipboardUtil.copy(file.getFilePath());
     }
 
@@ -347,7 +347,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
                 this.back();
                 return;
             }
-            List<ShellSftpFile> files = this.getSelectedItems();
+            List<ShellSFTPFile> files = this.getSelectedItems();
             if (files == null) {
                 return;
             }
@@ -361,7 +361,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
             }
             // 鼠标按键
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                ShellSftpFile file = files.getFirst();
+                ShellSFTPFile file = files.getFirst();
                 if (file.isDirectory()) {
                     this.intoDir(file);
                 } else if (file.isFile()) {
@@ -378,7 +378,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
         return "/".equals(this.getLocation());
     }
 
-    public void intoDir(ShellSftpFile file) {
+    public void intoDir(ShellSFTPFile file) {
         if (file.isReturnDirectory()) {
             this.returnDir();
             return;
@@ -404,11 +404,11 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
      * 前进
      */
     public void forward() {
-        List<ShellSftpFile> files = this.getSelectedItems();
+        List<ShellSFTPFile> files = this.getSelectedItems();
         if (files.size() != 1) {
             return;
         }
-        ShellSftpFile file = files.getFirst();
+        ShellSFTPFile file = files.getFirst();
         if (!file.isDirectory()) {
             return;
         }
@@ -436,16 +436,16 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
     }
 
     public boolean existFile(String fileName) {
-        Optional<ShellSftpFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
+        Optional<ShellSFTPFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
         return sftpFile.isPresent();
     }
 
-    public void deleteFile(List<ShellSftpFile> files) {
+    public void deleteFile(List<ShellSFTPFile> files) {
         if (CollectionUtil.isEmpty(files) || this.checkInvalid(files)) {
             return;
         }
         if (files.size() == 1) {
-            ShellSftpFile file = files.getFirst();
+            ShellSFTPFile file = files.getFirst();
             if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
                 return;
             }
@@ -460,8 +460,8 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
         }
         ThreadUtil.start(() -> {
             try {
-                List<ShellSftpFile> sftpFiles = new CopyOnWriteArrayList<>(files);
-                for (ShellSftpFile file : sftpFiles) {
+                List<ShellSFTPFile> sftpFiles = new CopyOnWriteArrayList<>(files);
+                for (ShellSFTPFile file : sftpFiles) {
                     // 不可删除文件
                     if (file.isReturnDirectory() || file.isCurrentFile()) {
                         continue;
@@ -481,7 +481,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
         });
     }
 
-    public void filePermission(ShellSftpFile file) {
+    public void filePermission(ShellSFTPFile file) {
         if (this.checkInvalid(file)) {
             return;
         }
@@ -493,7 +493,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
      *
      * @param files 文件列表
      */
-    public void renameFile(List<ShellSftpFile> files) {
+    public void renameFile(List<ShellSFTPFile> files) {
         try {
             if (files == null || files.size() != 1) {
                 return;
@@ -501,7 +501,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
             if (this.checkInvalid(files)) {
                 return;
             }
-            ShellSftpFile file = files.getFirst();
+            ShellSFTPFile file = files.getFirst();
             String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
             String name = file.getFileName();
             if (newName == null || StringUtil.equals(name, newName)) {
@@ -519,7 +519,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
     }
 
     public void fileDeleted(String remoteFile) {
-        Optional<ShellSftpFile> optional = this.files.parallelStream()
+        Optional<ShellSFTPFile> optional = this.files.parallelStream()
                 .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
                 .findAny();
         if (optional.isPresent()) {
@@ -547,7 +547,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
      * @param file 文件
      * @return 结果
      */
-    protected boolean fileEditable(ShellSftpFile file) {
+    protected boolean fileEditable(ShellSFTPFile file) {
         if (!file.isFile()) {
             return false;
         }
@@ -570,7 +570,7 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
      *
      * @param file 文件
      */
-    public void editFile(ShellSftpFile file) {
+    public void editFile(ShellSFTPFile file) {
         if (!this.fileEditable(file)) {
             return;
         }
@@ -599,18 +599,18 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
             return;
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        ShellSftpChannel sftp = this.sftp();
+        ShellSFTPChannel sftp = this.sftp();
         sftp.touch(filePath);
         SftpATTRS attrs = sftp.stat(filePath);
-        ShellSftpFile file = new ShellSftpFile(this.getLocation(), name, attrs);
+        ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件
-        ShellSftpUtil.realpath(file, sftp);
+        ShellSFTPUtil.realpath(file, sftp);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");
         } else {
-            file.setOwner(ShellSftpUtil.getOwner(file.getUid(), this.client));
-            file.setGroup(ShellSftpUtil.getGroup(file.getGid(), this.client));
+            file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
         }
         this.files.add(file);
         this.refreshFile();
@@ -636,18 +636,18 @@ public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> imple
             return;
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        ShellSftpChannel sftp = this.sftp();
+        ShellSFTPChannel sftp = this.sftp();
         sftp.mkdir(filePath);
         SftpATTRS attrs = sftp.stat(filePath);
-        ShellSftpFile file = new ShellSftpFile(this.getLocation(), name, attrs);
+        ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件
-        ShellSftpUtil.realpath(file, sftp);
+        ShellSFTPUtil.realpath(file, sftp);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");
         } else {
-            file.setOwner(ShellSftpUtil.getOwner(file.getUid(), this.client));
-            file.setGroup(ShellSftpUtil.getGroup(file.getGid(), this.client));
+            file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
+            file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
         }
         this.files.add(file);
         this.refreshFile();

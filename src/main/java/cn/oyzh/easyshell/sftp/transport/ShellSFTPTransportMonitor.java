@@ -2,17 +2,17 @@ package cn.oyzh.easyshell.sftp.transport;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpMonitor;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPMonitor;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpTransportMonitor extends ShellSftpMonitor {
+public class ShellSFTPTransportMonitor extends ShellSFTPMonitor {
 
-    private final ShellSftpFile localFile;
+    private final ShellSFTPFile localFile;
 
     private final String remoteFile;
 
@@ -20,9 +20,9 @@ public class ShellSftpTransportMonitor extends ShellSftpMonitor {
         return remoteFile;
     }
 
-    private final ShellSftpTransportTask task;
+    private final ShellSFTPTransportTask task;
 
-    public ShellSftpTransportMonitor(final ShellSftpFile localFile, String remoteFile, ShellSftpTransportTask task) {
+    public ShellSFTPTransportMonitor(final ShellSFTPFile localFile, String remoteFile, ShellSFTPTransportTask task) {
         this.localFile = localFile;
         this.remoteFile = remoteFile;
         this.task = task;

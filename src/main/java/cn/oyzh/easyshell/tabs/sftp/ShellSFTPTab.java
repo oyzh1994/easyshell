@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.sftp;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -76,7 +76,7 @@ public class ShellSFTPTab extends RichTab {
      *
      * @return shell客户端
      */
-    public ShellSftpClient client() {
+    public ShellSFTPClient client() {
         return this.controller().client();
     }
 }

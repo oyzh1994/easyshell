@@ -6,10 +6,10 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpChannel;
-import cn.oyzh.easyshell.sftp.ShellSftpClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpTask;
+import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-15
  */
-public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonitor> {
+public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonitor> {
 
     /**
      * 下载状态
@@ -47,11 +47,11 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
 
     private final File localFile;
 
-    private final ShellSftpFile remoteFile;
+    private final ShellSFTPFile remoteFile;
 
-    private final ShellSftpClient client;
+    private final ShellSFTPClient client;
 
-    private final ShellSftpDownloadManager manager;
+    private final ShellSFTPDownloadManager manager;
 
     @Override
     public String getSrcPath() {
@@ -63,7 +63,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
         return this.localFile.getName();
     }
 
-    public ShellSftpDownloadTask(ShellSftpDownloadManager manager, File localFile, ShellSftpFile remoteFile, ShellSftpClient client) {
+    public ShellSFTPDownloadTask(ShellSFTPDownloadManager manager, File localFile, ShellSFTPFile remoteFile, ShellSFTPClient client) {
         this.client = client;
         this.manager = manager;
         this.localFile = localFile;
@@ -121,7 +121,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
      * @param remoteFile 远程文件
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(File localFile, ShellSftpFile remoteFile) throws SftpException {
+    protected void addMonitorRecursive(File localFile, ShellSFTPFile remoteFile) throws SftpException {
         // 已取消则跳过
         if (this.isCancelled()) {
             return;
@@ -130,14 +130,14 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
         // 文件夹
         if (remoteFile.isDirectory()) {
             // 列举文件
-            List<ShellSftpFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
+            List<ShellSFTPFile> files = this.client.openSftp().lsFileNormal(remoteFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 本地文件夹
                 File localDir = new File(localFile.getPath(), remoteFile.getFileName());
                 FileUtil.mkdir(localDir);
                 // 添加文件
-                for (ShellSftpFile file : files) {
+                for (ShellSFTPFile file : files) {
                     file.setParentPath(remoteFile.getFilePath());
                     if (file.isDirectory()) {
                         this.addMonitorRecursive(localDir, file);
@@ -149,7 +149,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
             }
         } else {// 文件
 //            this.updateTotal();
-            this.monitors.add(new ShellSftpDownloadMonitor(localFile, remoteFile, this));
+            this.monitors.add(new ShellSFTPDownloadMonitor(localFile, remoteFile, this));
         }
     }
 
@@ -158,7 +158,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
      */
     private void doDownload() {
         while (!this.isEmpty()) {
-            ShellSftpDownloadMonitor monitor = this.takeMonitor();
+            ShellSFTPDownloadMonitor monitor = this.takeMonitor();
             if (monitor == null) {
                 break;
             }
@@ -169,7 +169,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
                 ThreadUtil.sleep(5);
                 continue;
             }
-            ShellSftpChannel sftp = this.client.newSftp();
+            ShellSFTPChannel sftp = this.client.newSftp();
             try {
                 sftp.get(monitor.getRemoteFilePath(), monitor.getLocalFilePath(), monitor, ChannelSftp.OVERWRITE);
             } catch (Exception ex) {
@@ -239,13 +239,13 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
     }
 
     @Override
-    public void remove(ShellSftpDownloadMonitor monitor) {
+    public void remove(ShellSFTPDownloadMonitor monitor) {
         super.remove(monitor);
         this.manager.remove(this);
     }
 
     @Override
-    public void ended(ShellSftpDownloadMonitor monitor) {
+    public void ended(ShellSFTPDownloadMonitor monitor) {
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
         this.manager.remove(this);
@@ -253,7 +253,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
     }
 
     @Override
-    public void failed(ShellSftpDownloadMonitor monitor, Throwable exception) {
+    public void failed(ShellSFTPDownloadMonitor monitor, Throwable exception) {
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
         this.manager.remove(this);
@@ -261,7 +261,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
     }
 
     @Override
-    public void canceled(ShellSftpDownloadMonitor monitor) {
+    public void canceled(ShellSFTPDownloadMonitor monitor) {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
         this.manager.remove(this);
@@ -269,7 +269,7 @@ public class ShellSftpDownloadTask extends ShellSftpTask<ShellSftpDownloadMonito
     }
 
     @Override
-    public void changed(ShellSftpDownloadMonitor monitor) {
+    public void changed(ShellSFTPDownloadMonitor monitor) {
         super.changed(monitor);
         this.manager.monitorChanged(monitor, this);
     }

@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpMonitor;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPMonitor;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.io.File;
@@ -12,15 +12,15 @@ import java.io.File;
  * @author oyzh
  * @since 2025-03-06
  */
-public class ShellSftpDownloadMonitor extends ShellSftpMonitor {
+public class ShellSFTPDownloadMonitor extends ShellSFTPMonitor {
 
     private final File localFile;
 
-    private final ShellSftpFile remoteFile;
+    private final ShellSFTPFile remoteFile;
 
-    private final ShellSftpDownloadTask task;
+    private final ShellSFTPDownloadTask task;
 
-    public ShellSftpDownloadMonitor(final File localFile, ShellSftpFile remoteFile, ShellSftpDownloadTask task) {
+    public ShellSFTPDownloadMonitor(final File localFile, ShellSFTPFile remoteFile, ShellSFTPDownloadTask task) {
         this.task = task;
         this.localFile = localFile;
         this.remoteFile = remoteFile;
