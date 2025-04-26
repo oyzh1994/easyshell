@@ -8,7 +8,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSftpUtil;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
@@ -216,7 +216,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
                         }
                         return true;
                     })
-                    .sorted(Comparator.comparingInt(ShellFTPFile::getOrder))
+                    .sorted(Comparator.comparingInt(ShellFTPFile::getFileOrder))
                     .collect(Collectors.toList());
         }
 //        return files;
@@ -312,7 +312,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             // 鼠标按键
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 ShellFTPFile file = files.getFirst();
-                if (file.isDir()) {
+                if (file.isDirectory()) {
                     this.intoDir(file);
                 }
             }
@@ -344,7 +344,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
      */
     public void back() {
         String location = this.getLocation();
-        String parent = ShellSftpUtil.parent(location);
+        String parent = ShellFileUtil.parent(location);
         this.intoDir(parent);
     }
 
@@ -357,7 +357,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             return;
         }
         ShellFTPFile file = files.getFirst();
-        if (!file.isDir()) {
+        if (!file.isDirectory()) {
             return;
         }
         this.intoDir(file);
@@ -387,10 +387,10 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
         if (files.size() == 1) {
             ShellFTPFile file = files.getFirst();
-            if (file.isDir() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
+            if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
                 return;
             }
-            if (!file.isDir() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
+            if (!file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
                 return;
             }
         } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
@@ -442,8 +442,8 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
             }
-            String filePath = ShellSftpUtil.concat(this.getLocation(), name);
-            String newPath = ShellSftpUtil.concat(this.getLocation(), newName);
+            String filePath = ShellFileUtil.concat(this.getLocation(), name);
+            String newPath = ShellFileUtil.concat(this.getLocation(), newName);
             this.client.rename(filePath, newPath);
             file.setFileName(newName);
             this.refreshFile();
@@ -481,7 +481,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
             return;
         }
-        String filePath = ShellSftpUtil.concat(this.getLocation(), name);
+        String filePath = ShellFileUtil.concat(this.getLocation(), name);
         this.client.touch(filePath);
         ShellFTPFile file = this.client.finfo(filePath);
         this.files.add(file);
@@ -499,7 +499,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     }
 
     public void mkdir(String filePath) throws SftpException {
-        String dirPath = ShellSftpUtil.concat(this.getLocation(), filePath);
+        String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
         this.client.mkdir(dirPath);
         ShellFTPFile file = this.client.finfo(dirPath);
         this.files.add(file);

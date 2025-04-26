@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.ftp;
 
-import org.apache.commons.net.ftp.FTPClient;
+import cn.oyzh.common.log.JulLog;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
@@ -10,8 +10,16 @@ import java.io.InputStream;
 
 public class ShellFTPUtil {
 
-    public static void uploadFolder(FTPClient ftpClient, File localFolder, String remoteBaseDir) throws IOException {
-        if (!localFolder.exists() ||!localFolder.isDirectory()) {
+    /**
+     * 上传文件夹
+     *
+     * @param ftpClient     客户端
+     * @param localFolder   本地文件夹
+     * @param remoteBaseDir 远程目录
+     * @throws IOException 异常
+     */
+    public static void uploadFolder(ShellFTPClient ftpClient, File localFolder, String remoteBaseDir) throws IOException {
+        if (!localFolder.exists() || !localFolder.isDirectory()) {
             return;
         }
         // 遍历本地文件夹中的所有文件和子文件夹
@@ -23,8 +31,8 @@ public class ShellFTPUtil {
                     String remoteSubDir = remoteBaseDir + "/" + file.getName();
                     // 在服务器上创建对应的子文件夹
                     if (!ftpClient.changeWorkingDirectory(remoteSubDir)) {
-                        if (!ftpClient.makeDirectory(remoteSubDir)) {
-                            System.err.println("无法创建远程文件夹: " + remoteSubDir);
+                        if (!ftpClient.mkdir(remoteSubDir)) {
+                            JulLog.error("无法创建远程文件夹: " + remoteSubDir);
                             continue;
                         }
                         ftpClient.changeWorkingDirectory(remoteSubDir);
@@ -40,9 +48,9 @@ public class ShellFTPUtil {
                         // 上传文件
                         boolean uploaded = ftpClient.storeFile(remoteFilePath, inputStream);
                         if (uploaded) {
-                            System.out.println("文件上传成功: " + remoteFilePath);
+                            JulLog.info("文件上传成功: " + remoteFilePath);
                         } else {
-                            System.err.println("文件上传失败: " + remoteFilePath);
+                            JulLog.error("文件上传失败: " + remoteFilePath);
                         }
                     }
                 }
@@ -50,7 +58,14 @@ public class ShellFTPUtil {
         }
     }
 
-    public static void deleteDirectory(FTPClient ftpClient, String directory) throws IOException {
+    /**
+     * 删除文件夹
+     *
+     * @param ftpClient 客户端
+     * @param directory 文件夹
+     * @throws IOException 异常
+     */
+    public static void deleteDirectory(ShellFTPClient ftpClient, String directory) throws IOException {
         FTPFile[] files = ftpClient.listFiles(directory);
         if (files != null) {
             for (FTPFile file : files) {
@@ -68,7 +83,12 @@ public class ShellFTPUtil {
         ftpClient.removeDirectory(directory);
     }
 
-
+    /**
+     * 获取文件权限
+     *
+     * @param file 文件
+     * @return 权限
+     */
     public static String getPermissionsString(FTPFile file) {
         StringBuilder permissions = new StringBuilder();
 

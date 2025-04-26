@@ -5,8 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.BaseClient;
-import cn.oyzh.easyshell.sftp.ShellSftpUtil;
-import com.jcraft.jsch.SftpException;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
@@ -101,26 +100,42 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         return downloadFiles;
     }
 
+    /**
+     * 删除文件
+     *
+     * @param file 文件
+     */
     public void delete(ShellFTPFile file) {
         ShellFTPDeleteFile deleteFile = new ShellFTPDeleteFile();
-        try {
-            deleteFile.setSize(file.getSize());
-            deleteFile.setRemotePath(file.getFilePath());
-            this.deleteFiles.add(deleteFile);
-            if (file.isDirectory()) {
-                ShellFTPUtil.deleteDirectory(this, file.getFilePath());
-            } else {
-                super.deleteFile(file.getFilePath());
+        deleteFile.setSize(file.getSize());
+        deleteFile.setRemotePath(file.getFilePath());
+        this.deleteFiles.add(deleteFile);
+        Thread task = ThreadUtil.startVirtual(() -> {
+            try {
+                file.startWaiting();
+                if (file.isDirectory()) {
+                    ShellFTPUtil.deleteDirectory(this, file.getFilePath());
+                } else {
+                    super.deleteFile(file.getFilePath());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                file.stopWaiting();
+                this.deleteFiles.remove(deleteFile);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            this.deleteFiles.remove(deleteFile);
-        }
+        });
+        deleteFile.setTask(task);
     }
 
-    public void upload(File localFile, String remotePath) throws SftpException {
-        String remoteFile = ShellSftpUtil.concat(remotePath, localFile.getName());
+    /**
+     * 上传文件
+     *
+     * @param localFile  本地文件
+     * @param remotePath 远程目录
+     */
+    public void upload(File localFile, String remotePath) {
+        String remoteFile = ShellFileUtil.concat(remotePath, localFile.getName());
         ShellFTPUploadFile uploadFile = new ShellFTPUploadFile();
         uploadFile.setRemotePath(remoteFile);
         uploadFile.setSize(localFile.length());
@@ -130,7 +145,8 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             try {
                 this.setFileType(FTPClient.BINARY_FILE_TYPE);
                 if (localFile.isDirectory()) {
-                    String remoteDir = ShellSftpUtil.concat(remotePath, localFile.getName());
+                    // 创建根目录
+                    String remoteDir = ShellFileUtil.concat(remotePath, localFile.getName());
                     this.mkdir(remoteDir);
                     ShellFTPUtil.uploadFolder(this, localFile, remoteDir);
                 } else {
@@ -145,7 +161,13 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         uploadFile.setTask(task);
     }
 
-    public void download(File localFile, ShellFTPFile remoteFile) throws SftpException {
+    /**
+     * 下载文件
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     */
+    public void download(File localFile, ShellFTPFile remoteFile) {
         ShellFTPDownloadFile downloadFile = new ShellFTPDownloadFile();
         downloadFile.setSize(remoteFile.getSize());
         downloadFile.setRemotePath(remoteFile.getFilePath());
@@ -189,18 +211,19 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         return null;
     }
 
-    public void mkdir(String filePath) {
+    public boolean mkdir(String filePath) {
         try {
-            super.makeDirectory(filePath);
+            return super.makeDirectory(filePath);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return false;
     }
 
     public ShellFTPFile finfo(String filePath) {
         try {
             FTPFile file = super.mlistFile(filePath);
-            String pPath = ShellSftpUtil.parent(filePath);
+            String pPath = ShellFileUtil.parent(filePath);
             return new ShellFTPFile(pPath, file);
         } catch (Exception ex) {
             ex.printStackTrace();

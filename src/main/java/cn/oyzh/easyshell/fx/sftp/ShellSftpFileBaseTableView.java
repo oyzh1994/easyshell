@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -396,7 +397,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
      */
     public void back() {
         String location = this.getLocation();
-        String parent = ShellSftpUtil.parent(location);
+        String parent = ShellFileUtil.parent(location);
         this.intoDir(parent);
     }
 
@@ -515,8 +516,8 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
             }
-            String filePath = ShellSftpUtil.concat(this.getLocation(), name);
-            String newPath = ShellSftpUtil.concat(this.getLocation(), newName);
+            String filePath = ShellFileUtil.concat(this.getLocation(), name);
+            String newPath = ShellFileUtil.concat(this.getLocation(), newName);
             this.sftp().rename(filePath, newPath);
             file.setFileName(newName);
             this.refreshFile();
@@ -606,7 +607,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
             return;
         }
-        String filePath = ShellSftpUtil.concat(this.getLocation(), name);
+        String filePath = ShellFileUtil.concat(this.getLocation(), name);
         ShellSftpChannel sftp = this.sftp();
         sftp.touch(filePath);
         SftpATTRS attrs = sftp.stat(filePath);
@@ -643,7 +644,7 @@ public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> imple
         if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
             return;
         }
-        String filePath = ShellSftpUtil.concat(this.getLocation(), name);
+        String filePath = ShellFileUtil.concat(this.getLocation(), name);
         ShellSftpChannel sftp = this.sftp();
         sftp.mkdir(filePath);
         SftpATTRS attrs = sftp.stat(filePath);

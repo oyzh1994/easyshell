@@ -8,7 +8,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.sftp.ShellSftpChannel;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpTask;
-import cn.oyzh.easyshell.sftp.ShellSftpUtil;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 
@@ -130,7 +130,7 @@ public class ShellSftpUploadTask extends ShellSftpTask<ShellSftpUploadMonitor> {
             // 处理文件
             if (ArrayUtil.isNotEmpty(files)) {
                 // 远程文件夹
-                String remoteDir = ShellSftpUtil.concat(remoteFile, localFile.getName());
+                String remoteDir = ShellFileUtil.concat(remoteFile, localFile.getName());
                 // 递归创建文件夹
                 this.client.openSftp().mkdirRecursive(remoteDir);
                 // 添加文件
@@ -138,7 +138,7 @@ public class ShellSftpUploadTask extends ShellSftpTask<ShellSftpUploadMonitor> {
                     if (file.isDirectory()) {
                         this.addMonitorRecursive(file, remoteDir);
                     } else {
-                        String remoteFile1 = ShellSftpUtil.concat(remoteDir, file.getName());
+                        String remoteFile1 = ShellFileUtil.concat(remoteDir, file.getName());
                         this.addMonitorRecursive(file, remoteFile1);
                     }
                 }

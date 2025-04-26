@@ -9,11 +9,11 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpClientUtil;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
-import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportMonitor;
 import cn.oyzh.easyshell.sftp.transport.ShellSftpTransportTask;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -320,7 +320,7 @@ public class ShellSftpTransportController extends StageController {
             if (file.isDirectory()) {
                 sourceClient.transport(file, remotePath, targetClient);
             } else {
-                String remoteFile = ShellSftpUtil.concat(remotePath, file.getName());
+                String remoteFile = ShellFileUtil.concat(remotePath, file.getName());
                 sourceClient.transport(file, remoteFile, targetClient);
             }
         }

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.sftp;
 
-import cn.oyzh.common.util.StringUtil;
 import com.jcraft.jsch.SftpException;
 
 /**
@@ -9,16 +8,6 @@ import com.jcraft.jsch.SftpException;
  */
 
 public class ShellSftpUtil {
-
-    public static String concat(String src, String name) {
-        if (src.endsWith("/") && name.startsWith("/")) {
-            return src + name.substring(1);
-        }
-        if (!src.endsWith("/") && !name.startsWith("/")) {
-            return src + "/" + name;
-        }
-        return src + name;
-    }
 
     public static String getOwner(int uid, ShellSftpClient client) {
         ShellSftpAttr attr = client.getAttr();
@@ -38,13 +27,6 @@ public class ShellSftpUtil {
             attr.putGroup(gid, groupName);
         }
         return groupName;
-    }
-
-    public static String parent(String dest) {
-        if (StringUtil.isEmpty(dest)) {
-            return dest;
-        }
-        return dest.substring(0, dest.lastIndexOf("/"));
     }
 
     /**
