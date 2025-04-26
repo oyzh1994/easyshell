@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.sftp;
+package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.util.ShellUtil;

@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox;
-import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
-import cn.oyzh.easyshell.fx.sftp.ShellSftpTransportFileTableView;
+import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField;
+import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpClient;
 import cn.oyzh.easyshell.sftp.ShellSftpClientUtil;
@@ -122,13 +122,13 @@ public class ShellSftpTransportController extends StageController {
      * 来源文件
      */
     @FXML
-    private ShellSftpTransportFileTableView sourceFile;
+    private ShellSFTPTransportFileTableView sourceFile;
 
     /**
      * 目标文件
      */
     @FXML
-    private ShellSftpTransportFileTableView targetFile;
+    private ShellSFTPTransportFileTableView targetFile;
 
 //    /**
 //     * 文件传输表

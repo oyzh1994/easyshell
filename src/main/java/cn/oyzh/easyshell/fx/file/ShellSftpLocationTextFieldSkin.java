@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.sftp;
+package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.fx.gui.skin.SelectTextFiledSkin;
 import javafx.scene.control.TextField;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSftpFileConnectTableView?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView?>
+<?import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
@@ -83,7 +83,7 @@
             </FXHBox.margin>
         </ClearableTextField>
     </FXHBox>
-    <ShellSftpFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
+    <ShellSFTPFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
             <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
@@ -95,7 +95,7 @@
             <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
             <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
         </columns>
-    </ShellSftpFileConnectTableView>
+    </ShellSFTPFileConnectTableView>
     <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXLabel text="%base.delete" prefWidth="50" maxWidth="50">
             <FXHBox.margin>

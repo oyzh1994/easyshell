@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellSftpConnectComboBox?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSftpTransportFileTableView?>
+<?import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -218,7 +218,7 @@
                             </FXHBox.margin>
                         </ClearableTextField>
                     </FXHBox>
-                    <ShellSftpTransportFileTableView fx:id="sourceFile" flexWidth="100% - 10" flexHeight="100% - 35">
+                    <ShellSFTPTransportFileTableView fx:id="sourceFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
                             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                            valueName="icon"/>
@@ -234,7 +234,7 @@
                         <FXVBox.margin>
                             <Insets left="5" top="5"/>
                         </FXVBox.margin>
-                    </ShellSftpTransportFileTableView>
+                    </ShellSFTPTransportFileTableView>
                 </FXVBox>
 <!--                <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">-->
 <!--                    <TransportRightSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport1">-->
@@ -282,7 +282,7 @@
                             </FXHBox.margin>
                         </ClearableTextField>
                     </FXHBox>
-                    <ShellSftpTransportFileTableView fx:id="targetFile" flexWidth="100% - 10" flexHeight="100% - 35">
+                    <ShellSFTPTransportFileTableView fx:id="targetFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
                             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                            valueName="icon"/>
@@ -298,7 +298,7 @@
                         <FXVBox.margin>
                             <Insets left="5" top="5"/>
                         </FXVBox.margin>
-                    </ShellSftpTransportFileTableView>
+                    </ShellSFTPTransportFileTableView>
                 </FXVBox>
             </FXHBox>
             <!--            <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">-->

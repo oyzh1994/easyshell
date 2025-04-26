@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.sftp.ShellSftpFileDraggedEvent;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView;
-import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField;
+import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.delete.ShellSftpDeleteManager;
 import cn.oyzh.easyshell.sftp.download.ShellSftpDownloadManager;

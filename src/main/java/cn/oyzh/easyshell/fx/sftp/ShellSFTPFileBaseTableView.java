@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSftpFileBaseTableView extends FXTableView<ShellSftpFile> implements FXEventListener {
+public class ShellSFTPFileBaseTableView extends FXTableView<ShellSftpFile> implements FXEventListener {
 
     @Override
     public void initNode() {

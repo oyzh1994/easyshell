@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSftpFileConnectTableView?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSftpLocationTextField?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView?>
+<?import cn.oyzh.easyshell.fx.file.ShellSftpLocationTextField?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>

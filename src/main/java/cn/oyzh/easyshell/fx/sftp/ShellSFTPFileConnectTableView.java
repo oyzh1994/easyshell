@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSftpFileConnectTableView extends ShellSftpFileBaseTableView {
+public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 
     @Override
     public void loadFile() {
