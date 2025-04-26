@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.ShellSftpUploadTask;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -555,6 +556,14 @@ public class ShellFTPTabController extends RichTabController {
     @FXML
     private void hiddenFile() {
         this.hiddenFile(!this.hiddenPane.isHidden());
+    }
+
+    /**
+     * 管理上传、下载
+     */
+    @FXML
+    private void manage() {
+        ShellViewFactory.ftpManage(this.client);
     }
 
     /**

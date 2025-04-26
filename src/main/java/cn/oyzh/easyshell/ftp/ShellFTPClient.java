@@ -1,17 +1,21 @@
 package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.BaseClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import com.jcraft.jsch.SftpException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +37,9 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
     @Override
     public void close() {
         try {
+            this.logout();
+            super.disconnect();
+            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -76,9 +83,30 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         return !this.isConnected();
     }
 
+    private final ObservableList<ShellFTPDeleteFile> deleteFiles = FXCollections.observableArrayList();
+
+    private final ObservableList<ShellFTPUploadFile> uploadFiles = FXCollections.observableArrayList();
+
+    private final ObservableList<ShellFTPDownloadFile> downloadFiles = FXCollections.observableArrayList();
+
+    public ObservableList<ShellFTPDeleteFile> getDeleteFiles() {
+        return deleteFiles;
+    }
+
+    public ObservableList<ShellFTPUploadFile> getUploadFiles() {
+        return uploadFiles;
+    }
+
+    public ObservableList<ShellFTPDownloadFile> getDownloadFiles() {
+        return downloadFiles;
+    }
 
     public void delete(ShellFTPFile file) {
+        ShellFTPDeleteFile deleteFile = new ShellFTPDeleteFile();
         try {
+            deleteFile.setSize(file.getSize());
+            deleteFile.setRemotePath(file.getFilePath());
+            this.deleteFiles.add(deleteFile);
             if (file.isDirectory()) {
                 ShellFTPUtil.deleteDirectory(this, file.getFilePath());
             } else {
@@ -86,27 +114,45 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            this.deleteFiles.remove(deleteFile);
         }
     }
 
-    public void delete(String filePath) {
+    public void upload(File localFile, String remotePath) throws SftpException {
+        String remoteFile = ShellSftpUtil.concat(remotePath, localFile.getName());
+        ShellFTPUploadFile uploadFile = new ShellFTPUploadFile();
+        uploadFile.setRemotePath(remoteFile);
+        uploadFile.setSize(localFile.length());
+        uploadFile.setLocalPath(localFile.getAbsolutePath());
+        this.uploadFiles.add(uploadFile);
+        Thread task = ThreadUtil.startVirtual(() -> {
+            try {
+                this.setFileType(FTPClient.BINARY_FILE_TYPE);
+                super.storeFile(remoteFile, new FileInputStream(localFile));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                this.uploadFiles.remove(uploadFile);
+            }
+        });
+        uploadFile.setTask(task);
+    }
+
+    public void download(File localFile, ShellFTPFile remoteFile) throws SftpException {
+        ShellFTPDownloadFile uploadFile = new ShellFTPDownloadFile();
         try {
-            super.deleteFile(filePath);
+            uploadFile.setSize(remoteFile.getSize());
+            uploadFile.setRemotePath(remoteFile.getFilePath());
+            uploadFile.setLocalPath(localFile.getAbsolutePath());
+            this.downloadFiles.add(uploadFile);
+            super.retrieveFile(remoteFile.getFilePath(), new FileOutputStream(localFile));
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            this.downloadFiles.remove(uploadFile);
         }
     }
-
-
-    public void upload(File localFile, String remoteFile) throws SftpException {
-    }
-
-    public void download(File localFile, ShellSftpFile remoteFile) throws SftpException {
-    }
-
-    public void transport(ShellSftpFile localFile, String remoteFile, ShellFTPClient remoteClient) {
-    }
-
 
     public List<ShellFTPFile> lsFile(String filePath) {
 

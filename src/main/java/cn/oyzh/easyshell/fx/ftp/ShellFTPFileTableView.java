@@ -11,6 +11,9 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSftpUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,6 +31,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -268,6 +272,12 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
         refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
         menuItems.add(refreshFile);
+        // 上传文件
+        FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+        // 上传文件夹
+        FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+        menuItems.add(uploadFile);
+        menuItems.add(uploadFolder);
         // 删除文件
         FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
         deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
@@ -498,5 +508,57 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
 
     public void cd(String filePath) {
         this.client.cd(filePath);
+    }
+
+
+    public void uploadFile() {
+        try {
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+            this.uploadFile(files);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public void uploadFolder() {
+        try {
+            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+            this.uploadFile(file);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public boolean uploadFile(File file) {
+        if (file != null && file.exists()) {
+            return this.uploadFile(Collections.singletonList(file));
+        }
+        return false;
+    }
+
+    public boolean uploadFile(List<File> files) {
+        if (CollectionUtil.isEmpty(files)) {
+            return false;
+        }
+        // 检查要上传的文件是否存在
+        for (File file : files) {
+            if (this.existFile(file.getName())) {
+                if (!MessageBox.confirm(ShellI18nHelper.fileTip3())) {
+                    return false;
+                }
+                break;
+            }
+        }
+        for (File file : files) {
+            try {
+                this.client.upload(file, this.getLocation());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        }
+        return true;
     }
 }

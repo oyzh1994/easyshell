@@ -19,11 +19,13 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -301,6 +303,17 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellSftpTransportController.class, null);
             adapter.setProp("sourceConnect", sourceConnect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void ftpManage(ShellFTPClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFTPManageController.class);
+            adapter.setProp("client", client);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
