@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController" prefWidth="600" realHeight="450">
+        fx:controller="cn.oyzh.easyshell.controller.file.ShellFileInfoController" prefWidth="600" realHeight="450">
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>

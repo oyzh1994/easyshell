@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.controller.sftp;
+package cn.oyzh.easyshell.controller.file;
 
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
+import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -23,7 +24,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "sftp/shellSftpFileInfo.fxml"
 )
-public class ShellSftpFileInfoController extends StageController {
+public class ShellFileInfoController extends StageController {
 
     /**
      * 分组
@@ -58,15 +59,15 @@ public class ShellSftpFileInfoController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        ShellSftpFile file = this.getProp("file");
+        ShellFile file = this.getProp("file");
         this.group.setText(file.getGroup());
         this.owner.setText(file.getOwner());
-        this.name.setText(file.getName());
+        this.name.setText(file.getFileName());
         this.permissions.setText(file.getPermissions());
         if (file.isDirectory()) {
             NodeGroupUtil.disappear(this.getStage(), "size");
         } else {
-            this.size.setText(file.getSize());
+            this.size.setText(NumberUtil.formatSize(file.getFileSize(), 2));
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

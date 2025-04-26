@@ -19,14 +19,13 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
-import cn.oyzh.easyshell.controller.sftp.ShellSftpFileInfoController;
 import cn.oyzh.easyshell.controller.sftp.ShellSftpTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSftpFile;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -275,9 +274,9 @@ public class ShellViewFactory {
     /**
      * 文件信息
      */
-    public static void fileInfo(ShellSftpFile file) {
+    public static void fileInfo(ShellFile file) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellSftpFileInfoController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellFileInfoController.class, StageManager.getPrimaryStage());
             adapter.setProp("file", file);
             adapter.display();
         } catch (Exception ex) {

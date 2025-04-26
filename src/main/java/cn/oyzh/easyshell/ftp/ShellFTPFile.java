@@ -96,7 +96,7 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
 
     @Override
     public long getFileSize() {
-        return super.getSize();
+        return this.getSize();
     }
 
     @Override
@@ -148,8 +148,6 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
     public String getRawListing() {
         return file.getRawListing();
     }
-
-
 
     public void setFileName(String newName) {
         this.file.setName(newName);

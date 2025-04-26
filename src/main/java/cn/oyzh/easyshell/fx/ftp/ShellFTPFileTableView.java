@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.ftp.ShellFTPUploadFile;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -24,6 +25,7 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
@@ -146,15 +148,17 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     protected List<ShellFTPFile> files;
 
     public void loadFile() {
-        try {
-            this.loadFileInner();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        StageManager.showMask(()->{
+            try {
+                this.loadFileInner();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
-    protected synchronized void loadFileInner() throws SftpException {
+    protected synchronized void loadFileInner() {
         try {
             String currPath = this.getLocation();
             if (currPath == null) {
@@ -267,6 +271,11 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         menuItems.add(MenuItemHelper.separator());
         if (files.size() == 1) {
             ShellFTPFile file = files.getFirst();
+            // 文件信息
+            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
+            fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+            menuItems.add(fileInfo);
+            // 复制文件路径
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
             menuItems.add(copyFilePath);
             // 重命名文件
@@ -296,6 +305,17 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
             menuItems.add(downloadFile);
         }
         return menuItems;
+    }
+
+    /**
+     * 显示文件信息
+     *
+     * @param file 文件
+     */
+    protected void fileInfo(ShellFTPFile file) {
+        if (file != null && !this.checkInvalid(file)) {
+            ShellViewFactory.fileInfo(file);
+        }
     }
 
     protected void copyFilePath(ShellFTPFile file) {
@@ -519,9 +539,10 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     }
 
     public void cd(String filePath) {
+        this.setLocation(filePath);
         this.client.cd(filePath);
+        this.loadFile();
     }
-
 
     public void uploadFile() {
         try {
