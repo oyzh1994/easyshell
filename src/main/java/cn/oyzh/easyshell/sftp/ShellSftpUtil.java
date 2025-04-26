@@ -39,7 +39,7 @@ public class ShellSftpUtil {
     public static void realpath(ShellSftpFile file, ShellSftpChannel sftp) throws SftpException {
         // 读取链接文件
         if (file != null && file.isLink()) {
-            String linkPath = sftp.realpath(file.getPath());
+            String linkPath = sftp.realpath(file.getFilePath());
             if (linkPath != null) {
                 file.setLinkPath(linkPath);
                 file.setLinkAttrs(sftp.stat(linkPath));

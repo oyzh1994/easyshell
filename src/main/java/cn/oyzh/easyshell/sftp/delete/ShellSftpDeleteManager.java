@@ -108,14 +108,14 @@ public class ShellSftpDeleteManager implements AutoCloseable {
                 try {
                     deleteFile.startWaiting();
                     if (deleteFile.isDirectory()) {
-                        this.rmdirRecursive(deleteFile.getPath(), sftp);
+                        this.rmdirRecursive(deleteFile.getFilePath(), sftp);
                     } else {
-                        this.rm(deleteFile.getPath(), sftp);
+                        this.rm(deleteFile.getFilePath(), sftp);
                     }
                 } catch (Exception ex) {
                     if (!ExceptionUtil.hasMessage(ex, "no such file")) {
                         ex.printStackTrace();
-                        JulLog.warn("file:{} delete failed", deleteFile.getPath(), ex);
+                        JulLog.warn("file:{} delete failed", deleteFile.getFilePath(), ex);
                         MessageBox.exception(ex);
                         this.deleteFailed(deleteFile, ex);
                         break;

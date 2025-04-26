@@ -132,7 +132,7 @@ public class ShellSftpTransportTask extends ShellSftpTask<ShellSftpTransportMoni
             ShellSftpChannel localSftp = this.localClient.openSftp();
             ShellSftpChannel remoteSftp = this.remoteClient.openSftp();
             // 列举文件
-            List<ShellSftpFile> files = localSftp.lsFileNormal(localFile.getPath());
+            List<ShellSftpFile> files = localSftp.lsFileNormal(localFile.getFilePath());
             // 处理文件
             if (CollectionUtil.isNotEmpty(files)) {
                 // 远程文件夹

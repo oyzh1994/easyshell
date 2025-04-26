@@ -220,6 +220,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         return this.getAttrs().getGId();
     }
 
+    @Override
     public boolean isFile() {
         if (this.isLink()) {
             if (this.linkAttrs != null) {
@@ -230,6 +231,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         return this.getAttrs().isReg();
     }
 
+    @Override
     public boolean isLink() {
         return this.getAttrs().isLink();
     }
@@ -254,10 +256,7 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
         this.parentPath = t1.parentPath;
     }
 
-    public boolean canWrite() {
-        return this.getPermissions().contains("w");
-    }
-
+    @Override
     public boolean isDirectory() {
         if (this.isLink()) {
             if (this.linkAttrs != null) {
@@ -266,14 +265,6 @@ public class ShellSftpFile implements ObjectCopier<ShellSftpFile>, ShellFile {
             return false;
         }
         return this.getAttrs().isDir();
-    }
-
-    public String getPath() {
-        return this.getFilePath();
-    }
-
-    public long length() {
-        return this.size();
     }
 
     public boolean hasOwnerReadPermission() {

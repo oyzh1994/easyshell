@@ -52,11 +52,11 @@ public class ShellSftpTransportMonitor extends ShellSftpMonitor {
     }
 
     public String getLocalFilePath() {
-        return this.localFile.getPath();
+        return this.localFile.getFilePath();
     }
 
     public long getLocalFileLength() {
-        return this.localFile.length();
+        return this.localFile.getFileSize();
     }
 
     @Override
