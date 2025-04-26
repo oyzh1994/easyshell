@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.event.sftp;
+package cn.oyzh.easyshell.event.file;
 
 
 import cn.oyzh.event.Event;

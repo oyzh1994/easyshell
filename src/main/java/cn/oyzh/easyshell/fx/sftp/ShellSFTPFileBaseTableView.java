@@ -5,7 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.sftp.ShellSftpFileSavedEvent;
+import cn.oyzh.easyshell.event.file.ShellSftpFileSavedEvent;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
