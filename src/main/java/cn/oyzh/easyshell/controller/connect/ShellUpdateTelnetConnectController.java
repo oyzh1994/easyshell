@@ -185,9 +185,9 @@ public class ShellUpdateTelnetConnectController extends StageController {
             return;
         }
         String userName = this.userName.getTextTrim();
-        if (!this.userName.validate()) {
-            return;
-        }
+//        if (!this.userName.validate()) {
+//            return;
+//        }
         String password = this.password.getPassword();
         // 检查背景配置
         if (this.enableBackground.isSelected()) {
