@@ -30,7 +30,7 @@ import java.util.List;
 
 
 /**
- * ssh连接导入业务
+ * 连接导入业务
  *
  * @author oyzh
  * @since 2025/02/21
