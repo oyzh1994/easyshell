@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -28,17 +27,17 @@ import java.util.function.Consumer;
  */
 public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 
-    @Override
-    public void loadFile() {
-        StageManager.showMask(() -> {
-            try {
-                super.loadFileInner();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+//    @Override
+//    public void loadFile() {
+//        StageManager.showMask(() -> {
+//            try {
+//                super.loadFileInner();
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        });
+//    }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {

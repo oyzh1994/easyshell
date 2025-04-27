@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
@@ -68,7 +69,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FolderLinkSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
-public interface ShellFile {
+public interface ShellFile extends ObjectCopier<ShellFile> {
 
     boolean isFile();
 
@@ -93,6 +94,8 @@ public interface ShellFile {
     }
 
     String getFileName();
+
+    void setFileName(String fileName);
 
     boolean isDirectory();
 

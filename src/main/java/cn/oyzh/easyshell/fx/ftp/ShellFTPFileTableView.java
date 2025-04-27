@@ -1,118 +1,107 @@
 package cn.oyzh.easyshell.fx.ftp;
 
-import cn.oyzh.common.exception.ExceptionUtil;
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPDeleteFile;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.ftp.ShellFTPUploadFile;
+import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
-import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements FXEventListener {
+public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,ShellFTPFile> implements FXEventListener {
+
+//    @Override
+//    public void initNode() {
+//        super.initNode();
+//        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//    }
+//
+//    @Override
+//    protected void initEvenListener() {
+//        super.initEvenListener();
+//        // 右键菜单事件
+//        this.setOnContextMenuRequested(e -> {
+//            List<? extends MenuItem> items = this.getMenuItems();
+//            if (CollectionUtil.isNotEmpty(items)) {
+//                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+//            } else {
+//                this.clearContextMenu();
+//            }
+//        });
+//        this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
+//        // 初始化鼠标多选辅助类
+//        TableViewMouseSelectHelper.install(this);
+//        // 快捷键
+//        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+//            // 删除
+//            if (KeyboardUtil.delete_keyCombination.match(event)) {
+//                this.deleteFile(this.getSelectedItems());
+//                event.consume();
+//            } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名
+//                this.renameFile(this.getSelectedItems());
+//                event.consume();
+//            } else if (KeyboardUtil.refresh_keyCombination.match(event)) {// 刷新
+//                this.loadFile();
+//                event.consume();
+//            }
+//        });
+//    }
+//
+//    private boolean showHiddenFile = false;
+//
+//    public void setShowHiddenFile(boolean showHiddenFile) {
+//        this.showHiddenFile = showHiddenFile;
+//        this.refreshFile();
+//    }
+//
+//    private String filterText;
+//
+//    public void setFilterText(String filterText) {
+//        if (!StringUtil.equals(this.filterText, filterText)) {
+//            this.filterText = filterText;
+//            this.refreshFile();
+//        }
+//    }
+
+//    protected ShellFTPClient client;
+//
+//    public ShellFTPClient getClient() {
+//        return client;
+//    }
 
     @Override
-    public void initNode() {
-        super.initNode();
-        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    }
-
-    @Override
-    protected void initEvenListener() {
-        super.initEvenListener();
-        // 右键菜单事件
-        this.setOnContextMenuRequested(e -> {
-            List<? extends MenuItem> items = this.getMenuItems();
-            if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
-            } else {
-                this.clearContextMenu();
-            }
-        });
-        this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
-        // 初始化鼠标多选辅助类
-        TableViewMouseSelectHelper.install(this);
-        // 快捷键
-        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            // 删除
-            if (KeyboardUtil.delete_keyCombination.match(event)) {
-                this.deleteFile(this.getSelectedItems());
-                event.consume();
-            } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名
-                this.renameFile(this.getSelectedItems());
-                event.consume();
-            } else if (KeyboardUtil.refresh_keyCombination.match(event)) {// 刷新
-                this.loadFile();
-                event.consume();
-            }
-        });
-    }
-
-    private boolean showHiddenFile = false;
-
-    public void setShowHiddenFile(boolean showHiddenFile) {
-        this.showHiddenFile = showHiddenFile;
-        this.refreshFile();
-    }
-
-    private String filterText;
-
-    public void setFilterText(String filterText) {
-        if (!StringUtil.equals(this.filterText, filterText)) {
-            this.filterText = filterText;
-            this.refreshFile();
-        }
-    }
-
-    protected ShellFTPClient client;
-
-    public ShellFTPClient getClient() {
-        return client;
-    }
-
     public void setClient(ShellFTPClient client) {
-        this.client = client;
+       super.setClient(client);
         this.client.getUploadFiles().addListener((ListChangeListener<ShellFTPUploadFile>) c -> {
             if (this.client.getUploadFiles().isEmpty()) {
                 this.loadFile();
@@ -125,138 +114,140 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         });
     }
 
-    /**
-     * 位置属性
-     */
-    private final StringProperty locationProperty = new SimpleStringProperty();
+//    /**
+//     * 位置属性
+//     */
+//    private final StringProperty locationProperty = new SimpleStringProperty();
+//
+//    public String getLocation() {
+//        String location = locationProperty.get();
+//        if (location == null) {
+//            return "/";
+//        }
+//        return location;
+//    }
+//
+//    public StringProperty locationProperty() {
+//        return this.locationProperty;
+//    }
+//
+//    protected void setLocation(String location) {
+//        if (StringUtil.notEquals(this.getLocation(), location)) {
+//            this.clearItems();
+//        }
+//        this.locationProperty.set(location);
+//    }
+//
+//    protected List<ShellFTPFile> files;
 
-    public String getLocation() {
-        String location = locationProperty.get();
-        if (location == null) {
-            return "/";
-        }
-        return location;
-    }
+//    public void loadFile() {
+//        StageManager.showMask(() -> {
+//            try {
+//                this.loadFileInner();
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        });
+//    }
 
-    public StringProperty locationProperty() {
-        return this.locationProperty;
-    }
+//    protected synchronized void loadFileInner() throws Exception {
+//        try {
+//            String currPath = this.getLocation();
+//            if (currPath == null) {
+//                this.setLocation(this.client.pwdDir());
+//                currPath = this.getLocation();
+//            } else if (currPath.isBlank()) {
+//                currPath = "/";
+//            }
+//            JulLog.info("current path: {}", currPath);
+//            // 更新当前列表
+//            this.files = this.client.lsFile(currPath);
+//            // 过滤出来待显示的列表
+//            List<ShellFTPFile> files = this.doFilter(this.files);
+//            // 当前在显示的列表
+//            List<ShellFTPFile> items = this.getItems();
+//            // 删除列表
+//            List<ShellFTPFile> delList = new ArrayList<>();
+//            // 新增列表
+//            List<ShellFTPFile> addList = new ArrayList<>();
+//            // 遍历已有集合，如果不在待显示列表，则删除，否则更新
+//            for (ShellFTPFile file : items) {
+//                Optional<ShellFTPFile> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+//                if (optional.isEmpty()) {
+//                    delList.add(file);
+//                } else {
+//                    file.copy(optional.get());
+//                }
+//            }
+//            // 遍历待显示列表，如果不在已显示列表，则新增
+//            for (ShellFTPFile file : files) {
+//                Optional<ShellFTPFile> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+//                if (optional.isEmpty()) {
+//                    addList.add(file);
+//                }
+//            }
+//
+//            // 删除数据
+//            this.removeItem(delList);
+//            // 新增数据
+//            this.addItem(addList);
+//        } catch (Throwable ex) {
+//            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4: ", "0: Success")) {
+//                this.loadFileInner();
+//            } else {
+//                throw ex;
+//            }
+//        }
+//    }
 
-    protected void setLocation(String location) {
-        if (StringUtil.notEquals(this.getLocation(), location)) {
-            this.clearItems();
-        }
-        this.locationProperty.set(location);
-    }
-
-    protected List<ShellFTPFile> files;
-
-    public void loadFile() {
-        StageManager.showMask(() -> {
-            try {
-                this.loadFileInner();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    protected synchronized void loadFileInner() throws IOException {
-        try {
-            String currPath = this.getLocation();
-            if (currPath == null) {
-                this.setLocation(this.client.pwdDir());
-                currPath = this.getLocation();
-            } else if (currPath.isBlank()) {
-                currPath = "/";
-            }
-            JulLog.info("current path: {}", currPath);
-            // 更新当前列表
-            this.files = this.client.lsFile(currPath);
-            // 过滤出来待显示的列表
-            List<ShellFTPFile> files = this.doFilter(this.files);
-            // 当前在显示的列表
-            List<ShellFTPFile> items = this.getItems();
-            // 删除列表
-            List<ShellFTPFile> delList = new ArrayList<>();
-            // 新增列表
-            List<ShellFTPFile> addList = new ArrayList<>();
-            // 遍历已有集合，如果不在待显示列表，则删除，否则更新
-            for (ShellFTPFile file : items) {
-                Optional<ShellFTPFile> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-                if (optional.isEmpty()) {
-                    delList.add(file);
-                } else {
-                    file.copy(optional.get());
-                }
-            }
-            // 遍历待显示列表，如果不在已显示列表，则新增
-            for (ShellFTPFile file : files) {
-                Optional<ShellFTPFile> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-                if (optional.isEmpty()) {
-                    addList.add(file);
-                }
-            }
-
-            // 删除数据
-            this.removeItem(delList);
-            // 新增数据
-            this.addItem(addList);
-        } catch (Throwable ex) {
-            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4: ", "0: Success")) {
-                this.loadFileInner();
-            } else {
-                throw ex;
-            }
-        }
-    }
-
+    @Override
     public void refreshFile() {
-        if (this.files == null) {
-            this.loadFile();
-        } else {
-            this.setItem(this.doFilter(this.files));
-        }
+//        if (this.files == null) {
+//            this.loadFile();
+//        } else {
+//            this.setItem(this.doFilter(this.files));
+//        }
+        super.refreshFile();
         super.refresh();
     }
 
-    protected List<ShellFTPFile> doFilter(List<ShellFTPFile> files) {
-        if (CollectionUtil.isNotEmpty(files)) {
-            return files.stream()
-                    .filter(f -> {
-                        if (f.isCurrentFile()) {
-                            return false;
-                        }
-                        if (this.currentIsRootDirectory() && f.isReturnDirectory()) {
-                            return false;
-                        }
-                        if (!this.showHiddenFile && f.isHiddenFile()) {
-                            return false;
-                        }
-                        if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(f.getFileName(), this.filterText)) {
-                            return false;
-                        }
-                        return true;
-                    })
-                    .sorted(Comparator.comparingInt(ShellFTPFile::getFileOrder))
-                    .collect(Collectors.toList());
-        }
-        return new CopyOnWriteArrayList<>(files);
-    }
-
-    protected boolean checkInvalid(List<ShellFTPFile> files) {
-        for (ShellFTPFile file : files) {
-            if (this.checkInvalid(file)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected boolean checkInvalid(ShellFTPFile file) {
-        return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
-    }
+//    protected List<ShellFTPFile> doFilter(List<ShellFTPFile> files) {
+//        if (CollectionUtil.isNotEmpty(files)) {
+//            return files.stream()
+//                    .filter(f -> {
+//                        if (f.isCurrentFile()) {
+//                            return false;
+//                        }
+//                        if (this.currentIsRootDirectory() && f.isReturnDirectory()) {
+//                            return false;
+//                        }
+//                        if (!this.showHiddenFile && f.isHiddenFile()) {
+//                            return false;
+//                        }
+//                        if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(f.getFileName(), this.filterText)) {
+//                            return false;
+//                        }
+//                        return true;
+//                    })
+//                    .sorted(Comparator.comparingInt(ShellFTPFile::getFileOrder))
+//                    .collect(Collectors.toList());
+//        }
+//        return new CopyOnWriteArrayList<>(files);
+//    }
+//
+//    protected boolean checkInvalid(List<ShellFTPFile> files) {
+//        for (ShellFTPFile file : files) {
+//            if (this.checkInvalid(file)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    protected boolean checkInvalid(ShellFTPFile file) {
+//        return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
+//    }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
@@ -322,114 +313,115 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         return menuItems;
     }
 
-    /**
-     * 显示文件信息
-     *
-     * @param file 文件
-     */
-    protected void fileInfo(ShellFTPFile file) {
-        if (file != null && !this.checkInvalid(file)) {
-            ShellViewFactory.fileInfo(file);
-        }
-    }
+//    /**
+//     * 显示文件信息
+//     *
+//     * @param file 文件
+//     */
+//    protected void fileInfo(ShellFTPFile file) {
+//        if (file != null && !this.checkInvalid(file)) {
+//            ShellViewFactory.fileInfo(file);
+//        }
+//    }
 
-    protected void copyFilePath(ShellFTPFile file) {
-        ClipboardUtil.copy(file.getFilePath());
-    }
+//    protected void copyFilePath(ShellFTPFile file) {
+//        ClipboardUtil.copy(file.getFilePath());
+//    }
 
-    protected void onMouseClicked(MouseEvent event) {
-        try {
-            // 鼠标后退
-            if (event.getButton() == MouseButton.BACK && event.getClickCount() == 1) {
-                this.back();
-                return;
-            }
-            List<ShellFTPFile> files = this.getSelectedItems();
-            if (files == null) {
-                return;
-            }
-            if (files.size() != 1) {
-                return;
-            }
-            // 鼠标前进
-            if (event.getButton() == MouseButton.FORWARD && event.getClickCount() == 1) {
-                this.forward();
-                return;
-            }
-            // 鼠标按键
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                ShellFTPFile file = files.getFirst();
-                if (file.isDirectory()) {
-                    this.intoDir(file);
-                } else if (file.isFile()) {
-                    this.editFile(file);
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    protected void onMouseClicked(MouseEvent event) {
+//        try {
+//            // 鼠标后退
+//            if (event.getButton() == MouseButton.BACK && event.getClickCount() == 1) {
+//                this.back();
+//                return;
+//            }
+//            List<ShellFTPFile> files = this.getSelectedItems();
+//            if (files == null) {
+//                return;
+//            }
+//            if (files.size() != 1) {
+//                return;
+//            }
+//            // 鼠标前进
+//            if (event.getButton() == MouseButton.FORWARD && event.getClickCount() == 1) {
+//                this.forward();
+//                return;
+//            }
+//            // 鼠标按键
+//            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+//                ShellFTPFile file = files.getFirst();
+//                if (file.isDirectory()) {
+//                    this.intoDir(file);
+//                } else if (file.isFile()) {
+//                    this.editFile(file);
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
-    public boolean currentIsRootDirectory() {
-        return "/".equals(this.getLocation());
-    }
+//    public boolean currentIsRootDirectory() {
+//        return "/".equals(this.getLocation());
+//    }
+//
+//    public void intoDir(ShellFTPFile file) {
+//        if (file.isReturnDirectory()) {
+//            this.returnDir();
+//            return;
+//        }
+//        this.intoDir(file.getFilePath());
+//    }
+//
+//    public void intoDir(String filePath) {
+//        this.setLocation(filePath);
+//        this.loadFile();
+//    }
+//
+//    /**
+//     * 后退
+//     */
+//    public void back() {
+//        String location = this.getLocation();
+//        String parent = ShellFileUtil.parent(location);
+//        this.intoDir(parent);
+//    }
+//
+//    /**
+//     * 前进
+//     */
+//    public void forward() {
+//        List<ShellFTPFile> files = this.getSelectedItems();
+//        if (files.size() != 1) {
+//            return;
+//        }
+//        ShellFTPFile file = files.getFirst();
+//        if (!file.isDirectory()) {
+//            return;
+//        }
+//        this.intoDir(file);
+//    }
 
-    public void intoDir(ShellFTPFile file) {
-        if (file.isReturnDirectory()) {
-            this.returnDir();
-            return;
-        }
-        this.intoDir(file.getFilePath());
-    }
+//    public void returnDir() {
+//        if (this.currentIsRootDirectory()) {
+//            return;
+//        }
+//        String currPath = this.getLocation();
+//        if (currPath.endsWith("/")) {
+//            currPath = currPath.substring(0, currPath.length() - 1);
+//        }
+//        currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
+//        this.setLocation(currPath);
+//        this.loadFile();
+//    }
 
-    public void intoDir(String filePath) {
-        this.setLocation(filePath);
-        this.loadFile();
-    }
+//    public boolean existFile(String fileName) {
+//        Optional<ShellFTPFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
+//        return sftpFile.isPresent();
+//    }
 
-    /**
-     * 后退
-     */
-    public void back() {
-        String location = this.getLocation();
-        String parent = ShellFileUtil.parent(location);
-        this.intoDir(parent);
-    }
-
-    /**
-     * 前进
-     */
-    public void forward() {
-        List<ShellFTPFile> files = this.getSelectedItems();
-        if (files.size() != 1) {
-            return;
-        }
-        ShellFTPFile file = files.getFirst();
-        if (!file.isDirectory()) {
-            return;
-        }
-        this.intoDir(file);
-    }
-
-    public void returnDir() {
-        if (this.currentIsRootDirectory()) {
-            return;
-        }
-        String currPath = this.getLocation();
-        if (currPath.endsWith("/")) {
-            currPath = currPath.substring(0, currPath.length() - 1);
-        }
-        currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
-        this.setLocation(currPath);
-        this.loadFile();
-    }
-
-    public boolean existFile(String fileName) {
-        Optional<ShellFTPFile> sftpFile = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
-        return sftpFile.isPresent();
-    }
-
+    @Override
     public void deleteFile(List<ShellFTPFile> files) {
         if (CollectionUtil.isEmpty(files) || this.checkInvalid(files)) {
             return;
@@ -472,6 +464,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         });
     }
 
+    @Override
     public void filePermission(ShellFTPFile file) {
         if (this.checkInvalid(file)) {
             return;
@@ -479,47 +472,48 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         ShellViewFactory.ftpFilePermission(file, this.client);
     }
 
-    /**
-     * 重命名文件
-     *
-     * @param files 文件列表
-     */
-    public void renameFile(List<ShellFTPFile> files) {
-        try {
-            if (files == null || files.size() != 1) {
-                return;
-            }
-            if (this.checkInvalid(files)) {
-                return;
-            }
-            ShellFTPFile file = files.getFirst();
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
-            String name = file.getFileName();
-            if (newName == null || StringUtil.equals(name, newName)) {
-                return;
-            }
-            String filePath = ShellFileUtil.concat(file.getParentPath(), name);
-            String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
-            this.client.rename(filePath, newPath);
-            file.setFileName(newName);
-            this.refreshFile();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 重命名文件
+//     *
+//     * @param files 文件列表
+//     */
+//    public void renameFile(List<ShellFTPFile> files) {
+//        try {
+//            if (files == null || files.size() != 1) {
+//                return;
+//            }
+//            if (this.checkInvalid(files)) {
+//                return;
+//            }
+//            ShellFTPFile file = files.getFirst();
+//            String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
+//            String name = file.getFileName();
+//            if (newName == null || StringUtil.equals(name, newName)) {
+//                return;
+//            }
+//            String filePath = ShellFileUtil.concat(file.getParentPath(), name);
+//            String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
+//            this.client.rename(filePath, newPath);
+//            file.setFileName(newName);
+//            this.refreshFile();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
-    public void touch() {
-        try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
-            this.touch(name);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    public void touch() {
+//        try {
+//            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
+//            this.touch(name);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
-    public void touch(String name) throws IOException {
+    @Override
+    public void touch(String name) throws Exception {
         if (StringUtil.isEmpty(name)) {
             return;
         }
@@ -534,17 +528,18 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         this.refreshFile();
     }
 
-    public void mkdir() {
-        try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
-            this.mkdir(name);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    public void mkdir() {
+//        try {
+//            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
+//            this.mkdir(name);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
-    public void mkdir(String filePath) throws IOException {
+    @Override
+    public void mkdir(String filePath) throws Exception {
         String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
         this.client.mkdir(dirPath);
         ShellFTPFile file = this.client.finfo(dirPath);
@@ -552,17 +547,14 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         this.refreshFile();
     }
 
-    public void cd(String filePath) throws IOException {
+    @Override
+    public void cd(String filePath) throws Exception {
         this.setLocation(filePath);
         this.client.cd(filePath);
         this.loadFile();
     }
 
-    /**
-     * 编辑文件
-     *
-     * @param file 文件
-     */
+    @Override
     public void editFile(ShellFTPFile file) {
         if (!ShellFileUtil.fileEditable(file)) {
             return;
@@ -659,4 +651,9 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         return false;
     }
 
+    @Override
+    @EventSubscribe
+    public void onFileSaved(ShellFileSavedEvent event) {
+        super.onFileSaved(event);
+    }
 }

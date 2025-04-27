@@ -120,7 +120,7 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
      * @param remoteFile 远程文件
      * @throws SftpException 异常
      */
-    protected void addMonitorRecursive(ShellSFTPFile localFile, String remoteFile) throws SftpException {
+    protected void addMonitorRecursive(ShellSFTPFile localFile, String remoteFile) throws Exception {
         // 已取消则跳过
         if (this.isCancelled()) {
             return;

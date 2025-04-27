@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import com.jcraft.jsch.SftpException;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
@@ -228,7 +227,7 @@ public class ShellKeyUtil {
                 }
             }
             return true;
-        } catch (SftpException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;

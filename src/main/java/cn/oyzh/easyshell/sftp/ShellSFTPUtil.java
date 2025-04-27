@@ -42,7 +42,7 @@ public class ShellSFTPUtil {
      * @param client 客户端
      * @throws SftpException 异常
      */
-    public static void realpath(ShellSFTPFile file, ShellSFTPClient client) throws SftpException {
+    public static void realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
         // 读取链接文件
         if (file != null && file.isLink()) {
             String linkPath = client.realpath(file.getFilePath());

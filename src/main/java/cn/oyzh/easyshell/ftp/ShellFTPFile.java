@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.date.DateHelper;
-import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import org.apache.commons.net.ftp.FTPFile;
@@ -15,7 +14,7 @@ import java.util.Calendar;
  * @author oyzh
  * @since 2025-04-26
  */
-public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>, ShellFile {
+public class ShellFTPFile extends FTPFile implements ShellFile {
 
     /**
      * 父目录
@@ -25,7 +24,7 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
     /**
      * 链接属性
      */
-    private final FTPFile file;
+    private FTPFile file;
 
     public void setIcon(SVGGlyph icon) {
         this.icon = icon;
@@ -57,8 +56,11 @@ public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>,
     }
 
     @Override
-    public void copy(ShellFTPFile t1) {
-        this.parentPath = t1.parentPath;
+    public void copy(ShellFile t1) {
+        if (t1 instanceof ShellFTPFile file) {
+            this.file = file.file;
+            this.parentPath = file.parentPath;
+        }
     }
 
     @Override

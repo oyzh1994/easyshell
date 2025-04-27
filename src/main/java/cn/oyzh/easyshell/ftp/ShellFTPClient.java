@@ -6,6 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.file.FileClient;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -30,7 +31,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/26
  */
-public class ShellFTPClient extends FTPClient implements BaseClient {
+public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile>, BaseClient {
 
     private ShellConnect shellConnect;
 
@@ -117,11 +118,7 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         return downloadFiles;
     }
 
-    /**
-     * 删除文件
-     *
-     * @param file 文件
-     */
+    @Override
     public void delete(ShellFTPFile file) {
         ShellFTPDeleteFile deleteFile = new ShellFTPDeleteFile();
         deleteFile.setSize(file.getSize());
@@ -275,7 +272,8 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         }
     }
 
-    public List<ShellFTPFile> lsFile(String filePath) throws IOException {
+    @Override
+    public List<ShellFTPFile> lsFile(String filePath) throws Exception {
         List<ShellFTPFile> list = new ArrayList<>();
         FTPFile[] files = this.listFiles(filePath);
         if (files != null) {
@@ -286,10 +284,12 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         return list;
     }
 
-    public String pwdDir() throws IOException {
+    @Override
+    public String pwdDir() throws Exception {
         return super.printWorkingDirectory();
     }
 
+    @Override
     public boolean mkdir(String filePath) throws IOException {
         return super.makeDirectory(filePath);
     }
@@ -300,19 +300,22 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         return new ShellFTPFile(pPath, file);
     }
 
-    public void touch(String filePath) throws IOException {
+    @Override
+    public void touch(String filePath) throws Exception {
         try (InputStream inputStream = new ByteArrayInputStream(new byte[0])) {
             // 文件不存在，创建文件
             super.storeFile(filePath, inputStream);
         }
     }
 
-    public boolean exist(String filePath) throws IOException {
+    @Override
+    public boolean exist(String filePath) throws Exception {
         long lastModifiedTime = this.mdtm(filePath);
         return lastModifiedTime != -1;
     }
 
-    public void cd(String filePath) throws IOException {
+    @Override
+    public void cd(String filePath) throws Exception {
         this.changeWorkingDirectory(filePath);
     }
 

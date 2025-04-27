@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.date.DateHelper;
-import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -16,7 +15,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPFile implements ObjectCopier<ShellSFTPFile>, ShellFile {
+public class ShellSFTPFile implements ShellFile {
 
     private ChannelSftp.LsEntry entry;
 
@@ -236,23 +235,25 @@ public class ShellSFTPFile implements ObjectCopier<ShellSFTPFile>, ShellFile {
     }
 
     @Override
-    public void copy(ShellSFTPFile t1) {
-        if (t1.entry != null) {
-            this.entry = t1.entry;
+    public void copy(ShellFile t1) {
+        if (t1 instanceof ShellSFTPFile file) {
+            if (file.entry != null) {
+                this.entry = file.entry;
+            }
+            if (file.attrs != null) {
+                this.attrs = file.attrs;
+            }
+            if (file.owner != null) {
+                this.owner = file.owner;
+            }
+            if (file.group != null) {
+                this.group = file.group;
+            }
+            this.fileName = file.fileName;
+            this.linkPath = file.linkPath;
+            this.linkAttrs = file.linkAttrs;
+            this.parentPath = file.parentPath;
         }
-        if (t1.attrs != null) {
-            this.attrs = t1.attrs;
-        }
-        if (t1.owner != null) {
-            this.owner = t1.owner;
-        }
-        if (t1.group != null) {
-            this.group = t1.group;
-        }
-        this.fileName = t1.fileName;
-        this.linkPath = t1.linkPath;
-        this.linkAttrs = t1.linkAttrs;
-        this.parentPath = t1.parentPath;
     }
 
     @Override
