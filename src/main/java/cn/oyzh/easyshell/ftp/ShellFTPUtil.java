@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * ftp工具类
+ *
+ * @author oyzh
+ * @since 2025/04/26
+ */
 public class ShellFTPUtil {
 
     /**

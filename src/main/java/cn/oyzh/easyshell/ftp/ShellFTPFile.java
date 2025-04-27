@@ -10,8 +10,10 @@ import java.time.Instant;
 import java.util.Calendar;
 
 /**
+ * ftp文件
+ *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-04-26
  */
 public class ShellFTPFile extends FTPFile implements ObjectCopier<ShellFTPFile>, ShellFile {
 

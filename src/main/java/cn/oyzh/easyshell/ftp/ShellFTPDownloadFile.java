@@ -2,6 +2,12 @@ package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.util.NumberUtil;
 
+/**
+ * ftp下载文件
+ *
+ * @author oyzh
+ * @since 2025/04/26
+ */
 public class ShellFTPDownloadFile {
 
     private long size;

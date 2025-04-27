@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.ui.FXFXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -68,13 +69,13 @@ public class ShellTelnetTabController extends RichTabController {
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-//        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
-//            try {
-//                this.client.setPtySize(newValue.getColumns(), newValue.getRows());
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
+        // 初始化一次pty大小
+        TermSize termSize = this.widget.getTermSize();
+        this.client.setPtySize(termSize.getColumns(), termSize.getRows());
+        // 监听并动态修改pty大小
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            this.client.setPtySize(newValue.getColumns(), newValue.getRows());
+        });
     }
 
     /**

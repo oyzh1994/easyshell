@@ -1,5 +1,11 @@
 package cn.oyzh.easyshell.ftp;
 
+/**
+ * ftp删除文件
+ *
+ * @author oyzh
+ * @since 2025/04/26
+ */
 public class ShellFTPDeleteFile {
 
     private long size;

@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * shell终端
+ * ftp客户端
  *
  * @author oyzh
- * @since 2023/08/16
+ * @since 2025/04/26
  */
 public class ShellFTPClient extends FTPClient implements BaseClient {
 
@@ -36,7 +36,6 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
 
     public ShellFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
-
     }
 
     @Override
