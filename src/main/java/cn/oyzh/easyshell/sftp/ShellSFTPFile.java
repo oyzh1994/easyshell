@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.object.ObjectCopier;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -135,12 +134,12 @@ public class ShellSFTPFile implements ObjectCopier<ShellSFTPFile>, ShellFile {
         return this.icon;
     }
 
-    public String getSize() {
-        if (this.isDirectory() || this.isReturnDirectory() || this.isCurrentFile()) {
-            return "-";
-        }
-        return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
-    }
+//    public String getSize() {
+//        if (this.isDirectory() || this.isReturnDirectory() || this.isCurrentFile()) {
+//            return "-";
+//        }
+//        return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
+//    }
 
     public long size() {
         return this.getAttrs().getSize();

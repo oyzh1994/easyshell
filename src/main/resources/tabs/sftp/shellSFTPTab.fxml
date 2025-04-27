@@ -86,7 +86,7 @@
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
             <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
                            text="%base.name"/>
-            <FXTableColumn prefWidth="110" valueName="size" text="%base.size"/>
+            <FXTableColumn prefWidth="110" valueName="fileSizeDisplay" text="%base.size"/>
             <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
             <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
             <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>

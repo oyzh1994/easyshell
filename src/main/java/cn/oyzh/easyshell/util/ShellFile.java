@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.File7zSVGGlyph;
@@ -78,6 +79,18 @@ public interface ShellFile {
     String getGroup();
 
     long getFileSize();
+
+    /**
+     * 获取显示用文件大小
+     *
+     * @return 文件大小
+     */
+    default String getFileSizeDisplay() {
+        if (this.isDirectory() || this.isReturnDirectory() || this.isCurrentFile()) {
+            return "-";
+        }
+        return NumberUtil.formatSize(this.getFileSize(), 4);
+    }
 
     String getFileName();
 

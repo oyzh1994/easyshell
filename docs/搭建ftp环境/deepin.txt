@@ -1,0 +1,17 @@
+# 1. 安装依赖
+apt install -y vsftpd
+# 2. 处理错误(安装不了的时候可选操作)
+apt --fix-broken install
+# 3. 修改vsftpd配置
+vim /etc/vsftpd.conf
+listen=YES
+listen_ipv6=NO
+local_enable=YES
+write_enable=YES
+anonymous_enable=YES
+# 4. 修改ftpusers配置，这个是ftp黑名单
+vim /etc/ftpusers
+删除需要登陆ftp的用户，例如root
+# 5. 启动并启用vsftpd服务
+systemctl start vsftpd
+systemctl enable vsftpd

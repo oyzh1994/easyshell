@@ -76,10 +76,11 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
             if (this.isConnected()) {
                 super.login(this.shellConnect.getUser(), this.shellConnect.getPassword());
             }
+            this.lsFile("/");
             long endTime = System.currentTimeMillis();
-            JulLog.info("shellSftpClient connected used:{}ms.", (endTime - starTime));
+            JulLog.info("shellFTPClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            JulLog.warn("shellSftpClient start error", ex);
+            JulLog.warn("shellFTPClient start error", ex);
             throw new ShellException(ex);
         }
     }
@@ -274,92 +275,53 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         }
     }
 
-    public List<ShellFTPFile> lsFile(String filePath) {
+    public List<ShellFTPFile> lsFile(String filePath) throws IOException {
         List<ShellFTPFile> list = new ArrayList<>();
-        try {
-            FTPFile[] files = this.listFiles(filePath);
-            if (files != null) {
-                for (FTPFile file : files) {
-                    list.add(new ShellFTPFile(filePath, file));
-                }
+        FTPFile[] files = this.listFiles(filePath);
+        if (files != null) {
+            for (FTPFile file : files) {
+                list.add(new ShellFTPFile(filePath, file));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return list;
     }
 
-    public String pwdDir() {
-        try {
-            return super.printWorkingDirectory();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    public String pwdDir() throws IOException {
+        return super.printWorkingDirectory();
     }
 
-    public boolean mkdir(String filePath) {
-        try {
-            return super.makeDirectory(filePath);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
+    public boolean mkdir(String filePath) throws IOException {
+        return super.makeDirectory(filePath);
     }
 
-    public ShellFTPFile finfo(String filePath) {
-        try {
-            FTPFile file = super.mlistFile(filePath);
-            String pPath = ShellFileUtil.parent(filePath);
-            return new ShellFTPFile(pPath, file);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    public ShellFTPFile finfo(String filePath) throws IOException {
+        FTPFile file = super.mlistFile(filePath);
+        String pPath = ShellFileUtil.parent(filePath);
+        return new ShellFTPFile(pPath, file);
     }
 
-    public void touch(String filePath) {
-        try {
+    public void touch(String filePath) throws IOException {
+        try (InputStream inputStream = new ByteArrayInputStream(new byte[0])) {
             // 文件不存在，创建文件
-            InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-            boolean created = super.storeFile(filePath, inputStream);
-            inputStream.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            super.storeFile(filePath, inputStream);
         }
     }
 
-    public boolean exist(String filePath) {
-        try {
-            long lastModifiedTime = this.mdtm(filePath);
-            if (lastModifiedTime != -1) {
-                return true;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
+    public boolean exist(String filePath) throws IOException {
+        long lastModifiedTime = this.mdtm(filePath);
+        return lastModifiedTime != -1;
     }
 
-    public void cd(String filePath) {
-        try {
-            this.changeWorkingDirectory(filePath);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public void cd(String filePath) throws IOException {
+        this.changeWorkingDirectory(filePath);
     }
 
-    public boolean chmod(int permissions, String filePath) {
-        try {
-            // 构建 SITE CHMOD 命令
-            String command = "SITE CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
-            // 发送命令到 FTP 服务器
-            int replyCode = this.sendCommand(command);
-            // 检查命令执行结果
-            return FTPReply.isPositiveCompletion(replyCode);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
+    public boolean chmod(int permissions, String filePath) throws IOException {
+        // 构建 SITE CHMOD 命令
+        String command = "SITE CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
+        // 发送命令到 FTP 服务器
+        int replyCode = this.sendCommand(command);
+        // 检查命令执行结果
+        return FTPReply.isPositiveCompletion(replyCode);
     }
 }

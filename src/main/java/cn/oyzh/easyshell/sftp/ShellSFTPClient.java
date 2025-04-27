@@ -112,9 +112,9 @@ public class ShellSFTPClient extends ShellClient {
                 this.session.connect(timeout);
             }
             long endTime = System.currentTimeMillis();
-            JulLog.info("shellSftpClient connected used:{}ms.", (endTime - starTime));
+            JulLog.info("shellSFTPClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            JulLog.warn("shellSftpClient start error", ex);
+            JulLog.warn("shellSFTPClient start error", ex);
             throw new ShellException(ex);
         }
     }

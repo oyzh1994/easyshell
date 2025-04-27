@@ -27,7 +27,6 @@ import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.SftpException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
@@ -38,6 +37,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -131,7 +131,11 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     private final StringProperty locationProperty = new SimpleStringProperty();
 
     public String getLocation() {
-        return this.locationProperty.get();
+        String location = locationProperty.get();
+        if (location == null) {
+            return "/";
+        }
+        return location;
     }
 
     public StringProperty locationProperty() {
@@ -158,7 +162,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         });
     }
 
-    protected synchronized void loadFileInner() {
+    protected synchronized void loadFileInner() throws IOException {
         try {
             String currPath = this.getLocation();
             if (currPath == null) {
@@ -214,7 +218,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         } else {
             this.setItem(this.doFilter(this.files));
         }
-        this.refresh();
+        super.refresh();
     }
 
     protected List<ShellFTPFile> doFilter(List<ShellFTPFile> files) {
@@ -505,16 +509,6 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
     }
 
-    public void fileDeleted(String remoteFile) {
-        Optional<ShellFTPFile> optional = this.files.parallelStream()
-                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
-                .findAny();
-        if (optional.isPresent()) {
-            this.files.remove(optional.get());
-            this.refreshFile();
-        }
-    }
-
     public void touch() {
         try {
             String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
@@ -525,7 +519,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
     }
 
-    public void touch(String name) throws SftpException {
+    public void touch(String name) throws IOException {
         if (StringUtil.isEmpty(name)) {
             return;
         }
@@ -550,7 +544,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
     }
 
-    public void mkdir(String filePath) throws SftpException {
+    public void mkdir(String filePath) throws IOException {
         String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
         this.client.mkdir(dirPath);
         ShellFTPFile file = this.client.finfo(dirPath);
@@ -558,7 +552,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         this.refreshFile();
     }
 
-    public void cd(String filePath) {
+    public void cd(String filePath) throws IOException {
         this.setLocation(filePath);
         this.client.cd(filePath);
         this.loadFile();
@@ -576,6 +570,9 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         ShellViewFactory.ftpFileEdit(file, this.client);
     }
 
+    /**
+     * 上传文件
+     */
     public void uploadFile() {
         try {
             List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
@@ -586,6 +583,9 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         }
     }
 
+    /**
+     * 上传文件夹
+     */
     public void uploadFolder() {
         try {
             File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
@@ -607,6 +607,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
         if (CollectionUtil.isEmpty(files)) {
             return false;
         }
+        MessageBox.okToast(I18nHelper.addedToUploadList());
         // 检查要上传的文件是否存在
         for (File file : files) {
             if (this.existFile(file.getName())) {
@@ -630,6 +631,7 @@ public class ShellFTPFileTableView extends FXTableView<ShellFTPFile> implements 
     public boolean downloadFile(List<ShellFTPFile> files) {
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
+            MessageBox.okToast(I18nHelper.addedToDownloadList());
             String[] fileArr = dir.list();
             // 检查文件是否存在
             if (ArrayUtil.isNotEmpty(fileArr)) {
