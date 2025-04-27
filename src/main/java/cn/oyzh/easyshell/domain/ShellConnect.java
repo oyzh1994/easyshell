@@ -164,40 +164,40 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String type;
 
     /**
-     * 波特率
+     * 波特率-串口
      */
     @Column
-    private int baudRate;
+    private int serialBaudRate;
 
     /**
-     * 端口
+     * 端口-串口
      */
     @Column
-    private String portName;
+    private String serialPortName;
 
     /**
-     * 校验位
+     * 校验位-串口
      */
     @Column
-    private int parityBits;
+    private int serialParityBits;
 
     /**
-     * 数据位
+     * 数据位-串口
      */
     @Column
-    private int numDataBits;
+    private int serialNumDataBits;
 
     /**
-     * 停止位
+     * 停止位-串口
      */
     @Column
-    private int numStopBits;
+    private int serialNumStopBits;
 
     /**
-     * 流控
+     * 流控-串口
      */
     @Column
-    private int flowControl;
+    private int serialFlowControl;
 
     public Boolean getEnableProxy() {
         return enableProxy;
@@ -310,6 +310,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     @Override
     public void copy(ShellConnect t1) {
+        // 基本
         this.name = t1.name;
         this.host = t1.host;
         this.user = t1.user;
@@ -336,13 +337,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // 背景
         this.backgroundImage = t1.backgroundImage;
         this.enableBackground = t1.enableBackground;
+        // 代理
+        this.enableProxy = t1.enableProxy;
+        this.proxyConfig = t1.proxyConfig;
         // 串口
-        this.baudRate = t1.baudRate;
-        this.portName = t1.portName;
-        this.parityBits = t1.parityBits;
-        this.numDataBits = t1.numDataBits;
-        this.numStopBits = t1.numStopBits;
-        this.flowControl = t1.flowControl;
+        this.serialBaudRate = t1.serialBaudRate;
+        this.serialPortName = t1.serialPortName;
+        this.serialParityBits = t1.serialParityBits;
+        this.serialNumDataBits = t1.serialNumDataBits;
+        this.serialNumStopBits = t1.serialNumStopBits;
+        this.serialFlowControl = t1.serialFlowControl;
     }
 
     /**
@@ -555,60 +559,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.tunnelingConfigs = tunnelingConfigs;
     }
 
-    public int getBaudRate() {
-        return baudRate;
-    }
-
-    public void setBaudRate(int baudRate) {
-        this.baudRate = baudRate;
-    }
-
-    public String getPortName() {
-        return portName;
-    }
-
-    public void setPortName(String portName) {
-        this.portName = portName;
-    }
-
-    public int getNumDataBits() {
-        return numDataBits;
-    }
-
-    public void setNumDataBits(int numDataBits) {
-        this.numDataBits = numDataBits;
-    }
-
-    public int getNumStopBits() {
-        return numStopBits;
-    }
-
-    public void setNumStopBits(int numStopBits) {
-        this.numStopBits = numStopBits;
-    }
-
-    public int getFlowControl() {
-        return flowControl;
-    }
-
-    public void setFlowControl(int flowControl) {
-        this.flowControl = flowControl;
-    }
-
     public String getType() {
         return StringUtil.isBlank(this.type) ? "ssh" : type;
     }
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public int getParityBits() {
-        return parityBits;
-    }
-
-    public void setParityBits(int parityBits) {
-        this.parityBits = parityBits;
     }
 
     public boolean isSSHType() {
@@ -633,5 +589,53 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public boolean isFTPType() {
         return "ftp".equalsIgnoreCase(this.type);
+    }
+
+    public int getSerialBaudRate() {
+        return serialBaudRate;
+    }
+
+    public void setSerialBaudRate(int serialBaudRate) {
+        this.serialBaudRate = serialBaudRate;
+    }
+
+    public String getSerialPortName() {
+        return serialPortName;
+    }
+
+    public void setSerialPortName(String serialPortName) {
+        this.serialPortName = serialPortName;
+    }
+
+    public int getSerialParityBits() {
+        return serialParityBits;
+    }
+
+    public void setSerialParityBits(int serialParityBits) {
+        this.serialParityBits = serialParityBits;
+    }
+
+    public int getSerialNumDataBits() {
+        return serialNumDataBits;
+    }
+
+    public void setSerialNumDataBits(int serialNumDataBits) {
+        this.serialNumDataBits = serialNumDataBits;
+    }
+
+    public int getSerialNumStopBits() {
+        return serialNumStopBits;
+    }
+
+    public void setSerialNumStopBits(int serialNumStopBits) {
+        this.serialNumStopBits = serialNumStopBits;
+    }
+
+    public int getSerialFlowControl() {
+        return serialFlowControl;
+    }
+
+    public void setSerialFlowControl(int serialFlowControl) {
+        this.serialFlowControl = serialFlowControl;
     }
 }

@@ -162,12 +162,12 @@ public class ShellUpdateSerialConnectController extends StageController {
             shellConnect.setConnectTimeOut(3);
             // 串口信息
             shellConnect.setType("serial");
-            shellConnect.setPortName(portName);
-            shellConnect.setBaudRate(this.baudRate.getBaudRate());
-            shellConnect.setParityBits(this.parityBits.getParityBits());
-            shellConnect.setFlowControl(this.flowControl.getFlowControl());
-            shellConnect.setNumDataBits(this.numDataBits.getNumDataBits());
-            shellConnect.setNumStopBits(this.numStopBits.getNumStopBits());
+            shellConnect.setSerialPortName(portName);
+            shellConnect.setSerialBaudRate(this.baudRate.getBaudRate());
+            shellConnect.setSerialParityBits(this.parityBits.getParityBits());
+            shellConnect.setSerialFlowControl(this.flowControl.getFlowControl());
+            shellConnect.setSerialNumDataBits(this.numDataBits.getNumDataBits());
+            shellConnect.setSerialNumStopBits(this.numStopBits.getNumStopBits());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -217,12 +217,12 @@ public class ShellUpdateSerialConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 串口设置
-            this.shellConnect.setBaudRate(baudRate);
-            this.shellConnect.setPortName(portName);
-            this.shellConnect.setParityBits(parityBits);
-            this.shellConnect.setNumDataBits(numDataBits);
-            this.shellConnect.setNumStopBits(numStopBits);
-            this.shellConnect.setFlowControl(flowControl);
+            this.shellConnect.setSerialBaudRate(baudRate);
+            this.shellConnect.setSerialPortName(portName);
+            this.shellConnect.setSerialParityBits(parityBits);
+            this.shellConnect.setSerialNumDataBits(numDataBits);
+            this.shellConnect.setSerialNumDataBits(numStopBits);
+            this.shellConnect.setSerialFlowControl(flowControl);
             // 背景配置
             this.shellConnect.setBackgroundImage(backgroundImage);
             this.shellConnect.setEnableBackground(enableBackground);
@@ -266,12 +266,12 @@ public class ShellUpdateSerialConnectController extends StageController {
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 串口处理
-        this.portName.setText(this.shellConnect.getPortName());
-        this.baudRate.setText(this.shellConnect.getBaudRate() + "");
-        this.parityBits.init(this.shellConnect.getParityBits());
-        this.flowControl.init(this.shellConnect.getFlowControl());
-        this.numStopBits.init(this.shellConnect.getNumStopBits());
-        this.numDataBits.init(this.shellConnect.getNumDataBits());
+        this.portName.setText(this.shellConnect.getSerialPortName());
+        this.baudRate.setText(this.shellConnect.getSerialBaudRate() + "");
+        this.parityBits.init(this.shellConnect.getSerialParityBits());
+        this.flowControl.init(this.shellConnect.getSerialFlowControl());
+        this.numStopBits.init(this.shellConnect.getSerialNumStopBits());
+        this.numDataBits.init(this.shellConnect.getSerialNumDataBits());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

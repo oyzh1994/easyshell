@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.internal.BaseClient;
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author oyzh
@@ -27,14 +28,14 @@ public class ShellSerialClient implements BaseClient {
      */
     protected void iniSerialPort() {
         // 获取指定名称的串口
-        this.serialPort = SerialPort.getCommPort(shellConnect.getPortName());
+        this.serialPort = SerialPort.getCommPort(this.shellConnect.getSerialPortName());
 
         // 设置串口参数
-        this.serialPort.setBaudRate(shellConnect.getBaudRate());
-        this.serialPort.setParity(shellConnect.getParityBits());
-        this.serialPort.setNumDataBits(shellConnect.getNumDataBits());
-        this.serialPort.setNumStopBits(shellConnect.getNumStopBits());
-        this.serialPort.setFlowControl(shellConnect.getFlowControl());
+        this.serialPort.setParity(this.shellConnect.getSerialParityBits());
+        this.serialPort.setBaudRate(this.shellConnect.getSerialBaudRate());
+        this.serialPort.setNumDataBits(this.shellConnect.getSerialNumDataBits());
+        this.serialPort.setNumStopBits(this.shellConnect.getSerialNumDataBits());
+        this.serialPort.setFlowControl(this.shellConnect.getSerialFlowControl());
     }
 
     @Override
@@ -46,9 +47,9 @@ public class ShellSerialClient implements BaseClient {
         // 打开串口
         if (!this.serialPort.openPort()) {
             JulLog.warn("无法打开串口:{}, 错误码:{} 位置:{} ",
-                    this.serialPort.getSystemPortName(),
-                    this.serialPort.getLastErrorCode(),
-                    this.serialPort.getLastErrorLocation()
+                    this.getPortName(),
+                    this.getLastErrorCode(),
+                    this.getLastErrorLocation()
             );
         }
     }
@@ -81,13 +82,21 @@ public class ShellSerialClient implements BaseClient {
             if (this.serialPort != null) {
                 this.serialPort.flushDataListener();
                 this.serialPort.removeDataListener();
-                IOUtil.close(this.serialPort.getInputStream());
-                IOUtil.close(this.serialPort.getOutputStream());
+                IOUtil.close(this.getInputStream());
+                IOUtil.close(this.getOutputStream());
                 this.serialPort.closePort();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public InputStream getOutputStream() {
+        return this.serialPort == null ? null : this.serialPort.getInputStream();
+    }
+
+    public AutoCloseable getInputStream() {
+        return this.serialPort == null ? null : this.serialPort.getOutputStream();
     }
 
     public void addDataListener(ShellSerialDataListener listener) {
@@ -110,6 +119,10 @@ public class ShellSerialClient implements BaseClient {
             return this.serialPort.isOpen();
         }
         return false;
+    }
+
+    public String getPortName() {
+        return this.serialPort == null ? this.shellConnect.getSerialPortName() : this.serialPort.getSystemPortName();
     }
 
     public Integer getLastErrorCode() {

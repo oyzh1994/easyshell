@@ -13,14 +13,14 @@ import java.nio.charset.Charset;
 public interface BaseClient extends AutoCloseable {
 
     /**
-     * 开始连接客户端
+     * 连接
      */
     default void start() throws IOException {
         this.start(this.getShellConnect().connectTimeOutMs());
     }
 
     /**
-     * 开始连接客户端
+     * 连接
      *
      * @param timeout 超时时间
      */

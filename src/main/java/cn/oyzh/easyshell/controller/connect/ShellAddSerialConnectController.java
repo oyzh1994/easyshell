@@ -163,12 +163,12 @@ public class ShellAddSerialConnectController extends StageController {
             shellConnect.setConnectTimeOut(3);
             // 串口信息
             shellConnect.setType("serial");
-            shellConnect.setPortName(portName);
-            shellConnect.setBaudRate(this.baudRate.getBaudRate());
-            shellConnect.setParityBits(this.parityBits.getParityBits());
-            shellConnect.setFlowControl(this.flowControl.getFlowControl());
-            shellConnect.setNumDataBits(this.numDataBits.getNumDataBits());
-            shellConnect.setNumStopBits(this.numStopBits.getNumStopBits());
+            shellConnect.setSerialPortName(portName);
+            shellConnect.setSerialBaudRate(this.baudRate.getBaudRate());
+            shellConnect.setSerialParityBits(this.parityBits.getParityBits());
+            shellConnect.setSerialFlowControl(this.flowControl.getFlowControl());
+            shellConnect.setSerialNumDataBits(this.numDataBits.getNumDataBits());
+            shellConnect.setSerialNumStopBits(this.numStopBits.getNumStopBits());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -219,12 +219,12 @@ public class ShellAddSerialConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 串口设置
-            shellConnect.setPortName(portName);
-            shellConnect.setBaudRate(baudRate);
-            shellConnect.setParityBits(parityBits);
-            shellConnect.setNumDataBits(numDataBits);
-            shellConnect.setNumStopBits(numStopBits);
-            shellConnect.setFlowControl(flowControl);
+            shellConnect.setSerialPortName(portName);
+            shellConnect.setSerialBaudRate(baudRate);
+            shellConnect.setSerialParityBits(parityBits);
+            shellConnect.setSerialNumDataBits(numDataBits);
+            shellConnect.setSerialNumStopBits(numStopBits);
+            shellConnect.setSerialFlowControl(flowControl);
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);
             shellConnect.setEnableBackground(enableBackground);
