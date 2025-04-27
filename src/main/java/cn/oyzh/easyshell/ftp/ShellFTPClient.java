@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.ftp;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.BaseClient;
@@ -35,6 +36,7 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
 
     public ShellFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
+
     }
 
     @Override
@@ -48,12 +50,23 @@ public class ShellFTPClient extends FTPClient implements BaseClient {
         }
     }
 
+    /**
+     * 初始化客户端
+     */
+    protected void initClient() {
+        // 设置字符集
+        if (StringUtil.isNotBlank(this.shellConnect.getCharset())) {
+            this.setControlEncoding(this.shellConnect.getCharset());
+        }
+    }
+
     @Override
     public void start(int timeout) {
         if (this.isConnected()) {
             return;
         }
         try {
+            this.initClient();
             // 连接信息
             int port = this.shellConnect.hostPort();
             String hostIp = this.shellConnect.hostIp();

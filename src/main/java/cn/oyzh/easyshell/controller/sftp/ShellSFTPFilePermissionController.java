@@ -214,6 +214,7 @@ public class ShellSFTPFilePermissionController extends StageController {
         if (this.file.hasOthersExecutePermission()) {
             this.othersE.setSelected(true);
         }
+        this.appendTitle("-" + this.file.getFileName());
     }
 
     @Override

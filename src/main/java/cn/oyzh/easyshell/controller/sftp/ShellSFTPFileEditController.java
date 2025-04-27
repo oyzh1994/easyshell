@@ -32,7 +32,7 @@ import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 
 /**
- * ssh文件编辑业务
+ * sftp文件编辑业务
  *
  * @author oyzh
  * @since 2025/03/18
@@ -160,6 +160,7 @@ public class ShellSFTPFileEditController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
+        this.appendTitle("-" + this.file.getFileName());
         // 目标路径
         this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "_" + this.file.getFileName();
         this.init();

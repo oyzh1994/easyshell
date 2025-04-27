@@ -31,10 +31,10 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 
 /**
- * ssh文件编辑业务
+ * ftp文件编辑业务
  *
  * @author oyzh
- * @since 2025/03/18
+ * @since 2025/04/26
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
@@ -160,6 +160,7 @@ public class ShellFTPFileEditController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
+        this.appendTitle("-" + this.file.getFileName());
         // 目标路径
         this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "_" + this.file.getFileName();
         this.init();
