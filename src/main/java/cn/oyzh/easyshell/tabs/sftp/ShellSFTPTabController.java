@@ -62,6 +62,12 @@ public class ShellSFTPTabController extends RichTabController {
     private ShellFileLocationTextField location;
 
     /**
+     * 上传/下载管理
+     */
+    @FXML
+    private SVGGlyph manage;
+
+    /**
      * 上传组件
      */
     @FXML
@@ -226,11 +232,11 @@ public class ShellSFTPTabController extends RichTabController {
                 this.hiddenFile(this.setting.isShowHiddenFile());
                 // 上传回调
                 this.fileTable.setUploadFileCallback(files -> {
-                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.uploadBox);
+                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
                 });
                 // 下载回调
                 this.fileTable.setDownloadFileCallback(files -> {
-                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.downloadBox);
+                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
                 });
             } catch (Exception ex) {
                 ex.printStackTrace();

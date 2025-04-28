@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.NumberUtil;
@@ -12,7 +13,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.File;
-import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,11 +151,14 @@ public class ShellSFTPUploadTask {
                     }
                 });
                 this.updateFileCount();
-            } catch (InterruptedIOException ignored) {// 中断
             } catch (Exception ex) {// 其他
-                this.error = ex;
-                this.updateStatus(ShellSFTPStatus.FAILED);
-                throw ex;
+                // 忽略中断异常
+                if (!ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
+                    this.error = ex;
+                    this.updateStatus(ShellSFTPStatus.FAILED);
+                    throw ex;
+                }
+
             }
         }
         if (this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED && this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.FAILED) {
