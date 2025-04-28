@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.File;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,20 +22,45 @@ import java.util.List;
  */
 public class ShellSFTPUploadTask {
 
+    /**
+     * 进度条
+     */
     private FXProgressTextBar progressBar;
 
+    /**
+     * 文件总数
+     */
     private final LongProperty fileCountProperty = new SimpleLongProperty();
 
+    /**
+     * 速度
+     */
     private final StringProperty speedProperty = new SimpleStringProperty();
 
+    /**
+     * 状态
+     */
     private final StringProperty statusProperty = new SimpleStringProperty();
 
+    /**
+     * 文件大小
+     * 剩余大小/总大小
+     */
     private final StringProperty fileSizeProperty = new SimpleStringProperty();
 
+    /**
+     * 当前文件
+     */
     private final StringProperty currentFileProperty = new SimpleStringProperty();
 
+    /**
+     * 总大小
+     */
     private long totalSize;
 
+    /**
+     * 开始时间
+     */
     private long startTime;
 
     /**
@@ -42,18 +68,39 @@ public class ShellSFTPUploadTask {
      */
     private Throwable error;
 
+    /**
+     * 当前大小
+     */
     private long currentSize;
 
+    /**
+     * 远程路径
+     */
     private String remotePath;
 
+    /**
+     * 本地文件
+     */
     private final File localFile;
 
+    /**
+     * 文件列表
+     */
     private List<File> fileList;
 
-    private ShellSFTPStatus status;
-
+    /**
+     * 客户端
+     */
     private final ShellSFTPClient client;
 
+    /**
+     * 状态
+     */
+    private transient ShellSFTPStatus status;
+
+    /**
+     * 上传文件
+     */
     private final ShellSFTPUploadFile uploadFile;
 
     public ShellSFTPUploadTask(ShellSFTPUploadFile uploadFile, ShellSFTPClient client) {
@@ -63,6 +110,11 @@ public class ShellSFTPUploadTask {
         this.remotePath = uploadFile.getRemotePath();
     }
 
+    /**
+     * 执行上传
+     *
+     * @throws Exception 异常
+     */
     public void upload() throws Exception {
         this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
         this.initFile();
@@ -94,21 +146,26 @@ public class ShellSFTPUploadTask {
                         currentSize += count;
                         updateSpeed();
                         updateProgress();
-                        return status != ShellSFTPStatus.CANCELED;
+                        updateFileSize();
+                        return status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED;
                     }
                 });
                 this.updateFileCount();
-            } catch (Exception ex) {
+            } catch (InterruptedIOException ignored) {// 中断
+            } catch (Exception ex) {// 其他
                 this.error = ex;
                 this.updateStatus(ShellSFTPStatus.FAILED);
                 throw ex;
             }
         }
-        if (this.status != ShellSFTPStatus.CANCELED && this.status != ShellSFTPStatus.FAILED) {
+        if (this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED && this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.FAILED) {
             this.updateStatus(ShellSFTPStatus.FINISHED);
         }
     }
 
+    /**
+     * 取消
+     */
     public void cancel() {
         this.uploadFile.getTask().interrupt();
         this.updateStatus(ShellSFTPStatus.CANCELED);
@@ -137,7 +194,7 @@ public class ShellSFTPUploadTask {
     }
 
     /**
-     * 计算当前大小
+     * 更新速度
      */
     protected void updateSpeed() {
         // 处理耗时
@@ -152,18 +209,22 @@ public class ShellSFTPUploadTask {
         return speedProperty;
     }
 
+    /**
+     * 更新文件大小
+     */
+    private void updateFileSize() {
+        String total = NumberUtil.formatSize(this.totalSize, 2);
+        String current = NumberUtil.formatSize(this.currentSize, 2);
+        this.fileSizeProperty.set(current + "/" + total);
+    }
+
     public StringProperty fileSizeProperty() {
         return fileSizeProperty;
     }
 
-    private void updateFileSize() {
-        this.fileSizeProperty.set(NumberUtil.formatSize(this.totalSize, 4));
-    }
-
-    public StringProperty fileSize() {
-        return fileSizeProperty;
-    }
-
+    /**
+     * 更新文件数量
+     */
     private void updateFileCount() {
         this.fileCountProperty.set(this.fileList.size());
     }
@@ -172,6 +233,9 @@ public class ShellSFTPUploadTask {
         return this.fileCountProperty;
     }
 
+    /**
+     * 更新进度
+     */
     private void updateProgress() {
         if (this.progressBar == null) {
             this.progressBar = new FXProgressTextBar();
@@ -195,6 +259,11 @@ public class ShellSFTPUploadTask {
         return this.remotePath;
     }
 
+    /**
+     * 更新状态
+     *
+     * @param status 状态
+     */
     private void updateStatus(ShellSFTPStatus status) {
         this.status = status;
         switch (status) {
