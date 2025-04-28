@@ -10,8 +10,6 @@ import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -93,12 +91,15 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
         return this.files.isEmpty();
     }
 
+
+    private transient boolean deleting = false;
+
     private void doDelete() {
-        if (this.isDeleting()) {
+        if (this.deleting) {
             return;
         }
         try {
-            this.setDeleting(true);
+            this.deleting = true;
             while (!this.isEmpty()) {
                 ShellSFTPFile deleteFile = this.files.peek();
                 if (deleteFile == null) {
@@ -121,6 +122,7 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
                         break;
                     }
                 } finally {
+                    sftp.close();
                     deleteFile.stopWaiting();
                     this.files.remove(deleteFile);
                 }
@@ -128,7 +130,7 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
         } finally {
             // 删除文件结束
             this.deleteEnded();
-            this.setDeleting(false);
+            this.deleting = false;
         }
     }
 
@@ -158,19 +160,19 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
         this.deleteDeleted(path);
     }
 
-    private final BooleanProperty deletingProperty = new SimpleBooleanProperty(false);
-
-    public BooleanProperty deletingProperty() {
-        return this.deletingProperty;
-    }
-
-    public void setDeleting(boolean deleting) {
-        this.deletingProperty.set(deleting);
-    }
-
-    public boolean isDeleting() {
-        return this.deletingProperty.get();
-    }
+//    private final BooleanProperty deletingProperty = new SimpleBooleanProperty(false);
+//
+//    public BooleanProperty deletingProperty() {
+//        return this.deletingProperty;
+//    }
+//
+//    public void setDeleting(boolean deleting) {
+//        this.deletingProperty.set(deleting);
+//    }
+//
+//    public boolean isDeleting() {
+//        return this.deletingProperty.get();
+//    }
 
     @Override
     public void close() throws Exception {
