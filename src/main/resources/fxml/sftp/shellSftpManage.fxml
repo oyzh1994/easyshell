@@ -18,11 +18,12 @@
             </graphic>
             <SftpUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
                 <columns>
-                    <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>
-                    <FXTableColumn flexWidth="100% - 760" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="200" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 920" valueName="currentFile" text="%base.currentFile"/>
                     <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>
                     <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
-                    <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
                     <FXTableColumn prefWidth="90" valueName="fileSize" text="%base.fileSize"/>
                     <FXTableColumn prefWidth="90" valueName="status" text="%base.status"/>
                 </columns>

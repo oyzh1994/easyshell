@@ -2,8 +2,11 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -23,8 +26,11 @@ public class ShellSFTPUploadTask {
 
     private long currentSize;
 
+    private LongProperty fileCountProperty = new SimpleLongProperty();
 
     private StringProperty speedProperty = new SimpleStringProperty();
+
+    private StringProperty statusProperty = new SimpleStringProperty();
 
     private StringProperty fileSizeProperty = new SimpleStringProperty();
 
@@ -55,13 +61,20 @@ public class ShellSFTPUploadTask {
     }
 
     public void upload() throws Exception {
-        this.taskStatusChanged(ShellSFTPStatus.IN_PREPARATION);
+        this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
         this.calcTotalSize();
-        this.taskStatusChanged(ShellSFTPStatus.EXECUTE_ING);
+        this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
+        String localPath = localFile.getPath();
         for (File file : fileList) {
-            String remoteFilePath = remotePath + file.getPath().replace(this.localFile.getPath(), "");
+            String pPath = file.getParent().replace(localPath, "");
+            String remoteDir = ShellFileUtil.concat(remotePath, pPath);
+            String remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
             try {
                 this.currentFileProperty.set(file.getName());
+                // 创建父目录
+                if (!this.client.exist(remoteDir)) {
+                    this.client.mkdirRecursive(remoteDir);
+                }
                 this.client.put(file.getPath(), remoteFilePath, new ShellSFTPProgressMonitor() {
                     @Override
                     public boolean count(long count) {
@@ -71,18 +84,19 @@ public class ShellSFTPUploadTask {
                         return status != ShellSFTPStatus.CANCELED;
                     }
                 });
+                this.updateFileCount();
             } catch (Exception ex) {
                 this.error = ex;
-                this.taskStatusChanged(ShellSFTPStatus.FAILED);
+                this.updateStatus(ShellSFTPStatus.FAILED);
                 throw ex;
             }
         }
-        this.taskStatusChanged(ShellSFTPStatus.FINISHED);
+        this.updateStatus(ShellSFTPStatus.FINISHED);
     }
 
     public void cancel() {
         this.uploadFile.getTask().interrupt();
-        this.taskStatusChanged(ShellSFTPStatus.CANCELED);
+        this.updateStatus(ShellSFTPStatus.CANCELED);
     }
 
     /**
@@ -96,30 +110,16 @@ public class ShellSFTPUploadTask {
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
+            this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getName());
             FileUtil.getAllFiles(this.localFile, f -> {
                 fileList.add(f);
-                this.totalSize += this.localFile.length();
+                this.totalSize += f.length();
                 this.updateFileSize();
             });
         }
         this.startTime = System.currentTimeMillis();
     }
 
-    public void taskSizeChanged() {
-
-    }
-
-    public void taskCurrentChanged() {
-
-    }
-
-    public void taskStatusChanged(ShellSFTPStatus status) {
-
-    }
-
-    public void taskProgressChanged() {
-
-    }
     /**
      * 计算当前大小
      */
@@ -141,14 +141,6 @@ public class ShellSFTPUploadTask {
         return fileSizeProperty;
     }
 
-    public File getLocalFile() {
-        return localFile;
-    }
-
-    public ShellSFTPStatus getStatus() {
-        return status;
-    }
-
     private void updateFileSize() {
         this.fileSizeProperty.set(NumberUtil.formatSize(this.totalSize, 4));
     }
@@ -157,17 +149,21 @@ public class ShellSFTPUploadTask {
         return fileSizeProperty;
     }
 
-    public long getTotalCount() {
-        return this.fileList.size();
+    private void updateFileCount() {
+        this.fileCountProperty.set(this.fileList.size());
+    }
+
+    public LongProperty fileCountProperty() {
+        return this.fileCountProperty;
     }
 
     private FXProgressTextBar progressBar;
 
     private void updateProgress() {
-        if (progressBar == null) {
-            progressBar = new FXProgressTextBar();
+        if (this.progressBar == null) {
+            this.progressBar = new FXProgressTextBar();
         }
-        progressBar.setValue(this.currentSize,this.totalSize);
+        this.progressBar.setValue(this.currentSize, this.totalSize);
     }
 
     public FXProgressTextBar getProgress() {
@@ -178,7 +174,31 @@ public class ShellSFTPUploadTask {
         return this.currentFileProperty;
     }
 
+    public String getSrcPath() {
+        return localFile.getPath();
+    }
+
     public String getDestPath() {
         return this.remotePath;
+    }
+
+    private void updateStatus(ShellSFTPStatus status) {
+        this.status = status;
+        switch (status) {
+            case CANCELED:
+                this.statusProperty.set(I18nHelper.cancel());
+            case FINISHED:
+                this.statusProperty.set(I18nHelper.finished());
+            case FAILED:
+                this.statusProperty.set(I18nHelper.downloadFailed());
+            case IN_PREPARATION:
+                this.statusProperty.set(I18nHelper.inPreparation());
+            case EXECUTE_ING:
+                this.statusProperty.set(I18nHelper.downloadIng());
+        }
+    }
+
+    public StringProperty statusProperty() {
+        return this.statusProperty;
     }
 }
