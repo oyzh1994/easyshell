@@ -7,6 +7,7 @@ import cn.oyzh.common.function.WeakRunnable;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -105,8 +106,7 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
                 if (deleteFile == null) {
                     break;
                 }
-                ShellSFTPChannel sftp = this.sftpSupplier.get();
-                try {
+                try (ShellSFTPChannel sftp = this.sftpSupplier.get()) {
                     deleteFile.startWaiting();
                     if (deleteFile.isDirectory()) {
                         this.rmdirRecursive(deleteFile.getFilePath(), sftp);
@@ -122,7 +122,6 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
                         break;
                     }
                 } finally {
-                    sftp.close();
                     deleteFile.stopWaiting();
                     this.files.remove(deleteFile);
                 }
@@ -138,7 +137,7 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
         Vector<ChannelSftp.LsEntry> entries = sftp.ls(path);
         for (ChannelSftp.LsEntry entry : entries) {
             String filename = entry.getFilename();
-            if (!filename.equals(".") && !filename.equals("..")) {
+            if (ShellFileUtil.isNormal(filename)) {
                 String fullPath = path + "/" + filename;
                 if (entry.getAttrs().isDir()) {
                     this.rmdirRecursive(fullPath, sftp);
@@ -176,7 +175,9 @@ public class ShellSFTPDeleteManager implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
+        this.files.clear();
         this.sftpSupplier = null;
+        this.deleteFailedCallbacks.clear();
         this.deleteEndedCallbacks.clear();
         this.deleteDeletedCallbacks.clear();
     }

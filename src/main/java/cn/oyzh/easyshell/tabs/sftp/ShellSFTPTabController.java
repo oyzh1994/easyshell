@@ -5,19 +5,20 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
-import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
+import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.delete.ShellSFTPDeleteManager;
-import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadTask;
 import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
 import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadMonitor;
-import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadMonitor;
+import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadTask;
 import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
+import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadMonitor;
 import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -554,7 +555,7 @@ public class ShellSFTPTabController extends RichTabController {
             this.deleteBox.display();
             this.updateLayout();
         }
-        this.fileTable.fileDeleted(fileName);
+//        this.fileTable.fileDeleted(fileName);
         this.fileDelete.text(I18nHelper.deleteIng() + ": " + fileName);
     }
 
@@ -627,17 +628,25 @@ public class ShellSFTPTabController extends RichTabController {
         this.settingStore.update(this.setting);
     }
 
+    /**
+     * 管理上传、下载
+     */
+    @FXML
+    private void manage() {
+        ShellViewFactory.sftpManage(this.client);
+    }
+
 //    @FXML
 //    public void showSftpBox() {
 //        // 判断窗口是否存在
-//        List<StageAdapter> list = StageManager.listStage(ShellSftpManageController.class);
+//        List<StageAdapter> list = StageManager.listStage(ShellSFTPManageController.class);
 //        for (StageAdapter adapter : list) {
 //            if (adapter.getProp("client") == this.client()) {
 //                adapter.toFront();
 //                return;
 //            }
 //        }
-//        StageAdapter adapter = StageManager.parseStage(ShellSftpManageController.class, null);
+//        StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class, null);
 //        adapter.setProp("client", this.client());
 //        adapter.display();
 //    }

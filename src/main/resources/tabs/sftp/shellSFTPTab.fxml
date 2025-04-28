@@ -6,6 +6,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.BoxSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
@@ -70,6 +71,11 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
+        <BoxSVGGlyph fx:id="manage" onMousePrimaryClicked="#manage">
+            <HBox.margin>
+                <Insets left="5" top="8"/>
+            </HBox.margin>
+        </BoxSVGGlyph>
         <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
                 <Insets left="5" top="8"/>

@@ -5,6 +5,15 @@ import cn.oyzh.common.util.StringUtil;
 
 public class ShellFileUtil {
 
+    /**
+     * 是否正常文件
+     * @param fileName 文件名
+     * @return 结果
+     */
+    public static boolean isNormal(String fileName) {
+        return !StringUtil.equalsAny(fileName, ".", "..");
+    }
+
     public static String parent(String dest) {
         if (StringUtil.isEmpty(dest)) {
             return dest;

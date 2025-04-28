@@ -33,8 +33,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 2025-03-05
  */
 public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClient,ShellSFTPFile> implements FXEventListener {
+    @Override
+    public void setClient(ShellSFTPClient client) {
+        super.setClient(client);
+        this.client.getDeleteManager().addDeleteDeletedCallback(this, this::fileDeleted);
+    }
 
-//    @Override
+
+    //    @Override
 //    public void initNode() {
 //        super.initNode();
 //        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);

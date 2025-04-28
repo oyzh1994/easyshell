@@ -564,7 +564,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
             this.deleteBox.display();
             this.updateLayout();
         }
-        this.fileTable.fileDeleted(fileName);
+//        this.fileTable.fileDeleted(fileName);
         this.fileDelete.text(I18nHelper.deleteIng() + ": " + fileName);
     }
 
@@ -640,14 +640,14 @@ public class ShellSSHSFTPTabController extends SubTabController {
 //    @FXML
 //    public void showSftpBox() {
 //        // 判断窗口是否存在
-//        List<StageAdapter> list = StageManager.listStage(ShellSftpManageController.class);
+//        List<StageAdapter> list = StageManager.listStage(ShellSFTPManageController.class);
 //        for (StageAdapter adapter : list) {
 //            if (adapter.getProp("client") == this.client()) {
 //                adapter.toFront();
 //                return;
 //            }
 //        }
-//        StageAdapter adapter = StageManager.parseStage(ShellSftpManageController.class, null);
+//        StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class, null);
 //        adapter.setProp("client", this.client());
 //        adapter.display();
 //    }

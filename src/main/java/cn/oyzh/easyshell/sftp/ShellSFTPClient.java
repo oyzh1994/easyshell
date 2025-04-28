@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.FileClient;
@@ -15,6 +16,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpProgressMonitor;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.InputStream;
@@ -360,5 +363,29 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.mkdirRecursive(remoteDir);
         }
+    }
+
+    private final ObservableList<ShellSFTPUploadTask> uploadTasks = FXCollections.observableArrayList();
+
+    public ObservableList<ShellSFTPUploadTask> getUploadTasks() {
+        return uploadTasks;
+    }
+
+    public void uploadFile(File localFile, String remotePath) throws Exception {
+        ShellSFTPUploadFile file = new ShellSFTPUploadFile();
+        file.setLocalFile(localFile);
+        file.setRemotePath(remotePath);
+        ShellSFTPUploadTask task = new ShellSFTPUploadTask(file, this);
+        uploadTasks.add(task);
+        Thread thread = ThreadUtil.startVirtual(() -> {
+            try {
+                task.upload();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                uploadTasks.remove(task);
+            }
+        });
+        file.setTask(thread);
     }
 }

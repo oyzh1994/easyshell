@@ -7,9 +7,8 @@ import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPClientUtil;
-import cn.oyzh.easyshell.sftp.delete.ShellSFTPDeleteManager;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportMonitor;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportTask;
@@ -549,12 +548,12 @@ public class ShellSFTPTransportController extends StageController {
 //                this.refreshSourceFile();
 //            }
 //        });
-        // 删除处理器
-        ShellSFTPDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
-        ShellSFTPDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
-        // 注册监听器
-        deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
-        deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));
+//        // 删除处理器
+//        ShellSFTPDeleteManager deleteManager1 = this.sourceClient.getDeleteManager();
+//        ShellSFTPDeleteManager deleteManager2 = this.targetClient.getDeleteManager();
+//        // 注册监听器
+//        deleteManager1.addDeleteDeletedCallback(this, f -> this.sourceFile.fileDeleted(f));
+//        deleteManager2.addDeleteDeletedCallback(this, f -> this.targetFile.fileDeleted(f));
         // 监听位置
         this.sourceFile.locationProperty().addListener((observable, oldValue, t1) -> {
             if (t1 == null) {

@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFilePermissionController;
+import cn.oyzh.easyshell.controller.sftp.ShellSFTPManageController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -360,6 +361,18 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    public static void sftpManage(ShellSFTPClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class);
+            adapter.setProp("client", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 
     public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
         try {
