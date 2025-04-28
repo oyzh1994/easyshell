@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPDeleteTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
@@ -42,8 +42,16 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
         this.client.getDeleteManager().addDeleteDeletedCallback(this, this::fileDeleted);
         this.client.getUploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
             change.next();
-            if (change.wasAdded()||this.client.getUploadTasks().isEmpty()) {
+            if (change.wasAdded() || this.client.isUploadTaskEmpty()) {
                 this.loadFile();
+            }
+        });
+        this.client.getDeleteTasks().addListener((ListChangeListener<ShellSFTPDeleteTask>) change -> {
+            change.next();
+            if (change.wasRemoved()) {
+                for (ShellSFTPDeleteTask task : change.getRemoved()) {
+                    this.fileDeleted(task.getFilePath());
+                }
             }
         });
     }
@@ -450,27 +458,27 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
         if (CollectionUtil.isEmpty(files)) {
             return;
         }
-        ThreadUtil.start(() -> {
-            try {
-                List<ShellSFTPFile> sftpFiles = new CopyOnWriteArrayList<>(files);
-                for (ShellSFTPFile file : sftpFiles) {
-                    // 不可删除文件
-                    if (file.isReturnDirectory() || file.isCurrentFile()) {
-                        continue;
-                    }
-                    // 隐藏文件
-                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
-                        continue;
-                    }
-                    // 执行删除
-                    this.client.delete(file);
+//        ThreadUtil.start(() -> {
+        try {
+            List<ShellSFTPFile> sftpFiles = new CopyOnWriteArrayList<>(files);
+            for (ShellSFTPFile file : sftpFiles) {
+                // 不可删除文件
+                if (file.isReturnDirectory() || file.isCurrentFile()) {
+                    continue;
                 }
-                this.refreshFile();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
+                // 隐藏文件
+                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
+                    continue;
+                }
+                // 执行删除
+                this.client.deleteFile(file);
             }
-        });
+            this.refreshFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+//        });
     }
 
     @Override

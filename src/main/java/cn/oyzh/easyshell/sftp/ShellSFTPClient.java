@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * shell终端
@@ -248,6 +250,12 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         }
     }
 
+    public void rmdir(String filePath) throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.rmdir(filePath);
+        }
+    }
+
     @Override
     public boolean mkdir(String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
@@ -388,4 +396,74 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         });
         file.setTask(thread);
     }
+
+    public boolean isUploadTaskEmpty() {
+        return this.uploadTasks.isEmpty();
+    }
+
+    public boolean isDeleteTaskEmpty() {
+        return this.deleteTasks.isEmpty();
+    }
+
+    public boolean isTaskEmpty() {
+        return this.uploadTasks.isEmpty() && this.deleteTasks.isEmpty();
+    }
+
+    public int getTaskSize() {
+        return this.uploadTasks.size() + this.deleteTasks.size();
+    }
+
+    private final ObservableList<ShellSFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
+
+    public ObservableList<ShellSFTPDeleteTask> getDeleteTasks() {
+        return deleteTasks;
+    }
+
+    public void deleteFile(ShellSFTPFile file) throws Exception {
+        ShellSFTPDeleteFile deleteFile = new ShellSFTPDeleteFile();
+        deleteFile.setFile(file);
+        ShellSFTPDeleteTask task = new ShellSFTPDeleteTask(deleteFile, this);
+        deleteTasks.add(task);
+        Thread thread = ThreadUtil.startVirtual(() -> {
+            try {
+                task.doDelete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                deleteTasks.remove(task);
+            }
+        });
+        deleteFile.setTask(thread);
+    }
+
+//    public void getAllFiles(ShellSFTPFile remoteFile, Consumer<ShellSFTPFile> callback) throws Exception {
+//        if (remoteFile.isFile()) {
+//            callback.accept(remoteFile);
+//        } else {
+//            List<ShellSFTPFile> files = this.lsFileNormal(remoteFile.getFilePath());
+//            for (ShellSFTPFile file : files) {
+//                this.getAllFiles(file, callback);
+//            }
+//        }
+//
+//    }
+
+    public void rmdirRecursive(String path) throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            Vector<ChannelSftp.LsEntry> entries = channel.ls(path);
+            for (ChannelSftp.LsEntry entry : entries) {
+                String filename = entry.getFilename();
+                if (ShellFileUtil.isNormal(filename)) {
+                    String fullPath = path + "/" + filename;
+                    if (entry.getAttrs().isDir()) {
+                        this.rmdirRecursive(fullPath);
+                    } else {
+                        this.rm(fullPath);
+                    }
+                }
+            }
+            this.rmdir(path);
+        }
+    }
+
 }

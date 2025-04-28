@@ -6,11 +6,11 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.BoxSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -34,7 +34,7 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </ReturnFolderSVGGlyph>
-        <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 330">
+        <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 380">
             <FXHBox.margin>
                 <Insets left="5" top="4"/>
             </FXHBox.margin>
@@ -71,11 +71,11 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
-        <BoxSVGGlyph fx:id="manage" onMousePrimaryClicked="#manage">
+        <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
             <HBox.margin>
                 <Insets left="5" top="8"/>
             </HBox.margin>
-        </BoxSVGGlyph>
+        </BoxSVGLabel>
         <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
                 <Insets left="5" top="8"/>

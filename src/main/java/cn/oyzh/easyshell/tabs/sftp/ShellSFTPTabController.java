@@ -29,11 +29,13 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -65,7 +67,7 @@ public class ShellSFTPTabController extends RichTabController {
      * 上传/下载管理
      */
     @FXML
-    private SVGGlyph manage;
+    private SVGLabel manage;
 
     /**
      * 上传组件
@@ -237,6 +239,13 @@ public class ShellSFTPTabController extends RichTabController {
                 // 下载回调
                 this.fileTable.setDownloadFileCallback(files -> {
                     AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
+                });
+                this.client.getUploadTasks().addListener((ListChangeListener<cn.oyzh.easyshell.sftp.ShellSFTPUploadTask>) change -> {
+                    if (this.client.isTaskEmpty()) {
+                        this.manage.clear();
+                    } else {
+                        this.manage.setText("(" + this.client.getUploadTasks().size() + ")");
+                    }
                 });
             } catch (Exception ex) {
                 ex.printStackTrace();

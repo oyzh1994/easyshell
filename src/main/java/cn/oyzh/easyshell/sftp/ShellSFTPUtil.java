@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
+import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.log.JulLog;
 import com.jcraft.jsch.SftpException;
 
 /**
@@ -65,8 +67,16 @@ public class ShellSFTPUtil {
         if (file != null && file.isLink()) {
             String linkPath = channel.realpath(file.getFilePath());
             if (linkPath != null) {
-                file.setLinkPath(linkPath);
-                file.setLinkAttrs(channel.stat(linkPath));
+                try {
+                    file.setLinkPath(linkPath);
+                    file.setLinkAttrs(channel.stat(linkPath));
+                } catch (SftpException e) {
+                    if (ExceptionUtil.hasMessage(e, "No such file")) {
+                        JulLog.warn("realpath:{} fail", file.getFilePath());
+                    } else {
+                        throw e;
+                    }
+                }
             }
         }
     }

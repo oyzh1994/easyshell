@@ -158,7 +158,6 @@ public class ShellSFTPUploadTask {
                     this.updateStatus(ShellSFTPStatus.FAILED);
                     throw ex;
                 }
-
             }
         }
         if (this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED && this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.FAILED) {
