@@ -5,6 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPStatus;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -18,24 +19,11 @@ import java.io.File;
  */
 public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 
-    /**
-     * 上传状态
-     */
-    private ShellSFTPUploadStatus status;
-
-    /**
-     * 更新状态
-     *
-     * @param status 状态
-     */
-    private void updateStatus(ShellSFTPUploadStatus status) {
-        this.status = status;
-        switch (status) {
-            case FAILED -> this.statusProperty.set(I18nHelper.failed());
-            case FINISHED -> this.statusProperty.set(I18nHelper.finished());
-            case CANCELED -> this.statusProperty.set(I18nHelper.canceled());
-            case UPLOAD_ING -> this.statusProperty.set(I18nHelper.uploadIng());
-            default -> this.statusProperty.set(I18nHelper.inPreparation());
+    @Override
+    public void updateStatus(ShellSFTPStatus status) {
+        super.updateStatus(status);;
+        if (status == ShellSFTPStatus.EXECUTE_ING) {
+            this.statusProperty.set(I18nHelper.uploadIng());
         }
         this.manager.taskStatusChanged(this.getStatus(), this);
     }
@@ -68,9 +56,9 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 //        this.currentFileProperty().set(localFile.getPath());
 //        this.executeThread = ThreadUtil.start(() -> {
 //            try {
-//                this.updateStatus(ShellSFTPUploadStatus.IN_PREPARATION);
+//                this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
 //                this.addMonitorRecursive(localFile, remoteFile, client);
-//                this.updateStatus(ShellSFTPUploadStatus.UPLOAD_ING);
+//                this.updateStatus(ShellSFTPStatus.UPLOAD_ING);
 //                this.calcTotalSize();
 //                this.updateTotal();
 //                this.doUpload();
@@ -80,7 +68,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 //                this.updateTotal();
 //                // 如果是非取消和失败，则设置为结束
 //                if (!this.isCancelled() && !this.isFailed()) {
-//                    this.updateStatus(ShellSFTPUploadStatus.FINISHED);
+//                    this.updateStatus(ShellSFTPStatus.FINISHED);
 //                }
 //            }
 //        });
@@ -91,9 +79,9 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
      */
     public void upload() {
         try {
-            this.updateStatus(ShellSFTPUploadStatus.IN_PREPARATION);
+            this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(ShellSFTPUploadStatus.UPLOAD_ING);
+            this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doUpload();
@@ -103,7 +91,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(ShellSFTPUploadStatus.FINISHED);
+                this.updateStatus(ShellSFTPStatus.FINISHED);
             }
         }
     }
@@ -182,7 +170,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 //    @Override
 //    protected void updateTotal() {
 ////        if (this.monitors.isEmpty() && !this.isInPreparation()) {
-////            this.updateStatus(ShellSFTPUploadStatus.FINISHED);
+////            this.updateStatus(ShellSFTPStatus.FINISHED);
 ////        }
 //        super.updateTotal();
 //        this.manager.updateUploading();
@@ -192,41 +180,12 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
     public void cancel() {
         super.cancel();
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPUploadStatus.CANCELED);
+        this.updateStatus(ShellSFTPStatus.CANCELED);
     }
 
     @Override
     public void remove() {
         this.manager.remove(this);
-    }
-
-    @Override
-    public boolean isFailed() {
-        return this.status == ShellSFTPUploadStatus.FAILED;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return this.status == ShellSFTPUploadStatus.FINISHED;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return this.status == ShellSFTPUploadStatus.CANCELED;
-    }
-
-    @Override
-    public boolean isInPreparation() {
-        return this.status == ShellSFTPUploadStatus.IN_PREPARATION;
-    }
-
-    /**
-     * 是否上传中
-     *
-     * @return 结果
-     */
-    public boolean isUploading() {
-        return this.status == ShellSFTPUploadStatus.UPLOAD_ING;
     }
 
     @Override
@@ -240,7 +199,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPUploadStatus.FINISHED);
+//        this.updateStatus(ShellSFTPStatus.FINISHED);
     }
 
     @Override
@@ -248,7 +207,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPUploadStatus.FAILED);
+//        this.updateStatus(ShellSFTPStatus.FAILED);
     }
 
     @Override
@@ -256,7 +215,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPUploadStatus.CANCELED);
+//        this.updateStatus(ShellSFTPStatus.CANCELED);
     }
 
     @Override

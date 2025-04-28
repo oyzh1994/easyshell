@@ -14,15 +14,31 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
 
-//    /**
-//     * 执行线程
-//     */
-//    protected Thread executeThread;
+    /**
+     * 状态
+     */
+    protected ShellSFTPStatus status;
+
+    /**
+     * 更新状态
+     *
+     * @param status 状态
+     */
+    public void updateStatus(ShellSFTPStatus status) {
+        this.status = status;
+        switch (status) {
+            case FAILED -> this.statusProperty.set(I18nHelper.failed());
+            case FINISHED -> this.statusProperty.set(I18nHelper.finished());
+            case CANCELED -> this.statusProperty.set(I18nHelper.canceled());
+            default -> this.statusProperty.set(I18nHelper.inPreparation());
+        }
+    }
 
     /**
      * 传输监听器
      */
     protected final Queue<M> monitors = new ConcurrentLinkedQueue<>();
+
 
     /**
      * 获取监听器
@@ -86,6 +102,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      */
     public void ended(M monitor) {
         this.monitors.remove(monitor);
+        this.updateStatus(ShellSFTPStatus.FINISHED);
 //        this.updateTotal();
     }
 
@@ -96,7 +113,8 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      * @param exception 异常
      */
     public void failed(M monitor, Throwable exception) {
-//        this.monitors.remove(monitor);
+        this.monitors.remove(monitor);
+        this.updateStatus(ShellSFTPStatus.FAILED);
 //        this.updateTotal();
     }
 
@@ -107,6 +125,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      */
     public void canceled(M monitor) {
         this.monitors.remove(monitor);
+        this.updateStatus(ShellSFTPStatus.CANCELED);
 //        this.updateTotal();
     }
 
@@ -177,6 +196,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
 
     /**
      * 获取文件大小，显示用
+     *
      * @return 文件大小
      */
     public String getFileSize() {
@@ -251,28 +271,45 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      *
      * @return 结果
      */
-    public abstract boolean isFailed();
+    public boolean isFailed() {
+        return this.status == ShellSFTPStatus.FAILED;
+    }
 
     /**
      * 是否已结束
      *
      * @return 结果
      */
-    public abstract boolean isFinished();
+    public boolean isFinished() {
+        return this.status == ShellSFTPStatus.FINISHED;
+    }
 
     /**
      * 是否已取消
      *
      * @return 结果
      */
-    public abstract boolean isCancelled();
+    public boolean isCancelled() {
+        return this.status == ShellSFTPStatus.CANCELED;
+    }
+
+    /**
+     * 是否执行中
+     *
+     * @return 结果
+     */
+    public boolean isExecuting() {
+        return this.status == ShellSFTPStatus.EXECUTE_ING;
+    }
 
     /**
      * 是否准备中
      *
      * @return 结果
      */
-    public abstract boolean isInPreparation();
+    public boolean isInPreparation() {
+        return this.status == ShellSFTPStatus.IN_PREPARATION;
+    }
 
     /**
      * 是否已完成

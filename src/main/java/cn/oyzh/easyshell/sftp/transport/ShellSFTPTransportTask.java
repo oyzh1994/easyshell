@@ -7,6 +7,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPStatus;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -22,31 +23,28 @@ import java.util.List;
  */
 public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMonitor> {
 
-    /**
-     * 传输状态
-     */
-    private ShellSFTPTransportStatus status;
+//    /**
+//     * 传输状态
+//     */
+//    private ShellSFTPTransportStatus status;
 
     /**
      * 更新状态
      *
      * @param status 状态
      */
-    private void updateStatus(ShellSFTPTransportStatus status) {
-        this.status = status;
-        switch (status) {
-            case FAILED -> this.statusProperty.set(I18nHelper.failed());
-            case FINISHED -> this.statusProperty.set(I18nHelper.finished());
-            case CANCELED -> this.statusProperty.set(I18nHelper.canceled());
-            case TRANSPORT_ING -> this.statusProperty.set(I18nHelper.transportIng());
-            default -> this.statusProperty.set(I18nHelper.inPreparation());
+    @Override
+    public void updateStatus(ShellSFTPStatus status) {
+        super.updateStatus(status);
+        if (status == ShellSFTPStatus.EXECUTE_ING) {
+            this.statusProperty.set(I18nHelper.transportIng());
         }
         this.manager.taskStatusChanged(this.getStatus(), this);
     }
 
-    private ShellSFTPFile localFile;
+    private final ShellSFTPFile localFile;
 
-    private String remoteFile;
+    private final String remoteFile;
 
     private final ShellSFTPClient localClient;
 
@@ -96,9 +94,9 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
      */
     public void transport() {
         try {
-            this.updateStatus(ShellSFTPTransportStatus.IN_PREPARATION);
+            this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(ShellSFTPTransportStatus.TRANSPORT_ING);
+            this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doTransport();
@@ -108,7 +106,7 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(ShellSFTPTransportStatus.FINISHED);
+                this.updateStatus(ShellSFTPStatus.FINISHED);
             }
         }
     }
@@ -192,7 +190,7 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
     public void cancel() {
         super.cancel();
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPTransportStatus.CANCELED);
+        this.updateStatus(ShellSFTPStatus.CANCELED);
     }
 
     @Override
@@ -200,34 +198,34 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
         this.manager.remove(this);
     }
 
-    @Override
-    public boolean isFailed() {
-        return this.status == ShellSFTPTransportStatus.FAILED;
-    }
+//    @Override
+//    public boolean isFailed() {
+//        return this.status == ShellSFTPTransportStatus.FAILED;
+//    }
+//
+//    @Override
+//    public boolean isFinished() {
+//        return this.status == ShellSFTPTransportStatus.FINISHED;
+//    }
+//
+//    @Override
+//    public boolean isCancelled() {
+//        return this.status == ShellSFTPTransportStatus.CANCELED;
+//    }
 
-    @Override
-    public boolean isFinished() {
-        return this.status == ShellSFTPTransportStatus.FINISHED;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return this.status == ShellSFTPTransportStatus.CANCELED;
-    }
-
-    @Override
-    public boolean isInPreparation() {
-        return this.status == ShellSFTPTransportStatus.IN_PREPARATION;
-    }
-
-    /**
-     * 是否传输中
-     *
-     * @return 结果
-     */
-    public boolean isTransporting() {
-        return this.status == ShellSFTPTransportStatus.TRANSPORT_ING;
-    }
+//    @Override
+//    public boolean isInPreparation() {
+//        return this.status == ShellSFTPTransportStatus.IN_PREPARATION;
+//    }
+//
+//    /**
+//     * 是否传输中
+//     *
+//     * @return 结果
+//     */
+//    public boolean isTransporting() {
+//        return this.status == ShellSFTPTransportStatus.TRANSPORT_ING;
+//    }
 
     @Override
     public void remove(ShellSFTPTransportMonitor monitor) {
@@ -240,7 +238,7 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
         super.ended(monitor);
         this.manager.monitorEnded(monitor, this);
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPTransportStatus.FINISHED);
+//        this.updateStatus(ShellSFTPStatus.FINISHED);
     }
 
     @Override
@@ -248,7 +246,7 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
         super.failed(monitor, exception);
         this.manager.monitorFailed(monitor, exception);
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPTransportStatus.FAILED);
+//        this.updateStatus(ShellSFTPStatus.FAILED);
     }
 
     @Override
@@ -256,7 +254,7 @@ public class ShellSFTPTransportTask extends ShellSFTPTask<ShellSFTPTransportMoni
         super.canceled(monitor);
         this.manager.monitorCanceled(monitor, this);
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPTransportStatus.CANCELED);
+//        this.updateStatus(ShellSFTPStatus.CANCELED);
     }
 
     @Override

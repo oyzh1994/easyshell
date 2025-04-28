@@ -1,13 +1,13 @@
-package cn.oyzh.easyshell.sftp.upload;
+package cn.oyzh.easyshell.sftp;
 
 /**
  * @author oyzh
  * @since 2025-03-15
  */
-public enum ShellSFTPUploadStatus {
+public enum ShellSFTPStatus {
 
     IN_PREPARATION,
-    UPLOAD_ING,
+    EXECUTE_ING,
     FINISHED,
     FAILED,
     CANCELED
