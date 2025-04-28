@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -20,6 +21,7 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.SftpATTRS;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
@@ -32,13 +34,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClient,ShellSFTPFile> implements FXEventListener {
+public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClient, ShellSFTPFile> implements FXEventListener {
+
     @Override
     public void setClient(ShellSFTPClient client) {
         super.setClient(client);
         this.client.getDeleteManager().addDeleteDeletedCallback(this, this::fileDeleted);
+        this.client.getUploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
+            if (this.client.getUploadTasks().isEmpty()) {
+                this.loadFile();
+            }
+        });
     }
-
 
     //    @Override
 //    public void initNode() {
@@ -233,7 +240,8 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
 //                    .sorted(Comparator.comparingInt(ShellSFTPFile::getFileOrder))
 //                    .collect(Collectors.toList());
 //        }
-////        return files;
+
+    /// /        return files;
 //        return new CopyOnWriteArrayList<>(files);
 //    }
 
@@ -249,7 +257,6 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
 //    protected boolean checkInvalid(ShellSFTPFile file) {
 //        return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
 //    }
-
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<ShellSFTPFile> files = this.getSelectedItems();
@@ -587,10 +594,10 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
         this.client.mkdir(filePath);
-        SftpATTRS attrs =  this.client.stat(filePath);
+        SftpATTRS attrs = this.client.stat(filePath);
         ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件
-        ShellSFTPUtil.realpath(file,  this.client);
+        ShellSFTPUtil.realpath(file, this.client);
         if (this.client.isWindows()) {
             file.setOwner("-");
             file.setGroup("-");
