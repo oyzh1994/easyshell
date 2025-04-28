@@ -187,6 +187,7 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
         StageManager.showMask(() -> {
             try {
                 this.loadFileInner();
+                this.refresh();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -258,6 +259,7 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
         } else {
             this.setItem(this.doFilter(this.files));
         }
+        super.refresh();
     }
 
     /**

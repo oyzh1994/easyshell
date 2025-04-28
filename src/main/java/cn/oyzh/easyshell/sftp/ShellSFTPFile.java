@@ -51,7 +51,7 @@ public class ShellSFTPFile implements ShellFile {
         if (this.attrs == null) {
             return this.entry.getAttrs();
         }
-        return attrs;
+        return this.attrs;
     }
 
     public void setAttrs(SftpATTRS attrs) {
@@ -253,6 +253,7 @@ public class ShellSFTPFile implements ShellFile {
             this.linkPath = file.linkPath;
             this.linkAttrs = file.linkAttrs;
             this.parentPath = file.parentPath;
+            this.updatePermissions();
         }
     }
 

@@ -200,17 +200,17 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,She
 //            }
 //        }
 //    }
-
-    @Override
-    public void refreshFile() {
-//        if (this.files == null) {
-//            this.loadFile();
-//        } else {
-//            this.setItem(this.doFilter(this.files));
-//        }
-        super.refreshFile();
-        super.refresh();
-    }
+//
+//    @Override
+//    public void refreshFile() {
+////        if (this.files == null) {
+////            this.loadFile();
+////        } else {
+////            this.setItem(this.doFilter(this.files));
+////        }
+//        super.refreshFile();
+//        super.refresh();
+//    }
 
 //    protected List<ShellFTPFile> doFilter(List<ShellFTPFile> files) {
 //        if (CollectionUtil.isNotEmpty(files)) {
