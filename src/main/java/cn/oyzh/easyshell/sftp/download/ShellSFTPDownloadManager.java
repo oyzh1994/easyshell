@@ -2,12 +2,10 @@ package cn.oyzh.easyshell.sftp.download;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPManager;
 import cn.oyzh.fx.plus.information.MessageBox;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 import java.io.File;
 
@@ -23,11 +21,11 @@ public class ShellSFTPDownloadManager extends ShellSFTPManager<ShellSFTPDownload
         this.doDownload();
     }
 
-    private final BooleanProperty downloadingProperty = new SimpleBooleanProperty(false);
-
-    public BooleanProperty downloadingProperty() {
-        return this.downloadingProperty;
-    }
+//    private final BooleanProperty downloadingProperty = new SimpleBooleanProperty(false);
+//
+//    public BooleanProperty downloadingProperty() {
+//        return this.downloadingProperty;
+//    }
 
 //    public void updateDownloading() {
 //        for (ShellSFTPDownloadTask task : this.tasks) {
@@ -39,22 +37,25 @@ public class ShellSFTPDownloadManager extends ShellSFTPManager<ShellSFTPDownload
 //        this.downloadingProperty.set(false);
 //    }
 
-    public boolean isDownloading() {
-        return this.downloadingProperty.get();
-    }
+//    public boolean isDownloading() {
+//        return this.downloadingProperty.get();
+//    }
+//
+//    public void setDownloading(boolean downloading) {
+//        this.downloadingProperty.set(downloading);
+//    }
 
-    public void setDownloading(boolean downloading) {
-        this.downloadingProperty.set(downloading);
-    }
+
+    private transient boolean downloading = false;
 
     /**
      * 执行下载
      */
     protected void doDownload() {
-        if (this.isDownloading()) {
+        if (downloading) {
             return;
         }
-        this.setDownloading(true);
+        this.downloading = true;
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
@@ -73,7 +74,7 @@ public class ShellSFTPDownloadManager extends ShellSFTPManager<ShellSFTPDownload
                     }
                 }
             } finally {
-                this.setDownloading(false);
+                this.downloading = false;
             }
         });
     }

@@ -5,8 +5,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPManager;
 import cn.oyzh.fx.plus.information.MessageBox;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 import java.io.File;
 
@@ -22,11 +20,11 @@ public class ShellSFTPUploadManager extends ShellSFTPManager<ShellSFTPUploadMoni
         this.doUpload();
     }
 
-    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
-
-    public BooleanProperty uploadingProperty() {
-        return this.uploadingProperty;
-    }
+//    private final BooleanProperty uploadingProperty = new SimpleBooleanProperty(false);
+//
+//    public BooleanProperty uploadingProperty() {
+//        return this.uploadingProperty;
+//    }
 
 //    public void updateUploading() {
 //        for (ShellSFTPUploadTask task : this.tasks) {
@@ -38,22 +36,24 @@ public class ShellSFTPUploadManager extends ShellSFTPManager<ShellSFTPUploadMoni
 //        this.uploadingProperty.set(false);
 //    }
 
-    public boolean isUploading() {
-        return this.uploadingProperty.get();
-    }
+//    public boolean isUploading() {
+//        return this.uploadingProperty.get();
+//    }
+//
+//    public void setUploading(boolean uploading) {
+//        this.uploadingProperty.set(uploading);
+//    }
 
-    public void setUploading(boolean uploading) {
-        this.uploadingProperty.set(uploading);
-    }
+    private transient boolean uploading = false;
 
     /**
      * 执行上传
      */
     protected void doUpload() {
-        if (this.isUploading()) {
+        if (this.uploading) {
             return;
         }
-        this.setUploading(true);
+        this.uploading = true;
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
@@ -72,7 +72,7 @@ public class ShellSFTPUploadManager extends ShellSFTPManager<ShellSFTPUploadMoni
                     }
                 }
             } finally {
-                this.setUploading(false);
+                this.uploading = false;
             }
         });
     }

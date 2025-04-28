@@ -3,11 +3,9 @@ package cn.oyzh.easyshell.sftp.transport;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPManager;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPManager;
 import cn.oyzh.fx.plus.information.MessageBox;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  * @author oyzh
@@ -21,28 +19,30 @@ public class ShellSFTPTransportManager extends ShellSFTPManager<ShellSFTPTranspo
         this.doTransport();
     }
 
-    private final BooleanProperty transportingProperty = new SimpleBooleanProperty(false);
+//    private final BooleanProperty transportingProperty = new SimpleBooleanProperty(false);
+//
+//    public BooleanProperty transportingProperty() {
+//        return this.transportingProperty;
+//    }
+//
+//    public boolean isTransporting() {
+//        return this.transportingProperty.get();
+//    }
+//
+//    public void setTransporting(boolean transporting) {
+//        this.transportingProperty.set(transporting);
+//    }
 
-    public BooleanProperty transportingProperty() {
-        return this.transportingProperty;
-    }
-
-    public boolean isTransporting() {
-        return this.transportingProperty.get();
-    }
-
-    public void setTransporting(boolean transporting) {
-        this.transportingProperty.set(transporting);
-    }
+    private transient boolean transporting = false;
 
     /**
      * 执行传输
      */
     protected void doTransport() {
-        if (this.isTransporting()) {
+        if (this.transporting) {
             return;
         }
-        this.setTransporting(true);
+        this.transporting = true;
         ThreadUtil.start(() -> {
             try {
                 while (!this.isEmpty()) {
@@ -61,7 +61,7 @@ public class ShellSFTPTransportManager extends ShellSFTPManager<ShellSFTPTranspo
                     }
                 }
             } finally {
-                this.setTransporting(false);
+                this.transporting = false;
             }
         });
     }
