@@ -37,6 +37,11 @@ public class ShellSFTPUploadTask {
 
     private long startTime;
 
+    /**
+     * 错误
+     */
+    private Throwable error;
+
     private long currentSize;
 
     private String remotePath;
@@ -47,21 +52,20 @@ public class ShellSFTPUploadTask {
 
     private ShellSFTPStatus status;
 
-    private Throwable error;
-
     private final ShellSFTPClient client;
 
-    private ShellSFTPUploadFile uploadFile;
+    private final ShellSFTPUploadFile uploadFile;
 
     public ShellSFTPUploadTask(ShellSFTPUploadFile uploadFile, ShellSFTPClient client) {
         this.client = client;
+        this.uploadFile = uploadFile;
         this.localFile = uploadFile.getLocalFile();
         this.remotePath = uploadFile.getRemotePath();
     }
 
     public void upload() throws Exception {
         this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
-        this.calcTotalSize();
+        this.initFile();
         this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
         while (!this.fileList.isEmpty()) {
             try {
@@ -111,9 +115,9 @@ public class ShellSFTPUploadTask {
     }
 
     /**
-     * 计算总大小
+     * 初始化文件
      */
-    protected void calcTotalSize() {
+    protected void initFile() {
         if (this.localFile.isFile()) {
             this.fileList = new ArrayList<>();
             this.fileList.add(this.localFile);
@@ -128,6 +132,7 @@ public class ShellSFTPUploadTask {
                 this.updateFileSize();
             });
         }
+        this.updateFileCount();
         this.startTime = System.currentTimeMillis();
     }
 

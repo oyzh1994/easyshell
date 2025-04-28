@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
-import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView;
+import cn.oyzh.easyshell.fx.sftp.ShellSFTPUploadTaskTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -32,7 +32,7 @@ public class ShellSFTPManageController extends StageController {
      * 上传表
      */
     @FXML
-    private SftpUploadTaskTableView uploadTable;
+    private ShellSFTPUploadTaskTableView uploadTable;
 
     /**
      * 下载表

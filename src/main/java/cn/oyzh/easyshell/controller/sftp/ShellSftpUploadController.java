@@ -3,7 +3,7 @@
 //import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
 //import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadTask;
 //import cn.oyzh.easyshell.shell.ShellSSHClient;
-//import cn.oyzh.easyshell.fx.sftp.SftpUploadTaskTableView;
+//import cn.oyzh.easyshell.fx.sftp.ShellSFTPUploadTaskTableView;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.fx.plus.FXConst;
 //import cn.oyzh.fx.plus.controller.StageController;
@@ -28,7 +28,7 @@
 //     * 上传表
 //     */
 //    @FXML
-//    private SftpUploadTaskTableView uploadTable;
+//    private ShellSFTPUploadTaskTableView uploadTable;
 //
 //    /**
 //     * 上传管理器
