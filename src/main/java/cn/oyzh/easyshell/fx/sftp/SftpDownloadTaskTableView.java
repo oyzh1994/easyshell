@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadTask;
+import cn.oyzh.easyshell.sftp.ShellSFTPDownloadTask;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -53,14 +53,14 @@ public class SftpDownloadTaskTableView extends FXTableView<ShellSFTPDownloadTask
             }
             this.removeItem(tasks);
         });
-        MenuItem removeTransport = MenuItemHelper.removeDownload("12", ()->{
-            for (ShellSFTPDownloadTask task : tasks) {
-                task.remove();
-            }
-            this.removeItem(tasks);
-        });
+//        MenuItem removeTransport = MenuItemHelper.removeDownload("12", ()->{
+//            for (ShellSFTPDownloadTask task : tasks) {
+//                task.remove();
+//            }
+//            this.removeItem(tasks);
+//        });
         menuItems.add(cancelTransport);
-        menuItems.add(removeTransport);
+//        menuItems.add(removeTransport);
         return menuItems;
     }
 }

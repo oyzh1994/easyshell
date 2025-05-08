@@ -21,7 +21,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellSFTPUploadTask {
+public class ShellSFTPDownloadTask {
 
     /**
      * 进度条
@@ -77,17 +77,17 @@ public class ShellSFTPUploadTask {
     /**
      * 远程路径
      */
-    private String remotePath;
+    private final ShellSFTPFile remoteFile;
 
     /**
      * 本地文件
      */
-    private final File localFile;
+    private final File localPath;
 
     /**
      * 文件列表
      */
-    private List<File> fileList;
+    private List<ShellSFTPFile> fileList;
 
     /**
      * 客户端
@@ -99,15 +99,10 @@ public class ShellSFTPUploadTask {
      */
     private transient ShellSFTPStatus status;
 
-//    /**
-//     * 上传文件
-//     */
-//    private final ShellSFTPUploadFile uploadFile;
-
-    public ShellSFTPUploadTask(File localFile,String remotePath, ShellSFTPClient client) {
+    public ShellSFTPDownloadTask(ShellSFTPFile remoteFile, File localPath, ShellSFTPClient client) {
         this.client = client;
-        this.localFile = localFile;
-        this.remotePath = remotePath;
+        this.localPath = localPath;
+        this.remoteFile = remoteFile;
     }
 
     /**
@@ -115,39 +110,39 @@ public class ShellSFTPUploadTask {
      *
      * @throws Exception 异常
      */
-    public void upload() throws Exception {
+    public void download() throws Exception {
         this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
         this.initFile();
         this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
         while (!this.fileList.isEmpty()) {
             try {
                 // 当前文件
-                File file = this.fileList.removeFirst();
+                ShellSFTPFile file = this.fileList.removeFirst();
                 // 设置文件
                 this.currentFileProperty.set(file.getName());
                 // 远程文件目录
-                String remoteFilePath;
-                // 文件
-                if (this.localFile.isFile()) {
-                    remoteFilePath = ShellFileUtil.concat(remotePath, file.getName());
+                String localFilePath;
+//                // 文件
+                if (this.remoteFile.isFile()) {
+                    localFilePath = new File(this.localPath, file.getFileName()).getPath();
                 } else {// 文件夹
-                    String pPath = file.getParent().replace(this.localFile.getPath(), "");
-                    String remoteDir = ShellFileUtil.concat(remotePath, pPath);
-                    remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
+                    String pPath = file.getParentPath().replace(this.remoteFile.getFilePath(), "");
+                    String localDir = ShellFileUtil.concat(this.localPath.getPath(), pPath);
+                    localFilePath = ShellFileUtil.concat(localDir, file.getName());
                     // 创建父目录
-                    if (!this.client.exist(remoteDir)) {
-                        this.client.mkdirRecursive(remoteDir);
+                    if (!FileUtil.exist(localDir)) {
+                        FileUtil.mkdir(localDir);
                     }
                 }
                 // 执行上传
-                this.client.put(file.getPath(), remoteFilePath, new ShellSFTPProgressMonitor() {
+                this.client.get(file.getFilePath(), localFilePath, new ShellSFTPProgressMonitor() {
                     @Override
                     public boolean count(long count) {
                         currentSize += count;
                         updateSpeed();
                         updateProgress();
                         updateFileSize();
-                        return status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED;
+                        return status != ShellSFTPStatus.CANCELED;
                     }
                 });
                 this.updateFileCount();
@@ -160,7 +155,7 @@ public class ShellSFTPUploadTask {
                 }
             }
         }
-        if (this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED && this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.FAILED) {
+        if (this.status != ShellSFTPStatus.CANCELED && this.status != ShellSFTPStatus.FAILED) {
             this.updateStatus(ShellSFTPStatus.FINISHED);
         }
     }
@@ -176,18 +171,17 @@ public class ShellSFTPUploadTask {
     /**
      * 初始化文件
      */
-    protected void initFile() {
-        if (this.localFile.isFile()) {
+    protected void initFile() throws Exception {
+        if (this.remoteFile.isFile()) {
             this.fileList = new ArrayList<>();
-            this.fileList.add(this.localFile);
-            this.totalSize = this.localFile.length();
+            this.fileList.add(this.remoteFile);
+            this.totalSize = this.remoteFile.getFileSize();
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
-            this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getName());
-            FileUtil.getAllFiles(this.localFile, f -> {
+            this.client.getAllFiles(this.remoteFile, f -> {
                 fileList.add(f);
-                this.totalSize += f.length();
+                this.totalSize += f.getFileSize();
                 this.updateFileSize();
             });
         }
@@ -254,11 +248,11 @@ public class ShellSFTPUploadTask {
     }
 
     public String getSrcPath() {
-        return localFile.getPath();
+        return  this.remoteFile.getFilePath();
     }
 
     public String getDestPath() {
-        return this.remotePath;
+        return ShellFileUtil.concat(this.localPath.getPath(), this.remoteFile.getFileName());
     }
 
     /**
@@ -279,7 +273,7 @@ public class ShellSFTPUploadTask {
                 this.statusProperty.set(I18nHelper.finished());
                 break;
             case EXECUTE_ING:
-                this.statusProperty.set(I18nHelper.uploadIng());
+                this.statusProperty.set(I18nHelper.downloadIng());
                 break;
             case IN_PREPARATION:
                 this.statusProperty.set(I18nHelper.inPreparation());

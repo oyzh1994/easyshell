@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -131,6 +132,20 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //            }
         }
         return files;
+    }
+
+    public void lsFile(String path, Consumer<ShellSFTPFile> callback) throws SftpException {
+        if (this.isWindows()) {
+            path = ShellUtil.reverseWindowsFilePath(path);
+        }
+        this.cd(path);
+        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
+        for (ChannelSftp.LsEntry lsEntry : vector) {
+            ShellSFTPFile file = new ShellSFTPFile(path, lsEntry);
+            // 读取链接文件
+            ShellSFTPUtil.realpath(file, this);
+            callback.accept(file);
+        }
     }
 
     public void rm(String path) throws SftpException {
@@ -316,6 +331,10 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     public OutputStream put(String dest, SftpProgressMonitor monitor) throws SftpException {
         return this.put(dest, monitor, ChannelSftp.OVERWRITE);
+    }
+
+    public void get(String src, String dest, SftpProgressMonitor monitor) throws SftpException {
+        this.get(src, dest, monitor, ChannelSftp.OVERWRITE);
     }
 
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {

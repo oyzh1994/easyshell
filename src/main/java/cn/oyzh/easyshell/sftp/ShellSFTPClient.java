@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 /**
  * shell终端
@@ -340,6 +341,12 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         }
     }
 
+    public void get(String src, String dest, SftpProgressMonitor monitor) throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.get(src, dest, monitor);
+        }
+    }
+
     public void chmod(int permission, String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.chmod(permission, filePath);
@@ -350,6 +357,12 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             return channel.lsFile(filePath);
+        }
+    }
+
+    public void lsFile(String filePath, Consumer<ShellSFTPFile> callback) throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            channel.lsFile(filePath, callback);
         }
     }
 
@@ -380,10 +393,7 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     }
 
     public void uploadFile(File localFile, String remotePath) throws Exception {
-        ShellSFTPUploadFile file = new ShellSFTPUploadFile();
-        file.setLocalFile(localFile);
-        file.setRemotePath(remotePath);
-        ShellSFTPUploadTask task = new ShellSFTPUploadTask(file, this);
+        ShellSFTPUploadTask task = new ShellSFTPUploadTask(localFile, remotePath, this);
         uploadTasks.add(task);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
@@ -394,7 +404,32 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
                 uploadTasks.remove(task);
             }
         });
-        file.setTask(thread);
+        task.setWorker(thread);
+    }
+
+    private final ObservableList<ShellSFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
+
+    public ObservableList<ShellSFTPDownloadTask> getDownloadTasks() {
+        return downloadTasks;
+    }
+
+    public void downloadFile(ShellSFTPFile remoteFile, File localPath) throws Exception {
+        ShellSFTPDownloadTask task = new ShellSFTPDownloadTask(remoteFile, localPath, this);
+        downloadTasks.add(task);
+        Thread thread = ThreadUtil.startVirtual(() -> {
+            try {
+                task.download();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                downloadTasks.remove(task);
+            }
+        });
+        task.setWorker(thread);
+    }
+
+    public boolean isDownloadTaskEmpty() {
+        return this.downloadTasks.isEmpty();
     }
 
     public boolean isUploadTaskEmpty() {
@@ -406,11 +441,11 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     }
 
     public boolean isTaskEmpty() {
-        return this.uploadTasks.isEmpty() && this.deleteTasks.isEmpty();
+        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty() && this.deleteTasks.isEmpty();
     }
 
     public int getTaskSize() {
-        return this.uploadTasks.size() + this.deleteTasks.size();
+        return this.uploadTasks.size() + this.downloadTasks.size() + this.deleteTasks.size();
     }
 
     private final ObservableList<ShellSFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
@@ -436,17 +471,16 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         deleteFile.setTask(thread);
     }
 
-//    public void getAllFiles(ShellSFTPFile remoteFile, Consumer<ShellSFTPFile> callback) throws Exception {
-//        if (remoteFile.isFile()) {
-//            callback.accept(remoteFile);
-//        } else {
-//            List<ShellSFTPFile> files = this.lsFileNormal(remoteFile.getFilePath());
-//            for (ShellSFTPFile file : files) {
-//                this.getAllFiles(file, callback);
-//            }
-//        }
-//
-//    }
+    public void getAllFiles(ShellSFTPFile remoteFile, Consumer<ShellSFTPFile> callback) throws Exception {
+        if (remoteFile.isFile()) {
+            callback.accept(remoteFile);
+        } else {
+            List<ShellSFTPFile> files = this.lsFileNormal(remoteFile.getFilePath());
+            for (ShellSFTPFile file : files) {
+                this.getAllFiles(file, callback);
+            }
+        }
+    }
 
     public void rmdirRecursive(String path) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {

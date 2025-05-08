@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPUploadTaskTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPDownloadTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
@@ -52,6 +53,11 @@ public class ShellSFTPManageController extends StageController {
         this.uploadTable.setItem(client.getUploadTasks());
         client.getUploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
             this.uploadTable.setItem(client.getUploadTasks());
+        });
+        // 处理下载列表
+        this.downloadTable.setItem(client.getDownloadTasks());
+        client.getDownloadTasks().addListener((ListChangeListener<ShellSFTPDownloadTask>) change -> {
+            this.downloadTable.setItem(client.getDownloadTasks());
         });
         super.onWindowShown(event);
     }
