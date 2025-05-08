@@ -124,10 +124,10 @@ public class ShellSFTPDownloadTask {
                 String localFilePath;
 //                // 文件
                 if (this.remoteFile.isFile()) {
-                    localFilePath = new File(this.localPath, file.getFileName()).getPath();
+                    localFilePath = this.getDestPath();
                 } else {// 文件夹
                     String pPath = file.getParentPath().replace(this.remoteFile.getFilePath(), "");
-                    String localDir = ShellFileUtil.concat(this.localPath.getPath(), pPath);
+                    String localDir = ShellFileUtil.concat(this.getDestPath(), pPath);
                     localFilePath = ShellFileUtil.concat(localDir, file.getName());
                     // 创建父目录
                     if (!FileUtil.exist(localDir)) {

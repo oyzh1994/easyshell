@@ -35,7 +35,6 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -240,11 +239,11 @@ public class ShellSFTPTabController extends RichTabController {
                 this.fileTable.setDownloadFileCallback(files -> {
                     AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
                 });
-                this.client.getUploadTasks().addListener((ListChangeListener<cn.oyzh.easyshell.sftp.ShellSFTPUploadTask>) change -> {
+                this.client.addTaskSizeCallback(() -> {
                     if (this.client.isTaskEmpty()) {
                         this.manage.clear();
                     } else {
-                        this.manage.setText("(" + this.client.getUploadTasks().size() + ")");
+                        this.manage.setText("(" + this.client.getTaskSize() + ")");
                     }
                 });
             } catch (Exception ex) {

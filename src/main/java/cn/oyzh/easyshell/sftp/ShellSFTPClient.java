@@ -18,6 +18,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpProgressMonitor;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.io.File;
@@ -441,11 +442,11 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     }
 
     public boolean isTaskEmpty() {
-        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty() && this.deleteTasks.isEmpty();
+        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
     }
 
     public int getTaskSize() {
-        return this.uploadTasks.size() + this.downloadTasks.size() + this.deleteTasks.size();
+        return this.uploadTasks.size() + this.downloadTasks.size();
     }
 
     private final ObservableList<ShellSFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
@@ -469,6 +470,15 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
             }
         });
         deleteFile.setTask(thread);
+    }
+
+    public void addTaskSizeCallback(Runnable callback) {
+        this.getUploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
+            callback.run();
+        });
+        this.getDownloadTasks().addListener((ListChangeListener<ShellSFTPDownloadTask>) change -> {
+            callback.run();
+        });
     }
 
     public void getAllFiles(ShellSFTPFile remoteFile, Consumer<ShellSFTPFile> callback) throws Exception {
