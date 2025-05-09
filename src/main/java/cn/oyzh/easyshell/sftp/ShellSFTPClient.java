@@ -435,7 +435,7 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 
     private final ObservableList<ShellSFTPUploadTask> uploadTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellSFTPUploadTask> getUploadTasks() {
+    public ObservableList<ShellSFTPUploadTask> uploadTasks() {
         return uploadTasks;
     }
 
@@ -459,7 +459,7 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 
     private final ObservableList<ShellSFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellSFTPDownloadTask> getDownloadTasks() {
+    public ObservableList<ShellSFTPDownloadTask> downloadTasks() {
         return downloadTasks;
     }
 
@@ -500,7 +500,7 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 
     private final ObservableList<ShellSFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellSFTPDeleteTask> getDeleteTasks() {
+    public ObservableList<ShellSFTPDeleteTask> deleteTasks() {
         return deleteTasks;
     }
 
@@ -522,10 +522,10 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 //        this.deleteTasks.add(task);
 //    }
     public void addTaskSizeCallback(Runnable callback) {
-        this.getUploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
+        this.uploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
             callback.run();
         });
-        this.getDownloadTasks().addListener((ListChangeListener<ShellSFTPDownloadTask>) change -> {
+        this.downloadTasks().addListener((ListChangeListener<ShellSFTPDownloadTask>) change -> {
             callback.run();
         });
     }

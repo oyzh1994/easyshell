@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.ftp.ShellFTPDownloadFileTableView?>
-<?import cn.oyzh.easyshell.fx.ftp.ShellFTPUploadTaskTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPUploadTaskTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadBoxSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UploadBoxSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<FXTabPane prefWidth="1200" prefHeight="650" styleClass="root"
+<FXTabPane fx:id="tabPane" prefWidth="1200" prefHeight="650" styleClass="root"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="cn.oyzh.easyshell.controller.ftp.ShellFTPManageController">
+           fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSFTPManageController">
     <FXTab text="%base.upload">
         <graphic>
             <UploadBoxSVGGlyph sizeStr="12"/>
         </graphic>
-        <ShellFTPUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
+        <ShellSFTPUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
             <columns>
                 <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
                 <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
@@ -25,19 +25,24 @@
                 <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
                 <FXTableColumn prefWidth="70" valueName="status" text="%base.status"/>
             </columns>
-        </ShellFTPUploadTaskTableView>
+        </ShellSFTPUploadTaskTableView>
     </FXTab>
     <FXTab text="%base.download">
         <graphic>
             <DownloadBoxSVGGlyph sizeStr="12"/>
         </graphic>
-        <ShellFTPDownloadFileTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
+        <SftpDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
             <columns>
-                <FXTableColumn prefWidth="240" valueName="localPath" text="%base.fileName"/>
-                <FXTableColumn flexWidth="100% - 400" valueName="remotePath" text="%base.destPath"/>
-                <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
+                <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
+                <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
+                <FXTableColumn flexWidth="100% - 990" valueName="currentFile" text="%base.currentFile"/>
+                <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>
+                <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                <FXTableColumn prefWidth="70" valueName="status" text="%base.status"/>
             </columns>
-        </ShellFTPDownloadFileTableView>
+        </SftpDownloadTaskTableView>
     </FXTab>
 </FXTabPane>
 

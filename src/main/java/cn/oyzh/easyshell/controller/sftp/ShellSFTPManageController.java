@@ -3,14 +3,11 @@ package cn.oyzh.easyshell.controller.sftp;
 import cn.oyzh.easyshell.fx.sftp.SftpDownloadTaskTableView;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPUploadTaskTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPDownloadTask;
-import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
@@ -50,15 +47,9 @@ public class ShellSFTPManageController extends StageController {
     public void onWindowShown(WindowEvent event) {
         ShellSFTPClient client = this.getProp("client");
         // 处理上传列表
-        this.uploadTable.setItem(client.getUploadTasks());
-        client.getUploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
-            this.uploadTable.setItem(client.getUploadTasks());
-        });
+        this.uploadTable.setItems(client.uploadTasks());
         // 处理下载列表
-        this.downloadTable.setItem(client.getDownloadTasks());
-        client.getDownloadTasks().addListener((ListChangeListener<ShellSFTPDownloadTask>) change -> {
-            this.downloadTable.setItem(client.getDownloadTasks());
-        });
+        this.downloadTable.setItems(client.downloadTasks());
         super.onWindowShown(event);
     }
 

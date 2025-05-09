@@ -358,8 +358,12 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        long lastModifiedTime = this.mdtm(filePath);
-        return lastModifiedTime != -1;
+        try {
+            FTPFile file = this.mlistFile(filePath);
+            return file != null;
+        } catch (IndexOutOfBoundsException ignored) {
+            return false;
+        }
     }
 
     @Override

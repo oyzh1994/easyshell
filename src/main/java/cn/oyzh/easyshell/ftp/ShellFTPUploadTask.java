@@ -125,10 +125,10 @@ public class ShellFTPUploadTask {
                 String remoteFilePath;
                 // 文件
                 if (this.localFile.isFile()) {
-                    remoteFilePath = ShellFileUtil.concat(remotePath, file.getName());
+                    remoteFilePath = ShellFileUtil.concat(this.remotePath, file.getName());
                 } else {// 文件夹
                     String pPath = file.getParent().replace(this.localFile.getPath(), "");
-                    String remoteDir = ShellFileUtil.concat(remotePath, pPath);
+                    String remoteDir = ShellFileUtil.concat(this.remotePath, pPath);
                     remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
                     // 创建父目录
                     if (!this.client.exist(remoteDir)) {

@@ -38,19 +38,11 @@ public class ShellFTPManageController extends StageController {
         super.bindListeners();
     }
 
-    protected void initUploadTable() {
-        this.uploadTable.setItem(this.client.uploadTasks());
-    }
-
-    protected void initDownloadTable() {
-        this.downloadTable.setItem(this.client.getDownloadFiles());
-    }
-
     @Override
     public void onWindowShown(WindowEvent event) {
         this.client = this.getProp("client");
-        this.initUploadTable();
-        this.initDownloadTable();
+        // 处理上传列表
+        this.uploadTable.setItems(this.client.uploadTasks());
         super.onWindowShown(event);
     }
 
