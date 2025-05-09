@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -101,7 +102,8 @@ public class ShellFTPFileEditController extends StageController {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
                 File localFile = new File(this.destPath);
-                this.client.upload(localFile, file.getParentPath(), file.getFileName());
+                String remoteFile = ShellFileUtil.concat(file.getParentPath(), file.getFileName());
+                this.client.put(localFile, remoteFile);
                 file.setSize(localFile.length());
                 ShellEventUtil.fileSaved(this.file);
             } catch (Exception ex) {

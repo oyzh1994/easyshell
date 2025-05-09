@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.ftp;
 
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.fx.ftp.ShellFTPDownloadFileTableView;
-import cn.oyzh.easyshell.fx.ftp.ShellFTPUploadFileTableView;
+import cn.oyzh.easyshell.fx.ftp.ShellFTPUploadTaskTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -23,7 +23,7 @@ public class ShellFTPManageController extends StageController {
      * 上传表
      */
     @FXML
-    private ShellFTPUploadFileTableView uploadTable;
+    private ShellFTPUploadTaskTableView uploadTable;
 
     /**
      * 下载表
@@ -39,7 +39,7 @@ public class ShellFTPManageController extends StageController {
     }
 
     protected void initUploadTable() {
-        this.uploadTable.setItem(this.client.getUploadFiles());
+        this.uploadTable.setItem(this.client.uploadTasks());
     }
 
     protected void initDownloadTable() {

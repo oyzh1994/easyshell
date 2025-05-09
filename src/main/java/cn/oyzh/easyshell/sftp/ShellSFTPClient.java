@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
@@ -438,13 +439,16 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         return uploadTasks;
     }
 
-    public void uploadFile(File localFile, String remotePath) throws Exception {
+    @Override
+    public void doUpload(File localFile, String remotePath) {
         ShellSFTPUploadTask task = new ShellSFTPUploadTask(localFile, remotePath, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
                 task.doUpload();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (InterruptedException | InterruptedIOException ex) {
+                JulLog.warn("upload interrupted");
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
             } finally {
                 this.uploadTasks.remove(task);
             }

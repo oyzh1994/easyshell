@@ -456,7 +456,6 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
         if (CollectionUtil.isEmpty(files)) {
             return;
         }
-//        ThreadUtil.start(() -> {
         try {
             List<ShellSFTPFile> sftpFiles = new CopyOnWriteArrayList<>(files);
             for (ShellSFTPFile file : sftpFiles) {
@@ -476,7 +475,6 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
-//        });
     }
 
     @Override

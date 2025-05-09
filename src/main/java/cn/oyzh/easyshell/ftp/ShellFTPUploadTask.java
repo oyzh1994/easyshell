@@ -5,8 +5,6 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
@@ -95,19 +93,14 @@ public class ShellFTPUploadTask {
     /**
      * 客户端
      */
-    private final ShellSFTPClient client;
+    private final ShellFTPClient client;
 
     /**
      * 状态
      */
     private transient ShellFileStatus status;
 
-//    /**
-//     * 上传文件
-//     */
-//    private final ShellSFTPUploadFile uploadFile;
-
-    public ShellFTPUploadTask(File localFile, String remotePath, ShellSFTPClient client) {
+    public ShellFTPUploadTask(File localFile, String remotePath, ShellFTPClient client) {
         this.client = client;
         this.localFile = localFile;
         this.remotePath = remotePath;
@@ -139,11 +132,11 @@ public class ShellFTPUploadTask {
                     remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
                     // 创建父目录
                     if (!this.client.exist(remoteDir)) {
-                        this.client.mkdirRecursive(remoteDir);
+                        this.client.mkdir(remoteDir);
                     }
                 }
                 // 执行上传
-                this.client.put(file.getPath(), remoteFilePath, new ShellSFTPProgressMonitor() {
+                this.client.put(file, remoteFilePath, new ShellFTPProgressMonitor() {
                     @Override
                     public boolean count(long count) {
                         currentSize += count;

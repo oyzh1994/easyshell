@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.easyshell.util.ShellFile;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -133,4 +134,12 @@ public interface FileClient<E extends ShellFile> {
      * @throws Exception 异常
      */
     void cd(String filePath) throws Exception;
+
+    /**
+     * 执行上传
+     *
+     * @param localFile  本地文件
+     * @param remotePath 远程路径
+     */
+    void doUpload(File localFile, String remotePath);
 }

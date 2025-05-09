@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.fx.ftp;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -8,7 +7,7 @@ import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPDeleteTask;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
-import cn.oyzh.easyshell.ftp.ShellFTPUploadFile;
+import cn.oyzh.easyshell.ftp.ShellFTPUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -38,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,ShellFTPFile> implements FXEventListener {
+public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, ShellFTPFile> implements FXEventListener {
 
 //    @Override
 //    public void initNode() {
@@ -101,9 +100,9 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,She
 
     @Override
     public void setClient(ShellFTPClient client) {
-       super.setClient(client);
-        this.client.getUploadFiles().addListener((ListChangeListener<ShellFTPUploadFile>) c -> {
-            if (this.client.getUploadFiles().isEmpty()) {
+        super.setClient(client);
+        this.client.uploadTasks().addListener((ListChangeListener<ShellFTPUploadTask>) c -> {
+            if (this.client.isUploadTaskEmpty()) {
                 this.loadFile();
             }
         });
@@ -206,11 +205,12 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,She
 //
 //    @Override
 //    public void refreshFile() {
-////        if (this.files == null) {
-////            this.loadFile();
-////        } else {
-////            this.setItem(this.doFilter(this.files));
-////        }
+
+    /// /        if (this.files == null) {
+    /// /            this.loadFile();
+    /// /        } else {
+    /// /            this.setItem(this.doFilter(this.files));
+    /// /        }
 //        super.refreshFile();
 //        super.refresh();
 //    }
@@ -251,7 +251,6 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,She
 //    protected boolean checkInvalid(ShellFTPFile file) {
 //        return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
 //    }
-
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<ShellFTPFile> files = this.getSelectedItems();
@@ -443,28 +442,25 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,She
         if (CollectionUtil.isEmpty(files)) {
             return;
         }
-        ThreadUtil.start(() -> {
-            try {
-                List<ShellFTPFile> sftpFiles = new CopyOnWriteArrayList<>(files);
-                for (ShellFTPFile file : sftpFiles) {
-                    // 不可删除文件
-                    if (file.isReturnDirectory() || file.isCurrentFile()) {
-                        continue;
-                    }
-                    // 隐藏文件
-                    if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
-                        continue;
-                    }
-                    // 执行删除
-                    this.client.doDelete(file);
-                    this.files.remove(file);
+        try {
+            List<ShellFTPFile> sftpFiles = new CopyOnWriteArrayList<>(files);
+            for (ShellFTPFile file : sftpFiles) {
+                // 不可删除文件
+                if (file.isReturnDirectory() || file.isCurrentFile()) {
+                    continue;
                 }
-                this.refreshFile();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
+                // 隐藏文件
+                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
+                    continue;
+                }
+                // 执行删除
+                this.client.doDelete(file);
             }
-        });
+            this.refreshFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     @Override
@@ -614,7 +610,7 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient,She
         }
         for (File file : files) {
             try {
-                this.client.upload(file, this.getLocation());
+                this.client.doUpload(file, this.getLocation());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
