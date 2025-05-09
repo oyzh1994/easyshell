@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.ftp;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.ftp.ShellFTPDownloadFile;
+import cn.oyzh.easyshell.ftp.ShellFTPDownloadTask;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellFTPDownloadFileTableView extends FXTableView<ShellFTPDownloadFile> {
+public class ShellFTPDownloadTaskTableView extends FXTableView<ShellFTPDownloadTask> {
 
     @Override
     public void initNode() {
@@ -41,13 +41,13 @@ public class ShellFTPDownloadFileTableView extends FXTableView<ShellFTPDownloadF
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellFTPDownloadFile> tasks = this.getSelectedItems();
+        List<ShellFTPDownloadTask> tasks = this.getSelectedItems();
         if (CollectionUtil.isEmpty(tasks)) {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
         MenuItem cancelTransport = MenuItemHelper.cancelDownload("12", () -> {
-            for (ShellFTPDownloadFile task : tasks) {
+            for (ShellFTPDownloadTask task : tasks) {
                 task.cancel();
             }
             this.removeItem(tasks);

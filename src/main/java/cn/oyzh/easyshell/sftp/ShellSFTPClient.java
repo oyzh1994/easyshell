@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.function.Consumer;
 
 /**
  * shell终端
@@ -406,12 +405,18 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
             return channel.lsFile(filePath);
         }
     }
-
-    public void lsFile(String filePath, Consumer<ShellSFTPFile> callback) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.lsFile(filePath, callback);
-        }
-    }
+//
+//    @Override
+//    public void lsFileRecursive(ShellSFTPFile file, Consumer<ShellSFTPFile> callback) throws Exception {
+//        if (file.isFile()) {
+//            callback.accept(file);
+//        } else {
+//            List<ShellSFTPFile> files = this.lsFileNormal(file.getFilePath());
+//            for (ShellSFTPFile f : files) {
+//                this.lsFileRecursive(f, callback);
+//            }
+//        }
+//    }
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
@@ -457,13 +462,8 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         this.uploadTasks.add(task);
     }
 
-    private final ObservableList<ShellSFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
-
-    public ObservableList<ShellSFTPDownloadTask> downloadTasks() {
-        return downloadTasks;
-    }
-
-    public void downloadFile(ShellSFTPFile remoteFile, File localPath) throws Exception {
+    @Override
+    public void doDownload(ShellSFTPFile remoteFile, String localPath)   {
         ShellSFTPDownloadTask task = new ShellSFTPDownloadTask(remoteFile, localPath, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
@@ -477,6 +477,15 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         task.setWorker(thread);
         this.downloadTasks.add(task);
     }
+
+    private final ObservableList<ShellSFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
+
+    public ObservableList<ShellSFTPDownloadTask> downloadTasks() {
+        return downloadTasks;
+    }
+
+
+
 
     public boolean isDownloadTaskEmpty() {
         return this.downloadTasks.isEmpty();
@@ -530,16 +539,6 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         });
     }
 
-    public void getAllFiles(ShellSFTPFile remoteFile, Consumer<ShellSFTPFile> callback) throws Exception {
-        if (remoteFile.isFile()) {
-            callback.accept(remoteFile);
-        } else {
-            List<ShellSFTPFile> files = this.lsFileNormal(remoteFile.getFilePath());
-            for (ShellSFTPFile file : files) {
-                this.getAllFiles(file, callback);
-            }
-        }
-    }
 
 
 }

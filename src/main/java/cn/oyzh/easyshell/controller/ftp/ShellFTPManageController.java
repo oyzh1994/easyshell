@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.ftp;
 
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.fx.ftp.ShellFTPDownloadFileTableView;
+import cn.oyzh.easyshell.fx.ftp.ShellFTPDownloadTaskTableView;
 import cn.oyzh.easyshell.fx.ftp.ShellFTPUploadTaskTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
@@ -29,9 +29,7 @@ public class ShellFTPManageController extends StageController {
      * 下载表
      */
     @FXML
-    private ShellFTPDownloadFileTableView downloadTable;
-
-    private ShellFTPClient client;
+    private ShellFTPDownloadTaskTableView downloadTable;
 
     @Override
     protected void bindListeners() {
@@ -40,9 +38,11 @@ public class ShellFTPManageController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
-        this.client = this.getProp("client");
+        ShellFTPClient client = this.getProp("client");
         // 处理上传列表
-        this.uploadTable.setItems(this.client.uploadTasks());
+        this.uploadTable.setItems(client.uploadTasks());
+        // 处理下载列表
+        this.downloadTable.setItems(client.downloadTasks());
         super.onWindowShown(event);
     }
 

@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.util.ShellFile;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 文件客户端
@@ -21,6 +22,24 @@ public interface FileClient<E extends ShellFile> {
      * @throws Exception 异常
      */
     List<E> lsFile(String filePath) throws Exception;
+
+    /**
+     * 递归列举文件
+     *
+     * @param file     文件路径
+     * @param callback 文件回调
+     * @throws Exception 异常
+     */
+    default void lsFileRecursive(E file, Consumer<E> callback) throws Exception {
+        if (file.isFile()) {
+            callback.accept(file);
+        } else {
+            List<E> files = this.lsFile(file.getFilePath());
+            for (E f : files) {
+                this.lsFileRecursive(f, callback);
+            }
+        }
+    }
 
     /**
      * 删除文件
@@ -142,4 +161,22 @@ public interface FileClient<E extends ShellFile> {
      * @param remotePath 远程路径
      */
     void doUpload(File localFile, String remotePath);
+
+    /**
+     * 执行下载
+     *
+     * @param remoteFile 远程文件
+     * @param localPath  本地路径
+     */
+    default void doDownload(E remoteFile, File localPath) {
+        this.doDownload(remoteFile, localPath.getPath());
+    }
+
+    /**
+     * 执行下载
+     *
+     * @param remoteFile 远程文件
+     * @param localPath  本地路径
+     */
+    void doDownload(E remoteFile, String localPath);
 }

@@ -15,11 +15,11 @@ import java.util.function.Function;
 public abstract class ShellFTPProgressMonitor {
 
     public ShellFTPInputStream init(InputStream in) {
-     return    new ShellFTPInputStream(in, this::count);
+        return new ShellFTPInputStream(in, this::count);
     }
 
     public ShellFTPOuputStream init(OutputStream out) {
-        return   new ShellFTPOuputStream(out, this::count);
+        return new ShellFTPOuputStream(out, this::count);
     }
 
     public abstract boolean count(long count);
@@ -41,7 +41,7 @@ public abstract class ShellFTPProgressMonitor {
         }
 
         @Override
-        public int read(byte @NotNull [] b ) throws IOException {
+        public int read(byte @NotNull [] b) throws IOException {
             int l = this.in.read(b);
             if (!this.callback.apply(l)) {
                 throw new InterruptedIOException();
@@ -56,6 +56,13 @@ public abstract class ShellFTPProgressMonitor {
                 throw new IOException();
             }
             return l;
+        }
+
+        @Override
+        public void close() throws IOException {
+            this.in.close();
+            this.in = null;
+            this.callback = null;
         }
     }
 
@@ -81,6 +88,19 @@ public abstract class ShellFTPProgressMonitor {
             if (!this.callback.apply(len)) {
                 throw new IOException();
             }
+        }
+
+        @Override
+        public void flush() throws IOException {
+            this.out.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            this.out.flush();
+            this.out.close();
+            this.out = null;
+            this.callback = null;
         }
     }
 }

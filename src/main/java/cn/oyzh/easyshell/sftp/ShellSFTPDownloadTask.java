@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +82,7 @@ public class ShellSFTPDownloadTask {
     /**
      * 本地文件
      */
-    private final File localPath;
+    private final String localPath;
 
     /**
      * 文件列表
@@ -100,7 +99,7 @@ public class ShellSFTPDownloadTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellSFTPDownloadTask(ShellSFTPFile remoteFile, File localPath, ShellSFTPClient client) {
+    public ShellSFTPDownloadTask(ShellSFTPFile remoteFile, String localPath, ShellSFTPClient client) {
         this.client = client;
         this.localPath = localPath;
         this.remoteFile = remoteFile;
@@ -180,7 +179,7 @@ public class ShellSFTPDownloadTask {
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
-            this.client.getAllFiles(this.remoteFile, f -> {
+            this.client.lsFileRecursive(this.remoteFile, f -> {
                 fileList.add(f);
                 this.totalSize += f.getFileSize();
                 this.updateFileSize();
@@ -253,7 +252,7 @@ public class ShellSFTPDownloadTask {
     }
 
     public String getDestPath() {
-        return ShellFileUtil.concat(this.localPath.getPath(), this.remoteFile.getFileName());
+        return ShellFileUtil.concat(this.localPath, this.remoteFile.getFileName());
     }
 
     /**

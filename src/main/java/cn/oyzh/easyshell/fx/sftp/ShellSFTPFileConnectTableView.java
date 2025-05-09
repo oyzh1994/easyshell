@@ -155,7 +155,7 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
             for (ShellSFTPFile file : files) {
                 try {
                     file.setParentPath(this.getLocation());
-                    this.client.downloadFile(file,dir );
+                    this.client.doDownload(file, dir);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     MessageBox.exception(ex);

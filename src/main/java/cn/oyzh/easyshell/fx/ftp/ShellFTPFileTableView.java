@@ -639,7 +639,7 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
             for (ShellFTPFile file : files) {
                 try {
                     file.setParentPath(this.getLocation());
-                    this.client.download(dir, file);
+                    this.client.doDownload(file, dir);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     MessageBox.exception(ex);

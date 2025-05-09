@@ -121,7 +121,7 @@ public class ShellFTPFileEditController extends StageController {
             try {
                 FileUtil.touch(this.destPath);
                 File localFile = new File(this.destPath);
-                this.client.doDownload(localFile.getPath(), this.file);
+                this.client.doDownload(this.file, localFile);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {

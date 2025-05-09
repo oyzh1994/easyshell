@@ -5,9 +5,6 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.ShellSFTPProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
@@ -17,7 +14,6 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,29 +77,29 @@ public class ShellFTPDownloadTask {
     /**
      * 远程路径
      */
-    private final ShellSFTPFile remoteFile;
+    private final ShellFTPFile remoteFile;
 
     /**
      * 本地文件
      */
-    private final File localPath;
+    private final String localPath;
 
     /**
      * 文件列表
      */
-    private List<ShellSFTPFile> fileList;
+    private List<ShellFTPFile> fileList;
 
     /**
      * 客户端
      */
-    private final ShellSFTPClient client;
+    private final ShellFTPClient client;
 
     /**
      * 状态
      */
     private transient ShellFileStatus status;
 
-    public ShellFTPDownloadTask(ShellSFTPFile remoteFile, File localPath, ShellSFTPClient client) {
+    public ShellFTPDownloadTask(ShellFTPFile remoteFile, String localPath, ShellFTPClient client) {
         this.client = client;
         this.localPath = localPath;
         this.remoteFile = remoteFile;
@@ -121,12 +117,12 @@ public class ShellFTPDownloadTask {
         while (!this.fileList.isEmpty()) {
             try {
                 // 当前文件
-                ShellSFTPFile file = this.fileList.removeFirst();
+                ShellFTPFile file = this.fileList.removeFirst();
                 // 设置当前文件
                 this.currentFileProperty.set(file.getName());
                 // 本地文件目录
                 String localFilePath;
-//                // 文件
+                // 文件
                 if (this.remoteFile.isFile()) {
                     localFilePath = this.getDestPath();
                 } else {// 文件夹
@@ -139,7 +135,7 @@ public class ShellFTPDownloadTask {
                     }
                 }
                 // 执行下载
-                this.client.get(file.getFilePath(), localFilePath, new ShellSFTPProgressMonitor() {
+                this.client.get(file, localFilePath, new ShellFTPProgressMonitor() {
                     @Override
                     public boolean count(long count) {
                         currentSize += count;
@@ -183,7 +179,7 @@ public class ShellFTPDownloadTask {
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
-            this.client.getAllFiles(this.remoteFile, f -> {
+            this.client.lsFileRecursive(this.remoteFile, f -> {
                 fileList.add(f);
                 this.totalSize += f.getFileSize();
                 this.updateFileSize();
@@ -252,11 +248,11 @@ public class ShellFTPDownloadTask {
     }
 
     public String getSrcPath() {
-        return  this.remoteFile.getFilePath();
+        return this.remoteFile.getFilePath();
     }
 
     public String getDestPath() {
-        return ShellFileUtil.concat(this.localPath.getPath(), this.remoteFile.getFileName());
+        return ShellFileUtil.concat(this.localPath, this.remoteFile.getFileName());
     }
 
     /**
