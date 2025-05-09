@@ -1,20 +1,17 @@
 package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
-import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -26,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,23 +152,23 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         this.deleteDir(dir);
     }
 
-    @Override
-    public void doDelete(ShellFTPFile file) {
-        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                deleteTask.doDelete();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("delete interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.deleteTasks.remove(deleteTask);
-            }
-        });
-        deleteTask.setWorker(worker);
-        this.deleteTasks.add(deleteTask);
-    }
+//    @Override
+//    public void doDelete(ShellFTPFile file) {
+//        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
+//        Thread worker = ThreadUtil.startVirtual(() -> {
+//            try {
+//                deleteTask.doDelete();
+//            } catch (InterruptedException | InterruptedIOException ex) {
+//                JulLog.warn("delete interrupted");
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            } finally {
+//                this.deleteTasks.remove(deleteTask);
+//            }
+//        });
+//        deleteTask.setWorker(worker);
+//        this.deleteTasks.add(deleteTask);
+//    }
 
 //    /**
 //     * 上传文件
@@ -214,41 +210,41 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 //        uploadFile.setTask(task);
 //    }
 
-    @Override
-    public void doUpload(File localFile, String remoteFile) {
-        ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remoteFile, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                uploadTask.doUpload();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("upload interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.uploadTasks.remove(uploadTask);
-            }
-        });
-        uploadTask.setWorker(worker);
-        this.uploadTasks.add(uploadTask);
-    }
+//    @Override
+//    public void doUpload(File localFile, String remoteFile) {
+//        ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remoteFile, this);
+//        Thread worker = ThreadUtil.startVirtual(() -> {
+//            try {
+//                uploadTask.doUpload();
+//            } catch (InterruptedException | InterruptedIOException ex) {
+//                JulLog.warn("upload interrupted");
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            } finally {
+//                this.uploadTasks.remove(uploadTask);
+//            }
+//        });
+//        uploadTask.setWorker(worker);
+//        this.uploadTasks.add(uploadTask);
+//    }
 
-    @Override
-    public void doDownload(ShellFTPFile remoteFile, String localPath) {
-        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                downloadTask.doDownload();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("download interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.downloadTasks.remove(downloadTask);
-            }
-        });
-        downloadTask.setWorker(worker);
-        this.downloadTasks.add(downloadTask);
-    }
+//    @Override
+//    public void doDownload(ShellFTPFile remoteFile, String localPath) {
+//        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
+//        Thread worker = ThreadUtil.startVirtual(() -> {
+//            try {
+//                downloadTask.doDownload();
+//            } catch (InterruptedException | InterruptedIOException ex) {
+//                JulLog.warn("download interrupted");
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            } finally {
+//                this.downloadTasks.remove(downloadTask);
+//            }
+//        });
+//        downloadTask.setWorker(worker);
+//        this.downloadTasks.add(downloadTask);
+//    }
 
 //    /**
 //     * 执行上传
@@ -424,24 +420,24 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         return FTPReply.isPositiveCompletion(replyCode);
     }
 
-    public int getTaskSize() {
-        return this.uploadTasks.size() + this.downloadTasks.size();
-    }
-
-    public boolean isUploadTaskEmpty() {
-        return this.uploadTasks.isEmpty();
-    }
-
-    public boolean isTaskEmpty() {
-        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
-    }
-
-    public void addTaskSizeCallback(Runnable callback) {
-        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-            callback.run();
-        });
-        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
-            callback.run();
-        });
-    }
+//    public int getTaskSize() {
+//        return this.uploadTasks.size() + this.downloadTasks.size();
+//    }
+//
+//    public boolean isUploadTaskEmpty() {
+//        return this.uploadTasks.isEmpty();
+//    }
+//
+//    public boolean isTaskEmpty() {
+//        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
+//    }
+//
+//    public void addTaskSizeCallback(Runnable callback) {
+//        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
+//            callback.run();
+//        });
+//        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
+//            callback.run();
+//        });
+//    }
 }

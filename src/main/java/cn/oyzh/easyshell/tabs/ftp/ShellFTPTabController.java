@@ -138,7 +138,8 @@ public class ShellFTPTabController extends RichTabController {
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
                 this.hiddenFile(this.setting.isShowHiddenFile());
-                this.client.addTaskSizeCallback(() -> {
+                // 任务数量监听
+                this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty()) {
                         this.manage.clear();
                     } else {

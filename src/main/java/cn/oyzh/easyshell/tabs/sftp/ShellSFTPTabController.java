@@ -226,7 +226,8 @@ public class ShellSFTPTabController extends RichTabController {
 //                this.fileTable.setDownloadFileCallback(files -> {
 //                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
 //                });
-                this.client.addTaskSizeCallback(() -> {
+                // 任务数量监听
+                this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty()) {
                         this.manage.clear();
                     } else {

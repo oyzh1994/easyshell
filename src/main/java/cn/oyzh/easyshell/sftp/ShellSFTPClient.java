@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -11,7 +10,6 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -19,12 +17,10 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpProgressMonitor;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
@@ -264,21 +260,21 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         }
     }
 
-    @Override
-    public void doDelete(ShellSFTPFile file) {
-        ShellFileDeleteTask task = new ShellFileDeleteTask(file, this);
-        Thread thread = ThreadUtil.startVirtual(() -> {
-            try {
-                task.doDelete();
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                deleteTasks.remove(task);
-            }
-        });
-        task.setWorker(thread);
-        this.deleteTasks.add(task);
-    }
+//    @Override
+//    public void doDelete(ShellSFTPFile file) {
+//        ShellFileDeleteTask task = new ShellFileDeleteTask(file, this);
+//        Thread thread = ThreadUtil.startVirtual(() -> {
+//            try {
+//                task.doDelete();
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            } finally {
+//                deleteTasks.remove(task);
+//            }
+//        });
+//        task.setWorker(thread);
+//        this.deleteTasks.add(task);
+//    }
 
 //    public void upload(File localFile, String remoteFile) throws Exception {
 //        this.getUploadManager().fileUpload(localFile, remoteFile, this);
@@ -487,72 +483,75 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
+    @Override
     public ObservableList<ShellFileUploadTask> uploadTasks() {
         return uploadTasks;
     }
 
-    @Override
-    public void doUpload(File localFile, String remotePath) {
-        ShellFileUploadTask task = new ShellFileUploadTask(localFile, remotePath, this);
-        Thread thread = ThreadUtil.startVirtual(() -> {
-            try {
-                task.doUpload();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("upload interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.uploadTasks.remove(task);
-            }
-        });
-        task.setWorker(thread);
-        this.uploadTasks.add(task);
-    }
+//    @Override
+//    public void doUpload(File localFile, String remotePath) {
+//        ShellFileUploadTask task = new ShellFileUploadTask(localFile, remotePath, this);
+//        Thread thread = ThreadUtil.startVirtual(() -> {
+//            try {
+//                task.doUpload();
+//            } catch (InterruptedException | InterruptedIOException ex) {
+//                JulLog.warn("upload interrupted");
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            } finally {
+//                this.uploadTasks.remove(task);
+//            }
+//        });
+//        task.setWorker(thread);
+//        this.uploadTasks.add(task);
+//    }
 
-    @Override
-    public void doDownload(ShellSFTPFile remoteFile, String localPath) {
-        ShellFileDownloadTask task = new ShellFileDownloadTask(remoteFile, localPath, this);
-        Thread thread = ThreadUtil.startVirtual(() -> {
-            try {
-                task.doDownload();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                this.downloadTasks.remove(task);
-            }
-        });
-        task.setWorker(thread);
-        this.downloadTasks.add(task);
-    }
+//    @Override
+//    public void doDownload(ShellSFTPFile remoteFile, String localPath) {
+//        ShellFileDownloadTask task = new ShellFileDownloadTask(remoteFile, localPath, this);
+//        Thread thread = ThreadUtil.startVirtual(() -> {
+//            try {
+//                task.doDownload();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            } finally {
+//                this.downloadTasks.remove(task);
+//            }
+//        });
+//        task.setWorker(thread);
+//        this.downloadTasks.add(task);
+//    }
 
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
+    @Override
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
     }
 
-    public boolean isDownloadTaskEmpty() {
-        return this.downloadTasks.isEmpty();
-    }
+//    public boolean isDownloadTaskEmpty() {
+//        return this.downloadTasks.isEmpty();
+//    }
+//
+//    public boolean isUploadTaskEmpty() {
+//        return this.uploadTasks.isEmpty();
+//    }
+//
+//    public boolean isDeleteTaskEmpty() {
+//        return this.deleteTasks.isEmpty();
+//    }
 
-    public boolean isUploadTaskEmpty() {
-        return this.uploadTasks.isEmpty();
-    }
+//    public boolean isTaskEmpty() {
+//        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
+//    }
 
-    public boolean isDeleteTaskEmpty() {
-        return this.deleteTasks.isEmpty();
-    }
-
-    public boolean isTaskEmpty() {
-        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
-    }
-
-    public int getTaskSize() {
-        return this.uploadTasks.size() + this.downloadTasks.size();
-    }
+//    public int getTaskSize() {
+//        return this.uploadTasks.size() + this.downloadTasks.size();
+//    }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
+    @Override
     public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
     }
@@ -574,14 +573,14 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //        task.setWorker(thread);
 //        this.deleteTasks.add(task);
 //    }
-    public void addTaskSizeCallback(Runnable callback) {
-        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-            callback.run();
-        });
-        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
-            callback.run();
-        });
-    }
+//    public void addTaskSizeCallback(Runnable callback) {
+//        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
+//            callback.run();
+//        });
+//        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
+//            callback.run();
+//        });
+//    }
 
 
 }

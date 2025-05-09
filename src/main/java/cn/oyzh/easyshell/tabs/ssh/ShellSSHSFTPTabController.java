@@ -221,7 +221,8 @@ public class ShellSSHSFTPTabController extends SubTabController {
 //        this.fileTable.setDownloadFileCallback(files -> {
 //            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.downloadBox);
 //        });
-        this.sftpClient().addTaskSizeCallback(() -> {
+        // 任务数量监听
+        this.sftpClient().addTaskSizeListener(() -> {
             if (this.sftpClient().isTaskEmpty()) {
                 this.manage.clear();
             } else {

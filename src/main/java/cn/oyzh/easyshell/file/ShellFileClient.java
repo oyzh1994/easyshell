@@ -1,7 +1,14 @@
 package cn.oyzh.easyshell.file;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.fx.plus.information.MessageBox;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -96,13 +103,6 @@ public interface ShellFileClient<E extends ShellFile> {
     void deleteDirRecursive(String dir) throws Exception;
 
     /**
-     * 执行删除文件/文件夹
-     *
-     * @param file 文件
-     */
-    void doDelete(E file);
-
-    /**
      * 重命名文件
      *
      * @param filePath 文件路径
@@ -155,32 +155,6 @@ public interface ShellFileClient<E extends ShellFile> {
     void cd(String filePath) throws Exception;
 
     /**
-     * 执行上传
-     *
-     * @param localFile  本地文件
-     * @param remotePath 远程路径
-     */
-    void doUpload(File localFile, String remotePath);
-
-    /**
-     * 执行下载
-     *
-     * @param remoteFile 远程文件
-     * @param localPath  本地路径
-     */
-    default void doDownload(E remoteFile, File localPath) {
-        this.doDownload(remoteFile, localPath.getPath());
-    }
-
-    /**
-     * 执行下载
-     *
-     * @param remoteFile 远程文件
-     * @param localPath  本地路径
-     */
-    void doDownload(E remoteFile, String localPath);
-
-    /**
      * 下载文件
      *
      * @param localFile  本地文件
@@ -219,5 +193,163 @@ public interface ShellFileClient<E extends ShellFile> {
      * @param remoteFile 远程文件
      * @throws IOException 异常
      */
-     void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception ;
+    void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception;
+
+    /**
+     * 创建删除任务
+     *
+     * @param file 文件
+     */
+    default void doDelete(E file) {
+        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
+        Thread worker = ThreadUtil.startVirtual(() -> {
+            try {
+                deleteTask.doDelete();
+            } catch (InterruptedException | InterruptedIOException ex) {
+                JulLog.warn("delete interrupted");
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            } finally {
+                this.deleteTasks().remove(deleteTask);
+            }
+        });
+        deleteTask.setWorker(worker);
+        this.deleteTasks().add(deleteTask);
+    }
+
+    /**
+     * 获取删除任务列表
+     *
+     * @return 删除任务列表
+     */
+    ObservableList<ShellFileDeleteTask> deleteTasks();
+
+    /**
+     * 创建上传任务
+     *
+     * @param localFile  本地文件
+     * @param remotePath 远程路径
+     */
+    default void doUpload(File localFile, String remotePath) {
+        ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remotePath, this);
+        Thread worker = ThreadUtil.startVirtual(() -> {
+            try {
+                uploadTask.doUpload();
+            } catch (InterruptedException | InterruptedIOException ex) {
+                JulLog.warn("upload interrupted");
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            } finally {
+                this.uploadTasks().remove(uploadTask);
+            }
+        });
+        uploadTask.setWorker(worker);
+        this.uploadTasks().add(uploadTask);
+    }
+
+    /**
+     * 获取上传任务列表
+     *
+     * @return 上传任务列表
+     */
+    ObservableList<ShellFileUploadTask> uploadTasks();
+
+    /**
+     * 创建下载任务
+     *
+     * @param remoteFile 远程文件
+     * @param localPath  本地路径
+     */
+    default void doDownload(E remoteFile, File localPath) {
+        this.doDownload(remoteFile, localPath.getPath());
+    }
+
+    /**
+     * 创建下载任务
+     *
+     * @param remoteFile 远程文件
+     * @param localPath  本地路径
+     */
+    default void doDownload(E remoteFile, String localPath) {
+        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
+        Thread worker = ThreadUtil.startVirtual(() -> {
+            try {
+                downloadTask.doDownload();
+            } catch (InterruptedException | InterruptedIOException ex) {
+                JulLog.warn("download interrupted");
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            } finally {
+                this.downloadTasks().remove(downloadTask);
+            }
+        });
+        downloadTask.setWorker(worker);
+        this.downloadTasks().add(downloadTask);
+    }
+
+    /**
+     * 获取下载任务列表
+     *
+     * @return 下载任务列表
+     */
+    ObservableList<ShellFileDownloadTask> downloadTasks();
+
+    /**
+     * 获取任务数量
+     *
+     * @return 任务数量
+     */
+    default int getTaskSize() {
+        return this.uploadTasks().size() + this.downloadTasks().size();
+    }
+
+    /**
+     * 下载任务是否为空
+     *
+     * @return 结果
+     */
+    default boolean isDownloadTaskEmpty() {
+        return this.downloadTasks().isEmpty();
+    }
+
+    /**
+     * 上传任务是否为空
+     *
+     * @return 结果
+     */
+    default boolean isUploadTaskEmpty() {
+        return this.uploadTasks().isEmpty();
+    }
+
+    /**
+     * 删除任务是否为空
+     *
+     * @return 结果
+     */
+    default boolean isDeleteTaskEmpty() {
+        return this.deleteTasks().isEmpty();
+    }
+
+    /**
+     * 任务是否为空
+     *
+     * @return 结果
+     */
+    default boolean isTaskEmpty() {
+        return this.uploadTasks().isEmpty() && this.downloadTasks().isEmpty();
+    }
+
+    /**
+     * 添加任务数量监听
+     *
+     * @param callback 回调
+     */
+    default void addTaskSizeListener(Runnable callback) {
+        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
+            callback.run();
+        });
+        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
+            callback.run();
+        });
+    }
 }
