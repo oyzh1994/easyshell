@@ -106,11 +106,11 @@ public class ShellSFTPDownloadTask {
     }
 
     /**
-     * 执行上传
+     * 执行下载
      *
      * @throws Exception 异常
      */
-    public void download() throws Exception {
+    public void doDownload() throws Exception {
         this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
         this.initFile();
         this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
@@ -118,9 +118,9 @@ public class ShellSFTPDownloadTask {
             try {
                 // 当前文件
                 ShellSFTPFile file = this.fileList.removeFirst();
-                // 设置文件
+                // 设置当前文件
                 this.currentFileProperty.set(file.getName());
-                // 远程文件目录
+                // 本地文件目录
                 String localFilePath;
 //                // 文件
                 if (this.remoteFile.isFile()) {
@@ -134,7 +134,7 @@ public class ShellSFTPDownloadTask {
                         FileUtil.mkdir(localDir);
                     }
                 }
-                // 执行上传
+                // 执行下载
                 this.client.get(file.getFilePath(), localFilePath, new ShellSFTPProgressMonitor() {
                     @Override
                     public boolean count(long count) {
@@ -264,7 +264,7 @@ public class ShellSFTPDownloadTask {
         this.status = status;
         switch (status) {
             case FAILED:
-                this.statusProperty.set(I18nHelper.uploadFailed());
+                this.statusProperty.set(I18nHelper.downloadFailed());
                 break;
             case CANCELED:
                 this.statusProperty.set(I18nHelper.cancel());

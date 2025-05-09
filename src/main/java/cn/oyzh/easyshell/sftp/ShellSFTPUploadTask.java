@@ -115,7 +115,7 @@ public class ShellSFTPUploadTask {
      *
      * @throws Exception 异常
      */
-    public void upload() throws Exception {
+    public void doUpload() throws Exception {
         this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
         this.initFile();
         this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
@@ -123,7 +123,7 @@ public class ShellSFTPUploadTask {
             try {
                 // 当前文件
                 File file = this.fileList.removeFirst();
-                // 设置文件
+                // 设置当前文件
                 this.currentFileProperty.set(file.getName());
                 // 远程文件目录
                 String remoteFilePath;
@@ -160,7 +160,7 @@ public class ShellSFTPUploadTask {
                 }
             }
         }
-        if (this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED && this.status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.FAILED) {
+        if (this.status != ShellSFTPStatus.CANCELED && this.status != ShellSFTPStatus.FAILED) {
             this.updateStatus(ShellSFTPStatus.FINISHED);
         }
     }

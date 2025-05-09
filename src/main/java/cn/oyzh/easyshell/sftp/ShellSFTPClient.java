@@ -395,17 +395,17 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 
     public void uploadFile(File localFile, String remotePath) throws Exception {
         ShellSFTPUploadTask task = new ShellSFTPUploadTask(localFile, remotePath, this);
-        uploadTasks.add(task);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
-                task.upload();
+                task.doUpload();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                uploadTasks.remove(task);
+                this.uploadTasks.remove(task);
             }
         });
         task.setWorker(thread);
+        this.uploadTasks.add(task);
     }
 
     private final ObservableList<ShellSFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
@@ -416,17 +416,17 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 
     public void downloadFile(ShellSFTPFile remoteFile, File localPath) throws Exception {
         ShellSFTPDownloadTask task = new ShellSFTPDownloadTask(remoteFile, localPath, this);
-        downloadTasks.add(task);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
-                task.download();
+                task.doDownload();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                downloadTasks.remove(task);
+                this.downloadTasks.remove(task);
             }
         });
         task.setWorker(thread);
+        this.downloadTasks.add(task);
     }
 
     public boolean isDownloadTaskEmpty() {
@@ -456,10 +456,9 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     }
 
     public void deleteFile(ShellSFTPFile file) throws Exception {
-        ShellSFTPDeleteFile deleteFile = new ShellSFTPDeleteFile();
-        deleteFile.setFile(file);
-        ShellSFTPDeleteTask task = new ShellSFTPDeleteTask(deleteFile, this);
-        deleteTasks.add(task);
+//        ShellSFTPDeleteFile deleteFile = new ShellSFTPDeleteFile();
+//        deleteFile.setFile(file);
+        ShellSFTPDeleteTask task = new ShellSFTPDeleteTask(file, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
                 task.doDelete();
@@ -469,7 +468,8 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
                 deleteTasks.remove(task);
             }
         });
-        deleteFile.setTask(thread);
+        task.setWorker(thread);
+        this.deleteTasks.add(task);
     }
 
     public void addTaskSizeCallback(Runnable callback) {

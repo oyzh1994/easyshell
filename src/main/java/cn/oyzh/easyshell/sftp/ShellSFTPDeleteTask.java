@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,7 +31,7 @@ public class ShellSFTPDeleteTask {
     /**
      * 远程文件
      */
-    private ShellSFTPFile remoteFile;
+    private final ShellSFTPFile remoteFile;
 
     /**
      * 客户端
@@ -42,15 +43,14 @@ public class ShellSFTPDeleteTask {
      */
     private transient ShellSFTPStatus status;
 
-    /**
-     * 上传文件
-     */
-    private final ShellSFTPDeleteFile deleteFile;
+//    /**
+//     * 上传文件
+//     */
+//    private final ShellSFTPDeleteFile deleteFile;
 
-    public ShellSFTPDeleteTask(ShellSFTPDeleteFile deleteFile, ShellSFTPClient client) {
+    public ShellSFTPDeleteTask(ShellSFTPFile remoteFile, ShellSFTPClient client) {
         this.client = client;
-        this.deleteFile = deleteFile;
-        this.remoteFile = deleteFile.getFile();
+        this.remoteFile = remoteFile;
     }
 
     /**
@@ -60,14 +60,15 @@ public class ShellSFTPDeleteTask {
      */
     public void doDelete() throws Exception {
         this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
+        this.startTime = System.currentTimeMillis();
         this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
         try {
             this.remoteFile.startWaiting();
-            // 执行上传
+            // 执行删除
             if (this.remoteFile.isDirectory()) {
-                this.client.rmdirRecursive(remoteFile.getFilePath());
+                this.client.rmdirRecursive(this.remoteFile.getFilePath());
             } else {
-                this.client.rm(remoteFile.getFilePath());
+                this.client.rm(this.remoteFile.getFilePath());
             }
         } catch (Exception ex) {// 其他
             // 忽略中断异常
@@ -88,7 +89,8 @@ public class ShellSFTPDeleteTask {
      * 取消
      */
     public void cancel() {
-        this.deleteFile.getTask().interrupt();
+//        this.deleteFile.getTask().interrupt();
+        ThreadUtil.interrupt(this.worker);
         this.updateStatus(ShellSFTPStatus.CANCELED);
     }
 
@@ -105,7 +107,7 @@ public class ShellSFTPDeleteTask {
         this.status = status;
         switch (status) {
             case FAILED:
-                this.statusProperty.set(I18nHelper.uploadFailed());
+                this.statusProperty.set(I18nHelper.deleteFailed());
                 break;
             case CANCELED:
                 this.statusProperty.set(I18nHelper.cancel());
@@ -114,7 +116,7 @@ public class ShellSFTPDeleteTask {
                 this.statusProperty.set(I18nHelper.finished());
                 break;
             case EXECUTE_ING:
-                this.statusProperty.set(I18nHelper.uploadIng());
+                this.statusProperty.set(I18nHelper.deleteIng());
                 break;
             case IN_PREPARATION:
                 this.statusProperty.set(I18nHelper.inPreparation());
@@ -125,5 +127,11 @@ public class ShellSFTPDeleteTask {
 
     public StringProperty statusProperty() {
         return this.statusProperty;
+    }
+
+    private Thread worker;
+
+    public void setWorker(Thread worker) {
+        this.worker = worker;
     }
 }
