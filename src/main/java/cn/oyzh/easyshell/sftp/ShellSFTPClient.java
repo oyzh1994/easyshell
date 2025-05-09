@@ -5,10 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.FileClient;
-import cn.oyzh.easyshell.sftp.delete.ShellSFTPDeleteManager;
-import cn.oyzh.easyshell.sftp.download.ShellSFTPDownloadManager;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
-import cn.oyzh.easyshell.sftp.upload.ShellSFTPUploadManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -76,22 +73,22 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 //                this.sftpManager.close();
 //                this.sftpManager = null;
 //            }
-            if (this.deleteManager != null) {
-                this.deleteManager.close();
-                this.deleteManager = null;
-            }
-            if (this.uploadManager != null) {
-                this.uploadManager.close();
-                this.uploadManager = null;
-            }
+//            if (this.deleteManager != null) {
+//                this.deleteManager.close();
+//                this.deleteManager = null;
+//            }
+//            if (this.uploadManager != null) {
+//                this.uploadManager.close();
+//                this.uploadManager = null;
+//            }
             if (this.transportManager != null) {
                 this.transportManager.close();
                 this.transportManager = null;
             }
-            if (this.downloadManager != null) {
-                this.downloadManager.close();
-                this.downloadManager = null;
-            }
+//            if (this.downloadManager != null) {
+//                this.downloadManager.close();
+//                this.downloadManager = null;
+//            }
             // 销毁回话
             if (this.session != null && this.session.isConnected()) {
                 this.session.disconnect();
@@ -154,32 +151,32 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 //        return this.sftpManager;
 //    }
 
-    private ShellSFTPUploadManager uploadManager;
-
-    public ShellSFTPUploadManager getUploadManager() {
-        if (this.uploadManager == null) {
-            this.uploadManager = new ShellSFTPUploadManager();
-        }
-        return uploadManager;
-    }
-
-    private ShellSFTPDeleteManager deleteManager;
-
-    public ShellSFTPDeleteManager getDeleteManager() {
-        if (this.deleteManager == null) {
-            this.deleteManager = new ShellSFTPDeleteManager(this::newSFTP);
-        }
-        return deleteManager;
-    }
-
-    private ShellSFTPDownloadManager downloadManager;
-
-    public ShellSFTPDownloadManager getDownloadManager() {
-        if (this.downloadManager == null) {
-            this.downloadManager = new ShellSFTPDownloadManager();
-        }
-        return downloadManager;
-    }
+//    private ShellSFTPUploadManager uploadManager;
+//
+//    public ShellSFTPUploadManager getUploadManager() {
+//        if (this.uploadManager == null) {
+//            this.uploadManager = new ShellSFTPUploadManager();
+//        }
+//        return uploadManager;
+//    }
+//
+//    private ShellSFTPDeleteManager deleteManager;
+//
+//    public ShellSFTPDeleteManager getDeleteManager() {
+//        if (this.deleteManager == null) {
+//            this.deleteManager = new ShellSFTPDeleteManager(this::newSFTP);
+//        }
+//        return deleteManager;
+//    }
+//
+//    private ShellSFTPDownloadManager downloadManager;
+//
+//    public ShellSFTPDownloadManager getDownloadManager() {
+//        if (this.downloadManager == null) {
+//            this.downloadManager = new ShellSFTPDownloadManager();
+//        }
+//        return downloadManager;
+//    }
 
     private ShellSFTPTransportManager transportManager;
 
@@ -279,13 +276,13 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         this.deleteTasks.add(task);
     }
 
-    public void upload(File localFile, String remoteFile) throws Exception {
-        this.getUploadManager().fileUpload(localFile, remoteFile, this);
-    }
-
-    public void download(File localFile, ShellSFTPFile remoteFile) throws Exception {
-        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
-    }
+//    public void upload(File localFile, String remoteFile) throws Exception {
+//        this.getUploadManager().fileUpload(localFile, remoteFile, this);
+//    }
+//
+//    public void download(File localFile, ShellSFTPFile remoteFile) throws Exception {
+//        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
+//    }
 
     public void transport(ShellSFTPFile localFile, String remoteFile, ShellSFTPClient remoteClient) {
         this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
