@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.ftp;
+package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellFTPDownloadTaskTableView extends FXTableView<ShellFileDownloadTask> {
+public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloadTask> {
 
     @Override
     public void initNode() {

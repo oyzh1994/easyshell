@@ -5,7 +5,6 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.i18n.I18nHelper;
@@ -106,7 +105,7 @@ public class ShellFileUploadTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellFileUploadTask(File localFile, String remotePath, ShellFTPClient client) {
+    public ShellFileUploadTask(File localFile, String remotePath, ShellFileClient client) {
         this.client = client;
         this.localFile = localFile;
         this.remotePath = remotePath;

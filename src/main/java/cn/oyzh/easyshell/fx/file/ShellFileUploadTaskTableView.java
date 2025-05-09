@@ -1,7 +1,7 @@
-package cn.oyzh.easyshell.fx.sftp;
+package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPUploadTaskTableView extends FXTableView<ShellSFTPUploadTask> {
+public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTask> {
 
     @Override
     public void initNode() {
@@ -42,14 +42,14 @@ public class ShellSFTPUploadTaskTableView extends FXTableView<ShellSFTPUploadTas
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellSFTPUploadTask> tasks = this.getSelectedItems();
+        List<ShellFileUploadTask> tasks = this.getSelectedItems();
         if (CollectionUtil.isEmpty(tasks)) {
             return Collections.emptyList();
         }
-        List<ShellSFTPUploadTask> list = new ArrayList<>(tasks);
+        List<ShellFileUploadTask> list = new ArrayList<>(tasks);
         List<MenuItem> menuItems = new ArrayList<>();
         MenuItem cancelTransport = MenuItemHelper.cancelUpload("12", () -> {
-            for (ShellSFTPUploadTask task : list) {
+            for (ShellFileUploadTask task : list) {
                 task.cancel();
             }
             this.removeItem(list);

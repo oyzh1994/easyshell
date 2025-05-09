@@ -6,7 +6,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
-import cn.oyzh.easyshell.ftp.ShellFTPFile;
+import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -399,7 +400,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     }
 
     @Override
-    public void get(ShellFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
+    public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             SftpProgressMonitor monitor = callback == null ? null : new SftpProgressMonitor() {
                 @Override
@@ -484,15 +485,15 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         }
     }
 
-    private final ObservableList<ShellSFTPUploadTask> uploadTasks = FXCollections.observableArrayList();
+    private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellSFTPUploadTask> uploadTasks() {
+    public ObservableList<ShellFileUploadTask> uploadTasks() {
         return uploadTasks;
     }
 
     @Override
     public void doUpload(File localFile, String remotePath) {
-        ShellSFTPUploadTask task = new ShellSFTPUploadTask(localFile, remotePath, this);
+        ShellFileUploadTask task = new ShellFileUploadTask(localFile, remotePath, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
                 task.doUpload();
@@ -510,7 +511,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public void doDownload(ShellSFTPFile remoteFile, String localPath) {
-        ShellSFTPDownloadTask task = new ShellSFTPDownloadTask(remoteFile, localPath, this);
+        ShellFileDownloadTask task = new ShellFileDownloadTask(remoteFile, localPath, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
                 task.doDownload();
@@ -524,12 +525,11 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         this.downloadTasks.add(task);
     }
 
-    private final ObservableList<ShellSFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
+    private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellSFTPDownloadTask> downloadTasks() {
+    public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
     }
-
 
     public boolean isDownloadTaskEmpty() {
         return this.downloadTasks.isEmpty();
@@ -575,10 +575,10 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //        this.deleteTasks.add(task);
 //    }
     public void addTaskSizeCallback(Runnable callback) {
-        this.uploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
+        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
             callback.run();
         });
-        this.downloadTasks().addListener((ListChangeListener<ShellSFTPDownloadTask>) change -> {
+        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
             callback.run();
         });
     }

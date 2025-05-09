@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.ftp;
 
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.fx.ftp.ShellFTPDownloadTaskTableView;
-import cn.oyzh.easyshell.fx.ftp.ShellFTPUploadTaskTableView;
+import cn.oyzh.easyshell.fx.file.ShellFileDownloadTaskTableView;
+import cn.oyzh.easyshell.fx.file.ShellFileUploadTaskTableView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -23,13 +23,13 @@ public class ShellFTPManageController extends StageController {
      * 上传表
      */
     @FXML
-    private ShellFTPUploadTaskTableView uploadTable;
+    private ShellFileUploadTaskTableView uploadTable;
 
     /**
      * 下载表
      */
     @FXML
-    private ShellFTPDownloadTaskTableView downloadTable;
+    private ShellFileDownloadTaskTableView downloadTable;
 
     @Override
     protected void bindListeners() {

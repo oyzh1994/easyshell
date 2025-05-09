@@ -4,11 +4,11 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -39,7 +39,7 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
     public void setClient(ShellSFTPClient client) {
         super.setClient(client);
 //        this.client.getDeleteManager().addDeleteDeletedCallback(this, this::fileDeleted);
-        this.client.uploadTasks().addListener((ListChangeListener<ShellSFTPUploadTask>) change -> {
+        this.client.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
             if (this.client.isUploadTaskEmpty()) {
                 this.loadFile();
             }

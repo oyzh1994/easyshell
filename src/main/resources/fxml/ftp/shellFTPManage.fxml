@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.ftp.ShellFTPDownloadTaskTableView?>
-<?import cn.oyzh.easyshell.fx.ftp.ShellFTPUploadTaskTableView?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileDownloadTaskTableView?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileUploadTaskTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadBoxSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UploadBoxSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
@@ -14,7 +14,7 @@
         <graphic>
             <UploadBoxSVGGlyph sizeStr="12"/>
         </graphic>
-        <ShellFTPUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
+        <ShellFileUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
             <columns>
                 <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
                 <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
@@ -25,13 +25,13 @@
                 <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
                 <FXTableColumn prefWidth="70" valueName="status" text="%base.status"/>
             </columns>
-        </ShellFTPUploadTaskTableView>
+        </ShellFileUploadTaskTableView>
     </FXTab>
     <FXTab text="%base.download">
         <graphic>
             <DownloadBoxSVGGlyph sizeStr="12"/>
         </graphic>
-        <ShellFTPDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
+        <ShellFileDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
             <columns>
                 <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
                 <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
@@ -42,7 +42,7 @@
                 <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
                 <FXTableColumn prefWidth="70" valueName="status" text="%base.status"/>
             </columns>
-        </ShellFTPDownloadTaskTableView>
+        </ShellFileDownloadTaskTableView>
     </FXTab>
 </FXTabPane>
 
