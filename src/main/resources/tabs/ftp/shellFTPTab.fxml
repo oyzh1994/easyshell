@@ -21,6 +21,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.BoxSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.ftp.ShellFTPTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -67,11 +68,11 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
-        <BoxSVGGlyph fx:id="manage" onMousePrimaryClicked="#manage">
+        <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
             <HBox.margin>
                 <Insets left="5" top="8"/>
             </HBox.margin>
-        </BoxSVGGlyph>
+        </BoxSVGLabel>
         <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
                 <Insets left="5" top="8"/>

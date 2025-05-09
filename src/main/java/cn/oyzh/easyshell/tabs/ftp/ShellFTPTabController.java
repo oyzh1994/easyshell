@@ -17,6 +17,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -49,6 +50,12 @@ public class ShellFTPTabController extends RichTabController {
     private ShellFileLocationTextField location;
 
     /**
+     * 上传/下载管理
+     */
+    @FXML
+    private SVGLabel manage;
+
+    /**
      * 刷新文件
      */
     @FXML
@@ -78,17 +85,17 @@ public class ShellFTPTabController extends RichTabController {
     @FXML
     private ClearableTextField filterFile;
 
-    /**
-     * 上传文件按钮
-     */
-    @FXML
-    private SVGGlyph uploadFile;
-
-    /**
-     * 上传文件夹按钮
-     */
-    @FXML
-    private SVGGlyph uploadDir;
+//    /**
+//     * 上传文件按钮
+//     */
+//    @FXML
+//    private SVGGlyph uploadFile;
+//
+//    /**
+//     * 上传文件夹按钮
+//     */
+//    @FXML
+//    private SVGGlyph uploadDir;
 
     /**
      * 设置
@@ -131,6 +138,13 @@ public class ShellFTPTabController extends RichTabController {
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
                 this.hiddenFile(this.setting.isShowHiddenFile());
+                this.client.addTaskSizeCallback(() -> {
+                    if (this.client.isTaskEmpty()) {
+                        this.manage.clear();
+                    } else {
+                        this.manage.setText("(" + this.client.getTaskSize() + ")");
+                    }
+                });
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

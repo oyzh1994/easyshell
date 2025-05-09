@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -429,7 +430,24 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
         return FTPReply.isPositiveCompletion(replyCode);
     }
 
+    public int getTaskSize() {
+        return this.uploadTasks.size() + this.downloadTasks.size();
+    }
+
     public boolean isUploadTaskEmpty() {
         return this.uploadTasks.isEmpty();
+    }
+
+    public boolean isTaskEmpty() {
+        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
+    }
+
+    public void addTaskSizeCallback(Runnable callback) {
+        this.uploadTasks().addListener((ListChangeListener<ShellFTPUploadTask>) change -> {
+            callback.run();
+        });
+        this.downloadTasks().addListener((ListChangeListener<ShellFTPDownloadTask>) change -> {
+            callback.run();
+        });
     }
 }

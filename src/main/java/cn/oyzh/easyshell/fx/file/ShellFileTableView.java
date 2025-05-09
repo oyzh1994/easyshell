@@ -2,14 +2,18 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.file.FileClient;
 import cn.oyzh.easyshell.util.ShellFile;
 import cn.oyzh.easyshell.util.ShellFileUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -26,7 +30,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -121,6 +127,7 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
 
     /**
      * 获取客户端
+     *
      * @return 文件客户端
      */
     public C getClient() {
@@ -563,7 +570,6 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
      *
      * @param event 事件
      */
-    @EventSubscribe
     public void onFileSaved(ShellFileSavedEvent event) {
         if (this.existFile(event.fileName())) {
             this.refresh();
@@ -577,6 +583,95 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
         if (optional.isPresent()) {
             this.files.remove(optional.get());
             this.refreshFile();
+        }
+    }
+
+    /**
+     * 上传文件
+     */
+    public void uploadFile() {
+        try {
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+            this.uploadFile(files);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 上传文件夹
+     */
+    public void uploadFolder() {
+        try {
+            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+            this.uploadFile(file);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param file 文件
+     */
+    public void uploadFile(File file) {
+        if (file != null && file.exists()) {
+            this.uploadFile(Collections.singletonList(file));
+        }
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param files 文件列表
+     */
+    public void uploadFile(List<File> files) {
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
+        // 检查要上传的文件是否存在
+        for (File file : files) {
+            if (this.existFile(file.getName())) {
+                if (!MessageBox.confirm(ShellI18nHelper.fileTip3())) {
+                    return;
+                }
+                break;
+            }
+        }
+        for (File file : files) {
+            this.client.doUpload(file, this.getLocation());
+        }
+        MessageBox.okToast(I18nHelper.addedToUploadList());
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param files 文件列表
+     */
+    public void downloadFile(List<E> files) {
+        File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
+        if (dir != null && dir.isDirectory() && dir.exists()) {
+            String[] fileArr = dir.list();
+            // 检查文件是否存在
+            if (ArrayUtil.isNotEmpty(fileArr)) {
+                for (String f1 : fileArr) {
+                    Optional<E> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
+                    if (file.isPresent()) {
+                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
+                            return;
+                        }
+                        break;
+                    }
+                }
+            }
+            for (E file : files) {
+                this.client.doDownload(file, dir);
+            }
+            MessageBox.okToast(I18nHelper.addedToDownloadList());
         }
     }
 }

@@ -1,25 +1,13 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.plus.chooser.DirChooserHelper;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * @author oyzh
@@ -123,118 +111,118 @@ public class ShellSFTPFileConnectTableView extends ShellSFTPFileBaseTableView {
 //        }
 //    }
 
-    /**
-     * 下载回调
-     */
-    private Consumer<List<ShellSFTPFile>> downloadFileCallback;
+//    /**
+//     * 下载回调
+//     */
+//    private Consumer<List<ShellSFTPFile>> downloadFileCallback;
+//
+//    public Consumer<List<ShellSFTPFile>> getDownloadFileCallback() {
+//        return downloadFileCallback;
+//    }
+//
+//    public void setDownloadFileCallback(Consumer<List<ShellSFTPFile>> downloadFileCallback) {
+//        this.downloadFileCallback = downloadFileCallback;
+//    }
 
-    public Consumer<List<ShellSFTPFile>> getDownloadFileCallback() {
-        return downloadFileCallback;
-    }
+//    public boolean downloadFile(List<ShellSFTPFile> files) {
+//        File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
+//        if (dir != null && dir.isDirectory() && dir.exists()) {
+//            String[] fileArr = dir.list();
+//            // 检查文件是否存在
+//            if (ArrayUtil.isNotEmpty(fileArr)) {
+//                for (String f1 : fileArr) {
+//                    Optional<ShellSFTPFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
+//                    if (file.isPresent()) {
+//                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
+//                            return false;
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//            for (ShellSFTPFile file : files) {
+//                try {
+//                    file.setParentPath(this.getLocation());
+//                    this.client.doDownload(file, dir);
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                    MessageBox.exception(ex);
+//                }
+//            }
+//            // 下载回调触发
+//            if (this.downloadFileCallback != null) {
+//                this.downloadFileCallback.accept(files);
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
 
-    public void setDownloadFileCallback(Consumer<List<ShellSFTPFile>> downloadFileCallback) {
-        this.downloadFileCallback = downloadFileCallback;
-    }
+//    /**
+//     * 上传回调
+//     */
+//    private Consumer<List<File>> uploadFileCallback;
+//
+//    public Consumer<List<File>> getUploadFileCallback() {
+//        return uploadFileCallback;
+//    }
+//
+//    public void setUploadFileCallback(Consumer<List<File>> uploadFileCallback) {
+//        this.uploadFileCallback = uploadFileCallback;
+//    }
 
-    public boolean downloadFile(List<ShellSFTPFile> files) {
-        File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
-        if (dir != null && dir.isDirectory() && dir.exists()) {
-            String[] fileArr = dir.list();
-            // 检查文件是否存在
-            if (ArrayUtil.isNotEmpty(fileArr)) {
-                for (String f1 : fileArr) {
-                    Optional<ShellSFTPFile> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
-                    if (file.isPresent()) {
-                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
-                            return false;
-                        }
-                        break;
-                    }
-                }
-            }
-            for (ShellSFTPFile file : files) {
-                try {
-                    file.setParentPath(this.getLocation());
-                    this.client.doDownload(file, dir);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
-                }
-            }
-            // 下载回调触发
-            if (this.downloadFileCallback != null) {
-                this.downloadFileCallback.accept(files);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 上传回调
-     */
-    private Consumer<List<File>> uploadFileCallback;
-
-    public Consumer<List<File>> getUploadFileCallback() {
-        return uploadFileCallback;
-    }
-
-    public void setUploadFileCallback(Consumer<List<File>> uploadFileCallback) {
-        this.uploadFileCallback = uploadFileCallback;
-    }
-
-    public void uploadFile() {
-        try {
-            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-            this.uploadFile(files);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    public void uploadFolder() {
-        try {
-            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
-            this.uploadFile(file);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    public boolean uploadFile(File file) {
-        if (file != null && file.exists()) {
-            return this.uploadFile(Collections.singletonList(file));
-        }
-        return false;
-    }
-
-    public boolean uploadFile(List<File> files) {
-        if (CollectionUtil.isEmpty(files)) {
-            return false;
-        }
-        // 检查要上传的文件是否存在
-        for (File file : files) {
-            if (this.existFile(file.getName())) {
-                if (!MessageBox.confirm(ShellI18nHelper.fileTip3())) {
-                    return false;
-                }
-                break;
-            }
-        }
-        for (File file : files) {
-            try {
-                this.client.doUpload(file, this.getLocation());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        }
-        // 下载回调触发
-        if (this.uploadFileCallback != null) {
-            this.uploadFileCallback.accept(files);
-        }
-        return true;
-    }
+//    public void uploadFile() {
+//        try {
+//            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+//            this.uploadFile(files);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    public void uploadFolder() {
+//        try {
+//            File file = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory());
+//            this.uploadFile(file);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+//
+//    public boolean uploadFile(File file) {
+//        if (file != null && file.exists()) {
+//            return this.uploadFile(Collections.singletonList(file));
+//        }
+//        return false;
+//    }
+//
+//    public boolean uploadFile(List<File> files) {
+//        if (CollectionUtil.isEmpty(files)) {
+//            return false;
+//        }
+//        // 检查要上传的文件是否存在
+//        for (File file : files) {
+//            if (this.existFile(file.getName())) {
+//                if (!MessageBox.confirm(ShellI18nHelper.fileTip3())) {
+//                    return false;
+//                }
+//                break;
+//            }
+//        }
+//        for (File file : files) {
+//            try {
+//                this.client.doUpload(file, this.getLocation());
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        }
+//        // 下载回调触发
+//        if (this.uploadFileCallback != null) {
+//            this.uploadFileCallback.accept(files);
+//        }
+//        return true;
+//    }
 }
