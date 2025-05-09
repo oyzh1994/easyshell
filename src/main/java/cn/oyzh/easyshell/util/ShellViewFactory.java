@@ -30,6 +30,7 @@ import cn.oyzh.easyshell.controller.sftp.ShellSFTPTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.fx.plus.information.MessageBox;

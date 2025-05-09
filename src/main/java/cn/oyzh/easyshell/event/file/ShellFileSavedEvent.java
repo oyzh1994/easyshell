@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.file;
 
 
-import cn.oyzh.easyshell.util.ShellFile;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.event.Event;
 
 /**

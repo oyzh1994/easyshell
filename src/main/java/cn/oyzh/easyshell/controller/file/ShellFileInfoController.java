@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.file;
 
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.util.ShellFile;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;

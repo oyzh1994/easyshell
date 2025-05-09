@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.file.ShellFile;
 
 public class ShellFileUtil {
 

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.util;
+package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.object.ObjectCopier;
@@ -67,6 +67,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileYmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileZipSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderLinkSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
+import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
 public interface ShellFile extends ObjectCopier<ShellFile> {

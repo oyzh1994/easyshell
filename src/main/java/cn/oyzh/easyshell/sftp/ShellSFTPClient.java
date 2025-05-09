@@ -4,7 +4,8 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.file.FileClient;
+import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -33,7 +34,7 @@ import java.util.Vector;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTPFile> {
+public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
 
     public ShellSFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
@@ -262,7 +263,7 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
 
     @Override
     public void doDelete(ShellSFTPFile file) {
-        ShellSFTPDeleteTask task = new ShellSFTPDeleteTask(file, this);
+        ShellFileDeleteTask task = new ShellFileDeleteTask(file, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
                 task.doDelete();
@@ -504,9 +505,9 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
         return this.uploadTasks.size() + this.downloadTasks.size();
     }
 
-    private final ObservableList<ShellSFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
+    private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellSFTPDeleteTask> deleteTasks() {
+    public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
     }
 

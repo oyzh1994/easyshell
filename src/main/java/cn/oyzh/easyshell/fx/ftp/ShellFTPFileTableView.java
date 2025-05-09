@@ -4,7 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.ftp.ShellFTPDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.ftp.ShellFTPUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
@@ -100,10 +100,10 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
                 this.loadFile();
             }
         });
-        this.client.deleteTasks().addListener((ListChangeListener<ShellFTPDeleteTask>) change -> {
+        this.client.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
             change.next();
             if (change.wasRemoved()) {
-                for (ShellFTPDeleteTask task : change.getRemoved()) {
+                for (ShellFileDeleteTask task : change.getRemoved()) {
                     this.onFileDeleted(task.getFilePath());
                 }
             }

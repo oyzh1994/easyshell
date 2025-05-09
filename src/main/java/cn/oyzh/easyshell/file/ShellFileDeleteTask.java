@@ -1,25 +1,26 @@
-package cn.oyzh.easyshell.ftp;
+package cn.oyzh.easyshell.file;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 
 /**
+ * 文件删除任务
+ *
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellFTPDeleteTask {
+public class ShellFileDeleteTask {
 
     /**
      * 远程文件
      */
-    private final ShellFTPFile remoteFile;
+    private final ShellFile remoteFile;
 
     /**
      * 客户端
      */
-    private final ShellFTPClient client;
+    private final ShellFileClient client;
 
-    public ShellFTPDeleteTask(ShellFTPFile remoteFile, ShellFTPClient client) {
+    public ShellFileDeleteTask(ShellFile remoteFile, ShellFileClient<?> client) {
         this.client = client;
         this.remoteFile = remoteFile;
     }
@@ -37,11 +38,6 @@ public class ShellFTPDeleteTask {
                 this.client.deleteDirRecursive(this.remoteFile);
             } else {
                 this.client.delete(this.remoteFile);
-            }
-        } catch (Exception ex) {// 其他
-            // 忽略中断异常
-            if (!ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
-                throw ex;
             }
         } finally {
             this.remoteFile.stopWaiting();

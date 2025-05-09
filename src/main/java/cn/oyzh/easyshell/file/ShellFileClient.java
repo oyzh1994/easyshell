@@ -1,7 +1,5 @@
 package cn.oyzh.easyshell.file;
 
-import cn.oyzh.easyshell.util.ShellFile;
-
 import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,7 +10,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-04-27
  */
-public interface FileClient<E extends ShellFile> {
+public interface ShellFileClient<E extends ShellFile> {
 
     /**
      * 列举文件

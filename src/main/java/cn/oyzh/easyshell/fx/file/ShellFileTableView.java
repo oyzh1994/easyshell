@@ -6,8 +6,8 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
-import cn.oyzh.easyshell.file.FileClient;
-import cn.oyzh.easyshell.util.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-03-05
  */
-public abstract class ShellFileTableView<C extends FileClient<E>, E extends ShellFile> extends FXTableView<E> implements FXEventListener {
+public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends ShellFile> extends FXTableView<E> implements FXEventListener {
 
     @Override
     public void initNode() {

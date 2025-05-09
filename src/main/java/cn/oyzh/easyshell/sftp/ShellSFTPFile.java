@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.date.DateHelper;
-import cn.oyzh.easyshell.util.ShellFile;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;

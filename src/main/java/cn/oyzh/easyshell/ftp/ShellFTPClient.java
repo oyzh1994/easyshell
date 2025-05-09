@@ -6,7 +6,8 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.file.FileClient;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/26
  */
-public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile>, BaseClient {
+public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFTPFile>, BaseClient {
 
     private ShellConnect shellConnect;
 
@@ -103,13 +104,13 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
         return !this.isConnected();
     }
 
-    private final ObservableList<ShellFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
+    private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
     private final ObservableList<ShellFTPUploadTask> uploadTasks = FXCollections.observableArrayList();
 
     private final ObservableList<ShellFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
-    public ObservableList<ShellFTPDeleteTask> deleteTasks() {
+    public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
     }
 
@@ -154,10 +155,12 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
 
     @Override
     public void doDelete(ShellFTPFile file) {
-        ShellFTPDeleteTask deleteTask = new ShellFTPDeleteTask(file, this);
+        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
         Thread worker = ThreadUtil.startVirtual(() -> {
             try {
                 deleteTask.doDelete();
+            } catch (InterruptedException | InterruptedIOException ex) {
+                JulLog.warn("delete interrupted");
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             } finally {
@@ -233,7 +236,7 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
             try {
                 downloadTask.doDownload();
             } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("upload interrupted");
+                JulLog.warn("download interrupted");
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             } finally {

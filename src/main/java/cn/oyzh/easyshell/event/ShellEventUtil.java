@@ -25,7 +25,7 @@ import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
-import cn.oyzh.easyshell.util.ShellFile;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;

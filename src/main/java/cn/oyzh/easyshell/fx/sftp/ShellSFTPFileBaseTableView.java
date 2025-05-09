@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.fx.sftp;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPDeleteTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPUploadTask;
 import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
@@ -44,10 +44,10 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
                 this.loadFile();
             }
         });
-        this.client.deleteTasks().addListener((ListChangeListener<ShellSFTPDeleteTask>) change -> {
+        this.client.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
             change.next();
             if (change.wasRemoved()) {
-                for (ShellSFTPDeleteTask task : change.getRemoved()) {
+                for (ShellFileDeleteTask task : change.getRemoved()) {
                     this.onFileDeleted(task.getFilePath());
                 }
             }
