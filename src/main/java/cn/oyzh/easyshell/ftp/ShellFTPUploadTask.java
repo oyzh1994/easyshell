@@ -1,10 +1,12 @@
-package cn.oyzh.easyshell.sftp;
+package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
@@ -22,7 +24,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellSFTPDownloadTask {
+public class ShellFTPUploadTask {
 
     /**
      * 进度条
@@ -78,17 +80,17 @@ public class ShellSFTPDownloadTask {
     /**
      * 远程路径
      */
-    private final ShellSFTPFile remoteFile;
+    private String remotePath;
 
     /**
      * 本地文件
      */
-    private final File localPath;
+    private final File localFile;
 
     /**
      * 文件列表
      */
-    private List<ShellSFTPFile> fileList;
+    private List<File> fileList;
 
     /**
      * 客户端
@@ -100,43 +102,48 @@ public class ShellSFTPDownloadTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellSFTPDownloadTask(ShellSFTPFile remoteFile, File localPath, ShellSFTPClient client) {
+//    /**
+//     * 上传文件
+//     */
+//    private final ShellSFTPUploadFile uploadFile;
+
+    public ShellFTPUploadTask(File localFile, String remotePath, ShellSFTPClient client) {
         this.client = client;
-        this.localPath = localPath;
-        this.remoteFile = remoteFile;
+        this.localFile = localFile;
+        this.remotePath = remotePath;
     }
 
     /**
-     * 执行下载
+     * 执行上传
      *
      * @throws Exception 异常
      */
-    public void doDownload() throws Exception {
+    public void doUpload() throws Exception {
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
         this.initFile();
         this.updateStatus(ShellFileStatus.EXECUTE_ING);
         while (!this.fileList.isEmpty()) {
             try {
                 // 当前文件
-                ShellSFTPFile file = this.fileList.removeFirst();
+                File file = this.fileList.removeFirst();
                 // 设置当前文件
                 this.currentFileProperty.set(file.getName());
-                // 本地文件目录
-                String localFilePath;
-//                // 文件
-                if (this.remoteFile.isFile()) {
-                    localFilePath = this.getDestPath();
+                // 远程文件目录
+                String remoteFilePath;
+                // 文件
+                if (this.localFile.isFile()) {
+                    remoteFilePath = ShellFileUtil.concat(remotePath, file.getName());
                 } else {// 文件夹
-                    String pPath = file.getParentPath().replace(this.remoteFile.getFilePath(), "");
-                    String localDir = ShellFileUtil.concat(this.getDestPath(), pPath);
-                    localFilePath = ShellFileUtil.concat(localDir, file.getName());
+                    String pPath = file.getParent().replace(this.localFile.getPath(), "");
+                    String remoteDir = ShellFileUtil.concat(remotePath, pPath);
+                    remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
                     // 创建父目录
-                    if (!FileUtil.exist(localDir)) {
-                        FileUtil.mkdir(localDir);
+                    if (!this.client.exist(remoteDir)) {
+                        this.client.mkdirRecursive(remoteDir);
                     }
                 }
-                // 执行下载
-                this.client.get(file.getFilePath(), localFilePath, new ShellSFTPProgressMonitor() {
+                // 执行上传
+                this.client.put(file.getPath(), remoteFilePath, new ShellSFTPProgressMonitor() {
                     @Override
                     public boolean count(long count) {
                         currentSize += count;
@@ -172,17 +179,18 @@ public class ShellSFTPDownloadTask {
     /**
      * 初始化文件
      */
-    protected void initFile() throws Exception {
-        if (this.remoteFile.isFile()) {
+    protected void initFile() {
+        if (this.localFile.isFile()) {
             this.fileList = new ArrayList<>();
-            this.fileList.add(this.remoteFile);
-            this.totalSize = this.remoteFile.getFileSize();
+            this.fileList.add(this.localFile);
+            this.totalSize = this.localFile.length();
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
-            this.client.getAllFiles(this.remoteFile, f -> {
+            this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getName());
+            FileUtil.getAllFiles(this.localFile, f -> {
                 fileList.add(f);
-                this.totalSize += f.getFileSize();
+                this.totalSize += f.length();
                 this.updateFileSize();
             });
         }
@@ -249,11 +257,11 @@ public class ShellSFTPDownloadTask {
     }
 
     public String getSrcPath() {
-        return  this.remoteFile.getFilePath();
+        return localFile.getPath();
     }
 
     public String getDestPath() {
-        return ShellFileUtil.concat(this.localPath.getPath(), this.remoteFile.getFileName());
+        return this.remotePath;
     }
 
     /**
@@ -265,7 +273,7 @@ public class ShellSFTPDownloadTask {
         this.status = status;
         switch (status) {
             case FAILED:
-                this.statusProperty.set(I18nHelper.downloadFailed());
+                this.statusProperty.set(I18nHelper.uploadFailed());
                 break;
             case CANCELED:
                 this.statusProperty.set(I18nHelper.cancel());
@@ -274,7 +282,7 @@ public class ShellSFTPDownloadTask {
                 this.statusProperty.set(I18nHelper.finished());
                 break;
             case EXECUTE_ING:
-                this.statusProperty.set(I18nHelper.downloadIng());
+                this.statusProperty.set(I18nHelper.uploadIng());
                 break;
             case IN_PREPARATION:
                 this.statusProperty.set(I18nHelper.inPreparation());

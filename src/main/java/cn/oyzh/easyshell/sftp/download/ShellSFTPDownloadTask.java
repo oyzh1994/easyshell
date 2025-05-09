@@ -7,7 +7,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.ShellSFTPStatus;
+import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.ChannelSftp;
@@ -29,9 +29,9 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 //    private ShellSFTPDownloadStatus status;
 
     @Override
-    public void updateStatus(ShellSFTPStatus status) {
+    public void updateStatus(ShellFileStatus status) {
         super.updateStatus(status);
-        if (Objects.requireNonNull(status) == ShellSFTPStatus.EXECUTE_ING) {
+        if (Objects.requireNonNull(status) == ShellFileStatus.EXECUTE_ING) {
             this.statusProperty.set(I18nHelper.downloadIng());
         }
         this.manager.taskStatusChanged(this.getStatus(), this);
@@ -89,9 +89,9 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
      */
     public void download() {
         try {
-            this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
+            this.updateStatus(ShellFileStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
+            this.updateStatus(ShellFileStatus.EXECUTE_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doDownload();
@@ -101,7 +101,7 @@ public class ShellSFTPDownloadTask extends ShellSFTPTask<ShellSFTPDownloadMonito
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(ShellSFTPStatus.FINISHED);
+                this.updateStatus(ShellFileStatus.FINISHED);
             }
         }
     }

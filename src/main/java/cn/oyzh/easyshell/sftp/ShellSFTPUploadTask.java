@@ -5,6 +5,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.i18n.I18nHelper;
@@ -97,7 +98,7 @@ public class ShellSFTPUploadTask {
     /**
      * 状态
      */
-    private transient ShellSFTPStatus status;
+    private transient ShellFileStatus status;
 
 //    /**
 //     * 上传文件
@@ -116,9 +117,9 @@ public class ShellSFTPUploadTask {
      * @throws Exception 异常
      */
     public void doUpload() throws Exception {
-        this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
+        this.updateStatus(ShellFileStatus.IN_PREPARATION);
         this.initFile();
-        this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
+        this.updateStatus(ShellFileStatus.EXECUTE_ING);
         while (!this.fileList.isEmpty()) {
             try {
                 // 当前文件
@@ -147,7 +148,7 @@ public class ShellSFTPUploadTask {
                         updateSpeed();
                         updateProgress();
                         updateFileSize();
-                        return status != cn.oyzh.easyshell.sftp.ShellSFTPStatus.CANCELED;
+                        return status != ShellFileStatus.CANCELED;
                     }
                 });
                 this.updateFileCount();
@@ -155,13 +156,13 @@ public class ShellSFTPUploadTask {
                 // 忽略中断异常
                 if (!ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     this.error = ex;
-                    this.updateStatus(ShellSFTPStatus.FAILED);
+                    this.updateStatus(ShellFileStatus.FAILED);
                     throw ex;
                 }
             }
         }
-        if (this.status != ShellSFTPStatus.CANCELED && this.status != ShellSFTPStatus.FAILED) {
-            this.updateStatus(ShellSFTPStatus.FINISHED);
+        if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
+            this.updateStatus(ShellFileStatus.FINISHED);
         }
     }
 
@@ -170,7 +171,7 @@ public class ShellSFTPUploadTask {
      */
     public void cancel() {
         ThreadUtil.interrupt(this.worker);
-        this.updateStatus(ShellSFTPStatus.CANCELED);
+        this.updateStatus(ShellFileStatus.CANCELED);
     }
 
     /**
@@ -266,7 +267,7 @@ public class ShellSFTPUploadTask {
      *
      * @param status 状态
      */
-    private void updateStatus(ShellSFTPStatus status) {
+    private void updateStatus(ShellFileStatus status) {
         this.status = status;
         switch (status) {
             case FAILED:

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,14 +18,14 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
     /**
      * 状态
      */
-    protected ShellSFTPStatus status;
+    protected ShellFileStatus status;
 
     /**
      * 更新状态
      *
      * @param status 状态
      */
-    public void updateStatus(ShellSFTPStatus status) {
+    public void updateStatus(ShellFileStatus status) {
         this.status = status;
         switch (status) {
             case FAILED -> this.statusProperty.set(I18nHelper.failed());
@@ -102,7 +103,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      */
     public void ended(M monitor) {
         this.monitors.remove(monitor);
-        this.updateStatus(ShellSFTPStatus.FINISHED);
+        this.updateStatus(ShellFileStatus.FINISHED);
 //        this.updateTotal();
     }
 
@@ -114,7 +115,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      */
     public void failed(M monitor, Throwable exception) {
         this.monitors.remove(monitor);
-        this.updateStatus(ShellSFTPStatus.FAILED);
+        this.updateStatus(ShellFileStatus.FAILED);
 //        this.updateTotal();
     }
 
@@ -125,7 +126,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      */
     public void canceled(M monitor) {
         this.monitors.remove(monitor);
-        this.updateStatus(ShellSFTPStatus.CANCELED);
+        this.updateStatus(ShellFileStatus.CANCELED);
 //        this.updateTotal();
     }
 
@@ -272,7 +273,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      * @return 结果
      */
     public boolean isFailed() {
-        return this.status == ShellSFTPStatus.FAILED;
+        return this.status == ShellFileStatus.FAILED;
     }
 
     /**
@@ -281,7 +282,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      * @return 结果
      */
     public boolean isFinished() {
-        return this.status == ShellSFTPStatus.FINISHED;
+        return this.status == ShellFileStatus.FINISHED;
     }
 
     /**
@@ -290,7 +291,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      * @return 结果
      */
     public boolean isCancelled() {
-        return this.status == ShellSFTPStatus.CANCELED;
+        return this.status == ShellFileStatus.CANCELED;
     }
 
     /**
@@ -299,7 +300,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      * @return 结果
      */
     public boolean isExecuting() {
-        return this.status == ShellSFTPStatus.EXECUTE_ING;
+        return this.status == ShellFileStatus.EXECUTE_ING;
     }
 
     /**
@@ -308,7 +309,7 @@ public abstract class ShellSFTPTask<M extends ShellSFTPMonitor> {
      * @return 结果
      */
     public boolean isInPreparation() {
-        return this.status == ShellSFTPStatus.IN_PREPARATION;
+        return this.status == ShellFileStatus.IN_PREPARATION;
     }
 
     /**

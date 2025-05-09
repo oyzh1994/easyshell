@@ -569,4 +569,14 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
             this.refresh();
         }
     }
+
+    public void onFileDeleted(String remoteFile) {
+        Optional<E> optional = this.files.parallelStream()
+                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
+                .findAny();
+        if (optional.isPresent()) {
+            this.files.remove(optional.get());
+            this.refreshFile();
+        }
+    }
 }

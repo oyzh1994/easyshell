@@ -111,7 +111,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
                 if (!StringUtil.isBlank(output)) {
                     MessageBox.warn(output);
                 } else if (sftpClient.exist(tempFile)) { // 删除临时文件
-                    sftpClient.rm(tempFile);
+                    sftpClient.delete(tempFile);
                 }
             } catch (Exception ex) {
                 // 忽略No such file错误

@@ -1,10 +1,10 @@
-package cn.oyzh.easyshell.sftp;
+package cn.oyzh.easyshell.file;
 
 /**
  * @author oyzh
  * @since 2025-03-15
  */
-public enum ShellSFTPStatus {
+public enum ShellFileStatus {
 
     IN_PREPARATION,
     EXECUTE_ING,

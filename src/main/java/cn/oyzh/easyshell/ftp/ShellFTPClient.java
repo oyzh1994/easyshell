@@ -100,14 +100,14 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
         return !this.isConnected();
     }
 
-    private final ObservableList<ShellFTPDeleteFile> deleteFiles = FXCollections.observableArrayList();
+    private final ObservableList<ShellFTPDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
     private final ObservableList<ShellFTPUploadFile> uploadFiles = FXCollections.observableArrayList();
 
     private final ObservableList<ShellFTPDownloadFile> downloadFiles = FXCollections.observableArrayList();
 
-    public ObservableList<ShellFTPDeleteFile> getDeleteFiles() {
-        return deleteFiles;
+    public ObservableList<ShellFTPDeleteTask> deleteTasks() {
+        return deleteTasks;
     }
 
     public ObservableList<ShellFTPUploadFile> getUploadFiles() {
@@ -119,51 +119,48 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
     }
 
     @Override
-    public void delete(ShellFTPFile file) {
-        ShellFTPDeleteFile deleteFile = new ShellFTPDeleteFile();
-        deleteFile.setSize(file.getSize());
-        deleteFile.setRemotePath(file.getFilePath());
-        this.deleteFiles.add(deleteFile);
-        Thread task = ThreadUtil.startVirtual(() -> {
-            try {
-                file.startWaiting();
-                if (file.isDirectory()) {
-                    ShellFTPUtil.deleteDirectory(this, file.getFilePath());
-                    super.removeDirectory(file.getFilePath());
-                } else {
-                    super.deleteFile(file.getFilePath());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            } finally {
-                file.stopWaiting();
-                this.deleteFiles.remove(deleteFile);
-            }
-        });
-        deleteFile.setTask(task);
+    public void delete(String file) throws Exception {
+        super.deleteFile(file);
     }
 
-    /**
-     * 删除文件
-     *
-     * @param file 文件
-     */
-    public void doDelete(ShellFTPFile file) {
-        try {
-            file.startWaiting();
-            if (file.isDirectory()) {
-                ShellFTPUtil.deleteDirectory(this, file.getFilePath());
-                super.removeDirectory(file.getFilePath());
-            } else {
-                super.deleteFile(file.getFilePath());
+    @Override
+    public void deleteDir(String dir) throws Exception {
+        super.removeDirectory(dir);
+    }
+
+    @Override
+    public void deleteDirRecursive(String dir) throws Exception {
+        FTPFile[] files = this.listFiles(dir);
+        if (files != null) {
+            for (FTPFile file : files) {
+                String filePath = dir + "/" + file.getName();
+                if (file.isDirectory()) {
+                    // 递归删除子文件夹
+                    deleteDirRecursive(filePath);
+                } else {
+                    // 删除文件
+                    this.deleteFile(filePath);
+                }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        } finally {
-            file.stopWaiting();
         }
+        // 删除空文件夹
+        this.deleteDir(dir);
+    }
+
+    @Override
+    public void doDelete(ShellFTPFile file) {
+        ShellFTPDeleteTask deleteTask = new ShellFTPDeleteTask(file, this);
+        Thread worker = ThreadUtil.startVirtual(() -> {
+            try {
+                deleteTask.doDelete();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            } finally {
+                this.deleteTasks.remove(deleteTask);
+            }
+        });
+        deleteTask.setWorker(worker);
+        this.deleteTasks.add(deleteTask);
     }
 
     /**
@@ -327,4 +324,5 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
         // 检查命令执行结果
         return FTPReply.isPositiveCompletion(replyCode);
     }
+
 }

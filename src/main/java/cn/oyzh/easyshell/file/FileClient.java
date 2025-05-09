@@ -27,7 +27,60 @@ public interface FileClient<E extends ShellFile> {
      * @param file 文件
      * @throws Exception 异常
      */
-    void delete(E file) throws Exception;
+    default void delete(E file) throws Exception {
+        this.delete(file.getFilePath());
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param file 文件
+     * @throws Exception 异常
+     */
+    void delete(String file) throws Exception;
+
+    /**
+     * 删除文件夹
+     *
+     * @param dir 文件夹
+     * @throws Exception 异常
+     */
+    default void deleteDir(E dir) throws Exception {
+        this.deleteDir(dir.getFilePath());
+    }
+
+    /**
+     * 删除文件夹
+     *
+     * @param dir 文件夹
+     * @throws Exception 异常
+     */
+    void deleteDir(String dir) throws Exception;
+
+    /**
+     * 递归删除文件夹
+     *
+     * @param dir 文件夹
+     * @throws Exception 异常
+     */
+    default void deleteDirRecursive(E dir) throws Exception {
+        this.deleteDirRecursive(dir.getFilePath());
+    }
+
+    /**
+     * 递归删除文件夹
+     *
+     * @param dir 文件夹
+     * @throws Exception 异常
+     */
+    void deleteDirRecursive(String dir) throws Exception;
+
+    /**
+     * 执行删除文件/文件夹
+     *
+     * @param file 文件
+     */
+    void doDelete(E file);
 
     /**
      * 重命名文件

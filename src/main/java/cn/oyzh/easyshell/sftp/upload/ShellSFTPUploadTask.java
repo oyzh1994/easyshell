@@ -5,7 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPStatus;
+import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -20,9 +20,9 @@ import java.io.File;
 public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 
     @Override
-    public void updateStatus(ShellSFTPStatus status) {
+    public void updateStatus(ShellFileStatus status) {
         super.updateStatus(status);;
-        if (status == ShellSFTPStatus.EXECUTE_ING) {
+        if (status == ShellFileStatus.EXECUTE_ING) {
             this.statusProperty.set(I18nHelper.uploadIng());
         }
         this.manager.taskStatusChanged(this.getStatus(), this);
@@ -79,9 +79,9 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
      */
     public void upload() {
         try {
-            this.updateStatus(ShellSFTPStatus.IN_PREPARATION);
+            this.updateStatus(ShellFileStatus.IN_PREPARATION);
             this.addMonitorRecursive(localFile, remoteFile);
-            this.updateStatus(ShellSFTPStatus.EXECUTE_ING);
+            this.updateStatus(ShellFileStatus.EXECUTE_ING);
             this.calcTotalSize();
 //            this.updateTotal();
             this.doUpload();
@@ -91,7 +91,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
 //            this.updateTotal();
             // 如果是非取消和失败，则设置为结束
             if (!this.isCancelled() && !this.isFailed()) {
-                this.updateStatus(ShellSFTPStatus.FINISHED);
+                this.updateStatus(ShellFileStatus.FINISHED);
             }
         }
     }
@@ -180,7 +180,7 @@ public class ShellSFTPUploadTask extends ShellSFTPTask<ShellSFTPUploadMonitor> {
     public void cancel() {
         super.cancel();
         this.manager.remove(this);
-        this.updateStatus(ShellSFTPStatus.CANCELED);
+        this.updateStatus(ShellFileStatus.CANCELED);
     }
 
     @Override

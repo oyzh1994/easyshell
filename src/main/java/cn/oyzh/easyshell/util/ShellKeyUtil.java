@@ -222,7 +222,7 @@ public class ShellKeyUtil {
                 client.shellExec().append_file(remoteFile, sshFile);
                 try {
                     // 删除临时公钥文件
-                    sftpClient.rm(remoteFile);
+                    sftpClient.delete(remoteFile);
                 } catch (Exception ignored) {
                 }
             }

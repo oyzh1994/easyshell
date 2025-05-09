@@ -27,7 +27,6 @@ import javafx.scene.control.MenuItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -49,7 +48,7 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
             change.next();
             if (change.wasRemoved()) {
                 for (ShellSFTPDeleteTask task : change.getRemoved()) {
-                    this.fileDeleted(task.getFilePath());
+                    this.onFileDeleted(task.getFilePath());
                 }
             }
         });
@@ -470,7 +469,7 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
                     continue;
                 }
                 // 执行删除
-                this.client.deleteFile(file);
+                this.client.doDelete(file);
             }
             this.refreshFile();
         } catch (Exception ex) {
@@ -518,15 +517,15 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
 //        }
 //    }
 
-    public void fileDeleted(String remoteFile) {
-        Optional<ShellSFTPFile> optional = this.files.parallelStream()
-                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
-                .findAny();
-        if (optional.isPresent()) {
-            this.files.remove(optional.get());
-            this.refreshFile();
-        }
-    }
+//    public void fileDeleted(String remoteFile) {
+//        Optional<ShellSFTPFile> optional = this.files.parallelStream()
+//                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
+//                .findAny();
+//        if (optional.isPresent()) {
+//            this.files.remove(optional.get());
+//            this.refreshFile();
+//        }
+//    }
 
     @Override
     public void cd(String path) {

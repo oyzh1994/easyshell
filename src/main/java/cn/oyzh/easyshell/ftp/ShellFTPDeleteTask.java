@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.sftp;
+package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -7,19 +7,19 @@ import cn.oyzh.common.thread.ThreadUtil;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellSFTPDeleteTask {
+public class ShellFTPDeleteTask {
 
     /**
      * 远程文件
      */
-    private final ShellSFTPFile remoteFile;
+    private final ShellFTPFile remoteFile;
 
     /**
      * 客户端
      */
-    private final ShellSFTPClient client;
+    private final ShellFTPClient client;
 
-    public ShellSFTPDeleteTask(ShellSFTPFile remoteFile, ShellSFTPClient client) {
+    public ShellFTPDeleteTask(ShellFTPFile remoteFile, ShellFTPClient client) {
         this.client = client;
         this.remoteFile = remoteFile;
     }

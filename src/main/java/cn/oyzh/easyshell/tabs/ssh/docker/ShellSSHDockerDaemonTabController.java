@@ -105,7 +105,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                     MessageBox.warn(output);
                 } else {
                     // 删除临时文件
-                    this.sftpClient().rm(tempFile);
+                    this.sftpClient().delete(tempFile);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

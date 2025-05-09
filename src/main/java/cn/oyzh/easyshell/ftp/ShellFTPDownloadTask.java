@@ -1,10 +1,13 @@
-package cn.oyzh.easyshell.sftp;
+package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileStatus;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
@@ -22,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellSFTPDownloadTask {
+public class ShellFTPDownloadTask {
 
     /**
      * 进度条
@@ -100,7 +103,7 @@ public class ShellSFTPDownloadTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellSFTPDownloadTask(ShellSFTPFile remoteFile, File localPath, ShellSFTPClient client) {
+    public ShellFTPDownloadTask(ShellSFTPFile remoteFile, File localPath, ShellSFTPClient client) {
         this.client = client;
         this.localPath = localPath;
         this.remoteFile = remoteFile;
