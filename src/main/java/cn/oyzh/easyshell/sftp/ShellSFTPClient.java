@@ -309,6 +309,13 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     }
 
     @Override
+    public String workDir() throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            return channel.pwd();
+        }
+    }
+
+    @Override
     public void cd(String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.cd(filePath);
@@ -331,13 +338,6 @@ public class ShellSFTPClient extends ShellClient implements FileClient<ShellSFTP
     public String realpath(String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             return channel.realpath(filePath);
-        }
-    }
-
-    @Override
-    public String pwdDir() throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            return channel.pwd();
         }
     }
 

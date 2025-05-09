@@ -154,10 +154,6 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
      * @return 位置
      */
     public String getLocation() {
-        String location = locationProperty.get();
-        if (location == null) {
-            return "/";
-        }
         return this.locationProperty.get();
     }
 
@@ -211,7 +207,7 @@ public abstract class ShellFileTableView<C extends FileClient<E>, E extends Shel
         try {
             String currPath = this.getLocation();
             if (currPath == null) {
-                this.setLocation(this.client.pwdDir());
+                this.setLocation(this.client.workDir());
                 currPath = this.getLocation();
             } else if (currPath.isBlank()) {
                 currPath = "/";

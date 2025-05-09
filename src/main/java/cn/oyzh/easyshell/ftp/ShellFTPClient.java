@@ -383,13 +383,18 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
     }
 
     @Override
-    public String pwdDir() throws Exception {
+    public boolean mkdir(String filePath) throws IOException {
+        return super.makeDirectory(filePath);
+    }
+
+    @Override
+    public String workDir() throws Exception {
         return super.printWorkingDirectory();
     }
 
     @Override
-    public boolean mkdir(String filePath) throws IOException {
-        return super.makeDirectory(filePath);
+    public void cd(String filePath) throws Exception {
+        this.changeWorkingDirectory(filePath);
     }
 
     public ShellFTPFile finfo(String filePath) throws IOException {
@@ -414,11 +419,6 @@ public class ShellFTPClient extends FTPClient implements FileClient<ShellFTPFile
         } catch (IndexOutOfBoundsException ignored) {
             return false;
         }
-    }
-
-    @Override
-    public void cd(String filePath) throws Exception {
-        this.changeWorkingDirectory(filePath);
     }
 
     public boolean chmod(int permissions, String filePath) throws IOException {

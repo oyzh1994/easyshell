@@ -144,7 +144,7 @@ public interface FileClient<E extends ShellFile> {
      * @return 结果
      * @throws Exception 异常
      */
-    String pwdDir() throws Exception;
+    String workDir() throws Exception;
 
     /**
      * 进入位置
