@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.fx.ftp;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
-import cn.oyzh.easyshell.ftp.ShellFTPUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -95,7 +95,7 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
     @Override
     public void setClient(ShellFTPClient client) {
         super.setClient(client);
-        this.client.uploadTasks().addListener((ListChangeListener<ShellFTPUploadTask>) c -> {
+        this.client.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) c -> {
             if (this.client.isUploadTaskEmpty()) {
                 this.loadFile();
             }

@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -27,6 +28,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.function.Function;
 
 /**
  * shell终端
@@ -367,9 +369,55 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         }
     }
 
+    @Override
+    public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            SftpProgressMonitor monitor = callback == null ? null : new SftpProgressMonitor() {
+                @Override
+                public void init(int i, String s, String s1, long l) {
+
+                }
+
+                @Override
+                public boolean count(long l) {
+                    return callback.apply(l);
+                }
+
+                @Override
+                public void end() {
+
+                }
+            };
+            channel.put(localFile.getPath(), remoteFile, monitor);
+        }
+    }
+
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.get(src, dest, monitor, mode);
+        }
+    }
+
+    @Override
+    public void get(ShellFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
+        try (ShellSFTPChannel channel = this.newSFTP()) {
+            SftpProgressMonitor monitor = callback == null ? null : new SftpProgressMonitor() {
+                @Override
+                public void init(int i, String s, String s1, long l) {
+
+                }
+
+                @Override
+                public boolean count(long l) {
+                    return callback.apply(l);
+                }
+
+                @Override
+                public void end() {
+
+                }
+            };
+            channel.get(remoteFile.getFilePath(), localFile, monitor, ChannelSftp.OVERWRITE);
         }
     }
 
@@ -461,7 +509,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     }
 
     @Override
-    public void doDownload(ShellSFTPFile remoteFile, String localPath)   {
+    public void doDownload(ShellSFTPFile remoteFile, String localPath) {
         ShellSFTPDownloadTask task = new ShellSFTPDownloadTask(remoteFile, localPath, this);
         Thread thread = ThreadUtil.startVirtual(() -> {
             try {
@@ -481,8 +529,6 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     public ObservableList<ShellSFTPDownloadTask> downloadTasks() {
         return downloadTasks;
     }
-
-
 
 
     public boolean isDownloadTaskEmpty() {
@@ -536,7 +582,6 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
             callback.run();
         });
     }
-
 
 
 }

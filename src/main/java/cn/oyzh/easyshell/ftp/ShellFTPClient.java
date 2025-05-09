@@ -6,8 +6,10 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,6 +30,7 @@ import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * ftp客户端
@@ -106,19 +109,19 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
-    private final ObservableList<ShellFTPUploadTask> uploadTasks = FXCollections.observableArrayList();
+    private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
-    private final ObservableList<ShellFTPDownloadTask> downloadTasks = FXCollections.observableArrayList();
+    private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
     public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
     }
 
-    public ObservableList<ShellFTPUploadTask> uploadTasks() {
+    public ObservableList<ShellFileUploadTask> uploadTasks() {
         return uploadTasks;
     }
 
-    public ObservableList<ShellFTPDownloadTask> downloadTasks() {
+    public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
     }
 
@@ -213,7 +216,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void doUpload(File localFile, String remoteFile) {
-        ShellFTPUploadTask uploadTask = new ShellFTPUploadTask(localFile, remoteFile, this);
+        ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remoteFile, this);
         Thread worker = ThreadUtil.startVirtual(() -> {
             try {
                 uploadTask.doUpload();
@@ -231,7 +234,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void doDownload(ShellFTPFile remoteFile, String localPath) {
-        ShellFTPDownloadTask downloadTask = new ShellFTPDownloadTask(remoteFile, localPath, this);
+        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
         Thread worker = ThreadUtil.startVirtual(() -> {
             try {
                 downloadTask.doDownload();
@@ -247,29 +250,23 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         this.downloadTasks.add(downloadTask);
     }
 
-    /**
-     * 执行上传
-     *
-     * @param localFile  本地文件
-     * @param remoteFile 远程文件
-     * @throws IOException 异常
-     */
-    public void put(File localFile, String remoteFile) throws IOException {
-        this.put(localFile, remoteFile, null);
-    }
+//    /**
+//     * 执行上传
+//     *
+//     * @param localFile  本地文件
+//     * @param remoteFile 远程文件
+//     * @throws IOException 异常
+//     */
+//    public void put(File localFile, String remoteFile) throws IOException {
+//        this.put(localFile, remoteFile, null);
+//    }
 
-    /**
-     * 执行上传
-     *
-     * @param localFile  本地文件
-     * @param remoteFile 远程文件
-     * @throws IOException 异常
-     */
-    public void put(File localFile, String remoteFile, ShellFTPProgressMonitor monitor) throws IOException {
+    @Override
+    public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws IOException {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
         InputStream in;
-        if (monitor != null) {
-            in = monitor.init(new FileInputStream(localFile));
+        if (callback != null) {
+            in = ShellFTPProgressMonitor.of(new FileInputStream(localFile), callback);
         } else {
             in = new FileInputStream(localFile);
         }
@@ -277,29 +274,23 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         IOUtil.close(in);
     }
 
-    /**
-     * 执行下载
-     *
-     * @param localFile  本地文件
-     * @param remoteFile 远程文件
-     * @throws IOException 异常
-     */
-    public void get(ShellFTPFile remoteFile, String localFile) throws IOException {
-        this.get(remoteFile, localFile, null);
-    }
+//    /**
+//     * 执行下载
+//     *
+//     * @param localFile  本地文件
+//     * @param remoteFile 远程文件
+//     * @throws IOException 异常
+//     */
+//    public void get(ShellFTPFile remoteFile, String localFile) throws IOException {
+//        this.get(remoteFile, localFile, null);
+//    }
 
-    /**
-     * 执行下载
-     *
-     * @param remoteFile 远程文件
-     * @param localFile  本地文件
-     * @throws IOException 异常
-     */
-    public void get(ShellFTPFile remoteFile, String localFile, ShellFTPProgressMonitor monitor) throws IOException {
+    @Override
+    public void get(ShellFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws IOException {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
         OutputStream out;
-        if (monitor != null) {
-            out = monitor.init(new FileOutputStream(localFile));
+        if (callback != null) {
+            out = ShellFTPProgressMonitor.of(new FileOutputStream(localFile), callback);
         } else {
             out = new FileOutputStream(localFile);
         }
@@ -446,10 +437,10 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     }
 
     public void addTaskSizeCallback(Runnable callback) {
-        this.uploadTasks().addListener((ListChangeListener<ShellFTPUploadTask>) change -> {
+        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
             callback.run();
         });
-        this.downloadTasks().addListener((ListChangeListener<ShellFTPDownloadTask>) change -> {
+        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
             callback.run();
         });
     }

@@ -12,25 +12,25 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025-04-28
  */
-public abstract class ShellFTPProgressMonitor {
+public class ShellFTPProgressMonitor {
 
-    public ShellFTPInputStream init(InputStream in) {
-        return new ShellFTPInputStream(in, this::count);
+    public static ShellFTPInputStream of(InputStream in, Function<Long, Boolean> callback) {
+        return new ShellFTPInputStream(in, callback);
     }
 
-    public ShellFTPOuputStream init(OutputStream out) {
-        return new ShellFTPOuputStream(out, this::count);
+    public static ShellFTPOuputStream of(OutputStream out, Function<Long, Boolean> callback) {
+        return new ShellFTPOuputStream(out, callback);
     }
 
-    public abstract boolean count(long count);
+//    public abstract boolean count(long count);
 
     public static class ShellFTPInputStream extends InputStream {
 
         private InputStream in;
 
-        private Function<Integer, Boolean> callback;
+        private Function<Long, Boolean> callback;
 
-        public ShellFTPInputStream(InputStream in, Function<Integer, Boolean> callback) {
+        public ShellFTPInputStream(InputStream in, Function<Long, Boolean> callback) {
             this.in = in;
             this.callback = callback;
         }
@@ -43,7 +43,7 @@ public abstract class ShellFTPProgressMonitor {
         @Override
         public int read(byte @NotNull [] b) throws IOException {
             int l = this.in.read(b);
-            if (!this.callback.apply(l)) {
+            if (!this.callback.apply((long) l)) {
                 throw new InterruptedIOException();
             }
             return l;
@@ -52,7 +52,7 @@ public abstract class ShellFTPProgressMonitor {
         @Override
         public int read(byte @NotNull [] b, int off, int len) throws IOException {
             int l = this.in.read(b, off, len);
-            if (!this.callback.apply(l)) {
+            if (!this.callback.apply((long) l)) {
                 throw new IOException();
             }
             return l;
@@ -70,9 +70,9 @@ public abstract class ShellFTPProgressMonitor {
 
         private OutputStream out;
 
-        private Function<Integer, Boolean> callback;
+        private Function<Long, Boolean> callback;
 
-        public ShellFTPOuputStream(OutputStream out, Function<Integer, Boolean> callback) {
+        public ShellFTPOuputStream(OutputStream out, Function<Long, Boolean> callback) {
             this.out = out;
             this.callback = callback;
         }
@@ -85,7 +85,7 @@ public abstract class ShellFTPProgressMonitor {
         @Override
         public void write(byte @NotNull [] b, int off, int len) throws IOException {
             this.out.write(b, off, len);
-            if (!this.callback.apply(len)) {
+            if (!this.callback.apply((long) len)) {
                 throw new IOException();
             }
         }

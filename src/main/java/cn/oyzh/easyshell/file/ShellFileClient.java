@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * 文件客户端
@@ -177,4 +179,45 @@ public interface ShellFileClient<E extends ShellFile> {
      * @param localPath  本地路径
      */
     void doDownload(E remoteFile, String localPath);
+
+    /**
+     * 下载文件
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    default void get(E remoteFile, String localFile) throws Exception {
+        this.get(remoteFile, localFile, null);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param remoteFile 远程文件
+     * @param localFile  本地文件
+     * @param callback   下载变化回调
+     * @throws IOException 异常
+     */
+    void get(E remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception;
+
+    /**
+     * 上传文件
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    default void put(File localFile, String remoteFile) throws Exception {
+        this.put(localFile, remoteFile, null);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+     void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception ;
 }

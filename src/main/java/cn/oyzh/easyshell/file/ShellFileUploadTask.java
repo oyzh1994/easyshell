@@ -1,11 +1,11 @@
-package cn.oyzh.easyshell.ftp;
+package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.file.ShellFileStatus;
+import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.i18n.I18nHelper;
@@ -17,12 +17,18 @@ import javafx.beans.property.StringProperty;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellFTPUploadTask {
+public class ShellFileUploadTask {
+
+    /**
+     * 工作线程
+     */
+    private Thread worker;
 
     /**
      * 进度条
@@ -93,14 +99,14 @@ public class ShellFTPUploadTask {
     /**
      * 客户端
      */
-    private final ShellFTPClient client;
+    private final ShellFileClient client;
 
     /**
      * 状态
      */
     private transient ShellFileStatus status;
 
-    public ShellFTPUploadTask(File localFile, String remotePath, ShellFTPClient client) {
+    public ShellFileUploadTask(File localFile, String remotePath, ShellFTPClient client) {
         this.client = client;
         this.localFile = localFile;
         this.remotePath = remotePath;
@@ -136,15 +142,12 @@ public class ShellFTPUploadTask {
                     }
                 }
                 // 执行上传
-                this.client.put(file, remoteFilePath, new ShellFTPProgressMonitor() {
-                    @Override
-                    public boolean count(long count) {
-                        currentSize += count;
-                        updateSpeed();
-                        updateProgress();
-                        updateFileSize();
-                        return status != ShellFileStatus.CANCELED;
-                    }
+                this.client.put(file, remoteFilePath, (Function<Long, Boolean>) count -> {
+                    currentSize += count;
+                    updateSpeed();
+                    updateProgress();
+                    updateFileSize();
+                    return status != ShellFileStatus.CANCELED;
                 });
                 this.updateFileCount();
             } catch (Exception ex) {// 其他
@@ -203,6 +206,11 @@ public class ShellFTPUploadTask {
         this.speedProperty.set(NumberUtil.formatSize(speed, 2) + "/" + I18nHelper.second());
     }
 
+    /**
+     * 速度属性
+     *
+     * @return 速度属性
+     */
     public StringProperty speedProperty() {
         return speedProperty;
     }
@@ -216,6 +224,11 @@ public class ShellFTPUploadTask {
         this.fileSizeProperty.set(current + "/" + total);
     }
 
+    /**
+     * 文件大小属性
+     *
+     * @return 文件大小属性
+     */
     public StringProperty fileSizeProperty() {
         return fileSizeProperty;
     }
@@ -227,6 +240,11 @@ public class ShellFTPUploadTask {
         this.fileCountProperty.set(this.fileList.size());
     }
 
+    /**
+     * 文件数量属性
+     *
+     * @return 文件数量属性
+     */
     public LongProperty fileCountProperty() {
         return this.fileCountProperty;
     }
@@ -241,18 +259,38 @@ public class ShellFTPUploadTask {
         this.progressBar.setValue(this.currentSize, this.totalSize);
     }
 
+    /**
+     * 当前进度
+     *
+     * @return 当前进度
+     */
     public FXProgressTextBar getProgress() {
         return progressBar;
     }
 
+    /**
+     * 当前文件属性
+     *
+     * @return 当前文件属性
+     */
     public StringProperty currentFileProperty() {
         return this.currentFileProperty;
     }
 
+    /**
+     * 源文件路径
+     *
+     * @return 源文件路径
+     */
     public String getSrcPath() {
-        return localFile.getPath();
+        return this.localFile.getPath();
     }
 
+    /**
+     * 目标文件路径
+     *
+     * @return 目标文件路径
+     */
     public String getDestPath() {
         return this.remotePath;
     }
@@ -284,12 +322,20 @@ public class ShellFTPUploadTask {
         JulLog.info("status:{}", this.statusProperty.get());
     }
 
+    /**
+     * 状态属性
+     *
+     * @return 状态属性
+     */
     public StringProperty statusProperty() {
         return this.statusProperty;
     }
 
-    private Thread worker;
-
+    /**
+     * 设置工作线程
+     *
+     * @param worker 工作线程
+     */
     public void setWorker(Thread worker) {
         this.worker = worker;
     }
