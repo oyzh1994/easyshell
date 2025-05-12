@@ -32,7 +32,7 @@ public class ShellFileTransportTask {
     /**
      * 进度属性
      */
-    private StringProperty progressProperty = new SimpleStringProperty();
+    private final StringProperty progressProperty = new SimpleStringProperty();
 
     /**
      * 文件总数
@@ -267,6 +267,7 @@ public class ShellFileTransportTask {
      */
     private void updateProgress() {
         this.progressProperty.setValue(NumberUtil.scale(this.currentSize * 1D / this.totalSize * 100D, 2) + "%");
+        JulLog.debug("progress: {}", this.progressProperty.getValue());
     }
 
     /**

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileConnectComboBox?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.fx.gui.button.NextStepButton?>
+<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.file.ShellFileTransportController" realWidth="1400"
+        realHeight="750">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox flexWidth="100%" realHeight="80">
+            <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
+                <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </LinuxSVGGlyph>
+                <FXLabel realHeight="25" fx:id="sourceInfoName" fontSize="15">
+                    <HBox.margin>
+                        <Insets left="15" top="28"/>
+                    </HBox.margin>
+                </FXLabel>
+            </FXHBox>
+            <RightSideSVGGlyph sizeStr="30,20">
+                <HBox.margin>
+                    <Insets top="30"/>
+                </HBox.margin>
+            </RightSideSVGGlyph>
+            <FXHBox flexHeight="100%" flexWidth="50% - 20">
+                <LinuxSVGGlyph sizeStr="40,40" color="mediumturquoise">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </LinuxSVGGlyph>
+                <FXLabel realHeight="25" fx:id="targetInfoName" fontSize="15">
+                    <HBox.margin>
+                        <Insets left="15" top="28"/>
+                    </HBox.margin>
+                </FXLabel>
+            </FXHBox>
+        </FXHBox>
+        <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
+            <FXHBox flexHeight="100% - 60" flexWidth="100%">
+                <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
+                    <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: yellowgreen">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXLabel text="%base.connect" realHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="15"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <ShellFileConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellFileConnectComboBox>
+                    <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: yellowgreen">
+                        <VBox.margin>
+                            <Insets left="30" top="30"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXHBox realHeight="25" flexWidth="100%">
+                        <FXLabel text="%base.host" realWidth="80">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                        <FXLabel fx:id="sourceHost" flexWidth="100% - 100">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                </FXVBox>
+                <FXVBox flexHeight="100%" flexWidth="50% -5">
+                    <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: mediumturquoise">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXLabel text="%base.connect" realHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="15"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <ShellFileConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellFileConnectComboBox>
+                    <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                             style="-fx-text-fill: mediumturquoise">
+                        <VBox.margin>
+                            <Insets left="30" top="30"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXHBox realHeight="25" flexWidth="100%">
+                        <FXLabel text="%base.host" realWidth="80">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                        <FXLabel fx:id="targetHost" flexWidth="100% - 100">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                </FXVBox>
+            </FXHBox>
+            <FXHBox flexWidth="100%" realHeight="50">
+                <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+                    <HBox.margin>
+                        <Insets left="30" top="10"/>
+                    </HBox.margin>
+                </NextStepButton>
+            </FXHBox>
+        </FXVBox>
+        <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+            <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100% - 200">
+                <FXVBox flexWidth="50%" flexHeight="100%">
+                    <FXHBox prefHeight="30" flexWidth="100%">
+                        <HomeSVGGlyph onMousePrimaryClicked="#intoSourceHome">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </HomeSVGGlyph>
+                        <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnSourceDir">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </ReturnFolderSVGGlyph>
+                        <ShellFileLocationTextField prefHeight="22" fx:id="sourceLocation" flexWidth="100% - 220">
+                            <FXHBox.margin>
+                                <Insets left="5" top="4"/>
+                            </FXHBox.margin>
+                        </ShellFileLocationTextField>
+                        <RefreshSVGGlyph onMousePrimaryClicked="#refreshSourceFile">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </RefreshSVGGlyph>
+                        <HiddenSVGPane fx:id="hiddenSourcePane" size="16,14" onMousePrimaryClicked="#hiddenSourceFile">
+                            <HBox.margin>
+                                <Insets left="5" top="8"/>
+                            </HBox.margin>
+                        </HiddenSVGPane>
+                        <ClearableTextField focusTraversable="false" realHeight="22" fx:id="filterSourceFile"
+                                            tipText="%base.searchKWTip" prefWidth="120">
+                            <FXHBox.margin>
+                                <Insets left="5" top="4"/>
+                            </FXHBox.margin>
+                        </ClearableTextField>
+                    </FXHBox>
+                    <ShellFileTransportFileTableView fx:id="sourceFile" flexWidth="100% - 10" flexHeight="100% - 35">
+                        <columns>
+                            <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
+                                           valueName="icon"/>
+                            <FXTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
+                                           text="%base.name"/>
+                            <FXTableColumn prefWidth="130" valueName="fileSizeDisplay" text="%base.size"/>
+                            <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                        </columns>
+                        <FXVBox.margin>
+                            <Insets left="5" top="5"/>
+                        </FXVBox.margin>
+                    </ShellFileTransportFileTableView>
+                </FXVBox>
+                <FXVBox flexWidth="50%" flexHeight="100%">
+                    <FXHBox prefHeight="30" flexWidth="100%">
+                        <HomeSVGGlyph onMousePrimaryClicked="#intoTargetHome">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </HomeSVGGlyph>
+                        <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnTargetDir">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </ReturnFolderSVGGlyph>
+                        <ShellFileLocationTextField prefHeight="22" fx:id="targetLocation" flexWidth="100% - 220">
+                            <FXHBox.margin>
+                                <Insets left="5" top="4"/>
+                            </FXHBox.margin>
+                        </ShellFileLocationTextField>
+                        <RefreshSVGGlyph onMousePrimaryClicked="#refreshTargetFile">
+                            <FXHBox.margin>
+                                <Insets left="5" top="7"/>
+                            </FXHBox.margin>
+                        </RefreshSVGGlyph>
+                        <HiddenSVGPane fx:id="hiddenTargetPane" size="16,14" onMousePrimaryClicked="#hiddenTargetFile">
+                            <HBox.margin>
+                                <Insets left="5" top="8"/>
+                            </HBox.margin>
+                        </HiddenSVGPane>
+                        <ClearableTextField focusTraversable="false" realHeight="22" fx:id="filterTargetFile"
+                                            tipText="%base.searchKWTip" prefWidth="120">
+                            <FXHBox.margin>
+                                <Insets left="5" top="4"/>
+                            </FXHBox.margin>
+                        </ClearableTextField>
+                    </FXHBox>
+                    <ShellFileTransportFileTableView fx:id="targetFile" flexWidth="100% - 10" flexHeight="100% - 35">
+                        <columns>
+                            <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
+                                           valueName="icon"/>
+                            <FXTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
+                                           text="%base.name"/>
+                            <FXTableColumn prefWidth="130" valueName="fileSizeDisplay" text="%base.size"/>
+                            <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                        </columns>
+                        <FXVBox.margin>
+                            <Insets left="5" top="5"/>
+                        </FXVBox.margin>
+                    </ShellFileTransportFileTableView>
+                </FXVBox>
+            </FXHBox>
+            <ShellFileTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">
+                <columns>
+                    <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 990" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="70" valueName="status" text="%base.status"/>
+                </columns>
+            </ShellFileTransportTaskTableView>
+        </FXVBox>
+    </FXVBox>
+</FXPane>

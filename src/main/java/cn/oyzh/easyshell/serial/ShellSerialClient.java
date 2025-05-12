@@ -114,6 +114,7 @@ public class ShellSerialClient implements BaseClient {
         return shellConnect;
     }
 
+    @Override
     public boolean isConnected() {
         if (this.serialPort != null) {
             return this.serialPort.isOpen();

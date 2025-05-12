@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
-import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView;
+import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -113,7 +113,7 @@ public class ShellSFTPTabController extends RichTabController {
      * 文件表格
      */
     @FXML
-    private ShellSFTPFileConnectTableView fileTable;
+    private ShellSFTPFileTableView fileTable;
 
     /**
      * 文件过滤

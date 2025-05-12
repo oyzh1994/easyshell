@@ -11,21 +11,19 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
-import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
+import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
-import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
-import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -285,16 +283,16 @@ public class ShellEventUtil {
 //        EventUtil.post(event);
 //    }
 
-    /**
-     * 文件已保存事件
-     *
-     * @param file 文件
-     */
-    public static void fileSaved(ShellFile file) {
-        ShellFileSavedEvent event = new ShellFileSavedEvent();
-        event.data(file);
-        EventUtil.post(event);
-    }
+//    /**
+//     * 文件已保存事件
+//     *
+//     * @param file 文件
+//     */
+//    public static void fileSaved(ShellFile file) {
+//        ShellFileSavedEvent event = new ShellFileSavedEvent();
+//        event.data(file);
+//        EventUtil.post(event);
+//    }
 
     /**
      * 文件已拖拽事件

@@ -211,7 +211,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      * 传输文件
      */
     private void transportFile() {
-        ShellViewFactory.transportData(this.value);
+        ShellViewFactory.transportFile(this.value);
     }
 
     /**

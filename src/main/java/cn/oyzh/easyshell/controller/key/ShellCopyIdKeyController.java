@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.controller.key;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.fx.connect.ShellSFTPConnectComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHClientUtil;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -39,7 +39,7 @@ public class ShellCopyIdKeyController extends StageController {
      * 连接列表
      */
     @FXML
-    private ShellSFTPConnectComboBox host;
+    private ShellSSHConnectComboBox host;
 
     /**
      * 密钥信息
@@ -91,7 +91,7 @@ public class ShellCopyIdKeyController extends StageController {
             ValidatorUtil.validFail(this.host);
             return;
         }
-        ShellSSHClient client = ShellSSHClientUtil.newClient(connect);
+        ShellSSHClient client = ShellClientUtil.newClient(connect);
         StageManager.showMask(() -> {
             try {
                 this.message.appendLine("client connecting");

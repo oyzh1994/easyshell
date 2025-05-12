@@ -5,9 +5,8 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.file.ShellFileSavedEvent;
-import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -467,7 +466,44 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param files 文件列表
      */
-    public abstract void deleteFile(List<E> files);
+    public void deleteFile(List<E> files){
+        if (CollectionUtil.isEmpty(files) || this.checkInvalid(files)) {
+            return;
+        }
+        if (files.size() == 1) {
+            E file = files.getFirst();
+            if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
+                return;
+            }
+            if (!file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
+                return;
+            }
+        } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
+            return;
+        }
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
+        try {
+            List<E> fList = new CopyOnWriteArrayList<>(files);
+            for (E file : fList) {
+                // 不可删除文件
+                if (!file.isNormal()) {
+                    continue;
+                }
+                // 隐藏文件
+                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
+                    continue;
+                }
+                // 执行删除
+                this.client.doDelete(file);
+            }
+            this.refreshFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 文件权限
@@ -564,14 +600,18 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     /**
      * 文件保存事件
      *
-     * @param event 事件
+     * @param file 文件
      */
-    public void onFileSaved(ShellFileSavedEvent event) {
-        if (this.existFile(event.fileName())) {
+    public void onFileSaved(ShellFile file) {
+        if (this.existFile(file.getFileName())) {
             this.refresh();
         }
     }
 
+    /**
+     * 文件删除时间
+     * @param remoteFile 文件
+     */
     public void onFileDeleted(String remoteFile) {
         Optional<E> optional = this.files.parallelStream()
                 .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
@@ -669,5 +709,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
             MessageBox.okToast(I18nHelper.addedToDownloadList());
         }
+    }
+
+    /**
+     * 进入home目录
+     */
+    public void intoHome() throws Exception {
+        this.intoDir(this.client.workDir());
     }
 }

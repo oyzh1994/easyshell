@@ -131,23 +131,19 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         }
     }
 
-    /**
-     * 是否已连接
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isConnected() {
         return this.session != null && this.session.isConnected();
     }
 
-    /**
-     * 是否已关闭
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        return this.session == null || !this.session.isConnected();
-    }
+//    /**
+//     * 是否已关闭
+//     *
+//     * @return 结果
+//     */
+//    public boolean isClosed() {
+//        return this.session == null || !this.session.isConnected();
+//    }
 
 //    private ShellSFTPChannelManager sftpManager;
 //

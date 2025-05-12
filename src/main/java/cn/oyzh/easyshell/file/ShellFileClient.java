@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -22,7 +23,7 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025-04-27
  */
-public interface ShellFileClient<E extends ShellFile> {
+public interface ShellFileClient<E extends ShellFile> extends BaseClient {
 
     /**
      * 列举文件
@@ -411,6 +412,15 @@ public interface ShellFileClient<E extends ShellFile> {
      */
     default boolean isDeleteTaskEmpty() {
         return this.deleteTasks().isEmpty();
+    }
+
+    /**
+     * 传输任务是否为空
+     *
+     * @return 结果
+     */
+    default boolean isTransportTaskEmpty() {
+        return this.transportTasks().isEmpty();
     }
 
     /**

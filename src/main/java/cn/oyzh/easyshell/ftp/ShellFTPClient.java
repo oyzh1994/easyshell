@@ -93,14 +93,14 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         return this.shellConnect;
     }
 
-    /**
-     * 是否已关闭
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        return !this.isConnected();
-    }
+//    /**
+//     * 是否已关闭
+//     *
+//     * @return 结果
+//     */
+//    public boolean isClosed() {
+//        return !this.isConnected();
+//    }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
@@ -120,9 +120,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         return downloadTasks;
     }
 
+    private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
+
     @Override
     public ObservableList<ShellFileTransportTask> transportTasks() {
-        return null;
+        return this.transportTasks;
     }
 
     @Override

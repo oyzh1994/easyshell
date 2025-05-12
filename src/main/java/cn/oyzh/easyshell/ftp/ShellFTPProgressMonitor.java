@@ -22,8 +22,6 @@ public class ShellFTPProgressMonitor {
         return new ShellFTPOuputStream(out, callback);
     }
 
-//    public abstract boolean count(long count);
-
     public static class ShellFTPInputStream extends InputStream {
 
         private InputStream in;

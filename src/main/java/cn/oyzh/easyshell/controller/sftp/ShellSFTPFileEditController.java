@@ -6,7 +6,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -99,11 +98,10 @@ public class ShellSFTPFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-//                this.client.put(new FileInputStream(this.destPath), file.getFilePath());
                 this.client.put(this.destPath, file.getFilePath());
                 SftpATTRS attrs = this.client.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
-                ShellEventUtil.fileSaved(this.file);
+//                ShellEventUtil.fileSaved(this.file);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

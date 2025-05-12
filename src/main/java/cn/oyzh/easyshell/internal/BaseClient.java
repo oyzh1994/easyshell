@@ -64,4 +64,19 @@ public interface BaseClient extends AutoCloseable {
         return Charset.forName(charset);
     }
 
+    /**
+     * 是否已关闭
+     *
+     * @return 结果
+     */
+    default boolean isClosed() {
+        return !this.isConnected();
+    }
+
+    /**
+     * 是否已连接
+     *
+     * @return 结果
+     */
+    boolean isConnected();
 }

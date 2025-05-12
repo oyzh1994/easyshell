@@ -54,4 +54,9 @@ public class ShellTelnetClient extends TelnetClient implements BaseClient {
     public ShellConnect getShellConnect() {
         return shellConnect;
     }
+
+//    @Override
+//    public boolean isClosed() {
+//        return !this.isConnected();
+//    }
 }

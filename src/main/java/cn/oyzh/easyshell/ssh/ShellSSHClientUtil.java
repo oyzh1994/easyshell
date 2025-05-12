@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.ssh;
 
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.ProxyHTTP;
@@ -14,9 +13,9 @@ import com.jcraft.jsch.ProxySOCKS5;
  */
 public class ShellSSHClientUtil {
 
-    public static ShellSSHClient newClient(ShellConnect connect) {
-        return new ShellSSHClient(connect);
-    }
+//    public static ShellSSHClient newClient(ShellConnect connect) {
+//        return new ShellSSHClient(connect);
+//    }
 
     /**
      * 初始化代理

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileConnectTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
@@ -16,8 +15,6 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.FXProgressTextBar?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
@@ -122,7 +119,7 @@
             <!--                </FXHBox.margin>-->
             <!--            </SFTPSVGGlyph>-->
         </FXHBox>
-        <ShellSFTPFileConnectTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
+        <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                 <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
@@ -134,7 +131,7 @@
                 <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
                 <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
             </columns>
-        </ShellSFTPFileConnectTableView>
+        </ShellSFTPFileTableView>
 <!--        <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">-->
 <!--            <FXLabel text="%base.delete" prefWidth="50" maxWidth="50">-->
 <!--                <FXHBox.margin>-->

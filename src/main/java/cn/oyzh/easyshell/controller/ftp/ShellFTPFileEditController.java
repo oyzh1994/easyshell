@@ -6,7 +6,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -105,7 +104,7 @@ public class ShellFTPFileEditController extends StageController {
                 String remoteFile = ShellFileUtil.concat(file.getParentPath(), file.getFileName());
                 this.client.put(localFile, remoteFile);
                 file.setSize(localFile.length());
-                ShellEventUtil.fileSaved(this.file);
+//                ShellEventUtil.fileSaved(this.file);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

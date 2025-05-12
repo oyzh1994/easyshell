@@ -20,13 +20,13 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
+import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPFileEditController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFilePermissionController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPManageController;
-import cn.oyzh.easyshell.controller.sftp.ShellSFTPTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
@@ -293,13 +293,13 @@ public class ShellViewFactory {
     }
 
     /**
-     * 传输数据
+     * 传输文件
      *
      * @param sourceConnect 来源连接
      */
-    public static void transportData(ShellConnect sourceConnect) {
+    public static void transportFile(ShellConnect sourceConnect) {
         // 判断窗口是否存在
-        List<StageAdapter> list = StageManager.listStage(ShellSFTPTransportController.class);
+        List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
         for (StageAdapter adapter : list) {
             if (adapter.getProp("sourceConnect") == sourceConnect) {
                 adapter.toFront();
@@ -307,7 +307,7 @@ public class ShellViewFactory {
             }
         }
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellSFTPTransportController.class, null);
+            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, null);
             adapter.setProp("sourceConnect", sourceConnect);
             adapter.display();
         } catch (Exception ex) {
@@ -356,7 +356,7 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellFTPFileEditController.class);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
-            adapter.display();
+            adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -374,13 +374,12 @@ public class ShellViewFactory {
         }
     }
 
-
     public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellSFTPFileEditController.class);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
-            adapter.display();
+            adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

@@ -370,26 +370,19 @@ public class ShellSSHClient extends ShellClient {
         return false;
     }
 
-    /**
-     * 是否已连接
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isConnected() {
-        if (!this.isClosed()) {
-            return this.state.get().isConnected();
-        }
-        return false;
+        return this.session != null && this.session.isConnected() && this.state.get().isConnected();
     }
 
-    /**
-     * 是否已关闭
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
-    }
+//    /**
+//     * 是否已关闭
+//     *
+//     * @return 结果
+//     */
+//    public boolean isClosed() {
+//        return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
+//    }
 
     private ShellSSHShell shell;
 
