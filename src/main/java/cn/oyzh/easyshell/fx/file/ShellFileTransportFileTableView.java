@@ -1,8 +1,15 @@
 package cn.oyzh.easyshell.fx.file;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.ftp.ShellFTPFile;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.util.ShellFileUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.collections.ListChangeListener;
@@ -55,6 +62,12 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
         menuItems.add(MenuItemHelper.separator());
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
+        // 禁用未实现的功能
+        for (MenuItem menuItem : menuItems) {
+            if (StringUtil.equalsAny(menuItem.getId(), "touchFile", "createDir")) {
+                menuItem.setDisable(true);
+            }
+        }
         return menuItems;
     }
 
@@ -75,17 +88,28 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
 
     @Override
     public void filePermission(ShellFile file) {
-
-    }
-
-    @Override
-    public void cd(String filePath) {
-
+        Object client = this.client;
+        // ftp
+        if (file instanceof ShellFTPFile) {
+            ShellViewFactory.ftpFilePermission(file, (ShellFTPClient) client);
+        } else if (file instanceof ShellSFTPFile) {// sftp
+            ShellViewFactory.sftpFilePermission(file, (ShellSFTPClient) client);
+        }
     }
 
     @Override
     public void editFile(ShellFile file) {
-
+        if (!ShellFileUtil.fileEditable(file)) {
+            return;
+        }
+        Object client = this.client;
+        // ftp
+        if (file instanceof ShellFTPFile) {
+            ShellViewFactory.ftpFileEdit(file, (ShellFTPClient) client);
+        } else if (file instanceof ShellSFTPFile) {// sftp
+            ShellViewFactory.sftpFileEdit(file, (ShellSFTPClient) client);
+        }
+        this.onFileSaved(file);
     }
 
     @Override
@@ -94,7 +118,7 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
     }
 
     @Override
-    public void mkdir(String name) throws Exception {
+    public void createDir(String name) throws Exception {
 
     }
 }

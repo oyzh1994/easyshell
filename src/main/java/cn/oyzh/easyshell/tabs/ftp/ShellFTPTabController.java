@@ -193,11 +193,7 @@ public class ShellFTPTabController extends RichTabController {
             });
             // 路径跳转
             this.location.setOnJumpLocation(path -> {
-                try {
-                    this.fileTable.cd(path);
-                } catch (Exception ex) {
-                    MessageBox.exception(ex);
-                }
+                this.fileTable.cd(path);
             });
             // 快捷键
             this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -254,7 +250,7 @@ public class ShellFTPTabController extends RichTabController {
 
     @FXML
     private void mkdir() {
-        this.fileTable.mkdir();
+        this.fileTable.createDir();
     }
 
     @FXML

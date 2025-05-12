@@ -353,7 +353,7 @@ public class ShellSFTPTabController extends RichTabController {
 
     @FXML
     private void mkdir() {
-        this.fileTable.mkdir();
+        this.fileTable.createDir();
     }
 
     @FXML

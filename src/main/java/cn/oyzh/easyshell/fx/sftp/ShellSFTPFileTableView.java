@@ -117,19 +117,19 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         ShellViewFactory.sftpFilePermission(file, this.client);
     }
 
-    @Override
-    public void cd(String path) {
-        if (!StringUtil.isBlank(path)) {
-            try {
-                if (this.client.exist(path)) {
-                    this.setLocation(path);
-                    this.loadFile();
-                }
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        }
-    }
+//    @Override
+//    public void cd(String path) {
+//        if (!StringUtil.isBlank(path)) {
+//            try {
+//                if (this.client.exist(path)) {
+//                    this.setLocation(path);
+//                    this.loadFile();
+//                }
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            }
+//        }
+//    }
 
     @Override
     public void editFile(ShellSFTPFile file) {
@@ -162,7 +162,7 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
     }
 
     @Override
-    public void mkdir(String name) throws Exception {
+    public void createDir(String name) throws Exception {
         if (StringUtil.isEmpty(name)) {
             return;
         }

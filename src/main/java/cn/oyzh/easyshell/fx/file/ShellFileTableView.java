@@ -469,7 +469,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param files 文件列表
      */
-    public void deleteFile(List<E> files){
+    public void deleteFile(List<E> files) {
         if (CollectionUtil.isEmpty(files) || this.checkInvalid(files)) {
             return;
         }
@@ -549,9 +549,19 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 进入目录
      *
      * @param filePath 文件路径
-     * @throws Exception 异常
      */
-    public abstract void cd(String filePath) throws Exception;
+    public void cd(String filePath) {
+        if (!StringUtil.isBlank(filePath)) {
+            try {
+                if (this.client.exist(filePath)) {
+                    this.setLocation(filePath);
+                    this.loadFile();
+                }
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        }
+    }
 
     /**
      * 编辑文件
@@ -583,10 +593,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     /**
      * 创建文件夹
      */
-    public void mkdir() {
+    public void createDir() {
         try {
             String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
-            this.mkdir(name);
+            this.createDir(name);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -594,11 +604,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
-     * 创建文件
+     * 创建文件夹
      *
      * @param name 文件名
      */
-    public abstract void mkdir(String name) throws Exception;
+    public abstract void createDir(String name) throws Exception;
 
     /**
      * 文件保存事件
@@ -613,6 +623,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
 
     /**
      * 文件删除时间
+     *
      * @param remoteFile 文件
      */
     public void onFileDeleted(String remoteFile) {
@@ -730,16 +741,19 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         List<MenuItem> menuItems = new ArrayList<>();
         // 创建文件
-        FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
-        menuItems.add(touch);
+        FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
+        touchFile.setId("touchFile");
+        menuItems.add(touchFile);
         // 创建文件夹
-        FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
-        menuItems.add(mkdir);
+        FXMenuItem createDir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::createDir);
+        createDir.setId("createDir");
+        menuItems.add(createDir);
         menuItems.add(MenuItemHelper.separator());
         if (files.size() == 1) {
             E file = files.getFirst();
             // 编辑文件
             FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
+            editFile.setId("editFile");
             if (!ShellFileUtil.fileEditable(file)) {
                 editFile.setDisable(true);
             }
@@ -758,6 +772,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             menuItems.add(renameFile);
             // 文件权限
             FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+            filePermission.setId("filePermission");
             menuItems.add(filePermission);
             menuItems.add(MenuItemHelper.separator());
         }

@@ -363,7 +363,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
 
     @FXML
     private void mkdir() {
-        this.fileTable.mkdir();
+        this.fileTable.createDir();
     }
 
     @FXML

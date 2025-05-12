@@ -524,7 +524,7 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
 //    }
 
     @Override
-    public void mkdir(String filePath) throws Exception {
+    public void createDir(String filePath) throws Exception {
         if (StringUtil.isEmpty(filePath)) {
             return;
         }
@@ -539,12 +539,12 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
         this.refreshFile();
     }
 
-    @Override
-    public void cd(String filePath) throws Exception {
-        this.setLocation(filePath);
-        this.client.cd(filePath);
-        this.loadFile();
-    }
+//    @Override
+//    public void cd(String filePath) throws Exception {
+//        this.setLocation(filePath);
+//        this.client.cd(filePath);
+//        this.loadFile();
+//    }
 
     @Override
     public void editFile(ShellFTPFile file) {
