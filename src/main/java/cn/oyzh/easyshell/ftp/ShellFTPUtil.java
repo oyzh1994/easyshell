@@ -90,7 +90,7 @@ public class ShellFTPUtil {
                     String remoteSubDir = remoteBaseDir + "/" + file.getName();
                     // 在服务器上创建对应的子文件夹
                     if (!ftpClient.changeWorkingDirectory(remoteSubDir)) {
-                        if (!ftpClient.mkdir(remoteSubDir)) {
+                        if (!ftpClient.createDir(remoteSubDir)) {
                             JulLog.error("无法创建远程文件夹: " + remoteSubDir);
                             continue;
                         }

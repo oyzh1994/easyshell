@@ -126,6 +126,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     }
 
     @Override
+    public void closeDelayResources() {
+
+    }
+
+    @Override
     public void delete(String file) throws Exception {
         super.deleteFile(file);
     }
@@ -403,8 +408,29 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     }
 
     @Override
-    public boolean mkdir(String filePath) throws IOException {
+    public boolean createDir(String filePath) throws IOException {
         return super.makeDirectory(filePath);
+    }
+
+    @Override
+    public void createDirRecursive(String filePath) throws Exception {
+        String[] dirs = filePath.split("/");
+        StringBuilder currentPath = new StringBuilder();
+        for (String dir : dirs) {
+            if (dir.isEmpty()) {
+                continue;
+            }
+            currentPath.append("/").append(dir);
+            try {
+                // 创建缺失目录
+                if (!this.exist(currentPath.toString())) {
+                    this.createDir(currentPath.toString());
+                }
+            } catch (Exception ex) {
+                // 创建缺失目录
+                this.createDir(currentPath.toString());
+            }
+        }
     }
 
     @Override

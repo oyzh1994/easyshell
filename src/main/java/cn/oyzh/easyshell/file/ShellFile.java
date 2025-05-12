@@ -297,6 +297,10 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return "..".equals(this.getFileName());
     }
 
+    default boolean isNormal() {
+        return !this.isCurrentFile() && !this.isReturnDirectory();
+    }
+
     default boolean isHiddenFile() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return false;

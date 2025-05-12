@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -10,17 +11,20 @@ import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -33,6 +37,10 @@ import java.util.function.Function;
  * @since 2023/08/16
  */
 public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
+
+
+    private List<ShellSFTPChannel> delayChannels = new ArrayList<>();
+
 
     public ShellSFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
@@ -198,13 +206,21 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //    }
 
     protected ShellSFTPChannel newSFTP() {
+        return this.newSFTP(0, 3);
+    }
+
+    protected ShellSFTPChannel newSFTP(int retryNum, int maxRetry) {
         try {
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
             ShellSFTPChannel sftp = new ShellSFTPChannel(channel, this.osType);
             sftp.connect(this.connectTimeout());
             return sftp;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ExceptionUtil.hasMessage(ex, "channel is not opened.") && retryNum < 3) {
+                return this.newSFTP(retryNum + 1, maxRetry);
+            } else {
+                ex.printStackTrace();
+            }
         }
         return null;
     }
@@ -300,11 +316,39 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //    }
 
     @Override
-    public boolean mkdir(String filePath) throws Exception {
+    public boolean createDir(String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.mkdir(filePath);
         }
         return true;
+    }
+
+    @Override
+    public void createDirRecursive(String filePath) throws Exception {
+        if (this.isWindows()) {
+            filePath = ShellUtil.reverseWindowsFilePath(filePath);
+        }
+        String[] dirs = filePath.split("/");
+        StringBuilder currentPath = new StringBuilder();
+        for (String dir : dirs) {
+            if (dir.isEmpty()) {
+                continue;
+            }
+            currentPath.append("/").append(dir);
+            try {
+                // 创建缺失目录
+                if (!this.exist(currentPath.toString())) {
+                    this.createDir(currentPath.toString());
+                }
+            } catch (SftpException ex) {
+                // 创建缺失目录
+                if (ex.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                    this.createDir(currentPath.toString());
+                } else {
+                    throw ex;
+                }
+            }
+        }
     }
 
     @Override
@@ -353,20 +397,20 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //        }
 //    }
 
-    public OutputStream put1(String dest, SftpProgressMonitor monitor) throws Exception {
-//        try (ShellSFTPChannel channel = this.newSFTP()) {
-//            return channel.put(dest, monitor);
-//        }
-        ShellSFTPChannel channel = this.newSFTP();
-        return channel.put(dest, monitor);
-    }
+//    public OutputStream put1(String dest, SftpProgressMonitor monitor) throws Exception {
+
+    /// /        try (ShellSFTPChannel channel = this.newSFTP()) {
+    /// /            return channel.put(dest, monitor);
+    /// /        }
+//        ShellSFTPChannel channel = this.newSFTP();
+//        return channel.put(dest, monitor);
+//    }
 
 //    public void put(String src, String dest, SftpProgressMonitor monitor) throws Exception {
 //        try (ShellSFTPChannel channel = this.newSFTP()) {
 //            channel.put(src, dest, monitor);
 //        }
 //    }
-
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
@@ -377,6 +421,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
         ShellSFTPChannel channel = this.newSFTP();
+        this.delayChannels.add(channel);
         return channel.put(remoteFile, this.newMonitor(callback));
     }
 
@@ -396,6 +441,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     @Override
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
         ShellSFTPChannel channel = this.newSFTP();
+        this.delayChannels.add(channel);
         return channel.get(remoteFile.getFilePath(), this.newMonitor(callback));
     }
 
@@ -452,17 +498,17 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         return true;
     }
 
-    public List<ShellSFTPFile> lsFileNormal(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            return channel.lsFileNormal(filePath);
-        }
-    }
+//    public List<ShellSFTPFile> lsFileNormal(String filePath) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            return channel.lsFileNormal(filePath);
+//        }
+//    }
 
-    public void mkdirRecursive(String remoteDir) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.mkdirRecursive(remoteDir);
-        }
-    }
+//    public void mkdirRecursive(String remoteDir) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            channel.mkdirRecursive(remoteDir);
+//        }
+//    }
 
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
@@ -544,6 +590,14 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     @Override
     public ObservableList<ShellFileTransportTask> transportTasks() {
         return transportTasks;
+    }
+
+    @Override
+    public void closeDelayResources() {
+        while (!this.delayChannels.isEmpty()) {
+            ShellSFTPChannel channel = this.delayChannels.removeFirst();
+            channel.close();
+        }
     }
 
 //    public void deleteFile(ShellSFTPFile file) throws Exception {

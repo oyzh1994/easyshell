@@ -207,7 +207,7 @@ public class ShellKeyUtil {
                 sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
                 // 检查文件夹
                 if (!sftpClient.exist(sshFile)) {
-                    sftpClient.mkdir(sshFile);
+                    sftpClient.createDirRecursive(sshFile);
                 }
                 sshFile = sshFile + "authorized_keys";
             } else {

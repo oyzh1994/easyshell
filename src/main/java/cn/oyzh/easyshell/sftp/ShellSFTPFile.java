@@ -119,10 +119,6 @@ public class ShellSFTPFile implements ShellFile {
         this.updatePermissions();
     }
 
-    public boolean isNormal() {
-        return !this.isCurrentFile() && !this.isReturnDirectory();
-    }
-
     private SVGGlyph icon;
 
     @Override

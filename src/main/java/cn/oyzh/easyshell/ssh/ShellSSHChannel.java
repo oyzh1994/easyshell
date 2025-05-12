@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.ssh;
 
-import cn.oyzh.common.thread.TaskManager;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -28,15 +27,16 @@ public class ShellSSHChannel implements AutoCloseable {
     @Override
     public void close() {
         if (this.channel != null) {
-            Channel channelTemp = this.channel;
-            this.channel = null;
-            TaskManager.startTimeout(() -> {
-                try {
-                    channelTemp.disconnect();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }, 100);
+            this.channel.disconnect();
+//            Channel channelTemp = this.channel;
+//            this.channel = null;
+//            TaskManager.startTimeout(() -> {
+//                try {
+//                    channelTemp.disconnect();
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }, 100);
         }
     }
 

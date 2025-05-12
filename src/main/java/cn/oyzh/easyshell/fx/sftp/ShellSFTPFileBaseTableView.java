@@ -598,7 +598,7 @@ public class ShellSFTPFileBaseTableView extends ShellFileTableView<ShellSFTPClie
             return;
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        this.client.mkdir(filePath);
+        this.client.createDir(filePath);
         SftpATTRS attrs = this.client.stat(filePath);
         ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
         // 读取链接文件

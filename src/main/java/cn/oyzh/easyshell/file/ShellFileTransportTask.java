@@ -143,7 +143,7 @@ public class ShellFileTransportTask {
                     remoteFilePath = ShellFileUtil.concat(remoteDir, file.getFileName());
                     // 创建父目录
                     if (!this.remoteClient.exist(remoteDir)) {
-                        this.remoteClient.mkdir(remoteDir);
+                        this.remoteClient.createDirRecursive(remoteDir);
                     }
                 }
                 // 执行传输
@@ -158,6 +158,8 @@ public class ShellFileTransportTask {
                 input.transferTo(output);
                 IOUtil.close(input);
                 IOUtil.close(output);
+                this.localClient.closeDelayResources();
+                this.remoteClient.closeDelayResources();
                 this.updateFileCount();
             } catch (Exception ex) {// 其他
                 // 忽略中断异常
@@ -195,7 +197,7 @@ public class ShellFileTransportTask {
             this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getFileName());
             this.localClient.lsFileRecursive(this.localFile, f -> {
                 if (f instanceof ShellFile f1) {
-                    fileList.add(f1);
+                    this.fileList.add(f1);
                     this.totalSize += f1.getFileSize();
                     this.updateFileSize();
                 }

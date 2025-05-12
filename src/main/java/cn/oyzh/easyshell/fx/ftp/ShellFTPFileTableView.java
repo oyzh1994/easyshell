@@ -534,7 +534,7 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
     @Override
     public void mkdir(String filePath) throws Exception {
         String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
-        this.client.mkdir(dirPath);
+        this.client.createDir(dirPath);
         ShellFTPFile file = this.client.finfo(dirPath);
         this.files.add(file);
         this.refreshFile();

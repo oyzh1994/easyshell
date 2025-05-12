@@ -41,6 +41,9 @@ public interface ShellFileClient<E extends ShellFile> {
      * @throws Exception 异常
      */
     default void lsFileRecursive(E file, Consumer<E> callback) throws Exception {
+        if (!file.isNormal()) {
+            return;
+        }
         if (file.isFile()) {
             callback.accept(file);
         } else {
@@ -139,7 +142,15 @@ public interface ShellFileClient<E extends ShellFile> {
      * @return 结果
      * @throws Exception 异常
      */
-    boolean mkdir(String filePath) throws Exception;
+    boolean createDir(String filePath) throws Exception;
+
+    /**
+     * 递归删除文件夹
+     *
+     * @param filePath 文件路径
+     * @throws Exception 异常
+     */
+    void createDirRecursive(String filePath) throws Exception;
 
     /**
      * 获取当前位置
@@ -424,4 +435,6 @@ public interface ShellFileClient<E extends ShellFile> {
             callback.run();
         });
     }
+
+    void closeDelayResources();
 }

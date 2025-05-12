@@ -137,7 +137,7 @@ public class ShellFileUploadTask {
                     remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
                     // 创建父目录
                     if (!this.client.exist(remoteDir)) {
-                        this.client.mkdir(remoteDir);
+                        this.client.createDirRecursive(remoteDir);
                     }
                 }
                 // 执行上传
