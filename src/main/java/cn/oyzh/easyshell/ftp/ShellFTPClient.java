@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
@@ -18,8 +19,6 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,6 +118,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
+    }
+
+    @Override
+    public ObservableList<ShellFileTransportTask> transportTasks() {
+        return null;
     }
 
     @Override
@@ -258,19 +262,32 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 //    }
 
     @Override
-    public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws IOException {
+    public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws IOException {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
         InputStream in;
         if (callback != null) {
-            in = ShellFTPProgressMonitor.of(new FileInputStream(localFile), callback);
+            in = ShellFTPProgressMonitor.of(localFile, callback);
         } else {
-            in = new FileInputStream(localFile);
+            in = localFile;
         }
         super.storeFile(remoteFile, in);
         IOUtil.close(in);
     }
 
-//    /**
+    @Override
+    public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        OutputStream out = super.storeFileStream(remoteFile);
+        OutputStream stream;
+        if (callback != null) {
+            stream = ShellFTPProgressMonitor.of(out, callback);
+        } else {
+            stream = out;
+        }
+        return stream;
+    }
+
+    //    /**
 //     * 执行下载
 //     *
 //     * @param localFile  本地文件
@@ -294,7 +311,20 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         IOUtil.close(out);
     }
 
-//    /**
+    @Override
+    public InputStream getStream(ShellFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
+        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        InputStream in = super.retrieveFileStream(remoteFile.getFilePath());
+        InputStream stream;
+        if (callback != null) {
+            stream = ShellFTPProgressMonitor.of(in, callback);
+        } else {
+            stream = in;
+        }
+        return stream;
+    }
+
+    //    /**
 //     * 执行上传
 //     *
 //     * @param localFile  本地文件

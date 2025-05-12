@@ -217,7 +217,7 @@ public class ShellKeyUtil {
                 // 远程临时公钥
                 String remoteFile = client.getUserHome() + key.getId() + ".pub";
                 // 上传
-                sftpClient.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile);
+                sftpClient.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile, null);
                 // 追加到已知公钥
                 client.shellExec().append_file(remoteFile, sshFile);
                 try {

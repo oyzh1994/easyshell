@@ -7,8 +7,11 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -176,6 +179,25 @@ public interface ShellFileClient<E extends ShellFile> {
     void get(E remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception;
 
     /**
+     * 下载文件
+     *
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    InputStream getStream(E remoteFile, Function<Long, Boolean> callback) throws Exception;
+
+    /**
+     * 上传文件
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    default void put(String localFile, String remoteFile) throws Exception {
+        this.put(new File(localFile), remoteFile, null);
+    }
+
+    /**
      * 上传文件
      *
      * @param localFile  本地文件
@@ -193,7 +215,26 @@ public interface ShellFileClient<E extends ShellFile> {
      * @param remoteFile 远程文件
      * @throws IOException 异常
      */
-    void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception;
+    default void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        this.put(new FileInputStream(localFile), remoteFile, callback);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param localFile  本地文件
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception;
+
+    /**
+     * 上传文件
+     *
+     * @param remoteFile 远程文件
+     * @throws IOException 异常
+     */
+    OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception;
 
     /**
      * 创建删除任务
@@ -293,6 +334,37 @@ public interface ShellFileClient<E extends ShellFile> {
      * @return 下载任务列表
      */
     ObservableList<ShellFileDownloadTask> downloadTasks();
+
+    /**
+     * 创建传输任务
+     *
+     * @param remotePath   远程路径
+     * @param localFile    本地文件
+     * @param remoteClient 远程客户端
+     */
+    default void doTransport(String remotePath, E localFile, ShellFileClient<E> remoteClient) throws Exception {
+        ShellFileTransportTask transportTask = new ShellFileTransportTask(remotePath, localFile, remoteClient, this);
+        Thread worker = ThreadUtil.startVirtual(() -> {
+            try {
+                transportTask.doTransport();
+            } catch (InterruptedException | InterruptedIOException ex) {
+                JulLog.warn("transport interrupted");
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            } finally {
+                this.transportTasks().remove(transportTask);
+            }
+        });
+        transportTask.setWorker(worker);
+        this.transportTasks().add(transportTask);
+    }
+
+    /**
+     * 获取传输任务列表
+     *
+     * @return 传输任务列表
+     */
+    ObservableList<ShellFileTransportTask> transportTasks();
 
     /**
      * 获取任务数量

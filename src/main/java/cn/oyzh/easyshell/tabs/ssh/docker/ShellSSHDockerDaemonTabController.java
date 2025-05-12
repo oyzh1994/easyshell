@@ -97,7 +97,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                     sftpClient.touch(tempFile);
                 }
                 // 上传内容
-                sftpClient.put(new ByteArrayInputStream(text.getBytes()), tempFile);
+                sftpClient.put(new ByteArrayInputStream(text.getBytes()), tempFile, null);
                 // 把临时文件内容copy到真实文件
 //                String output = exec.echo("$(cat " + tempFile + ")", jsonFile);
                 String output = exec.cat_file(tempFile, jsonFile);

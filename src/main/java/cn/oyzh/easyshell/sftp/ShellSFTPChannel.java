@@ -351,12 +351,16 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     }
 
     public InputStream get(String src) throws SftpException {
+        return this.get(src, (SftpProgressMonitor) null);
+    }
+
+    public InputStream get(String src, SftpProgressMonitor monitor) throws SftpException {
         try {
             this.setUsing(true);
             if (this.isWindows()) {
                 src = ShellUtil.reverseWindowsFilePath(src);
             }
-            return this.getChannel().get(src);
+            return this.getChannel().get(src, monitor);
         } finally {
             this.setUsing(false);
         }

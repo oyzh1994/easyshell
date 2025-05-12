@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellSFTPConnectComboBox?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
-<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
@@ -13,7 +13,6 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.FXProgressTextBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
@@ -183,7 +182,7 @@
             </FXHBox>
         </FXVBox>
         <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
-            <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100%">
+            <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100% - 200">
                 <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <HomeSVGGlyph onMousePrimaryClicked="#intoSourceHome">
@@ -224,7 +223,7 @@
                                            valueName="icon"/>
                             <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName"
                                            text="%base.name"/>
-                            <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
+                            <FXTableColumn prefWidth="130" valueName="fileSizeDisplay" text="%base.size"/>
                             <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
                             <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>
                             <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
@@ -236,18 +235,18 @@
                         </FXVBox.margin>
                     </ShellSFTPTransportFileTableView>
                 </FXVBox>
-<!--                <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">-->
-<!--                    <TransportRightSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport1">-->
-<!--                        <FXVBox.margin>-->
-<!--                            <Insets left="3" top="-10"/>-->
-<!--                        </FXVBox.margin>-->
-<!--                    </TransportRightSVGGlyph>-->
-<!--                    <TransportLeftSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport2">-->
-<!--                        <FXVBox.margin>-->
-<!--                            <Insets left="3" top="20"/>-->
-<!--                        </FXVBox.margin>-->
-<!--                    </TransportLeftSVGGlyph>-->
-<!--                </FXVBox>-->
+                <!--                <FXVBox realWidth="30" flexHeight="100%" alignment="CENTER">-->
+                <!--                    <TransportRightSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport1">-->
+                <!--                        <FXVBox.margin>-->
+                <!--                            <Insets left="3" top="-10"/>-->
+                <!--                        </FXVBox.margin>-->
+                <!--                    </TransportRightSVGGlyph>-->
+                <!--                    <TransportLeftSVGGlyph sizeStr="16" onMousePrimaryClicked="#doTransport2">-->
+                <!--                        <FXVBox.margin>-->
+                <!--                            <Insets left="3" top="20"/>-->
+                <!--                        </FXVBox.margin>-->
+                <!--                    </TransportLeftSVGGlyph>-->
+                <!--                </FXVBox>-->
                 <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <HomeSVGGlyph onMousePrimaryClicked="#intoTargetHome">
@@ -288,7 +287,7 @@
                                            valueName="icon"/>
                             <FXTableColumn style="-fx-padding-left:0;" prefWidth="260" valueName="fileName"
                                            text="%base.name"/>
-                            <FXTableColumn prefWidth="130" valueName="size" text="%base.size"/>
+                            <FXTableColumn prefWidth="130" valueName="fileSizeDisplay" text="%base.size"/>
                             <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
                             <FXTableColumn prefWidth="175" valueName="addTime" text="%base.addTime"/>
                             <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
@@ -301,64 +300,64 @@
                     </ShellSFTPTransportFileTableView>
                 </FXVBox>
             </FXHBox>
-            <!--            <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">-->
-            <!--                <columns>-->
-            <!--                    <FXTableColumn prefWidth="100" valueName="remoteName" text="%base.targetConnect"/>-->
-            <!--                    <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>-->
-            <!--                    <FXTableColumn flexWidth="100% - 862" valueName="currentFile" text="%base.currentFile"/>-->
-            <!--                    <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>-->
-            <!--                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>-->
-            <!--                    <FXTableColumn prefWidth="90" valueName="totalCount" text="%base.remainingCount"/>-->
-            <!--                    <FXTableColumn prefWidth="90" valueName="fileSize" text="%base.fileSize"/>-->
-            <!--                    <FXTableColumn prefWidth="90" valueName="status" text="%base.status"/>-->
-            <!--                </columns>-->
-            <!--            </SftpTransportTaskTableView>-->
-            <FXHBox fx:id="sourceTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true"
-                    visible="false">
-                <FXLabel fx:id="sourceName" prefWidth="100" maxWidth="100">
-                    <FXHBox.margin>
-                        <Insets left="5" top="5"/>
-                    </FXHBox.margin>
-                </FXLabel>
-                <FXProgressTextBar fx:id="sourceTransportProgress" realWidth="135">
-                    <FXHBox.margin>
-                        <Insets left="5" top="-4"/>
-                    </FXHBox.margin>
-                </FXProgressTextBar>
-                <FXLabel fx:id="sourceFileTransport" flexWidth="100% - 280">
-                    <FXHBox.margin>
-                        <Insets left="5" top="5"/>
-                    </FXHBox.margin>
-                </FXLabel>
-                <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelSourceTransport">
-                    <FXHBox.margin>
-                        <Insets left="5" top="8"/>
-                    </FXHBox.margin>
-                </CancelSVGGlyph>
-            </FXHBox>
-            <FXHBox fx:id="targetTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true"
-                    visible="false">
-                <FXLabel fx:id="targetName" prefWidth="100" maxWidth="100">
-                    <FXHBox.margin>
-                        <Insets left="5" top="5"/>
-                    </FXHBox.margin>
-                </FXLabel>
-                <FXProgressTextBar fx:id="targetTransportProgress" realWidth="135">
-                    <FXHBox.margin>
-                        <Insets left="5" top="-4"/>
-                    </FXHBox.margin>
-                </FXProgressTextBar>
-                <FXLabel fx:id="targetFileTransport" flexWidth="100% - 280">
-                    <FXHBox.margin>
-                        <Insets left="5" top="5"/>
-                    </FXHBox.margin>
-                </FXLabel>
-                <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelTargetTransport">
-                    <FXHBox.margin>
-                        <Insets left="5" top="8"/>
-                    </FXHBox.margin>
-                </CancelSVGGlyph>
-            </FXHBox>
+            <SftpTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">
+                <columns>
+                    <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 990" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="70" valueName="status" text="%base.status"/>
+                </columns>
+            </SftpTransportTaskTableView>
+            <!--            <FXHBox fx:id="sourceTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true"-->
+            <!--                    visible="false">-->
+            <!--                <FXLabel fx:id="sourceName" prefWidth="100" maxWidth="100">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="5"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </FXLabel>-->
+            <!--                <FXProgressTextBar fx:id="sourceTransportProgress" realWidth="135">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="-4"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </FXProgressTextBar>-->
+            <!--                <FXLabel fx:id="sourceFileTransport" flexWidth="100% - 280">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="5"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </FXLabel>-->
+            <!--                <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelSourceTransport">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="8"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </CancelSVGGlyph>-->
+            <!--            </FXHBox>-->
+            <!--            <FXHBox fx:id="targetTransportBox" prefHeight="30" flexWidth="100%" managedBindVisible="true"-->
+            <!--                    visible="false">-->
+            <!--                <FXLabel fx:id="targetName" prefWidth="100" maxWidth="100">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="5"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </FXLabel>-->
+            <!--                <FXProgressTextBar fx:id="targetTransportProgress" realWidth="135">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="-4"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </FXProgressTextBar>-->
+            <!--                <FXLabel fx:id="targetFileTransport" flexWidth="100% - 280">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="5"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </FXLabel>-->
+            <!--                <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelTargetTransport">-->
+            <!--                    <FXHBox.margin>-->
+            <!--                        <Insets left="5" top="8"/>-->
+            <!--                    </FXHBox.margin>-->
+            <!--                </CancelSVGGlyph>-->
+            <!--            </FXHBox>-->
         </FXVBox>
     </FXVBox>
 </FXPane>

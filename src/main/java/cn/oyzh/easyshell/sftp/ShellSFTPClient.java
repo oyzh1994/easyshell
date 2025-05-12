@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
-import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
 import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.ssh.util.SSHHolder;
@@ -19,7 +19,6 @@ import com.jcraft.jsch.SftpProgressMonitor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -81,10 +80,10 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //                this.uploadManager.close();
 //                this.uploadManager = null;
 //            }
-            if (this.transportManager != null) {
-                this.transportManager.close();
-                this.transportManager = null;
-            }
+//            if (this.transportManager != null) {
+//                this.transportManager.close();
+//                this.transportManager = null;
+//            }
 //            if (this.downloadManager != null) {
 //                this.downloadManager.close();
 //                this.downloadManager = null;
@@ -178,14 +177,14 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //        return downloadManager;
 //    }
 
-    private ShellSFTPTransportManager transportManager;
-
-    public ShellSFTPTransportManager getTransportManager() {
-        if (this.transportManager == null) {
-            this.transportManager = new ShellSFTPTransportManager();
-        }
-        return transportManager;
-    }
+//    private ShellSFTPTransportManager transportManager;
+//
+//    public ShellSFTPTransportManager getTransportManager() {
+//        if (this.transportManager == null) {
+//            this.transportManager = new ShellSFTPTransportManager();
+//        }
+//        return transportManager;
+//    }
 //
 //    public ShellSFTPChannel openSFTP() {
 //        if (!this.getSftpManager().hasAvailable()) {
@@ -284,9 +283,9 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //        this.getDownloadManager().fileDownload(localFile, remoteFile, this);
 //    }
 
-    public void transport(ShellSFTPFile localFile, String remoteFile, ShellSFTPClient remoteClient) {
-        this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
-    }
+//    public void transport(ShellSFTPFile localFile, String remoteFile, ShellSFTPClient remoteClient) {
+//        this.getTransportManager().fileTransport(localFile, remoteFile, this, remoteClient);
+//    }
 
 //    public void rm(String filePath) throws Exception {
 //        try (ShellSFTPChannel channel = this.newSFTP()) {
@@ -348,94 +347,78 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         }
     }
 
-    public void put(InputStream stream, String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.put(stream, filePath);
-        }
+//    public void put(InputStream stream, String filePath) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            channel.put(stream, filePath);
+//        }
+//    }
+
+    public OutputStream put1(String dest, SftpProgressMonitor monitor) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            return channel.put(dest, monitor);
+//        }
+        ShellSFTPChannel channel = this.newSFTP();
+        return channel.put(dest, monitor);
     }
 
-    public OutputStream put(String dest, SftpProgressMonitor monitor) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            return channel.put(dest, monitor);
-        }
-    }
+//    public void put(String src, String dest, SftpProgressMonitor monitor) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            channel.put(src, dest, monitor);
+//        }
+//    }
 
-    public void put(String src, String dest, SftpProgressMonitor monitor) throws Exception {
+    @Override
+    public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.put(src, dest, monitor);
+            channel.put(localFile, remoteFile, this.newMonitor(callback), ChannelSftp.OVERWRITE);
         }
     }
 
     @Override
-    public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            SftpProgressMonitor monitor = callback == null ? null : new SftpProgressMonitor() {
-                @Override
-                public void init(int i, String s, String s1, long l) {
-
-                }
-
-                @Override
-                public boolean count(long l) {
-                    return callback.apply(l);
-                }
-
-                @Override
-                public void end() {
-
-                }
-            };
-            channel.put(localFile.getPath(), remoteFile, monitor);
-        }
+    public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        ShellSFTPChannel channel = this.newSFTP();
+        return channel.put(remoteFile, this.newMonitor(callback));
     }
 
-    public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.get(src, dest, monitor, mode);
-        }
-    }
+//    public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            channel.get(src, dest, monitor, mode);
+//        }
+//    }
 
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
-            SftpProgressMonitor monitor = callback == null ? null : new SftpProgressMonitor() {
-                @Override
-                public void init(int i, String s, String s1, long l) {
-
-                }
-
-                @Override
-                public boolean count(long l) {
-                    return callback.apply(l);
-                }
-
-                @Override
-                public void end() {
-
-                }
-            };
-            channel.get(remoteFile.getFilePath(), localFile, monitor, ChannelSftp.OVERWRITE);
+            channel.get(remoteFile.getFilePath(), localFile, this.newMonitor(callback), ChannelSftp.OVERWRITE);
         }
     }
 
-    public InputStream get(String src) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            return channel.get(src);
-        }
+    @Override
+    public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
+        ShellSFTPChannel channel = this.newSFTP();
+        return channel.get(remoteFile.getFilePath(), this.newMonitor(callback));
     }
 
-    public void get(String src, String dest) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.get(src, dest);
-        }
-    }
+//    public InputStream get1(String src) throws Exception {
 
-    public void get(String src, String dest, SftpProgressMonitor monitor) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
-            channel.get(src, dest, monitor);
-        }
-    }
+    /// /        try (ShellSFTPChannel channel = this.newSFTP()) {
+    /// /            return channel.get(src);
+    /// /        }
+//        ShellSFTPChannel channel = this.newSFTP();
+//        return channel.get(src);
+//    }
 
+//    public void get(String src, String dest) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            channel.get(src, dest);
+//        }
+//    }
+//
+//    public void get(String src, String dest, SftpProgressMonitor monitor) throws Exception {
+//        try (ShellSFTPChannel channel = this.newSFTP()) {
+//            channel.get(src, dest, monitor);
+//        }
+//    }
     public void chmod(int permission, String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.chmod(permission, filePath);
@@ -556,6 +539,13 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         return deleteTasks;
     }
 
+    private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
+
+    @Override
+    public ObservableList<ShellFileTransportTask> transportTasks() {
+        return transportTasks;
+    }
+
 //    public void deleteFile(ShellSFTPFile file) throws Exception {
 
     /// /        ShellSFTPDeleteFile deleteFile = new ShellSFTPDeleteFile();
@@ -581,6 +571,22 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //            callback.run();
 //        });
 //    }
+    private SftpProgressMonitor newMonitor(Function<Long, Boolean> callback) {
+        return callback == null ? null : new SftpProgressMonitor() {
+            @Override
+            public void init(int i, String s, String s1, long l) {
 
+            }
 
+            @Override
+            public boolean count(long l) {
+                return callback.apply(l);
+            }
+
+            @Override
+            public void end() {
+
+            }
+        };
+    }
 }

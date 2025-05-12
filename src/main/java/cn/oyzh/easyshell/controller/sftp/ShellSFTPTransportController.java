@@ -2,32 +2,30 @@ package cn.oyzh.easyshell.controller.sftp;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.fx.connect.ShellSFTPConnectComboBox;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
+import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPTransportFileTableView;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClientUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportManager;
-import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportMonitor;
-import cn.oyzh.easyshell.sftp.transport.ShellSFTPTransportTask;
-import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.AnimationUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
@@ -199,53 +197,56 @@ public class ShellSFTPTransportController extends StageController {
      */
     private ShellSFTPClient targetClient;
 
-    /**
-     * 源名称
-     */
-    @FXML
-    private FXLabel sourceName;
+//    /**
+//     * 源名称
+//     */
+//    @FXML
+//    private FXLabel sourceName;
+//
+//    /**
+//     * 源传输组件
+//     */
+//    @FXML
+//    private FXHBox sourceTransportBox;
+//
+//    /**
+//     * 源传输标签
+//     */
+//    @FXML
+//    private FXLabel sourceFileTransport;
+//
+//    /**
+//     * 源传输进度
+//     */
+//    @FXML
+//    private FXProgressTextBar sourceTransportProgress;
+//
+//    /**
+//     * 目标名称
+//     */
+//    @FXML
+//    private FXLabel targetName;
+    /// /
+//    /**
+//     * 目标传输组件
+//     */
+//    @FXML
+//    private FXHBox targetTransportBox;
+//
+//    /**
+//     * 目标传输标签
+//     */
+//    @FXML
+//    private FXLabel targetFileTransport;
+//
+//    /**
+//     * 目标传输进度
+//     */
+//    @FXML
+//    private FXProgressTextBar targetTransportProgress;
 
-    /**
-     * 源传输组件
-     */
     @FXML
-    private FXHBox sourceTransportBox;
-
-    /**
-     * 源传输标签
-     */
-    @FXML
-    private FXLabel sourceFileTransport;
-
-    /**
-     * 源传输进度
-     */
-    @FXML
-    private FXProgressTextBar sourceTransportProgress;
-
-    /**
-     * 目标名称
-     */
-    @FXML
-    private FXLabel targetName;
-
-    /**
-     * 目标传输组件
-     */
-    @FXML
-    private FXHBox targetTransportBox;
-
-    /**
-     * 目标传输标签
-     */
-    @FXML
-    private FXLabel targetFileTransport;
-
-    /**
-     * 目标传输进度
-     */
-    @FXML
-    private FXProgressTextBar targetTransportProgress;
+    private SftpTransportTaskTableView transportTable;
 
     /**
      * 执行传输1
@@ -268,7 +269,7 @@ public class ShellSFTPTransportController extends StageController {
             }
             String remotePath = this.targetFile.getLocation();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
-            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.sourceTransportBox);
+//            AnimationUtil.move(new FileSVGGlyph("150"), this.sourceFile, this.sourceTransportBox);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -296,7 +297,7 @@ public class ShellSFTPTransportController extends StageController {
             }
             String remotePath = this.sourceFile.getLocation();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
-            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.targetTransportBox);
+//            AnimationUtil.move(new FileSVGGlyph("150"), this.targetFile, this.targetTransportBox);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -311,17 +312,12 @@ public class ShellSFTPTransportController extends StageController {
      * @param sourceClient 源连接
      * @param targetClient 目标连接
      */
-    private void doTransport(List<ShellSFTPFile> files, String remotePath, ShellSFTPClient sourceClient, ShellSFTPClient targetClient) {
+    private void doTransport(List<ShellSFTPFile> files, String remotePath, ShellSFTPClient sourceClient, ShellSFTPClient targetClient) throws Exception {
         for (ShellSFTPFile file : files) {
-            if (file.isCurrentFile() || file.isReturnDirectory()) {
+            if (!file.isNormal()) {
                 continue;
             }
-            if (file.isDirectory()) {
-                sourceClient.transport(file, remotePath, targetClient);
-            } else {
-                String remoteFile = ShellFileUtil.concat(remotePath, file.getName());
-                sourceClient.transport(file, remoteFile, targetClient);
-            }
+            sourceClient.doTransport(remotePath, file, targetClient);
         }
     }
 
@@ -342,7 +338,7 @@ public class ShellSFTPTransportController extends StageController {
         this.sourceInfo.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 // 初始化名称
-                this.sourceName.setText(newValue.getName());
+//                this.sourceName.setText(newValue.getName());
                 this.sourceHost.setText(newValue.getHost());
                 this.sourceInfoName.setText(newValue.getName());
             } else {
@@ -357,7 +353,7 @@ public class ShellSFTPTransportController extends StageController {
         this.targetInfo.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 // 初始化名称
-                this.targetName.setText(newValue.getName());
+//                this.targetName.setText(newValue.getName());
                 this.targetHost.setText(newValue.getHost());
                 this.targetInfoName.setText(newValue.getName());
             } else {
@@ -516,9 +512,9 @@ public class ShellSFTPTransportController extends StageController {
         }
     }
 
-    private ShellSFTPTransportManager sourceTransportManager;
-
-    private ShellSFTPTransportManager targetTransportManager;
+//    private ShellSFTPTransportManager sourceTransportManager;
+//
+//    private ShellSFTPTransportManager targetTransportManager;
 
     /**
      * 初始化文件表格
@@ -527,22 +523,43 @@ public class ShellSFTPTransportController extends StageController {
         // 设置客户端
         this.sourceFile.setClient(this.sourceClient);
         this.targetFile.setClient(this.targetClient);
-        // 传输处理器
-        this.sourceTransportManager = this.sourceClient.getTransportManager();
-        this.targetTransportManager = this.targetClient.getTransportManager();
-        // 注册监听器
-        this.sourceTransportManager.addMonitorChangedCallback(this, this::sourceTransportMonitorChanged);
-        this.sourceTransportManager.addTaskSizeChangedCallback(this, this::sourceTransportTaskSizeChanged);
-        this.sourceTransportManager.addTaskStatusChangedCallback(this, this::sourceTransportStatusChanged);
+
+        // 创建去重后的集合
+        ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
+//        Bindings.createObjectBinding((() -> {
+//            transportTasks.clear();
+//            transportTasks.addAll(this.sourceClient.transportTasks());
+//            transportTasks.addAll(this.targetClient.transportTasks());
+//            return transportTasks;
+//        }), this.sourceClient.transportTasks(), this.targetClient.transportTasks());
+        this.transportTable.setItems(transportTasks);
+
+        this.sourceClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
+            transportTasks.clear();
+            transportTasks.addAll(this.sourceClient.transportTasks());
+            transportTasks.addAll(this.targetClient.transportTasks());
+        });
+        this.targetClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
+            transportTasks.clear();
+            transportTasks.addAll(this.sourceClient.transportTasks());
+            transportTasks.addAll(this.targetClient.transportTasks());
+        });
+//        // 传输处理器
+//        this.sourceTransportManager = this.sourceClient.getTransportManager();
+//        this.targetTransportManager = this.targetClient.getTransportManager();
+//        // 注册监听器
+//        this.sourceTransportManager.addMonitorChangedCallback(this, this::sourceTransportMonitorChanged);
+//        this.sourceTransportManager.addTaskSizeChangedCallback(this, this::sourceTransportTaskSizeChanged);
+//        this.sourceTransportManager.addTaskStatusChangedCallback(this, this::sourceTransportStatusChanged);
 //        this.sourceTransportManager.setMonitorEndedCallback(e -> {
 //            if (this.sourceTransportManager.isCompleted()) {
 //                this.refreshTargetFile();
 //            }
 //        });
-        this.targetTransportManager.addMonitorFailedCallback(this, this::transportFailed);
-        this.targetTransportManager.addMonitorChangedCallback(this, this::targetTransportMonitorChanged);
-        this.targetTransportManager.addTaskSizeChangedCallback(this, this::targetTransportTaskSizeChanged);
-        this.targetTransportManager.addTaskStatusChangedCallback(this, this::targetTransportStatusChanged);
+//        this.targetTransportManager.addMonitorFailedCallback(this, this::transportFailed);
+//        this.targetTransportManager.addMonitorChangedCallback(this, this::targetTransportMonitorChanged);
+//        this.targetTransportManager.addTaskSizeChangedCallback(this, this::targetTransportTaskSizeChanged);
+//        this.targetTransportManager.addTaskStatusChangedCallback(this, this::targetTransportStatusChanged);
 //        this.targetTransportManager.setMonitorEndedCallback(e -> {
 //            if (this.targetTransportManager.isCompleted()) {
 //                this.refreshSourceFile();
@@ -596,29 +613,29 @@ public class ShellSFTPTransportController extends StageController {
 
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
-        // 检查任务是否执行中
-        ShellSFTPTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
-        if (manager1 != null
-                && !manager1.isCompleted()
-                && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
-            event.consume();
-            return;
-        }
-        // 检查任务是否执行中
-        ShellSFTPTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
-        if (manager2 != null
-                && !manager2.isCompleted()
-                && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
-            event.consume();
-            return;
-        }
-        // 取消任务
-        if (manager1 != null) {
-            manager1.cancel();
-        }
-        if (manager2 != null) {
-            manager2.cancel();
-        }
+//        // 检查任务是否执行中
+//        ShellSFTPTransportManager manager1 = this.sourceClient == null ? null : this.sourceClient.getTransportManager();
+//        if (manager1 != null
+//                && !manager1.isCompleted()
+//                && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
+//            event.consume();
+//            return;
+//        }
+//        // 检查任务是否执行中
+//        ShellSFTPTransportManager manager2 = this.targetClient == null ? null : this.targetClient.getTransportManager();
+//        if (manager2 != null
+//                && !manager2.isCompleted()
+//                && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
+//            event.consume();
+//            return;
+//        }
+//        // 取消任务
+//        if (manager1 != null) {
+//            manager1.cancel();
+//        }
+//        if (manager2 != null) {
+//            manager2.cancel();
+//        }
         // 关闭连接
         if (this.sourceClient != null) {
             this.sourceClient.close();
@@ -629,144 +646,144 @@ public class ShellSFTPTransportController extends StageController {
         super.onWindowCloseRequest(event);
     }
 
-    /**
-     * 传输失败
-     *
-     * @param monitor   监听器
-     * @param exception 异常
-     */
-    private void transportFailed(ShellSFTPTransportMonitor monitor, Throwable exception) {
-        if (exception != null) {
-            MessageBox.exception(exception, I18nHelper.transportFail() + " " + monitor.getLocalFileName());
-        }
-    }
+//    /**
+//     * 传输失败
+//     *
+//     * @param monitor   监听器
+//     * @param exception 异常
+//     */
+//    private void transportFailed(ShellSFTPTransportMonitor monitor, Throwable exception) {
+//        if (exception != null) {
+//            MessageBox.exception(exception, I18nHelper.transportFail() + " " + monitor.getLocalFileName());
+//        }
+//    }
+//
+//    /**
+//     * 取消源传输
+//     */
+//    @FXML
+//    private void cancelSourceTransport() {
+//        this.sourceTransportManager.cancel();
+//    }
+//
+//    /**
+//     * 取消目标传输
+//     */
+//    @FXML
+//    private void cancelTargetTransport() {
+//        this.targetTransportManager.cancel();
+//    }
+//
+//    /**
+//     * 源状态改变事件
+//     *
+//     * @param status 状态
+//     * @param task   任务
+//     */
+//    private void sourceTransportStatusChanged(String status, ShellSFTPTransportTask task) {
+//        StringBuilder builder = new StringBuilder();
+//        builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
+//        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
+//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+//        this.sourceFileTransport.text(builder.toString());
+//        this.sourceTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+//    }
+//
+//    /**
+//     * 源监听变更事件
+//     *
+//     * @param monitor 监听器
+//     * @param task    任务
+//     */
+//    private void sourceTransportMonitorChanged(ShellSFTPTransportMonitor monitor, ShellSFTPTransportTask task) {
+//        StringBuilder builder = new StringBuilder();
+//        builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
+////        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+//        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
+//        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
+//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+//        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getLocalFileName());
+//        this.sourceFileTransport.text(builder.toString());
+//        this.sourceTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+//    }
+//
+//    /**
+//     * 源任务大小变更事件
+//     */
+//    private void sourceTransportTaskSizeChanged() {
+//        if (this.sourceTransportManager.isEmpty()) {
+//            this.sourceTransportBox.disappear();
+//            this.targetFile.loadFile();
+//        } else {
+//            this.sourceTransportBox.display();
+//        }
+//        this.updateLayout();
+//    }
+//
+//    /**
+//     * 目标状态改变事件
+//     *
+//     * @param status 状态
+//     * @param task   任务
+//     */
+//    private void targetTransportStatusChanged(String status, ShellSFTPTransportTask task) {
+//        StringBuilder builder = new StringBuilder();
+//        builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
+//        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
+//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+//        this.targetFileTransport.text(builder.toString());
+//        this.targetTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+//    }
+//
+//    /**
+//     * 目标监听变更事件
+//     *
+//     * @param monitor 监听器
+//     * @param task    任务
+//     */
+//    private void targetTransportMonitorChanged(ShellSFTPTransportMonitor monitor, ShellSFTPTransportTask task) {
+//        StringBuilder builder = new StringBuilder();
+//        builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
+////        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
+//        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
+//        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
+//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
+//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
+//        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getLocalFileName());
+//        this.targetFileTransport.text(builder.toString());
+//        this.targetTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
+//    }
+//
+//    /**
+//     * 目标任务大小变更事件
+//     */
+//    private void targetTransportTaskSizeChanged() {
+//        if (this.targetTransportManager.isEmpty()) {
+//            this.targetTransportBox.disappear();
+//            this.sourceFile.loadFile();
+//        } else {
+//            this.targetTransportBox.display();
+//        }
+//        this.updateLayout();
+//    }
 
-    /**
-     * 取消源传输
-     */
-    @FXML
-    private void cancelSourceTransport() {
-        this.sourceTransportManager.cancel();
-    }
-
-    /**
-     * 取消目标传输
-     */
-    @FXML
-    private void cancelTargetTransport() {
-        this.targetTransportManager.cancel();
-    }
-
-    /**
-     * 源状态改变事件
-     *
-     * @param status 状态
-     * @param task   任务
-     */
-    private void sourceTransportStatusChanged(String status, ShellSFTPTransportTask task) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
-        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
-        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-        this.sourceFileTransport.text(builder.toString());
-        this.sourceTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-    }
-
-    /**
-     * 源监听变更事件
-     *
-     * @param monitor 监听器
-     * @param task    任务
-     */
-    private void sourceTransportMonitorChanged(ShellSFTPTransportMonitor monitor, ShellSFTPTransportTask task) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(I18nHelper.task()).append(": ").append(this.sourceTransportManager.getTaskSize());
-//        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
-        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
-        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
-        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getLocalFileName());
-        this.sourceFileTransport.text(builder.toString());
-        this.sourceTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-    }
-
-    /**
-     * 源任务大小变更事件
-     */
-    private void sourceTransportTaskSizeChanged() {
-        if (this.sourceTransportManager.isEmpty()) {
-            this.sourceTransportBox.disappear();
-            this.targetFile.loadFile();
-        } else {
-            this.sourceTransportBox.display();
-        }
-        this.updateLayout();
-    }
-
-    /**
-     * 目标状态改变事件
-     *
-     * @param status 状态
-     * @param task   任务
-     */
-    private void targetTransportStatusChanged(String status, ShellSFTPTransportTask task) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
-        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
-        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-        this.targetFileTransport.text(builder.toString());
-        this.targetTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-    }
-
-    /**
-     * 目标监听变更事件
-     *
-     * @param monitor 监听器
-     * @param task    任务
-     */
-    private void targetTransportMonitorChanged(ShellSFTPTransportMonitor monitor, ShellSFTPTransportTask task) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(I18nHelper.task()).append(": ").append(this.targetTransportManager.getTaskSize());
-//        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
-        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
-        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
-        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getLocalFileName());
-        this.targetFileTransport.text(builder.toString());
-        this.targetTransportProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-    }
-
-    /**
-     * 目标任务大小变更事件
-     */
-    private void targetTransportTaskSizeChanged() {
-        if (this.targetTransportManager.isEmpty()) {
-            this.targetTransportBox.disappear();
-            this.sourceFile.loadFile();
-        } else {
-            this.targetTransportBox.display();
-        }
-        this.updateLayout();
-    }
-
-    /**
-     * 更新布局
-     */
-    private synchronized void updateLayout() {
-        int showNum = 0;
-        if (this.sourceTransportBox.isVisible()) {
-            ++showNum;
-        }
-        if (this.targetTransportBox.isVisible()) {
-            ++showNum;
-        }
-        this.fileBox.setFlexHeight("100% - " + (showNum * 30));
-        this.fileBox.parentAutosize();
-    }
+//    /**
+//     * 更新布局
+//     */
+//    private synchronized void updateLayout() {
+//        int showNum = 0;
+//        if (this.sourceTransportBox.isVisible()) {
+//            ++showNum;
+//        }
+//        if (this.targetTransportBox.isVisible()) {
+//            ++showNum;
+//        }
+//        this.fileBox.setFlexHeight("100% - " + (showNum * 30));
+//        this.fileBox.parentAutosize();
+//    }
 
     /**
      * 隐藏来源文件

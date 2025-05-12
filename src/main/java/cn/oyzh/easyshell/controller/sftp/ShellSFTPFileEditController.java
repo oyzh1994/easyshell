@@ -29,8 +29,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.WindowEvent;
 
-import java.io.FileInputStream;
-
 /**
  * sftp文件编辑业务
  *
@@ -101,7 +99,8 @@ public class ShellSFTPFileEditController extends StageController {
             try {
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                this.client.put(new FileInputStream(this.destPath), file.getFilePath());
+//                this.client.put(new FileInputStream(this.destPath), file.getFilePath());
+                this.client.put(this.destPath, file.getFilePath());
                 SftpATTRS attrs = this.client.stat(file.getFilePath());
                 this.file.setAttrs(attrs);
                 ShellEventUtil.fileSaved(this.file);
@@ -119,7 +118,7 @@ public class ShellSFTPFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                this.client.get(this.file.getFilePath(), this.destPath);
+                this.client.get(this.file, this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {
