@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
-import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +32,7 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025/04/26
  */
-public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFTPFile>, BaseClient {
+public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFTPFile> {
 
     private ShellConnect shellConnect;
 
@@ -129,7 +128,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void closeDelayResources() {
-
+        try {
+            this.completePendingCommand();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

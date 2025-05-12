@@ -6,16 +6,13 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 
@@ -248,48 +245,47 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
         if (this.checkInvalid(files)) {
             return Collections.emptyList();
         }
-
-        List<MenuItem> menuItems = new ArrayList<>();
-        // 创建文件
-        FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
-        menuItems.add(touch);
-        // 创建文件夹
-        FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
-        menuItems.add(mkdir);
-        menuItems.add(MenuItemHelper.separator());
-        if (files.size() == 1) {
-            ShellFTPFile file = files.getFirst();
-            // 编辑文件
-            FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
-            if (!ShellFileUtil.fileEditable(file)) {
-                editFile.setDisable(true);
-            }
-            editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
-            menuItems.add(editFile);
-            // 文件信息
-            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
-            fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
-            menuItems.add(fileInfo);
-            // 复制文件路径
-            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
-            menuItems.add(copyFilePath);
-            // 重命名文件
-            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
-            renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
-            menuItems.add(renameFile);
-            // 文件权限
-            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
-            menuItems.add(filePermission);
-            menuItems.add(MenuItemHelper.separator());
-        }
-        // 刷新文件
-        FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
-        refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
-        menuItems.add(refreshFile);
-        // 删除文件
-        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
-        menuItems.add(deleteFile);
+        List<MenuItem> menuItems = new ArrayList<>(super.getMenuItems());
+//        // 创建文件
+//        FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
+//        menuItems.add(touch);
+//        // 创建文件夹
+//        FXMenuItem mkdir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::mkdir);
+//        menuItems.add(mkdir);
+//        menuItems.add(MenuItemHelper.separator());
+//        if (files.size() == 1) {
+//            ShellFTPFile file = files.getFirst();
+//            // 编辑文件
+//            FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
+//            if (!ShellFileUtil.fileEditable(file)) {
+//                editFile.setDisable(true);
+//            }
+//            editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
+//            menuItems.add(editFile);
+//            // 文件信息
+//            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
+//            fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+//            menuItems.add(fileInfo);
+//            // 复制文件路径
+//            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
+//            menuItems.add(copyFilePath);
+//            // 重命名文件
+//            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
+//            renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
+//            menuItems.add(renameFile);
+//            // 文件权限
+//            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+//            menuItems.add(filePermission);
+//            menuItems.add(MenuItemHelper.separator());
+//        }
+//        // 刷新文件
+//        FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);
+//        refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
+//        menuItems.add(refreshFile);
+//        // 删除文件
+//        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+//        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
+//        menuItems.add(deleteFile);
         menuItems.add(MenuItemHelper.separator());
         // 上传文件
         FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
@@ -529,6 +525,13 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
 
     @Override
     public void mkdir(String filePath) throws Exception {
+        if (StringUtil.isEmpty(filePath)) {
+            return;
+        }
+        filePath = filePath.trim();
+        if (this.existFile(filePath) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
+            return;
+        }
         String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
         this.client.createDir(dirPath);
         ShellFTPFile file = this.client.finfo(dirPath);

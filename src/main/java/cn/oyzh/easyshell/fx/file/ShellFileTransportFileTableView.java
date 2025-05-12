@@ -2,8 +2,10 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
@@ -24,6 +26,19 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
 
     public void setTransportCallback(Consumer<List<ShellFile>> transportCallback) {
         this.transportCallback = transportCallback;
+    }
+
+    @Override
+    public void setClient(ShellFileClient client) {
+        super.setClient(client);
+        this.client.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
+            change.next();
+            if (change.wasRemoved()) {
+                for (ShellFileDeleteTask task : change.getRemoved()) {
+                    this.onFileDeleted(task.getFilePath());
+                }
+            }
+        });
     }
 
     @Override

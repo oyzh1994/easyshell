@@ -532,7 +532,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         if (t1 == null) {
             return false;
         }
-        return StringUtil.equals(this.name, t1.name);
+        return StringUtil.equals(this.id, t1.id);
     }
 
     public String getTermType() {

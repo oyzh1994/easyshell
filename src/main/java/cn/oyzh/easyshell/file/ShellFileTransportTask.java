@@ -350,4 +350,8 @@ public class ShellFileTransportTask {
     public void setWorker(Thread worker) {
         this.worker = worker;
     }
+
+    public String getClientName() {
+        return this.localClient.connectName();
+    }
 }

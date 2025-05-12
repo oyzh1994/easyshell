@@ -429,12 +429,12 @@ public class ShellFileTransportController extends StageController {
 
     @FXML
     private void refreshSourceFile() {
-        StageManager.showMask(() -> this.sourceFile.loadFile());
+        this.sourceFile.loadFile();
     }
 
     @FXML
     private void refreshTargetFile() {
-        StageManager.showMask(() -> this.targetFile.loadFile());
+        this.targetFile.loadFile();
     }
 
     @Override
@@ -503,7 +503,7 @@ public class ShellFileTransportController extends StageController {
         try {
             this.sourceFile.intoHome();
         } catch (Exception ex) {
-           MessageBox.exception(ex);
+            MessageBox.exception(ex);
         }
     }
 
@@ -517,7 +517,7 @@ public class ShellFileTransportController extends StageController {
         try {
             this.targetFile.intoHome();
         } catch (Exception ex) {
-           MessageBox.exception(ex);
+            MessageBox.exception(ex);
         }
     }
 

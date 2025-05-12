@@ -263,11 +263,15 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             } finally {
-                this.deleteTasks().remove(deleteTask);
+                synchronized (ShellFileClient.class) {
+                    this.deleteTasks().remove(deleteTask);
+                }
             }
         });
         deleteTask.setWorker(worker);
-        this.deleteTasks().add(deleteTask);
+        synchronized (ShellFileClient.class) {
+            this.deleteTasks().add(deleteTask);
+        }
     }
 
     /**
