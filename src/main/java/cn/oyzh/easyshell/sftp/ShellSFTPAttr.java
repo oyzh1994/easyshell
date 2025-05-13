@@ -18,7 +18,7 @@ public class ShellSFTPAttr {
     }
 
     public void putOwner(int id, String owner) {
-        if(owner == null) {
+        if (owner == null) {
             return;
         }
         if (this.owner == null) {
@@ -32,12 +32,23 @@ public class ShellSFTPAttr {
     }
 
     public void putGroup(int id, String group) {
-        if(group == null) {
+        if (group == null) {
             return;
         }
         if (this.group == null) {
             this.group = new HashMap<>();
         }
         this.group.put(id, group);
+    }
+
+    public void clear() {
+        if (this.owner != null) {
+            this.owner.clear();
+            this.owner = null;
+        }
+        if (this.group != null) {
+            this.group.clear();
+            this.group = null;
+        }
     }
 }

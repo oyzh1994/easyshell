@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * ssh终端tab内容组件
+ * ssh-终端tab内容组件
  *
  * @author oyzh
  * @since 2025/03/11

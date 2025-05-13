@@ -26,7 +26,7 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * 服务配置tab内容组件
+ * ssh-服务配置tab内容组件
  *
  * @author oyzh
  * @since 2025/03/16

@@ -18,7 +18,7 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * shell连接tab内容组件
+ * ssh-tab内容组件
  *
  * @author oyzh
  * @since 2025/04/16

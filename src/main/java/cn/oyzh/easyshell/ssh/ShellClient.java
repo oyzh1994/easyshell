@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
@@ -57,6 +58,11 @@ public abstract class ShellClient implements BaseClient {
         return session;
     }
 
+    /**
+     * 获取系统类型
+     *
+     * @return 系统类型
+     */
     protected String osType() {
         if (this.osType == null) {
             String output = this.exec("which");
@@ -126,7 +132,7 @@ public abstract class ShellClient implements BaseClient {
             } else {
                 result = stream.toString();
             }
-            stream.close();
+            IOUtil.close(stream);
             if (StringUtil.endsWith(result, "\r\n")) {
                 result = result.substring(0, result.length() - 2);
             } else if (StringUtil.endWithAny(result, "\n", "\r")) {
@@ -184,26 +190,56 @@ public abstract class ShellClient implements BaseClient {
         }
     }
 
+    /**
+     * 是否macos系统
+     *
+     * @return 结果
+     */
     public boolean isMacos() {
         return StringUtil.containsIgnoreCase(this.osType(), "Darwin");
     }
 
+    /**
+     * 是否linux系统
+     *
+     * @return 结果
+     */
     public boolean isLinux() {
         return StringUtil.containsIgnoreCase(this.osType(), "Linux");
     }
 
+    /**
+     * 是否unix系统
+     *
+     * @return 结果
+     */
     public boolean isUnix() {
         return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix");
     }
 
+    /**
+     * 是否freebsd系统
+     *
+     * @return 结果
+     */
     public boolean isFreeBSD() {
         return StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
     }
 
+    /**
+     * 是否windows系统
+     *
+     * @return 结果
+     */
     public boolean isWindows() {
         return StringUtil.equals(this.osType(), "Windows");
     }
 
+    /**
+     * 获取远程字符集
+     *
+     * @return 远程字符集
+     */
     public String getRemoteCharset() {
         if (this.remoteCharset == null) {
             String output = this.exec("chcp");
@@ -212,6 +248,11 @@ public abstract class ShellClient implements BaseClient {
         return this.remoteCharset;
     }
 
+    /**
+     * 获取文件分割符
+     *
+     * @return 文件分割符
+     */
     public String getFileSeparator() {
         if (this.isWindows()) {
             return "\\";
@@ -219,6 +260,11 @@ public abstract class ShellClient implements BaseClient {
         return "/";
     }
 
+    /**
+     * 获取用户目录
+     *
+     * @return 用户目录
+     */
     public String getUserHome() {
         if (this.userHome == null) {
             if (this.isWindows()) {

@@ -28,6 +28,7 @@ public class ShellSSHChannel implements AutoCloseable {
     public void close() {
         if (this.channel != null) {
             this.channel.disconnect();
+            this.channel = null;
 //            Channel channelTemp = this.channel;
 //            this.channel = null;
 //            TaskManager.startTimeout(() -> {

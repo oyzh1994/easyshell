@@ -17,16 +17,34 @@ import java.util.Date;
  */
 public class ShellSFTPFile implements ShellFile {
 
+    /**
+     * 文件对象
+     */
     private ChannelSftp.LsEntry entry;
 
+    /**
+     * 文件属性
+     */
     private SftpATTRS attrs;
 
+    /**
+     * 拥有者
+     */
     private String owner;
 
+    /**
+     * 分组
+     */
     private String group;
 
+    /**
+     * 文件名
+     */
     private String fileName;
 
+    /**
+     * 父路径
+     */
     private String parentPath;
 
     /**
@@ -38,6 +56,11 @@ public class ShellSFTPFile implements ShellFile {
      * 链接属性
      */
     private SftpATTRS linkAttrs;
+
+    /**
+     * 文件图标
+     */
+    private SVGGlyph icon;
 
     public ChannelSftp.LsEntry getEntry() {
         return entry;
@@ -54,10 +77,10 @@ public class ShellSFTPFile implements ShellFile {
         return this.attrs;
     }
 
-    public void setAttrs(SftpATTRS attrs) {
-        this.attrs = attrs;
-        this.updatePermissions();
-    }
+//    public void setAttrs(SftpATTRS attrs) {
+//        this.attrs = attrs;
+//        this.updatePermissions();
+//    }
 
     public SftpATTRS getLinkAttrs() {
         return linkAttrs;
@@ -123,8 +146,6 @@ public class ShellSFTPFile implements ShellFile {
         this.attrs = attrs;
         this.updatePermissions();
     }
-
-    private SVGGlyph icon;
 
     @Override
     public SVGGlyph getIcon() {
@@ -281,12 +302,4 @@ public class ShellSFTPFile implements ShellFile {
 //        this.linkPath = linkPath;
 //    }
 
-    /**
-     * 是否根目录
-     *
-     * @return 结果
-     */
-    public boolean isRoot() {
-        return this.isDirectory() && "/".equals(this.getFilePath());
-    }
 }

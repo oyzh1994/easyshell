@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * sftp组件
+ * ssh-sftp组件
  *
  * @author oyzh
  * @since 2025/03/11

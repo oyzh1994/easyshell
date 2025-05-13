@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * shell终端
+ * ssh客户端
  *
  * @author oyzh
  * @since 2023/08/16

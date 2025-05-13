@@ -509,4 +509,13 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return ShellFileUtil.hasOthersExecutePermission(this.getPermissions());
     }
 
+    /**
+     * 是否根目录
+     *
+     * @return 结果
+     */
+    default boolean isRoot() {
+        return this.isDirectory() && "/".equals(this.getFilePath());
+    }
+
 }

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.sftp;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -9,8 +8,8 @@ import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
-import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
@@ -31,10 +30,10 @@ import java.util.Vector;
 import java.util.function.Function;
 
 /**
- * shell终端
+ * sftp客户端
  *
  * @author oyzh
- * @since 2023/08/16
+ * @since 2025/04/16
  */
 public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
 
@@ -97,10 +96,15 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //                this.downloadManager.close();
 //                this.downloadManager = null;
 //            }
-            // 销毁回话
+            // 销毁会话
             if (this.session != null && this.session.isConnected()) {
                 this.session.disconnect();
                 this.session = null;
+            }
+            // 清除用户、分组信息
+            if (this.attr != null) {
+                this.attr.clear();
+                this.attr = null;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -203,21 +207,13 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //    }
 
     protected ShellSFTPChannel newSFTP() {
-        return this.newSFTP(0, 3);
-    }
-
-    protected ShellSFTPChannel newSFTP(int retryNum, int maxRetry) {
         try {
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
             ShellSFTPChannel sftp = new ShellSFTPChannel(channel, this.osType);
             sftp.connect(this.connectTimeout());
             return sftp;
         } catch (Exception ex) {
-            if (ExceptionUtil.hasMessage(ex, "channel is not opened.") && retryNum < 3) {
-                return this.newSFTP(retryNum + 1, maxRetry);
-            } else {
-                ex.printStackTrace();
-            }
+            ex.printStackTrace();
         }
         return null;
     }

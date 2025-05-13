@@ -20,7 +20,7 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * docker tab内容组件
+ * ssh-docker tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21

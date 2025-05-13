@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.ssh;
 
 /**
- * shell连接状态
+ * ssh连接状态
  *
  * @author oyzh
  * @since 2023/07/1
