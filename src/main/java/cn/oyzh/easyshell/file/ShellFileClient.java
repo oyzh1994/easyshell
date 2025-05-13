@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -259,22 +260,24 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      */
     default void doDelete(E file) {
         ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                deleteTask.doDelete();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("delete interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                synchronized (ShellFileClient.class) {
-                    this.deleteTasks().remove(deleteTask);
+        this.deleteTasks().add(deleteTask);
+        Thread worker = ThreadLocalUtil.getVal("delete:thread");
+        if (!ThreadUtil.isAlive(worker)) {
+            worker = ThreadUtil.startVirtual(() -> {
+                while (!this.isDeleteTaskEmpty()) {
+                    ShellFileDeleteTask task = this.deleteTasks().getFirst();
+                    try {
+                        task.doDelete();
+                    } catch (InterruptedException | InterruptedIOException ex) {
+                        JulLog.warn("delete interrupted");
+                    } catch (Exception ex) {
+                        MessageBox.exception(ex);
+                    } finally {
+                        this.deleteTasks().remove(task);
+                    }
                 }
-            }
-        });
-        deleteTask.setWorker(worker);
-        synchronized (ShellFileClient.class) {
-            this.deleteTasks().add(deleteTask);
+            });
+            ThreadLocalUtil.setVal("delete:thread", worker);
         }
     }
 
@@ -293,19 +296,29 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      */
     default void doUpload(File localFile, String remotePath) {
         ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remotePath, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                uploadTask.doUpload();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("upload interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.uploadTasks().remove(uploadTask);
-            }
+        uploadTask.setCancelCallback(t -> {
+            this.uploadTasks().remove(t);
+            this.closeDelayResources();
         });
-        uploadTask.setWorker(worker);
         this.uploadTasks().add(uploadTask);
+        Thread worker = ThreadLocalUtil.getVal("upload:thread");
+        if (!ThreadUtil.isAlive(worker)) {
+            worker = ThreadUtil.startVirtual(() -> {
+                while (!this.isUploadTaskEmpty()) {
+                    ShellFileUploadTask task = this.uploadTasks().getFirst();
+                    try {
+                        task.doUpload();
+                    } catch (InterruptedException | InterruptedIOException ex) {
+                        JulLog.warn("upload interrupted");
+                    } catch (Exception ex) {
+                        MessageBox.exception(ex);
+                    } finally {
+                        this.uploadTasks().remove(task);
+                    }
+                }
+            });
+            ThreadLocalUtil.setVal("upload:thread", worker);
+        }
     }
 
     /**
@@ -333,19 +346,29 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      */
     default void doDownload(E remoteFile, String localPath) {
         ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                downloadTask.doDownload();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("download interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.downloadTasks().remove(downloadTask);
-            }
+        downloadTask.setCancelCallback(t -> {
+            this.downloadTasks().remove(t);
+            this.closeDelayResources();
         });
-        downloadTask.setWorker(worker);
         this.downloadTasks().add(downloadTask);
+        Thread worker = ThreadLocalUtil.getVal("download:thread");
+        if (!ThreadUtil.isAlive(worker)) {
+            worker = ThreadUtil.startVirtual(() -> {
+                while (!this.isDownloadTaskEmpty()) {
+                    ShellFileDownloadTask task = this.downloadTasks().getFirst();
+                    try {
+                        task.doDownload();
+                    } catch (InterruptedException | InterruptedIOException ex) {
+                        JulLog.warn("download interrupted");
+                    } catch (Exception ex) {
+                        MessageBox.exception(ex);
+                    } finally {
+                        this.downloadTasks().remove(task);
+                    }
+                }
+            });
+            ThreadLocalUtil.setVal("download:thread", worker);
+        }
     }
 
     /**
@@ -364,19 +387,29 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      */
     default void doTransport(String remotePath, E localFile, ShellFileClient<E> remoteClient) throws Exception {
         ShellFileTransportTask transportTask = new ShellFileTransportTask(remotePath, localFile, remoteClient, this);
-        Thread worker = ThreadUtil.startVirtual(() -> {
-            try {
-                transportTask.doTransport();
-            } catch (InterruptedException | InterruptedIOException ex) {
-                JulLog.warn("transport interrupted");
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            } finally {
-                this.transportTasks().remove(transportTask);
-            }
+        transportTask.setCancelCallback(t -> {
+            this.transportTasks().remove(t);
+            this.closeDelayResources();
         });
-        transportTask.setWorker(worker);
         this.transportTasks().add(transportTask);
+        Thread worker = ThreadLocalUtil.getVal("transport:thread");
+        if (!ThreadUtil.isAlive(worker)) {
+            worker = ThreadUtil.startVirtual(() -> {
+                while (!this.isTransportTaskEmpty()) {
+                    ShellFileTransportTask task = this.transportTasks().getFirst();
+                    try {
+                        task.doTransport();
+                    } catch (InterruptedException | InterruptedIOException ex) {
+                        JulLog.warn("transport interrupted");
+                    } catch (Exception ex) {
+                        MessageBox.exception(ex);
+                    } finally {
+                        this.transportTasks().remove(task);
+                    }
+                }
+            });
+            ThreadLocalUtil.setVal("transport:thread", worker);
+        }
     }
 
     /**

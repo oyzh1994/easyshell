@@ -141,8 +141,17 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        if (!super.removeDirectory(dir)) {
-            this.sendCommand("SITE RMTDIR " + dir);
+        if (super.removeDirectory(dir)) {
+            return;
+        }
+        if (this.sendSiteCommand("RMTDIR " + dir)) {
+            return;
+        }
+        if (this.sendSiteCommand("RMDA " + dir)) {
+            return;
+        }
+        if (this.sendCommand("RMD", dir) == 250) {
+            return;
         }
     }
 
@@ -154,10 +163,10 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
                 String filePath = dir + "/" + file.getName();
                 if (file.isDirectory()) {
                     // 递归删除子文件夹
-                    deleteDirRecursive(filePath);
+                    this.deleteDirRecursive(filePath);
                 } else {
                     // 删除文件
-                    this.deleteFile(filePath);
+                    this.delete(filePath);
                 }
             }
         }
@@ -471,9 +480,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void touch(String filePath) throws Exception {
-        try (InputStream inputStream = new ByteArrayInputStream(new byte[0])) {
-            // 文件不存在，创建文件
-            super.storeFile(filePath, inputStream);
+        // 文件不存在，创建文件
+        if (!this.exist(filePath)) {
+            try (InputStream inputStream = new ByteArrayInputStream(new byte[0])) {
+                super.storeFile(filePath, inputStream);
+            }
         }
     }
 

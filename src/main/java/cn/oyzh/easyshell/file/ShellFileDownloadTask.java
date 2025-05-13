@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
@@ -13,6 +12,7 @@ import javafx.beans.property.StringProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -24,14 +24,9 @@ import java.util.function.Function;
 public class ShellFileDownloadTask {
 
     /**
-     * 工作线程
+     * 取消回调
      */
-    private Thread worker;
-
-//    /**
-//     * 进度条
-//     */
-//    private FXProgressTextBar progressBar;
+    private Consumer<ShellFileDownloadTask> cancelCallback;
 
     /**
      * 进度属性
@@ -113,6 +108,7 @@ public class ShellFileDownloadTask {
         this.client = client;
         this.localPath = localPath;
         this.remoteFile = remoteFile;
+        this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
     /**
@@ -178,8 +174,10 @@ public class ShellFileDownloadTask {
      * 取消
      */
     public void cancel() {
-        ThreadUtil.interrupt(this.worker);
         this.updateStatus(ShellFileStatus.CANCELED);
+        if (this.cancelCallback != null) {
+            this.cancelCallback.accept(this);
+        }
     }
 
     /**
@@ -233,7 +231,7 @@ public class ShellFileDownloadTask {
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
-        JulLog.debug("fileSize: {}", this.fileSizeProperty.get());
+        JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
     }
 
     /**
@@ -265,10 +263,6 @@ public class ShellFileDownloadTask {
      * 更新进度
      */
     private void updateProgress() {
-//        if (this.progressBar == null) {
-//            this.progressBar = new FXProgressTextBar();
-//        }
-//        this.progressBar.setValue(this.currentSize, this.totalSize);
         this.progressProperty.setValue(NumberUtil.scale(this.currentSize * 1D / this.totalSize * 100D, 2) + "%");
         JulLog.debug("progress: {}", this.progressProperty.getValue());
     }
@@ -346,11 +340,11 @@ public class ShellFileDownloadTask {
     }
 
     /**
-     * 设置工作线程
+     * 设置取消回调
      *
-     * @param worker 工作线程
+     * @param cancelCallback 取消回调
      */
-    public void setWorker(Thread worker) {
-        this.worker = worker;
+    public void setCancelCallback(Consumer<ShellFileDownloadTask> cancelCallback) {
+        this.cancelCallback = cancelCallback;
     }
 }

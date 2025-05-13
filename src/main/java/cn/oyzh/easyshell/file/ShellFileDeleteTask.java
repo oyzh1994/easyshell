@@ -1,7 +1,5 @@
 package cn.oyzh.easyshell.file;
 
-import cn.oyzh.common.thread.ThreadUtil;
-
 /**
  * 文件删除任务
  *
@@ -44,20 +42,7 @@ public class ShellFileDeleteTask {
         }
     }
 
-    /**
-     * 取消
-     */
-    public void cancel() {
-        ThreadUtil.interrupt(this.worker);
-    }
-
     public String getFilePath() {
         return this.remoteFile.getFilePath();
-    }
-
-    private Thread worker;
-
-    public void setWorker(Thread worker) {
-        this.worker = worker;
     }
 }

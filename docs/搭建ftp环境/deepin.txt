@@ -4,11 +4,18 @@ apt install -y vsftpd
 apt --fix-broken install
 # 3. 修改vsftpd配置
 vim /etc/vsftpd.conf
+# ipv4监听
 listen=YES
+# ipv6监听
 listen_ipv6=NO
+# 本地访问
 local_enable=YES
+# 文件上传
 write_enable=YES
+# 匿名访问
 anonymous_enable=YES
+# 默认返回隐藏文件
+force_dot_files=YES
 # 4. 修改ftpusers配置，这个是ftp黑名单
 vim /etc/ftpusers
 删除需要登陆ftp的用户，例如root

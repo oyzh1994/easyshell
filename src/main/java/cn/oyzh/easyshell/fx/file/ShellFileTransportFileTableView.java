@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.fx.file;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -56,12 +55,6 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
         menuItems.add(MenuItemHelper.separator());
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
-        // 禁用未实现的功能
-        for (MenuItem menuItem : menuItems) {
-            if (StringUtil.equalsAny(menuItem.getId(), "touchFile", "createDir")) {
-                menuItem.setDisable(true);
-            }
-        }
         return menuItems;
     }
 
@@ -99,14 +92,4 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
 //            ShellViewFactory.fileEdit(file,  this.client);
 //        this.onFileSaved(file);
 //    }
-
-    @Override
-    public void touch(String name) throws Exception {
-
-    }
-
-    @Override
-    public void createDir(String name) throws Exception {
-
-    }
 }

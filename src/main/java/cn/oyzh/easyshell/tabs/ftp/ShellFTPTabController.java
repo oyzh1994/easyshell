@@ -135,7 +135,7 @@ public class ShellFTPTabController extends RichTabController {
                     if (this.client.isTaskEmpty()) {
                         this.manage.clear();
                     } else {
-                        this.manage.setText("(" + this.client.getTaskSize() + ")");
+                        this.manage.text("(" + this.client.getTaskSize() + ")");
                     }
                 });
             } catch (Exception ex) {

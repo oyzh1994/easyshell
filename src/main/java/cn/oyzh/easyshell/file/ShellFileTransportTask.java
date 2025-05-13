@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -15,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -26,9 +26,9 @@ import java.util.function.Function;
 public class ShellFileTransportTask {
 
     /**
-     * 工作线程
+     * 取消回调
      */
-    private Thread worker;
+    private Consumer<ShellFileTransportTask> cancelCallback;
 
     /**
      * 进度属性
@@ -116,6 +116,7 @@ public class ShellFileTransportTask {
         this.remotePath = remotePath;
         this.localClient = localClient;
         this.remoteClient = remoteClient;
+        this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
     /**
@@ -189,8 +190,10 @@ public class ShellFileTransportTask {
      * 取消
      */
     public void cancel() {
-        ThreadUtil.interrupt(this.worker);
         this.updateStatus(ShellFileStatus.CANCELED);
+        if (this.cancelCallback != null) {
+            this.cancelCallback.accept(this);
+        }
     }
 
     /**
@@ -354,12 +357,12 @@ public class ShellFileTransportTask {
     }
 
     /**
-     * 设置工作线程
+     * 设置取消回调
      *
-     * @param worker 工作线程
+     * @param cancelCallback 取消回调
      */
-    public void setWorker(Thread worker) {
-        this.worker = worker;
+    public void setCancelCallback(Consumer<ShellFileTransportTask> cancelCallback) {
+        this.cancelCallback = cancelCallback;
     }
 
     /**

@@ -226,7 +226,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
             if (this.sftpClient().isTaskEmpty()) {
                 this.manage.clear();
             } else {
-                this.manage.setText("(" + this.sftpClient().getTaskSize() + ")");
+                this.manage.text("(" + this.sftpClient().getTaskSize() + ")");
             }
         });
     }

@@ -277,6 +277,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
                     .filter(f -> {
+                        if (f == null) {
+                            return false;
+                        }
                         if (f.isCurrentFile()) {
                             return false;
                         }
@@ -784,18 +787,15 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         List<MenuItem> menuItems = new ArrayList<>();
         // 创建文件
         FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
-        touchFile.setId("touchFile");
         menuItems.add(touchFile);
         // 创建文件夹
         FXMenuItem createDir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::createDir);
-        createDir.setId("createDir");
         menuItems.add(createDir);
         menuItems.add(MenuItemHelper.separator());
         if (files.size() == 1) {
             E file = files.getFirst();
             // 编辑文件
             FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
-            editFile.setId("editFile");
             if (!ShellFileUtil.fileEditable(file)) {
                 editFile.setDisable(true);
             }
@@ -814,7 +814,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             menuItems.add(renameFile);
             // 文件权限
             FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
-            filePermission.setId("filePermission");
             menuItems.add(filePermission);
             menuItems.add(MenuItemHelper.separator());
         }

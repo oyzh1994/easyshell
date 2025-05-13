@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
@@ -14,6 +13,7 @@ import javafx.beans.property.StringProperty;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 文件上传任务
@@ -24,14 +24,9 @@ import java.util.List;
 public class ShellFileUploadTask {
 
     /**
-     * 工作线程
+     * 取消回调
      */
-    private Thread worker;
-
-//    /**
-//     * 进度条
-//     */
-//    private FXProgressTextBar progressBar;
+    private Consumer<ShellFileUploadTask> cancelCallback;
 
     /**
      * 进度属性
@@ -113,6 +108,7 @@ public class ShellFileUploadTask {
         this.client = client;
         this.localFile = localFile;
         this.remotePath = remotePath;
+        this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
     /**
@@ -178,8 +174,10 @@ public class ShellFileUploadTask {
      * 取消
      */
     public void cancel() {
-        ThreadUtil.interrupt(this.worker);
         this.updateStatus(ShellFileStatus.CANCELED);
+        if (this.cancelCallback != null) {
+            this.cancelCallback.accept(this);
+        }
     }
 
     /**
@@ -345,11 +343,11 @@ public class ShellFileUploadTask {
     }
 
     /**
-     * 设置工作线程
+     * 设置取消回调
      *
-     * @param worker 工作线程
+     * @param cancelCallback 取消回调
      */
-    public void setWorker(Thread worker) {
-        this.worker = worker;
+    public void setCancelCallback(Consumer<ShellFileUploadTask> cancelCallback) {
+        this.cancelCallback = cancelCallback;
     }
 }
