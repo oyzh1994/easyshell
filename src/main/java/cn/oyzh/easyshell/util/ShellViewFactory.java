@@ -19,12 +19,11 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.file.ShellFileEditController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
-import cn.oyzh.easyshell.controller.ftp.ShellFTPFileEditController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController;
-import cn.oyzh.easyshell.controller.sftp.ShellSFTPFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFilePermissionController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -351,17 +350,17 @@ public class ShellViewFactory {
         }
     }
 
-    public static void ftpFileEdit(ShellFile file, ShellFTPClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellFTPFileEditController.class);
-            adapter.setProp("file", file);
-            adapter.setProp("client", client);
-            adapter.showAndWait();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    public static void ftpFileEdit(ShellFile file, ShellFTPClient client) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellFTPFileEditController.class);
+//            adapter.setProp("file", file);
+//            adapter.setProp("client", client);
+//            adapter.showAndWait();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
 //    public static void sftpManage(ShellSFTPClient client) {
 //        try {
@@ -374,23 +373,35 @@ public class ShellViewFactory {
 //        }
 //    }
 
-    public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellSFTPFileEditController.class);
-            adapter.setProp("file", file);
-            adapter.setProp("client", client);
-            adapter.showAndWait();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellSFTPFileEditController.class);
+//            adapter.setProp("file", file);
+//            adapter.setProp("client", client);
+//            adapter.showAndWait();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     public static void fileManage(ShellFileClient<?> client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class);
             adapter.setProp("client", client);
             adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
+            adapter.setProp("file", file);
+            adapter.setProp("client", client);
+            adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

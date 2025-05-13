@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
-import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
@@ -543,14 +542,14 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
 //        this.loadFile();
 //    }
 
-    @Override
-    public void editFile(ShellFTPFile file) {
-        if (!ShellFileUtil.fileEditable(file)) {
-            return;
-        }
-        ShellViewFactory.ftpFileEdit(file, this.client);
-        this.onFileSaved(file);
-    }
+//    @Override
+//    public void editFile(ShellFTPFile file) {
+//        if (!ShellFileUtil.fileEditable(file)) {
+//            return;
+//        }
+//        ShellViewFactory.fileEdit(file, this.client);
+//        this.onFileSaved(file);
+//    }
 
 //    /**
 //     * 上传文件

@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -97,20 +96,14 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
         }
     }
 
-    @Override
-    public void editFile(ShellFile file) {
-        if (!ShellFileUtil.fileEditable(file)) {
-            return;
-        }
-        Object client = this.client;
-        // ftp
-        if (file instanceof ShellFTPFile) {
-            ShellViewFactory.ftpFileEdit(file, (ShellFTPClient) client);
-        } else if (file instanceof ShellSFTPFile) {// sftp
-            ShellViewFactory.sftpFileEdit(file, (ShellSFTPClient) client);
-        }
-        this.onFileSaved(file);
-    }
+//    @Override
+//    public void editFile(ShellFile file) {
+//        if (!ShellFileUtil.fileEditable(file)) {
+//            return;
+//        }
+//            ShellViewFactory.fileEdit(file,  this.client);
+//        this.onFileSaved(file);
+//    }
 
     @Override
     public void touch(String name) throws Exception {

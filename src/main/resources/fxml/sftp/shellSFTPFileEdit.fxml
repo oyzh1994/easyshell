@@ -1,48 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
-<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSFTPFileEditController" prefWidth="1200" realHeight="650">
-    <FXHBox prefHeight="30" flexWidth="100%">
-        <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
-                            tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
-            <FXHBox.margin>
-                <Insets left="10" top="4"/>
-            </FXHBox.margin>
-        </ClearableTextField>
-        <NextSVGGlyph onMousePrimaryClicked="#searchNext">
-            <FXHBox.margin>
-                <Insets left="5" top="7"/>
-            </FXHBox.margin>
-        </NextSVGGlyph>
-        <RichDataTypeComboBox realHeight="22" fx:id="format">
-            <FXHBox.margin>
-                <Insets left="10" top="4"/>
-            </FXHBox.margin>
-        </RichDataTypeComboBox>
-        <FontSizeComboBox realHeight="22" fx:id="fontSize">
-            <FXHBox.margin>
-                <Insets left="10" top="4"/>
-            </FXHBox.margin>
-        </FontSizeComboBox>
-        <SaveSVGGlyph onMousePrimaryClicked="#save">
-            <FXHBox.margin>
-                <Insets left="10" top="7"/>
-            </FXHBox.margin>
-        </SaveSVGGlyph>
-    </FXHBox>
-    <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
-        <VBox.margin>
-            <Insets left="10"/>
-        </VBox.margin>
-    </ShellDataTextAreaPane>
-</FXVBox>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>-->
+<!--<?import cn.oyzh.fx.plus.controls.box.FXHBox?>-->
+<!--<?import cn.oyzh.fx.plus.controls.box.FXVBox?>-->
+<!--<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>-->
+<!--<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox?>-->
+<!--<?import javafx.geometry.Insets?>-->
+<!--<?import javafx.scene.layout.HBox?>-->
+<!--<?import javafx.scene.layout.VBox?>-->
+<!--<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>-->
+<!--<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"-->
+<!--        fx:controller="cn.oyzh.easyshell.controller.sftp.ShellSFTPFileEditController" prefWidth="1200" realHeight="650">-->
+<!--    <FXHBox prefHeight="30" flexWidth="100%">-->
+<!--        <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"-->
+<!--                            tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">-->
+<!--            <FXHBox.margin>-->
+<!--                <Insets left="10" top="4"/>-->
+<!--            </FXHBox.margin>-->
+<!--        </ClearableTextField>-->
+<!--        <NextSVGGlyph onMousePrimaryClicked="#searchNext">-->
+<!--            <FXHBox.margin>-->
+<!--                <Insets left="5" top="7"/>-->
+<!--            </FXHBox.margin>-->
+<!--        </NextSVGGlyph>-->
+<!--        <RichDataTypeComboBox realHeight="22" fx:id="format">-->
+<!--            <FXHBox.margin>-->
+<!--                <Insets left="10" top="4"/>-->
+<!--            </FXHBox.margin>-->
+<!--        </RichDataTypeComboBox>-->
+<!--        <FontSizeComboBox realHeight="22" fx:id="fontSize">-->
+<!--            <FXHBox.margin>-->
+<!--                <Insets left="10" top="4"/>-->
+<!--            </FXHBox.margin>-->
+<!--        </FontSizeComboBox>-->
+<!--        <SaveSVGGlyph onMousePrimaryClicked="#save">-->
+<!--            <FXHBox.margin>-->
+<!--                <Insets left="10" top="7"/>-->
+<!--            </FXHBox.margin>-->
+<!--        </SaveSVGGlyph>-->
+<!--    </FXHBox>-->
+<!--    <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">-->
+<!--        <VBox.margin>-->
+<!--            <Insets left="10"/>-->
+<!--        </VBox.margin>-->
+<!--    </ShellDataTextAreaPane>-->
+<!--</FXVBox>-->

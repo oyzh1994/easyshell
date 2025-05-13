@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
@@ -126,14 +125,14 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
 //        }
 //    }
 
-    @Override
-    public void editFile(ShellSFTPFile file) {
-        if (!ShellFileUtil.fileEditable(file)) {
-            return;
-        }
-        ShellViewFactory.sftpFileEdit(file, this.client);
-        this.onFileSaved(file);
-    }
+//    @Override
+//    public void editFile(ShellSFTPFile file) {
+//        if (!ShellFileUtil.fileEditable(file)) {
+//            return;
+//        }
+//        ShellViewFactory.fileEdit(file, this.client);
+//        this.onFileSaved(file);
+//    }
 
 //    @Override
 //    public void touch(String name) throws Exception {

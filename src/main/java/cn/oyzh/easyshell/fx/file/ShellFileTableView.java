@@ -571,7 +571,13 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param file 文件
      */
-    public abstract void editFile(E file);
+    public void editFile(E file) {
+        if (!ShellFileUtil.fileEditable(file)) {
+            return;
+        }
+        ShellViewFactory.fileEdit(file, this.client);
+        this.onFileSaved(file);
+    }
 
     /**
      * 创建文件
@@ -591,7 +597,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param name 文件名
      */
-    public  void touch(String name) throws Exception{
+    public void touch(String name) throws Exception {
         if (StringUtil.isEmpty(name)) {
             return;
         }
@@ -624,7 +630,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param name 文件名
      */
-    public void createDir(String name) throws Exception{
+    public void createDir(String name) throws Exception {
         if (StringUtil.isEmpty(name)) {
             return;
         }
