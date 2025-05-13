@@ -9,6 +9,8 @@ import cn.oyzh.easyshell.fx.file.ShellFileConnectComboBox;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView;
+import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
@@ -334,7 +336,12 @@ public class ShellFileTransportController extends StageController {
                     try {
                         // 检查来源
                         if (this.sourceClient == null || this.sourceClient.isClosed()) {
-                            this.sourceClient = ShellClientUtil.newClient(sourceInfo);
+                            BaseClient client = ShellClientUtil.newClient(sourceInfo);
+                            if (client instanceof ShellSSHClient sshClient) {
+                                this.sourceClient = sshClient.sftpClient();
+                            } else {
+                                this.sourceClient = (ShellFileClient) client;
+                            }
                             this.sourceClient.start(2500);
                         }
                         if (!this.sourceClient.isConnected()) {
@@ -346,7 +353,12 @@ public class ShellFileTransportController extends StageController {
                         }
                         // 检查目标
                         if (this.targetClient == null || this.targetClient.isClosed()) {
-                            this.targetClient = ShellClientUtil.newClient(targetInfo);
+                            BaseClient client = ShellClientUtil.newClient(targetInfo);
+                            if (client instanceof ShellSSHClient sshClient) {
+                                this.targetClient = sshClient.sftpClient();
+                            } else {
+                                this.targetClient = (ShellFileClient) client;
+                            }
                             this.targetClient.start(2500);
                         }
                         if (!this.targetClient.isConnected()) {

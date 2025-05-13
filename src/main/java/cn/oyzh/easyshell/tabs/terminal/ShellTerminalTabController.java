@@ -34,6 +34,7 @@ public class ShellTerminalTabController extends RichTabController {
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
         // macos需要初始化终端类型
         if (OSUtil.isMacOS()) {
+            connector.write("export LANG=en_US.utf-8\n");
             connector.write("export TERM=xterm-256color\n");
         }
     }

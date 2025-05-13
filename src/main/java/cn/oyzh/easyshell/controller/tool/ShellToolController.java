@@ -169,10 +169,10 @@ public class ShellToolController extends StageController {
     private void execTelnet() {
         StageManager.showMask(() -> {
             try {
-                // 超时时间
-                int timeout = this.telnetTimeout.getIntValue();
                 // 清除记录
                 this.telnetArea.clear();
+                // 超时时间
+                int timeout = this.telnetTimeout.getIntValue();
                 // 创建客户端
                 TelnetClient client = new TelnetClient();
                 // 设置超时

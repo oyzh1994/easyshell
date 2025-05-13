@@ -44,7 +44,7 @@ public class ShellAddGuidController extends StageController {
     private void toAdd() {
         try {
             if ("ssh".equals(this.type.selectedUserData())) {
-                ShellViewFactory.addConnect(group);
+                ShellViewFactory.addSSHConnect(group);
             } else if ("local".equals(this.type.selectedUserData())) {
                 ShellViewFactory.addLocalConnect(group);
             } else if ("telnet".equals(this.type.selectedUserData())) {
@@ -53,7 +53,7 @@ public class ShellAddGuidController extends StageController {
                 ShellViewFactory.addSFTPConnect(group);
             } else if ("ftp".equals(this.type.selectedUserData())) {
                 ShellViewFactory.addFTPConnect(group);
-            } else {
+            } else if ("serial".equals(this.type.selectedUserData())) {
                 ShellViewFactory.addSerialConnect(group);
             }
             this.closeWindow();

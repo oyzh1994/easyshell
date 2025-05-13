@@ -103,7 +103,7 @@ public class ShellExportConnectController extends StageController {
     @FXML
     private void selectFile() {
         FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
-        String fileName = "SSH-" + I18nHelper.connect() + ".json";
+        String fileName = "Shell-" + I18nHelper.connect() + ".json";
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
         if (this.exportFile != null) {
             this.fileName.setText(this.exportFile.getPath());

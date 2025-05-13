@@ -58,7 +58,7 @@ public class ShellSSHConfigTabController extends ParentTabController {
     public void setClient(ShellSSHClient client) {
         this.client = client;
         try {
-            ShellSFTPClient sftpClient = this.client.getSftpClient();
+            ShellSFTPClient sftpClient = this.client.sftpClient();
             if (this.client.isWindows()) {
                 // 移除linux专属配置
                 this.tabPane.removeTabs("sshd","bash","hosts","resolv", "profile","userZshrc","userBashrc","userProfile", "environment","userBashProfile");

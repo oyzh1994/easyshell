@@ -31,7 +31,7 @@ public class ShellProcessParser {
                 info.setCpuUsage(Double.parseDouble(cols[2]));
                 info.setMemUsage(Double.parseDouble(cols[3]));
                 double rss = Double.parseDouble(cols[4]);
-                info.setRss(NumberUtil.scale(rss / 1024 / 1024, 2));
+                info.setRss(NumberUtil.scale(rss / 1024, 2));
                 info.setStat(cols[7]);
                 info.setStart(cols[8]);
                 info.setTime(cols[9]);
@@ -58,7 +58,7 @@ public class ShellProcessParser {
                 info.setCpuUsage(Double.parseDouble(cols[2]));
                 info.setMemUsage(Double.parseDouble(cols[3]));
                 double rss = Double.parseDouble(cols[4]);
-                info.setRss(NumberUtil.scale(rss / 1024 / 1024, 2));
+                info.setRss(NumberUtil.scale(rss / 1024, 2));
                 info.setStat(cols[7]);
                 info.setStart(cols[8]);
                 info.setTime(cols[9]);
@@ -85,7 +85,7 @@ public class ShellProcessParser {
                 info.setCpuUsage(Double.parseDouble(cols[2]));
                 info.setMemUsage(Double.parseDouble(cols[3]));
                 double rss = Double.parseDouble(cols[4]);
-                info.setRss(NumberUtil.scale(rss / 1024 / 1024, 2));
+                info.setRss(NumberUtil.scale(rss / 1024, 2));
                 info.setStat(cols[7]);
                 info.setStart(cols[8]);
                 info.setTime(cols[9]);
@@ -167,7 +167,7 @@ public class ShellProcessParser {
                 if (!StringUtil.isBlank(memUsage)) {
                     double usage = Double.parseDouble(memUsage);
                     usage = Math.abs(usage);
-                    info.setRss(NumberUtil.scale(usage / 1024 / 1024, 2));
+                    info.setRss(NumberUtil.scale(usage / 1024, 2));
                     usage = NumberUtil.scale(usage / totalMemory, 2) * 100;
                     info.setMemUsage(usage);
                 }

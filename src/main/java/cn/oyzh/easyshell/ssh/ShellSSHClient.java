@@ -107,7 +107,7 @@ public class ShellSSHClient extends ShellClient {
 
     private ShellSFTPClient sftpClient;
 
-    public ShellSFTPClient getSftpClient() {
+    public ShellSFTPClient sftpClient() {
         if (this.sftpClient == null) {
             this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session);
         }
@@ -444,7 +444,7 @@ public class ShellSSHClient extends ShellClient {
                     } else if (!ShellUtil.isCommandNotFound(output)) {
                         String env = output.substring(0, output.lastIndexOf("/"));
                         this.environment.add(env);
-                    } else if (this.isMacos() && this.getSftpClient().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                    } else if (this.isMacos() && this.sftpClient().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
                         this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
                     }
                 }

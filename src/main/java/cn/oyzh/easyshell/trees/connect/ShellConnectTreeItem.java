@@ -79,7 +79,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
-        if (this.isLocalType() || this.isSerialType()) {
+        if (this.isLocalType() || this.isSerialType() || this.isTelnetType()) {
             transportFile.setDisable(true);
         }
 
@@ -103,6 +103,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public boolean isSerialType() {
         return value.isSerialType();
+    }
+
+    public boolean isTelnetType() {
+        return value.isTelnetType();
     }
 
 
@@ -193,7 +197,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //        adapter.setProp("shellConnect", this.value());
 //        adapter.display();
         if (this.value.isSSHType()) {
-            ShellViewFactory.updateConnect(this.value);
+            ShellViewFactory.updateSSHConnect(this.value);
         } else if (this.value.isLocalType()) {
             ShellViewFactory.updateLocalConnect(this.value);
         } else if (this.value.isTelnetType()) {
@@ -202,7 +206,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateSFTPConnect(this.value);
         } else if (this.value.isFTPType()) {
             ShellViewFactory.updateFTPConnect(this.value);
-        } else if(this.value.isSerialType()) {
+        } else if (this.value.isSerialType()) {
             ShellViewFactory.updateSerialConnect(this.value);
         }
     }
@@ -211,7 +215,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      * 传输文件
      */
     private void transportFile() {
-        ShellViewFactory.transportFile(this.value);
+        ShellViewFactory.fileTransport(this.value);
     }
 
     /**

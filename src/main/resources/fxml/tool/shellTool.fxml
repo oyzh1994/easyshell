@@ -26,12 +26,13 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox>
-                <ClearableTextField text="192.168.22.138" fx:id="telnetHost" flexWidth="100% - 265" realHeight="30" tipText="%base.contentTip1">
+                <ClearableTextField fx:id="telnetHost" flexWidth="100% - 265" realHeight="30"
+                                    tipText="%base.contentTip1">
                     <FXHBox.margin>
                         <Insets left="30" top="5"/>
                     </FXHBox.margin>
                 </ClearableTextField>
-                <PortTextField fx:id="telnetPort" value="23" realHeight="30" prefWidth="80">
+                <PortTextField fx:id="telnetPort" value="23" realHeight="30" realWidth="80">
                     <FXHBox.margin>
                         <Insets left="5" top="5"/>
                     </FXHBox.margin>
@@ -43,7 +44,8 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox>
-                <NumberTextField realHeight="30" flexWidth="100% - 180" min="1" max="30" fx:id="telnetTimeout" value="3" require="true">
+                <NumberTextField realHeight="30" flexWidth="100% - 180" min="1" max="30" fx:id="telnetTimeout" value="3"
+                                 require="true">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
                     </HBox.margin>

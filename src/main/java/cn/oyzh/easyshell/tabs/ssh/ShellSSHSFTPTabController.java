@@ -315,7 +315,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
     }
 
     public ShellSFTPClient sftpClient() {
-        return this.client().getSftpClient();
+        return this.client().sftpClient();
     }
 
     @FXML

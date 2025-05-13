@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh.docker;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exec.ShellExec;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
@@ -108,8 +109,10 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                     this.sftpClient().delete(tempFile);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
+                if (!ExceptionUtil.hasMessage(ex, "No such file")) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
             }
         });
     }
@@ -136,7 +139,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     }
 
     public ShellSFTPClient sftpClient() {
-        return this.client().getSftpClient();
+        return this.client().sftpClient();
     }
 
     @Override

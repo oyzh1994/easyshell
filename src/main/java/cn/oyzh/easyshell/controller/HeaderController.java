@@ -64,7 +64,7 @@ public class HeaderController extends StageController {
     @FXML
     private void transport() {
 //        ShellEventUtil.showTransportFile();
-        ShellViewFactory.transportFile(null);
+        ShellViewFactory.fileTransport(null);
     }
 
     /**

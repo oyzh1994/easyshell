@@ -199,7 +199,7 @@ public class ShellKeyUtil {
      */
     public static boolean sshCopyId(List<ShellKey> keys, ShellSSHClient client) {
         try {
-            ShellSFTPClient sftpClient = client.getSftpClient();
+            ShellSFTPClient sftpClient = client.sftpClient();
             // ssh已知公钥文件
             String sshFile;
             // windows
