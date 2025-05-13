@@ -30,10 +30,10 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 
 /**
- * 文件编辑业务
+ * shell文件编辑业务
  *
  * @author oyzh
- * @since 2025/03/18
+ * @since 2025/05/13
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,

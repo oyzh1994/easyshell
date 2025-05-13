@@ -4,11 +4,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
-import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.ftp.ShellFTPFile;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.collections.ListChangeListener;
@@ -85,16 +80,16 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
         this.transportCallback.accept(files);
     }
 
-    @Override
-    public void filePermission(ShellFile file) {
-        Object client = this.client;
-        // ftp
-        if (file instanceof ShellFTPFile) {
-            ShellViewFactory.ftpFilePermission(file, (ShellFTPClient) client);
-        } else if (file instanceof ShellSFTPFile) {// sftp
-            ShellViewFactory.sftpFilePermission(file, (ShellSFTPClient) client);
-        }
-    }
+//    @Override
+//    public void filePermission(ShellFile file) {
+//        Object client = this.client;
+//        // ftp
+//        if (file instanceof ShellFTPFile) {
+//            ShellViewFactory.ftpFilePermission(file, (ShellFTPClient) client);
+//        } else if (file instanceof ShellSFTPFile) {// sftp
+//            ShellViewFactory.sftpFilePermission(file, (ShellSFTPClient) client);
+//        }
+//    }
 
 //    @Override
 //    public void editFile(ShellFile file) {

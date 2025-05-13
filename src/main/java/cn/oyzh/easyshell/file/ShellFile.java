@@ -67,7 +67,6 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileYmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileZipSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderLinkSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
 /**
@@ -166,6 +165,13 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
      * @return 权限
      */
     String getPermissions();
+
+    /**
+     * 设置权限
+     *
+     * @param permissions 权限
+     */
+    void setPermissions(String permissions);
 
     /**
      * 获取修改时间

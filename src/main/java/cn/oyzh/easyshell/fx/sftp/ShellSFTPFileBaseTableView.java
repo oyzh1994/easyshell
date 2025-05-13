@@ -9,7 +9,7 @@
 //import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 //import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
-//import cn.oyzh.easyshell.util.ShellFileUtil;
+//import cn.oyzh.easyshell.file.ShellFileUtil;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.easyshell.util.ShellViewFactory;
 //import cn.oyzh.event.EventSubscribe;

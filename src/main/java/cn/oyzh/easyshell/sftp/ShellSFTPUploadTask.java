@@ -6,7 +6,7 @@
 //import cn.oyzh.common.thread.ThreadUtil;
 //import cn.oyzh.common.util.NumberUtil;
 //import cn.oyzh.easyshell.file.ShellFileStatus;
-//import cn.oyzh.easyshell.util.ShellFileUtil;
+//import cn.oyzh.easyshell.file.ShellFileUtil;
 //import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 //import cn.oyzh.i18n.I18nHelper;
 //import javafx.beans.property.LongProperty;

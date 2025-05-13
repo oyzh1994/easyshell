@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.ssh.ShellClient;
-import cn.oyzh.easyshell.util.ShellFileUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;

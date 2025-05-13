@@ -7,8 +7,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -513,7 +513,14 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param file 文件
      */
-    public abstract void filePermission(E file);
+    public void filePermission(E file) {
+        if (this.checkInvalid(file)) {
+            return;
+        }
+        ShellViewFactory.filePermission(file, this.client);
+        // 更新表格
+        this.refresh();
+    }
 
     /**
      * 重命名文件

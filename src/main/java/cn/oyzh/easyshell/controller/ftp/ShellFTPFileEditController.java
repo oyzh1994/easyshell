@@ -9,7 +9,7 @@
 //import cn.oyzh.easyshell.ftp.ShellFTPClient;
 //import cn.oyzh.easyshell.ftp.ShellFTPFile;
 //import cn.oyzh.easyshell.store.ShellSettingStore;
-//import cn.oyzh.easyshell.util.ShellFileUtil;
+//import cn.oyzh.easyshell.file.ShellFileUtil;
 //import cn.oyzh.fx.gui.text.field.ClearableTextField;
 //import cn.oyzh.fx.plus.FXConst;
 //import cn.oyzh.fx.plus.controller.StageController;

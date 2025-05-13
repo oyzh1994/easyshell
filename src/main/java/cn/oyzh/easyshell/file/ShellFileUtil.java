@@ -1,8 +1,7 @@
-package cn.oyzh.easyshell.util;
+package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.file.ShellFile;
 
 public class ShellFileUtil {
 
@@ -39,7 +38,6 @@ public class ShellFileUtil {
         }
         return src + name;
     }
-
 
     public static boolean hasOwnerReadPermission(String permission) {
         char[] chars = permission.toCharArray();
@@ -109,4 +107,69 @@ public class ShellFileUtil {
                 "cfg", "sh", "bat", "py", "asp",
                 "aspx", "env", "tsv", "conf");
     }
+
+//    /**
+//     * 将Unix风格的权限字符串（如"drwx------"）转换为数字表示（如700）
+//     *
+//     * @param permissions 权限字符串
+//     * @return 数字表示的权限
+//     */
+//    public static int toPermissionInt(String permissions) {
+//        // 无效权限字符串
+//        if (permissions == null || permissions.length() < 9) {
+//            return 0;
+//        }
+//
+//        // 忽略第一个字符（文件类型）
+//        String permission = permissions.substring(1, 10);
+//        if (permissions.length() == 10) {
+//            permission = permissions.substring(1, 10);
+//        } else {
+//            permission = permissions;
+//        }
+//
+//        // 计算三组权限值
+//        int owner = calculatePermissionGroup(permission.substring(0, 3));
+//        int group = calculatePermissionGroup(permission.substring(3, 6));
+//        int others = calculatePermissionGroup(permission.substring(6, 9));
+//
+//        // 组合为三位数整数
+//        return owner * 100 + group * 10 + others;
+//    }
+
+//    private static int calculatePermissionGroup(String group) {
+//        int value = 0;
+//        if (group.charAt(0) == 'r') value += 4;
+//        if (group.charAt(1) == 'w') value += 2;
+//        if (group.charAt(2) == 'x') value += 1;
+//        return value;
+//    }
+
+    /**
+     * 将Unix风格的权限字符串（如"drwx------"）转换为数字表示（如700）
+     *
+     * @param permission 权限字符串
+     * @return 数字表示的权限
+     */
+    public static int toPermissionInt(String permission) {
+        int[] permissions = new int[3];
+        for (int i = 0; i < 3; i++) {
+            int start = i * 3;
+            int octal = 0;
+            if (permission.charAt(start) == 'r') {
+                octal += 4;
+            }
+            if (permission.charAt(start + 1) == 'w') {
+                octal += 2;
+            }
+            if (permission.charAt(start + 2) == 'x') {
+                octal += 1;
+            }
+            permissions[i] = octal;
+        }
+        String str = "0" + permissions[0] + permissions[1] + permissions[2];
+        return Integer.parseInt(str, 8);
+    }
+
+
 }

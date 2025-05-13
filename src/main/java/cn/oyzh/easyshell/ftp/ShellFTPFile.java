@@ -131,16 +131,35 @@ public class ShellFTPFile implements ShellFile {
         return ShellFTPUtil.getPermissionsString(this.file);
     }
 
+    @Override
+    public void setPermissions(String permissions) {
+        if (permissions.length() == 10) {
+            permissions = permissions.substring(1, 10);
+        }
+
+        this.file.setPermission(FTPFile.USER_ACCESS, FTPFile.READ_PERMISSION, permissions.charAt(0) == 'r');
+        this.file.setPermission(FTPFile.USER_ACCESS, FTPFile.WRITE_PERMISSION, permissions.charAt(1) == 'w');
+        this.file.setPermission(FTPFile.USER_ACCESS, FTPFile.EXECUTE_PERMISSION, permissions.charAt(2) == 'x');
+
+        this.file.setPermission(FTPFile.GROUP_ACCESS, FTPFile.READ_PERMISSION, permissions.charAt(3) == 'r');
+        this.file.setPermission(FTPFile.GROUP_ACCESS, FTPFile.WRITE_PERMISSION, permissions.charAt(4) == 'w');
+        this.file.setPermission(FTPFile.GROUP_ACCESS, FTPFile.EXECUTE_PERMISSION, permissions.charAt(5) == 'x');
+
+        this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.READ_PERMISSION, permissions.charAt(6) == 'r');
+        this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.WRITE_PERMISSION, permissions.charAt(7) == 'w');
+        this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.EXECUTE_PERMISSION, permissions.charAt(8) == 'x');
+    }
+
     public void setParentPath(String parentPath) {
         this.parentPath = parentPath;
     }
 
-    public boolean hasPermission(int access, int permission) {
-        return file.hasPermission(access, permission);
-    }
-
-    public void setPermission(int access, int permission, boolean value) {
-        this.file.setPermission(access, permission, value);
-    }
+//    public boolean hasPermission(int access, int permission) {
+//        return file.hasPermission(access, permission);
+//    }
+//
+//    public void setPermission(int access, int permission, boolean value) {
+//        this.file.setPermission(access, permission, value);
+//    }
 
 }

@@ -9,7 +9,7 @@
 //import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.file.ShellFileStatus;
 //import cn.oyzh.easyshell.sftp.ShellSFTPTask;
-//import cn.oyzh.easyshell.util.ShellFileUtil;
+//import cn.oyzh.easyshell.file.ShellFileUtil;
 //import cn.oyzh.i18n.I18nHelper;
 //import com.jcraft.jsch.SftpException;
 //

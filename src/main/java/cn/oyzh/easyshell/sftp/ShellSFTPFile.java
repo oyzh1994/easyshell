@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
-import cn.oyzh.easyshell.util.ShellFileUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
@@ -189,6 +189,13 @@ public class ShellSFTPFile implements ShellFile {
             return "";
         }
         return permissionsProperty().get();
+    }
+
+    @Override
+    public void setPermissions(String permissions) {
+        int permissionInt = ShellFileUtil.toPermissionInt(permissions);
+        this.getAttrs().setPERMISSIONS(permissionInt);
+        this.updatePermissions();
     }
 
     public String getAddTime() {

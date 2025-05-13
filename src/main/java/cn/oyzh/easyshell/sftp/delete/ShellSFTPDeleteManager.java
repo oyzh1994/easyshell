@@ -7,7 +7,7 @@
 //import cn.oyzh.common.log.JulLog;
 //import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 //import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-//import cn.oyzh.easyshell.util.ShellFileUtil;
+//import cn.oyzh.easyshell.file.ShellFileUtil;
 //import cn.oyzh.fx.plus.information.MessageBox;
 //import com.jcraft.jsch.ChannelSftp;
 //import com.jcraft.jsch.SftpException;

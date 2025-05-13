@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -103,13 +102,13 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         return menuItems;
     }
 
-    @Override
-    public void filePermission(ShellSFTPFile file) {
-        if (this.checkInvalid(file)) {
-            return;
-        }
-        ShellViewFactory.sftpFilePermission(file, this.client);
-    }
+//    @Override
+//    public void filePermission(ShellSFTPFile file) {
+//        if (this.checkInvalid(file)) {
+//            return;
+//        }
+//        ShellViewFactory.sftpFilePermission(file, this.client);
+//    }
 
 //    @Override
 //    public void cd(String path) {
