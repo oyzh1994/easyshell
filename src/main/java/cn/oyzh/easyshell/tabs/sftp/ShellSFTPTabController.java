@@ -170,19 +170,23 @@ public class ShellSFTPTabController extends RichTabController {
 //     */
 //    private ShellSFTPDownloadManager downloadManager;
 
+    /**
+     * sftp客户端
+     */
     private ShellSFTPClient client;
 
-    private ShellConnect shellConnect;
+    public ShellSFTPClient client() {
+        return this.client;
+    }
 
-    public ShellConnect getShellConnect() {
-        return shellConnect;
+    public ShellConnect shellConnect() {
+        return this.client.getShellConnect();
     }
 
     /**
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
         this.client = new ShellSFTPClient(shellConnect);
         StageManager.showMask(() -> {
             try {
@@ -302,10 +306,6 @@ public class ShellSFTPTabController extends RichTabController {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
-    }
-
-    public ShellSFTPClient client() {
-        return this.client;
     }
 
     @FXML

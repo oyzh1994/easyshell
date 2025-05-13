@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ShellAddConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
 import cn.oyzh.easyshell.controller.connect.ShellAddLocalConnectController;
@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
@@ -37,11 +37,18 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * shell页面工厂
+ *
  * @author oyzh
  * @since 2025-04-24
  */
 public class ShellViewFactory {
 
+    /**
+     * 新增引导
+     *
+     * @param group 分组
+     */
     public static void addGuid(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddGuidController.class);
@@ -53,9 +60,14 @@ public class ShellViewFactory {
         }
     }
 
-    public static void addConnect(ShellGroup group) {
+    /**
+     * 新增SSH连接
+     *
+     * @param group 分组
+     */
+    public static void addSSHConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddSSHConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -64,6 +76,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增本地连接
+     *
+     * @param group 分组
+     */
     public static void addLocalConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddLocalConnectController.class);
@@ -75,6 +92,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增telnet连接
+     *
+     * @param group 分组
+     */
     public static void addTelnetConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddTelnetConnectController.class);
@@ -86,6 +108,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增串口连接
+     *
+     * @param group 分组
+     */
     public static void addSerialConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddSerialConnectController.class);
@@ -98,6 +125,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增sftp连接
+     *
+     * @param group 分组
+     */
     public static void addSFTPConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddSFTPConnectController.class);
@@ -109,6 +141,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增ftp连接
+     *
+     * @param group 分组
+     */
     public static void addFTPConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddFTPConnectController.class);
@@ -120,9 +157,14 @@ public class ShellViewFactory {
         }
     }
 
-    public static void updateConnect(ShellConnect connect) {
+    /**
+     * 修改ssh连接
+     *
+     * @param connect 连接
+     */
+    public static void updateSSHConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSSHConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -131,6 +173,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 修改本地连接
+     *
+     * @param connect 连接
+     */
     public static void updateLocalConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateLocalConnectController.class);
@@ -142,6 +189,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 修改telnet连接
+     *
+     * @param connect 连接
+     */
     public static void updateTelnetConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateTelnetConnectController.class);
@@ -153,6 +205,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 修改串口连接
+     *
+     * @param connect 连接
+     */
     public static void updateSerialConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateSerialConnectController.class);
@@ -164,6 +221,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 修改sftp连接
+     *
+     * @param connect 连接
+     */
     public static void updateSFTPConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateSFTPConnectController.class);
@@ -175,6 +237,11 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 修改ftp连接
+     *
+     * @param connect 连接
+     */
     public static void updateFTPConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateFTPConnectController.class);
@@ -289,11 +356,11 @@ public class ShellViewFactory {
     }
 
     /**
-     * 传输文件
+     * 文件传输
      *
      * @param sourceConnect 来源连接
      */
-    public static void transportFile(ShellConnect sourceConnect) {
+    public static void fileTransport(ShellConnect sourceConnect) {
         // 判断窗口是否存在
         List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
         for (StageAdapter adapter : list) {
@@ -382,6 +449,11 @@ public class ShellViewFactory {
 //        }
 //    }
 
+    /**
+     * 上传/下载管理
+     *
+     * @param client 文件客户端
+     */
     public static void fileManage(ShellFileClient<?> client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class);
@@ -393,6 +465,12 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 文件编辑
+     *
+     * @param file   文件
+     * @param client 文件客户端
+     */
     public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
@@ -405,6 +483,12 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 文件权限
+     *
+     * @param file   文件
+     * @param client 文件客户端
+     */
     public static void filePermission(ShellFile file, ShellFileClient<?> client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFilePermissionController.class);
@@ -416,5 +500,4 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
-
 }

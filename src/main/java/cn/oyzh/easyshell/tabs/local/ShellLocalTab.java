@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
@@ -27,7 +26,7 @@ public class ShellLocalTab extends RichTab {
 
     @Override
     public String getTabTitle() {
-        return I18nHelper.localTerminal();
+        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
@@ -68,6 +67,6 @@ public class ShellLocalTab extends RichTab {
      * @return 当前shell信息
      */
     public ShellConnect shellConnect() {
-        return this.controller().getShellConnect();
+        return this.controller().shellConnect();
     }
 }

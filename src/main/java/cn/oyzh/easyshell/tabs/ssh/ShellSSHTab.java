@@ -31,7 +31,6 @@ public class ShellSSHTab extends RichTab {
         if (graphic == null) {
             graphic = ShellOsTypeComboBox.getGlyph(this.shellConnect().getOsType());
             graphic.setSizeStr("13");
-//            graphic = new LinuxSVGGlyph("13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }
@@ -55,7 +54,7 @@ public class ShellSSHTab extends RichTab {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().shellConnect().getName();
+        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override

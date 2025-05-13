@@ -65,9 +65,9 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellAddConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/shellAddSSHConnect.fxml"
 )
-public class ShellAddConnectController extends StageController {
+public class ShellAddSSHConnectController extends StageController {
 
     /**
      * 用户名

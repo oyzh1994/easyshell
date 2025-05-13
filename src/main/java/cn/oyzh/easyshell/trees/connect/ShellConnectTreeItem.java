@@ -189,7 +189,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //        }
 //        // 关闭所有连接
 //        ShellEventUtil.connectEdit(this.value);
-//        StageAdapter adapter = StageManager.parseStage(ShellUpdateConnectController.class, this.window());
+//        StageAdapter adapter = StageManager.parseStage(ShellUpdateSSHConnectController.class, this.window());
 //        adapter.setProp("shellConnect", this.value());
 //        adapter.display();
         if (this.value.isSSHType()) {

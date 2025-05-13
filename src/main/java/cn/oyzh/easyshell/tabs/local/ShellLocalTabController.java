@@ -90,7 +90,7 @@ public class ShellLocalTabController extends RichTabController {
         }
     }
 
-    public ShellConnect getShellConnect() {
+    public ShellConnect shellConnect() {
         return shellConnect;
     }
 }

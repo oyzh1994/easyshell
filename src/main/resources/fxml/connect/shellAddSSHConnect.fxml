@@ -38,7 +38,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.ShellUpdateConnectController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController" realWidth="750"
         realHeight="480">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
@@ -527,7 +527,7 @@
                 <Insets left="30" top="10"/>
             </HBox.margin>
         </TestButton>
-        <SubmitButton onAction="#update">
+        <SubmitButton onAction="#add">
             <HBox.margin>
                 <Insets left="15" top="10"/>
             </HBox.margin>

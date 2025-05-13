@@ -54,7 +54,7 @@ public class ShellSerialTab extends RichTab {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().shellConnect().getName();
+        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
