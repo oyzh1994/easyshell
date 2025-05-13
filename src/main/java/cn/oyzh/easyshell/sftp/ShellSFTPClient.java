@@ -38,6 +38,9 @@ import java.util.function.Function;
  */
 public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
 
+    /**
+     * 延迟处理的文件通道
+     */
     private final List<ShellSFTPChannel> delayChannels = new ArrayList<>();
 
     public ShellSFTPClient(ShellConnect shellConnect) {

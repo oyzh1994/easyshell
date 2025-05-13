@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
+ * 文件传输任务
+ *
  * @author oyzh
  * @since 2025-03-15
  */
@@ -149,27 +151,36 @@ public class ShellFileTransportTask {
                 // 执行传输
                 InputStream input = this.localClient.getStream(file, null);
                 OutputStream output = this.remoteClient.putStream(remoteFilePath, (Function<Long, Boolean>) count -> {
-                    currentSize += count;
-                    updateSpeed();
-                    updateProgress();
-                    updateFileSize();
-                    return status != ShellFileStatus.CANCELED;
+                    this.currentSize += count;
+                    // 更新速度
+                    this.updateSpeed();
+                    // 更新进度
+                    this.updateProgress();
+                    // 更新文件大小
+                    this.updateFileSize();
+                    // 判断是否继续
+                    return this.status != ShellFileStatus.CANCELED;
                 });
                 input.transferTo(output);
+                // 关闭流
                 IOUtil.close(input);
                 IOUtil.close(output);
+                // 关闭部分延迟资源
                 this.localClient.closeDelayResources();
                 this.remoteClient.closeDelayResources();
+                // 更新文件总数
                 this.updateFileCount();
-            } catch (Exception ex) {// 其他
+            } catch (Exception ex) {
                 // 忽略中断异常
                 if (!ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     this.error = ex;
+                    // 更新为失败
                     this.updateStatus(ShellFileStatus.FAILED);
                     throw ex;
                 }
             }
         }
+        // 更新为结束
         if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
             this.updateStatus(ShellFileStatus.FINISHED);
         }
@@ -235,6 +246,7 @@ public class ShellFileTransportTask {
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
+        JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
     }
 
     /**
@@ -330,7 +342,7 @@ public class ShellFileTransportTask {
                 this.statusProperty.set(I18nHelper.inPreparation());
                 break;
         }
-        JulLog.info("status:{}", this.statusProperty.get());
+        JulLog.debug("status: {}", this.statusProperty.get());
     }
 
     /**
@@ -351,6 +363,11 @@ public class ShellFileTransportTask {
         this.worker = worker;
     }
 
+    /**
+     * 获取客户端名称
+     *
+     * @return 客户端名称
+     */
     public String getClientName() {
         return this.localClient.connectName();
     }

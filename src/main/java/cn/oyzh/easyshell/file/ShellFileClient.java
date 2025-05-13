@@ -450,6 +450,9 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         });
     }
 
+    /**
+     * 关闭延迟资源，例如文件流
+     */
     void closeDelayResources();
 
     /**

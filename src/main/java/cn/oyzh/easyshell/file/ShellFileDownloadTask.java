@@ -6,7 +6,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.util.ShellFileUtil;
-import cn.oyzh.fx.plus.controls.FXProgressTextBar;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -18,6 +17,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
+ * 文件下载任务
+ *
  * @author oyzh
  * @since 2025-04-28
  */
@@ -28,10 +29,15 @@ public class ShellFileDownloadTask {
      */
     private Thread worker;
 
+//    /**
+//     * 进度条
+//     */
+//    private FXProgressTextBar progressBar;
+
     /**
-     * 进度条
+     * 进度属性
      */
-    private FXProgressTextBar progressBar;
+    private final StringProperty progressProperty = new SimpleStringProperty();
 
     /**
      * 文件总数
@@ -141,22 +147,29 @@ public class ShellFileDownloadTask {
                 }
                 // 执行下载
                 this.client.get(file, localFilePath, (Function<Long, Boolean>) count -> {
-                    currentSize += count;
-                    updateSpeed();
-                    updateProgress();
-                    updateFileSize();
-                    return status != ShellFileStatus.CANCELED;
+                    this.currentSize += count;
+                    // 更新速度
+                    this.updateSpeed();
+                    // 更新进度
+                    this.updateProgress();
+                    // 更新文件大小
+                    this.updateFileSize();
+                    // 判断是否继续
+                    return this.status != ShellFileStatus.CANCELED;
                 });
+                // 更新文件总数
                 this.updateFileCount();
-            } catch (Exception ex) {// 其他
+            } catch (Exception ex) {
                 // 忽略中断异常
-                if (!ExceptionUtil.hasMessage(ex, "InterruptedException", "InterruptedIOException")) {
+                if (!ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
                     this.error = ex;
+                    // 更新为失败
                     this.updateStatus(ShellFileStatus.FAILED);
                     throw ex;
                 }
             }
         }
+        // 更新为结束
         if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
             this.updateStatus(ShellFileStatus.FINISHED);
         }
@@ -183,7 +196,7 @@ public class ShellFileDownloadTask {
             this.fileList = new ArrayList<>();
             this.client.lsFileRecursive(this.remoteFile, f -> {
                 if (f instanceof ShellFile f1) {
-                    fileList.add(f1);
+                    this.fileList.add(f1);
                     this.totalSize += f1.getFileSize();
                     this.updateFileSize();
                 }
@@ -221,6 +234,7 @@ public class ShellFileDownloadTask {
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
+        JulLog.debug("fileSize: {}", this.fileSizeProperty.get());
     }
 
     /**
@@ -252,10 +266,12 @@ public class ShellFileDownloadTask {
      * 更新进度
      */
     private void updateProgress() {
-        if (this.progressBar == null) {
-            this.progressBar = new FXProgressTextBar();
-        }
-        this.progressBar.setValue(this.currentSize, this.totalSize);
+//        if (this.progressBar == null) {
+//            this.progressBar = new FXProgressTextBar();
+//        }
+//        this.progressBar.setValue(this.currentSize, this.totalSize);
+        this.progressProperty.setValue(NumberUtil.scale(this.currentSize * 1D / this.totalSize * 100D, 2) + "%");
+        JulLog.debug("progress: {}", this.progressProperty.getValue());
     }
 
     /**
@@ -263,8 +279,8 @@ public class ShellFileDownloadTask {
      *
      * @return 当前进度
      */
-    public FXProgressTextBar getProgress() {
-        return progressBar;
+    public StringProperty progressProperty() {
+        return progressProperty;
     }
 
     /**
@@ -318,7 +334,7 @@ public class ShellFileDownloadTask {
                 this.statusProperty.set(I18nHelper.inPreparation());
                 break;
         }
-        JulLog.info("status:{}", this.statusProperty.get());
+        JulLog.debug("status: {}", this.statusProperty.get());
     }
 
     /**
