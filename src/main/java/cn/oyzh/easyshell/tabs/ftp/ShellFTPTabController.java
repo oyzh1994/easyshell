@@ -283,7 +283,7 @@ public class ShellFTPTabController extends RichTabController {
      */
     @FXML
     private void manage() {
-        ShellViewFactory.ftpManage(this.client);
+        ShellViewFactory.fileManage(this.client);
     }
 
     /**

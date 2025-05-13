@@ -397,7 +397,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
      */
     @FXML
     private void manage() {
-        ShellViewFactory.sftpManage(this.sftpClient());
+        ShellViewFactory.fileManage(this.sftpClient());
     }
 
 //    /**

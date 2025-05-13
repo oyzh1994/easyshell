@@ -20,17 +20,17 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
+import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPFileEditController;
 import cn.oyzh.easyshell.controller.ftp.ShellFTPFilePermissionController;
-import cn.oyzh.easyshell.controller.ftp.ShellFTPManageController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFileEditController;
 import cn.oyzh.easyshell.controller.sftp.ShellSFTPFilePermissionController;
-import cn.oyzh.easyshell.controller.sftp.ShellSFTPManageController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -316,16 +316,16 @@ public class ShellViewFactory {
         }
     }
 
-    public static void ftpManage(ShellFTPClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellFTPManageController.class);
-            adapter.setProp("client", client);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    public static void ftpManage(ShellFTPClient client) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellFTPManageController.class);
+//            adapter.setProp("client", client);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     public static void ftpFilePermission(ShellFile file, ShellFTPClient client) {
         try {
@@ -363,16 +363,16 @@ public class ShellViewFactory {
         }
     }
 
-    public static void sftpManage(ShellSFTPClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class);
-            adapter.setProp("client", client);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    public static void sftpManage(ShellSFTPClient client) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class);
+//            adapter.setProp("client", client);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
         try {
@@ -380,6 +380,17 @@ public class ShellViewFactory {
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    public static void fileManage(ShellFileClient<?> client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class);
+            adapter.setProp("client", client);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

@@ -635,7 +635,7 @@ public class ShellSFTPTabController extends RichTabController {
      */
     @FXML
     private void manage() {
-        ShellViewFactory.sftpManage(this.client);
+        ShellViewFactory.fileManage(this.client);
     }
 
 //    @FXML
