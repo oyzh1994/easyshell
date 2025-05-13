@@ -49,7 +49,7 @@ public class ShellSFTPUtil {
         if (file != null && file.isLink()) {
             String linkPath = client.realpath(file.getFilePath());
             if (linkPath != null) {
-                file.setLinkPath(linkPath);
+//                file.setLinkPath(linkPath);
                 file.setLinkAttrs(client.stat(linkPath));
             }
         }
@@ -68,7 +68,7 @@ public class ShellSFTPUtil {
             try {
                 String linkPath = channel.realpath(file.getFilePath());
                 if (linkPath != null) {
-                    file.setLinkPath(linkPath);
+//                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(channel.stat(linkPath));
                 }
             } catch (SftpException e) {

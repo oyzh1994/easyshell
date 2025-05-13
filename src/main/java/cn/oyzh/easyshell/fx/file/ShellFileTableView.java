@@ -536,9 +536,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
             String filePath = ShellFileUtil.concat(file.getParentPath(), name);
             String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
-            this.client.rename(filePath, newPath);
-            file.setFileName(newName);
-            this.refreshFile();
+            if (this.client.rename(filePath, newPath)) {
+                file.setFileName(newName);
+                this.refreshFile();
+            } else {
+                MessageBox.warn(I18nHelper.operationFail());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -588,7 +591,20 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param name 文件名
      */
-    public abstract void touch(String name) throws Exception;
+    public  void touch(String name) throws Exception{
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        name = name.trim();
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
+            return;
+        }
+        String filePath = ShellFileUtil.concat(this.getLocation(), name);
+        this.client.touch(filePath);
+        E file = this.client.fileInfo(filePath);
+        this.files.add(file);
+        this.refreshFile();
+    }
 
     /**
      * 创建文件夹
@@ -608,7 +624,20 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @param name 文件名
      */
-    public abstract void createDir(String name) throws Exception;
+    public void createDir(String name) throws Exception{
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        name = name.trim();
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
+            return;
+        }
+        String dirPath = ShellFileUtil.concat(this.getLocation(), name);
+        this.client.createDir(dirPath);
+        E file = this.client.fileInfo(dirPath);
+        this.files.add(file);
+        this.refreshFile();
+    }
 
     /**
      * 文件保存事件

@@ -5,37 +5,39 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import org.apache.commons.net.ftp.FTPFile;
 
-import java.time.Instant;
-import java.util.Calendar;
-
 /**
  * ftp文件
  *
  * @author oyzh
  * @since 2025-04-26
  */
-public class ShellFTPFile extends FTPFile implements ShellFile {
+public class ShellFTPFile implements ShellFile {
 
     /**
-     * 父目录
-     */
-    private String parentPath;
-
-    /**
-     * 链接属性
+     * ftp文件
      */
     private FTPFile file;
 
-    public void setIcon(SVGGlyph icon) {
-        this.icon = icon;
-    }
+    /**
+     * ftp链接文件
+     */
+    private FTPFile linkFile;
 
-    public ShellFTPFile(String parentPath, FTPFile file) {
+    /**
+     * 文件图标
+     */
+    private SVGGlyph icon;
+
+    /**
+     * 父路径
+     */
+    private String parentPath;
+
+    public ShellFTPFile(String parentPath, FTPFile file, FTPFile linkFile) {
         this.file = file;
+        this.linkFile = linkFile;
         this.parentPath = parentPath;
     }
-
-    private SVGGlyph icon;
 
     @Override
     public SVGGlyph getIcon() {
@@ -47,50 +49,21 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
 
     @Override
     public boolean isLink() {
-        return file.isSymbolicLink();
+        return this.file.isSymbolicLink();
     }
 
     @Override
     public String getFileName() {
-        return file.getName();
+        return this.file.getName();
     }
 
     @Override
     public void copy(ShellFile t1) {
-        if (t1 instanceof ShellFTPFile file) {
-            this.file = file.file;
-            this.parentPath = file.parentPath;
+        if (t1 instanceof ShellFTPFile f1) {
+            this.file = f1.file;
+            this.linkFile = f1.linkFile;
+            this.parentPath = f1.parentPath;
         }
-    }
-
-    @Override
-    public boolean hasPermission(int access, int permission) {
-        return file.hasPermission(access, permission);
-    }
-
-    @Override
-    public String getUser() {
-        return file.getUser();
-    }
-
-    @Override
-    public int getType() {
-        return file.getType();
-    }
-
-    @Override
-    public Instant getTimestampInstant() {
-        return file.getTimestampInstant();
-    }
-
-    @Override
-    public Calendar getTimestamp() {
-        return file.getTimestamp();
-    }
-
-    @Override
-    public int getHardLinkCount() {
-        return file.getHardLinkCount();
     }
 
     @Override
@@ -109,13 +82,14 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
     }
 
     @Override
-    public String getName() {
-        return file.getName();
-    }
-
-    @Override
     public boolean isDirectory() {
-        return file.isDirectory();
+        if (this.isLink()) {
+            if (this.linkFile != null) {
+                return this.linkFile.isDirectory();
+            }
+            return false;
+        }
+        return this.file.isDirectory();
     }
 
     @Override
@@ -125,49 +99,31 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
 
     @Override
     public boolean isFile() {
-        return file.isFile();
+        if (this.isLink()) {
+            if (this.linkFile != null) {
+                return this.linkFile.isFile();
+            }
+            return false;
+        }
+        return this.file.isFile();
     }
 
     @Override
-    public boolean isValid() {
-        return file.isValid();
-    }
-
-    @Override
-    public boolean isUnknown() {
-        return file.isUnknown();
-    }
-
-    @Override
-    public boolean isSymbolicLink() {
-        return file.isSymbolicLink();
-    }
-
-    @Override
-    public String getLink() {
-        return file.getLink();
-    }
-
-    @Override
-    public String getRawListing() {
-        return file.getRawListing();
-    }
-
     public void setFileName(String newName) {
         this.file.setName(newName);
     }
 
     @Override
     public String getModifyTime() {
-        if (this.isReturnDirectory() || this.isCurrentFile()) {
+        if (!this.isNormal()) {
             return "";
         }
-        return DateHelper.formatDateTime(this.getTimestamp().getTime());
+        return DateHelper.formatDateTime(this.file.getTimestamp().getTime());
     }
 
     @Override
     public String getOwner() {
-        return file.getUser();
+        return this.file.getUser();
     }
 
     @Override
@@ -175,13 +131,16 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
         return ShellFTPUtil.getPermissionsString(this.file);
     }
 
-    @Override
-    public void setPermission(int access, int permission, boolean value) {
-        this.file.setPermission(access, permission, value);
-    }
-
     public void setParentPath(String parentPath) {
         this.parentPath = parentPath;
+    }
+
+    public boolean hasPermission(int access, int permission) {
+        return file.hasPermission(access, permission);
+    }
+
+    public void setPermission(int access, int permission, boolean value) {
+        this.file.setPermission(access, permission, value);
     }
 
 }

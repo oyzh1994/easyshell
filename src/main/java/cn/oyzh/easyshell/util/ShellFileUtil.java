@@ -8,6 +8,7 @@ public class ShellFileUtil {
 
     /**
      * 是否正常文件
+     *
      * @param fileName 文件名
      * @return 结果
      */
@@ -15,11 +16,18 @@ public class ShellFileUtil {
         return !StringUtil.equalsAny(fileName, ".", "..");
     }
 
-    public static String parent(String dest) {
-        if (StringUtil.isEmpty(dest)) {
-            return dest;
+    public static String parent(String path) {
+        if (StringUtil.isEmpty(path)) {
+            return path;
         }
-        return dest.substring(0, dest.lastIndexOf("/"));
+        return path.substring(0, path.lastIndexOf("/"));
+    }
+
+    public static String name(String path) {
+        if (StringUtil.isEmpty(path)) {
+            return path;
+        }
+        return path.substring(path.lastIndexOf("/") + 1);
     }
 
     public static String concat(String src, String name) {

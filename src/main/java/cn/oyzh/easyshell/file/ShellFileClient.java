@@ -194,6 +194,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * 下载文件
      *
      * @param remoteFile 远程文件
+     * @param callback   回调
      * @throws IOException 异常
      */
     InputStream getStream(E remoteFile, Function<Long, Boolean> callback) throws Exception;
@@ -225,6 +226,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
+     * @param callback   回调
      * @throws IOException 异常
      */
     default void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
@@ -236,6 +238,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
+     * @param callback   回调
      * @throws IOException 异常
      */
     void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception;
@@ -244,6 +247,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * 上传文件
      *
      * @param remoteFile 远程文件
+     * @param callback   回调
      * @throws IOException 异常
      */
     OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception;
@@ -464,4 +468,13 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @throws Exception 异常
      */
     boolean chmod(int permissions, String filePath) throws Exception;
+
+    /**
+     * 文件信息
+     *
+     * @param filePath 文件路径
+     * @return 文件
+     * @throws Exception 异常
+     */
+    E fileInfo(String filePath) throws Exception;
 }

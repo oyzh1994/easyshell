@@ -266,13 +266,13 @@ public class ShellSFTPFile implements ShellFile {
         return this.getAttrs().isDir();
     }
 
-    public String getLinkPath() {
-        return linkPath;
-    }
-
-    public void setLinkPath(String linkPath) {
-        this.linkPath = linkPath;
-    }
+//    public String getLinkPath() {
+//        return linkPath;
+//    }
+//
+//    public void setLinkPath(String linkPath) {
+//        this.linkPath = linkPath;
+//    }
 
     /**
      * 是否根目录

@@ -1,20 +1,15 @@
 package cn.oyzh.easyshell.fx.sftp;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.sftp.ShellSFTPUtil;
 import cn.oyzh.easyshell.util.ShellFileUtil;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import com.jcraft.jsch.SftpATTRS;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 
@@ -140,52 +135,37 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         this.onFileSaved(file);
     }
 
-    @Override
-    public void touch(String name) throws Exception {
-        if (StringUtil.isEmpty(name)) {
-            return;
-        }
-        name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
-            return;
-        }
-        String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        this.client.touch(filePath);
-        SftpATTRS attrs = this.client.stat(filePath);
-        ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
-        // 读取链接文件
-        ShellSFTPUtil.realpath(file, this.client);
-        file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
-        file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
-        this.files.add(file);
-        this.refreshFile();
-    }
+//    @Override
+//    public void touch(String name) throws Exception {
+//        if (StringUtil.isEmpty(name)) {
+//            return;
+//        }
+//        name = name.trim();
+//        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
+//            return;
+//        }
+//        String filePath = ShellFileUtil.concat(this.getLocation(), name);
+//        this.client.touch(filePath);
+//        ShellSFTPFile file = this.client.fileInfo(filePath);
+//        this.files.add(file);
+//        this.refreshFile();
+//    }
 
-    @Override
-    public void createDir(String name) throws Exception {
-        if (StringUtil.isEmpty(name)) {
-            return;
-        }
-        name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
-            return;
-        }
-        String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        this.client.createDir(filePath);
-        SftpATTRS attrs = this.client.stat(filePath);
-        ShellSFTPFile file = new ShellSFTPFile(this.getLocation(), name, attrs);
-        // 读取链接文件
-        ShellSFTPUtil.realpath(file, this.client);
-        if (this.client.isWindows()) {
-            file.setOwner("-");
-            file.setGroup("-");
-        } else {
-            file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this.client));
-            file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this.client));
-        }
-        this.files.add(file);
-        this.refreshFile();
-    }
+//    @Override
+//    public void createDir(String name) throws Exception {
+//        if (StringUtil.isEmpty(name)) {
+//            return;
+//        }
+//        name = name.trim();
+//        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
+//            return;
+//        }
+//        String filePath = ShellFileUtil.concat(this.getLocation(), name);
+//        this.client.createDir(filePath);
+//        ShellSFTPFile file = this.client.fileInfo(filePath);
+//        this.files.add(file);
+//        this.refreshFile();
+//    }
 
 //    @Override
 //    @EventSubscribe

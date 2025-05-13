@@ -196,7 +196,7 @@ public class ShellFTPFilePermissionController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
-        this.fileName.setText(this.file.getName());
+        this.fileName.setText(this.file.getFileName());
         this.ownerName.setText(this.file.getOwner());
         this.groupName.setText(this.file.getGroup());
         if (this.file.hasOwnerReadPermission()) {

@@ -405,7 +405,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         FTPFile[] files = this.listFiles(filePath);
         if (files != null) {
             for (FTPFile file : files) {
-                list.add(new ShellFTPFile(filePath, file));
+                FTPFile linkFile = null;
+                if (file.isSymbolicLink()) {
+                    linkFile = this.getFile("/" + file.getLink());
+                }
+                list.add(new ShellFTPFile(filePath, file, linkFile));
             }
         }
         return list;
@@ -447,10 +451,22 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         this.changeWorkingDirectory(filePath);
     }
 
-    public ShellFTPFile finfo(String filePath) throws IOException {
+    private FTPFile getFile(String filePath) throws IOException {
         FTPFile file = super.mlistFile(filePath);
+        if (file != null) {
+            return file;
+        }
         String pPath = ShellFileUtil.parent(filePath);
-        return new ShellFTPFile(pPath, file);
+        String fName = ShellFileUtil.name(filePath);
+        FTPFile[] files = super.listFiles(pPath);
+        if (files != null) {
+            for (FTPFile ftpFile : files) {
+                if (ftpFile.getName().equals(fName)) {
+                    return ftpFile;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -482,5 +498,19 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         String command = "CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
         // 发送命令到 FTP 服务器
         return this.sendSiteCommand(command);
+    }
+
+    @Override
+    public ShellFTPFile fileInfo(String filePath) throws IOException {
+        FTPFile file = this.getFile(filePath);
+        if (file != null) {
+            String pPath = ShellFileUtil.parent(filePath);
+            FTPFile linkFile = null;
+            if (file.isSymbolicLink()) {
+                linkFile = this.getFile("/" + file.getLink());
+            }
+            return new ShellFTPFile(pPath, file, linkFile);
+        }
+        return null;
     }
 }

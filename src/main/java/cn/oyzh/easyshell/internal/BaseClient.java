@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
+ * 基础客户端
+ *
  * @author oyzh
  * @since 2025-04-25
  */

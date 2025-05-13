@@ -70,16 +70,47 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
+/**
+ * 文件接口
+ *
+ * @author oyzh
+ * @since 2025-04-28
+ */
 public interface ShellFile extends ObjectCopier<ShellFile> {
 
+    /**
+     * 是否文件
+     *
+     * @return 结果
+     */
     boolean isFile();
 
+    /**
+     * 是否链接
+     *
+     * @return 结果
+     */
     boolean isLink();
 
+    /**
+     * 获取拥有者
+     *
+     * @return 拥有者
+     */
     String getOwner();
 
+    /**
+     * 获取分组
+     *
+     * @return 分组
+     */
     String getGroup();
 
+    /**
+     * 获取文件大小
+     *
+     * @return 文件大小
+     */
     long getFileSize();
 
     /**
@@ -101,18 +132,53 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return NumberUtil.formatSize(this.getFileSize(), 4);
     }
 
+    /**
+     * 获取文件名称
+     *
+     * @return 文件名称
+     */
     String getFileName();
 
+    /**
+     * 设置文件名称
+     *
+     * @param fileName 文件名称
+     */
     void setFileName(String fileName);
 
+    /**
+     * 是否目录
+     *
+     * @return 结果
+     */
     boolean isDirectory();
 
+    /**
+     * 获取父路径
+     *
+     * @return 父路径
+     */
     String getParentPath();
 
+    /**
+     * 获取权限
+     *
+     * @return 权限
+     */
     String getPermissions();
 
+    /**
+     * 获取修改时间
+     *
+     * @return 修改时间
+     */
     String getModifyTime();
 
+    /**
+     * 获取文件排序
+     *
+     * @return 文件排序
+     */
     default int getFileOrder() {
         if (this.isReturnDirectory()) {
             return -10;
@@ -129,10 +195,20 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return 0;
     }
 
+    /**
+     * 获取文件路径
+     *
+     * @return 文件路径
+     */
     default String getFilePath() {
         return ShellFileUtil.concat(this.getParentPath(), this.getFileName());
     }
 
+    /**
+     * 获取图标
+     *
+     * @return 图标
+     */
     default SVGGlyph getIcon() {
         SVGGlyph glyph;
         if (this.isReturnDirectory()) {
@@ -274,6 +350,9 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return glyph;
     }
 
+    /**
+     * 开始等待动画
+     */
     default void startWaiting() {
         SVGGlyph icon = this.getIcon();
         if (icon != null) {
@@ -281,6 +360,9 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         }
     }
 
+    /**
+     * 结束等待动画
+     */
     default void stopWaiting() {
         SVGGlyph icon = this.getIcon();
         if (icon != null) {
@@ -288,6 +370,11 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         }
     }
 
+    /**
+     * 等待动画是否开启中
+     *
+     * @return 结果
+     */
     default boolean isWaiting() {
         SVGGlyph icon = this.getIcon();
         if (icon != null) {
@@ -296,18 +383,38 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return false;
     }
 
+    /**
+     * 是否当前"文件"
+     *
+     * @return 结果
+     */
     default boolean isCurrentFile() {
         return ".".equals(this.getFileName());
     }
 
+    /**
+     * 是否返回"文件"
+     *
+     * @return 结果
+     */
     default boolean isReturnDirectory() {
         return "..".equals(this.getFileName());
     }
 
+    /**
+     * 是否正常文件
+     *
+     * @return 结果
+     */
     default boolean isNormal() {
         return !this.isCurrentFile() && !this.isReturnDirectory();
     }
 
+    /**
+     * 是否隐藏文件
+     *
+     * @return 结果
+     */
     default boolean isHiddenFile() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return false;
@@ -315,38 +422,83 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return this.getFileName().startsWith(".");
     }
 
+    /**
+     * 是否有当前用户读取权限
+     *
+     * @return 结果
+     */
     default boolean hasOwnerReadPermission() {
         return ShellFileUtil.hasOwnerReadPermission(this.getPermissions());
     }
 
+    /**
+     * 是否有当前用户写入权限
+     *
+     * @return 结果
+     */
     default boolean hasOwnerWritePermission() {
         return ShellFileUtil.hasOwnerWritePermission(this.getPermissions());
     }
 
+    /**
+     * 是否有当前用户执行权限
+     *
+     * @return 结果
+     */
     default boolean hasOwnerExecutePermission() {
         return ShellFileUtil.hasOwnerExecutePermission(this.getPermissions());
     }
 
+    /**
+     * 是否有组用户读取权限
+     *
+     * @return 结果
+     */
     default boolean hasGroupsReadPermission() {
         return ShellFileUtil.hasGroupsReadPermission(this.getPermissions());
     }
 
+    /**
+     * 是否有组用户写入权限
+     *
+     * @return 结果
+     */
     default boolean hasGroupsWritePermission() {
         return ShellFileUtil.hasGroupsWritePermission(this.getPermissions());
     }
 
+    /**
+     * 是否有组用户执行权限
+     *
+     * @return 结果
+     */
     default boolean hasGroupsExecutePermission() {
         return ShellFileUtil.hasGroupsExecutePermission(this.getPermissions());
     }
 
+    /**
+     * 是否有其他用户读取权限
+     *
+     * @return 结果
+     */
     default boolean hasOthersReadPermission() {
         return ShellFileUtil.hasOthersReadPermission(this.getPermissions());
     }
 
+    /**
+     * 是否有其他用户写入权限
+     *
+     * @return 结果
+     */
     default boolean hasOthersWritePermission() {
         return ShellFileUtil.hasOthersWritePermission(this.getPermissions());
     }
 
+    /**
+     * 是否有其他用户执行权限
+     *
+     * @return 结果
+     */
     default boolean hasOthersExecutePermission() {
         return ShellFileUtil.hasOthersExecutePermission(this.getPermissions());
     }

@@ -462,13 +462,31 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //            channel.get(src, dest, monitor);
 //        }
 //    }
-
     @Override
     public boolean chmod(int permission, String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.chmod(permission, filePath);
         }
         return true;
+    }
+
+    @Override
+    public ShellSFTPFile fileInfo(String filePath) throws Exception {
+        SftpATTRS attrs = this.stat(filePath);
+        String pPath = ShellFileUtil.parent(filePath);
+        String fName = ShellFileUtil.name(filePath);
+        ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
+        // 读取链接文件
+        ShellSFTPUtil.realpath(file, this);
+        // 拥有者、分组
+        if (this.isWindows()) {
+            file.setOwner("-");
+            file.setGroup("-");
+        } else {
+            file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this));
+            file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this));
+        }
+        return file;
     }
 
     @Override

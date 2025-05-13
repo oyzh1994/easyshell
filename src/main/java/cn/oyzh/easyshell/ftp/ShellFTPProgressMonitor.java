@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.function.Function;
 
 /**
+ * ftp进度监听器
+ *
  * @author oyzh
  * @since 2025-04-28
  */

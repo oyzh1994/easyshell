@@ -1,17 +1,14 @@
 package cn.oyzh.easyshell.fx.ftp;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
 import cn.oyzh.easyshell.util.ShellFileUtil;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
@@ -497,21 +494,21 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
 //        }
 //    }
 
-    @Override
-    public void touch(String name) throws Exception {
-        if (StringUtil.isEmpty(name)) {
-            return;
-        }
-        name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
-            return;
-        }
-        String filePath = ShellFileUtil.concat(this.getLocation(), name);
-        this.client.touch(filePath);
-        ShellFTPFile file = this.client.finfo(filePath);
-        this.files.add(file);
-        this.refreshFile();
-    }
+//    @Override
+//    public void touch(String name) throws Exception {
+//        if (StringUtil.isEmpty(name)) {
+//            return;
+//        }
+//        name = name.trim();
+//        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
+//            return;
+//        }
+//        String filePath = ShellFileUtil.concat(this.getLocation(), name);
+//        this.client.touch(filePath);
+//        ShellFTPFile file = this.client.fileInfo(filePath);
+//        this.files.add(file);
+//        this.refreshFile();
+//    }
 
 //    public void mkdir() {
 //        try {
@@ -523,21 +520,21 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
 //        }
 //    }
 
-    @Override
-    public void createDir(String filePath) throws Exception {
-        if (StringUtil.isEmpty(filePath)) {
-            return;
-        }
-        filePath = filePath.trim();
-        if (this.existFile(filePath) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
-            return;
-        }
-        String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
-        this.client.createDir(dirPath);
-        ShellFTPFile file = this.client.finfo(dirPath);
-        this.files.add(file);
-        this.refreshFile();
-    }
+//    @Override
+//    public void createDir(String filePath) throws Exception {
+//        if (StringUtil.isEmpty(filePath)) {
+//            return;
+//        }
+//        filePath = filePath.trim();
+//        if (this.existFile(filePath) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
+//            return;
+//        }
+//        String dirPath = ShellFileUtil.concat(this.getLocation(), filePath);
+//        this.client.createDir(dirPath);
+//        ShellFTPFile file = this.client.fileInfo(dirPath);
+//        this.files.add(file);
+//        this.refreshFile();
+//    }
 
 //    @Override
 //    public void cd(String filePath) throws Exception {
