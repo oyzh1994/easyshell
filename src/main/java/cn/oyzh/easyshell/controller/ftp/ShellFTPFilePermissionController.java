@@ -15,6 +15,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+import org.apache.commons.net.ftp.FTPFile;
 
 /**
  * ssh文件权限业务
@@ -165,19 +166,22 @@ public class ShellFTPFilePermissionController extends StageController {
                     perms.append("-");
                 }
                 int permission = ShellUtil.permissionToInt(perms.toString());
-                this.client.chmod(permission, this.file.getFilePath());
-                this.file.setPermission(0, 0, this.ownerR.isSelected());
-                this.file.setPermission(0, 1, this.ownerW.isSelected());
-                this.file.setPermission(0, 2, this.ownerE.isSelected());
+                if (this.client.chmod(permission, this.file.getFilePath())) {
+                    this.file.setPermission(FTPFile.USER_ACCESS, FTPFile.READ_PERMISSION, this.ownerR.isSelected());
+                    this.file.setPermission(FTPFile.USER_ACCESS, FTPFile.WRITE_PERMISSION, this.ownerW.isSelected());
+                    this.file.setPermission(FTPFile.USER_ACCESS, FTPFile.EXECUTE_PERMISSION, this.ownerE.isSelected());
 
-                this.file.setPermission(1, 0, this.groupsR.isSelected());
-                this.file.setPermission(1, 1, this.groupsW.isSelected());
-                this.file.setPermission(1, 2, this.groupsE.isSelected());
+                    this.file.setPermission(FTPFile.GROUP_ACCESS, FTPFile.READ_PERMISSION, this.groupsR.isSelected());
+                    this.file.setPermission(FTPFile.GROUP_ACCESS, FTPFile.WRITE_PERMISSION, this.groupsW.isSelected());
+                    this.file.setPermission(FTPFile.GROUP_ACCESS, FTPFile.EXECUTE_PERMISSION, this.groupsE.isSelected());
 
-                this.file.setPermission(2, 0, this.ownerR.isSelected());
-                this.file.setPermission(2, 1, this.ownerW.isSelected());
-                this.file.setPermission(2, 2, this.ownerE.isSelected());
-                this.closeWindow();
+                    this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.READ_PERMISSION, this.othersR.isSelected());
+                    this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.WRITE_PERMISSION, this.othersW.isSelected());
+                    this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.EXECUTE_PERMISSION, this.othersE.isSelected());
+                    this.closeWindow();
+                } else {
+                    MessageBox.warn(I18nHelper.operationFail());
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

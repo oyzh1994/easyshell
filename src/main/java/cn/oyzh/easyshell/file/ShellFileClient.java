@@ -451,4 +451,14 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     }
 
     void closeDelayResources();
+
+    /**
+     * 设置文件权限
+     *
+     * @param permissions 权限
+     * @param filePath    文件路径
+     * @return 结果
+     * @throws Exception 异常
+     */
+    boolean chmod(int permissions, String filePath) throws Exception;
 }

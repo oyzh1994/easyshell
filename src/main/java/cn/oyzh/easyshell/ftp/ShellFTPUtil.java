@@ -179,16 +179,12 @@ public class ShellFTPUtil {
     }
 
     private static char getPermissionSymbol(int permission) {
-        switch (permission) {
-            case FTPFile.READ_PERMISSION:
-                return 'r';
-            case FTPFile.WRITE_PERMISSION:
-                return 'w';
-            case FTPFile.EXECUTE_PERMISSION:
-                return 'x';
-            default:
-                return '-';
-        }
+        return switch (permission) {
+            case FTPFile.READ_PERMISSION -> 'r';
+            case FTPFile.WRITE_PERMISSION -> 'w';
+            case FTPFile.EXECUTE_PERMISSION -> 'x';
+            default -> '-';
+        };
     }
 
 }

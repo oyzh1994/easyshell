@@ -15,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -472,33 +471,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         }
     }
 
-    public boolean chmod(int permissions, String filePath) throws IOException {
+    @Override
+    public boolean chmod(int permissions, String filePath) throws Exception {
         // 构建 SITE CHMOD 命令
-        String command = "SITE CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
+        String command = "CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
         // 发送命令到 FTP 服务器
-        int replyCode = this.sendCommand(command);
-        // 检查命令执行结果
-        return FTPReply.isPositiveCompletion(replyCode);
+        return this.sendSiteCommand(command);
     }
-
-//    public int getTaskSize() {
-//        return this.uploadTasks.size() + this.downloadTasks.size();
-//    }
-//
-//    public boolean isUploadTaskEmpty() {
-//        return this.uploadTasks.isEmpty();
-//    }
-//
-//    public boolean isTaskEmpty() {
-//        return this.uploadTasks.isEmpty() && this.downloadTasks.isEmpty();
-//    }
-//
-//    public void addTaskSizeCallback(Runnable callback) {
-//        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-//            callback.run();
-//        });
-//        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
-//            callback.run();
-//        });
-//    }
 }

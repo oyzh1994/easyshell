@@ -175,7 +175,13 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
         return ShellFTPUtil.getPermissionsString(this.file);
     }
 
+    @Override
+    public void setPermission(int access, int permission, boolean value) {
+        this.file.setPermission(access, permission, value);
+    }
+
     public void setParentPath(String parentPath) {
         this.parentPath = parentPath;
     }
+
 }

@@ -38,9 +38,7 @@ import java.util.function.Function;
  */
 public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
 
-
-    private List<ShellSFTPChannel> delayChannels = new ArrayList<>();
-
+    private final List<ShellSFTPChannel> delayChannels = new ArrayList<>();
 
     public ShellSFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
@@ -461,10 +459,13 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 //            channel.get(src, dest, monitor);
 //        }
 //    }
-    public void chmod(int permission, String filePath) throws Exception {
+
+    @Override
+    public boolean chmod(int permission, String filePath) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTP()) {
             channel.chmod(permission, filePath);
         }
+        return true;
     }
 
     @Override
