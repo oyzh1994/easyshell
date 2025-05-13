@@ -103,8 +103,7 @@ public class ShellFTPFileEditController extends StageController {
                 File localFile = new File(this.destPath);
                 String remoteFile = ShellFileUtil.concat(file.getParentPath(), file.getFileName());
                 this.client.put(localFile, remoteFile);
-                file.setSize(localFile.length());
-//                ShellEventUtil.fileSaved(this.file);
+                file.setFileSize(localFile.length());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -119,8 +118,7 @@ public class ShellFTPFileEditController extends StageController {
         StageManager.showMask(() -> {
             try {
                 FileUtil.touch(this.destPath);
-                File localFile = new File(this.destPath);
-                this.client.doDownload(this.file, localFile);
+                this.client.get(this.file, this.destPath);
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {

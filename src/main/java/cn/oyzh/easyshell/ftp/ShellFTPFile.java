@@ -100,7 +100,12 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
 
     @Override
     public long getFileSize() {
-        return this.getSize();
+        return this.file.getSize();
+    }
+
+    @Override
+    public void setFileSize(long fileSize) {
+        this.file.setSize(fileSize);
     }
 
     @Override
@@ -141,11 +146,6 @@ public class ShellFTPFile extends FTPFile implements ShellFile {
     @Override
     public String getLink() {
         return file.getLink();
-    }
-
-    @Override
-    public long getSize() {
-        return file.getSize();
     }
 
     @Override

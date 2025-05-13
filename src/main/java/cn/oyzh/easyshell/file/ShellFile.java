@@ -83,6 +83,13 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
     long getFileSize();
 
     /**
+     * 设置文件大小
+     *
+     * @param fileSize 文件大小
+     */
+    void setFileSize(long fileSize);
+
+    /**
      * 获取显示用文件大小
      *
      * @return 文件大小

@@ -81,7 +81,12 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public long getFileSize() {
-        return this.size();
+        return this.getAttrs().getSize();
+    }
+
+    @Override
+    public void setFileSize(long fileSize) {
+        this.getAttrs().setSIZE(fileSize);
     }
 
     public void setGroup(String group) {
@@ -136,9 +141,6 @@ public class ShellSFTPFile implements ShellFile {
 //        return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
 //    }
 
-    public long size() {
-        return this.getAttrs().getSize();
-    }
 
     public String getName() {
         String fileName = this.getFileName();

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * sftp连接下拉选择框
+ * 文件连接下拉选择框
  *
  * @author oyzh
  * @since 25/04/25
