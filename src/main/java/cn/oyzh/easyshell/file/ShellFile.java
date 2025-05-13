@@ -181,6 +181,13 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
     String getModifyTime();
 
     /**
+     * 设置修改时间
+     *
+     * @param modifyTime 修改时间
+     */
+    void setModifyTime(String modifyTime);
+
+    /**
      * 获取文件排序
      *
      * @return 文件排序

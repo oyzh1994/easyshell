@@ -162,14 +162,14 @@ public class ShellSFTPFile implements ShellFile {
 //        return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
 //    }
 
-
-    public String getName() {
-        String fileName = this.getFileName();
-        if (fileName.contains("/")) {
-            return fileName.substring(fileName.lastIndexOf("/") + 1);
-        }
-        return fileName;
-    }
+//
+//    public String getName() {
+//        String fileName = this.getFileName();
+//        if (fileName.contains("/")) {
+//            return fileName.substring(fileName.lastIndexOf("/") + 1);
+//        }
+//        return fileName;
+//    }
 
     @Override
     public String getFileName() {
@@ -234,6 +234,14 @@ public class ShellSFTPFile implements ShellFile {
         }
         int mtime = this.getAttrs().getMTime();
         return DateHelper.formatDateTime(new Date(mtime * 1000L));
+    }
+
+    @Override
+    public void setModifyTime(String modifyTime) {
+        Date date = DateHelper.parseDateTime(modifyTime);
+        int atime = this.getAttrs().getATime();
+        int mtime = Math.toIntExact(date.getTime() / 1000);
+        this.getAttrs().setACMODTIME(atime, mtime);
     }
 
     public int getUid() {

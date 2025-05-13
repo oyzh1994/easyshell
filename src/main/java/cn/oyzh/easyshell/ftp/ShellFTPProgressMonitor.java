@@ -53,7 +53,7 @@ public class ShellFTPProgressMonitor {
         public int read(byte @NotNull [] b, int off, int len) throws IOException {
             int l = this.in.read(b, off, len);
             if (!this.callback.apply((long) l)) {
-                throw new IOException();
+                throw new InterruptedIOException();
             }
             return l;
         }
@@ -86,7 +86,7 @@ public class ShellFTPProgressMonitor {
         public void write(byte @NotNull [] b, int off, int len) throws IOException {
             this.out.write(b, off, len);
             if (!this.callback.apply((long) len)) {
-                throw new IOException();
+                throw new InterruptedIOException();
             }
         }
 

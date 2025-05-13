@@ -824,6 +824,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         // 删除文件
         FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
         deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
+        deleteFile.setDisable(files.isEmpty());
         menuItems.add(deleteFile);
         return menuItems;
     }

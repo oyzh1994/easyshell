@@ -1,9 +1,13 @@
 package cn.oyzh.easyshell.ftp;
 
+import cn.oyzh.common.date.CalendarUtil;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import org.apache.commons.net.ftp.FTPFile;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * ftp文件
@@ -119,6 +123,13 @@ public class ShellFTPFile implements ShellFile {
             return "";
         }
         return DateHelper.formatDateTime(this.file.getTimestamp().getTime());
+    }
+
+    @Override
+    public void setModifyTime(String modifyTime) {
+        Date date = DateHelper.parseDateTime(modifyTime);
+        Calendar calendar = CalendarUtil.of(date);
+        this.file.setTimestamp(calendar);
     }
 
     @Override

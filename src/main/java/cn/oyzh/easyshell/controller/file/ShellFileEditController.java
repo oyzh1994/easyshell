@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.file;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -102,6 +103,7 @@ public class ShellFileEditController extends StageController {
                 this.client.put(this.destPath, file.getFilePath());
                 File localFile = new File(this.destPath);
                 this.file.setFileSize(localFile.length());
+                this.file.setModifyTime(DateHelper.formatDateTime());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

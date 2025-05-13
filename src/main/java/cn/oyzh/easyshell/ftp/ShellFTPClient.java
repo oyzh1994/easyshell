@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.ftp;
 
+import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -290,6 +291,9 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         }
         super.storeFile(remoteFile, in);
         IOUtil.close(in);
+        // 更新修改时间
+        String mtime = DateUtil.format("yyyyMMddHHmmss");
+        super.setModificationTime(remoteFile, mtime);
     }
 
     @Override
