@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <FXVBox styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.key.ShellKeyTabController">
     <FXHBox prefHeight="30">
-        <AddSVGGlyph onMousePrimaryClicked="#addKey">
+        <AddSVGGlyph onMousePrimaryClicked="#addKey" tipText="%base.add">
             <FXHBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="7"/>
             </FXHBox.margin>
         </AddSVGGlyph>
-        <EditSVGGlyph onMousePrimaryClicked="#updateKey">
+<!--        <EditSVGGlyph onMousePrimaryClicked="#updateKey" tipText="%base.edit">-->
+<!--            <FXHBox.margin>-->
+<!--                <Insets left="10" top="10"/>-->
+<!--            </FXHBox.margin>-->
+<!--        </EditSVGGlyph>-->
+        <ImportSVGGlyph onMousePrimaryClicked="#importKey" tipText="%base.import">
             <FXHBox.margin>
-                <Insets left="10" top="10"/>
-            </FXHBox.margin>
-        </EditSVGGlyph>
-        <ImportSVGGlyph onMousePrimaryClicked="#importKey">
-            <FXHBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="5" top="7"/>
             </FXHBox.margin>
         </ImportSVGGlyph>
     </FXHBox>

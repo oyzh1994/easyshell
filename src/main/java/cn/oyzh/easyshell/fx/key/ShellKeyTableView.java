@@ -76,6 +76,8 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             ShellKey key = keys.getFirst();
             MenuItem updateKey = MenuItemHelper.updateKey1("12", () -> this.updateKey(key));
             menuItems.add(updateKey);
+            MenuItem renameKey = MenuItemHelper.renameKey1("12", () -> this.renameKey(key));
+            menuItems.add(renameKey);
             MenuItem exportKey = MenuItemHelper.exportKey1("12", () -> this.exportKey(key));
             menuItems.add(exportKey);
         }

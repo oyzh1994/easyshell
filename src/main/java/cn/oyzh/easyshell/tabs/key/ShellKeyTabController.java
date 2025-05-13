@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.key;
 
 import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
-import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.fx.key.ShellKeyTableView;
@@ -57,14 +56,14 @@ public class ShellKeyTabController extends RichTabController {
         adapter.display();
     }
 
-    /**
-     * 编辑密钥
-     */
-    @FXML
-    private void updateKey() {
-        ShellKey key = this.keyTable.getSelectedItem();
-        this.keyTable.updateKey(key);
-    }
+//    /**
+//     * 编辑密钥
+//     */
+//    @FXML
+//    private void updateKey() {
+//        ShellKey key = this.keyTable.getSelectedItem();
+//        this.keyTable.renameKey(key);
+//    }
 
     /**
      * 刷新数据
