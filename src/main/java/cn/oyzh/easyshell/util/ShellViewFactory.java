@@ -4,19 +4,19 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
 import cn.oyzh.easyshell.controller.connect.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.file.ShellFileEditController;
@@ -34,7 +34,6 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * shell页面工厂
@@ -361,14 +360,14 @@ public class ShellViewFactory {
      * @param sourceConnect 来源连接
      */
     public static void fileTransport(ShellConnect sourceConnect) {
-        // 判断窗口是否存在
-        List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
-        for (StageAdapter adapter : list) {
-            if (adapter.getProp("sourceConnect") == sourceConnect) {
-                adapter.toFront();
-                return;
-            }
-        }
+//        // 判断窗口是否存在
+//        List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
+//        for (StageAdapter adapter : list) {
+//            if (adapter.getProp("sourceConnect") == sourceConnect) {
+//                adapter.toFront();
+//                return;
+//            }
+//        }
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, null);
             adapter.setProp("sourceConnect", sourceConnect);

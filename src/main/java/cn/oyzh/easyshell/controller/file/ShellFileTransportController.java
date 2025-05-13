@@ -28,6 +28,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.List;
  * @since 2025/05/13
  */
 @StageAttribute(
+        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "file/shellFileTransport.fxml"
 )
 public class ShellFileTransportController extends StageController {
