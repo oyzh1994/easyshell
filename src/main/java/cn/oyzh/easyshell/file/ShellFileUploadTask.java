@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
+ * 文件上传任务
+ *
  * @author oyzh
  * @since 2025-04-28
  */
@@ -98,14 +100,14 @@ public class ShellFileUploadTask {
     /**
      * 客户端
      */
-    private final ShellFileClient client;
+    private final ShellFileClient<?> client;
 
     /**
      * 状态
      */
     private transient ShellFileStatus status;
 
-    public ShellFileUploadTask(File localFile, String remotePath, ShellFileClient client) {
+    public ShellFileUploadTask(File localFile, String remotePath, ShellFileClient<?> client) {
         this.client = client;
         this.localFile = localFile;
         this.remotePath = remotePath;

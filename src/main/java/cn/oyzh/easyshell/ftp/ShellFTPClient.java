@@ -465,11 +465,12 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     public boolean exist(String filePath) throws Exception {
         try {
             long size = this.size(filePath);
-            if (size != -1) {
-                return true;
+            // 如果是550，则要继续判断
+            if (size == 550) {
+                FTPFile file = this.mlistFile(filePath);
+                return file != null;
             }
-            FTPFile file = this.mlistFile(filePath);
-            return file != null;
+            return true;
         } catch (IndexOutOfBoundsException ignored) {
             return false;
         }
