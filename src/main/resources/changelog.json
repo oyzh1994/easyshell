@@ -57,11 +57,12 @@
   },
   {
 	"version": "v1.0.8",
-	"date": "2025-04-26",
+	"date": "2025-05-14",
 	"features": [
-	  "1. 新增tftp协议支持"
+	  "1. ftp、sftp文件管理统一"
 	],
 	"bugfix": [
+	  "1. 修复数个文件管理相关bug"
 	],
 	"optimize": [
 	]

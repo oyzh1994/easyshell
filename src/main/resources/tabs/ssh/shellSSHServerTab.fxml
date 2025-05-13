@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.MonitorSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
-<?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <FXTab fx:id="root" text="%base.server" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController">
     <graphic>
