@@ -30,7 +30,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * sftp组件
+ * ftp组件
  *
  * @author oyzh
  * @since 2025/04/25
@@ -85,18 +85,6 @@ public class ShellFTPTabController extends RichTabController {
     @FXML
     private ClearableTextField filterFile;
 
-//    /**
-//     * 上传文件按钮
-//     */
-//    @FXML
-//    private SVGGlyph uploadFile;
-//
-//    /**
-//     * 上传文件夹按钮
-//     */
-//    @FXML
-//    private SVGGlyph uploadDir;
-
     /**
      * 设置
      */
@@ -107,19 +95,23 @@ public class ShellFTPTabController extends RichTabController {
      */
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
+    /**
+     * ftp客户端
+     */
     private ShellFTPClient client;
 
-    private ShellConnect shellConnect;
+    public ShellFTPClient client() {
+        return this.client;
+    }
 
-    public ShellConnect getShellConnect() {
-        return shellConnect;
+    public ShellConnect shellConnect() {
+        return this.client.getShellConnect();
     }
 
     /**
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
         this.client = new ShellFTPClient(shellConnect);
         StageManager.showMask(() -> {
             try {
@@ -214,9 +206,6 @@ public class ShellFTPTabController extends RichTabController {
         }
     }
 
-    public ShellFTPClient client() {
-        return this.client;
-    }
 
     @FXML
     private void refreshFile() {

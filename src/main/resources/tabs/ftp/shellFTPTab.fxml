@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.FXProgressTextBar?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView?>
-<?import cn.oyzh.fx.gui.svg.glyph.BoxSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.ftp.ShellFTPTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -40,13 +35,13 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </RefreshSVGGlyph>
-        <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"
+        <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false"
                             onMousePrimaryClicked="#uploadFile">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </FileUploadSVGGlyph>
-        <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"
+        <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false"
                               onMousePrimaryClicked="#uploadFolder">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
@@ -86,10 +81,10 @@
     <ShellFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
+            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 585" valueName="fileName"
                            text="%base.name"/>
-            <FXTableColumn prefWidth="110" valueName="fileSizeDisplay" text="%base.size"/>
-            <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
+            <FXTableColumn prefWidth="130" valueName="fileSizeDisplay" text="%base.size"/>
+            <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
             <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
             <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
             <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>

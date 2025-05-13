@@ -54,7 +54,7 @@ public class ShellFTPTab extends RichTab {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().getShellConnect().getName();
+        return this.controller().shellConnect().getName();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ShellFTPTab extends RichTab {
      * @return 当前shell信息
      */
     public ShellConnect shellConnect() {
-        return this.controller().getShellConnect();
+        return this.controller().shellConnect();
     }
 
     /**
