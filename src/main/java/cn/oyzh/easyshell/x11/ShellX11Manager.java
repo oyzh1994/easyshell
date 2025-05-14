@@ -7,6 +7,7 @@ import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 import java.io.File;
@@ -58,11 +59,15 @@ public class ShellX11Manager {
         if (ProcessUtil.isProcessRunning(processName)) {
             return;
         }
+        // 寻找存在的二进制命令
+        String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
+        if (bin == null) {
+            MessageBox.warn(ShellI18nHelper.x11Tip1());
+            return;
+        }
         // 异步启动
         ThreadUtil.start(() -> {
             try {
-                // 寻找存在的二进制命令
-                String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
                 // 命令
                 StringBuilder command = new StringBuilder("cmd.exe /c start ");
                 // 二进制程序名称
@@ -150,11 +155,15 @@ public class ShellX11Manager {
         if (ProcessUtil.isProcessRunning(processName)) {
             return;
         }
+        // 寻找存在的二进制命令
+        String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
+        if (bin == null) {
+            MessageBox.warn(ShellI18nHelper.x11Tip1());
+            return;
+        }
         // 异步启动
         ThreadUtil.start(() -> {
             try {
-                // 寻找存在的二进制命令
-                String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
                 // 工作目录
                 File dir = new File(setting.x11WorkDir());
                 // 构建进程

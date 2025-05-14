@@ -120,4 +120,8 @@ public class ShellI18nHelper {
     public static String termTip8() {
         return I18nResourceBundle.i18nString("shell.term.tip8");
     }
+
+    public static String x11Tip1() {
+        return I18nResourceBundle.i18nString("shell.x11.tip1");
+    }
 }

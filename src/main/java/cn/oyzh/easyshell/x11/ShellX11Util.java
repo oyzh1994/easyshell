@@ -8,7 +8,6 @@ import cn.oyzh.common.file.FileUtil;
  * @author oyzh
  * @since 2025/03/09
  */
-
 public class ShellX11Util {
 
     public static String findExist(String workdir, String[] x11Binary) {
