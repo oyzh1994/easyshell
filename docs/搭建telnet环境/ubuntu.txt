@@ -1,11 +1,24 @@
 # 1. 安装依赖
-apt install -y telnetd
+apt install -y telnetd xinetd
 # 2. 启用配置
-vim /etc/inetd.conf
-telnet  stream  tcp  nowait  root  /usr/sbin/tcpd  /usr/sbin/in.telnetd
-# 3. 关闭防火墙(或者自己添加端口)
+touch /etc/xinetd.d/telnet
+vim /etc/xinetd.d/telnet
+service telnet
+{
+    disable = no
+    socket_type = stream
+    protocol = tcp
+    wait = no
+    user = root
+    server = /usr/sbin/in.telnetd
+    log_on_failure += USERID
+}
+# 3. 链接文件
+ln -s /usr/sbin/telnetd /usr/sbin/in.telnetd
+chmod 755 /usr/sbin/in.telnetd
+# 4. 关闭防火墙(或者自己添加端口)
 systemctl stop ufw
 systemctl disable ufw
-# 4. 启动并启用telnet服务
-systemctl start inetd
-systemctl enable inetd
+# 5. 启动并启用telnet服务
+systemctl start xinetd
+systemctl enable xinetd

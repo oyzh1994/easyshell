@@ -958,10 +958,10 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
 
         gfx.setFill(this.getFXBackground());
 
-        // 清除内容
+//        // 清除内容
 //        gfx.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
-//        // 填充内容
-//        gfx.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+        // 填充内容
+        gfx.fillRect(0, 0, this.getWidth(), this.getHeight());
         this.fixScrollBarThumbVisibility();
 
         try {
