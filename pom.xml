@@ -16,8 +16,10 @@
         <jna.version>5.17.0</jna.version>
         <pty4j.version>0.13.4</pty4j.version>
         <jediterm.version>3.51</jediterm.version>
+        <jSerialComm.version>2.11.0</jSerialComm.version>
         <annotations.version>26.0.2</annotations.version>
         <purejavacomm.version>0.0.11.1</purejavacomm.version>
+        <commons-net.version>3.11.1</commons-net.version>
         <kotlin.stdlib.version>2.1.20</kotlin.stdlib.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
     </properties>
@@ -120,7 +122,7 @@
         <dependency>
             <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
-            <version>2.11.0</version>
+            <version>${jSerialComm.version}</version>
         </dependency>
 
         <!-- json类库 -->
@@ -234,7 +236,7 @@
             <dependency>
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
-                <version>3.9.0</version>
+                <version>${commons-net.version}</version>
             </dependency>
     </dependencies>
 
