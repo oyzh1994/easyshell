@@ -2,5 +2,5 @@
 brew install socat
 # 2. 建立串口通道
 socat -d -d pty,raw,echo=0 pty,raw,echo=0
-# 3. 绑定输出流到shell(看具体通道)
-socat exec:'bash -li',pty,stderr,setsid,sigint,sane /dev/ttys001
+# 3. 绑定输出流到shell(看具体通道，一般是上面生成通道的第二个)
+socat exec:'bash -li',pty,stderr,setsid,sigint,sane /dev/ttys002

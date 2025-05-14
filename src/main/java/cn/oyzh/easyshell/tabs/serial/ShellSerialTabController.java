@@ -41,20 +41,20 @@ public class ShellSerialTabController extends RichTabController {
      */
     private ShellSerialClient client;
 
-    public ShellSerialClient getClient() {
-        return client;
-    }
-
-    public ShellConnectTreeItem getTreeItem() {
-        return treeItem;
-    }
-
-    private ShellConnectTreeItem treeItem;
-
     /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    public ShellSerialClient getClient() {
+        return client;
+    }
+
+    private ShellConnectTreeItem treeItem;
+
+    public ShellConnectTreeItem getTreeItem() {
+        return treeItem;
+    }
 
     /**
      * 初始化组件

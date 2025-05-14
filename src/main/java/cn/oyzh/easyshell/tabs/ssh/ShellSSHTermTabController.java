@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -13,6 +14,7 @@ import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
 import com.jcraft.jsch.JSchException;
 import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXFXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -77,6 +79,12 @@ public class ShellSSHTermTabController extends SubTabController {
             MessageBox.warn(I18nHelper.connectFail());
             this.closeTab();
             return;
+        }
+        ShellConnect shellConnect = client.getShellConnect();
+        // macos需要初始化部分参数
+        if (OSUtil.isMacOS() && shellConnect.getCharset() != null) {
+            TtyConnector connector = this.widget.getTtyConnector();
+            connector.write("export LANG=en_US." + shellConnect.getCharset() + "\n");
         }
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);

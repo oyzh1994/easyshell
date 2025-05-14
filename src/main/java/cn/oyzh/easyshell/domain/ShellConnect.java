@@ -158,7 +158,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     /**
      * 连接类型
      * ssh ssh
+     * ftp ftp
+     * sftp sftp
+     * local 本地
      * serial 串口
+     * telnet telnet
      */
     @Column
     private String type;

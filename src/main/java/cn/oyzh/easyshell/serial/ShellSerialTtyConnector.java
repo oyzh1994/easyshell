@@ -21,7 +21,7 @@ public class ShellSerialTtyConnector extends ShellDefaultTtyConnector {
 
     public void initSerial(ShellSerialClient client) {
         this.client = client;
-        this.listener = new ShellSerialDataListener();
+        this.listener = new ShellSerialDataListener(client.getCharset());
         this.client.addDataListener(this.listener);
     }
 

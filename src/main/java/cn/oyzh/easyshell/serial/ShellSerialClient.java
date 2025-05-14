@@ -8,6 +8,7 @@ import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author oyzh
@@ -91,12 +92,12 @@ public class ShellSerialClient implements BaseClient {
         }
     }
 
-    public InputStream getOutputStream() {
-        return this.serialPort == null ? null : this.serialPort.getInputStream();
+    public OutputStream getOutputStream() {
+        return this.serialPort == null ? null : this.serialPort.getOutputStream();
     }
 
-    public AutoCloseable getInputStream() {
-        return this.serialPort == null ? null : this.serialPort.getOutputStream();
+    public InputStream getInputStream() {
+        return this.serialPort == null ? null : this.serialPort.getInputStream();
     }
 
     public void addDataListener(ShellSerialDataListener listener) {

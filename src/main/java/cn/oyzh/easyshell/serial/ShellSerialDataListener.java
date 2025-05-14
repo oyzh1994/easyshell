@@ -6,6 +6,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
+import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -19,6 +20,19 @@ public class ShellSerialDataListener implements SerialPortDataListener {
      * 数据队列
      */
     private final Queue<Character> characters = new ArrayDeque<>();
+
+    /**
+     * 字符集
+     */
+    private final Charset charset;
+
+    public ShellSerialDataListener() {
+        this(Charset.defaultCharset());
+    }
+
+    public ShellSerialDataListener(Charset charset) {
+        this.charset = charset;
+    }
 
     @Override
     public int getListeningEvents() {
@@ -39,7 +53,7 @@ public class ShellSerialDataListener implements SerialPortDataListener {
             byte[] bytes = new byte[serialPort.bytesAvailable()];
             serialPort.readBytes(bytes, bytes.length);
             ThreadUtil.sleep(1);
-            String str = new String(bytes);
+            String str = new String(bytes, this.charset);
             JulLog.info("串口返回数据:{}", str);
             char[] chars = str.toCharArray();
             for (char aChar : chars) {
@@ -53,6 +67,11 @@ public class ShellSerialDataListener implements SerialPortDataListener {
     }
 
     public Character takeChar() {
-        return this.characters.poll();
+        try {
+            return this.characters.poll();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }
