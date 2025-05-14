@@ -540,7 +540,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     public String getTermType() {
-        return termType == null ? "xterm-256color" : termType;
+        return StringUtil.isBlank(this.termType) ? "xterm-256color" : this.termType;
     }
 
     public void setTermType(String termType) {
