@@ -41,13 +41,13 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </RefreshSVGGlyph>
-        <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"
+        <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false"
                             onMousePrimaryClicked="#uploadFile">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </FileUploadSVGGlyph>
-        <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"
+        <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false"
                               onMousePrimaryClicked="#uploadFolder">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
@@ -87,7 +87,7 @@
     <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
+            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 725" valueName="fileName"
                            text="%base.name"/>
             <FXTableColumn prefWidth="110" valueName="fileSizeDisplay" text="%base.size"/>
             <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
