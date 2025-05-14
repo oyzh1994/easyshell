@@ -1,0 +1,5 @@
+# 1. 安装依赖
+apt update
+apt install x11-apps -y
+# 2. 启动xclock
+xclock
