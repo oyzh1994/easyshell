@@ -3,8 +3,12 @@
 apt update
 apt install squid apache2-utils -y
 # 2. 首次创建认证用户，后面会提示输入密码(非首次去掉-c参数)
-htpasswd -c /etc/tinyproxy/proxyusers proxyuser
+htpasswd -c /etc/squid/passwd proxyuser
 # 3. 配置文件
+这玩意配置文件1万行，严重影响效率，直接移走
+mv /etc/squid/squid.conf /etc/squid/squid1.conf
+创建一个新的，用下面的配置直接去设置即可
+touch /etc/squid/squid.conf
 vim /etc/squid/squid.conf
 # 设置认证用户
 auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
