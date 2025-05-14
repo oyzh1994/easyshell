@@ -139,10 +139,10 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     @Override
     public void stop() {
-        super.stop();
         // 关闭x11服务
         ShellX11Manager.stopXServer();
         EventListener.super.unregister();
+        super.stop();
     }
 
     @Override

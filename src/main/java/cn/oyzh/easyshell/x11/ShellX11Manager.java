@@ -198,7 +198,12 @@ public class ShellX11Manager {
     public synchronized static void stopXServer() {
         if (x11Process != null) {
             try {
-                x11Process.destroy();
+                ProcessHandle handle = x11Process.toHandle();
+                if (OSUtil.isWindows() || OSUtil.isLinux()) {
+                    handle.destroy();
+                } else {
+                    ProcessUtil.killProcess("X11.bin");
+                }
                 x11Process = null;
             } catch (Exception ex) {
                 ex.printStackTrace();
