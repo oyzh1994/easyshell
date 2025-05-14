@@ -97,7 +97,7 @@ public class ShellSSHDockerTabController extends ParentTabController {
                 return;
             }
             // 未运行
-            if (StringUtil.containsAnyIgnoreCase(output, "daemon running", "daemon is not running","system cannot find the file specified.")) {
+            if (StringUtil.containsAnyIgnoreCase(output, "daemon running", "daemon is not running", "system cannot find the file specified.")) {
                 MessageBox.warn(ShellI18nHelper.connectTip6());
                 return;
             }

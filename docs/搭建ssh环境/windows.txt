@@ -5,3 +5,11 @@
 net user ssh 123456 /add
 3. 设置用户为管理员
 账户->其他用户->ssh->更改账户类型->管理员->确定
+4. 解决当前用户密钥登陆无效问题
+C:\\ProgramData\\ssh\\sshd_config
+取消注释以下配置
+PubkeyAuthentication yes
+注释以下配置
+#Match Group administrators
+#    AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
+然后去服务重启OpenSSH SSH Server服务
