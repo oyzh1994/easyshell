@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.exec;
+package cn.oyzh.easyshell.internal.exec;
 
 /**
  * @author oyzh
