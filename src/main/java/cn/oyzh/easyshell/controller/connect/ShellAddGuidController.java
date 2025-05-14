@@ -43,17 +43,17 @@ public class ShellAddGuidController extends StageController {
     @FXML
     private void toAdd() {
         try {
-            if ("ssh".equals(this.type.selectedUserData())) {
+            if ("ssh".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addSSHConnect(group);
-            } else if ("local".equals(this.type.selectedUserData())) {
+            } else if ("local".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addLocalConnect(group);
-            } else if ("telnet".equals(this.type.selectedUserData())) {
+            } else if ("telnet".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addTelnetConnect(group);
-            } else if ("sftp".equals(this.type.selectedUserData())) {
+            } else if ("sftp".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addSFTPConnect(group);
-            } else if ("ftp".equals(this.type.selectedUserData())) {
+            } else if ("ftp".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addFTPConnect(group);
-            } else if ("serial".equals(this.type.selectedUserData())) {
+            } else if ("serial".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addSerialConnect(group);
             }
             this.closeWindow();

@@ -15,7 +15,7 @@ import java.util.List;
 public class ShellUtil {
 
     public static boolean isCommandNotFound(String output) {
-        return StringUtil.containsAnyIgnoreCase(output, "not found", "未找到命令");
+        return StringUtil.containsAnyIgnoreCase(output, "not found", "未找到命令", "不是内部或外部");
     }
 
     public static boolean isWindowsCommandNotFound(String output, String cmd) {

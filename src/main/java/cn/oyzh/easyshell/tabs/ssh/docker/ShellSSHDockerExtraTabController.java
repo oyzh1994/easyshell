@@ -1,15 +1,12 @@
 package cn.oyzh.easyshell.tabs.ssh.docker;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
-import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -40,11 +37,12 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(ShellDockerInfoController.class);
-                        adapter.setProp("info", output);
-                        adapter.display();
-                    });
+//                    FXUtil.runLater(() -> {
+//                        StageAdapter adapter = StageManager.parseStage(ShellDockerInfoController.class);
+//                        adapter.setProp("info", output);
+//                        adapter.display();
+//                    });
+                    ShellViewFactory.dockerInfo(output);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -62,11 +60,12 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class);
-                        adapter.setProp("version", output);
-                        adapter.display();
-                    });
+//                    FXUtil.runLater(() -> {
+//                        StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class, StageManager.getPrimaryStage());
+//                        adapter.setProp("version", output);
+//                        adapter.display();
+//                    });
+                    ShellViewFactory.dockerVersion(output);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

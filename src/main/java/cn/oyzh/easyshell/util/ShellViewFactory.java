@@ -19,6 +19,8 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.controller.file.ShellFileEditController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
@@ -494,6 +496,38 @@ public class ShellViewFactory {
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker信息
+     *
+     * @param info 信息
+     */
+    public static void dockerInfo(String info) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("info", info);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker版本
+     *
+     * @param version 版本
+     */
+    public static void dockerVersion(String version) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class, StageManager.getPrimaryStage());
+            adapter.setProp("version", version);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
