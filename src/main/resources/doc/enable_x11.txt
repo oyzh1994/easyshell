@@ -1,6 +1,6 @@
-以deepin、树莓派、ubuntu为例
+以deepin、树莓派为例
 vim /etc/lightdm/lightdm.conf
-把
+找到
 #xserver-allow-tcp=false
 改成
 xserver-allow-tcp=true
