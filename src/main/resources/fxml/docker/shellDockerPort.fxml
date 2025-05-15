@@ -8,8 +8,8 @@
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerPortController">
     <ShellDockerPortTableView flexWidth="100%" flexHeight="100%" fx:id="portTable">
         <columns>
-            <FXTableColumn flexWidth="45%" valueName="outerPort" text="%base.outerPort"/>
-            <FXTableColumn flexWidth="55% - 12" valueName="innerPort" text="%base.innerPort"/>
+            <FXTableColumn flexWidth="50%" valueName="outerPort" text="%base.outerPort"/>
+            <FXTableColumn flexWidth="50% - 7" valueName="innerPort" text="%base.innerPort"/>
         </columns>
     </ShellDockerPortTableView>
 </FXVBox>

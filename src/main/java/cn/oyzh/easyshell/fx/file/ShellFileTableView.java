@@ -332,7 +332,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     protected void fileInfo(E file) {
         if (file != null && !this.checkInvalid(file)) {
-            ShellViewFactory.fileInfo(file);
+            ShellViewFactory.fileInfo(file, this.window());
         }
     }
 
@@ -520,7 +520,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (this.checkInvalid(file)) {
             return;
         }
-        ShellViewFactory.filePermission(file, this.client);
+        ShellViewFactory.filePermission(file, this.client, this.window());
         // 更新表格
         this.refresh();
     }
@@ -585,7 +585,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (!ShellFileUtil.fileEditable(file)) {
             return;
         }
-        ShellViewFactory.fileEdit(file, this.client);
+        ShellViewFactory.fileEdit(file, this.client, this.window());
         this.onFileSaved(file);
     }
 

@@ -19,7 +19,12 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerLogsController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerPortController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerResourceController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.controller.file.ShellFileEditController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
@@ -27,6 +32,10 @@ import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
+import cn.oyzh.easyshell.docker.ShellDockerExec;
+import cn.oyzh.easyshell.docker.ShellDockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerPort;
+import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -34,8 +43,10 @@ import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import javafx.stage.Window;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * shell页面工厂
@@ -343,20 +354,6 @@ public class ShellViewFactory {
     }
 
     /**
-     * 文件信息
-     */
-    public static void fileInfo(ShellFile file) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileInfoController.class, StageManager.getPrimaryStage());
-            adapter.setProp("file", file);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
      * 文件传输
      *
      * @param sourceConnect 来源连接
@@ -371,7 +368,7 @@ public class ShellViewFactory {
 //            }
 //        }
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, null);
+            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, StageManager.getPrimaryStage());
             adapter.setProp("sourceConnect", sourceConnect);
             adapter.display();
         } catch (Exception ex) {
@@ -457,7 +454,7 @@ public class ShellViewFactory {
      */
     public static void fileManage(ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class, StageManager.getPrimaryStage());
             adapter.setProp("client", client);
             adapter.display();
         } catch (Exception ex) {
@@ -467,14 +464,33 @@ public class ShellViewFactory {
     }
 
     /**
+     * 文件信息
+     *
+     * @param file  文件
+     * @param owner 父窗口
+     */
+    public static void fileInfo(ShellFile file, Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFileInfoController.class, owner);
+            adapter.setProp("file", file);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+
+    /**
      * 文件编辑
      *
      * @param file   文件
      * @param client 文件客户端
+     * @param owner  父窗口
      */
-    public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
+    public static void fileEdit(ShellFile file, ShellFileClient<?> client, Window owner) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class, owner);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -489,10 +505,11 @@ public class ShellViewFactory {
      *
      * @param file   文件
      * @param client 文件客户端
+     * @param owner  父窗口
      */
-    public static void filePermission(ShellFile file, ShellFileClient<?> client) {
+    public static void filePermission(ShellFile file, ShellFileClient<?> client, Window owner) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFilePermissionController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellFilePermissionController.class, owner);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -527,6 +544,92 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class, StageManager.getPrimaryStage());
             adapter.setProp("version", version);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker历史
+     *
+     * @param histories 历史
+     */
+    public static void dockerHistory(List<ShellDockerHistory> histories) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerHistoryController.class, StageManager.getPrimaryStage());
+            adapter.setProp("histories", histories);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker审查
+     *
+     * @param inspect 审查信息
+     * @param image   是否镜像
+     */
+    public static void dockerInspect(String inspect, boolean image) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("inspect", inspect);
+            adapter.setProp("image", image);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker资源
+     *
+     * @param exec     执行器
+     * @param resource 资源
+     * @param id       id
+     */
+    public static void dockerResource(ShellDockerExec exec, ShellDockerResource resource, String id) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class, StageManager.getPrimaryStage());
+            adapter.setProp("exec", exec);
+            adapter.setProp("resource", resource);
+            adapter.setProp("id", id);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker日志
+     *
+     * @param logs 日志
+     */
+    public static void dockerLogs(String logs) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerLogsController.class, StageManager.getPrimaryStage());
+            adapter.setProp("logs", logs);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * docker端口
+     *
+     * @param ports 端口
+     */
+    public static void dockerPort(List<ShellDockerPort> ports) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerPortController.class, StageManager.getPrimaryStage());
+            adapter.setProp("ports", ports);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();

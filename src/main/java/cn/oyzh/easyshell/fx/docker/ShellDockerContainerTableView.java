@@ -2,23 +2,18 @@ package cn.oyzh.easyshell.fx.docker;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
-import cn.oyzh.easyshell.controller.docker.ShellDockerLogsController;
-import cn.oyzh.easyshell.controller.docker.ShellDockerPortController;
-import cn.oyzh.easyshell.controller.docker.ShellDockerResourceController;
 import cn.oyzh.easyshell.docker.ShellDockerContainer;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.docker.ShellDockerParser;
 import cn.oyzh.easyshell.docker.ShellDockerPort;
 import cn.oyzh.easyshell.docker.ShellDockerResource;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
@@ -396,11 +391,12 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class);
-                        adapter.setProp("inspect", output);
-                        adapter.display();
-                    });
+//                    FXUtil.runLater(() -> {
+//                        StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class);
+//                        adapter.setProp("inspect", output);
+//                        adapter.display();
+//                    });
+                    ShellViewFactory.dockerInspect(output, false);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -418,13 +414,14 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
                     ShellDockerResource resource = ShellDockerParser.resource(output);
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class);
-                        adapter.setProp("exec", this.exec);
-                        adapter.setProp("resource", resource);
-                        adapter.setProp("id", container.getContainerId());
-                        adapter.display();
-                    });
+//                    FXUtil.runLater(() -> {
+//                        StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class);
+//                        adapter.setProp("exec", this.exec);
+//                        adapter.setProp("resource", resource);
+//                        adapter.setProp("id", container.getContainerId());
+//                        adapter.display();
+//                    });
+                    ShellViewFactory.dockerResource(exec, resource, container.getContainerId());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -441,11 +438,12 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-                    FXUtil.runLater(() -> {
-                        StageAdapter adapter = StageManager.parseStage(ShellDockerLogsController.class);
-                        adapter.setProp("logs", output);
-                        adapter.display();
-                    });
+//                    FXUtil.runLater(() -> {
+//                        StageAdapter adapter = StageManager.parseStage(ShellDockerLogsController.class);
+//                        adapter.setProp("logs", output);
+//                        adapter.display();
+//                    });
+                    ShellViewFactory.dockerLogs(output);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -489,11 +487,12 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             try {
                 String output = this.exec.docker_port(container.getContainerId());
                 List<ShellDockerPort> ports = ShellDockerParser.port(output);
-                FXUtil.runLater(() -> {
-                    StageAdapter adapter = StageManager.parseStage(ShellDockerPortController.class);
-                    adapter.setProp("ports", ports);
-                    adapter.display();
-                });
+//                FXUtil.runLater(() -> {
+//                    StageAdapter adapter = StageManager.parseStage(ShellDockerPortController.class);
+//                    adapter.setProp("ports", ports);
+//                    adapter.display();
+//                });
+                ShellViewFactory.dockerPort(ports);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
