@@ -766,7 +766,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         if (OSUtil.isLinux()) {
             String str = RuntimeUtil.execForStr("xauth list");
             if (StringUtil.isNotBlank(str)) {
-                String[] arr = str.split("\\s+");
+                String[] arr = str.split("\n")[0].split("\\s+");
                 this.x11Cookie.setText(ArrayUtil.last(arr));
             } else {
                 this.x11Cookie.clear();

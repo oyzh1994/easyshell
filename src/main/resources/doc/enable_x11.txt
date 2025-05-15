@@ -1,4 +1,4 @@
-以deepin为例
+以deepin、树莓派、ubuntu为例
 vim /etc/lightdm/lightdm.conf
 把
 #xserver-allow-tcp=false
@@ -6,6 +6,23 @@ vim /etc/lightdm/lightdm.conf
 xserver-allow-tcp=true
 然后
 systemctl restart lightdm.service
+
+以ubuntu为例
+vim /etc/share/gdm/gdm.schames
+找到
+    <schema>
+      <key>security/DisallowTCP</key>
+      <signature>b</signature>
+      <default>true</default>
+    </schema>
+改成
+   <schema>
+      <key>security/DisallowTCP</key>
+      <signature>b</signature>
+      <default>false</default>
+    </schema>
+然后
+systemctl restart gdm.service
 
 查看和配置x11的cookie
 xauth list
