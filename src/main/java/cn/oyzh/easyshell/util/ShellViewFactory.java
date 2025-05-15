@@ -31,6 +31,10 @@ import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
+import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
+import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
+import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
+import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.docker.ShellDockerHistory;
@@ -38,6 +42,7 @@ import cn.oyzh.easyshell.docker.ShellDockerPort;
 import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -635,5 +640,55 @@ public class ShellViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    /**
+     * 复制密钥到主机
+     *
+     * @param keys 密钥
+     */
+    public static void copyKeysToHost(List<ShellKey> keys) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellCopyIdKeyController.class, StageManager.getPrimaryStage());
+            adapter.setProp("keys", keys);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改密钥
+     *
+     * @param key 密钥
+     */
+    public static void updateKey(ShellKey key) {
+        try {
+            if (key == null) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateKeyController.class, StageManager.getPrimaryStage());
+            adapter.setProp("key", key);
+            adapter.display();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 添加密钥
+     */
+    public static void addKey() {
+        StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class, StageManager.getPrimaryStage());
+        adapter.display();
+    }
+
+    /**
+     * 导入密钥
+     */
+    public static void importKey() {
+        StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class, StageManager.getPrimaryStage());
+        adapter.display();
     }
 }

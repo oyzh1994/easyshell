@@ -1,16 +1,13 @@
 package cn.oyzh.easyshell.tabs.key;
 
-import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
-import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.fx.key.ShellKeyTableView;
 import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 
 /**
@@ -43,8 +40,9 @@ public class ShellKeyTabController extends RichTabController {
      */
     @FXML
     private void addKey() {
-        StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class);
-        adapter.display();
+//        StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class);
+//        adapter.display();
+        ShellViewFactory.addKey();
     }
 
     /**
@@ -52,8 +50,9 @@ public class ShellKeyTabController extends RichTabController {
      */
     @FXML
     private void importKey() {
-        StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class);
-        adapter.display();
+//        StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class);
+//        adapter.display();
+        ShellViewFactory.importKey();
     }
 
 //    /**

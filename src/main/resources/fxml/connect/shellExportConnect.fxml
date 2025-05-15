@@ -54,7 +54,7 @@
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </FXCheckBox>
-        <FXCheckBox fx:id="includeGroup" text="%base.group">
+        <FXCheckBox selected="true" fx:id="includeGroup" text="%base.group">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>

@@ -3,18 +3,15 @@ package cn.oyzh.easyshell.fx.key;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
-import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -68,13 +65,13 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost("12", () -> this.copyKeysToHost(keys));
+        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost("12", () -> ShellViewFactory.copyKeysToHost(keys));
         menuItems.add(copyKeys1ToHost);
         MenuItem deleteKey = MenuItemHelper.deleteKey1("12", () -> this.deleteKey(keys));
         menuItems.add(deleteKey);
         if (keys.size() == 1) {
             ShellKey key = keys.getFirst();
-            MenuItem updateKey = MenuItemHelper.updateKey1("12", () -> this.updateKey(key));
+            MenuItem updateKey = MenuItemHelper.updateKey1("12", () -> ShellViewFactory.updateKey(key));
             menuItems.add(updateKey);
             MenuItem renameKey = MenuItemHelper.renameKey1("12", () -> this.renameKey(key));
             menuItems.add(renameKey);
@@ -84,20 +81,20 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
         return menuItems;
     }
 
-    /**
-     * 复制密钥到主机
-     *
-     * @param keys 密钥
-     */
-    public void copyKeysToHost(List<ShellKey> keys) {
-        try {
-            StageAdapter adapter= StageManager.parseStage(ShellCopyIdKeyController.class);
-            adapter.setProp("keys", keys);
-            adapter.display();
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 复制密钥到主机
+//     *
+//     * @param keys 密钥
+//     */
+//    public void copyKeysToHost(List<ShellKey> keys) {
+//        try {
+//            StageAdapter adapter= StageManager.parseStage(ShellCopyIdKeyController.class);
+//            adapter.setProp("keys", keys);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     /**
      * 删除密钥
@@ -118,23 +115,23 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
         }
     }
 
-    /**
-     * 修改密钥
-     *
-     * @param key 密钥
-     */
-    public void updateKey(ShellKey key) {
-        try {
-            if (key == null) {
-                return;
-            }
-            StageAdapter adapter=StageManager.parseStage(ShellUpdateKeyController.class);
-            adapter.setProp("key", key);
-            adapter.display();
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 修改密钥
+//     *
+//     * @param key 密钥
+//     */
+//    public void updateKey(ShellKey key) {
+//        try {
+//            if (key == null) {
+//                return;
+//            }
+//            StageAdapter adapter=StageManager.parseStage(ShellUpdateKeyController.class);
+//            adapter.setProp("key", key);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     /**
      * 重命名密钥
