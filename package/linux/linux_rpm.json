@@ -1,17 +1,14 @@
 {
     "packMode": "jpackage",
-    "platform": "windows",
-    "dest": "C:/Package/EasyShell/${appVersion}/",
-    "appIcon": "${projectPath}/resource/shell.ico",
+    "platform": "linux",
+    "dest": "/home/oyzh/Documents/Package/EasyShell/${appVersion}/",
+    "appIcon": "${projectPath}/resource/shell.png",
     "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
     "jdkPath": "$SYSTEM",
     "jpackage": {
         "verbose": true,
         "vendor": "oyzh",
-        "type": "msi",
-        "win-menu": true,
-        "win-shortcut": true,
-        "win-dir-chooser": true,
+        "type": "rpm",
         "description": "功能强大、现代化、支持多系统的终端仿真器"
     },
     "jdeps": {
@@ -103,8 +100,8 @@
             "lombok-.*.jar",
             ".*.processors",
             ".*.kotlin_module",
+            ".*.dll",
             ".*.dylib",
-            ".*.so",
             "data.zip",
             "git.properties",
             "native-image.properties",
