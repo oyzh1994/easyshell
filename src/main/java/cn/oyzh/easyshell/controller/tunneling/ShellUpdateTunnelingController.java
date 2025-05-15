@@ -1,32 +1,19 @@
 package cn.oyzh.easyshell.controller.tunneling;
 
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeCombobox;
-import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.gui.text.field.NumberTextField;
-import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
-import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
 
 /**
  * ssh隧道编辑业务
@@ -83,6 +70,12 @@ public class ShellUpdateTunnelingController extends StageController {
     private ShellTunnelingConfig config;
 
     /**
+     * 是否启用
+     */
+    @FXML
+    private FXToggleSwitch enable;
+
+    /**
      * 修改隧道信息
      */
     @FXML
@@ -100,13 +93,15 @@ public class ShellUpdateTunnelingController extends StageController {
             return;
         }
         try {
+            boolean enable = this.enable.isSelected();
+            int localPort = this.localPort.getIntValue();
+            String name = this.tunnelingName.getTextTrim();
+            int remotePort = this.remotePort.getIntValue();
             String localHost = this.localHost.getTextTrim();
             String remoteHost = this.remoteHost.getTextTrim();
-            int localPort = this.localPort.getIntValue();
-            int remotePort = this.remotePort.getIntValue();
             String tunnelingType = this.tunnelingType.getTunnelingType();
-            String name = this.tunnelingName.getTextTrim();
             this.config.setName(name);
+            this.config.setEnabled(enable);
             this.config.setType(tunnelingType);
             this.config.setLocalHost(localHost);
             this.config.setLocalPort(localPort);
@@ -139,6 +134,7 @@ public class ShellUpdateTunnelingController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.config = this.getProp("config");
+        this.enable.setSelected(this.config.isEnabled());
         this.tunnelingName.setText(this.config.getName());
         this.tunnelingType.setType(this.config.getType());
         this.localHost.setText(this.config.getLocalHost());

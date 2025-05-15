@@ -5,8 +5,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
 import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
-import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
-import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -25,6 +23,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -875,8 +874,7 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void addTunneling() {
-        StageAdapter adapter = StageManager.parseStage(ShellAddTunnelingController.class);
-        adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.addTunneling();
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
             this.tunnelingTableView.addItem(tunnelingConfig);
@@ -892,9 +890,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = StageManager.parseStage(ShellUpdateTunnelingController.class);
-        adapter.setProp("config", config);
-        adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.updateTunneling(config);
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
             this.tunnelingTableView.refresh();

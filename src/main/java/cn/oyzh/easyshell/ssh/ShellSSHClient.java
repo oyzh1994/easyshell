@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.exec.ShellExec;
@@ -18,6 +19,7 @@ import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
+import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
@@ -34,8 +36,10 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * ssh客户端
@@ -69,6 +73,11 @@ public class ShellSSHClient extends ShellClient {
      * 跳板配置存储
      */
     private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
+
+    /**
+     * 隧道转发存储
+     */
+    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
     /**
      * 代理配置存储
@@ -193,13 +202,21 @@ public class ShellSSHClient extends ShellClient {
      * 初始化隧道
      */
     private void initTunneling() {
+        // 加载隧道转发配置
+        List<ShellTunnelingConfig> tunnelingConfigs = this.shellConnect.getTunnelingConfigs();
+        // 从数据库获取
+        if (tunnelingConfigs == null) {
+            tunnelingConfigs = this.tunnelingConfigStore.listByIid(this.shellConnect.getId());
+        }
+        // 过滤配置
+        tunnelingConfigs = tunnelingConfigs == null ? Collections.emptyList() : tunnelingConfigs.stream().filter(ShellTunnelingConfig::isEnabled).collect(Collectors.toList());
         // 开启隧道转发
-        if (this.shellConnect.isTunnelingForward()) {
+        if (CollectionUtil.isNotEmpty(tunnelingConfigs)) {
             if (this.tunnelForwarder == null) {
                 this.tunnelForwarder = new SSHTunnelingForwarder();
             }
             // 执行转发
-            this.tunnelForwarder.forward(this.shellConnect.getTunnelingConfigs(), this.session);
+            this.tunnelForwarder.forward(tunnelingConfigs, this.session);
         }
     }
 

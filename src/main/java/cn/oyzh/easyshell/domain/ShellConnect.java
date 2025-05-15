@@ -353,14 +353,14 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.serialFlowControl = t1.serialFlowControl;
     }
 
-    /**
-     * 是否开启ssh隧道
-     *
-     * @return 结果
-     */
-    public boolean isTunnelingForward() {
-        return CollectionUtil.isNotEmpty(this.tunnelingConfigs);
-    }
+//    /**
+//     * 是否开启ssh隧道
+//     *
+//     * @return 结果
+//     */
+//    public boolean isTunnelingForward() {
+//        return CollectionUtil.isNotEmpty(this.getEnableTunnelingConfigs());
+//    }
 
     /**
      * 是否开启ssh跳板
@@ -558,6 +558,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     public List<ShellTunnelingConfig> getTunnelingConfigs() {
         return tunnelingConfigs;
     }
+
+//    public List<ShellTunnelingConfig> getEnableTunnelingConfigs() {
+//        if(CollectionUtil.isEmpty(tunnelingConfigs)) {
+//            return Collections.emptyList();
+//        }
+//        return this.tunnelingConfigs.parallelStream().filter(ShellTunnelingConfig::isEnabled).collect(Collectors.toList());
+//    }
 
     public void setTunnelingConfigs(List<ShellTunnelingConfig> tunnelingConfigs) {
         this.tunnelingConfigs = tunnelingConfigs;

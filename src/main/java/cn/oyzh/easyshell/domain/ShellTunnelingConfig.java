@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.domain.SSHTunneling;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
@@ -16,7 +18,6 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
 
     /**
      * id
-     *
      */
     @Column
     @PrimaryKey
@@ -29,6 +30,12 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
      */
     @Column
     private String iid;
+
+    /**
+     * 是否启用
+     */
+    @Column
+    private Boolean enabled;
 
     public String getIid() {
         return iid;
@@ -45,4 +52,32 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled == null || this.enabled;
+    }
+
+    public String getTypeName() {
+        if (this.isLocalType()) {
+            return I18nHelper.local();
+        }
+        if (this.isRemoteType()) {
+            return I18nHelper.remote();
+        }
+        return I18nHelper.dynamic();
+    }
+
+    public FXToggleSwitch getEnabledStatus() {
+        FXToggleSwitch toggleSwitch = new FXToggleSwitch();
+        toggleSwitch.setSelected(this.isEnabled());
+        toggleSwitch.selectedChanged((observable, oldValue, newValue) -> {
+            this.setEnabled(newValue);
+        });
+        return toggleSwitch;
+    }
+
 }

@@ -1,32 +1,19 @@
 package cn.oyzh.easyshell.controller.tunneling;
 
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeCombobox;
-import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.gui.text.field.NumberTextField;
-import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
-import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
 
 /**
  * ssh隧道新增业务
@@ -78,6 +65,12 @@ public class ShellAddTunnelingController extends StageController {
     private ShellTunnelingTypeCombobox tunnelingType;
 
     /**
+     * 是否启用
+     */
+    @FXML
+    private FXToggleSwitch enable;
+
+    /**
      * 添加隧道信息
      */
     @FXML
@@ -95,14 +88,16 @@ public class ShellAddTunnelingController extends StageController {
             return;
         }
         try {
-            String localHost = this.localHost.getTextTrim();
-            String remoteHost = this.remoteHost.getTextTrim();
+            boolean enable = this.enable.isSelected();
             int localPort = this.localPort.getIntValue();
             int remotePort = this.remotePort.getIntValue();
-            String tunnelingType = this.tunnelingType.getTunnelingType();
             String name = this.tunnelingName.getTextTrim();
+            String localHost = this.localHost.getTextTrim();
+            String remoteHost = this.remoteHost.getTextTrim();
+            String tunnelingType = this.tunnelingType.getTunnelingType();
             ShellTunnelingConfig config = new ShellTunnelingConfig();
             config.setName(name);
+            config.setEnabled(enable);
             config.setType(tunnelingType);
             config.setLocalHost(localHost);
             config.setLocalPort(localPort);

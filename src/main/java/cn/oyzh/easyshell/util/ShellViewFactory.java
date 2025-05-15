@@ -36,6 +36,8 @@ import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
+import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
+import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.docker.ShellDockerHistory;
 import cn.oyzh.easyshell.docker.ShellDockerPort;
@@ -43,6 +45,7 @@ import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -672,6 +675,7 @@ public class ShellViewFactory {
             adapter.setProp("key", key);
             adapter.display();
         } catch (Exception ex) {
+            ex.printStackTrace();
             MessageBox.exception(ex);
         }
     }
@@ -680,15 +684,58 @@ public class ShellViewFactory {
      * 添加密钥
      */
     public static void addKey() {
-        StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class, StageManager.getPrimaryStage());
-        adapter.display();
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class, StageManager.getPrimaryStage());
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     /**
      * 导入密钥
      */
     public static void importKey() {
-        StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class, StageManager.getPrimaryStage());
-        adapter.display();
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class, StageManager.getPrimaryStage());
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 添加隧道
+     */
+    public static StageAdapter addTunneling() {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddTunnelingController.class, StageManager.getFrontWindow());
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 编辑隧道
+     *
+     * @param config 配置
+     */
+    public static StageAdapter updateTunneling(ShellTunnelingConfig config) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateTunnelingController.class, StageManager.getFrontWindow());
+            adapter.setProp("config", config);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
     }
 }
