@@ -436,8 +436,9 @@
                 <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 50" flexHeight="100% - 50">
                     <columns>
                         <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
-                        <FXTableColumn flexWidth="100% - 253" valueName="host" text="%base.host"/>
+                        <FXTableColumn flexWidth="100% - 353" valueName="host" text="%base.host"/>
                         <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
+                        <FXTableColumn prefWidth="100" valueName="enabledStatus" text="%base.status"/>
                     </columns>
                     <FXVBox.margin>
                         <Insets left="30" top="7"/>

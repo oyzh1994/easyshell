@@ -61,6 +61,15 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return this.enabled == null || this.enabled;
     }
 
+    public FXToggleSwitch getEnabledStatus() {
+        FXToggleSwitch toggleSwitch = new FXToggleSwitch();
+        toggleSwitch.setSelected(this.isEnabled());
+        toggleSwitch.selectedChanged((observable, oldValue, newValue) -> {
+            this.setEnabled(newValue);
+        });
+        return toggleSwitch;
+    }
+
     public String getTypeName() {
         if (this.isLocalType()) {
             return I18nHelper.local();
@@ -71,13 +80,5 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return I18nHelper.dynamic();
     }
 
-    public FXToggleSwitch getEnabledStatus() {
-        FXToggleSwitch toggleSwitch = new FXToggleSwitch();
-        toggleSwitch.setSelected(this.isEnabled());
-        toggleSwitch.selectedChanged((observable, oldValue, newValue) -> {
-            this.setEnabled(newValue);
-        });
-        return toggleSwitch;
-    }
 
 }

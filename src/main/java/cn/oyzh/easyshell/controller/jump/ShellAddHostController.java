@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -41,6 +42,12 @@ public class ShellAddHostController extends StageController {
      */
     @FXML
     private ShellSSHConnectComboBox host;
+
+    /**
+     * 是否启用
+     */
+    @FXML
+    private FXToggleSwitch enable;
 
     /**
      * 密钥存储
@@ -79,6 +86,7 @@ public class ShellAddHostController extends StageController {
             config.setUser(connect.getUser());
             config.setPort(connect.hostPort());
             config.setPassword(connect.getPassword());
+            config.setEnabled(this.enable.isSelected());
             config.setTimeout(connect.getConnectTimeOut());
             config.setCertificatePath(connect.getCertificate());
             if (connect.isManagerAuth()) {

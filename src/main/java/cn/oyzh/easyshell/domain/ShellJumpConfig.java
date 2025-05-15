@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
@@ -32,6 +33,12 @@ public class ShellJumpConfig extends SSHConnect implements Serializable {
     @Column
     private String iid;
 
+    /**
+     * 是否启用
+     */
+    @Column
+    private Boolean enabled;
+
     public String getIid() {
         return iid;
     }
@@ -46,5 +53,22 @@ public class ShellJumpConfig extends SSHConnect implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled == null || this.enabled;
+    }
+
+    public FXToggleSwitch getEnabledStatus() {
+        FXToggleSwitch toggleSwitch = new FXToggleSwitch();
+        toggleSwitch.setSelected(this.isEnabled());
+        toggleSwitch.selectedChanged((observable, oldValue, newValue) -> {
+            this.setEnabled(newValue);
+        });
+        return toggleSwitch;
     }
 }

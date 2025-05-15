@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.internal.ShellClient;
 import cn.oyzh.easyshell.internal.exec.ShellExec;
 import cn.oyzh.easyshell.internal.process.ShellProcessExec;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
@@ -151,13 +152,15 @@ public class ShellSSHClient extends ShellClient {
     private String initHost() {
         // 连接地址
         String host;
-        // 初始化ssh转发器
+        // 初始化跳板配置
         List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
         // 从数据库获取
         if (jumpConfigs == null) {
             jumpConfigs = this.jumpConfigStore.listByIid(this.shellConnect.getId());
         }
-        // 初始化ssh端口转发
+        // 过滤配置
+        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ShellJumpConfig::isEnabled).collect(Collectors.toList());
+        // 初始化跳板转发
         if (CollectionUtil.isNotEmpty(jumpConfigs)) {
             if (this.jumpForwarder == null) {
                 this.jumpForwarder = new SSHJumpForwarder();

@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
@@ -93,6 +94,12 @@ public class ShellUpdateJumpController extends StageController {
     private ShellJumpConfig config;
 
     /**
+     * 是否启用
+     */
+    @FXML
+    private FXToggleSwitch enable;
+
+    /**
      * 获取连接地址
      *
      * @return 连接地址
@@ -163,6 +170,7 @@ public class ShellUpdateJumpController extends StageController {
             this.config.setAuthMethod(authType);
             this.config.setTimeout(timeout * 1000);
             this.config.setCertificatePath(certificate);
+            this.config.setEnabled(this.enable.isSelected());
             this.closeWindow();
             // 设置数据
             this.setProp("jumpConfig", this.config);
@@ -194,6 +202,7 @@ public class ShellUpdateJumpController extends StageController {
         this.sshHost.setText(this.config.getHost());
         this.sshUser.setText(this.config.getUser());
         this.sshPort.setValue(this.config.getPort());
+        this.enable.setSelected(this.config.isEnabled());
         this.sshTimeout.setValue(this.config.getTimeout());
         this.sshPassword.setText(this.config.getPassword());
         this.sshCertificate.setText(this.config.getCertificatePath());

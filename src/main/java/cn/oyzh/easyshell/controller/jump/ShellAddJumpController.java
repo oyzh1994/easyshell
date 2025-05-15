@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
@@ -88,6 +89,12 @@ public class ShellAddJumpController extends StageController {
     private ReadOnlyTextField sshCertificate;
 
     /**
+     * 是否启用
+     */
+    @FXML
+    private FXToggleSwitch enable;
+
+    /**
      * 获取连接地址
      *
      * @return 连接地址
@@ -159,6 +166,7 @@ public class ShellAddJumpController extends StageController {
             config.setAuthMethod(authType);
             config.setTimeout(timeout * 1000);
             config.setCertificatePath(certificate);
+            config.setEnabled(this.enable.isSelected());
             // 设置数据
             this.setProp("jumpConfig", config);
             this.closeWindow();
