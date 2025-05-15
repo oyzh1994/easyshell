@@ -473,7 +473,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField require="true" prefHeight="30" text="127.0.0.1" fx:id="x11Host"
+                <ClearableTextField require="true" prefHeight="30" text="localhost" fx:id="x11Host"
                                     tipText="%base.contentTip1"
                                     flexWidth="100% - 180">
                     <VBox.margin>

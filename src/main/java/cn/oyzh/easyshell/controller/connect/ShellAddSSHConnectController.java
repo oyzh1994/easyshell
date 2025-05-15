@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.controller.connect;
 
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.RuntimeUtil;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
@@ -163,6 +165,12 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private PortTextField x11Port;
+
+    /**
+     * x11 cookie
+     */
+    @FXML
+    private ClearableTextField x11Cookie;
 
 //    /**
 //     * ssh面板
@@ -374,6 +382,7 @@ public class ShellAddSSHConnectController extends StageController {
         ShellX11Config sshConfig = new ShellX11Config();
         sshConfig.setHost(this.x11Host.getText());
         sshConfig.setPort(this.x11Port.getIntValue());
+        sshConfig.setCookie(this.x11Cookie.getText());
         return sshConfig;
     }
 
@@ -653,6 +662,9 @@ public class ShellAddSSHConnectController extends StageController {
         return I18nHelper.connectAddTitle();
     }
 
+    /**
+     * 下载或者开启x11服务
+     */
     @FXML
     private void downloadX11() {
         String url = "";
@@ -660,8 +672,26 @@ public class ShellAddSSHConnectController extends StageController {
             url = "https://sourceforge.net/projects/vcxsrv/";
         } else if (OSUtil.isMacOS()) {
             url = "https://www.xquartz.org/";
+        } else if (OSUtil.isLinux()) {
+            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
         }
         FXUtil.showDocument(url);
+    }
+
+    /**
+     * 加载x11的cookie
+     */
+    @FXML
+    private void loadX11Cookie() {
+        if (OSUtil.isLinux()) {
+            String str = RuntimeUtil.execForStr("xauth list");
+            if (StringUtil.isNotBlank(str)) {
+                String[] arr = str.split("\\s+");
+                this.x11Cookie.setText(ArrayUtil.last(arr));
+            } else {
+                this.x11Cookie.clear();
+            }
+        }
     }
 
     /**

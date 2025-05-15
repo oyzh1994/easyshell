@@ -935,6 +935,4 @@ public class ShellUpdateSSHConnectController extends StageController {
     private void deleteTunneling() {
         this.tunnelingTableView.removeSelectedItem();
     }
-
-
 }
