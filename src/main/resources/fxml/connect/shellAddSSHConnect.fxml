@@ -370,12 +370,12 @@
                     </AddSVGGlyph>
                     <EditSVGGlyph onMousePrimaryClicked="#updateTunneling">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </EditSVGGlyph>
                     <DeleteSVGGlyph onMousePrimaryClicked="#deleteTunneling">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </DeleteSVGGlyph>
                     <FXVBox.margin>
@@ -406,27 +406,27 @@
                     </AddHostSVGGlyph>
                     <AddSVGGlyph onMousePrimaryClicked="#addJump">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </AddSVGGlyph>
                     <EditSVGGlyph onMousePrimaryClicked="#updateJump">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </EditSVGGlyph>
                     <DeleteSVGGlyph onMousePrimaryClicked="#deleteJump">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </DeleteSVGGlyph>
                     <MoveUpSVGGlyph onMousePrimaryClicked="#moveJumpUp">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </MoveUpSVGGlyph>
                     <MoveDownSVGGlyph onMousePrimaryClicked="#moveJumpDown">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </MoveDownSVGGlyph>
                     <FXVBox.margin>

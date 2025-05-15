@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.controller.connect;
 
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.RuntimeUtil;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
@@ -169,6 +171,12 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private PortTextField x11Port;
+
+    /**
+     * x11 cookie
+     */
+    @FXML
+    private ClearableTextField x11Cookie;
 
 //    /**
 //     * ssh面板
@@ -391,6 +399,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         sshConfig.setIid(this.shellConnect.getId());
         sshConfig.setHost(this.x11Host.getText());
         sshConfig.setPort(this.x11Port.getIntValue());
+        sshConfig.setCookie(this.x11Cookie.getText());
         return sshConfig;
     }
 
@@ -698,6 +707,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         if (x11Config != null) {
             this.x11Host.setValue(x11Config.getHost());
             this.x11Port.setValue(x11Config.getPort());
+            this.x11Cookie.setValue(x11Config.getCookie());
         }
         // 代理配置
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
@@ -712,10 +722,10 @@ public class ShellUpdateSSHConnectController extends StageController {
                 this.proxyAuthType.select(1);
             }
         }
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+//        // linux隐藏x11
+//        if (OSUtil.isLinux()) {
+//            NodeGroupUtil.disappear(this.getStage(), "x11");
+//        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -732,6 +742,9 @@ public class ShellUpdateSSHConnectController extends StageController {
         return I18nHelper.connectUpdateTitle();
     }
 
+    /**
+     * 下载或者开启x11服务
+     */
     @FXML
     private void downloadX11() {
         String url = "";
@@ -739,8 +752,26 @@ public class ShellUpdateSSHConnectController extends StageController {
             url = "https://sourceforge.net/projects/vcxsrv/";
         } else if (OSUtil.isMacOS()) {
             url = "https://www.xquartz.org/";
+        } else if (OSUtil.isLinux()) {
+            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
         }
         FXUtil.showDocument(url);
+    }
+
+    /**
+     * 加载x11的cookie
+     */
+    @FXML
+    private void loadX11Cookie() {
+        if (OSUtil.isLinux()) {
+            String str = RuntimeUtil.execForStr("xauth list");
+            if (StringUtil.isNotBlank(str)) {
+                String[] arr = str.split("\\s+");
+                this.x11Cookie.setText(ArrayUtil.last(arr));
+            } else {
+                this.x11Cookie.clear();
+            }
+        }
     }
 
     /**
@@ -904,4 +935,6 @@ public class ShellUpdateSSHConnectController extends StageController {
     private void deleteTunneling() {
         this.tunnelingTableView.removeSelectedItem();
     }
+
+
 }

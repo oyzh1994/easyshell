@@ -41,6 +41,12 @@ public class ShellX11Config implements Serializable {
     private String host;
 
     /**
+     * cookie
+     */
+    @Column
+    private String cookie;
+
+    /**
      * 是否本地转发
      *
      * @return 结果
@@ -79,5 +85,13 @@ public class ShellX11Config implements Serializable {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
     }
 }

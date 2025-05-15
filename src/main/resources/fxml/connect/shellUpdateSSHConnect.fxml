@@ -12,6 +12,7 @@
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.label.TipsLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
@@ -83,7 +84,8 @@
                             <Insets left="10" top="5"/>
                         </FXHBox.margin>
                     </PasswordTextField>
-                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true" groupId="certificate"
+                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                       groupId="certificate"
                                        fx:id="certificate" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
@@ -95,7 +97,8 @@
                             <Insets left="5" top="12"/>
                         </HBox.margin>
                     </ChooseSVGGlyph>
-                    <ShellKeyComboBox realHeight="30" require="true" visible="false" managedBindVisible="true" groupId="key"
+                    <ShellKeyComboBox realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                      groupId="key"
                                       fx:id="key" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
@@ -370,12 +373,12 @@
                     </AddSVGGlyph>
                     <EditSVGGlyph onMousePrimaryClicked="#updateTunneling">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </EditSVGGlyph>
                     <DeleteSVGGlyph onMousePrimaryClicked="#deleteTunneling">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </DeleteSVGGlyph>
                     <FXVBox.margin>
@@ -406,27 +409,27 @@
                     </AddHostSVGGlyph>
                     <AddSVGGlyph onMousePrimaryClicked="#addJump">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </AddSVGGlyph>
                     <EditSVGGlyph onMousePrimaryClicked="#updateJump">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </EditSVGGlyph>
                     <DeleteSVGGlyph onMousePrimaryClicked="#deleteJump">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </DeleteSVGGlyph>
                     <MoveUpSVGGlyph onMousePrimaryClicked="#moveJumpUp">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </MoveUpSVGGlyph>
                     <MoveDownSVGGlyph onMousePrimaryClicked="#moveJumpDown">
                         <FXHBox.margin>
-                            <Insets left="10" top="7"/>
+                            <Insets left="5" top="7"/>
                         </FXHBox.margin>
                     </MoveDownSVGGlyph>
                     <FXVBox.margin>
@@ -459,7 +462,7 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
-                    <FXButton groupId="x11" text="%shell.connect.tip3" onMousePrimaryClicked="#downloadX11">
+                    <FXButton groupId="x11" text="%shell.connect.tip9" onMousePrimaryClicked="#downloadX11">
                         <FXHBox.margin>
                             <Insets left="10"/>
                         </FXHBox.margin>
@@ -482,12 +485,39 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <PortTextField require="true" prefHeight="30" text="6000" fx:id="x11Port" tipText="%base.contentTip1"
-                               flexWidth="100% - 180">
+                <FXHBox>
+                    <PortTextField require="true" prefHeight="30" text="6000" fx:id="x11Port"
+                                   tipText="%base.contentTip1"
+                                   flexWidth="100% - 380">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                    <TipsLabel text="%shell.connect.tip10">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </TipsLabel>
+                </FXHBox>
+                <InfoLabel text="cookie">
                     <VBox.margin>
-                        <Insets left="30" top="5"/>
+                        <Insets left="30" top="10"/>
                     </VBox.margin>
-                </PortTextField>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField prefHeight="30" fx:id="x11Cookie"
+                                        tipText="%base.contentTip1"
+                                        flexWidth="100% - 380">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <FXButton text="%base.load" onMousePrimaryClicked="#loadX11Cookie">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.background" fx:id="backgroundTab">

@@ -224,6 +224,37 @@ public class ShellSSHClient extends ShellClient {
     }
 
     /**
+     * 初始化x11配置
+     */
+    private void initX11() {
+        // 启用X11转发
+        if (this.shellConnect.isX11forwarding()) {
+            // x11配置
+            ShellX11Config x11Config = this.shellConnect.getX11Config();
+            // 获取x11配置
+            if (x11Config == null) {
+                x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());
+            }
+            if (x11Config != null) {
+                // x11配置
+                this.session.setConfig("ForwardX11", "yes");
+                this.session.setConfig("ForwardX11Trusted", "yes");
+                this.session.setX11Host(x11Config.getHost());
+                this.session.setX11Port(x11Config.getPort());
+                if (StringUtil.isNotBlank(x11Config.getCookie())) {
+                    this.session.setX11Cookie(x11Config.getCookie());
+                }
+                // 本地转发，启动x11服务
+                if (x11Config.isLocal()) {
+                    ShellX11Manager.startXServer();
+                }
+            } else {
+                throw new RuntimeException("X11forwarding is enable but x11config is null");
+            }
+        }
+    }
+
+    /**
      * 初始化客户端
      */
     private void initClient() throws JSchException {
@@ -266,30 +297,10 @@ public class ShellSSHClient extends ShellClient {
         Properties config = new Properties();
         // 去掉首次连接确认
         config.put("StrictHostKeyChecking", "no");
-        // 启用X11转发
-        if (this.shellConnect.isX11forwarding()) {
-            // x11配置
-            ShellX11Config x11Config = this.shellConnect.getX11Config();
-            // 获取x11配置
-            if (x11Config == null) {
-                x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());
-            }
-            if (x11Config != null) {
-                // x11配置
-                config.put("ForwardX11", "yes");
-                config.put("ForwardX11Trusted", "yes");
-                this.session.setX11Host(x11Config.getHost());
-                this.session.setX11Port(x11Config.getPort());
-                // 本地转发，启动x11服务
-                if (x11Config.isLocal()) {
-                    ShellX11Manager.startXServer();
-                }
-            } else {
-                throw new RuntimeException("X11forwarding is enable but x11config is null");
-            }
-        }
         // 设置配置
         this.session.setConfig(config);
+        // 初始化x11
+        this.initX11();
         // 初始化代理
         this.initProxy();
     }
