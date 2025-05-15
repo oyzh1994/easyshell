@@ -475,7 +475,7 @@
                 </InfoLabel>
                 <ClearableTextField require="true" prefHeight="30" text="localhost" fx:id="x11Host"
                                     tipText="%base.contentTip1"
-                                    flexWidth="100% - 180">
+                                    flexWidth="100% - 380">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

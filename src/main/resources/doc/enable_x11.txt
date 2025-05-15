@@ -7,8 +7,8 @@ xserver-allow-tcp=true
 然后
 systemctl restart lightdm.service
 
-查看x服务的cookie
+查看和配置x11的cookie
 xauth list
 例如返回
 oyzh-PC/unix:0  MIT-MAGIC-COOKIE-1  4a8990913b52698fb02a0f666d70b075
-然后把4a8990913b52698fb02a0f666d70b075填到x11配置的cookie选项，保存
+然后把4a8990913b52698fb02a0f666d70b075填到 连接-> x11 > cookie选项，保存
