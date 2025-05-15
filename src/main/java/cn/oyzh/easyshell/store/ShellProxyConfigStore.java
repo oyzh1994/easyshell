@@ -6,6 +6,9 @@ import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 代理配置存储
  *
@@ -26,9 +29,19 @@ public class ShellProxyConfigStore extends JdbcStandardStore<ShellProxyConfig> {
      * @return 结果
      */
     public boolean replace(ShellProxyConfig model) {
-        String iid = model.getIid();
-        if (super.exist(iid)) {
+        // 根据id判断
+        String id = model.getId();
+        if (StringUtil.isNotBlank(id) || super.exist(id)) {
             return super.update(model);
+        }
+        // 根据iid判断
+        String iid = model.getIid();
+        if (StringUtil.isNotBlank(iid)) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("iid", iid);
+            if (super.exist(params)) {
+                return super.update(model);
+            }
         }
         return this.insert(model);
     }
