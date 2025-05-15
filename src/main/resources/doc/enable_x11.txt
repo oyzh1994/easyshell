@@ -8,7 +8,7 @@ xserver-allow-tcp=true
 systemctl restart lightdm.service
 
 以ubuntu为例
-vim /etc/share/gdm/gdm.schames
+vim /usr/share/gdm/gdm.schemas
 找到
     <schema>
       <key>security/DisallowTCP</key>
