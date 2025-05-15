@@ -25,7 +25,7 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </ReturnFolderSVGGlyph>
-        <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 360">
+        <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 370">
             <FXHBox.margin>
                 <Insets left="5" top="4"/>
             </FXHBox.margin>

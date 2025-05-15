@@ -30,13 +30,17 @@ public class ShellFileUtil {
     }
 
     public static String concat(String src, String name) {
+        src = src.replace("\\", "/");
+        name = name.replace("\\", "/");
+        String path ;
         if (src.endsWith("/") && name.startsWith("/")) {
-            return src + name.substring(1);
+            path = src + name.substring(1);
+        } else if (!src.endsWith("/") && !name.startsWith("/")) {
+            path = src + "/" + name;
+        } else {
+            path = src + name;
         }
-        if (!src.endsWith("/") && !name.startsWith("/")) {
-            return src + "/" + name;
-        }
-        return src + name;
+        return path;
     }
 
     public static boolean hasOwnerReadPermission(String permission) {

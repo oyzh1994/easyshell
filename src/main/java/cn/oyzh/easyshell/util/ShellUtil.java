@@ -33,7 +33,8 @@ public class ShellUtil {
         if (!filePath.startsWith("/")) {
             filePath = "/" + filePath;
         }
-        return StringUtil.replace(filePath, "\\", "/");
+        filePath = StringUtil.replace(filePath, "\\", "/");
+        return StringUtil.replace(filePath, "//", "/");
     }
 
     public static String permission(String permission) {

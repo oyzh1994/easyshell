@@ -2,7 +2,6 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
@@ -951,7 +950,6 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
     }
 
     public void paintComponent(GraphicsContext gfx) {
-        CostUtil.record();
         resetColorCache();
 
         setupAntialiasing(gfx);
@@ -1045,7 +1043,6 @@ public class FXFXTerminalPanel extends FXHBox implements TerminalDisplay, Termin
         drawInputMethodUncommitedChars(gfx);
 
         drawMargins(gfx, this.canvas.getWidth(), this.canvas.getHeight());
-        CostUtil.printCost();
     }
 
     private void resetColorCache() {

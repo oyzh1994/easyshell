@@ -1,0 +1,31 @@
+1. 下载镜像
+http://mirrors.163.com/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-DVD-1810.iso
+2. 安装镜像
+虚拟机安装
+网络设置为桥接模式
+3. 设置root密码
+sudo passwd root
+4. 设置网络
+cd /etc/sysconfig/network-scripts/
+vi ifcfg-ens33
+修改
+ONBOOT=on
+为
+ONBOOT=yes
+新增
+DNS1=8.8.8.8
+DNS2=4.2.2.2
+service network restart
+5. 设置源
+curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.cloud.tencent.com/repo/centos7_base.repo
+yum clean all
+yum makecache
+6. 安装桌面
+安装组件
+yum -y groups install "GNOME Desktop"
+开机默认设置成图形模式
+systemctl set-default graphical.target
+7. 安装git
+yum install http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
+yum -y install git
+git version
