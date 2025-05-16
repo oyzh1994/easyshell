@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
@@ -105,7 +106,7 @@ public class ShellFileDownloadTask {
     private transient ShellFileStatus status;
 
     public ShellFileDownloadTask(ShellFile remoteFile, String localPath, ShellFileClient client) {
-        this.client = client;
+        this.client = client.forkClient();
         this.localPath = localPath;
         this.remoteFile = remoteFile;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
@@ -167,6 +168,10 @@ public class ShellFileDownloadTask {
         // 更新为结束
         if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
             this.updateStatus(ShellFileStatus.FINISHED);
+        }
+        // 关闭子客户端
+        if (this.client.isForked()) {
+            IOUtil.close(this.client);
         }
     }
 

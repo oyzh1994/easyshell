@@ -114,8 +114,8 @@ public class ShellFileTransportTask {
     public ShellFileTransportTask(String remotePath, ShellFile localFile, ShellFileClient remoteClient, ShellFileClient localClient) {
         this.localFile = localFile;
         this.remotePath = remotePath;
-        this.localClient = localClient;
-        this.remoteClient = remoteClient;
+        this.localClient = localClient.forkClient();
+        this.remoteClient = remoteClient.forkClient();
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
@@ -183,6 +183,13 @@ public class ShellFileTransportTask {
         // 更新为结束
         if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
             this.updateStatus(ShellFileStatus.FINISHED);
+        }
+        // 关闭子客户端
+        if (this.localClient.isForked()) {
+            IOUtil.close(this.localClient);
+        }
+        if (this.remoteClient.isForked()) {
+            IOUtil.close(this.remoteClient);
         }
     }
 

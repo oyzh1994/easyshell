@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.file;
 
+import cn.oyzh.common.util.IOUtil;
+
 /**
  * 文件删除任务
  *
@@ -19,7 +21,7 @@ public class ShellFileDeleteTask {
     private final ShellFileClient client;
 
     public ShellFileDeleteTask(ShellFile remoteFile, ShellFileClient<?> client) {
-        this.client = client;
+        this.client = client.forkClient();
         this.remoteFile = remoteFile;
     }
 
@@ -39,6 +41,10 @@ public class ShellFileDeleteTask {
             }
         } finally {
             this.remoteFile.stopWaiting();
+        }
+        // 关闭子客户端
+        if (this.client.isForked()) {
+            IOUtil.close(this.client);
         }
     }
 

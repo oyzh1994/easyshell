@@ -528,4 +528,22 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         }
         return null;
     }
+
+    @Override
+    public ShellFTPClient forkClient() {
+        try {
+            ShellFTPClient ftpClient = new ShellFTPClient(this.shellConnect) {
+                @Override
+                public boolean isForked() {
+                    return true;
+                }
+            };
+            ftpClient.start();
+            return ftpClient;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 }
