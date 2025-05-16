@@ -258,7 +258,11 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     default void doDelete(E file) {
         ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
         this.deleteTasks().add(deleteTask);
-        deleteTask.doDelete(() -> this.deleteTasks().remove(deleteTask),
+        deleteTask.doDelete(() -> {
+                    synchronized (this.deleteTasks()) {
+                        this.deleteTasks().remove(deleteTask);
+                    }
+                },
                 ex -> {
                     if (!ExceptionUtil.isInterrupt(ex)) {
                         MessageBox.exception(ex);
@@ -282,7 +286,11 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     default void doUpload(File localFile, String remotePath) {
         ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remotePath, this);
         this.uploadTasks().add(uploadTask);
-        uploadTask.doUpload(() -> this.uploadTasks().remove(uploadTask),
+        uploadTask.doUpload(() -> {
+                    synchronized (this.uploadTasks()) {
+                        this.uploadTasks().remove(uploadTask);
+                    }
+                },
                 ex -> {
                     if (!ExceptionUtil.isInterrupt(ex)) {
                         MessageBox.exception(ex);
@@ -316,7 +324,11 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     default void doDownload(E remoteFile, String localPath) {
         ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
         this.downloadTasks().add(downloadTask);
-        downloadTask.doDownload(() -> this.downloadTasks().remove(downloadTask),
+        downloadTask.doDownload(() -> {
+                    synchronized (this.downloadTasks()) {
+                        this.downloadTasks().remove(downloadTask);
+                    }
+                },
                 ex -> {
                     if (!ExceptionUtil.isInterrupt(ex)) {
                         MessageBox.exception(ex);
@@ -341,7 +353,11 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     default void doTransport(String remotePath, E localFile, ShellFileClient<E> remoteClient) {
         ShellFileTransportTask transportTask = new ShellFileTransportTask(remotePath, localFile, remoteClient, this);
         this.transportTasks().add(transportTask);
-        transportTask.doTransport(() -> this.transportTasks().remove(transportTask),
+        transportTask.doTransport(() -> {
+                    synchronized (this.transportTasks()) {
+                        this.transportTasks().remove(transportTask);
+                    }
+                },
                 ex -> {
                     if (!ExceptionUtil.isInterrupt(ex)) {
                         MessageBox.exception(ex);

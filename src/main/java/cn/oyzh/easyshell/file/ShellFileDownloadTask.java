@@ -99,7 +99,7 @@ public class ShellFileDownloadTask {
     /**
      * 客户端
      */
-    private final ShellFileClient client;
+    private ShellFileClient client;
 
     /**
      * 状态
@@ -107,7 +107,7 @@ public class ShellFileDownloadTask {
     private transient ShellFileStatus status;
 
     public ShellFileDownloadTask(ShellFile remoteFile, String localPath, ShellFileClient client) {
-        this.client = client.forkClient();
+        this.client = client;
         this.localPath = localPath;
         this.remoteFile = remoteFile;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
@@ -122,6 +122,7 @@ public class ShellFileDownloadTask {
     public void doDownload(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.worker = ThreadUtil.start(() -> {
             try {
+                this.client = this.client.forkClient();
                 this.doDownload();
             } catch (Exception ex) {
                 errorCallback.accept(ex);

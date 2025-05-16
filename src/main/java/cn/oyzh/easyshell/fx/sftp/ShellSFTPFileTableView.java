@@ -24,8 +24,11 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
     public void setClient(ShellSFTPClient client) {
         super.setClient(client);
         this.client.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-            if (this.client.isUploadTaskEmpty()) {
-                this.loadFile();
+            change.next();
+            if (change.wasRemoved()) {
+                for (ShellFileUploadTask task : change.getRemoved()) {
+                    this.onFileAdded(task.getDestPath());
+                }
             }
         });
         this.client.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {

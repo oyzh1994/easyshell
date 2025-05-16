@@ -651,6 +651,31 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
+     * 文件新增事件
+     *
+     * @param filePath 文件路径
+     */
+    public void onFileAdded(String filePath) {
+        try {
+            E file = this.client.fileInfo(filePath);
+            if (file == null) {
+                return;
+            }
+            // 移除已存在的文件
+            this.files.parallelStream()
+                    .filter(f -> StringUtil.equals(filePath, f.getFilePath()))
+                    .findAny()
+                    .ifPresent(f -> this.files.remove(f));
+            // 添加文件
+            this.files.add(file);
+            this.refreshFile();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
      * 文件保存事件
      *
      * @param file 文件

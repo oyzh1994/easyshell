@@ -21,10 +21,10 @@ public class ShellFileDeleteTask {
     /**
      * 客户端
      */
-    private final ShellFileClient client;
+    private ShellFileClient client;
 
     public ShellFileDeleteTask(ShellFile remoteFile, ShellFileClient<?> client) {
-        this.client = client.forkClient();
+        this.client = client;
         this.remoteFile = remoteFile;
     }
 
@@ -37,6 +37,7 @@ public class ShellFileDeleteTask {
     public void doDelete(Runnable finishCallback, Consumer<Exception> errorCallback) {
         ThreadUtil.start(() -> {
             try {
+                this.client = this.client.forkClient();
                 this.doDelete();
             } catch (Exception ex) {
                 errorCallback.accept(ex);

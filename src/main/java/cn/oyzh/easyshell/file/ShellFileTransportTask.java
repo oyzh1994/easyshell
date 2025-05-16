@@ -95,12 +95,12 @@ public class ShellFileTransportTask {
     /**
      * 本地客户端
      */
-    private final ShellFileClient localClient;
+    private ShellFileClient localClient;
 
     /**
      * 远程客户端
      */
-    private final ShellFileClient remoteClient;
+    private ShellFileClient remoteClient;
 
     /**
      * 状态
@@ -110,8 +110,8 @@ public class ShellFileTransportTask {
     public ShellFileTransportTask(String remotePath, ShellFile localFile, ShellFileClient remoteClient, ShellFileClient localClient) {
         this.localFile = localFile;
         this.remotePath = remotePath;
-        this.localClient = localClient.forkClient();
-        this.remoteClient = remoteClient.forkClient();
+        this.localClient = localClient;
+        this.remoteClient = remoteClient;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
@@ -124,6 +124,8 @@ public class ShellFileTransportTask {
     public void doTransport(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.worker = ThreadUtil.start(() -> {
             try {
+                this.localClient = this.localClient.forkClient();
+                this.remoteClient = this.remoteClient.forkClient();
                 this.doTransport();
             } catch (Exception ex) {
                 errorCallback.accept(ex);

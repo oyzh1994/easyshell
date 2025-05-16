@@ -99,7 +99,7 @@ public class ShellFileUploadTask {
     /**
      * 客户端
      */
-    private final ShellFileClient<?> client;
+    private ShellFileClient<?> client;
 
     /**
      * 状态
@@ -107,7 +107,7 @@ public class ShellFileUploadTask {
     private transient ShellFileStatus status;
 
     public ShellFileUploadTask(File localFile, String remotePath, ShellFileClient<?> client) {
-        this.client = client.forkClient();
+        this.client = client;
         this.localFile = localFile;
         this.remotePath = remotePath;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
@@ -122,6 +122,7 @@ public class ShellFileUploadTask {
     public void doUpload(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.worker = ThreadUtil.start(() -> {
             try {
+                this.client = this.client.forkClient();
                 this.doUpload();
             } catch (Exception ex) {
                 errorCallback.accept(ex);
@@ -159,7 +160,7 @@ public class ShellFileUploadTask {
                 String remoteFilePath;
                 // 文件
                 if (this.localFile.isFile()) {
-                    remoteFilePath = ShellFileUtil.concat(this.remotePath, file.getName());
+                    remoteFilePath = this.remotePath;
                 } else {// 文件夹
                     String pPath = file.getParent().replace(this.localFile.getPath(), "");
                     String remoteDir = ShellFileUtil.concat(this.remotePath, pPath);
@@ -215,6 +216,7 @@ public class ShellFileUploadTask {
      * 初始化文件
      */
     protected void initFile() throws Exception {
+        this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getName());
         if (this.localFile.isFile()) {
             this.fileList = new ArrayList<>();
             this.fileList.add(this.localFile);
@@ -222,7 +224,6 @@ public class ShellFileUploadTask {
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
-            this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getName());
             FileUtil.getAllFiles(this.localFile, f -> {
                 if (this.status == ShellFileStatus.CANCELED) {
                     throw new InterruptedException();
