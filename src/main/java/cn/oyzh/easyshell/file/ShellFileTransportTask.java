@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class ShellFileTransportTask {
 
     /**
-     * 取消回调
+     * 工作线程
      */
     private Thread worker;
 

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -25,9 +26,9 @@ import java.util.function.Function;
 public class ShellFileDownloadTask {
 
     /**
-     * 取消回调
+     * 工作线程
      */
-    private Consumer<ShellFileDownloadTask> cancelCallback;
+    private Thread worker;
 
     /**
      * 进度属性
@@ -115,14 +116,41 @@ public class ShellFileDownloadTask {
     /**
      * 执行下载
      *
+     * @param finishCallback 结束回调
+     * @param errorCallback  错误回调
+     */
+    public void doDownload(Runnable finishCallback, Consumer<Exception> errorCallback) {
+        this.worker = ThreadUtil.start(() -> {
+            try {
+                this.doDownload();
+            } catch (Exception ex) {
+                errorCallback.accept(ex);
+            } finally {
+                finishCallback.run();
+            }
+        });
+    }
+
+    /**
+     * 执行下载
+     *
      * @throws Exception 异常
      */
-    public void doDownload() throws Exception {
+    private void doDownload() throws Exception {
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
+        // 初始化文件
         this.initFile();
+        // 被取消
+        if (this.status == ShellFileStatus.CANCELED) {
+            return;
+        }
         this.updateStatus(ShellFileStatus.EXECUTE_ING);
         while (!this.fileList.isEmpty()) {
             try {
+                // 取消
+                if (this.status == ShellFileStatus.CANCELED) {
+                    break;
+                }
                 // 当前文件
                 ShellFile file = this.fileList.removeFirst();
                 // 设置当前文件
@@ -156,13 +184,13 @@ public class ShellFileDownloadTask {
                 // 更新文件总数
                 this.updateFileCount();
             } catch (Exception ex) {
-                // 忽略中断异常
-                if (!ExceptionUtil.hasMessage(ex, "InterruptedException", "InterruptedIOException")) {
-                    this.error = ex;
+                // 忽略中断、取消异常
+                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
                     // 更新为失败
                     this.updateStatus(ShellFileStatus.FAILED);
+                    // 抛出异常
+                    throw ex;
                 }
-                throw ex;
             }
         }
         // 更新为结束
@@ -180,9 +208,7 @@ public class ShellFileDownloadTask {
      */
     public void cancel() {
         this.updateStatus(ShellFileStatus.CANCELED);
-        if (this.cancelCallback != null) {
-            this.cancelCallback.accept(this);
-        }
+        ThreadUtil.interrupt(this.worker);
     }
 
     /**
@@ -197,6 +223,9 @@ public class ShellFileDownloadTask {
         } else {
             this.fileList = new ArrayList<>();
             this.client.lsFileRecursive(this.remoteFile, f -> {
+                if (this.status == ShellFileStatus.CANCELED) {
+                    throw new InterruptedException();
+                }
                 if (f instanceof ShellFile f1) {
                     this.fileList.add(f1);
                     this.totalSize += f1.getFileSize();
@@ -342,14 +371,5 @@ public class ShellFileDownloadTask {
      */
     public StringProperty statusProperty() {
         return this.statusProperty;
-    }
-
-    /**
-     * 设置取消回调
-     *
-     * @param cancelCallback 取消回调
-     */
-    public void setCancelCallback(Consumer<ShellFileDownloadTask> cancelCallback) {
-        this.cancelCallback = cancelCallback;
     }
 }

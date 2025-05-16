@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.file;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
+
+import java.util.function.Consumer;
 
 /**
  * 文件删除任务
@@ -28,9 +31,27 @@ public class ShellFileDeleteTask {
     /**
      * 执行删除
      *
+     * @param finishCallback 结束回调
+     * @param errorCallback  错误回调
+     */
+    public void doDelete(Runnable finishCallback, Consumer<Exception> errorCallback) {
+        ThreadUtil.start(() -> {
+            try {
+                this.doDelete();
+            } catch (Exception ex) {
+                errorCallback.accept(ex);
+            } finally {
+                finishCallback.run();
+            }
+        });
+    }
+
+    /**
+     * 执行删除
+     *
      * @throws Exception 异常
      */
-    public void doDelete() throws Exception {
+    private void doDelete() throws Exception {
         try {
             this.remoteFile.startWaiting();
             // 执行删除

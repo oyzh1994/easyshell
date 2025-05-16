@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -25,9 +26,9 @@ import java.util.function.Consumer;
 public class ShellFileUploadTask {
 
     /**
-     * 取消回调
+     * 工作线程
      */
-    private Consumer<ShellFileUploadTask> cancelCallback;
+    private Thread worker;
 
     /**
      * 进度属性
@@ -115,14 +116,41 @@ public class ShellFileUploadTask {
     /**
      * 执行上传
      *
+     * @param finishCallback 结束回调
+     * @param errorCallback  错误回调
+     */
+    public void doUpload(Runnable finishCallback, Consumer<Exception> errorCallback) {
+        this.worker = ThreadUtil.start(() -> {
+            try {
+                this.doUpload();
+            } catch (Exception ex) {
+                errorCallback.accept(ex);
+            } finally {
+                finishCallback.run();
+            }
+        });
+    }
+
+    /**
+     * 执行上传
+     *
      * @throws Exception 异常
      */
-    public void doUpload() throws Exception {
+    private void doUpload() throws Exception {
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
+        // 初始化文件
         this.initFile();
+        // 被取消
+        if (this.status == ShellFileStatus.CANCELED) {
+            return;
+        }
         this.updateStatus(ShellFileStatus.EXECUTE_ING);
         while (!this.fileList.isEmpty()) {
             try {
+                // 取消
+                if (this.status == ShellFileStatus.CANCELED) {
+                    break;
+                }
                 // 当前文件
                 File file = this.fileList.removeFirst();
                 // 设置当前文件
@@ -156,13 +184,13 @@ public class ShellFileUploadTask {
                 // 更新文件总数
                 this.updateFileCount();
             } catch (Exception ex) {
-                // 忽略中断异常
-                if (!ExceptionUtil.hasMessage(ex, "InterruptedException", "InterruptedIOException")) {
-                    this.error = ex;
+                // 忽略中断、取消异常
+                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
                     // 更新为失败
                     this.updateStatus(ShellFileStatus.FAILED);
+                    // 抛出异常
+                    throw ex;
                 }
-                throw ex;
             }
         }
         // 更新为结束
@@ -180,15 +208,13 @@ public class ShellFileUploadTask {
      */
     public void cancel() {
         this.updateStatus(ShellFileStatus.CANCELED);
-        if (this.cancelCallback != null) {
-            this.cancelCallback.accept(this);
-        }
+        ThreadUtil.interrupt(this.worker);
     }
 
     /**
      * 初始化文件
      */
-    protected void initFile() {
+    protected void initFile() throws Exception {
         if (this.localFile.isFile()) {
             this.fileList = new ArrayList<>();
             this.fileList.add(this.localFile);
@@ -198,6 +224,9 @@ public class ShellFileUploadTask {
             this.fileList = new ArrayList<>();
             this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getName());
             FileUtil.getAllFiles(this.localFile, f -> {
+                if (this.status == ShellFileStatus.CANCELED) {
+                    throw new InterruptedException();
+                }
                 this.fileList.add(f);
                 this.totalSize += f.length();
                 this.updateFileSize();
@@ -235,7 +264,7 @@ public class ShellFileUploadTask {
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
-        JulLog.debug("fileSize: {}", this.fileSizeProperty.get());
+        JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
     }
 
     /**
@@ -267,10 +296,6 @@ public class ShellFileUploadTask {
      * 更新进度
      */
     private void updateProgress() {
-//        if (this.progressBar == null) {
-//            this.progressBar = new FXProgressTextBar();
-//        }
-//        this.progressBar.setValue(this.currentSize, this.totalSize);
         this.progressProperty.setValue(NumberUtil.scale(this.currentSize * 1D / this.totalSize * 100D, 2) + "%");
         JulLog.debug("progress: {}", this.progressProperty.getValue());
     }
@@ -345,14 +370,5 @@ public class ShellFileUploadTask {
      */
     public StringProperty statusProperty() {
         return this.statusProperty;
-    }
-
-    /**
-     * 设置取消回调
-     *
-     * @param cancelCallback 取消回调
-     */
-    public void setCancelCallback(Consumer<ShellFileUploadTask> cancelCallback) {
-        this.cancelCallback = cancelCallback;
     }
 }
