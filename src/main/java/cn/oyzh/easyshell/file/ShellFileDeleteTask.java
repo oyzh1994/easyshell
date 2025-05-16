@@ -14,6 +14,11 @@ import java.util.function.Consumer;
 public class ShellFileDeleteTask {
 
     /**
+     * 工作线程
+     */
+    private Thread worker;
+
+    /**
      * 远程文件
      */
     private final ShellFile remoteFile;
@@ -35,7 +40,7 @@ public class ShellFileDeleteTask {
      * @param errorCallback  错误回调
      */
     public void doDelete(Runnable finishCallback, Consumer<Exception> errorCallback) {
-        ThreadUtil.start(() -> {
+        this.worker = ThreadUtil.start(() -> {
             try {
                 this.client = this.client.forkClient();
                 this.doDelete();
@@ -72,5 +77,12 @@ public class ShellFileDeleteTask {
 
     public String getFilePath() {
         return this.remoteFile.getFilePath();
+    }
+
+    /**
+     * 取消
+     */
+    public void cancel() {
+        ThreadUtil.interrupt(this.worker);
     }
 }

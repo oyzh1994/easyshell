@@ -7,6 +7,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -402,6 +403,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (file.isWaiting()) {
             return;
         }
+        // 进入目录
         this.intoDir(file.getFilePath());
     }
 
@@ -411,6 +413,13 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param filePath 文件路径
      */
     public void intoDir(String filePath) {
+        // 目录切换，取消删除任务
+        if (StringUtil.notEquals(this.getLocation(),filePath) && !this.client.isDeleteTaskEmpty()) {
+            List<ShellFileDeleteTask> deleteTasks = new ArrayList<>(this.client.deleteTasks());
+            for (ShellFileDeleteTask deleteTask : deleteTasks) {
+                deleteTask.cancel();
+            }
+        }
         this.setLocation(filePath);
         this.loadFile();
     }
@@ -451,8 +460,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             currPath = currPath.substring(0, currPath.length() - 1);
         }
         currPath = currPath.substring(0, currPath.lastIndexOf("/") + 1);
-        this.setLocation(currPath);
-        this.loadFile();
+        this.intoDir(currPath);
     }
 
     /**
@@ -567,8 +575,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (!StringUtil.isBlank(filePath)) {
             try {
                 if (this.client.exist(filePath)) {
-                    this.setLocation(filePath);
-                    this.loadFile();
+                    this.intoDir(filePath);
                 }
             } catch (Exception ex) {
                 MessageBox.exception(ex);
