@@ -393,8 +393,13 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param file 文件
      */
     public void intoDir(E file) {
+        // 返回上一级
         if (file.isReturnDirectory()) {
             this.returnDir();
+            return;
+        }
+        // 等待中的文件，则忽略
+        if (file.isWaiting()) {
             return;
         }
         this.intoDir(file.getFilePath());

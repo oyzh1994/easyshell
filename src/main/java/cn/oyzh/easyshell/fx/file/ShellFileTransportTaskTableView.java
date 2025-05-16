@@ -57,9 +57,13 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
         return menuItems;
     }
 
+    /**
+     * 取消
+     */
     public void cancel() {
-        for (ShellFileTransportTask item : this.getItems()) {
-            item.cancel();
+        List<ShellFileTransportTask> tasks = new ArrayList<>(this.getSelectedItems());
+        for (ShellFileTransportTask task : tasks) {
+            task.cancel();
         }
     }
 }
