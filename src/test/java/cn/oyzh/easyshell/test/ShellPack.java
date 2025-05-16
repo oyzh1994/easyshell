@@ -85,7 +85,7 @@ public class ShellPack {
     @Test
     public void easyshell_linux_rpm() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux/linux_rom.json";
+        String linux_pack_config = packagePath + "/linux/linux_rpm.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
