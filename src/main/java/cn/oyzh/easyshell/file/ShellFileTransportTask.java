@@ -172,12 +172,12 @@ public class ShellFileTransportTask {
                 this.updateFileCount();
             } catch (Exception ex) {
                 // 忽略中断异常
-                if (!ExceptionUtil.hasMessage(ex, "InterruptedIOException")) {
+                if (!ExceptionUtil.hasMessage(ex, "InterruptedException", "InterruptedIOException")) {
                     this.error = ex;
                     // 更新为失败
                     this.updateStatus(ShellFileStatus.FAILED);
-                    throw ex;
                 }
+                throw ex;
             }
         }
         // 更新为结束

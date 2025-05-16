@@ -72,10 +72,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             // 删除
             if (KeyboardUtil.delete_keyCombination.match(event)) {
-                this.deleteFile(this.getSelectedItems());
+                this.deleteFile(this.getFilterSelectedItems());
                 event.consume();
             } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名
-                this.renameFile(this.getSelectedItems());
+                this.renameFile(this.getFilterSelectedItems());
                 event.consume();
             } else if (KeyboardUtil.refresh_keyCombination.match(event)) {// 刷新
                 this.loadFile();
@@ -322,7 +322,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @return 结果
      */
     protected boolean checkInvalid(E file) {
-        return file.isCurrentFile() || file.isReturnDirectory() || file.isWaiting();
+        return !file.isNormal() || file.isWaiting();
     }
 
     /**
@@ -473,7 +473,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param files 文件列表
      */
     public void deleteFile(List<E> files) {
-        if (CollectionUtil.isEmpty(files) || this.checkInvalid(files)) {
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
+        // 过滤文件
+        files = files.stream().filter(f -> !this.checkInvalid(f)).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(files)) {
             return;
         }
         if (files.size() == 1) {
@@ -487,16 +492,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
             return;
         }
-        if (CollectionUtil.isEmpty(files)) {
-            return;
-        }
         try {
             List<E> fList = new CopyOnWriteArrayList<>(files);
             for (E file : fList) {
-                // 不可删除文件
-                if (!file.isNormal()) {
-                    continue;
-                }
                 // 隐藏文件
                 if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
                     continue;
@@ -532,13 +530,13 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void renameFile(List<E> files) {
         try {
-            if (files == null || files.size() != 1) {
-                return;
-            }
-            if (this.checkInvalid(files)) {
+            if (CollectionUtil.isEmpty(files)) {
                 return;
             }
             E file = files.getFirst();
+            if (this.checkInvalid(file)) {
+                return;
+            }
             String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
             String name = file.getFileName();
             if (newName == null || StringUtil.equals(name, newName)) {
@@ -748,6 +746,13 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param files 文件列表
      */
     public void downloadFile(List<E> files) {
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
+        files = files.stream().filter(f -> !this.checkInvalid(f)).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(files)) {
+            return;
+        }
         File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
         if (dir != null && dir.isDirectory() && dir.exists()) {
             String[] fileArr = dir.list();
@@ -779,11 +784,14 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<E> files = this.getSelectedItems();
-        // 检查是否包含无效文件
-        if (this.checkInvalid(files)) {
-            return Collections.emptyList();
-        }
+        List<E> files = this.getFilterSelectedItems();
+        // if (CollectionUtil.isEmpty(files)) {
+        //     return Collections.emptyList();
+        // }
+        // // 检查是否包含无效文件
+        // if (this.checkInvalid(files)) {
+        //     return Collections.emptyList();
+        // }
         List<MenuItem> menuItems = new ArrayList<>();
         // 创建文件
         FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
@@ -827,5 +835,15 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         deleteFile.setDisable(files.isEmpty());
         menuItems.add(deleteFile);
         return menuItems;
+    }
+
+    /**
+     * 获取过滤的选中列表
+     *
+     * @return 过滤的选中列表
+     */
+    public List<E> getFilterSelectedItems() {
+        List<E> list = super.getSelectedItems();
+        return list.stream().filter(f -> !this.checkInvalid(f)).collect(Collectors.toList());
     }
 }

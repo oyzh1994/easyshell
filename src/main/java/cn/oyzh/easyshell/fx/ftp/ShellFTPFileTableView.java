@@ -12,7 +12,6 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -235,11 +234,13 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
 //    }
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellFTPFile> files = this.getSelectedItems();
-        // 检查是否包含无效文件
-        if (this.checkInvalid(files)) {
-            return Collections.emptyList();
-        }
+        // if(CollectionUtil.isEmpty(files)){
+        //     return Collections.emptyList();
+        // }
+        // // 检查是否包含无效文件
+        // if (this.checkInvalid(files)) {
+        //     return Collections.emptyList();
+        // }
         List<MenuItem> menuItems = new ArrayList<>(super.getMenuItems());
 //        // 创建文件
 //        FXMenuItem touch = MenuItemHelper.touchFile("12", this::touch);
@@ -288,11 +289,12 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
         FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
         menuItems.add(uploadFile);
         menuItems.add(uploadFolder);
-        if (!files.isEmpty()) {
-            // 下载文件
-            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
-            menuItems.add(downloadFile);
-        }
+        // 获取选中的文件
+        List<ShellFTPFile> files = this.getFilterSelectedItems();
+        // 下载文件
+        FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
+        downloadFile.setDisable(files.isEmpty());
+        menuItems.add(downloadFile);
         return menuItems;
     }
 

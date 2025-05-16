@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.fx.file;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -11,6 +12,7 @@ import javafx.scene.control.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -43,14 +45,19 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        List<ShellFile> files = this.getSelectedItems();
-        // 检查是否包含无效文件
-        if (this.checkInvalid(files)) {
-            return super.getMenuItems();
-        }
+        // if (CollectionUtil.isEmpty(files)) {
+        //     return Collections.emptyList();
+        // }
+        // // 检查是否包含无效文件
+        // if (this.checkInvalid(files)) {
+        //     return super.getMenuItems();
+        // }
+        // 获取选中的文件
+        List<ShellFile> files = this.getFilterSelectedItems();
         List<MenuItem> menuItems = new ArrayList<>();
         // 传输文件
         FXMenuItem transportFile = MenuItemHelper.transportFile("12", () -> this.transportFile(files));
+        transportFile.setDisable(files.isEmpty());
         menuItems.add(transportFile);
         menuItems.add(MenuItemHelper.separator());
         // 添加父级菜单
@@ -64,10 +71,11 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
      * @param files 文件列表
      */
     private void transportFile(List<ShellFile> files) {
-        if (files == null || files.isEmpty()) {
+        if (this.transportCallback == null) {
             return;
         }
-        if (this.transportCallback == null) {
+        files = files.stream().filter(file -> !this.checkInvalid(file)).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(files)) {
             return;
         }
         this.transportCallback.accept(files);
