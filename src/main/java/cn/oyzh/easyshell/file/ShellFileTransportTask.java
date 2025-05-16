@@ -163,7 +163,7 @@ public class ShellFileTransportTask {
                 String remoteFilePath;
                 // 文件
                 if (this.localFile.isFile()) {
-                    remoteFilePath = ShellFileUtil.concat(this.remotePath, file.getFileName());
+                    remoteFilePath = this.remotePath;
                 } else {// 文件夹
                     String pPath = file.getParentPath().replace(this.localFile.getFilePath(), "");
                     String remoteDir = ShellFileUtil.concat(this.remotePath, pPath);
@@ -230,6 +230,7 @@ public class ShellFileTransportTask {
      * 初始化文件
      */
     protected void initFile() throws Exception {
+        this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getFileName());
         if (this.localFile.isFile()) {
             this.fileList = new ArrayList<>();
             this.fileList.add(this.localFile);
@@ -237,7 +238,6 @@ public class ShellFileTransportTask {
             this.updateFileSize();
         } else {
             this.fileList = new ArrayList<>();
-            this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getFileName());
             this.localClient.lsFileRecursive(this.localFile, f -> {
                 if (this.status == ShellFileStatus.CANCELED) {
                     throw new InterruptedException();
@@ -246,6 +246,7 @@ public class ShellFileTransportTask {
                     this.fileList.add(f1);
                     this.totalSize += f1.getFileSize();
                     this.updateFileSize();
+                    this.updateFileCount();
                 }
             });
         }

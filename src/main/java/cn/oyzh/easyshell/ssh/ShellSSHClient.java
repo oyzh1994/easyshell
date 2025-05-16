@@ -308,6 +308,8 @@ public class ShellSSHClient extends ShellClient {
     @Override
     public void close() {
         try {
+            // 从监听器队列移除
+            ShellSSHClientChecker.remove(this);
             if (this.shell != null) {
                 this.shell.close();
                 this.shell = null;
@@ -342,8 +344,6 @@ public class ShellSSHClient extends ShellClient {
             if (this.sftpClient != null) {
                 this.sftpClient.close();
             }
-            // 从监听器队列移除
-            ShellSSHClientChecker.remove(this);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

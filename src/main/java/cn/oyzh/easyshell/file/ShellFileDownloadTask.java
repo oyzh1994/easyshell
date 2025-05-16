@@ -231,6 +231,7 @@ public class ShellFileDownloadTask {
                     this.fileList.add(f1);
                     this.totalSize += f1.getFileSize();
                     this.updateFileSize();
+                    this.updateFileCount();
                 }
             });
         }

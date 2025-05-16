@@ -231,6 +231,7 @@ public class ShellFileUploadTask {
                 this.fileList.add(f);
                 this.totalSize += f.length();
                 this.updateFileSize();
+                this.updateFileCount();
             });
         }
         this.updateFileCount();

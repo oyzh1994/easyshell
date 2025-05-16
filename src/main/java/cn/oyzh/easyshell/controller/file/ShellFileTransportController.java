@@ -397,20 +397,30 @@ public class ShellFileTransportController extends StageController {
         // 处理传输列表
         ObservableList<ShellFileTransportTask> transportTasks = this.transportTable.getItems();
         // 列表监听
-        ListChangeListener<ShellFileTransportTask> taskListChangeListener = change -> {
+        Runnable taskChanged = () -> {
             transportTasks.clear();
             transportTasks.addAll(this.sourceClient.transportTasks());
             transportTasks.addAll(this.targetClient.transportTasks());
-            if (this.targetClient.isTransportTaskEmpty()) {
-                this.targetFile.loadFile();
-            }
-            if (this.sourceClient.isTransportTaskEmpty()) {
-                this.sourceFile.loadFile();
-            }
         };
         // 监听目标传输
-        this.sourceClient.transportTasks().addListener(taskListChangeListener);
-        this.targetClient.transportTasks().addListener(taskListChangeListener);
+        this.sourceClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
+            taskChanged.run();
+            change.next();
+            if(change.wasRemoved()){
+                for (ShellFileTransportTask task : change.getRemoved()) {
+                    this.targetFile.onFileAdded(task.getDestPath());
+                }
+            }
+        });
+        this.targetClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
+            taskChanged.run();
+            change.next();
+            if(change.wasRemoved()){
+                for (ShellFileTransportTask task : change.getRemoved()) {
+                    this.sourceFile.onFileAdded(task.getDestPath());
+                }
+            }
+        });
         // 监听位置
         this.sourceFile.locationProperty().addListener((observable, oldValue, t1) -> {
             if (t1 == null) {
