@@ -543,7 +543,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return this;
     }
 
 }

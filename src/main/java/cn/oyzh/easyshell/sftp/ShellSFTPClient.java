@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -117,21 +118,38 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         }
     }
 
-    private ShellSFTPChannel getChannel() {
-        // 初始化通道
-        if (channel == null || channel.isClosed()) {
-            channel = this.newSFTP();
-        }
-        return channel;
-    }
-
     @Override
     public boolean isConnected() {
         return this.session != null && this.session.isConnected();
     }
 
-    protected ShellSFTPChannel newSFTP() {
+    /**
+     * 获取通道
+     *
+     * @return 通道
+     */
+    private ShellSFTPChannel getChannel() {
+        ShellSFTPChannel oldChannel = this.channel;
+        ShellSFTPChannel newChannel = this.newChannel();
+        if (newChannel != null) {
+            IOUtil.close(oldChannel);
+            this.channel = newChannel;
+            return newChannel;
+        }
+        return oldChannel;
+    }
+
+    /**
+     * 创建新通道
+     *
+     * @return 通道
+     */
+    protected ShellSFTPChannel newChannel() {
         try {
+            // 如果会话关了，则先启动会话
+            if (this.isClosed()) {
+                this.start();
+            }
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
             ShellSFTPChannel sftp = new ShellSFTPChannel(channel);
             sftp.connect(this.connectTimeout());
@@ -250,28 +268,28 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
+        try (ShellSFTPChannel channel = this.newChannel()) {
             channel.put(localFile, remoteFile, this.newMonitor(callback), ChannelSftp.OVERWRITE);
         }
     }
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellSFTPChannel channel = this.newSFTP();
+        ShellSFTPChannel channel = this.newChannel();
         this.delayChannels.add(channel);
         return channel.put(remoteFile, this.newMonitor(callback));
     }
 
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTP()) {
+        try (ShellSFTPChannel channel = this.newChannel()) {
             channel.get(remoteFile.getFilePath(), localFile, this.newMonitor(callback), ChannelSftp.OVERWRITE);
         }
     }
 
     @Override
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellSFTPChannel channel = this.newSFTP();
+        ShellSFTPChannel channel = this.newChannel();
         this.delayChannels.add(channel);
         return channel.get(remoteFile.getFilePath(), this.newMonitor(callback));
     }
@@ -383,6 +401,6 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return this;
     }
 }

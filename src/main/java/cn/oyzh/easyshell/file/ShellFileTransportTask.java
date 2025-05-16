@@ -32,6 +32,11 @@ public class ShellFileTransportTask {
     private Thread worker;
 
     /**
+     * 任务结束时的回调
+     */
+    private Runnable finishCallback;
+
+    /**
      * 进度属性
      */
     private final StringProperty progressProperty = new SimpleStringProperty();
@@ -93,6 +98,11 @@ public class ShellFileTransportTask {
     private List<ShellFile> fileList;
 
     /**
+     * 客户端名称
+     */
+    private String clientName;
+
+    /**
      * 本地客户端
      */
     private ShellFileClient localClient;
@@ -112,6 +122,7 @@ public class ShellFileTransportTask {
         this.remotePath = remotePath;
         this.localClient = localClient;
         this.remoteClient = remoteClient;
+        this.clientName = localClient.connectName();
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
@@ -122,6 +133,7 @@ public class ShellFileTransportTask {
      * @param errorCallback  错误回调
      */
     public void doTransport(Runnable finishCallback, Consumer<Exception> errorCallback) {
+        this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
                 this.localClient = this.localClient.forkClient();
@@ -130,9 +142,19 @@ public class ShellFileTransportTask {
             } catch (Exception ex) {
                 errorCallback.accept(ex);
             } finally {
-                finishCallback.run();
+                this.finishTransport();
             }
         });
+    }
+
+    /**
+     * 结束传输
+     */
+    private void finishTransport() {
+        if (this.finishCallback != null) {
+            this.finishCallback.run();
+            this.finishCallback = null;
+        }
     }
 
     /**
@@ -224,6 +246,7 @@ public class ShellFileTransportTask {
     public void cancel() {
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
+        this.finishTransport();
     }
 
     /**
@@ -396,6 +419,6 @@ public class ShellFileTransportTask {
      * @return 客户端名称
      */
     public String getClientName() {
-        return this.localClient.connectName();
+        return this.clientName;
     }
 }

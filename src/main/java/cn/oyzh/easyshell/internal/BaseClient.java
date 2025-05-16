@@ -18,7 +18,7 @@ public interface BaseClient extends AutoCloseable {
      * 连接
      */
     default void start() throws IOException {
-        this.start(this.getShellConnect().connectTimeOutMs());
+        this.start(this.connectTimeout());
     }
 
     /**

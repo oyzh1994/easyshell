@@ -247,7 +247,7 @@
                     <FXTableColumn prefWidth="90" valueName="clientName" text="%base.connectionName"/>
                     <FXTableColumn prefWidth="200" valueName="srcPath" text="%base.src"/>
                     <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
-                    <FXTableColumn flexWidth="100% - 1030" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn flexWidth="100% - 1045" valueName="currentFile" text="%base.currentFile"/>
                     <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>
                     <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                     <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>

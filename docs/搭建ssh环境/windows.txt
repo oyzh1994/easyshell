@@ -1,7 +1,7 @@
 1. 安装ssh服务
 管理可选功能->OpenSSH服务->勾选并应用
 2. 创建ssh用户
-管理员权限打开power shell，执行命令
+管理员权限打开powershell，执行命令
 net user ssh 123456 /add
 3. 设置用户为管理员
 账户->其他用户->ssh->更改账户类型->管理员->确定

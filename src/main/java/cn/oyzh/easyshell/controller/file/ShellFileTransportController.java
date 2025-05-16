@@ -398,15 +398,17 @@ public class ShellFileTransportController extends StageController {
         ObservableList<ShellFileTransportTask> transportTasks = this.transportTable.getItems();
         // 列表监听
         Runnable taskChanged = () -> {
-            transportTasks.clear();
-            transportTasks.addAll(this.sourceClient.transportTasks());
-            transportTasks.addAll(this.targetClient.transportTasks());
+            if (this.sourceClient != null && this.targetClient != null) {
+                transportTasks.clear();
+                transportTasks.addAll(this.sourceClient.transportTasks());
+                transportTasks.addAll(this.targetClient.transportTasks());
+            }
         };
         // 监听目标传输
         this.sourceClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
             taskChanged.run();
             change.next();
-            if(change.wasRemoved()){
+            if (change.wasRemoved()) {
                 for (ShellFileTransportTask task : change.getRemoved()) {
                     this.targetFile.onFileAdded(task.getDestPath());
                 }
@@ -415,7 +417,7 @@ public class ShellFileTransportController extends StageController {
         this.targetClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
             taskChanged.run();
             change.next();
-            if(change.wasRemoved()){
+            if (change.wasRemoved()) {
                 for (ShellFileTransportTask task : change.getRemoved()) {
                     this.sourceFile.onFileAdded(task.getDestPath());
                 }

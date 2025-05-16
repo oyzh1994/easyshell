@@ -31,6 +31,11 @@ public class ShellFileUploadTask {
     private Thread worker;
 
     /**
+     * 任务结束时的回调
+     */
+    private Runnable finishCallback;
+
+    /**
      * 进度属性
      */
     private final StringProperty progressProperty = new SimpleStringProperty();
@@ -70,11 +75,6 @@ public class ShellFileUploadTask {
      * 开始时间
      */
     private long startTime;
-
-    /**
-     * 错误
-     */
-    private Throwable error;
 
     /**
      * 当前大小
@@ -120,6 +120,7 @@ public class ShellFileUploadTask {
      * @param errorCallback  错误回调
      */
     public void doUpload(Runnable finishCallback, Consumer<Exception> errorCallback) {
+        this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
                 this.client = this.client.forkClient();
@@ -127,9 +128,19 @@ public class ShellFileUploadTask {
             } catch (Exception ex) {
                 errorCallback.accept(ex);
             } finally {
-                finishCallback.run();
+                this.finishUpload();
             }
         });
+    }
+
+    /**
+     * 结束上传
+     */
+    private void finishUpload() {
+        if (this.finishCallback != null) {
+            this.finishCallback.run();
+            this.finishCallback = null;
+        }
     }
 
     /**
@@ -210,6 +221,7 @@ public class ShellFileUploadTask {
     public void cancel() {
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
+        this.finishUpload();
     }
 
     /**

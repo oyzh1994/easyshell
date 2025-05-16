@@ -16,6 +16,10 @@ write_enable=YES
 anonymous_enable=YES
 # 默认返回隐藏文件
 force_dot_files=YES
+# 设置ftp服务根目录
+local_root=/
+# 允许读写根目录，可选
+allow_writeable_chroot=YES
 # 4. 修改ftpusers配置，这个是ftp黑名单
 vim /etc/ftpusers
 删除需要登陆ftp的用户，例如root
