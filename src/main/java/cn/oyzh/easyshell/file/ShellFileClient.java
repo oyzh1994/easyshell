@@ -262,8 +262,8 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
         this.deleteTasks().add(deleteTask);
         Thread worker = ThreadLocalUtil.getVal("delete:thread");
-        if (!ThreadUtil.isAlive(worker)) {
-            worker = ThreadUtil.startVirtual(() -> {
+        if (!ThreadUtil.isAlive(worker) || ThreadUtil.isInterrupted(worker)) {
+            worker = ThreadUtil.start(() -> {
                 while (!this.isDeleteTaskEmpty()) {
                     ShellFileDeleteTask task = this.deleteTasks().getFirst();
                     try {
@@ -276,6 +276,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
                         this.deleteTasks().remove(task);
                     }
                 }
+                ThreadLocalUtil.removeVal("delete:thread");
             });
             ThreadLocalUtil.setVal("delete:thread", worker);
         }
@@ -302,8 +303,8 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         });
         this.uploadTasks().add(uploadTask);
         Thread worker = ThreadLocalUtil.getVal("upload:thread");
-        if (!ThreadUtil.isAlive(worker)) {
-            worker = ThreadUtil.startVirtual(() -> {
+        if (!ThreadUtil.isAlive(worker) || ThreadUtil.isInterrupted(worker)) {
+            worker = ThreadUtil.start(() -> {
                 while (!this.isUploadTaskEmpty()) {
                     ShellFileUploadTask task = this.uploadTasks().getFirst();
                     try {
@@ -316,6 +317,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
                         this.uploadTasks().remove(task);
                     }
                 }
+                ThreadLocalUtil.removeVal("upload:thread");
             });
             ThreadLocalUtil.setVal("upload:thread", worker);
         }
@@ -352,8 +354,8 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         });
         this.downloadTasks().add(downloadTask);
         Thread worker = ThreadLocalUtil.getVal("download:thread");
-        if (!ThreadUtil.isAlive(worker)) {
-            worker = ThreadUtil.startVirtual(() -> {
+        if (!ThreadUtil.isAlive(worker) || ThreadUtil.isInterrupted(worker)) {
+            worker = ThreadUtil.start(() -> {
                 while (!this.isDownloadTaskEmpty()) {
                     ShellFileDownloadTask task = this.downloadTasks().getFirst();
                     try {
@@ -366,6 +368,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
                         this.downloadTasks().remove(task);
                     }
                 }
+                ThreadLocalUtil.removeVal("download:thread");
             });
             ThreadLocalUtil.setVal("download:thread", worker);
         }
@@ -393,8 +396,8 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         });
         this.transportTasks().add(transportTask);
         Thread worker = ThreadLocalUtil.getVal("transport:thread");
-        if (!ThreadUtil.isAlive(worker)) {
-            worker = ThreadUtil.startVirtual(() -> {
+        if (!ThreadUtil.isAlive(worker) || ThreadUtil.isInterrupted(worker)) {
+            worker = ThreadUtil.start(() -> {
                 while (!this.isTransportTaskEmpty()) {
                     ShellFileTransportTask task = this.transportTasks().getFirst();
                     try {
@@ -407,6 +410,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
                         this.transportTasks().remove(task);
                     }
                 }
+                ThreadLocalUtil.removeVal("transport:thread");
             });
             ThreadLocalUtil.setVal("transport:thread", worker);
         }

@@ -21,12 +21,12 @@
         </FXHBox>
         <ShellDiskInfoTableView flexWidth="100% - 10" flexHeight="100% - 40" fx:id="diskTable">
             <columns>
-                <FXTableColumn prefWidth="125" valueName="fileSystem" text="%base.fileSystem"/>
-                <FXTableColumn prefWidth="100" valueName="size" text="%base.size"/>
-                <FXTableColumn prefWidth="100" valueName="used" text="%base.used"/>
-                <FXTableColumn prefWidth="100" valueName="avail" text="%base.avail"/>
-                <FXTableColumn prefWidth="75" valueName="use" text="%base.usageRate"/>
-                <FXTableColumn flexWidth="100% - 506" valueName="mountedOn" text="%base.mountedOn"/>
+                <FXTableColumn prefWidth="200" valueName="fileSystem" text="%base.fileSystem"/>
+                <FXTableColumn prefWidth="120" valueName="size" text="%base.size"/>
+                <FXTableColumn prefWidth="120" valueName="used" text="%base.used"/>
+                <FXTableColumn prefWidth="120" valueName="avail" text="%base.avail"/>
+                <FXTableColumn prefWidth="120" valueName="use" text="%base.usageRate"/>
+                <FXTableColumn flexWidth="100% - 685" valueName="mountedOn" text="%base.mountedOn"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
