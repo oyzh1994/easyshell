@@ -32,7 +32,7 @@ public class ShellFileUtil {
     public static String concat(String src, String name) {
         src = src.replace("\\", "/");
         name = name.replace("\\", "/");
-        String path ;
+        String path;
         if (src.endsWith("/") && name.startsWith("/")) {
             path = src + name.substring(1);
         } else if (!src.endsWith("/") && !name.startsWith("/")) {
@@ -175,5 +175,17 @@ public class ShellFileUtil {
         return Integer.parseInt(str, 8);
     }
 
-
+    /**
+     * 对路径进行修正
+     *
+     * @param filePath 路径
+     * @return 修正后的路径
+     */
+    public static String fixFilePath(String filePath) {
+        if (!filePath.startsWith("/")) {
+            filePath = "/" + filePath;
+        }
+        filePath = StringUtil.replace(filePath, "\\", "/");
+        return StringUtil.replace(filePath, "//", "/");
+    }
 }

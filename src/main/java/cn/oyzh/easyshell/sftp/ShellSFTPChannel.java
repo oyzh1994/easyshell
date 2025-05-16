@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.sftp;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHChannel;
-import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -23,16 +23,17 @@ import java.util.Vector;
  */
 public class ShellSFTPChannel extends ShellSSHChannel {
 
-    private String osType;
+//    private String osType;
 
-    public ShellSFTPChannel(ChannelSftp channel, String osType) {
+    public ShellSFTPChannel(ChannelSftp channel) {
+//    public ShellSFTPChannel(ChannelSftp channel, String osType) {
         super(channel);
-        this.osType = osType;
+//        this.osType = osType;
     }
 
-    public boolean isWindows() {
-        return "windows".equalsIgnoreCase(this.osType);
-    }
+//    public boolean isWindows() {
+//        return "windows".equalsIgnoreCase(this.osType);
+//    }
 
 //    private final AtomicBoolean using = new AtomicBoolean(false);
 //
@@ -65,7 +66,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         return this.getChannel().ls(path);
 //        } finally {
 //            this.setUsing(false);
@@ -78,7 +79,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         this.getChannel().cd(path);
 //        } finally {
 //            this.setUsing(false);
@@ -100,7 +101,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         return this.getChannel().realpath(path);
 //        } finally {
 //            this.setUsing(false);
@@ -111,7 +112,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         // if (this.isWindows()) {
         //     path = ShellUtil.reverseWindowsFilePath(path);
         // }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
 //        this.cd(path);
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         List<ShellSFTPFile> files = new ArrayList<>();
@@ -155,7 +156,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         this.getChannel().rm(path);
 //        } finally {
 //            this.setUsing(false);
@@ -168,7 +169,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         this.getChannel().rmdir(path);
 //        } finally {
 //            this.setUsing(false);
@@ -206,7 +207,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         this.getChannel().mkdir(path);
 //        } finally {
 //            this.setUsing(false);
@@ -245,7 +246,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
             // if (this.isWindows()) {
             //     path = ShellUtil.reverseWindowsFilePath(path);
             // }
-            path = ShellUtil.fixFilePath(path);
+            path = ShellFileUtil.fixFilePath(path);
             return this.stat(path) != null;
         } catch (SftpException ex) {
             if (StringUtil.contains(ex.getMessage(), "No such file")) {
@@ -261,7 +262,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
         this.getChannel().put(inputStream, path);
 //        } finally {
@@ -275,7 +276,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         this.getChannel().rename(path, newPath);
 //        } finally {
 //            this.setUsing(false);
@@ -288,7 +289,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //             if (this.isWindows()) {
 //                 path = ShellUtil.reverseWindowsFilePath(path);
 //             }
-            path = ShellUtil.fixFilePath(path);
+            path = ShellFileUtil.fixFilePath(path);
             return this.getChannel().stat(path);
         } catch (SftpException ex) {
             if (ExceptionUtil.hasMessage(ex, "No such file")) {
@@ -311,8 +312,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //             src = ShellUtil.reverseWindowsFilePath(src);
 //             dest = ShellUtil.reverseWindowsFilePath(dest);
 //         }
-        src = ShellUtil.fixFilePath(src);
-        dest = ShellUtil.fixFilePath(dest);
+        src = ShellFileUtil.fixFilePath(src);
+        dest = ShellFileUtil.fixFilePath(dest);
         this.getChannel().put(src, dest, monitor, mode);
 //        } finally {
 //            this.setUsing(false);
@@ -325,7 +326,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             dest = ShellUtil.reverseWindowsFilePath(dest);
 //         }
-        dest = ShellUtil.fixFilePath(dest);
+        dest = ShellFileUtil.fixFilePath(dest);
         this.getChannel().put(src, dest, monitor, mode);
 //        } finally {
 //            this.setUsing(false);
@@ -355,8 +356,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //             src = ShellUtil.reverseWindowsFilePath(src);
 //             dest = ShellUtil.reverseWindowsFilePath(dest);
 //         }
-        src = ShellUtil.fixFilePath(src);
-        dest = ShellUtil.fixFilePath(dest);
+        src = ShellFileUtil.fixFilePath(src);
+        dest = ShellFileUtil.fixFilePath(dest);
         this.getChannel().get(src, dest, monitor, mode);
 //        } finally {
 //            this.setUsing(false);
@@ -373,7 +374,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             src = ShellUtil.reverseWindowsFilePath(src);
 //         }
-        src = ShellUtil.fixFilePath(src);
+        src = ShellFileUtil.fixFilePath(src);
         return this.getChannel().get(src, monitor);
 //        } finally {
 //            this.setUsing(false);
@@ -390,7 +391,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             dest = ShellUtil.reverseWindowsFilePath(dest);
 //         }
-        dest = ShellUtil.fixFilePath(dest);
+        dest = ShellFileUtil.fixFilePath(dest);
         return this.getChannel().put(dest, monitor, mode);
 //        } finally {
 //            this.setUsing(false);
@@ -402,7 +403,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //        this.setHolding(true);
         super.close();
 //        this.setHolding(false);
-        this.osType = null;
+//        this.osType = null;
     }
 
     /**
@@ -417,7 +418,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 //         if (this.isWindows()) {
 //             path = ShellUtil.reverseWindowsFilePath(path);
 //         }
-        path = ShellUtil.fixFilePath(path);
+        path = ShellFileUtil.fixFilePath(path);
         this.getChannel().chmod(permission, path);
 //        } finally {
 //            this.setUsing(false);

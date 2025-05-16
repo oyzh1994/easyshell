@@ -37,38 +37,24 @@ public class ShellUtil {
         return StringUtil.replace(filePath, "//", "/");
     }
 
-    /**
-     * 对路径进行修正
-     *
-     * @param filePath 路径
-     * @return 修正后的路径
-     */
-    public static String fixFilePath(String filePath) {
-        if (!filePath.startsWith("/")) {
-            filePath = "/" + filePath;
-        }
-        filePath = StringUtil.replace(filePath, "\\", "/");
-        return StringUtil.replace(filePath, "//", "/");
-    }
-
-    public static String permission(String permission) {
-        int[] permissions = new int[3];
-        for (int i = 0; i < 3; i++) {
-            int start = i * 3;
-            int octal = 0;
-            if (permission.charAt(start) == 'r') {
-                octal += 4;
-            }
-            if (permission.charAt(start + 1) == 'w') {
-                octal += 2;
-            }
-            if (permission.charAt(start + 2) == 'x') {
-                octal += 1;
-            }
-            permissions[i] = octal;
-        }
-        return permissions[0] + "" + permissions[1] + permissions[2];
-    }
+//    public static String permission(String permission) {
+//        int[] permissions = new int[3];
+//        for (int i = 0; i < 3; i++) {
+//            int start = i * 3;
+//            int octal = 0;
+//            if (permission.charAt(start) == 'r') {
+//                octal += 4;
+//            }
+//            if (permission.charAt(start + 1) == 'w') {
+//                octal += 2;
+//            }
+//            if (permission.charAt(start + 2) == 'x') {
+//                octal += 1;
+//            }
+//            permissions[i] = octal;
+//        }
+//        return permissions[0] + "" + permissions[1] + permissions[2];
+//    }
 
     public static String getWindowsCommandResult(String output) {
         if (StringUtil.isBlank(output)) {

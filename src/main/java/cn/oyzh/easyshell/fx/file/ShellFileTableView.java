@@ -194,8 +194,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 this.loadFileInner();
                 this.refresh();
             } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
+                if (!ExceptionUtil.isInterrupt(ex)) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
             }
         });
     }
@@ -206,53 +208,45 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @throws Exception 异常
      */
     protected synchronized void loadFileInner() throws Exception {
-        try {
-            String currPath = this.getLocation();
-            if (currPath == null) {
-                this.setLocation(this.client.workDir());
-                currPath = this.getLocation();
-            } else if (currPath.isBlank()) {
-                currPath = "/";
-            }
-            JulLog.info("current path: {}", currPath);
-            // 更新当前列表
-            this.files = this.client.lsFile(currPath);
-            // 过滤出来待显示的列表
-            List<E> files = this.doFilter(this.files);
-            // 当前在显示的列表
-            List<E> items = this.getItems();
-            // 删除列表
-            List<E> delList = new ArrayList<>();
-            // 新增列表
-            List<E> addList = new ArrayList<>();
-            // 遍历已有集合，如果不在待显示列表，则删除，否则更新
-            for (E file : items) {
-                Optional<E> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-                if (optional.isEmpty()) {
-                    delList.add(file);
-                } else {
-                    file.copy(optional.get());
-                }
-            }
-            // 遍历待显示列表，如果不在已显示列表，则新增
-            for (E file : files) {
-                Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-                if (optional.isEmpty()) {
-                    addList.add(file);
-                }
-            }
-
-            // 删除数据
-            this.removeItem(delList);
-            // 新增数据
-            this.addItem(addList);
-        } catch (Throwable ex) {
-            if (ExceptionUtil.hasMessage(ex, "inputstream is closed", "4: ", "0: Success")) {
-                this.loadFileInner();
+        String currPath = this.getLocation();
+        if (currPath == null) {
+            this.setLocation(this.client.workDir());
+            currPath = this.getLocation();
+        } else if (currPath.isBlank()) {
+            currPath = "/";
+        }
+        JulLog.info("current path: {}", currPath);
+        // 更新当前列表
+        this.files = this.client.lsFile(currPath);
+        // 过滤出来待显示的列表
+        List<E> files = this.doFilter(this.files);
+        // 当前在显示的列表
+        List<E> items = this.getItems();
+        // 删除列表
+        List<E> delList = new ArrayList<>();
+        // 新增列表
+        List<E> addList = new ArrayList<>();
+        // 遍历已有集合，如果不在待显示列表，则删除，否则更新
+        for (E file : items) {
+            Optional<E> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+            if (optional.isEmpty()) {
+                delList.add(file);
             } else {
-                throw ex;
+                file.copy(optional.get());
             }
         }
+        // 遍历待显示列表，如果不在已显示列表，则新增
+        for (E file : files) {
+            Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+            if (optional.isEmpty()) {
+                addList.add(file);
+            }
+        }
+
+        // 删除数据
+        this.removeItem(delList);
+        // 新增数据
+        this.addItem(addList);
     }
 
     /**

@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.file;
 
+import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.function.ExceptionConsumer;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -15,7 +17,6 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -42,7 +43,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @param callback 文件回调
      * @throws Exception 异常
      */
-    default void lsFileRecursive(E file, Consumer<E> callback) throws Exception {
+    default void lsFileRecursive(E file, ExceptionConsumer<E> callback) throws Exception {
         if (!file.isNormal()) {
             return;
         }
@@ -390,30 +391,13 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      */
     default void doTransport(String remotePath, E localFile, ShellFileClient<E> remoteClient) throws Exception {
         ShellFileTransportTask transportTask = new ShellFileTransportTask(remotePath, localFile, remoteClient, this);
-        transportTask.setCancelCallback(t -> {
-            this.transportTasks().remove(t);
-            this.closeDelayResources();
-        });
         this.transportTasks().add(transportTask);
-        Thread worker = ThreadLocalUtil.getVal("transport:thread");
-        if (!ThreadUtil.isAlive(worker) || ThreadUtil.isInterrupted(worker)) {
-            worker = ThreadUtil.start(() -> {
-                while (!this.isTransportTaskEmpty()) {
-                    ShellFileTransportTask task = this.transportTasks().getFirst();
-                    try {
-                        task.doTransport();
-                    } catch (InterruptedException | InterruptedIOException ex) {
-                        JulLog.warn("transport interrupted");
-                    } catch (Exception ex) {
+        transportTask.doTransport(() -> this.transportTasks().remove(transportTask),
+                ex -> {
+                    if (!ExceptionUtil.hasMessage(ex, "canceled", "interrupt")) {
                         MessageBox.exception(ex);
-                    } finally {
-                        this.transportTasks().remove(task);
                     }
-                }
-                ThreadLocalUtil.removeVal("transport:thread");
-            });
-            ThreadLocalUtil.setVal("transport:thread", worker);
-        }
+                });
     }
 
     /**
@@ -522,7 +506,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return fork出来的子客户端
      * @see #isForked() 配合这个方法这是个子客户端
      */
-    default ShellFileClient<E> forkClient()   {
+    default ShellFileClient<E> forkClient() {
         return this;
     }
 
