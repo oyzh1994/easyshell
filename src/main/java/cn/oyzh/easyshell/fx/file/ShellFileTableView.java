@@ -463,6 +463,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @return 结果
      */
     public boolean existFile(String fileName) {
+        if (this.files == null) {
+            return false;
+        }
         Optional<E> optional = this.files.parallelStream().filter(f -> StringUtil.equals(fileName, f.getFileName())).findAny();
         return optional.isPresent();
     }

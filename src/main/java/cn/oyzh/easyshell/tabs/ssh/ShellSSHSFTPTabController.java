@@ -243,10 +243,10 @@ public class ShellSSHSFTPTabController extends SubTabController {
             super.onTabInit(tab);
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
-                    System.setProperty(ShellConst.SFTP_VISIBLE, "1");
+                    // System.setProperty(ShellConst.SFTP_VISIBLE, "1");
                     this.init();
-                } else {
-                    System.clearProperty(ShellConst.SFTP_VISIBLE);
+                // } else {
+                //     System.clearProperty(ShellConst.SFTP_VISIBLE);
                 }
             });
 //            // 绑定属性
@@ -381,9 +381,18 @@ public class ShellSSHSFTPTabController extends SubTabController {
         this.fileTable.uploadFolder();
     }
 
+    /**
+     * 文件拖拽事件
+     *
+     * @param event 事件
+     */
     @EventSubscribe
     private void draggedFile(ShellFileDraggedEvent event) {
         try {
+            // 判断是否选中
+            if (!this.root.isSelected() || !this.getTab().isSelected()) {
+                return;
+            }
             List<File> files = event.data();
             this.fileTable.uploadFile(files);
         } catch (Exception ex) {

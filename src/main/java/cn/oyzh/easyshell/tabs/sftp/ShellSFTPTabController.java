@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.sftp;
 
-import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -260,13 +259,13 @@ public class ShellSFTPTabController extends RichTabController {
     public void onTabInit(RichTab tab) {
         try {
             super.onTabInit(tab);
-            tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1) {
-                    System.setProperty(ShellConst.SFTP_VISIBLE, "1");
-                } else {
-                    System.clearProperty(ShellConst.SFTP_VISIBLE);
-                }
-            });
+            // tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            //     if (t1) {
+            //         System.setProperty(ShellConst.SFTP_VISIBLE, "1");
+            //     } else {
+            //         System.clearProperty(ShellConst.SFTP_VISIBLE);
+            //     }
+            // });
 //            // 绑定属性
 //            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
             // 监听位置
@@ -371,9 +370,18 @@ public class ShellSFTPTabController extends RichTabController {
         this.fileTable.uploadFolder();
     }
 
+    /**
+     * 文件拖拽事件
+     *
+     * @param event 事件
+     */
     @EventSubscribe
     private void draggedFile(ShellFileDraggedEvent event) {
         try {
+            // 判断是否选中
+            if (!this.getTab().isSelected()) {
+                return;
+            }
             List<File> files = event.data();
             this.fileTable.uploadFile(files);
         } catch (Exception ex) {

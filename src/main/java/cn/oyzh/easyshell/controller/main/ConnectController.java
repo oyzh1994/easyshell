@@ -72,11 +72,11 @@ public class ConnectController extends SubStageController {
     }
 
     private void dragFile(List<File> files) {
-        if (ShellConst.isSftpVisible()) {
+        // if (ShellConst.isSftpVisible()) {
             ShellEventUtil.fileDragged(files);
-        } else {
-            this.tree.root().dragFile(files);
-        }
+        // } else {
+        //     this.tree.root().dragFile(files);
+        // }
     }
 
     @FXML

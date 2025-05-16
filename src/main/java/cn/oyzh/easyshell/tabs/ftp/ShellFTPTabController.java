@@ -160,13 +160,13 @@ public class ShellFTPTabController extends RichTabController {
     public void onTabInit(RichTab tab) {
         try {
             super.onTabInit(tab);
-            tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1) {
-                    System.setProperty(ShellConst.SFTP_VISIBLE, "1");
-                } else {
-                    System.clearProperty(ShellConst.SFTP_VISIBLE);
-                }
-            });
+            // tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            //     if (t1) {
+            //         System.setProperty(ShellConst.SFTP_VISIBLE, "1");
+            //     } else {
+            //         System.clearProperty(ShellConst.SFTP_VISIBLE);
+            //     }
+            // });
             // 监听位置
             this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
@@ -257,10 +257,17 @@ public class ShellFTPTabController extends RichTabController {
         this.fileTable.uploadFolder();
     }
 
-
+    /**
+     * 文件拖拽事件
+     * @param event 事件
+     */
     @EventSubscribe
     private void draggedFile(ShellFileDraggedEvent event) {
         try {
+            // 判断是否选中
+            if(!this.getTab().isSelected()){
+                return;
+            }
             List<File> files = event.data();
             this.fileTable.uploadFile(files);
         } catch (Exception ex) {
