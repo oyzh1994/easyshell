@@ -321,7 +321,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-        return getChannel().lsFile(filePath);
+        return getChannel().lsFileNormal(filePath);
     }
 
     @Override

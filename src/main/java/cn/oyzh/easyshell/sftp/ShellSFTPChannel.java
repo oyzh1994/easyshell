@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -56,6 +57,11 @@ public class ShellSFTPChannel extends ShellSSHChannel {
             files.add(file);
         }
         return files;
+    }
+
+    public List<ShellSFTPFile> lsFileNormal(String path) throws SftpException {
+        List<ShellSFTPFile> files = this.lsFile(path);
+        return files.stream().filter(ShellSFTPFile::isNormal).collect(Collectors.toList());
     }
 
     public void rm(String path) throws SftpException {
