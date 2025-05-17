@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.local;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
@@ -13,7 +13,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025/04/24
  */
-public class ShellLocalTab extends RichTab {
+public class ShellLocalTab extends ShellConnectTab {
 
     public ShellLocalTab(ShellConnectTreeItem treeItem) {
         this.init(treeItem);

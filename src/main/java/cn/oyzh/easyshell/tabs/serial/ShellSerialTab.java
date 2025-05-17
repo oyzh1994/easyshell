@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.tabs.serial;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
@@ -14,7 +14,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025/04/24
  */
-public class ShellSerialTab extends RichTab {
+public class ShellSerialTab extends ShellConnectTab {
 
     public ShellSerialTab(ShellConnectTreeItem item) {
         this.init(item);

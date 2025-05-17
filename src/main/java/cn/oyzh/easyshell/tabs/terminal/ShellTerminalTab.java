@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
+import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025/03/20
  */
-public class ShellTerminalTab extends RichTab {
+public class ShellTerminalTab extends ShellConnectTab {
 
     public ShellTerminalTab() {
         super();

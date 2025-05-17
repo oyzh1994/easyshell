@@ -107,6 +107,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         HashMap<String, String> envs = new HashMap<>(System.getenv());
         if (OSUtil.isMacOS()) {
             envs.put("LC_CTYPE", Charsets.UTF_8.name());
+            envs.put("TERM", "xterm-256color");
         }
         if (OSUtil.isWindows()) {
             envs.put("TERM", "xterm-256color");

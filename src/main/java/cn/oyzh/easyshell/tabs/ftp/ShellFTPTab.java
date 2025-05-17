@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.ftp;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
@@ -14,7 +14,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellFTPTab extends RichTab {
+public class ShellFTPTab extends ShellConnectTab {
 
     public ShellFTPTab(ShellConnectTreeItem item) {
         this.init(item);
