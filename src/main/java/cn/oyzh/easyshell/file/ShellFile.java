@@ -203,7 +203,7 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
             return -8;
         }
         if (this.isDirectory() ) {
-            return -6;
+            return -7;
         }
         return 0;
     }

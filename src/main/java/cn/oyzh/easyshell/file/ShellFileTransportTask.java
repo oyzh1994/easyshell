@@ -138,6 +138,13 @@ public class ShellFileTransportTask {
         if (this.error == null && this.finishCallback != null) {
             this.finishCallback.run();
             this.finishCallback = null;
+            // 关闭子客户端
+            if (this.localClient.isForked()) {
+                IOUtil.close(this.localClient);
+            }
+            if (this.remoteClient.isForked()) {
+                IOUtil.close(this.remoteClient);
+            }
         }
     }
 
@@ -246,19 +253,13 @@ public class ShellFileTransportTask {
         if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
             this.updateStatus(ShellFileStatus.FINISHED);
         }
-        // 关闭子客户端
-        if (this.localClient.isForked()) {
-            IOUtil.close(this.localClient);
-        }
-        if (this.remoteClient.isForked()) {
-            IOUtil.close(this.remoteClient);
-        }
     }
 
     /**
      * 取消
      */
     public void cancel() {
+        this.error = null;
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
         this.finishTransport();
