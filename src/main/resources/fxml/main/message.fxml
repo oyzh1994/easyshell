@@ -12,7 +12,8 @@
     <graphic>
         <MessageSVGGlyph cursorType="DEFAULT" size="13"/>
     </graphic>
-    <FXVBox flexHeight="100%" flexWidth="100%" style="-fx-border-width: 0 1 0 0; -fx-border-color: c0c0c0">
+    <FXVBox flexHeight="100%" flexWidth="100%">
+<!--    <FXVBox flexHeight="100%" flexWidth="100%" style="-fx-border-width: 0 1 0 0; -fx-border-color: c0c0c0">-->
         <FXHBox realHeight="30">
             <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearMsg">
                 <HBox.margin>
@@ -20,7 +21,7 @@
                 </HBox.margin>
             </ClearSVGGlyph>
         </FXHBox>
-        <MsgTextArea fx:id="msgArea" flexHeight="100% - 32" flexWidth="100%" lineLimit="1000"/>
+        <MsgTextArea fx:id="msgArea" flexHeight="100% - 30" flexWidth="100%" lineLimit="1000"/>
     </FXVBox>
 </FXTab>
 

@@ -53,9 +53,9 @@
             <Insets left="10" top="15"/>
         </VBox.margin>
     </LayoutSVGPane>
-    <FXPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 278">
+<!--    <FXPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 278">-->
 
-    </FXPane>
+<!--    </FXPane>-->
     <QuitSVGGlyph onMousePrimaryClicked="#quit" size="12">
         <VBox.margin>
             <Insets left="10" top="15"/>

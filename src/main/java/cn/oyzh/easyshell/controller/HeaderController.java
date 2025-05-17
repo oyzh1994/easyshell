@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.SysConst;
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -9,12 +8,10 @@ import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.WindowEvent;
 
 /**
  * 主页头部业务
@@ -141,17 +138,17 @@ public class HeaderController extends StageController {
 //        ShellEventUtil.layout2();
 //    }
 
-    /**
-     * 分割面板
-     */
-    @FXML
-    private FXPane splitPane;
+//    /**
+//     * 分割面板
+//     */
+//    @FXML
+//    private FXPane splitPane;
 
-    @Override
-    public void onWindowShowing(WindowEvent event) {
-        super.onWindowShowing(event);
-        if (OSUtil.isWindows()) {
-            this.splitPane.setFlexHeight("100% - 282");
-        }
-    }
+//    @Override
+//    public void onWindowShowing(WindowEvent event) {
+//        super.onWindowShowing(event);
+//        if (OSUtil.isWindows()) {
+//            this.splitPane.setFlexHeight("100% - 282");
+//        }
+//    }
 }
