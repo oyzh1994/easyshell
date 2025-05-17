@@ -287,15 +287,10 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remotePath, this);
         this.uploadTasks().add(uploadTask);
         uploadTask.doUpload(() -> {
-                    synchronized (this.uploadTasks()) {
-                        this.uploadTasks().remove(uploadTask);
-                    }
-                },
-                ex -> {
-                    if (!ExceptionUtil.isInterrupt(ex)) {
-                        MessageBox.exception(ex);
-                    }
-                });
+            synchronized (this.uploadTasks()) {
+                this.uploadTasks().remove(uploadTask);
+            }
+        });
     }
 
     /**
@@ -325,15 +320,10 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
         this.downloadTasks().add(downloadTask);
         downloadTask.doDownload(() -> {
-                    synchronized (this.downloadTasks()) {
-                        this.downloadTasks().remove(downloadTask);
-                    }
-                },
-                ex -> {
-                    if (!ExceptionUtil.isInterrupt(ex)) {
-                        MessageBox.exception(ex);
-                    }
-                });
+            synchronized (this.downloadTasks()) {
+                this.downloadTasks().remove(downloadTask);
+            }
+        });
     }
 
     /**
@@ -354,15 +344,10 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
         ShellFileTransportTask transportTask = new ShellFileTransportTask(remotePath, localFile, remoteClient, this);
         this.transportTasks().add(transportTask);
         transportTask.doTransport(() -> {
-                    synchronized (this.transportTasks()) {
-                        this.transportTasks().remove(transportTask);
-                    }
-                },
-                ex -> {
-                    if (!ExceptionUtil.isInterrupt(ex)) {
-                        MessageBox.exception(ex);
-                    }
-                });
+            synchronized (this.transportTasks()) {
+                this.transportTasks().remove(transportTask);
+            }
+        });
     }
 
     /**

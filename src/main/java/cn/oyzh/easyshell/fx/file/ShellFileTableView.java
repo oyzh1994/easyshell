@@ -36,7 +36,6 @@ import javafx.scene.input.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -289,7 +288,23 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                         }
                         return true;
                     })
-                    .sorted(Comparator.comparingInt(ShellFile::getFileOrder))
+                    .sorted((o1, o2) -> {
+                        int order1 = o1.getFileOrder();
+                        int order2 = o2.getFileOrder();
+                        if (order1 < 0 && order2 == 0) {
+                            return -1;
+                        }
+                        if (order1 == 0 && order2 < 0) {
+                            return 1;
+                        }
+                        if (order1 < order2) {
+                            return -1;
+                        }
+                        if (order1 > order2) {
+                            return 1;
+                        }
+                        return o1.getFileName().compareTo(o2.getFileName());
+                    })
                     .collect(Collectors.toList());
         }
         return new CopyOnWriteArrayList<>(files);
@@ -414,7 +429,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void intoDir(String filePath) {
         // 目录切换，取消删除任务
-        if (StringUtil.notEquals(this.getLocation(),filePath) && !this.client.isDeleteTaskEmpty()) {
+        if (StringUtil.notEquals(this.getLocation(), filePath) && !this.client.isDeleteTaskEmpty()) {
             List<ShellFileDeleteTask> deleteTasks = new ArrayList<>(this.client.deleteTasks());
             for (ShellFileDeleteTask deleteTask : deleteTasks) {
                 deleteTask.cancel();

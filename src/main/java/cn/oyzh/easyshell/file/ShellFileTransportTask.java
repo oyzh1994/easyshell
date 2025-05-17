@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 /**
@@ -30,6 +30,11 @@ public class ShellFileTransportTask {
      * 工作线程
      */
     private Thread worker;
+
+    /**
+     * 错误
+     */
+    private Exception error;
 
     /**
      * 任务结束时的回调
@@ -127,31 +132,10 @@ public class ShellFileTransportTask {
     }
 
     /**
-     * 执行传输
-     *
-     * @param finishCallback 结束回调
-     * @param errorCallback  错误回调
-     */
-    public void doTransport(Runnable finishCallback, Consumer<Exception> errorCallback) {
-        this.finishCallback = finishCallback;
-        this.worker = ThreadUtil.start(() -> {
-            try {
-                this.localClient = this.localClient.forkClient();
-                this.remoteClient = this.remoteClient.forkClient();
-                this.doTransport();
-            } catch (Exception ex) {
-                errorCallback.accept(ex);
-            } finally {
-                this.finishTransport();
-            }
-        });
-    }
-
-    /**
      * 结束传输
      */
     private void finishTransport() {
-        if (this.finishCallback != null) {
+        if (this.error == null && this.finishCallback != null) {
             this.finishCallback.run();
             this.finishCallback = null;
         }
@@ -160,25 +144,47 @@ public class ShellFileTransportTask {
     /**
      * 执行传输
      *
-     * @throws Exception 异常
+     * @param finishCallback 结束回调
+     */
+    public void doTransport(Runnable finishCallback) {
+        this.finishCallback = finishCallback;
+        this.worker = ThreadUtil.start(() -> {
+            try {
+                this.localClient = this.localClient.forkClient();
+                this.remoteClient = this.remoteClient.forkClient();
+                this.updateStatus(ShellFileStatus.IN_PREPARATION);
+                // 初始化文件
+                this.initFile();
+                this.updateStatus(ShellFileStatus.EXECUTE_ING);
+                // 执行传输
+                this.doTransport();
+                this.finishTransport();
+            } catch (Exception ex) {
+                // 忽略中断、取消异常
+                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                    this.error = ex;
+                    this.updateStatus(this.status);
+                }
+            }
+        });
+    }
+
+    /**
+     * 执行传输
      */
     private void doTransport() throws Exception {
-        this.updateStatus(ShellFileStatus.IN_PREPARATION);
-        // 初始化文件
-        this.initFile();
-        // 被取消
-        if (this.status == ShellFileStatus.CANCELED) {
-            return;
-        }
-        this.updateStatus(ShellFileStatus.EXECUTE_ING);
-        while (!this.fileList.isEmpty()) {
-            try {
+        InputStream in = null;
+        OutputStream out = null;
+        // 当前文件传输大小
+        AtomicLong currSize = new AtomicLong();
+        try {
+            while (!this.fileList.isEmpty()) {
                 // 取消
                 if (this.status == ShellFileStatus.CANCELED) {
                     break;
                 }
-                // 当前文件
-                ShellFile file = this.fileList.removeFirst();
+                // 获取首个文件
+                ShellFile file = this.fileList.getFirst();
                 // 设置当前文件
                 this.currentFileProperty.set(file.getFileName());
                 // 远程文件目录
@@ -196,8 +202,9 @@ public class ShellFileTransportTask {
                     }
                 }
                 // 执行传输
-                InputStream input = this.localClient.getStream(file, null);
-                OutputStream output = this.remoteClient.putStream(remoteFilePath, (Function<Long, Boolean>) count -> {
+                in = this.localClient.getStream(file, null);
+                out = this.remoteClient.putStream(remoteFilePath, (Function<Long, Boolean>) count -> {
+                    currSize.addAndGet(count);
                     this.currentSize += count;
                     // 更新速度
                     this.updateSpeed();
@@ -208,24 +215,32 @@ public class ShellFileTransportTask {
                     // 判断是否继续
                     return this.status != ShellFileStatus.CANCELED;
                 });
-                input.transferTo(output);
+                in.transferTo(out);
                 // 关闭流
-                IOUtil.close(input);
-                IOUtil.close(output);
-                // 关闭部分延迟资源
-                this.localClient.closeDelayResources();
-                this.remoteClient.closeDelayResources();
+                IOUtil.close(in);
+                IOUtil.close(out);
                 // 更新文件总数
                 this.updateFileCount();
-            } catch (Exception ex) {
-                // 忽略中断、取消异常
-                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
-                    // 更新为失败
-                    this.updateStatus(ShellFileStatus.FAILED);
-                    // 抛出异常
-                    throw ex;
-                }
+                // 移除首个文件
+                this.fileList.removeFirst();
             }
+        } catch (Exception ex) {
+            // 减去失败部分
+            this.currentSize -= currSize.get();
+            // 忽略中断、取消异常
+            if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                // 更新为失败
+                this.updateStatus(ShellFileStatus.FAILED);
+                // 抛出异常
+                throw ex;
+            }
+        } finally {
+            // 确保关闭流
+            IOUtil.close(in);
+            IOUtil.close(out);
+            // 关闭部分延迟资源
+            this.localClient.closeDelayResources();
+            this.remoteClient.closeDelayResources();
         }
         // 更新为结束
         if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
@@ -247,6 +262,25 @@ public class ShellFileTransportTask {
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
         this.finishTransport();
+    }
+
+    /**
+     * 重试
+     */
+    public void retry() {
+        this.error = null;
+        this.updateFileSize();
+        this.updateStatus(ShellFileStatus.EXECUTE_ING);
+        this.worker = ThreadUtil.start(() -> {
+            try {
+                // 执行传输
+                this.doTransport();
+                this.finishTransport();
+            } catch (Exception ex) {
+                this.error = ex;
+                this.updateStatus(this.status);
+            }
+        });
     }
 
     /**
@@ -386,7 +420,11 @@ public class ShellFileTransportTask {
         this.status = status;
         switch (status) {
             case FAILED:
-                this.statusProperty.set(I18nHelper.transportFailed());
+                if (this.error != null) {
+                    this.statusProperty.set(I18nHelper.transportFailed() + ": " + this.error.getMessage());
+                } else {
+                    this.statusProperty.set(I18nHelper.transportFailed());
+                }
                 break;
             case CANCELED:
                 this.statusProperty.set(I18nHelper.cancel());
@@ -420,5 +458,14 @@ public class ShellFileTransportTask {
      */
     public String getClientName() {
         return this.clientName;
+    }
+
+    /**
+     * 是否失败
+     *
+     * @return 结果
+     */
+    public boolean isFailed() {
+        return this.status == ShellFileStatus.FAILED;
     }
 }

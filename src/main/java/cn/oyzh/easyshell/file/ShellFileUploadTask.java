@@ -15,7 +15,7 @@ import javafx.beans.property.StringProperty;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 文件上传任务
@@ -29,6 +29,11 @@ public class ShellFileUploadTask {
      * 工作线程
      */
     private Thread worker;
+
+    /**
+     * 错误
+     */
+    private Exception error;
 
     /**
      * 任务结束时的回调
@@ -114,30 +119,10 @@ public class ShellFileUploadTask {
     }
 
     /**
-     * 执行上传
-     *
-     * @param finishCallback 结束回调
-     * @param errorCallback  错误回调
-     */
-    public void doUpload(Runnable finishCallback, Consumer<Exception> errorCallback) {
-        this.finishCallback = finishCallback;
-        this.worker = ThreadUtil.start(() -> {
-            try {
-                this.client = this.client.forkClient();
-                this.doUpload();
-            } catch (Exception ex) {
-                errorCallback.accept(ex);
-            } finally {
-                this.finishUpload();
-            }
-        });
-    }
-
-    /**
      * 结束上传
      */
     private void finishUpload() {
-        if (this.finishCallback != null) {
+        if (this.error == null && this.finishCallback != null) {
             this.finishCallback.run();
             this.finishCallback = null;
         }
@@ -146,19 +131,40 @@ public class ShellFileUploadTask {
     /**
      * 执行上传
      *
+     * @param finishCallback 结束回调
+     */
+    public void doUpload(Runnable finishCallback) {
+        this.finishCallback = finishCallback;
+        this.worker = ThreadUtil.start(() -> {
+            try {
+                this.client = this.client.forkClient();
+                this.updateStatus(ShellFileStatus.IN_PREPARATION);
+                // 初始化文件
+                this.initFile();
+                this.updateStatus(ShellFileStatus.EXECUTE_ING);
+                // 执行上传
+                this.doUpload();
+                this.finishUpload();
+            } catch (Exception ex) {
+                // 忽略中断、取消异常
+                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                    this.error = ex;
+                    this.updateStatus(this.status);
+                }
+            }
+        });
+    }
+
+    /**
+     * 执行上传
+     *
      * @throws Exception 异常
      */
     private void doUpload() throws Exception {
-        this.updateStatus(ShellFileStatus.IN_PREPARATION);
-        // 初始化文件
-        this.initFile();
-        // 被取消
-        if (this.status == ShellFileStatus.CANCELED) {
-            return;
-        }
-        this.updateStatus(ShellFileStatus.EXECUTE_ING);
-        while (!this.fileList.isEmpty()) {
-            try {
+        // 当前文件上传大小
+        AtomicLong currSize = new AtomicLong();
+        try {
+            while (!this.fileList.isEmpty()) {
                 // 取消
                 if (this.status == ShellFileStatus.CANCELED) {
                     break;
@@ -183,6 +189,7 @@ public class ShellFileUploadTask {
                 }
                 // 执行上传
                 this.client.put(file, remoteFilePath, count -> {
+                    currSize.addAndGet(count);
                     this.currentSize += count;
                     // 更新速度
                     this.updateSpeed();
@@ -195,14 +202,16 @@ public class ShellFileUploadTask {
                 });
                 // 更新文件总数
                 this.updateFileCount();
-            } catch (Exception ex) {
-                // 忽略中断、取消异常
-                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
-                    // 更新为失败
-                    this.updateStatus(ShellFileStatus.FAILED);
-                    // 抛出异常
-                    throw ex;
-                }
+            }
+        } catch (Exception ex) {
+            // 减去失败部分
+            this.currentSize -= currSize.get();
+            // 忽略中断、取消异常
+            if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                // 更新为失败
+                this.updateStatus(ShellFileStatus.FAILED);
+                // 抛出异常
+                throw ex;
             }
         }
         // 更新为结束
@@ -222,6 +231,25 @@ public class ShellFileUploadTask {
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
         this.finishUpload();
+    }
+
+    /**
+     * 重试
+     */
+    public void retry() {
+        this.error = null;
+        this.updateFileSize();
+        this.updateStatus(ShellFileStatus.EXECUTE_ING);
+        this.worker = ThreadUtil.start(() -> {
+            try {
+                // 执行上传
+                this.doUpload();
+                this.finishUpload();
+            } catch (Exception ex) {
+                this.error = ex;
+                this.updateStatus(this.status);
+            }
+        });
     }
 
     /**
@@ -359,7 +387,11 @@ public class ShellFileUploadTask {
         this.status = status;
         switch (status) {
             case FAILED:
-                this.statusProperty.set(I18nHelper.uploadFailed());
+                if (this.error != null) {
+                    this.statusProperty.set(I18nHelper.uploadFailed() + ": " + this.error.getMessage());
+                } else {
+                    this.statusProperty.set(I18nHelper.uploadFailed());
+                }
                 break;
             case CANCELED:
                 this.statusProperty.set(I18nHelper.cancel());
@@ -384,5 +416,14 @@ public class ShellFileUploadTask {
      */
     public StringProperty statusProperty() {
         return this.statusProperty;
+    }
+
+    /**
+     * 是否失败
+     *
+     * @return 结果
+     */
+    public boolean isFailed() {
+        return this.status == ShellFileStatus.FAILED;
     }
 }

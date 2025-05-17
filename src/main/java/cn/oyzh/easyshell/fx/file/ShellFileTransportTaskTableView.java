@@ -47,13 +47,17 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem cancelTransport = MenuItemHelper.cancelTransport("12", () -> {
+        MenuItem cancel = MenuItemHelper.cancelTransport("12", () -> {
             for (ShellFileTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
                 sftpTransportTask.cancel();
             }
             this.removeItem(tasks);
         });
-        menuItems.add(cancelTransport);
+        menuItems.add(cancel);
+        ShellFileTransportTask task = tasks.getFirst();
+        MenuItem retry = MenuItemHelper.retry("12", task::retry);
+        retry.setDisable(tasks.size() != 1 || !task.isFailed());
+        menuItems.add(retry);
         return menuItems;
     }
 

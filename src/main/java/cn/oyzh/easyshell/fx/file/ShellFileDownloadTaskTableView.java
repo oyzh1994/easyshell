@@ -46,13 +46,17 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem cancelTransport = MenuItemHelper.cancelDownload("12", () -> {
+        MenuItem cancel = MenuItemHelper.cancelDownload("12", () -> {
             for (ShellFileDownloadTask task : tasks) {
                 task.cancel();
             }
             this.removeItem(tasks);
         });
-        menuItems.add(cancelTransport);
+        menuItems.add(cancel);
+        ShellFileDownloadTask task = tasks.getFirst();
+        MenuItem retry = MenuItemHelper.retry("12", task::retry);
+        retry.setDisable(tasks.size() != 1 || !task.isFailed());
+        menuItems.add(retry);
         return menuItems;
     }
 
