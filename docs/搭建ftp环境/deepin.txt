@@ -8,16 +8,16 @@ vim /etc/vsftpd.conf
 listen=YES
 # ipv6监听
 listen_ipv6=NO
+# 匿名访问
+anonymous_enable=YES
 # 本地访问
 local_enable=YES
 # 文件上传
 write_enable=YES
-# 匿名访问
-anonymous_enable=YES
 # 默认返回隐藏文件
 force_dot_files=YES
 # 设置ftp服务根目录
-local_root=/
+local_root=/root
 # 允许读写根目录，可选
 allow_writeable_chroot=YES
 # 4. 修改ftpusers配置，这个是ftp黑名单
@@ -26,3 +26,5 @@ vim /etc/ftpusers
 # 5. 启动并启用vsftpd服务
 systemctl start vsftpd
 systemctl enable vsftpd
+# 6. 如果系统刚安装，需要重启，可选
+reboot

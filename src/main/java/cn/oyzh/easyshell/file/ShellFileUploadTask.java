@@ -173,8 +173,8 @@ public class ShellFileUploadTask {
                 if (this.status == ShellFileStatus.CANCELED) {
                     break;
                 }
-                // 当前文件
-                File file = this.fileList.removeFirst();
+                // 获取首个文件
+                File file = this.fileList.getFirst();
                 // 设置当前文件
                 this.currentFileProperty.set(file.getName());
                 // 远程文件目录
@@ -206,6 +206,10 @@ public class ShellFileUploadTask {
                 });
                 // 更新文件总数
                 this.updateFileCount();
+                // 移除首个文件
+                this.fileList.removeFirst();
+                // 重置当前文件大小
+                currSize.set(0);
             }
         } catch (Exception ex) {
             // 减去失败部分

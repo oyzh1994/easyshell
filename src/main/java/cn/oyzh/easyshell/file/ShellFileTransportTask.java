@@ -226,10 +226,15 @@ public class ShellFileTransportTask {
                 // 关闭流
                 IOUtil.close(in);
                 IOUtil.close(out);
+                // 关闭部分延迟资源
+                this.localClient.closeDelayResources();
+                this.remoteClient.closeDelayResources();
                 // 更新文件总数
                 this.updateFileCount();
                 // 移除首个文件
                 this.fileList.removeFirst();
+                // 重置当前文件大小
+                currSize.set(0);
             }
         } catch (Exception ex) {
             // 减去失败部分

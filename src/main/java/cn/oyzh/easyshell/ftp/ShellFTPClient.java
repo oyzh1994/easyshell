@@ -36,6 +36,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     private ShellConnect shellConnect;
 
+    /**
+     * 是否流模式
+     */
+    private transient boolean streamMode = false;
+
     public ShellFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
     }
@@ -92,15 +97,6 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         return this.shellConnect;
     }
 
-//    /**
-//     * 是否已关闭
-//     *
-//     * @return 结果
-//     */
-//    public boolean isClosed() {
-//        return !this.isConnected();
-//    }
-
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
@@ -129,7 +125,10 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public void closeDelayResources() {
         try {
-            this.completePendingCommand();
+            if (this.streamMode) {
+                this.streamMode = false;
+                this.completePendingCommand();
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -175,114 +174,10 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         this.deleteDir(dir);
     }
 
-//    @Override
-//    public void doDelete(ShellFTPFile file) {
-//        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
-//        Thread worker = ThreadUtil.startVirtual(() -> {
-//            try {
-//                deleteTask.doDelete();
-//            } catch (InterruptedException | InterruptedIOException ex) {
-//                JulLog.warn("delete interrupted");
-//            } catch (Exception ex) {
-//                MessageBox.exception(ex);
-//            } finally {
-//                this.deleteTasks.remove(deleteTask);
-//            }
-//        });
-//        deleteTask.setWorker(worker);
-//        this.deleteTasks.add(deleteTask);
-//    }
-
-//    /**
-//     * 上传文件
-//     *
-//     * @param localFile  本地文件
-//     * @param remotePath 远程目录
-//     */
-//    public void upload(File localFile, String remotePath) {
-//        this.upload(localFile, remotePath, null);
-//    }
-
-//    /**
-//     * 上传文件
-//     *
-//     * @param localFile      本地文件
-//     * @param remotePath     远程目录
-//     * @param remoteFileName 远程文件名
-//     */
-//    public void upload(File localFile, String remotePath, String remoteFileName) {
-//        if (remoteFileName == null) {
-//            remoteFileName = localFile.getName();
-//        }
-//        String remoteFile = ShellFileUtil.concat(remotePath, remoteFileName);
-//        ShellFTPUploadFile uploadFile = new ShellFTPUploadFile();
-//        uploadFile.setRemotePath(remoteFile);
-//        uploadFile.setSize(localFile.length());
-//        uploadFile.setLocalPath(localFile.getAbsolutePath());
-//        this.uploadFiles.add(uploadFile);
-//        Thread task = ThreadUtil.startVirtual(() -> {
-//            try {
-//                this.doUpload(localFile, remoteFile);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            } finally {
-//                this.uploadFiles.remove(uploadFile);
-//            }
-//        });
-//        uploadFile.setTask(task);
-//    }
-
-//    @Override
-//    public void doUpload(File localFile, String remoteFile) {
-//        ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remoteFile, this);
-//        Thread worker = ThreadUtil.startVirtual(() -> {
-//            try {
-//                uploadTask.doUpload();
-//            } catch (InterruptedException | InterruptedIOException ex) {
-//                JulLog.warn("upload interrupted");
-//            } catch (Exception ex) {
-//                MessageBox.exception(ex);
-//            } finally {
-//                this.uploadTasks.remove(uploadTask);
-//            }
-//        });
-//        uploadTask.setWorker(worker);
-//        this.uploadTasks.add(uploadTask);
-//    }
-
-//    @Override
-//    public void doDownload(ShellFTPFile remoteFile, String localPath) {
-//        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
-//        Thread worker = ThreadUtil.startVirtual(() -> {
-//            try {
-//                downloadTask.doDownload();
-//            } catch (InterruptedException | InterruptedIOException ex) {
-//                JulLog.warn("download interrupted");
-//            } catch (Exception ex) {
-//                MessageBox.exception(ex);
-//            } finally {
-//                this.downloadTasks.remove(downloadTask);
-//            }
-//        });
-//        downloadTask.setWorker(worker);
-//        this.downloadTasks.add(downloadTask);
-//    }
-
-//    /**
-//     * 执行上传
-//     *
-//     * @param localFile  本地文件
-//     * @param remoteFile 远程文件
-//     * @throws IOException 异常
-//     */
-//    public void put(File localFile, String remoteFile) throws IOException {
-//        this.put(localFile, remoteFile, null);
-//    }
-
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws IOException {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.streamMode = true;
         InputStream in;
         if (callback != null) {
             in = ShellFTPProgressMonitor.of(localFile, callback);
@@ -299,6 +194,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.streamMode = true;
         OutputStream out = super.storeFileStream(remoteFile);
         OutputStream stream;
         if (callback != null) {
@@ -309,20 +205,10 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         return stream;
     }
 
-    //    /**
-//     * 执行下载
-//     *
-//     * @param localFile  本地文件
-//     * @param remoteFile 远程文件
-//     * @throws IOException 异常
-//     */
-//    public void get(ShellFTPFile remoteFile, String localFile) throws IOException {
-//        this.get(remoteFile, localFile, null);
-//    }
-
     @Override
     public void get(ShellFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws IOException {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.streamMode = true;
         OutputStream out;
         if (callback != null) {
             out = ShellFTPProgressMonitor.of(new FileOutputStream(localFile), callback);
@@ -336,6 +222,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public InputStream getStream(ShellFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
         this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.streamMode = true;
         InputStream in = super.retrieveFileStream(remoteFile.getFilePath());
         InputStream stream;
         if (callback != null) {
@@ -345,72 +232,6 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         }
         return stream;
     }
-
-    //    /**
-//     * 执行上传
-//     *
-//     * @param localFile  本地文件
-//     * @param remoteFile 远程文件
-//     * @throws IOException 异常
-//     */
-//    public void put1(File localFile, String remoteFile) throws IOException {
-//        this.setFileType(FTPClient.BINARY_FILE_TYPE);
-//        if (localFile.isDirectory()) {
-//            // 创建根目录
-//            this.mkdir(remoteFile);
-//            ShellFTPUtil.uploadFolder(this, localFile, remoteFile);
-//        } else {
-//            FileInputStream fis = new FileInputStream(localFile);
-//            super.storeFile(remoteFile, fis);
-//            fis.close();
-//        }
-//    }
-
-//    /**
-//     * 下载文件
-//     *
-//     * @param localPath  本地路径
-//     * @param remoteFile 远程文件
-//     */
-//    public void download(File localPath, ShellFTPFile remoteFile) {
-//        ShellFTPDownloadFile downloadFile = new ShellFTPDownloadFile();
-//        downloadFile.setSize(remoteFile.getSize());
-//        downloadFile.setLocalPath(localPath.getPath());
-//        downloadFile.setRemotePath(remoteFile.getFilePath());
-//        this.downloadFiles.add(downloadFile);
-//        String localFile = ShellFileUtil.concat(localPath.getPath(), remoteFile.getFileName());
-//        Thread task = ThreadUtil.startVirtual(() -> {
-//            try {
-//                this.doDownload(localFile, remoteFile);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            } finally {
-//                this.downloadFiles.remove(downloadFile);
-//            }
-//        });
-//        downloadFile.setTask(task);
-//    }
-//
-//    /**
-//     * 执行下载
-//     *
-//     * @param localFile  本地文件
-//     * @param remoteFile 远程文件
-//     * @throws IOException 异常
-//     */
-//    public void doDownload(String localFile, ShellFTPFile remoteFile) throws IOException {
-//        this.setFileType(FTPClient.BINARY_FILE_TYPE);
-//        if (remoteFile.isDirectory()) {
-//            FileUtil.mkdir(localFile);
-//            ShellFTPUtil.downloadFolder(this, remoteFile.getFilePath(), localFile);
-//        } else {
-//            FileOutputStream fos = new FileOutputStream(localFile);
-//            super.retrieveFile(remoteFile.getFilePath(), fos);
-//            fos.flush();
-//            fos.close();
-//        }
-//    }
 
     @Override
     public List<ShellFTPFile> lsFile(String filePath) throws Exception {

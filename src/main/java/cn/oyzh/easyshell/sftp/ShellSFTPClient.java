@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -123,21 +122,21 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         return this.session != null && this.session.isConnected();
     }
 
-    /**
-     * 获取通道
-     *
-     * @return 通道
-     */
-    private ShellSFTPChannel getChannel() {
-        ShellSFTPChannel oldChannel = this.channel;
-        ShellSFTPChannel newChannel = this.newChannel();
-        if (newChannel != null) {
-            IOUtil.close(oldChannel);
-            this.channel = newChannel;
-            return newChannel;
-        }
-        return oldChannel;
-    }
+//    /**
+//     * 获取通道
+//     *
+//     * @return 通道
+//     */
+//    private ShellSFTPChannel getChannel() {
+//        ShellSFTPChannel oldChannel = this.channel;
+//        ShellSFTPChannel newChannel = this.newChannel();
+//        if (newChannel != null) {
+//            IOUtil.close(oldChannel);
+//            this.channel = newChannel;
+//            return newChannel;
+//        }
+//        return oldChannel;
+//    }
 
     /**
      * 创建新通道
@@ -148,7 +147,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         try {
             // 如果会话关了，则先启动会话
             if (this.isClosed()) {
-                this.start();
+                this.session.connect(this.connectTimeout());
             }
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
             ShellSFTPChannel sftp = new ShellSFTPChannel(channel);
@@ -179,36 +178,42 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public void delete(String file) throws Exception {
-//        try (ShellSFTPChannel channel = this.newSFTP()) {
-        getChannel().rm(file);
-//        }
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.rm(file);
+        }
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        getChannel().rmdir(dir);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.rmdir(dir);
+        }
     }
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        Vector<ChannelSftp.LsEntry> entries = getChannel().ls(dir);
-        for (ChannelSftp.LsEntry entry : entries) {
-            String filename = entry.getFilename();
-            if (ShellFileUtil.isNormal(filename)) {
-                String fullPath = dir + "/" + filename;
-                if (entry.getAttrs().isDir()) {
-                    this.deleteDirRecursive(fullPath);
-                } else {
-                    this.delete(fullPath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            Vector<ChannelSftp.LsEntry> entries = channel.ls(dir);
+            for (ChannelSftp.LsEntry entry : entries) {
+                String filename = entry.getFilename();
+                if (ShellFileUtil.isNormal(filename)) {
+                    String fullPath = dir + "/" + filename;
+                    if (entry.getAttrs().isDir()) {
+                        this.deleteDirRecursive(fullPath);
+                    } else {
+                        this.delete(fullPath);
+                    }
                 }
             }
+            this.deleteDir(dir);
         }
-        this.deleteDir(dir);
     }
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        getChannel().mkdir(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.mkdir(filePath);
+        }
         return true;
     }
 
@@ -240,30 +245,42 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public String workDir() throws Exception {
-        return getChannel().pwd();
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            return channel.pwd();
+        }
     }
 
     @Override
     public void cd(String filePath) throws Exception {
-        getChannel().cd(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.cd(filePath);
+        }
     }
 
     public SftpATTRS stat(String filePath) throws Exception {
-        return getChannel().stat(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            return channel.stat(filePath);
+        }
     }
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        return getChannel().exist(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            return channel.exist(filePath);
+        }
     }
 
     public String realpath(String filePath) throws Exception {
-        return getChannel().realpath(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            return channel.realpath(filePath);
+        }
     }
 
     @Override
     public void touch(String filePath) throws Exception {
-        getChannel().touch(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.touch(filePath);
+        }
     }
 
     @Override
@@ -296,7 +313,9 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public boolean chmod(int permission, String filePath) throws Exception {
-        getChannel().chmod(permission, filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.chmod(permission, filePath);
+        }
         return true;
     }
 
@@ -321,12 +340,16 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-        return getChannel().lsFileNormal(filePath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            return channel.lsFileNormal(filePath);
+        }
     }
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
-        getChannel().rename(filePath, newPath);
+        try (ShellSFTPChannel channel = this.newChannel()) {
+            channel.rename(filePath, newPath);
+        }
         return true;
     }
 
