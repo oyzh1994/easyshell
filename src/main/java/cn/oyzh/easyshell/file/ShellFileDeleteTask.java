@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.file;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 
@@ -28,9 +29,15 @@ public class ShellFileDeleteTask {
      */
     private ShellFileClient client;
 
+    /**
+     * 状态
+     */
+    private transient ShellFileStatus status;
+
     public ShellFileDeleteTask(ShellFile remoteFile, ShellFileClient<?> client) {
         this.client = client;
         this.remoteFile = remoteFile;
+        this.status = ShellFileStatus.IN_PREPARATION;
     }
 
     /**
@@ -59,6 +66,7 @@ public class ShellFileDeleteTask {
      */
     private void doDelete() throws Exception {
         try {
+            this.status = ShellFileStatus.EXECUTE_ING;
             this.remoteFile.startWaiting();
             // 执行删除
             if (this.remoteFile.isDirectory()) {
@@ -66,8 +74,15 @@ public class ShellFileDeleteTask {
             } else {
                 this.client.delete(this.remoteFile);
             }
+        } catch (Exception ex) {
+            if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                this.status = ShellFileStatus.FAILED;
+            }
         } finally {
             this.remoteFile.stopWaiting();
+        }
+        if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
+            this.status = ShellFileStatus.FINISHED;
         }
         // 关闭子客户端
         if (this.client.isForked()) {
@@ -83,6 +98,25 @@ public class ShellFileDeleteTask {
      * 取消
      */
     public void cancel() {
+        this.status = ShellFileStatus.CANCELED;
         ThreadUtil.interrupt(this.worker);
+    }
+
+    /**
+     * 是否失败
+     *
+     * @return 结果
+     */
+    public boolean isFailed() {
+        return this.status == ShellFileStatus.FAILED;
+    }
+
+    /**
+     * 是否取消
+     *
+     * @return 结果
+     */
+    public boolean isCanceled() {
+        return this.status == ShellFileStatus.CANCELED;
     }
 }

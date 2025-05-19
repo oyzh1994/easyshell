@@ -27,7 +27,9 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
             change.next();
             if (change.wasRemoved()) {
                 for (ShellFileUploadTask task : change.getRemoved()) {
-                    this.onFileAdded(task.getDestPath());
+                    if (!task.isFailed() && !task.isCanceled()) {
+                        this.onFileAdded(task.getDestPath());
+                    }
                 }
             }
         });
@@ -35,7 +37,9 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
             change.next();
             if (change.wasRemoved()) {
                 for (ShellFileDeleteTask task : change.getRemoved()) {
-                    this.onFileDeleted(task.getFilePath());
+                    if (!task.isFailed() && !task.isCanceled()) {
+                        this.onFileDeleted(task.getFilePath());
+                    }
                 }
             }
         });

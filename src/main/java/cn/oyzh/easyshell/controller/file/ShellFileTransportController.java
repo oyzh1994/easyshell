@@ -404,13 +404,15 @@ public class ShellFileTransportController extends StageController {
                 transportTasks.addAll(this.targetClient.transportTasks());
             }
         };
-        // 监听目标传输
+        // 监听传输
         this.sourceClient.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
             taskChanged.run();
             change.next();
             if (change.wasRemoved()) {
                 for (ShellFileTransportTask task : change.getRemoved()) {
-                    this.targetFile.onFileAdded(task.getDestPath());
+                    if (!task.isFailed() && !task.isCanceled()) {
+                        this.targetFile.onFileAdded(task.getDestPath());
+                    }
                 }
             }
         });
@@ -419,7 +421,9 @@ public class ShellFileTransportController extends StageController {
             change.next();
             if (change.wasRemoved()) {
                 for (ShellFileTransportTask task : change.getRemoved()) {
-                    this.sourceFile.onFileAdded(task.getDestPath());
+                    if (!task.isFailed() && !task.isCanceled()) {
+                        this.sourceFile.onFileAdded(task.getDestPath());
+                    }
                 }
             }
         });

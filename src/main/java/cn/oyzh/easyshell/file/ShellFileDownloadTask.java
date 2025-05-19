@@ -432,4 +432,13 @@ public class ShellFileDownloadTask {
     public boolean isFailed() {
         return this.status == ShellFileStatus.FAILED;
     }
+
+    /**
+     * 是否取消
+     *
+     * @return 结果
+     */
+    public boolean isCanceled() {
+        return this.status == ShellFileStatus.CANCELED;
+    }
 }

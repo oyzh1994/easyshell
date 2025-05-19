@@ -37,7 +37,9 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
             change.next();
             if (change.wasRemoved()) {
                 for (ShellFileDeleteTask task : change.getRemoved()) {
-                    this.onFileDeleted(task.getFilePath());
+                    if (!task.isFailed() && !task.isCanceled()) {
+                        this.onFileDeleted(task.getFilePath());
+                    }
                 }
             }
         });
