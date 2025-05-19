@@ -79,7 +79,7 @@ dmg、pkg打包需要设置mac-package-identifier参数，避免因为app同名�
 sudo apt install fakeroot
 ###### deb打包依赖(ubuntu)
 sudo apt install fakeroot binutils
-###### rpm打包依赖
+###### rpm打包依赖(centos)
 sudo yum install rpm-build
 ###### (推荐)deb打包
 配置 -> package -> linux -> linux_deb.json  
