@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -79,7 +81,9 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             super.setConnectTimeout(timeout);
+            super.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
             super.connect(hostIp, port);
+            super.enterLocalPassiveMode();
             if (this.isConnected()) {
                 super.login(this.shellConnect.getUser(), this.shellConnect.getPassword());
             }

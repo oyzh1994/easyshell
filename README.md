@@ -120,86 +120,86 @@ chmod -R 755 /路径/EasyShell.app(可拖入命令行窗口)
 
 # 程序相关截图
 ###### 截图1
-![img1.png](resource/md/img1.png)
+![1.png](resource/md/1.png)
 ###### 截图2
-![img2.png](resource/md/img2.png)
+![2.png](resource/md/2.png)
 ###### 截图3
-![img3.png](resource/md/img3.png)
+![3.png](resource/md/3.png)
 ###### 截图4
-![img4.png](resource/md/img4.png)
+![4.png](resource/md/4.png)
 ###### 截图5
-![img5.png](resource/md/img5.png)
+![5.png](resource/md/5.png)
 ###### 截图6
-![img6.png](resource/md/img6.png)
+![6.png](resource/md/6.png)
 ###### 截图7
-![img7.png](resource/md/img7.png)
+![7.png](resource/md/7.png)
 ###### 截图8
-![img8.png](resource/md/img8.png)
+![8.png](resource/md/8.png)
 ###### 截图9
-![img9.png](resource/md/img9.png)
+![9.png](resource/md/9.png)
 ###### 截图10
-![img10.png](resource/md/img10.png)
+![10.png](resource/md/10.png)
 ###### 截图11
-![img11.png](resource/md/img11.png)
+![11.png](resource/md/11.png)
 ###### 截图12
-![img12.png](resource/md/img12.png)
+![12.png](resource/md/12.png)
 ###### 截图13
-![img13.png](resource/md/img13.png)
+![13.png](resource/md/13.png)
 ###### 截图14
-![img14.png](resource/md/img14.png)
+![14.png](resource/md/14.png)
 ###### 截图15
-![img15.png](resource/md/img15.png)
+![15.png](resource/md/15.png)
 ###### 截图16
-![img16.png](resource/md/img16.png)
+![16.png](resource/md/16.png)
 ###### 截图17
-![img17.png](resource/md/img17.png)
+![17.png](resource/md/17.png)
 ###### 截图18
-![img18.png](resource/md/img18.png)
+![18.png](resource/md/18.png)
 ###### 截图19
-![img19.png](resource/md/img19.png)
+![19.png](resource/md/19.png)
 ###### 截图20
-![img20.png](resource/md/img20.png)
+![20.png](resource/md/20.png)
 ###### 截图21
-![img21.png](resource/md/img21.png)
+![21.png](resource/md/21.png)
 ###### 截图22
-![img22.png](resource/md/img22.png)
+![22.png](resource/md/22.png)
 ###### 截图23
-![img23.png](resource/md/img23.png)
+![23.png](resource/md/23.png)
 ###### 截图24
-![img24.png](resource/md/img24.png)
+![24.png](resource/md/24.png)
 ###### 截图25
-![img25.png](resource/md/img25.png)
+![25.png](resource/md/25.png)
 ###### 截图26
-![img26.png](resource/md/img26.png)
+![26.png](resource/md/26.png)
 ###### 截图27
-![img27.png](resource/md/img27.png)
+![27.png](resource/md/27.png)
 ###### 截图28
-![img28.png](resource/md/img28.png)
+![28.png](resource/md/28.png)
 ###### 截图29
-![img29.png](resource/md/img29.png)
+![29.png](resource/md/29.png)
 ###### 截图30
-![img30.png](resource/md/img30.png)
+![30.png](resource/md/30.png)
 ###### 截图31
-![img31.png](resource/md/img31.png)
+![31.png](resource/md/31.png)
 ###### 截图32
-![img32.png](resource/md/img32.png)
+![32.png](resource/md/32.png)
 ###### 截图33
-![img33.png](resource/md/img33.png)
+![33.png](resource/md/33.png)
 ###### 截图34
-![img34.png](resource/md/img34.png)
+![34.png](resource/md/34.png)
 ###### 截图35
-![img35.png](resource/md/img35.png)
+![35.png](resource/md/35.png)
 ###### 截图36
-![img36.png](resource/md/img36.png)
+![36.png](resource/md/36.png)
 ###### 截图37
-![img37.png](resource/md/img37.png)
+![37.png](resource/md/37.png)
 ###### 截图38
-![img38.png](resource/md/img38.png)
+![38.png](resource/md/38.png)
 ###### 截图39
-![img39.png](resource/md/img39.png)
+![39.png](resource/md/39.png)
 ###### 截图40
-![img40.png](resource/md/img40.png)
+![40.png](resource/md/40.png)
 ###### 截图41
-![img41.png](resource/md/img41.png)
+![41.png](resource/md/41.png)
 ###### 截图42
-![img42.png](resource/md/img42.png)
+![42.png](resource/md/42.png)

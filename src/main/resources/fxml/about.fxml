@@ -8,7 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="450">
+        fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="320">
     <FXTabPane flexHeight="100% - 45" flexWidth="100%">
         <FXTab text="%base.info">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -98,8 +98,18 @@
                 </FXHyperlink>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.dependency">
+        <FXTab text="%base.dependency" appendText="1">
             <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="SSH">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/mwiede/jsch">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
                 <InfoLabel text="JSON">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -130,6 +140,10 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.dependency" appendText="2">
+            <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.database">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -156,6 +170,16 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHyperlink text="https://mvnrepository.com/artifact/com.fazecast/jSerialComm">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="%base.key1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

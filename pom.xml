@@ -10,7 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyshell</artifactId>
     <version>1.0.8</version>
-    <description>这是一个使用javafx编写的ssh客户端，支持基本的连接管理，分组管理、ssh连接、sftp文件管理、docker管理、x11转发(需要安装第三方x-server)、服务监控、本地终端等功能，支持linux和macos远程，还支持暗色主题、系统主题跟随等能力</description>
+    <description>
+        功能强大、现代化、支持多系统的终端仿真器
+    </description>
 
     <properties>
         <jna.version>5.17.0</jna.version>
@@ -66,20 +68,20 @@
             <artifactId>jediterm-ui</artifactId>
             <version>${jediterm.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>jediterm</groupId>-->
-<!--            <artifactId>core</artifactId>-->
-<!--            <version>3.51</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/libs/jediterm-core-3.51-SNAPSHOT.jar</systemPath>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>jediterm</groupId>-->
-<!--            <artifactId>ui</artifactId>-->
-<!--            <version>3.51</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/libs/jediterm-ui-3.51-SNAPSHOT.jar</systemPath>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>jediterm</groupId>-->
+        <!--            <artifactId>core</artifactId>-->
+        <!--            <version>3.51</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>${project.basedir}/libs/jediterm-core-3.51-SNAPSHOT.jar</systemPath>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>jediterm</groupId>-->
+        <!--            <artifactId>ui</artifactId>-->
+        <!--            <version>3.51</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>${project.basedir}/libs/jediterm-ui-3.51-SNAPSHOT.jar</systemPath>-->
+        <!--        </dependency>-->
 
         <!-- openssh密钥库 -->
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
@@ -88,7 +90,7 @@
             <artifactId>bcprov-jdk18on</artifactId>
             <version>${bouncycastle.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
@@ -148,30 +150,30 @@
         </dependency>
 
         <!--### JetBrains ###-->
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains</groupId>-->
-<!--            <artifactId>annotations</artifactId>-->
-<!--            <version>${annotations.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jetbrains</groupId>-->
+        <!--            <artifactId>annotations</artifactId>-->
+        <!--            <version>${annotations.version}</version>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains.pty4j</groupId>
             <artifactId>pty4j</artifactId>
             <version>${pty4j.version}</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlin</groupId>-->
-<!--            <artifactId>kotlin-stdlib</artifactId>-->
-<!--            <version>${kotlin.stdlib.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.pty4j</groupId>-->
-<!--            <artifactId>purejavacomm</artifactId>-->
-<!--            <version>${purejavacomm.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+        <!--            <artifactId>kotlin-stdlib</artifactId>-->
+        <!--            <version>${kotlin.stdlib.version}</version>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jetbrains.pty4j</groupId>-->
+        <!--            <artifactId>purejavacomm</artifactId>-->
+        <!--            <version>${purejavacomm.version}</version>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
 
         <!-- fx打包 -->
         <dependency>
@@ -194,50 +196,50 @@
         </dependency>
 
         <!--        &lt;!&ndash;### LOGGING ###&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-api</artifactId>-->
-<!--            <version>${slf4j.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-api</artifactId>-->
-<!--            <version>${log4j.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-core</artifactId>-->
-<!--            <version>${log4j.version}</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; To route SLF4j to Log4j  &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-slf4j2-impl</artifactId>-->
-<!--            <version>${log4j.version}</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash;-->
-<!--            To route JUL to Log4j (without sending them to SLF4J bridge) use log4j-jul-->
-<!--            and -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager . For details see-->
-<!--            http://logging.apache.org/log4j/2.x/faq.html#which_jars-->
-<!--        &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-jul</artifactId>-->
-<!--            <version>${log4j.version}</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; To route Apache Commons Logging (JCL) to Log4j  &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-jcl</artifactId>-->
-<!--            <version>${log4j.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-api</artifactId>-->
+        <!--            <version>${slf4j.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-api</artifactId>-->
+        <!--            <version>${log4j.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-core</artifactId>-->
+        <!--            <version>${log4j.version}</version>-->
+        <!--        </dependency>-->
+        <!--        &lt;!&ndash; To route SLF4j to Log4j  &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-slf4j2-impl</artifactId>-->
+        <!--            <version>${log4j.version}</version>-->
+        <!--        </dependency>-->
+        <!--        &lt;!&ndash;-->
+        <!--            To route JUL to Log4j (without sending them to SLF4J bridge) use log4j-jul-->
+        <!--            and -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager . For details see-->
+        <!--            http://logging.apache.org/log4j/2.x/faq.html#which_jars-->
+        <!--        &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-jul</artifactId>-->
+        <!--            <version>${log4j.version}</version>-->
+        <!--        </dependency>-->
+        <!--        &lt;!&ndash; To route Apache Commons Logging (JCL) to Log4j  &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-jcl</artifactId>-->
+        <!--            <version>${log4j.version}</version>-->
+        <!--        </dependency>-->
 
-            <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
-            <dependency>
-                <groupId>commons-net</groupId>
-                <artifactId>commons-net</artifactId>
-                <version>${commons-net.version}</version>
-            </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${commons-net.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -259,10 +261,10 @@
                 <configuration>
                     <mainClass>cn.oyzh.easyshell.EasyShellBootstrap</mainClass>
                     <excludes>
-<!--                        <exclude>-->
-<!--                            <groupId>org.projectlombok</groupId>-->
-<!--                            <artifactId>lombok</artifactId>-->
-<!--                        </exclude>-->
+                        <!--                        <exclude>-->
+                        <!--                            <groupId>org.projectlombok</groupId>-->
+                        <!--                            <artifactId>lombok</artifactId>-->
+                        <!--                        </exclude>-->
                         <exclude>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-jarmode-layertools</artifactId>
