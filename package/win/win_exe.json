@@ -46,8 +46,7 @@
             "java.management",
             "java.datatransfer",
             "java.security.jgss",
-            "jdk.unsupported",
-            "java.net.http"
+            "jdk.unsupported"
         ]
     },
     "jre": {
