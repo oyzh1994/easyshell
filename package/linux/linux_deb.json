@@ -9,6 +9,7 @@
         "verbose": true,
         "vendor": "oyzh",
         "type": "deb",
+        "linux-package-property": "controlCharset=UTF-8",
         "description": "功能强大、现代化、支持多系统的终端仿真器"
     },
     "jdeps": {
