@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.button.ImportButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
@@ -14,11 +14,11 @@
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellImportConnectController" realWidth="600" realHeight="480">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
-            <ExportSVGGlyph sizeStr="40,40" color="yellowgreen">
+            <ImportSVGGlyph sizeStr="40,40" color="yellowgreen">
                 <HBox.margin>
                     <Insets left="30" top="20"/>
                 </HBox.margin>
-            </ExportSVGGlyph>
+            </ImportSVGGlyph>
             <FXText realHeight="25" text="%shell.import.tip2" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>

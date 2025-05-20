@@ -4,7 +4,7 @@
 <?import cn.oyzh.easyshell.ssh.ShellSSHTermWidget?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTermTabController"
-       text="%base.connect">
+       text="%base.terminal">
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
