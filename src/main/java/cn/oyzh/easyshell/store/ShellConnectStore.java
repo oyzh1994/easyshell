@@ -63,6 +63,19 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         return connects;
     }
 
+    @Override
+    public boolean delete(ShellConnect model) {
+        boolean result = super.delete(model);
+        // 删除关联配置
+        if (result) {
+            this.x11ConfigStore.deleteByIid(model.getId());
+            this.jumpConfigStore.deleteByIid(model.getId());
+            this.proxyConfigStore.deleteByIid(model.getId());
+            this.tunnelingConfigStore.deleteByIid(model.getId());
+        }
+        return result;
+    }
+
     /**
      * 替换
      *
