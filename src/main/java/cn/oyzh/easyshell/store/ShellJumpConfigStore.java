@@ -69,7 +69,7 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
      * @param iid shell连接id
      * @return ssh跳板配置
      */
-    public List<ShellJumpConfig> listByIid(String iid) {
+    public List<ShellJumpConfig> loadByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }

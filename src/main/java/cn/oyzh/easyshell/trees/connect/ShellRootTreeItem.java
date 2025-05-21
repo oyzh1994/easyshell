@@ -309,7 +309,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
             this.addChild(list);
         }
         // 初始化连接
-        List<ShellConnect> connects = this.connectStore.load();
+        List<ShellConnect> connects = this.connectStore.loadFull();
         if (CollectionUtil.isNotEmpty(connects)) {
             for (ShellConnect connect : connects) {
                 this.addConnect(connect);

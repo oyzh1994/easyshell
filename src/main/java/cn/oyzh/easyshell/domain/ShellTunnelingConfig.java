@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.domain.SSHTunneling;
@@ -8,6 +9,9 @@ import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author oyzh
@@ -80,5 +84,16 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return I18nHelper.dynamic();
     }
 
-
+    public static List<ShellTunnelingConfig> clone(List<ShellTunnelingConfig> configs) {
+        if (CollectionUtil.isEmpty(configs)) {
+            return Collections.emptyList();
+        }
+        List<ShellTunnelingConfig> list = new ArrayList<>();
+        for (ShellTunnelingConfig config : configs) {
+            ShellTunnelingConfig tunnelingConfig = new ShellTunnelingConfig();
+            tunnelingConfig.copy(config);
+            list.add(tunnelingConfig);
+        }
+        return list;
+    }
 }

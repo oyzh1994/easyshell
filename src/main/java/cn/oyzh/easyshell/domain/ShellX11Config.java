@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
@@ -12,7 +13,7 @@ import java.io.Serializable;
  * @since 2025/03/08
  */
 @Table("t_x11_config")
-public class ShellX11Config implements Serializable {
+public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config> {
 
     /**
      * 端口
@@ -93,5 +94,21 @@ public class ShellX11Config implements Serializable {
 
     public void setCookie(String cookie) {
         this.cookie = cookie;
+    }
+
+    @Override
+    public void copy(ShellX11Config t1) {
+        this.port = t1.getPort();
+        this.host = t1.getHost();
+        this.cookie = t1.getCookie();
+    }
+
+    public static ShellX11Config clone(ShellX11Config config) {
+        if (config == null) {
+            return null;
+        }
+        ShellX11Config x11Config = new ShellX11Config();
+        x11Config.copy(config);
+        return x11Config;
     }
 }

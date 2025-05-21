@@ -225,7 +225,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         ShellConnect shellConnect = new ShellConnect();
         shellConnect.copy(this.value);
         shellConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
-        if (this.connectStore.insert(shellConnect)) {
+        if (this.connectStore.replace(shellConnect)) {
             this.connectManager().addConnect(shellConnect);
         } else {
             MessageBox.warn(I18nHelper.operationFail());

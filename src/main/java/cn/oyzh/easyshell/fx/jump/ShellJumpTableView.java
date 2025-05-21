@@ -18,16 +18,6 @@ public class ShellJumpTableView extends FXTableView<ShellJumpConfig> {
     }
 
     /**
-     * 跳板配置存储器
-     */
-    private final ShellJumpConfigStore configStore = ShellJumpConfigStore.INSTANCE;
-
-    public void init(String iid) {
-        List<ShellJumpConfig> configs = this.configStore.listByIid(iid);
-        this.setItem(configs);
-    }
-
-    /**
      * 更新排序
      */
     public void updateOrder() {

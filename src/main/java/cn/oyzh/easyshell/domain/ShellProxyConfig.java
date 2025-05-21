@@ -40,4 +40,13 @@ public class ShellProxyConfig extends SSHProxyConfig {
     public void setId(String id) {
         this.id = id;
     }
+
+    public static ShellProxyConfig clone(ShellProxyConfig config) {
+        if (config == null) {
+            return null;
+        }
+        ShellProxyConfig proxyConfig = new ShellProxyConfig();
+        proxyConfig.copy(config);
+        return proxyConfig;
+    }
 }

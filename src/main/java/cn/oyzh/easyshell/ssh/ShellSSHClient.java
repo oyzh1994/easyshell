@@ -152,19 +152,21 @@ public class ShellSSHClient extends ShellClient {
     private String initHost() {
         // 连接地址
         String host;
-        // 初始化跳板配置
-        List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
-        // 从数据库获取
-        if (jumpConfigs == null) {
-            jumpConfigs = this.jumpConfigStore.listByIid(this.shellConnect.getId());
-        }
-        // 过滤配置
-        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ShellJumpConfig::isEnabled).collect(Collectors.toList());
+//        // 初始化跳板配置
+//        List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+//        // 从数据库获取
+//        if (jumpConfigs == null) {
+//            jumpConfigs = this.jumpConfigStore.loadByIid(this.shellConnect.getId());
+//        }
+//        // 过滤配置
+//        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ShellJumpConfig::isEnabled).collect(Collectors.toList());
         // 初始化跳板转发
-        if (CollectionUtil.isNotEmpty(jumpConfigs)) {
+        if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
                 this.jumpForwarder = new SSHJumpForwarder();
             }
+            // 初始化跳板配置
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
             // 转换为目标连接
             SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
             // 执行连接
@@ -172,6 +174,10 @@ public class ShellSSHClient extends ShellClient {
             // 连接信息
             host = "127.0.0.1:" + localPort;
         } else {// 直连
+            if (this.jumpForwarder != null) {
+                this.jumpForwarder.destroy();
+                this.jumpForwarder = null;
+            }
             // 连接信息
             host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
         }
@@ -209,7 +215,7 @@ public class ShellSSHClient extends ShellClient {
         List<ShellTunnelingConfig> tunnelingConfigs = this.shellConnect.getTunnelingConfigs();
         // 从数据库获取
         if (tunnelingConfigs == null) {
-            tunnelingConfigs = this.tunnelingConfigStore.listByIid(this.shellConnect.getId());
+            tunnelingConfigs = this.tunnelingConfigStore.loadByIid(this.shellConnect.getId());
         }
         // 过滤配置
         tunnelingConfigs = tunnelingConfigs == null ? Collections.emptyList() : tunnelingConfigs.stream().filter(ShellTunnelingConfig::isEnabled).collect(Collectors.toList());

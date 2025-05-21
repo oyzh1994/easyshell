@@ -682,25 +682,9 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 跳板机配置
-        this.jumpTableView.init(iid);
+        this.jumpTableView.setItem(this.shellConnect.getJumpConfigs());
         // 隧道配置
-        this.tunnelingTableView.init(iid);
-//        // ssh配置
-//        this.sshForward.setSelected(this.shellConnect.isSSHForward());
-//        ShellSSHConfig sshConfig = this.sshConfigStore.getByIid(iid);
-//        if (sshConfig != null) {
-//            this.sshHost.setText(sshConfig.getHost());
-//            this.sshUser.setText(sshConfig.getUser());
-//            this.sshPort.setValue(sshConfig.getPort());
-//            this.sshPassword.setText(sshConfig.getPassword());
-//            this.sshTimeout.setValue(sshConfig.getTimeoutSecond());
-//            this.sshCertificate.setText(sshConfig.getCertificatePath());
-//            if (sshConfig.isPasswordAuth()) {
-//                this.sshAuthMethod.selectFirst();
-//            } else {
-//                this.sshAuthMethod.select(1);
-//            }
-//        }
+        this.tunnelingTableView.setItem(this.shellConnect.getTunnelingConfigs());
         // x11配置
         this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
         ShellX11Config x11Config = this.x11ConfigStore.getByIid(iid);

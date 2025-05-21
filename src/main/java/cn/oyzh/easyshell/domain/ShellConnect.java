@@ -11,6 +11,7 @@ import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,12 +81,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @Column
     private Integer connectTimeOut;
-
-//    /**
-//     * 是否开启ssh转发
-//     */
-//    @Column
-//    private Boolean sshForward;
 
     /**
      * 跳板信息
@@ -331,19 +326,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.authMethod = t1.authMethod;
         this.certificate = t1.certificate;
         // 跳板机
-        this.jumpConfigs = t1.jumpConfigs;
+        this.jumpConfigs = ShellJumpConfig.clone(t1.jumpConfigs);
         // 隧道
-        this.tunnelingConfigs = t1.tunnelingConfigs;
-//        this.sshForward = shellConnect.sshForward;
+        this.tunnelingConfigs = ShellTunnelingConfig.clone(t1.tunnelingConfigs);
         // x11
-        this.x11Config = t1.x11Config;
         this.x11forwarding = t1.x11forwarding;
+        this.x11Config = ShellX11Config.clone(t1.x11Config);
         // 背景
         this.backgroundImage = t1.backgroundImage;
         this.enableBackground = t1.enableBackground;
         // 代理
         this.enableProxy = t1.enableProxy;
-        this.proxyConfig = t1.proxyConfig;
+        this.proxyConfig = ShellProxyConfig.clone(t1.proxyConfig);
         // 串口
         this.serialBaudRate = t1.serialBaudRate;
         this.serialPortName = t1.serialPortName;
@@ -353,15 +347,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.serialFlowControl = t1.serialFlowControl;
     }
 
-//    /**
-//     * 是否开启ssh隧道
-//     *
-//     * @return 结果
-//     */
-//    public boolean isTunnelingForward() {
-//        return CollectionUtil.isNotEmpty(this.getEnableTunnelingConfigs());
-//    }
-
     /**
      * 是否开启ssh跳板
      *
@@ -370,15 +355,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     public boolean isJumpForward() {
         return CollectionUtil.isNotEmpty(this.jumpConfigs);
     }
-
-//    /**
-//     * 是否开启ssh转发
-//     *
-//     * @return 结果
-//     */
-//    public boolean isSSHForward() {
-//        return BooleanUtil.isTrue(this.sshForward);
-//    }
 
     public boolean isX11forwarding() {
         return this.x11forwarding != null && this.x11forwarding;
@@ -461,14 +437,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     public void setConnectTimeOut(Integer connectTimeOut) {
         this.connectTimeOut = connectTimeOut;
     }
-//
-//    public Boolean getSshForward() {
-//        return sshForward;
-//    }
-//
-//    public void setSshForward(Boolean sshForward) {
-//        this.sshForward = sshForward;
-//    }
 
     public Boolean getX11forwarding() {
         return x11forwarding;
@@ -555,16 +523,22 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.jumpConfigs = jumpConfigs;
     }
 
+    /**
+     * 是否开启跳板
+     *
+     * @return 结果
+     */
+    public boolean isEnableJump() {
+        // 初始化跳板配置
+        List<ShellJumpConfig> jumpConfigs = this.getJumpConfigs();
+        // 过滤配置
+        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ShellJumpConfig::isEnabled).toList();
+        return CollectionUtil.isNotEmpty(jumpConfigs);
+    }
+
     public List<ShellTunnelingConfig> getTunnelingConfigs() {
         return tunnelingConfigs;
     }
-
-//    public List<ShellTunnelingConfig> getEnableTunnelingConfigs() {
-//        if(CollectionUtil.isEmpty(tunnelingConfigs)) {
-//            return Collections.emptyList();
-//        }
-//        return this.tunnelingConfigs.parallelStream().filter(ShellTunnelingConfig::isEnabled).collect(Collectors.toList());
-//    }
 
     public void setTunnelingConfigs(List<ShellTunnelingConfig> tunnelingConfigs) {
         this.tunnelingConfigs = tunnelingConfigs;

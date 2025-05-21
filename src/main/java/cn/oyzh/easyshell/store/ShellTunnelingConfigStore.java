@@ -64,7 +64,7 @@ public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingC
      * @param iid shell连接id
      * @return ssh配置
      */
-    public List<ShellTunnelingConfig> listByIid(String iid) {
+    public List<ShellTunnelingConfig> loadByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
             return null;
         }

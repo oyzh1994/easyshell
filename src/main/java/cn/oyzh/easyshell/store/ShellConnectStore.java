@@ -56,9 +56,9 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         List<ShellConnect> connects = this.load();
         for (ShellConnect connect : connects) {
             connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
-            connect.setJumpConfigs(this.jumpConfigStore.listByIid(connect.getId()));
+            connect.setJumpConfigs(this.jumpConfigStore.loadByIid(connect.getId()));
             connect.setProxyConfig(this.proxyConfigStore.getByIid(connect.getId()));
-            connect.setTunnelingConfigs(this.tunnelingConfigStore.listByIid(connect.getId()));
+            connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
         }
         return connects;
     }
@@ -96,11 +96,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (CollectionUtil.isNotEmpty(jumpConfigs)) {
                 for (ShellJumpConfig jumpConfig : jumpConfigs) {
                     jumpConfig.setIid(model.getId());
+                    this.jumpConfigStore.replace(jumpConfig);
                 }
-                this.jumpConfigStore.deleteByIid(model.getId());
-                this.jumpConfigStore.replace(jumpConfigs);
-            } else if (jumpConfigs != null) {
-                this.jumpConfigStore.deleteByIid(model.getId());
             }
 
             // 隧道处理
@@ -108,11 +105,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (CollectionUtil.isNotEmpty(tunnelingConfigs)) {
                 for (ShellTunnelingConfig tunnelingConfig : tunnelingConfigs) {
                     tunnelingConfig.setIid(model.getId());
+                    this.tunnelingConfigStore.replace(tunnelingConfig);
                 }
-                this.tunnelingConfigStore.deleteByIid(model.getId());
-                this.tunnelingConfigStore.replace(tunnelingConfigs);
-            } else if (tunnelingConfigs != null) {
-                this.tunnelingConfigStore.deleteByIid(model.getId());
             }
 
             // x11处理
