@@ -18,117 +18,119 @@ mainJar: '${projectPath}/target/easyshell-${appVersion}.jar'
 jdkPath: $SYSTEM
 # jpackage参数
 jpackage:
-	# 是否详细模式
-	verbose: true
-	# 程序作者
-	vendor: oyzh
-	# 程序描述
-	description: 功能强大、现代化、跨平台的终端仿真器.
-	# 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
-	type: exe
-	# windows菜单栏
-	win-menu: true
-	# windows桌面
-	win-shortcut: true
-	# windows自定义安装目录
-	win-dir-chooser: true
+  # 是否详细模式
+  verbose: true
+  # 程序作者
+  vendor: oyzh
+  # vm参数
+  java-options: '-XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders -Xmx1536m -Xms56m'
+  # 程序描述
+  description: 功能强大、现代化、跨平台的终端仿真器.
+  # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
+  type: exe
+  # windows菜单栏
+  win-menu: true
+  # windows桌面
+  win-shortcut: true
+  # windows自定义安装目录
+  win-dir-chooser: true
 # jdeps参数
 jdeps:
-	# 程序多版本指定
-	multi-release: 24
-	# 显示摘要
-	summary: true
-	# 跳过的模块
-	skips:
-		- javafx-.*.jar
-	# 排除的模块
-	excludes:
-		- jdk.jfr
+  # 程序多版本指定
+  multi-release: 24
+  # 显示摘要
+  summary: true
+  # 跳过的模块
+  skips:
+    - javafx-.*.jar
+  # 排除的模块
+  excludes:
+    - jdk.jfr
 # jlink参数
 jlink:
-	# 排除的文件
-	exclude-files:
-		- '**.md'
-		- '**LICENSE'
-		- '**COPYRIGHT'
-		- '**classlist'
-		- '**README.txt'
-		- '**sound.properties'
-		- '**ASSEMBLY_EXCEPTION'
-		- '**ADDITIONAL_LICENSE_INFO'
-	# 添加的模块
-	add-modules:
-		- java.xml
-		- java.sql
-		- java.base
-		- java.naming
-		- java.logging
-		- java.desktop
-		- java.scripting
-		- java.management
-		- java.datatransfer
-		- java.security.jgss
-		- jdk.unsupported
+  # 排除的文件
+  exclude-files:
+    - '**.md'
+    - '**LICENSE'
+    - '**COPYRIGHT'
+    - '**classlist'
+    - '**README.txt'
+    - '**sound.properties'
+    - '**ASSEMBLY_EXCEPTION'
+    - '**ADDITIONAL_LICENSE_INFO'
+  # 添加的模块
+  add-modules:
+    - java.xml
+    - java.sql
+    - java.base
+    - java.naming
+    - java.logging
+    - java.desktop
+    - java.scripting
+    - java.management
+    - java.datatransfer
+    - java.security.jgss
+    - jdk.unsupported
 # jre参数
 jre:
-	# 排除的文件
-	excludes:
-		- COPYRIGHT
-		- README.txt
-		- sound.properties
-		- ASSEMBLY_EXCEPTION
-		- ADDITIONAL_LICENSE_INFO
-		- .*.md
-		- lcms.*
-		- jawt.*
-		- j2gss.*
-		- prefs.*
-		- jsound.*
-		- LICENSE.*
-		- javajpeg.*
-		- classlist.*
-		- jrunscript.*
-		- splashscreen.*
+  # 排除的文件
+  excludes:
+    - COPYRIGHT
+    - README.txt
+    - sound.properties
+    - ASSEMBLY_EXCEPTION
+    - ADDITIONAL_LICENSE_INFO
+    - .*.md
+    - lcms.*
+    - jawt.*
+    - j2gss.*
+    - prefs.*
+    - jsound.*
+    - LICENSE.*
+    - javajpeg.*
+    - classlist.*
+    - jrunscript.*
+    - splashscreen.*
 # jar参数
 jar:
-	# 移除空jar
-	removeEmpty: true
-	# 排除的文件
-	excludes:
-		- AL2.0
-		- LGPL2.1
-		- package.html
-		- pom.xml
-		- pom.properties
-		- AUTHORS
-		- README.md
-		- README.txt
-		- DEPENDENCIES
-		- aot.factories
-		- changelog.txt
-		- module-info.class
-		- latestchanges.html
-		- package-info.class
-		- ASSEMBLY_EXCEPTION
-		- reflectionconfig.json
-		- release-timestamp.txt
-		- ADDITIONAL_LICENSE_INFO
-		- reactor.blockhound.integration.BlockHoundIntegration
-		- classpath.idx
-		- LICENSE.*
-		- .*.md
-		- .*.pro
-		- .*.xsd
-		- NOTICE.*
-		- .*.tooling
-		- .*.schemas
-		- .*.handlers
-		- lombok-.*.jar
-		- .*.processors
-		- .*.kotlin_module
-		- .*.dylib
-		- .*.so
-		- data.zip
-		- git.properties
-		- native-image.properties
-		- spring-boot-jarmode-layertools-.*.jar
+  # 移除空jar
+  removeEmpty: true
+  # 排除的文件
+  excludes:
+    - AL2.0
+    - LGPL2.1
+    - package.html
+    - pom.xml
+    - pom.properties
+    - AUTHORS
+    - README.md
+    - README.txt
+    - DEPENDENCIES
+    - aot.factories
+    - changelog.txt
+    - module-info.class
+    - latestchanges.html
+    - package-info.class
+    - ASSEMBLY_EXCEPTION
+    - reflectionconfig.json
+    - release-timestamp.txt
+    - ADDITIONAL_LICENSE_INFO
+    - reactor.blockhound.integration.BlockHoundIntegration
+    - classpath.idx
+    - LICENSE.*
+    - .*.md
+    - .*.pro
+    - .*.xsd
+    - NOTICE.*
+    - .*.tooling
+    - .*.schemas
+    - .*.handlers
+    - lombok-.*.jar
+    - .*.processors
+    - .*.kotlin_module
+    - .*.dylib
+    - .*.so
+    - data.zip
+    - git.properties
+    - native-image.properties
+    - spring-boot-jarmode-layertools-.*.jar
