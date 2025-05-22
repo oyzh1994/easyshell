@@ -22,7 +22,6 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         resizable = false,
-        stageStyle = FXStageStyle.UTILITY,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "about.fxml"
 )
