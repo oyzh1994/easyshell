@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 
@@ -106,6 +107,7 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
         return publicKey;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public byte[] getPublicKeyBytes() {
         return publicKey == null ? null : publicKey.getBytes();
     }
@@ -118,6 +120,7 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
         return privateKey;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public byte[] getPrivateKeyBytes() {
         return privateKey == null ? null : privateKey.getBytes();
     }

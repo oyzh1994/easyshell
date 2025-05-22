@@ -9,6 +9,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -528,6 +529,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      *
      * @return 结果
      */
+    @JSONField(serialize = false, deserialize = false)
     public boolean isEnableJump() {
         // 初始化跳板配置
         List<ShellJumpConfig> jumpConfigs = this.getJumpConfigs();
@@ -552,26 +554,32 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.type = type;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isSSHType() {
         return StringUtil.isBlank(this.type) || "ssh".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isLocalType() {
         return "local".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isTelnetType() {
         return "telnet".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isSerialType() {
         return "serial".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isSFTPType() {
         return "sftp".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isFTPType() {
         return "ftp".equalsIgnoreCase(this.type);
     }
