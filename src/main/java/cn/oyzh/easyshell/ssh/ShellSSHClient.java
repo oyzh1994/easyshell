@@ -39,7 +39,6 @@ import javafx.beans.value.ChangeListener;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
@@ -152,14 +151,6 @@ public class ShellSSHClient extends ShellClient {
     private String initHost() {
         // 连接地址
         String host;
-//        // 初始化跳板配置
-//        List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
-//        // 从数据库获取
-//        if (jumpConfigs == null) {
-//            jumpConfigs = this.jumpConfigStore.loadByIid(this.shellConnect.getId());
-//        }
-//        // 过滤配置
-//        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ShellJumpConfig::isEnabled).collect(Collectors.toList());
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
@@ -275,7 +266,7 @@ public class ShellSSHClient extends ShellClient {
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setPassword(this.shellConnect.getPassword());
+            this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
@@ -299,12 +290,12 @@ public class ShellSSHClient extends ShellClient {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
-        // 配置参数
-        Properties config = new Properties();
-        // 去掉首次连接确认
-        config.put("StrictHostKeyChecking", "no");
-        // 设置配置
-        this.session.setConfig(config);
+//        // 配置参数
+//        Properties config = new Properties();
+//        // 去掉首次连接确认
+//        config.put("StrictHostKeyChecking", "no");
+//        // 设置配置
+//        this.session.setConfig(config);
         // 初始化x11
         this.initX11();
         // 初始化代理

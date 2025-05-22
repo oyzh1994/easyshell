@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -24,7 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
 import java.util.function.Function;
 
@@ -64,14 +64,15 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         String hostIp = this.shellConnect.hostIp();
         // 创建会话
         this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-        // 设置密码
-        this.session.setPassword(this.shellConnect.getPassword());
-        // 配置参数
-        Properties config = new Properties();
-        // 去掉首次连接确认
-        config.put("StrictHostKeyChecking", "no");
-        // 设置配置
-        this.session.setConfig(config);
+        this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
+//        // 设置密码
+//        this.session.setPassword(this.shellConnect.getPassword());
+//        // 配置参数
+//        Properties config = new Properties();
+//        // 去掉首次连接确认
+//        config.put("StrictHostKeyChecking", "no");
+//        // 设置配置
+//        this.session.setConfig(config);
     }
 
     @Override
