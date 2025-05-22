@@ -23,7 +23,11 @@ jpackage:
   # 程序作者
   vendor: oyzh
   # vm参数
-  java-options: '-XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders -Xmx1536m -Xms56m'
+  java-options:
+    - '-XX:+UnlockExperimentalVMOptions'
+    - '-XX:+UseCompactObjectHeaders'
+    - '-Xmx1536m'
+    - '-Xms56m'
   # 程序描述
   description: 功能强大、现代化、跨平台的终端仿真器.
   # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
