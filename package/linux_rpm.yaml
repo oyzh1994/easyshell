@@ -1,13 +1,15 @@
 # 变量说明
 # ${projectPath}代表项目根路径
 # ${appVersion}代表程序版本
+# ${appName}代表程序名称
+# ${os.arch}代表系统架构
 # $SYSTEM代表从系统变量获取jdk路径
 # 打包模式，目前仅支持jpackage
 packMode: jpackage
 # 平台，macos、windows、linux
 platform: linux
 # 打包文件的存放目录
-dest: '/home/oyzh/Documents/Package/EasyShell/${appVersion}/'
+dest: '/home/oyzh/Package/EasyShell/${appVersion}/'
 # 程序的图标，windows是ico、linux是png、macos是icns
 appIcon: '${projectPath}/resource/app.png'
 # 程序主程序jar
@@ -26,7 +28,7 @@ jpackage:
   type: rpm
 # jdeps参数
 jdeps:
-    # 程序多版本指定
+  # 程序多版本指定
   multi-release: 24
   # 显示摘要
   summary: true

@@ -1,6 +1,8 @@
 # 变量说明
 # ${projectPath}代表项目根路径
 # ${appVersion}代表程序版本
+# ${appName}代表程序名称
+# ${os.arch}代表系统架构
 # $SYSTEM代表从系统变量获取jdk路径
 # 打包模式，目前仅支持jpackage
 packMode: jpackage
