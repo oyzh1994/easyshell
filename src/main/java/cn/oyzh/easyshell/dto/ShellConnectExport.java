@@ -1,11 +1,11 @@
 package cn.oyzh.easyshell.dto;
 
 import cn.oyzh.common.dto.Project;
-import cn.oyzh.common.json.JSONObject;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import com.alibaba.fastjson2.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,8 +98,8 @@ public class ShellConnectExport {
         export.connects = new ArrayList<>(12);
         export.version = object.getString("version");
         export.platform = object.getString("platform");
-        export.groups = object.getBeanList("groups", ShellGroup.class);
-        export.connects = object.getBeanList("connects", ShellConnect.class);
+        export.groups = object.getList("groups", ShellGroup.class);
+        export.connects = object.getList("connects", ShellConnect.class);
         return export;
     }
 

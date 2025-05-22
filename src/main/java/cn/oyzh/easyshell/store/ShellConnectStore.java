@@ -56,8 +56,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         List<ShellConnect> connects = this.load();
         for (ShellConnect connect : connects) {
             connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
-            connect.setJumpConfigs(this.jumpConfigStore.loadByIid(connect.getId()));
             connect.setProxyConfig(this.proxyConfigStore.getByIid(connect.getId()));
+            connect.setJumpConfigs(this.jumpConfigStore.loadByIid(connect.getId()));
             connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
         }
         return connects;

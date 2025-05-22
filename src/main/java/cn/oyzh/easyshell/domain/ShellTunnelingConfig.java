@@ -7,6 +7,7 @@ import cn.oyzh.ssh.domain.SSHTunneling;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return this.enabled == null || this.enabled;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public FXToggleSwitch getEnabledStatus() {
         FXToggleSwitch toggleSwitch = new FXToggleSwitch();
         toggleSwitch.setSelected(this.isEnabled());
@@ -74,6 +76,7 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return toggleSwitch;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String getTypeName() {
         if (this.isLocalType()) {
             return I18nHelper.local();

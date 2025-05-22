@@ -6,6 +6,7 @@ import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class ShellJumpConfig extends SSHConnect implements Serializable {
         return this.enabled == null || this.enabled;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public FXToggleSwitch getEnabledStatus() {
         FXToggleSwitch toggleSwitch = new FXToggleSwitch();
         toggleSwitch.setSelected(this.isEnabled());
