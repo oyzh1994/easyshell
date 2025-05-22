@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>easyshell</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <description>
         功能强大、现代化、跨平台的终端仿真器.
     </description>
