@@ -36,7 +36,6 @@ import java.util.concurrent.atomic.LongAdder;
  * @since 2023/11/09
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "tool/shellTool.fxml"
 )

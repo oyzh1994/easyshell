@@ -23,7 +23,6 @@ import javafx.stage.WindowEvent;
  * @since 2025/05/13
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "file/shellFilePermission.fxml"
 )

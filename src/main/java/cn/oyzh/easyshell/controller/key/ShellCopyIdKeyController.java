@@ -29,7 +29,6 @@ import java.util.List;
  * @since 2025/04/03
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "key/shellCopyIdKey.fxml"
 )

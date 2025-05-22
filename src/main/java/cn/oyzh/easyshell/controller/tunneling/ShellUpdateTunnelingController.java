@@ -22,7 +22,6 @@ import javafx.stage.WindowEvent;
  * @since 2025/04/16
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "tunneling/shellUpdateTunneling.fxml"
 )

@@ -37,7 +37,6 @@
 // * @since 2025/04/26
 // */
 //@StageAttribute(
-//        stageStyle = FXStageStyle.UNIFIED,
 //        value = FXConst.FXML_PATH + "ftp/shellFTPFileEdit.fxml"
 //)
 //public class ShellFTPFileEditController extends StageController {

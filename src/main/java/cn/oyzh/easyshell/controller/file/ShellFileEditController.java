@@ -37,7 +37,6 @@ import java.io.File;
  * @since 2025/05/13
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         value = FXConst.FXML_PATH + "file/shellFileEdit.fxml"
 )
 public class ShellFileEditController extends StageController {

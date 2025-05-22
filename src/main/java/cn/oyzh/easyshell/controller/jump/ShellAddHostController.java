@@ -25,7 +25,6 @@ import javafx.stage.WindowEvent;
  * @since 2025/04/15
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "jump/shellAddHost.fxml"
 )
