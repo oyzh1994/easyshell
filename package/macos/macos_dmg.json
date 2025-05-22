@@ -10,7 +10,7 @@
         "vendor": "oyzh",
         "type": "dmg",
         "mac-package-identifier": "cn.oyzh.easyshell",
-        "description": "功能强大、现代化、支持多系统的终端仿真器"
+        "description": "功能强大、现代化、跨平台的终端仿真器."
     },
     "jdeps": {
         "multi-release": 24,

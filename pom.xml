@@ -11,7 +11,7 @@
     <artifactId>easyshell</artifactId>
     <version>1.0.8</version>
     <description>
-        功能强大、现代化、支持多系统的终端仿真器
+        功能强大、现代化、跨平台的终端仿真器.
     </description>
 
     <properties>
