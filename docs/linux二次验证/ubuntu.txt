@@ -1,0 +1,19 @@
+# 1. 安装依赖
+apt install libpam-google-authenticator
+# 2. 生成二维码，然后用手机验证码app扫描
+google-authenticator -t -f -d -w 3 -e 10 -r 3 -R 30
+# 3. 修改pam配置
+vim /etc/pam.d/sshd
+# 禁用密码认证
+# @include common-auth
+# 添加pam认证
+auth required pam_google_authenticator.so nullok
+# 4. 修改ssh配置
+sudo vim /etc/ssh/sshd_config
+# 开启配置
+KbdInteractiveAuthentication yes
+# 新增配置
+ChallengeResponseAuthentication yes
+# 5. 重启ssh服务
+systemctl restart sshd
+
