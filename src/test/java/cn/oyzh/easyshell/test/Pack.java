@@ -30,7 +30,7 @@ public class Pack {
     @Test
     public void win_exe() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win_exe.json";
+        String win_pack_config = packagePath + "/win_exe.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -44,7 +44,7 @@ public class Pack {
     @Test
     public void win_msi() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win_msi.json";
+        String win_pack_config = packagePath + "/win_msi.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -58,7 +58,7 @@ public class Pack {
     @Test
     public void win_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win_image.json";
+        String win_pack_config = packagePath + "/win_image.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -72,7 +72,7 @@ public class Pack {
     @Test
     public void linux_deb() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_deb.json";
+        String linux_pack_config = packagePath + "/linux_deb.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -85,7 +85,7 @@ public class Pack {
     @Test
     public void linux_rpm() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_rpm.json";
+        String linux_pack_config = packagePath + "/linux_rpm.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -98,7 +98,7 @@ public class Pack {
     @Test
     public void linux_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_image.json";
+        String linux_pack_config = packagePath + "/linux_image.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -111,7 +111,7 @@ public class Pack {
     @Test
     public void macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_dmg.json";
+        String macos_arm64_pack_config = packagePath + "/macos_dmg.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -125,7 +125,7 @@ public class Pack {
     @Test
     public void macos_pkg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_pkg.json";
+        String macos_arm64_pack_config = packagePath + "/macos_pkg.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -139,7 +139,7 @@ public class Pack {
     @Test
     public void macos_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_image.json";
+        String macos_arm64_pack_config = packagePath + "/macos_image.yaml";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
