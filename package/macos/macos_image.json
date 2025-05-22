@@ -2,7 +2,7 @@
   "packMode": "jpackage",
   "platform": "macos",
   "dest": "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyRedis_${appVersion}.app",
-  "appIcon": "${projectPath}/resource/shell.icns",
+  "appIcon": "${projectPath}/resource/app.icns",
   "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
   "jdkPath": "$SYSTEM",
   "jpackage": {

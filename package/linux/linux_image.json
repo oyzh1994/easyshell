@@ -2,7 +2,7 @@
   "packMode": "jpackage",
   "platform": "linux",
   "dest": "/home/oyzh/Documents/Package/EasyShell/${appVersion}/",
-  "appIcon": "${projectPath}/resource/shell.png",
+  "appIcon": "${projectPath}/resource/app.png",
   "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
   "jdkPath": "$SYSTEM",
   "jpackage": {

@@ -2,7 +2,7 @@
   "packMode": "jpackage",
   "platform": "windows",
   "dest": "C:/Package/EasyShell/${appVersion}/EasyShell",
-  "appIcon": "${projectPath}/resource/shell.ico",
+  "appIcon": "${projectPath}/resource/app.ico",
   "mainJar": "${projectPath}/target/easyshell-${appVersion}.jar",
   "jdkPath": "$SYSTEM",
   "jpackage": {
