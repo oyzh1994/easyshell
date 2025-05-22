@@ -11,7 +11,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/3/8
  */
-public class ShellPack {
+public class Pack {
 
     private String getProjectPath() {
         String projectPath = getClass().getResource("").getPath();
@@ -28,9 +28,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_win_exe() throws Exception {
+    public void win_exe() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win/win_exe.json";
+        String win_pack_config = packagePath + "/win_exe.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -42,9 +42,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_win_msi() throws Exception {
+    public void win_msi() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win/win_msi.json";
+        String win_pack_config = packagePath + "/win_msi.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -56,9 +56,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_win_image() throws Exception {
+    public void win_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win/win_image.json";
+        String win_pack_config = packagePath + "/win_image.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -70,9 +70,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_linux_deb() throws Exception {
+    public void linux_deb() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux/linux_deb.json";
+        String linux_pack_config = packagePath + "/linux_deb.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -83,9 +83,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_linux_rpm() throws Exception {
+    public void linux_rpm() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux/linux_rpm.json";
+        String linux_pack_config = packagePath + "/linux_rpm.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -96,9 +96,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_linux_image() throws Exception {
+    public void linux_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux/linux_image.json";
+        String linux_pack_config = packagePath + "/linux_image.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -109,9 +109,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_macos_dmg() throws Exception {
+    public void macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos/macos_dmg.json";
+        String macos_arm64_pack_config = packagePath + "/macos_dmg.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -123,9 +123,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_macos_pkg() throws Exception {
+    public void macos_pkg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos/macos_pkg.json";
+        String macos_arm64_pack_config = packagePath + "/macos_pkg.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
@@ -137,9 +137,9 @@ public class ShellPack {
     }
 
     @Test
-    public void easyshell_macos_image() throws Exception {
+    public void macos_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos/macos_image.json";
+        String macos_arm64_pack_config = packagePath + "/macos_image.json";
         String getProjectPath = this.getProjectPath();
         Map<String, Object> properties = new HashMap<>();
         properties.put("projectPath", getProjectPath);
