@@ -55,6 +55,8 @@ public class ShellAddGuidController extends StageController {
 //                ShellViewFactory.addFTPSConnect(group);
             } else if ("serial".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addSerialConnect(group);
+            } else if ("vnc".equalsIgnoreCase(this.type.selectedUserData())) {
+                ShellViewFactory.addVNCConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

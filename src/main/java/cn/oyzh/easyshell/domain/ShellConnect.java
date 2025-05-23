@@ -602,6 +602,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 //        return "ftps".equalsIgnoreCase(this.type);
 //    }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isVNCType() {
+        return "vnc".equalsIgnoreCase(this.type);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }

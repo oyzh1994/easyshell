@@ -27,7 +27,7 @@ public class ShellSerialClient implements BaseClient {
     /**
      * 初始化串口
      */
-    protected void iniSerialPort() {
+    protected void initClient() {
         // 获取指定名称的串口
         this.serialPort = SerialPort.getCommPort(this.shellConnect.getSerialPortName());
 
@@ -42,7 +42,7 @@ public class ShellSerialClient implements BaseClient {
     @Override
     public void start(int timeout) throws IOException {
         if (this.serialPort == null) {
-            this.iniSerialPort();
+            this.initClient();
         }
         this.serialPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, timeout, timeout);
         // 打开串口

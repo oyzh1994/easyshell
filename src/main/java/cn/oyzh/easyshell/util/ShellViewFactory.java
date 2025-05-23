@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.controller.connect.ShellAddSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddTelnetConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateFTPConnectController;
@@ -19,6 +20,7 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateVNCConnectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
@@ -194,6 +196,24 @@ public class ShellViewFactory {
 //    }
 
     /**
+     * 新增vnc连接
+     *
+     * @param group 分组
+     */
+    public static void addVNCConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddVNCConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+
+    /**
      * 修改ssh连接
      *
      * @param connect 连接
@@ -304,6 +324,22 @@ public class ShellViewFactory {
 //            MessageBox.exception(ex);
 //        }
 //    }
+
+    /**
+     * 修改vnc连接
+     *
+     * @param connect 连接
+     */
+    public static void updateVNCConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateVNCConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 主页

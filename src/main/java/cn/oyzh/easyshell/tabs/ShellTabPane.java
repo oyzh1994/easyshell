@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
+import cn.oyzh.easyshell.tabs.vnc.ShellVNCTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
@@ -184,6 +185,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellFTPTab(event.data());
         } else if (connect.isSerialType()) {
             tab = new ShellSerialTab(event.data());
+        } else if (connect.isVNCType()) {
+            tab = new ShellVNCTab(event.data());
         } else {
             throw new RuntimeException("unknown connect type");
         }

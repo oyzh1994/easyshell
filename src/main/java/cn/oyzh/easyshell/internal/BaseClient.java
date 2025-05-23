@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.internal;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -17,7 +16,7 @@ public interface BaseClient extends AutoCloseable {
     /**
      * 连接
      */
-    default void start() throws IOException {
+    default void start() throws Exception {
         this.start(this.connectTimeout());
     }
 
@@ -26,7 +25,7 @@ public interface BaseClient extends AutoCloseable {
      *
      * @param timeout 超时时间
      */
-    void start(int timeout) throws IOException;
+    void start(int timeout) throws Exception;
 
     /**
      * 获取连接

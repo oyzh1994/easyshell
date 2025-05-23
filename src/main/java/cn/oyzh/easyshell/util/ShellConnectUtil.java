@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
+import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.ui.FXFXTerminalPanel;
 import javafx.scene.Node;
@@ -67,7 +67,7 @@ public class ShellConnectUtil {
      * @param shellConnect 连接信息
      */
     public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
-        StageManager.showMask(adapter, () -> {
+//        StageManager.showMask(adapter, () -> {
             try {
                 if (shellConnect.isSSHType()) {
                     ShellSSHClient client = new ShellSSHClient(shellConnect);
@@ -119,6 +119,17 @@ public class ShellConnectUtil {
 //                    } else {
 //                        MessageBox.warn(I18nHelper.connectFail());
 //                    }
+                } else if (shellConnect.isVNCType()) {
+                    ShellVNCClient client = new ShellVNCClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    System.out.println("---------2");
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
                 } else if (shellConnect.isSerialType()) {
                     ShellSerialClient client = new ShellSerialClient(shellConnect);
                     // 开始连接
@@ -134,7 +145,7 @@ public class ShellConnectUtil {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }
-        });
+//        });
     }
 
     /**
