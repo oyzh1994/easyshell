@@ -186,6 +186,20 @@
                 </FXHyperlink>
             </FXVBox>
         </FXTab>
+        <FXTab text="%base.dependency" appendText="3">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="VNC">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/comtel2000/jfxvnc">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+            </FXVBox>
+        </FXTab>
     </FXTabPane>
     <FXText fx:id="copyright">
         <VBox.margin>
