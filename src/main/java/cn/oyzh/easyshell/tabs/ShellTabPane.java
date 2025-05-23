@@ -182,8 +182,10 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellSFTPTab(event.data());
         } else if (connect.isFTPType()) {
             tab = new ShellFTPTab(event.data());
-        } else {
+        } else if (connect.isSerialType()) {
             tab = new ShellSerialTab(event.data());
+        } else {
+            throw new RuntimeException("unknown connect type");
         }
         super.addTab(tab);
         if (!tab.isSelected()) {

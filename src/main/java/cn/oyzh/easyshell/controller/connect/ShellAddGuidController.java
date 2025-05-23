@@ -6,7 +6,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -52,6 +51,8 @@ public class ShellAddGuidController extends StageController {
                 ShellViewFactory.addSFTPConnect(group);
             } else if ("ftp".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addFTPConnect(group);
+//            } else if ("ftps".equalsIgnoreCase(this.type.selectedUserData())) {
+//                ShellViewFactory.addFTPSConnect(group);
             } else if ("serial".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addSerialConnect(group);
             }

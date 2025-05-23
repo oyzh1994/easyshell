@@ -109,7 +109,17 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
-                } else if(shellConnect.isSerialType()) {
+//                } else if (shellConnect.isFTPSType()) {
+//                    ShellFTPSClient client = new ShellFTPSClient(shellConnect);
+//                    // 开始连接
+//                    client.start(5_000);
+//                    if (client.isConnected()) {
+//                        client.close();
+//                        MessageBox.okToast(I18nHelper.connectSuccess());
+//                    } else {
+//                        MessageBox.warn(I18nHelper.connectFail());
+//                    }
+                } else if (shellConnect.isSerialType()) {
                     ShellSerialClient client = new ShellSerialClient(shellConnect);
                     // 开始连接
                     client.start(5_000);

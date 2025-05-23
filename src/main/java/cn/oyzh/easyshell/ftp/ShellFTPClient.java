@@ -16,6 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPSClient;
+import org.apache.commons.net.util.TrustManagerUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -34,8 +36,16 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025/04/26
  */
-public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFTPFile> {
+public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
+    /**
+     * ftp客户端
+     */
+    private FTPClient ftpClient;
+
+    /**
+     * 连接
+     */
     private ShellConnect shellConnect;
 
     /**
@@ -50,8 +60,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public void close() {
         try {
-            this.logout();
-            super.disconnect();
+            if (this.ftpClient != null) {
+                this.ftpClient.logout();
+                this.ftpClient.disconnect();
+                this.ftpClient = null;
+            }
             this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -62,9 +75,16 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
      * 初始化客户端
      */
     protected void initClient() {
+        if (this.shellConnect.isFtpSSLMode()) {
+            FTPSClient ftpsClient = new FTPSClient();
+            ftpsClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
+            this.ftpClient = ftpsClient;
+        } else {
+            this.ftpClient = new FTPClient();
+        }
         // 设置字符集
         if (StringUtil.isNotBlank(this.shellConnect.getCharset())) {
-            this.setControlEncoding(this.shellConnect.getCharset());
+            this.ftpClient.setControlEncoding(this.shellConnect.getCharset());
         }
     }
 
@@ -80,12 +100,32 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
             String hostIp = this.shellConnect.hostIp();
             // 开始连接时间
             long starTime = System.currentTimeMillis();
-            super.setConnectTimeout(timeout);
-            super.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
-            super.connect(hostIp, port);
-            super.enterLocalPassiveMode();
-            if (this.isConnected()) {
-                super.login(this.shellConnect.getUser(), this.shellConnect.getPassword());
+            this.ftpClient.setConnectTimeout(timeout);
+            this.ftpClient.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
+            this.ftpClient.connect(hostIp, port);
+            // 连接失败
+            if (!this.isConnected()) {
+                JulLog.warn("ftp connect fail.");
+                return;
+            }
+            // 登陆失败
+            if (StringUtil.isNotBlank(this.shellConnect.getUser())
+                    && StringUtil.isNotBlank(this.shellConnect.getPassword())
+                    && !this.ftpClient.login(this.shellConnect.getUser(), this.shellConnect.getPassword())) {
+                JulLog.warn("ftp login fail.");
+                return;
+            }
+            // 启用 TLS 加密
+            if (this.shellConnect.isFtpSSLMode()) {
+                FTPSClient ftpsClient = (FTPSClient) this.ftpClient;
+                ftpsClient.execPBSZ(0);
+                ftpsClient.execPROT("P");
+            }
+            // 被动模式
+            if (this.shellConnect.isFtpPassiveMode()) {
+                this.ftpClient.enterLocalPassiveMode();
+            } else {
+                this.ftpClient.enterLocalActiveMode();
             }
             this.lsFile("/");
             long endTime = System.currentTimeMillis();
@@ -99,6 +139,11 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public ShellConnect getShellConnect() {
         return this.shellConnect;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return this.ftpClient != null && this.ftpClient.isConnected();
     }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
@@ -131,7 +176,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         try {
             if (this.streamMode) {
                 this.streamMode = false;
-                this.completePendingCommand();
+                this.ftpClient.completePendingCommand();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -140,28 +185,28 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void delete(String file) throws Exception {
-        super.deleteFile(file);
+        this.ftpClient.deleteFile(file);
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        if (super.removeDirectory(dir)) {
+        if (this.ftpClient.removeDirectory(dir)) {
             return;
         }
-        if (this.sendSiteCommand("RMTDIR " + dir)) {
+        if (this.ftpClient.sendSiteCommand("RMTDIR " + dir)) {
             return;
         }
-        if (this.sendSiteCommand("RMDA " + dir)) {
+        if (this.ftpClient.sendSiteCommand("RMDA " + dir)) {
             return;
         }
-        if (this.sendCommand("RMD", dir) == 250) {
+        if (this.ftpClient.sendCommand("RMD", dir) == 250) {
             return;
         }
     }
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        FTPFile[] files = this.listFiles(dir);
+        FTPFile[] files = this.ftpClient.listFiles(dir);
         if (files != null) {
             for (FTPFile file : files) {
                 String filePath = dir + "/" + file.getName();
@@ -179,8 +224,13 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     }
 
     @Override
+    public boolean rename(String filePath, String newPath) throws Exception {
+        return this.ftpClient.rename(filePath, newPath);
+    }
+
+    @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws IOException {
-        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
         InputStream in;
         if (callback != null) {
@@ -188,18 +238,18 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         } else {
             in = localFile;
         }
-        super.storeFile(remoteFile, in);
+        this.ftpClient.storeFile(remoteFile, in);
         IOUtil.close(in);
         // 更新修改时间
         String mtime = DateUtil.format("yyyyMMddHHmmss");
-        super.setModificationTime(remoteFile, mtime);
+        this.ftpClient.setModificationTime(remoteFile, mtime);
     }
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
-        OutputStream out = super.storeFileStream(remoteFile);
+        OutputStream out = this.ftpClient.storeFileStream(remoteFile);
         OutputStream stream;
         if (callback != null) {
             stream = ShellFTPProgressMonitor.of(out, callback);
@@ -211,7 +261,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public void get(ShellFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws IOException {
-        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
         OutputStream out;
         if (callback != null) {
@@ -219,15 +269,15 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         } else {
             out = new FileOutputStream(localFile);
         }
-        super.retrieveFile(remoteFile.getFilePath(), out);
+        this.ftpClient.retrieveFile(remoteFile.getFilePath(), out);
         IOUtil.close(out);
     }
 
     @Override
     public InputStream getStream(ShellFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
-        this.setFileType(FTPClient.BINARY_FILE_TYPE);
+        this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
-        InputStream in = super.retrieveFileStream(remoteFile.getFilePath());
+        InputStream in = this.ftpClient.retrieveFileStream(remoteFile.getFilePath());
         InputStream stream;
         if (callback != null) {
             stream = ShellFTPProgressMonitor.of(in, callback);
@@ -240,7 +290,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public List<ShellFTPFile> lsFile(String filePath) throws Exception {
         List<ShellFTPFile> list = new ArrayList<>();
-        FTPFile[] files = this.listFiles(filePath);
+        FTPFile[] files = this.ftpClient.listFiles(filePath);
         if (files != null) {
             for (FTPFile file : files) {
                 FTPFile linkFile = null;
@@ -255,7 +305,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public boolean createDir(String filePath) throws IOException {
-        return super.makeDirectory(filePath);
+        return this.ftpClient.makeDirectory(filePath);
     }
 
     @Override
@@ -281,22 +331,22 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
 
     @Override
     public String workDir() throws Exception {
-        return super.printWorkingDirectory();
+        return this.ftpClient.printWorkingDirectory();
     }
 
     @Override
     public void cd(String filePath) throws Exception {
-        this.changeWorkingDirectory(filePath);
+        this.ftpClient.changeWorkingDirectory(filePath);
     }
 
     private FTPFile getFile(String filePath) throws IOException {
-        FTPFile file = super.mlistFile(filePath);
+        FTPFile file = this.ftpClient.mlistFile(filePath);
         if (file != null) {
             return file;
         }
         String pPath = ShellFileUtil.parent(filePath);
         String fName = ShellFileUtil.name(filePath);
-        FTPFile[] files = super.listFiles(pPath);
+        FTPFile[] files = this.ftpClient.listFiles(pPath);
         if (files != null) {
             for (FTPFile ftpFile : files) {
                 if (ftpFile.getName().equals(fName)) {
@@ -312,7 +362,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         // 文件不存在，创建文件
         if (!this.exist(filePath)) {
             try (InputStream inputStream = new ByteArrayInputStream(new byte[0])) {
-                super.storeFile(filePath, inputStream);
+                this.ftpClient.storeFile(filePath, inputStream);
             }
         }
     }
@@ -320,10 +370,10 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
     @Override
     public boolean exist(String filePath) throws Exception {
         try {
-            long size = this.size(filePath);
+            long size = this.ftpClient.size(filePath);
             // 如果是550，则要继续判断
             if (size == 550) {
-                FTPFile file = this.mlistFile(filePath);
+                FTPFile file = this.ftpClient.mlistFile(filePath);
                 return file != null;
             }
             return true;
@@ -337,7 +387,7 @@ public class ShellFTPClient extends FTPClient implements ShellFileClient<ShellFT
         // 构建 SITE CHMOD 命令
         String command = "CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
         // 发送命令到 FTP 服务器
-        return this.sendSiteCommand(command);
+        return this.ftpClient.sendSiteCommand(command);
     }
 
     @Override

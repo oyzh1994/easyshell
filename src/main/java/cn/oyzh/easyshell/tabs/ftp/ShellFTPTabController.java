@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.ftp;
 
-import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -259,13 +258,14 @@ public class ShellFTPTabController extends RichTabController {
 
     /**
      * 文件拖拽事件
+     *
      * @param event 事件
      */
     @EventSubscribe
     private void draggedFile(ShellFileDraggedEvent event) {
         try {
             // 判断是否选中
-            if(!this.getTab().isSelected()){
+            if (!this.getTab().isSelected()) {
                 return;
             }
             List<File> files = event.data();

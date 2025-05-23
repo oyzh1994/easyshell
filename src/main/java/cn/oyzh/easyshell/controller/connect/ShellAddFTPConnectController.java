@@ -15,11 +15,11 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -99,6 +99,18 @@ public class ShellAddFTPConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
+
+    /**
+     * 被动模式
+     */
+    @FXML
+    private FXCheckBox passiveMode;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -144,6 +156,8 @@ public class ShellAddFTPConnectController extends StageController {
             shellConnect.setType("ftp");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
+            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -183,6 +197,8 @@ public class ShellAddFTPConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());

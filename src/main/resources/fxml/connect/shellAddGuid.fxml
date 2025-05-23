@@ -55,6 +55,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </FXRadioButton>
+<!--    <FXRadioButton toggleGroup="$type" text="FTPS" userData="ftps">-->
+<!--        <VBox.margin>-->
+<!--            <Insets left="30" top="10"/>-->
+<!--        </VBox.margin>-->
+<!--    </FXRadioButton>-->
     <FXRadioButton toggleGroup="$type" text="%base.serialPort" userData="serial">
         <VBox.margin>
             <Insets left="30" top="10"/>

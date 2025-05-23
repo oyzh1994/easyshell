@@ -13,10 +13,10 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -101,6 +101,18 @@ public class ShellUpdateFTPConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
+
+    /**
+     * 被动模式
+     */
+    @FXML
+    private FXCheckBox passiveMode;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -142,6 +154,8 @@ public class ShellUpdateFTPConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
+            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -180,6 +194,8 @@ public class ShellUpdateFTPConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setConnectTimeOut(connectTimeOut);
+            this.shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            this.shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
@@ -223,6 +239,8 @@ public class ShellUpdateFTPConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
+        this.sslMode.setSelected(this.shellConnect.isFtpSSLMode());
+        this.passiveMode.setSelected(this.shellConnect.isFtpPassiveMode());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());

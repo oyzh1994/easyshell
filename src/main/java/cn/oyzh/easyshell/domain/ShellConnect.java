@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.domain;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -198,6 +199,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @Column
     private int serialFlowControl;
+
+    /**
+     * ftp的ssl模式
+     */
+    @Column
+    private Boolean ftpSSLMode;
+
+    /**
+     * ftp的被动模式
+     */
+    @Column
+    private Boolean ftpPassiveMode;
 
     public Boolean getEnableProxy() {
         return enableProxy;
@@ -584,6 +597,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "ftp".equalsIgnoreCase(this.type);
     }
 
+//    @JSONField(serialize = false, deserialize = false)
+//    public boolean isFTPSType() {
+//        return "ftps".equalsIgnoreCase(this.type);
+//    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }
@@ -630,5 +648,31 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setSerialFlowControl(int serialFlowControl) {
         this.serialFlowControl = serialFlowControl;
+    }
+
+//    /**
+//     * 是否隐式ftps
+//     *
+//     * @return 结果
+//     */
+//    @JSONField(serialize = false, deserialize = false)
+//    public boolean isImplicitFTPS() {
+//        return this.hostPort() == 990;
+//    }
+
+    public boolean isFtpSSLMode() {
+        return BooleanUtil.isTrue(ftpSSLMode);
+    }
+
+    public void setFtpSSLMode(Boolean ftpSSLMode) {
+        this.ftpSSLMode = ftpSSLMode;
+    }
+
+    public boolean isFtpPassiveMode() {
+        return BooleanUtil.isTrue(ftpPassiveMode);
+    }
+
+    public void setFtpPassiveMode(Boolean ftpPassiveMode) {
+        this.ftpPassiveMode = ftpPassiveMode;
     }
 }

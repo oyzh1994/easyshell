@@ -177,6 +177,22 @@ public class ShellViewFactory {
         }
     }
 
+//    /**
+//     * 新增ftps连接
+//     *
+//     * @param group 分组
+//     */
+//    public static void addFTPSConnect(ShellGroup group) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellAddFTPSConnectController.class);
+//            adapter.setProp("group", group);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
+
     /**
      * 修改ssh连接
      *
@@ -272,6 +288,22 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+//    /**
+//     * 修改ftps连接
+//     *
+//     * @param connect 连接
+//     */
+//    public static void updateFTPSConnect(ShellConnect connect) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellUpdateFTPSConnectController.class);
+//            adapter.setProp("shellConnect", connect);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     /**
      * 主页
