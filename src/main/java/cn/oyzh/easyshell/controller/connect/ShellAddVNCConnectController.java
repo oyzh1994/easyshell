@@ -39,12 +39,6 @@ import javafx.stage.WindowEvent;
 public class ShellAddVNCConnectController extends StageController {
 
     /**
-     * 用户名
-     */
-    @FXML
-    private ClearableTextField userName;
-
-    /**
      * 密码
      */
     @FXML
@@ -105,12 +99,6 @@ public class ShellAddVNCConnectController extends StageController {
     private FXCheckBox sslMode;
 
     /**
-     * 被动模式
-     */
-    @FXML
-    private FXCheckBox passiveMode;
-
-    /**
      * 分组
      */
     private ShellGroup group;
@@ -156,8 +144,8 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setType("vnc");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
-            shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
@@ -170,10 +158,6 @@ public class ShellAddVNCConnectController extends StageController {
     private void add() {
         String host = this.getHost();
         if (host == null) {
-            return;
-        }
-        String userName = this.userName.getTextTrim();
-        if (!this.userName.validate()) {
             return;
         }
         String password = this.password.getPassword();
@@ -195,8 +179,8 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
-            shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             // 分组及类型
             shellConnect.setType("vnc");

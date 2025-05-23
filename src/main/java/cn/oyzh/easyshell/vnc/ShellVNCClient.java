@@ -6,21 +6,37 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import org.jfxvnc.net.rfb.VncConnection;
 import org.jfxvnc.net.rfb.render.ProtocolConfiguration;
 import org.jfxvnc.net.rfb.render.RenderProtocol;
+import org.jfxvnc.ui.service.VncRenderService;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * vnc客户端
+ *
  * @author oyzh
  * @since 2025-05-23
  */
 public class ShellVNCClient implements BaseClient {
 
+    /**
+     * 空渲染组件
+     */
+    public static final VncRenderService NO_OP = new VncRenderService();
 
+    /**
+     * vnc连接
+     */
     private VncConnection connection;
 
+    /**
+     * 渲染组件
+     */
     private RenderProtocol renderProtocol;
 
+    /**
+     * 连接
+     */
     private final ShellConnect shellConnect;
 
     public ShellVNCClient(ShellConnect shellConnect) {
@@ -33,17 +49,28 @@ public class ShellVNCClient implements BaseClient {
     protected void initClient() {
         // 获取指定名称的串口
         this.connection = new VncConnection();
-        this.connection.setRenderProtocol(this.renderProtocol);
+        // 设置渲染组件
+        if (this.renderProtocol != null) {
+            this.connection.setRenderProtocol(this.renderProtocol);
+        } else {
+            this.connection.setRenderProtocol(NO_OP);
+        }
+        // 错误处理
         this.connection.addFaultListener(ex -> {
             ex.printStackTrace();
             MessageBox.exception(ex);
         });
         ProtocolConfiguration config = this.connection.getConfiguration();
+        // 基础属性
         config.sharedProperty().set(true);
         config.rawEncProperty().set(true);
         config.copyRectEncProperty().set(true);
         config.desktopSizeProperty().set(true);
         config.clientCursorProperty().set(true);
+        // ssl模式
+        if (this.shellConnect.isSSLMode()) {
+            config.sslProperty().set(true);
+        }
         config.hostProperty().set(this.shellConnect.hostIp());
         config.portProperty().set(this.shellConnect.hostPort());
         config.passwordProperty().set(this.shellConnect.getPassword());
@@ -86,7 +113,4 @@ public class ShellVNCClient implements BaseClient {
     public void setRenderProtocol(RenderProtocol renderProtocol) {
         this.renderProtocol = renderProtocol;
     }
-
-
-
 }

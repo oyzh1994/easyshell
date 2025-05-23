@@ -1,0 +1,6 @@
+# 1. 安装依赖
+下载并安装tightVNC
+https://www.tightvnc.com/download.php
+# 2. 开启VNC服务
+tightVNC
+设置监听端口为5901，应用

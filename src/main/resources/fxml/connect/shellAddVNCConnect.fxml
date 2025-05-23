@@ -36,17 +36,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.userName">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024" text="root">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
                 <InfoLabel text="%base.password">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -86,11 +75,6 @@
                     <FXCheckBox fx:id="sslMode" text="%base.enableSSL" fontSize="11">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXCheckBox>
-                    <FXCheckBox fx:id="passiveMode" text="%base.passiveMode" fontSize="11">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
                 </FXHBox>

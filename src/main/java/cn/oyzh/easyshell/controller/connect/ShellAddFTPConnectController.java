@@ -156,7 +156,7 @@ public class ShellAddFTPConnectController extends StageController {
             shellConnect.setType("ftp");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
-            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
@@ -197,7 +197,7 @@ public class ShellAddFTPConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
-            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             shellConnect.setUser(userName.trim());

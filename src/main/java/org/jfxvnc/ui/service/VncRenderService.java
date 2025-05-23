@@ -42,204 +42,232 @@ import java.util.function.BiConsumer;
 
 public class VncRenderService implements RenderProtocol {
 
-  private final VncConnection con;
+    private final VncConnection con;
 
-  private BiConsumer<ServerDecoderEvent, ImageRect> eventConsumer;
+    private BiConsumer<ServerDecoderEvent, ImageRect> eventConsumer;
 
-  private final BooleanProperty listeningMode = new SimpleBooleanProperty(false);
+    private final BooleanProperty listeningMode = new SimpleBooleanProperty(false);
 
-  private final ReadOnlyBooleanWrapper online = new ReadOnlyBooleanWrapper(false);
-  private final ReadOnlyBooleanWrapper bell = new ReadOnlyBooleanWrapper(false);
-  private final ReadOnlyStringWrapper serverCutText = new ReadOnlyStringWrapper();
+    private final ReadOnlyBooleanWrapper online = new ReadOnlyBooleanWrapper(false);
+    private final ReadOnlyBooleanWrapper bell = new ReadOnlyBooleanWrapper(false);
+    private final ReadOnlyStringWrapper serverCutText = new ReadOnlyStringWrapper();
 
-  private final ReadOnlyObjectWrapper<ConnectInfoEvent> connectInfo = new ReadOnlyObjectWrapper<>();
-  private final ReadOnlyObjectWrapper<ProtocolState> protocolState = new ReadOnlyObjectWrapper<>(ProtocolState.CLOSED);
-  private final ReadOnlyObjectWrapper<InputEventListener> inputEventListener = new ReadOnlyObjectWrapper<>();
-  private final ReadOnlyObjectWrapper<ColourMapEvent> colourMapEvent = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ConnectInfoEvent> connectInfo = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ProtocolState> protocolState = new ReadOnlyObjectWrapper<>(ProtocolState.CLOSED);
+    private final ReadOnlyObjectWrapper<InputEventListener> inputEventListener = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ColourMapEvent> colourMapEvent = new ReadOnlyObjectWrapper<>();
 
-  private final ReadOnlyObjectWrapper<Throwable> exceptionCaught = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<Throwable> exceptionCaught = new ReadOnlyObjectWrapper<>();
 
-  private ReadOnlyObjectWrapper<ImageRect> image;
+    private ReadOnlyObjectWrapper<ImageRect> image;
 
-  private final double minZoomLevel = 0.2;
-  private final double maxZoomLevel = 5.0;
+    private final double minZoomLevel = 0.2;
+    private final double maxZoomLevel = 5.0;
 
-  private final DoubleProperty zoomLevel = new SimpleDoubleProperty(1);
-  private final BooleanProperty fullSceen = new SimpleBooleanProperty(false);
-  private final BooleanProperty restart = new SimpleBooleanProperty(false);
+    private final DoubleProperty zoomLevel = new SimpleDoubleProperty(1);
+    private final BooleanProperty fullSceen = new SimpleBooleanProperty(false);
+    private final BooleanProperty restart = new SimpleBooleanProperty(false);
 
-  public VncRenderService() {
-    this(new VncConnection());
-  }
+    public VncRenderService() {
+        this(new VncConnection());
+    }
 
-  public VncRenderService(VncConnection con) {
-    this.con = con;
-    zoomLevel.addListener((l, a, b) -> {
-      if (b.doubleValue() > maxZoomLevel) {
-        zoomLevel.set(maxZoomLevel);
-      } else if (b.doubleValue() < minZoomLevel) {
-        zoomLevel.set(minZoomLevel);
-      }
-    });
+    public VncRenderService(VncConnection con) {
+        this.con = con;
+        zoomLevel.addListener((l, a, b) -> {
+            if (b.doubleValue() > maxZoomLevel) {
+                zoomLevel.set(maxZoomLevel);
+            } else if (b.doubleValue() < minZoomLevel) {
+                zoomLevel.set(minZoomLevel);
+            }
+        });
 
-  }
+    }
 
-  public void setEventConsumer(BiConsumer<ServerDecoderEvent, ImageRect> c) {
-    eventConsumer = c;
-  }
+    public void setEventConsumer(BiConsumer<ServerDecoderEvent, ImageRect> c) {
+        eventConsumer = c;
+    }
 
-  public ProtocolConfiguration getConfiguration() {
-    return con.getConfiguration();
-  }
+    public ProtocolConfiguration getConfiguration() {
+        return con.getConfiguration();
+    }
 
-  public void connect() {
-    con.setRenderProtocol(this);
-    con.addFaultListener(exceptionCaught::set);
+    public void connect() {
+        con.setRenderProtocol(this);
+        con.addFaultListener(exceptionCaught::set);
 
-    if (listeningMode.get()) {
-      con.startListeningMode().whenComplete((c, th) -> {
-        if (th != null) {
-          exceptionCaught(th);
-          disconnect();
+        if (listeningMode.get()) {
+            con.startListeningMode().whenComplete((c, th) -> {
+                if (th != null) {
+                    exceptionCaught(th);
+                    disconnect();
+                }
+            });
+            return;
         }
-      });
-      return;
-    }
-    con.connect().whenComplete((c, th) -> {
-      if (th != null) {
-        exceptionCaught(th);
-        disconnect();
-      }
-    });
-  }
-
-  public void disconnect() {
-    con.disconnect();
-    online.set(false);
-  }
-
-  @Override
-  public void render(ImageRect rect, RenderCallback callback) {
-    if (eventConsumer != null) {
-      eventConsumer.accept(null, rect);
-    }
-    if (image != null) {
-      image.set(rect);
-    }
-    callback.renderComplete();
-  }
-
-  @Override
-  public void eventReceived(ServerDecoderEvent event) {
-    JulLog.debug("event received: {}", event);
-    
-    if (eventConsumer != null) {
-      eventConsumer.accept(event, null);
-    }
-    
-    if (event instanceof ConnectInfoEvent) {
-      connectInfo.set((ConnectInfoEvent) event);
-      online.set(true);
-      return;
-    }
-    if (event instanceof BellEvent) {
-      bell.set(!bell.get());
-      return;
-    }
-    if (event instanceof ServerCutTextEvent) {
-      serverCutText.set(((ServerCutTextEvent) event).getText());
-      return;
-    }
-    if (event instanceof ColourMapEvent) {
-      colourMapEvent.set((ColourMapEvent) event);
-      return;
+        con.connect().whenComplete((c, th) -> {
+            if (th != null) {
+                exceptionCaught(th);
+                disconnect();
+            }
+        });
     }
 
-    JulLog.warn("not handled event: {}", event);
-  }
-
-  @Override
-  public void exceptionCaught(Throwable t) {
-    exceptionCaught.set(t);
-  }
-
-  @Override
-  public void stateChanged(ProtocolState state) {
-    protocolState.set(state);
-    if (state == ProtocolState.CLOSED) {
-      disconnect();
+    public void disconnect() {
+        con.disconnect();
+        online.set(false);
     }
-  }
 
-  @Override
-  public void registerInputEventListener(InputEventListener listener) {
-    inputEventListener.set(listener);
-  }
-
-  public ReadOnlyObjectProperty<ConnectInfoEvent> connectInfoProperty() {
-    return connectInfo.getReadOnlyProperty();
-  }
-
-  public ReadOnlyObjectProperty<ProtocolState> protocolStateProperty() {
-    return protocolState;
-  }
-
-  public ReadOnlyObjectProperty<InputEventListener> inputEventListenerProperty() {
-    return inputEventListener.getReadOnlyProperty();
-  }
-
-  public ReadOnlyObjectProperty<ImageRect> imageProperty() {
-    if (image == null) {
-      image = new ReadOnlyObjectWrapper<>();
+    @Override
+    public void render(ImageRect rect, RenderCallback callback) {
+        if (eventConsumer != null) {
+            eventConsumer.accept(null, rect);
+        }
+        if (image != null) {
+            image.set(rect);
+        }
+        callback.renderComplete();
     }
-    return image.getReadOnlyProperty();
-  }
 
-  public ReadOnlyObjectProperty<ColourMapEvent> colourMapEventProperty() {
-    return colourMapEvent.getReadOnlyProperty();
-  }
+    @Override
+    public void eventReceived(ServerDecoderEvent event) {
+        JulLog.debug("event received: {}", event);
 
-  public ReadOnlyObjectProperty<Throwable> exceptionCaughtProperty() {
-    return exceptionCaught.getReadOnlyProperty();
-  }
+        if (eventConsumer != null) {
+            eventConsumer.accept(event, null);
+        }
 
-  public ReadOnlyBooleanProperty connectingProperty() {
-    return con.connectingProperty();
-  }
+        if (event instanceof ConnectInfoEvent) {
+            connectInfo.set((ConnectInfoEvent) event);
+            online.set(true);
+            return;
+        }
+        if (event instanceof BellEvent) {
+            bell.set(!bell.get());
+            return;
+        }
+        if (event instanceof ServerCutTextEvent) {
+            serverCutText.set(((ServerCutTextEvent) event).getText());
+            return;
+        }
+        if (event instanceof ColourMapEvent) {
+            colourMapEvent.set((ColourMapEvent) event);
+            return;
+        }
 
-  public ReadOnlyBooleanProperty connectedProperty() {
-    return con.connectedProperty();
-  }
-  
-  public ReadOnlyBooleanProperty onlineProperty() {
-    return online.getReadOnlyProperty();
-  }
+        JulLog.warn("not handled event: {}", event);
+    }
 
-  public ReadOnlyBooleanProperty bellProperty() {
-    return bell.getReadOnlyProperty();
-  }
+    @Override
+    public void exceptionCaught(Throwable t) {
+        exceptionCaught.set(t);
+    }
 
-  public ReadOnlyStringProperty serverCutTextProperty() {
-    return serverCutText.getReadOnlyProperty();
-  }
+    @Override
+    public void stateChanged(ProtocolState state) {
+        protocolState.set(state);
+        if (state == ProtocolState.CLOSED) {
+            disconnect();
+        }
+    }
 
-  public DoubleProperty zoomLevelProperty() {
-    return zoomLevel;
-  }
+    @Override
+    public void registerInputEventListener(InputEventListener listener) {
+        inputEventListener.set(listener);
+    }
 
-  public BooleanProperty fullSceenProperty() {
-    return fullSceen;
-  }
+    public ReadOnlyObjectProperty<ConnectInfoEvent> connectInfoProperty() {
+        return connectInfo.getReadOnlyProperty();
+    }
 
-  public BooleanProperty restartProperty() {
-    return restart;
-  }
+    public ReadOnlyObjectProperty<ProtocolState> protocolStateProperty() {
+        return protocolState;
+    }
 
-  public BooleanProperty listeningModeProperty() {
-    return listeningMode;
-  }
+    public ReadOnlyObjectProperty<InputEventListener> inputEventListenerProperty() {
+        return inputEventListener.getReadOnlyProperty();
+    }
 
-  public IntegerProperty listeningPortProperty() {
-    return getConfiguration().listeningPortProperty();
-  }
+    public ReadOnlyObjectProperty<ImageRect> imageProperty() {
+        if (image == null) {
+            image = new ReadOnlyObjectWrapper<>();
+        }
+        return image.getReadOnlyProperty();
+    }
+
+    public ReadOnlyObjectProperty<ColourMapEvent> colourMapEventProperty() {
+        return colourMapEvent.getReadOnlyProperty();
+    }
+
+    public ReadOnlyObjectProperty<Throwable> exceptionCaughtProperty() {
+        return exceptionCaught.getReadOnlyProperty();
+    }
+
+    public ReadOnlyBooleanProperty connectingProperty() {
+        return con.connectingProperty();
+    }
+
+    public ReadOnlyBooleanProperty connectedProperty() {
+        return con.connectedProperty();
+    }
+
+    public ReadOnlyBooleanProperty onlineProperty() {
+        return online.getReadOnlyProperty();
+    }
+
+    public ReadOnlyBooleanProperty bellProperty() {
+        return bell.getReadOnlyProperty();
+    }
+
+    public ReadOnlyStringProperty serverCutTextProperty() {
+        return serverCutText.getReadOnlyProperty();
+    }
+
+    public DoubleProperty zoomLevelProperty() {
+        return zoomLevel;
+    }
+
+    public BooleanProperty fullSceenProperty() {
+        return fullSceen;
+    }
+
+    public BooleanProperty restartProperty() {
+        return restart;
+    }
+
+    public BooleanProperty listeningModeProperty() {
+        return listeningMode;
+    }
+
+    public IntegerProperty listeningPortProperty() {
+        return getConfiguration().listeningPortProperty();
+    }
+
+    public double getZoomLevel() {
+        return zoomLevel.get();
+    }
+
+    public void setZoomLevel(double zoomLevel) {
+        this.zoomLevel.set(zoomLevel);
+    }
+
+    public ConnectInfoEvent getConnectInfo() {
+        return connectInfo.get();
+    }
+
+    public Integer frameWidth() {
+        ConnectInfoEvent event = connectInfo.get();
+        if (event == null) {
+            return null;
+        }
+        return event.getFrameWidth();
+    }
+
+    public Integer frameHeight() {
+        ConnectInfoEvent event = connectInfo.get();
+        if (event == null) {
+            return null;
+        }
+        return event.getFrameHeight();
+    }
 }

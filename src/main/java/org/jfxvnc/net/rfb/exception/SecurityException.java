@@ -13,15 +13,19 @@
  *******************************************************************************/
 package org.jfxvnc.net.rfb.exception;
 
+import cn.oyzh.fx.plus.information.MessageBox;
+
 public class SecurityException extends Exception {
 
   private static final long serialVersionUID = -2832675482799477488L;
 
   public SecurityException(String message) {
     super(message);
+    MessageBox.exception(this);
   }
 
   public SecurityException(String message, Throwable throwable) {
     super(message, throwable);
+    MessageBox.exception(this);
   }
 }

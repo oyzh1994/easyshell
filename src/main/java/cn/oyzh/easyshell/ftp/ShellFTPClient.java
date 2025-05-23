@@ -75,7 +75,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
      * 初始化客户端
      */
     protected void initClient() {
-        if (this.shellConnect.isFtpSSLMode()) {
+        if (this.shellConnect.isSSLMode()) {
             FTPSClient ftpsClient = new FTPSClient();
             ftpsClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
             this.ftpClient = ftpsClient;
@@ -116,7 +116,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 return;
             }
             // 启用 TLS 加密
-            if (this.shellConnect.isFtpSSLMode()) {
+            if (this.shellConnect.isSSLMode()) {
                 FTPSClient ftpsClient = (FTPSClient) this.ftpClient;
                 ftpsClient.execPBSZ(0);
                 ftpsClient.execPROT("P");

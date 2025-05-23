@@ -154,7 +154,7 @@ public class ShellUpdateFTPConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
-            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
@@ -194,7 +194,7 @@ public class ShellUpdateFTPConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setConnectTimeOut(connectTimeOut);
-            this.shellConnect.setFtpSSLMode(this.sslMode.isSelected());
+            this.shellConnect.setSSLMode(this.sslMode.isSelected());
             this.shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息
             this.shellConnect.setUser(userName.trim());
@@ -239,7 +239,7 @@ public class ShellUpdateFTPConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
-        this.sslMode.setSelected(this.shellConnect.isFtpSSLMode());
+        this.sslMode.setSelected(this.shellConnect.isSSLMode());
         this.passiveMode.setSelected(this.shellConnect.isFtpPassiveMode());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理

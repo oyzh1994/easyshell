@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.vnc;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -9,11 +10,9 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
 import org.jfxvnc.ui.control.VncImageView;
 import org.jfxvnc.ui.service.VncRenderService;
 
@@ -26,22 +25,27 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2025/05/23
  */
-public class ShellVNCTabController extends RichTabController   {
+public class ShellVNCTabController extends RichTabController {
 
+    /**
+     * 根节点
+     */
     @FXML
     private ScrollPane root;
 
     /**
-     * 上传/下载管理
+     * vnc视图
      */
     @FXML
     private VncImageView vncView;
 
-   private VncRenderService renderService;
-
+    /**
+     * vnc渲染组件
+     */
+    private VncRenderService renderService;
 
     /**
-     * ftp客户端
+     * vnc客户端
      */
     private ShellVNCClient client;
 
@@ -49,12 +53,6 @@ public class ShellVNCTabController extends RichTabController   {
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
-     * 设置储存
-     */
-    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
-
 
     public ShellVNCClient client() {
         return this.client;
@@ -69,11 +67,11 @@ public class ShellVNCTabController extends RichTabController   {
      */
     public void init(ShellConnect shellConnect) {
         this.client = new ShellVNCClient(shellConnect);
-        this.vncView.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
-
-        });
+        // 初始化组件
         this.initRenderService();
+        // 设置渲染组件
         this.client.setRenderProtocol(this.renderService);
+        // 执行连接
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -88,6 +86,9 @@ public class ShellVNCTabController extends RichTabController   {
                 if (this.setting.isHiddenLeftAfterConnected()) {
                     ShellEventUtil.layout1();
                 }
+
+                // 初始化缩放
+                this.initScale();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -96,23 +97,17 @@ public class ShellVNCTabController extends RichTabController   {
         });
     }
 
+    /**
+     * 初始化渲染组件
+     */
     private void initRenderService() {
         this.renderService = new VncRenderService();
-
         this.renderService.setEventConsumer(this.vncView);
         this.renderService.serverCutTextProperty().addListener((l, old, text) -> this.vncView.addClipboardText(text));
-
-        this.renderService.onlineProperty().addListener((l, old, online) -> Platform.runLater(() -> {
-            this.vncView.setDisable(!online);
-        }));
-
-        this.renderService.inputEventListenerProperty().addListener(l -> this.vncView.registerInputEventListener(this.renderService.inputEventListenerProperty().get()));
         this.renderService.getConfiguration().clientCursorProperty().addListener((l, a, b) -> this.vncView.setUseClientCursor(b));
-        this.vncView.setOnZoom(e -> this.renderService.zoomLevelProperty().set(e.getTotalZoomFactor()));
-
-        this.renderService.zoomLevelProperty().addListener((l, old, zoom) ->  this.vncView.zoomLevelProperty().set(zoom.doubleValue()));
-
-        this.root.setOnScroll(e -> this.renderService.zoomLevelProperty().set(this.renderService.zoomLevelProperty().get() + (e.getDeltaY() > 0.0 ? 0.01 : -0.01)));
+        this.renderService.inputEventListenerProperty().addListener(l -> this.vncView.registerInputEventListener(this.renderService.inputEventListenerProperty().get()));
+        this.renderService.zoomLevelProperty().addListener((observable, oldValue, newValue) -> this.vncView.setZoomLevel(newValue.doubleValue()));
+        this.vncView.setOnZoom(e -> this.renderService.setZoomLevel(e.getTotalZoomFactor()));
     }
 
     @Override
@@ -125,43 +120,27 @@ public class ShellVNCTabController extends RichTabController   {
         }
     }
 
-//    @Override
-//    public void render(ImageRect imageRect, RenderCallback renderCallback) {
-//        this.vncView.accept(null, imageRect);
-//        renderCallback.renderComplete();
-//    }
-//
-//    @Override
-//    public void eventReceived(ServerDecoderEvent event) {
-//        this.vncView.accept(event, null);
-////        if (event instanceof ConnectInfoEvent) {
-////            this.vncView.accept(event, null);
-////            return;
-////        }
-//        if (event instanceof ServerCutTextEvent cutTextEvent) {
-//            this.vncView.addClipboardText(cutTextEvent.getText());
-//            return;
-//        }
-//    }
-//
-//    @Override
-//    public void exceptionCaught(Throwable throwable) {
-//
-//    }
-//
-//    @Override
-//    public void stateChanged(ProtocolState protocolState) {
-//
-//    }
-//
-//    @Override
-//    public void registerInputEventListener(InputEventListener inputEventListener) {
-//
-//
-//    }
+    /**
+     * 初始化缩放
+     */
+    private void initScale() {
+        ThreadUtil.start(() -> {
+            Integer frameWidth = this.renderService.frameWidth();
+            Integer frameHeight = this.renderService.frameHeight();
+            if (frameWidth != null && frameHeight != null) {
+                double width = this.root.getWidth() - 4;
+                double scale1 = width / frameWidth;
+                double height = this.root.getHeight() - 4;
+                double scale2 = height / frameHeight;
+                this.renderService.setZoomLevel(Math.min(scale1, scale2));
+            }
+        }, 100);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
         super.initialize(location, resourceBundle);
+        this.root.widthProperty().addListener((observable, oldValue, newValue) -> this.initScale());
+        this.root.heightProperty().addListener((observable, oldValue, newValue) -> this.initScale());
     }
 }

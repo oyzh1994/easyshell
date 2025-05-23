@@ -123,7 +123,6 @@ public class ShellConnectUtil {
                     ShellVNCClient client = new ShellVNCClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
-                    System.out.println("---------2");
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());

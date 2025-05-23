@@ -182,16 +182,18 @@
 <!--            <version>1.2.0</version>-->
 <!--        </dependency>-->
 
+        <!-- vnc协议依赖开始 -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>4.1.114.Final</version>
+            <version>4.1.121.Final</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.21.0-GA</version>
+            <version>3.30.2-GA</version>
         </dependency>
+        <!-- vnc协议依赖结束 -->
 
         <!-- fx打包 -->
         <dependency>

@@ -201,10 +201,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private int serialFlowControl;
 
     /**
-     * ftp的ssl模式
+     * ssl模式
+     * ftp、vnc协议使用此字段
      */
     @Column
-    private Boolean ftpSSLMode;
+    private Boolean sslMode;
 
     /**
      * ftp的被动模式
@@ -655,22 +656,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.serialFlowControl = serialFlowControl;
     }
 
-//    /**
-//     * 是否隐式ftps
-//     *
-//     * @return 结果
-//     */
-//    @JSONField(serialize = false, deserialize = false)
-//    public boolean isImplicitFTPS() {
-//        return this.hostPort() == 990;
-//    }
-
-    public boolean isFtpSSLMode() {
-        return BooleanUtil.isTrue(ftpSSLMode);
+    public boolean isSSLMode() {
+        return BooleanUtil.isTrue(sslMode);
     }
 
-    public void setFtpSSLMode(Boolean ftpSSLMode) {
-        this.ftpSSLMode = ftpSSLMode;
+    public void setSSLMode(Boolean sslMode) {
+        this.sslMode = sslMode;
     }
 
     public boolean isFtpPassiveMode() {

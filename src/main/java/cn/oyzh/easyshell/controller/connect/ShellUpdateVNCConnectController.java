@@ -36,12 +36,6 @@ import javafx.stage.WindowEvent;
 public class ShellUpdateVNCConnectController extends StageController {
 
     /**
-     * 用户名
-     */
-    @FXML
-    private ClearableTextField userName;
-
-    /**
      * 密码
      */
     @FXML
@@ -107,12 +101,6 @@ public class ShellUpdateVNCConnectController extends StageController {
     private FXCheckBox sslMode;
 
     /**
-     * 被动模式
-     */
-    @FXML
-    private FXCheckBox passiveMode;
-
-    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -154,10 +142,8 @@ public class ShellUpdateVNCConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
-            shellConnect.setFtpSSLMode(this.sslMode.isSelected());
-            shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
-            shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
@@ -170,10 +156,6 @@ public class ShellUpdateVNCConnectController extends StageController {
     private void update() {
         String host = this.getHost();
         if (host == null) {
-            return;
-        }
-        String userName = this.userName.getTextTrim();
-        if (!this.userName.validate()) {
             return;
         }
         String password = this.password.getPassword();
@@ -194,10 +176,8 @@ public class ShellUpdateVNCConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setConnectTimeOut(connectTimeOut);
-            this.shellConnect.setFtpSSLMode(this.sslMode.isSelected());
-            this.shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
+            this.shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
-            this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
@@ -239,11 +219,9 @@ public class ShellUpdateVNCConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
-        this.sslMode.setSelected(this.shellConnect.isFtpSSLMode());
-        this.passiveMode.setSelected(this.shellConnect.isFtpPassiveMode());
+        this.sslMode.setSelected(this.shellConnect.isSSLMode());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理
-        this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
