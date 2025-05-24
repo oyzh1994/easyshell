@@ -25,9 +25,15 @@ jpackage:
   # vm参数
   java-options:
     - '-XX:+UnlockExperimentalVMOptions'
+    - '-Xss256k'
+    - '-Xms32m'
+    - '-Xmx2G'
+    - '-Xshare:off'
+    - '-XX:+UseZGC'
+    - '-XX:ConcGCThreads=2'
+    - '-XX:+TieredCompilation'
+    - '-XX:TieredStopAtLevel=1'
     - '-XX:+UseCompactObjectHeaders'
-    - '-Xmx1536m'
-    - '-Xms56m'
   # 程序描述
   description: 功能强大、现代化、跨平台的终端仿真器.
   # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
