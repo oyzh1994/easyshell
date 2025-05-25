@@ -27,7 +27,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
-import com.jcraft.jsch.JSchException;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXFXTerminalPanel;
@@ -119,7 +118,7 @@ public class ShellSSHEffTabController extends SubTabController {
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
-     * 初始化组件
+     * 初始化终端
      *
      * @throws IOException 异常
      */
@@ -133,6 +132,9 @@ public class ShellSSHEffTabController extends SubTabController {
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }
 
+    /**
+     * 初始化终端大小
+     */
     private void initShellSize() {
         int sizeW = (int) this.widget.getTerminalPanel().getWidth();
         int sizeH = (int) this.widget.getTerminalPanel().getHeight();
@@ -141,6 +143,19 @@ public class ShellSSHEffTabController extends SubTabController {
         shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
+    /**
+     * 初始化背景
+     */
+    private void initBackground() {
+        ShellConnect connect = this.client().getShellConnect();
+        FXFXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+        // 处理背景
+        ShellConnectUtil.initBackground(connect, terminalPanel);
+    }
+
+    /**
+     * 初始化文件
+     */
     private void initFile() {
         ShellSFTPClient sftpClient = this.sftpClient();
         this.fileTable.setClient(sftpClient);
@@ -164,18 +179,12 @@ public class ShellSSHEffTabController extends SubTabController {
     }
 
     /**
-     * 初始化背景
+     * 初始化
+     *
+     * @throws Exception 异常
      */
-    private void initBackground() {
-        ShellConnect connect = this.client().getShellConnect();
-        FXFXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
-        // 处理背景
-        ShellConnectUtil.initBackground(connect, terminalPanel);
-    }
-
-    public void init() throws IOException, JSchException {
+    public void init() throws Exception {
         ShellSSHClient client = this.client();
-        client.setResolveWorkerDir(true);
         ShellSSHShell shell = client.openShell();
         this.initWidget();
         shell.connect(client.connectTimeout());
@@ -247,6 +256,9 @@ public class ShellSSHEffTabController extends SubTabController {
         return this.client().sftpClient();
     }
 
+    /**
+     * 刷新文件
+     */
     @FXML
     private void refreshFile() {
         try {
@@ -258,32 +270,21 @@ public class ShellSSHEffTabController extends SubTabController {
     }
 
     /**
-     * 隐藏文件
+     * 删除文件
      */
     @FXML
-    private void hiddenFile() {
-        this.hiddenFile(!this.hiddenPane.isHidden());
+    private void deleteFile() {
+        try {
+            this.fileTable.deleteFile(this.fileTable.getSelectedItems());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     /**
-     * 隐藏文件
-     *
-     * @param hidden 是否隐藏
+     * 返回上一级
      */
-    private void hiddenFile(boolean hidden) {
-        if (hidden) {
-            this.hiddenPane.hidden();
-            this.fileTable.setShowHiddenFile(false);
-            this.hiddenPane.setTipText(I18nHelper.showHiddenFiles());
-        } else {
-            this.hiddenPane.show();
-            this.fileTable.setShowHiddenFile(true);
-            this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
-        }
-        this.setting.setShowHiddenFile(hidden);
-        this.settingStore.update(this.setting);
-    }
-
     @FXML
     private void returnDir() {
         try {
@@ -307,11 +308,33 @@ public class ShellSSHEffTabController extends SubTabController {
         }
     }
 
+    /**
+     * 创建文件夹
+     */
+    @FXML
+    private void mkdir() {
+        this.fileTable.createDir();
+    }
+
+    /**
+     * 创建文件
+     */
+    @FXML
+    private void touchFile() {
+        this.fileTable.touch();
+    }
+
+    /**
+     * 上传文件
+     */
     @FXML
     private void uploadFile() {
         this.fileTable.uploadFile();
     }
 
+    /**
+     * 上传文件夹
+     */
     @FXML
     private void uploadFolder() {
         this.fileTable.uploadFolder();
@@ -345,24 +368,31 @@ public class ShellSSHEffTabController extends SubTabController {
         ShellViewFactory.fileManage(this.client().sftpClient());
     }
 
+    /**
+     * 隐藏文件
+     */
     @FXML
-    private void deleteFile() {
-        try {
-            this.fileTable.deleteFile(this.fileTable.getSelectedItems());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
+    private void hiddenFile() {
+        this.hiddenFile(!this.hiddenPane.isHidden());
+    }
+
+    /**
+     * 隐藏文件
+     *
+     * @param hidden 是否隐藏
+     */
+    private void hiddenFile(boolean hidden) {
+        if (hidden) {
+            this.hiddenPane.hidden();
+            this.fileTable.setShowHiddenFile(false);
+            this.hiddenPane.setTipText(I18nHelper.showHiddenFiles());
+        } else {
+            this.hiddenPane.show();
+            this.fileTable.setShowHiddenFile(true);
+            this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
-    }
-
-    @FXML
-    private void mkdir() {
-        this.fileTable.createDir();
-    }
-
-    @FXML
-    private void touchFile() {
-        this.fileTable.touch();
+        this.setting.setShowHiddenFile(hidden);
+        this.settingStore.update(this.setting);
     }
 
 }

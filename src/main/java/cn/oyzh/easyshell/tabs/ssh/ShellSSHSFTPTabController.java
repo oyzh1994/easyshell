@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
-import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
@@ -318,6 +317,9 @@ public class ShellSSHSFTPTabController extends SubTabController {
         return this.client().sftpClient();
     }
 
+    /**
+     * 刷新文件
+     */
     @FXML
     private void refreshFile() {
         try {
@@ -328,6 +330,9 @@ public class ShellSSHSFTPTabController extends SubTabController {
         }
     }
 
+    /**
+     * 删除文件
+     */
     @FXML
     private void deleteFile() {
         try {
@@ -338,6 +343,9 @@ public class ShellSSHSFTPTabController extends SubTabController {
         }
     }
 
+    /**
+     * 返回上一级
+     */
     @FXML
     private void returnDir() {
         try {
@@ -361,21 +369,33 @@ public class ShellSSHSFTPTabController extends SubTabController {
         }
     }
 
+    /**
+     * 创建文件夹
+     */
     @FXML
     private void mkdir() {
         this.fileTable.createDir();
     }
 
+    /**
+     * 创建文件
+     */
     @FXML
     private void touchFile() {
         this.fileTable.touch();
     }
 
+    /**
+     * 上传文件
+     */
     @FXML
     private void uploadFile() {
         this.fileTable.uploadFile();
     }
 
+    /**
+     * 上传文件夹
+     */
     @FXML
     private void uploadFolder() {
         this.fileTable.uploadFolder();
