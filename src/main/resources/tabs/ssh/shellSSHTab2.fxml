@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<FXTabPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTabController"
+           rotateGraphic="true" side="RIGHT">
+    <fx:include fx:id="effTab" source="shellSSHEffTab.fxml"/>
+    <fx:include fx:id="serverTab" source="shellSSHServerTab.fxml"/>
+    <fx:include fx:id="dockerTab" source="shellSSHDockerTab.fxml"/>
+    <fx:include fx:id="monitorTab" source="shellSSHMonitorTab.fxml"/>
+    <fx:include fx:id="processTab" source="shellSSHProcessTab.fxml"/>
+    <fx:include fx:id="configTab" source="shellSSHConfigTab.fxml"/>
+</FXTabPane>

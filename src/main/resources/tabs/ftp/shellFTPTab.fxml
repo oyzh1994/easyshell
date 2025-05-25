@@ -62,16 +62,16 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
-        <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
-            <HBox.margin>
-                <Insets left="5" top="8"/>
-            </HBox.margin>
-        </BoxSVGLabel>
         <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
                 <Insets left="5" top="8"/>
             </HBox.margin>
         </HiddenSVGPane>
+        <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
+            <HBox.margin>
+                <Insets left="5" top="8"/>
+            </HBox.margin>
+        </BoxSVGLabel>
         <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
             <FXHBox.margin>
                 <Insets left="5" top="3"/>

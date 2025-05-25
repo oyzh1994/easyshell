@@ -24,6 +24,12 @@ public class ShellSetting extends AppSetting {
     private String x11Path;
 
     /**
+     * ssh效率模式
+     */
+    @Column
+    private Boolean efficiencyMode;
+
+    /**
      * 是否显示隐藏文件
      */
     @Column
@@ -97,6 +103,7 @@ public class ShellSetting extends AppSetting {
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
             this.showHiddenFile = setting.showHiddenFile;
+            this.efficiencyMode = setting.efficiencyMode;
             this.termRefreshRate = setting.termRefreshRate;
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
@@ -221,5 +228,13 @@ public class ShellSetting extends AppSetting {
 
     public void setTermUseAntialiasing(Boolean termUseAntialiasing) {
         this.termUseAntialiasing = termUseAntialiasing;
+    }
+
+    public boolean isEfficiencyMode() {
+        return BooleanUtil.isTrue(this.efficiencyMode);
+    }
+
+    public void setEfficiencyMode(Boolean efficiencyMode) {
+        this.efficiencyMode = efficiencyMode;
     }
 }

@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.ssh;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.ssh.util.SSHUtil;
 import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.ProxyHTTP;
 import com.jcraft.jsch.ProxySOCKS4;
@@ -11,11 +14,39 @@ import com.jcraft.jsch.ProxySOCKS5;
  * @author oyzh
  * @since 2025-03-21
  */
-public class ShellSSHClientUtil {
+public class ShellSSHUtil {
 
-//    public static ShellSSHClient newClient(ShellConnect connect) {
-//        return new ShellSSHClient(connect);
-//    }
+    /**
+     * 解析工作目录
+     *
+     * @param output 输出
+     * @return 工作目录
+     */
+    public static String resolveWorkerDir(String output) {
+        if (StringUtil.isBlank(output) || !output.contains("@")) {
+            return null;
+        }
+        // 获取最后一行
+        String line = output.lines().toList().getLast();
+        // 移除ansi字符串
+        line = SSHUtil.removeAnsi(line);
+        // 目录
+        String dir = null;
+        // linux、unix、macos
+        if (StringUtil.endWithAny(line, "# ", "@ ")) {
+            line = line.substring(0, line.length() - 2);
+            line = line.substring(line.lastIndexOf("@"));
+            dir = line.substring(line.lastIndexOf(":") + 1);
+        } else if (StringUtil.endWithAny(line, ">")) {// windows
+            line = line.substring(0, line.length() - 1);
+            line = line.substring(line.lastIndexOf("@"));
+            dir = line.substring(line.lastIndexOf(" ") + 1);
+            // windows的路径做一次处理
+            dir = ShellFileUtil.fixFilePath(dir);
+        }
+        return dir;
+    }
+
 
     /**
      * 初始化代理

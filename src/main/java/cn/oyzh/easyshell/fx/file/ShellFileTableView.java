@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -46,6 +47,19 @@ import java.util.stream.Collectors;
  * @since 2025-03-05
  */
 public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends ShellFile> extends FXTableView<E> implements FXEventListener {
+
+    /**
+     * 开启加载动画
+     */
+    private boolean enabledLoading = true;
+
+    public boolean isEnabledLoading() {
+        return enabledLoading;
+    }
+
+    public void setEnabledLoading(boolean enabledLoading) {
+        this.enabledLoading = enabledLoading;
+    }
 
     @Override
     public void initNode() {
@@ -189,7 +203,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 加载文件
      */
     public void loadFile() {
-        StageManager.showMask(() -> {
+        // 执行函数
+        Runnable func = () -> {
             try {
                 this.loadFileInner();
                 this.refresh();
@@ -199,7 +214,16 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                     MessageBox.exception(ex);
                 }
             }
-        });
+        };
+        if (this.enabledLoading) {
+            StageManager.showMask(func);
+        } else {
+            ThreadUtil.startVirtual(() -> {
+                this.disable();
+                func.run();
+                this.enable();
+            });
+        }
     }
 
     /**

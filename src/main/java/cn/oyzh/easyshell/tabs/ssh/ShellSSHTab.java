@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
@@ -22,6 +24,11 @@ public class ShellSSHTab extends ShellConnectTab {
 
     @Override
     protected String url() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        // 效率模式
+        if (setting.isEfficiencyMode()) {
+            return "/tabs/ssh/shellSSHTab2.fxml";
+        }
         return "/tabs/ssh/shellSSHTab.fxml";
     }
 

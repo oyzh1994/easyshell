@@ -65,8 +65,16 @@ public class ShellSSHChannel implements AutoCloseable {
         return this.channel.getInputStream();
     }
 
+    public void setInputStream(InputStream inputStream) {
+        this.channel.setInputStream(inputStream);
+    }
+
     public OutputStream getOutputStream() throws IOException {
         return this.channel.getOutputStream();
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.channel.setOutputStream(outputStream);
     }
 
     public Session getSession() throws JSchException {

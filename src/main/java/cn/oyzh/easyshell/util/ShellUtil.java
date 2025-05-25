@@ -29,13 +29,13 @@ public class ShellUtil {
         return StringUtil.replace(filePath, "/", "\\");
     }
 
-    public static String reverseWindowsFilePath(String filePath) {
-        if (!filePath.startsWith("/")) {
-            filePath = "/" + filePath;
-        }
-        filePath = StringUtil.replace(filePath, "\\", "/");
-        return StringUtil.replace(filePath, "//", "/");
-    }
+//    public static String reverseWindowsFilePath(String filePath) {
+//        if (!filePath.startsWith("/")) {
+//            filePath = "/" + filePath;
+//        }
+//        filePath = StringUtil.replace(filePath, "\\", "/");
+//        return StringUtil.replace(filePath, "//", "/");
+//    }
 
 //    public static String permission(String permission) {
 //        int[] permissions = new int[3];

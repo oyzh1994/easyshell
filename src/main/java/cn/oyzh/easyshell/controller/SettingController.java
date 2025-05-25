@@ -232,6 +232,12 @@ public class SettingController extends StageController {
     private ReadOnlyTextField x11Path;
 
     /**
+     * ssh效率模式
+     */
+    @FXML
+    private FXToggleSwitch efficiencyMode;
+
+    /**
      * 连接后收起左侧
      */
     @FXML
@@ -346,6 +352,8 @@ public class SettingController extends StageController {
         this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
         this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
+        // 效率模式
+        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
         // 连接后收起左侧
         this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
     }
@@ -406,6 +414,7 @@ public class SettingController extends StageController {
             this.setting.setRememberPageLocation((byte) (this.pageLocation.isSelected() ? 1 : 0));
             this.setting.setExitMode((byte) Integer.parseInt(this.exitMode.selectedUserData()));
             // 其他设置
+            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // 更新设置
             if (this.settingStore.update(this.setting)) {

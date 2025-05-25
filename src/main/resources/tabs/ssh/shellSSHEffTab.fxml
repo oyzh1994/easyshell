@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.easyshell.ssh.ShellSSHTermWidget?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
+       text="%base.terminal" fx:id="root">
+    <graphic>
+        <LinuxSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXHBox flexWidth="100%" flexHeight="100%">
+        <FXVBox flexWidth="30%" flexHeight="100%">
+            <FXHBox prefHeight="30" flexWidth="100%">
+                <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </RefreshSVGGlyph>
+                <DeleteSVGGlyph fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </DeleteSVGGlyph>
+                <ClearableTextField flexWidth="100% - 200" realHeight="24" fx:id="filterFile"
+                                    tipText="%base.searchKWTip">
+                    <FXHBox.margin>
+                        <Insets left="5" top="3"/>
+                    </FXHBox.margin>
+                </ClearableTextField>
+                <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false"
+                                    onMousePrimaryClicked="#uploadFile">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FileUploadSVGGlyph>
+                <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false"
+                                      onMousePrimaryClicked="#uploadFolder">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FolderUploadSVGGlyph>
+                <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FileAddSVGGlyph>
+                <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FolderAddSVGGlyph>
+                <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
+                    <HBox.margin>
+                        <Insets left="5" top="8"/>
+                    </HBox.margin>
+                </HiddenSVGPane>
+                <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
+                    <HBox.margin>
+                        <Insets left="5" top="8"/>
+                    </HBox.margin>
+                </BoxSVGLabel>
+            </FXHBox>
+            <FXHBox prefHeight="30" flexWidth="100%">
+                <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </HomeSVGGlyph>
+                <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </ReturnFolderSVGGlyph>
+                <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 70">
+                    <FXHBox.margin>
+                        <Insets left="5" top="4"/>
+                    </FXHBox.margin>
+                </ShellFileLocationTextField>
+            </FXHBox>
+            <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 90">
+                <columns>
+                    <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
+                    <FXTableColumn style="-fx-padding-left:0;" prefWidth="200" valueName="fileName"
+                                   text="%base.name"/>
+                    <FXTableColumn prefWidth="90" valueName="fileSizeDisplay" text="%base.size"/>
+                    <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
+                    <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
+                    <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                    <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                    <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                </columns>
+            </ShellSFTPFileTableView>
+            <FXHBox prefHeight="30">
+                <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FXToggleSwitch>
+            </FXHBox>
+        </FXVBox>
+        <FXVBox flexWidth="70%" flexHeight="100%">
+            <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
+
+            </ShellSSHTermWidget>
+        </FXVBox>
+    </FXHBox>
+
+</FXTab>

@@ -15,6 +15,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +40,12 @@ public class ShellSSHTabController extends ParentTabController {
     }
 
     private ShellConnectTreeItem treeItem;
+
+    /**
+     * 效率
+     */
+    @FXML
+    private ShellSSHEffTabController effTabController;
 
     /**
      * 终端
@@ -120,7 +127,12 @@ public class ShellSSHTabController extends ParentTabController {
                 if (this.setting.isHiddenLeftAfterConnected()) {
                     ShellEventUtil.layout1();
                 }
-                this.termTabController.init();
+                // 效率模式
+                if (this.setting.isEfficiencyMode()) {
+                    this.effTabController.init();
+                } else {// 正常模式
+                    this.termTabController.init();
+                }
                 this.serverTabController.setClient(this.client);
                 this.configTabController.setClient(this.client);
                 this.dockerTabController.setClient(this.client);
@@ -155,8 +167,18 @@ public class ShellSSHTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.serverTabController, this.termTabController, this.sftpTabController,
-                this.dockerTabController, this.monitorTabController, this.configTabController,
-                this.processTabController);
+        List<RichTabController> controllers = new ArrayList<>();
+        controllers.add(this.dockerTabController);
+        controllers.add(this.serverTabController);
+        controllers.add(this.processTabController);
+        controllers.add(this.monitorTabController);
+        controllers.add(this.configTabController);
+        if (this.setting.isEfficiencyMode()) {
+            controllers.add(this.effTabController);
+        } else {
+            controllers.add(this.termTabController);
+            controllers.add(this.sftpTabController);
+        }
+        return controllers;
     }
 }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.util.ShellUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
 import javafx.scene.control.Skin;
@@ -29,7 +29,7 @@ public class ShellFileLocationTextField extends FXTextField {
             super.clear();
             this.skin().setItemList(Collections.emptyList());
         } else {
-            text = ShellUtil.reverseWindowsFilePath(text);
+            text = ShellFileUtil.fixFilePath(text);
             if (!text.equals("/") && text.endsWith("/")) {
                 text = text.substring(0, text.length() - 1);
             } else if (text.isBlank()) {

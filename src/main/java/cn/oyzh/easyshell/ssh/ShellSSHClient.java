@@ -17,7 +17,6 @@ import cn.oyzh.easyshell.internal.exec.ShellExec;
 import cn.oyzh.easyshell.internal.process.ShellProcessExec;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
@@ -35,6 +34,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 
 import java.util.Collections;
@@ -48,6 +49,84 @@ import java.util.stream.Collectors;
  * @since 2023/08/16
  */
 public class ShellSSHClient extends ShellClient {
+
+    /**
+     * 最后一次输出
+     */
+    private String lastOutput;
+
+    /**
+     * 解析工作目录
+     */
+    private boolean resolveWorkerDir;
+
+    /**
+     * 工作目录属性
+     */
+    private StringProperty workDirProperty;
+
+    /**
+     * 是否解析工作目录
+     *
+     * @return 结果
+     */
+    public boolean isResolveWorkerDir() {
+        return resolveWorkerDir;
+    }
+
+    /**
+     * 设置是否解析工作目录
+     *
+     * @param resolveWorkerDir 是否解析工作目录
+     */
+    public void setResolveWorkerDir(boolean resolveWorkerDir) {
+        this.resolveWorkerDir = resolveWorkerDir;
+        if (resolveWorkerDir) {
+            this.doResolveWorkerDir(this.lastOutput);
+        }
+    }
+
+    /**
+     * 解析工作目录
+     *
+     * @param output 输出
+     */
+    public void resolveWorkerDir(String output) {
+        this.lastOutput = output;
+        if (!this.resolveWorkerDir) {
+            return;
+        }
+        this.doResolveWorkerDir(output);
+    }
+
+    /**
+     * 解析工作目录
+     *
+     * @param output 输出
+     */
+    private void doResolveWorkerDir(String output) {
+        String workDir = ShellSSHUtil.resolveWorkerDir(output);
+        if (StringUtil.isEmpty(workDir)) {
+            return;
+        }
+        if (workDir.equals("~")) {
+            this.workDirProperty().set(this.userHome);
+        } else {
+            this.workDirProperty().set(workDir);
+        }
+    }
+
+    /**
+     * 获取工作目录属性
+     *
+     * @return 工作目录属性
+     */
+    public StringProperty workDirProperty() {
+        if (this.workDirProperty == null) {
+            this.workDirProperty = new SimpleStringProperty();
+        }
+        return this.workDirProperty;
+    }
 
     /**
      * ssh跳板转发器
@@ -68,11 +147,6 @@ public class ShellSSHClient extends ShellClient {
      * x11配置存储
      */
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
-
-    /**
-     * 跳板配置存储
-     */
-    private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * 隧道转发存储
@@ -192,7 +266,7 @@ public class ShellSSHClient extends ShellClient {
                 throw new SSHException("proxy is enable but proxy config is null");
             }
             // 初始化代理
-            Proxy proxy = ShellSSHClientUtil.newProxy(proxyConfig);
+            Proxy proxy = ShellSSHUtil.newProxy(proxyConfig);
             // 设置代理
             this.session.setProxy(proxy);
         }
@@ -403,21 +477,20 @@ public class ShellSSHClient extends ShellClient {
         return this.session != null && this.session.isConnected() && this.state.get().isConnected();
     }
 
-//    /**
-//     * 是否已关闭
-//     *
-//     * @return 结果
-//     */
-//    public boolean isClosed() {
-//        return this.session == null || !this.session.isConnected() || !this.state.get().isConnected();
-//    }
-
+    /**
+     * shell通道
+     */
     private ShellSSHShell shell;
 
     public ShellSSHShell getShell() {
         return shell;
     }
 
+    /**
+     * 打开shell通道
+     *
+     * @return ShellSSHShell
+     */
     public ShellSSHShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
@@ -430,8 +503,8 @@ public class ShellSSHClient extends ShellClient {
                 if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
-                channel.setInputStream(System.in);
-                channel.setOutputStream(System.out);
+//                channel.setInputStream(System.in);
+//                channel.setOutputStream(System.out);
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
@@ -442,14 +515,6 @@ public class ShellSSHClient extends ShellClient {
         }
         return this.shell;
     }
-
-//    public ShellSFTPChannel openSftp() {
-//        return this.getSftpClient().openSftp();
-//    }
-//
-//    public ShellSFTPChannel newSftp() {
-//        return this.getSftpClient().newSftp();
-//    }
 
     private ShellDockerExec dockerExec;
 

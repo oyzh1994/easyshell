@@ -41,10 +41,9 @@ public class ShellSSHTermTabController extends SubTabController {
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
-        ShellSSHShell shell = this.client().getShell();
         Charset charset = this.client().getCharset();
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initShell(shell);
+        connector.initShell(this.client());
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());

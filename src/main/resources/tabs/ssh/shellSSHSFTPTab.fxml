@@ -79,45 +79,21 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <!--            <FXToggleSwitch realHeight="16" selected="true" fx:id="hiddenFile" selectedText="%base.showHiddenFiles"-->
-            <!--                            unselectedText="%base.doNotShowHiddenFiles">-->
-            <!--                <FXHBox.margin>-->
-            <!--                    <Insets left="5" top="8"/>-->
-            <!--                </FXHBox.margin>-->
-            <!--            </FXToggleSwitch>-->
-            <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
-                <HBox.margin>
-                    <Insets left="5" top="8"/>
-                </HBox.margin>
-            </BoxSVGLabel>
             <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
                 <HBox.margin>
                     <Insets left="5" top="8"/>
                 </HBox.margin>
             </HiddenSVGPane>
+            <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
+                <HBox.margin>
+                    <Insets left="5" top="8"/>
+                </HBox.margin>
+            </BoxSVGLabel>
             <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </ClearableTextField>
-            <!--            <UploadBoxSVGGlyph sizeStr="15" fx:id="uploadBox" onMousePrimaryClicked="#showUploadBox"-->
-            <!--                               tipText="%shell.file.tip10">-->
-            <!--                <FXHBox.margin>-->
-            <!--                    <Insets left="30" top="10"/>-->
-            <!--                </FXHBox.margin>-->
-            <!--            </UploadBoxSVGGlyph>-->
-            <!--            <DownloadBoxSVGGlyph sizeStr="15" fx:id="downloadBox" onMousePrimaryClicked="#showDownloadBox"-->
-            <!--                                 tipText="%shell.file.tip14">-->
-            <!--                <FXHBox.margin>-->
-            <!--                    <Insets left="10" top="10"/>-->
-            <!--                </FXHBox.margin>-->
-            <!--            </DownloadBoxSVGGlyph>-->
-            <!--            <SFTPSVGGlyph sizeStr="15" fx:id="sftpBox" onMousePrimaryClicked="#showSftpBox"-->
-            <!--                          tipText="%shell.file.tip17">-->
-            <!--                <FXHBox.margin>-->
-            <!--                    <Insets left="30" top="10"/>-->
-            <!--                </FXHBox.margin>-->
-            <!--            </SFTPSVGGlyph>-->
         </FXHBox>
         <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>

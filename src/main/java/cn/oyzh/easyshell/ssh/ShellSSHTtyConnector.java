@@ -16,11 +16,18 @@ import java.util.List;
  */
 public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
+    /**
+     * ssh客户端
+     */
+    private ShellSSHClient client;
+
     private InputStreamReader shellReader;
 
     private OutputStreamWriter shellWriter;
 
-    public void initShell(ShellSSHShell shell) throws IOException {
+    public void initShell(ShellSSHClient client) throws IOException {
+        this.client = client;
+        ShellSSHShell shell = client.getShell();
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
@@ -61,6 +68,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
     @Override
     public void close() {
         super.close();
+        this.client = null;
         if (this.shellReader != null) {
             try {
                 this.shellReader.close();
@@ -68,6 +76,14 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    protected void doRead(char[] buf, int offset, int len) throws IOException {
+        super.doRead(buf, offset, len);
+        if (this.client != null) {
+            this.client.resolveWorkerDir(new String(buf, offset, len));
         }
     }
 }
