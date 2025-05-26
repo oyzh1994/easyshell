@@ -74,7 +74,26 @@ public class ShellServerExec implements AutoCloseable {
 //        return monitor;
 //    }
 
+    /**
+     * 上一次缓存时间
+     */
+    private long lastMonitorTime;
+
+    /**
+     * 缓存记录
+     */
+    private ShellServerMonitor lastMonitor;
+
+    /**
+     * 获取服务监控信息
+     *
+     * @return 服务监控信息
+     */
     public ShellServerMonitor monitor() {
+        // 如果缓存的记录在指定时间内，则返回缓存记录
+        if (this.lastMonitor != null && System.currentTimeMillis() - this.lastMonitorTime < 3000) {
+            return this.lastMonitor;
+        }
         ShellServerMonitor monitor = new ShellServerMonitor();
         DownLatch latch = new DownLatch(4);
 
@@ -129,6 +148,8 @@ public class ShellServerExec implements AutoCloseable {
         });
 
         latch.await();
+        this.lastMonitor = monitor;
+        this.lastMonitorTime = System.currentTimeMillis();
         return monitor;
     }
 

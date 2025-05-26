@@ -6,19 +6,9 @@ package cn.oyzh.easyshell.internal.server;
  */
 public class ShellServerMonitor {
 
-//    private String ulimit;
-//
-//    private String arch;
-//
-//    private String uname;
-//
-//    private String uptime;
-
     private double cpuUsage;
 
     private double memoryUsage;
-
-//    private double totalMemory;
 
     private double diskReadSpeed;
 
@@ -27,14 +17,6 @@ public class ShellServerMonitor {
     private double networkSendSpeed;
 
     private double networkReceiveSpeed;
-
-//    public String getUptime() {
-//        return uptime;
-//    }
-//
-//    public void setUptime(String uptime) {
-//        this.uptime = uptime;
-//    }
 
     public double getDiskReadSpeed() {
         return diskReadSpeed;
@@ -68,30 +50,6 @@ public class ShellServerMonitor {
         this.networkReceiveSpeed = networkReceiveSpeed;
     }
 
-//    public String getUlimit() {
-//        return ulimit;
-//    }
-//
-//    public void setUlimit(String ulimit) {
-//        this.ulimit = ulimit;
-//    }
-//
-//    public String getArch() {
-//        return arch;
-//    }
-//
-//    public void setArch(String arch) {
-//        this.arch = arch;
-//    }
-//
-//    public String getUname() {
-//        return uname;
-//    }
-//
-//    public void setUname(String uname) {
-//        this.uname = uname;
-//    }
-
     public double getCpuUsage() {
         return cpuUsage;
     }
@@ -108,15 +66,4 @@ public class ShellServerMonitor {
         this.memoryUsage = memoryUsage;
     }
 
-//    public double getTotalMemory() {
-//        return totalMemory;
-//    }
-//
-//    public String getTotalMemoryInfo() {
-//        return totalMemory + "MB";
-//    }
-//
-//    public void setTotalMemory(double totalMemory) {
-//        this.totalMemory = totalMemory;
-//    }
 }

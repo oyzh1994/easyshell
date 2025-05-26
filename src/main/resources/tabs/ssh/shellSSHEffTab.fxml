@@ -21,6 +21,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -115,12 +116,21 @@
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
                 </FXToggleSwitch>
+                <FXToggleSwitch fx:id="serverMonitor" text="%shell.connect.tip13">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FXToggleSwitch>
             </FXHBox>
         </FXVBox>
         <FXVBox flexWidth="70%" flexHeight="100%">
             <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
-
             </ShellSSHTermWidget>
+            <FXLabel fx:id="serverMonitorInfo" managedBindVisible="true" visible="false">
+                <FXVBox.margin>
+                    <Insets left="5" top="9"/>
+                </FXVBox.margin>
+            </FXLabel>
         </FXVBox>
     </FXHBox>
 
