@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
-import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
+import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -122,7 +122,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
      * 文件表格
      */
     @FXML
-    private ShellSFTPFileTableView fileTable;
+    private ShellSSHSFTPFileTableView fileTable;
 
     /**
      * 文件过滤
@@ -192,7 +192,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
             return;
         }
         this.initialized = true;
-        this.fileTable.setClient(this.sftpClient());
+        this.fileTable.setSSHClient(this.client());
 //        this.deleteManager = this.sftpClient().getDeleteManager();
 //        this.uploadManager = this.sftpClient().getUploadManager();
 //        this.downloadManager = this.sftpClient().getDownloadManager();

@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
-import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
+import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.internal.server.ShellServerMonitor;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -100,7 +100,7 @@ public class ShellSSHEffTabController extends SubTabController {
      * 文件表格
      */
     @FXML
-    private ShellSFTPFileTableView fileTable;
+    private ShellSSHSFTPFileTableView fileTable;
 
     /**
      * 文件过滤
@@ -181,9 +181,9 @@ public class ShellSSHEffTabController extends SubTabController {
      * 初始化文件
      */
     private void initFile() {
-        ShellSFTPClient sftpClient = this.sftpClient();
-        this.fileTable.setClient(sftpClient);
+        this.fileTable.setSSHClient(this.client());
         this.fileTable.refreshFile();
+        ShellSFTPClient sftpClient = this.sftpClient();
         // 任务数量监听
         sftpClient.addTaskSizeListener(() -> {
             if (sftpClient.isTaskEmpty()) {

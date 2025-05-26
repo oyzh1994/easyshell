@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView?>
+<?import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
@@ -16,12 +16,13 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import javafx.scene.layout.VBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -97,7 +98,7 @@
                     </FXHBox.margin>
                 </ShellFileLocationTextField>
             </FXHBox>
-            <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 90">
+            <ShellSSHSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 90">
                 <columns>
                     <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                     <FXTableColumn style="-fx-padding-left:0;" prefWidth="200" valueName="fileName"
@@ -109,7 +110,7 @@
                     <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
                     <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                 </columns>
-            </ShellSFTPFileTableView>
+            </ShellSSHSFTPFileTableView>
             <FXHBox prefHeight="30">
                 <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
                     <FXHBox.margin>
@@ -133,5 +134,4 @@
             </FXLabel>
         </FXVBox>
     </FXHBox>
-
 </FXTab>
