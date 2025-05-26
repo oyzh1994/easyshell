@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.fx.sftp;
 
+import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -84,6 +85,25 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             forceDel.setDisable(true);
         }
         menuItems.add(forceDel);
+        // 解压文件
+        if (this.client.isLinux()) {
+            FXMenuItem unCompress = MenuItemHelper.unCompress("12", () -> this.uncompress(files));
+            // 判断是否禁用
+            if (CollectionUtil.isNotEmpty(files)) {
+                ShellFile f = files.getFirst();
+                String extName = FileNameUtil.extName(f.getFileName());
+                boolean isCompress = FileNameUtil.isGzType(extName)
+                        || FileNameUtil.isXzType(extName)
+                        || FileNameUtil.isLzType(extName)
+                        || FileNameUtil.isZstType(extName)
+                        || FileNameUtil.isLzoType(extName)
+                        || FileNameUtil.isLzmaType(extName);
+                unCompress.setDisable(!isCompress);
+            } else {
+                unCompress.setDisable(true);
+            }
+            menuItems.add(unCompress);
+        }
         menuItems.add(MenuItemHelper.separator());
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
@@ -122,6 +142,39 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             }
         });
     }
+
+    /**
+     * 解压文件
+     *
+     * @param files 文件列表
+     */
+    protected void uncompress(List<ShellSFTPFile> files) {
+        if (files.size() != 1) {
+            return;
+        }
+        // 文件
+        ShellSFTPFile file = files.getFirst();
+        String extName = FileNameUtil.extName(file.getFileName());
+        boolean isCompress = FileNameUtil.isGzType(extName)
+                || FileNameUtil.isXzType(extName)
+                || FileNameUtil.isLzType(extName)
+                || FileNameUtil.isZstType(extName)
+                || FileNameUtil.isLzoType(extName)
+                || FileNameUtil.isLzmaType(extName);
+        if (!isCompress) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                // 执行操作
+                this.sshClient.serverExec().uncompress(file.getFilePath());
+                super.loadFileInner();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
 
     /**
      * 剪切文件

@@ -611,6 +611,23 @@ public class ShellServerExec implements AutoCloseable {
     }
 
     /**
+     * 解压
+     *
+     * @param file 文件
+     * @return 结果
+     */
+    public String uncompress(String file) {
+        try {
+            if (this.client.isLinux()){
+                return this.client.exec("tar -axvf " + file);
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 获取时区
      *
      * @return 时区

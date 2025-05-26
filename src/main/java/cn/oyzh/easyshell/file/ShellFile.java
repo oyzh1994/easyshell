@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileAspSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBatSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBinSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBmpSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileBz2SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCmdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCompressSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileConfSVGGlyph;
@@ -62,6 +63,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileWavSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileWordSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileXlsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileXmlSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileXzSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileYamlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileYmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileZipSVGGlyph;
@@ -290,6 +292,10 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new File7zSVGGlyph("12");
             } else if (FileNameUtil.isGzType(extName)) {
                 glyph = new FileGzSVGGlyph("12");
+            } else if (FileNameUtil.isXzType(extName)) {
+                glyph = new FileXzSVGGlyph("12");
+            } else if (FileNameUtil.isBz2Type(extName)) {
+                glyph = new FileBz2SVGGlyph("12");
             } else if (FileNameUtil.isZipType(extName)) {
                 glyph = new FileZipSVGGlyph("12");
             } else if (FileNameUtil.isTsType(extName)) {
