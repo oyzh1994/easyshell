@@ -560,6 +560,29 @@ public class ShellServerExec implements AutoCloseable {
     }
 
     /**
+     * 复制文件
+     *
+     * @param src 源文件
+     * @param dst 目标文件
+     * @return 结果
+     */
+    public String copy(String src, String dst) {
+        try {
+            if (this.client.isLinux()
+                    || this.client.isMacos()
+                    || this.client.isFreeBSD()) {
+                return this.client.exec("cp -f " + src + " " + dst);
+            }
+            if (this.client.isWindows()) {
+                return this.client.exec("copy /Y " + src + " " + dst);
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return "N/A";
+    }
+
+    /**
      * 获取时区
      *
      * @return 时区

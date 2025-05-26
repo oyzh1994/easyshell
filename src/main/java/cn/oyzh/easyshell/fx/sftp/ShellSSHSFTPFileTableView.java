@@ -23,9 +23,16 @@ import java.util.List;
 public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
 
     /**
-     * 已复制的文件
+     * 临时文件类型
+     * 1 剪切
+     * 2 复制
      */
-    private List<ShellSFTPFile> copiedFiles;
+    private byte tempFileType;
+
+    /**
+     * 临时文件，可能是剪切或者复制的文件
+     */
+    private List<ShellSFTPFile> tempFiles;
 
     /**
      * ssh客户端
@@ -46,11 +53,15 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         FXMenuItem copyFile = MenuItemHelper.copyFile("12", () -> this.copyFile(files));
         copyFile.setDisable(files.isEmpty());
         menuItems.add(copyFile);
-        // 复制文件
+        // 剪切文件
+        FXMenuItem cutFile = MenuItemHelper.cutFile("12", () -> this.cutFile(files));
+        cutFile.setDisable(files.isEmpty());
+        menuItems.add(cutFile);
+        // 粘贴文件
         FXMenuItem pasteFile = MenuItemHelper.pasteFile("12", this::pasteFile);
         // 判断是否禁用
-        if (CollectionUtil.isNotEmpty(this.copiedFiles)) {
-            ShellFile f = this.copiedFiles.getFirst();
+        if (CollectionUtil.isNotEmpty(this.tempFiles)) {
+            ShellFile f = this.tempFiles.getFirst();
             pasteFile.setDisable(StringUtil.equals(f.getParentPath(), this.getLocation()));
         } else {
             pasteFile.setDisable(true);
@@ -63,40 +74,56 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
     }
 
     /**
+     * 剪切文件
+     *
+     * @param files 文件列表
+     */
+    protected void cutFile(List<ShellSFTPFile> files) {
+        this.tempFiles = files;
+        this.tempFileType = 1;
+    }
+
+    /**
      * 复制文件
      *
      * @param files 文件列表
      */
     protected void copyFile(List<ShellSFTPFile> files) {
-        this.copiedFiles = files;
+        this.tempFiles = files;
+        this.tempFileType = 2;
     }
 
     /**
      * 粘贴文件
      */
     protected void pasteFile() {
-        if (CollectionUtil.isEmpty(this.copiedFiles)) {
+        if (CollectionUtil.isEmpty(this.tempFiles)) {
             return;
         }
-        ShellFile f = this.copiedFiles.getFirst();
+        ShellFile f = this.tempFiles.getFirst();
         if (StringUtil.equals(f.getParentPath(), this.getLocation())) {
             return;
         }
         StageManager.showMask(() -> {
             try {
-                for (ShellSFTPFile f1 : copiedFiles) {
+                for (ShellSFTPFile f1 : tempFiles) {
                     String dst = ShellFileUtil.concat(this.getLocation(), f1.getFileName());
                     // 判断文件是否存在
                     if (this.client.exist(dst) && !MessageBox.confirm("[" + dst + "] " + ShellI18nHelper.fileTip4())) {
                         continue;
                     }
-                    this.sshClient.serverExec().move(f1.getFilePath(), dst);
+                    // 剪切
+                    if (this.tempFileType == 1) {
+                        this.sshClient.serverExec().move(f1.getFilePath(), dst);
+                    } else {// 复制
+                        this.sshClient.serverExec().copy(f1.getFilePath(), dst);
+                    }
                     super.onFileAdded(dst);
                 }
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             } finally {
-                this.copiedFiles = null;
+                this.tempFiles = null;
             }
         });
     }
