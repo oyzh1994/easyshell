@@ -2,6 +2,9 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.easyshell.dto.ShellPortScanResult;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
+
+import java.util.Comparator;
 
 /**
  * 端口扫描结果表
@@ -11,5 +14,15 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
  */
 public class ShellPortScanResultTableView extends FXTableView<ShellPortScanResult> {
 
+    {
+        TableViewUtil.copyCellDataOnDoubleClicked(this);
+    }
+
+    /**
+     * 执行排序
+     */
+    public void doSort() {
+        this.getItems().sort(Comparator.comparingInt(ShellPortScanResult::getPort));
+    }
 
 }

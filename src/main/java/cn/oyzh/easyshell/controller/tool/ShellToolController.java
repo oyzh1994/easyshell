@@ -299,7 +299,7 @@ public class ShellToolController extends StageController {
         String host = this.portScanHost.getTextTrim();
         AtomicInteger totalCount = new AtomicInteger(0);
         AtomicInteger successCount = new AtomicInteger(0);
-        this.portScanThread = NetworkUtil.scanAsync(startPort, endPort, host, (port, success) -> {
+        this.portScanThread = NetworkUtil.scanMultiple(startPort, endPort, 500, 10, host, (port, success) -> {
             totalCount.incrementAndGet();
             if (success) {
                 successCount.incrementAndGet();
@@ -307,6 +307,7 @@ public class ShellToolController extends StageController {
                 result.setPort(port);
                 result.setDesc(NetworkUtil.detectDesc(port));
                 this.portScanTable.addItem(result);
+                this.portScanTable.doSort();
             }
             this.portScanMsg.text(I18nHelper.scan() + ":" + totalCount.get() + " " + I18nHelper.available() + ":" + successCount.get());
         }, () -> {
