@@ -63,7 +63,7 @@
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </FXLabel>
-            <ShellPortScanResultTableView fx:id="portScanTable" flexHeight="100% - 340" flexWidth="100% - 40">
+            <ShellPortScanResultTableView fx:id="portScanTable" flexHeight="100% - 340" flexWidth="100% - 180">
                 <columns>
                     <FXTableColumn flexWidth="50%" valueName="port" text="%base.port"/>
                     <FXTableColumn flexWidth="50% - 15" valueName="desc" text="%base.desc"/>
