@@ -559,7 +559,7 @@ public class ShellServerExec implements AutoCloseable {
         } catch (Exception ee) {
             ee.printStackTrace();
         }
-        return "N/A";
+        return null;
     }
 
     /**
@@ -584,7 +584,30 @@ public class ShellServerExec implements AutoCloseable {
         } catch (Exception ee) {
             ee.printStackTrace();
         }
-        return "N/A";
+        return null;
+    }
+
+    /**
+     * 强制删除
+     *
+     * @param dir 目录
+     * @return 结果
+     */
+    public String forceDel(String dir) {
+        try {
+            if (this.client.isLinux()
+                    || this.client.isMacos()
+                    || this.client.isFreeBSD()) {
+                return this.client.exec("rm -rf " + dir);
+            }
+            if (this.client.isWindows()) {
+                dir = ShellFileUtil.fixWindowsFilePath(dir);
+                return this.client.exec("rmdir /s /q \"" + dir + "\"");
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+        return null;
     }
 
     /**

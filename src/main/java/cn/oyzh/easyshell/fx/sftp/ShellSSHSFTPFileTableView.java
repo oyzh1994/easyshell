@@ -8,9 +8,11 @@ import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
@@ -67,10 +69,58 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             pasteFile.setDisable(true);
         }
         menuItems.add(pasteFile);
+        // 强制删除
+        FXMenuItem forceDel;
+        if (this.client.isWindows()) {
+            forceDel = FXMenuItem.newItem("rmdir /s /q", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+        } else {
+            forceDel = FXMenuItem.newItem("rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+        }
+        // 判断是否禁用
+        if (CollectionUtil.isNotEmpty(files)) {
+            ShellFile f = files.getFirst();
+            forceDel.setDisable(!f.isDirectory());
+        } else {
+            forceDel.setDisable(true);
+        }
+        menuItems.add(forceDel);
         menuItems.add(MenuItemHelper.separator());
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
         return menuItems;
+    }
+
+    /**
+     * 强制删除
+     *
+     * @param files 文件列表
+     */
+    protected void forceDel(List<ShellSFTPFile> files) {
+        if (files.size() != 1) {
+            return;
+        }
+        // 文件
+        ShellSFTPFile file = files.getFirst();
+        if (!file.isDirectory()) {
+            return;
+        }
+        // 提示
+        if (!MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName() + "?")) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                // 执行操作
+                String result = this.sshClient.serverExec().forceDel(file.getFilePath());
+                if (StringUtil.isNotBlank(result)) {
+                    MessageBox.warn(result);
+                } else {
+                    super.onFileDeleted(file.getFilePath());
+                }
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     /**
@@ -112,13 +162,18 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                     if (this.client.exist(dst) && !MessageBox.confirm("[" + dst + "] " + ShellI18nHelper.fileTip4())) {
                         continue;
                     }
+                    String result;
                     // 剪切
                     if (this.tempFileType == 1) {
-                        this.sshClient.serverExec().move(f1.getFilePath(), dst);
+                        result = this.sshClient.serverExec().move(f1.getFilePath(), dst);
                     } else {// 复制
-                        this.sshClient.serverExec().copy(f1.getFilePath(), dst);
+                        result = this.sshClient.serverExec().copy(f1.getFilePath(), dst);
                     }
-                    super.onFileAdded(dst);
+                    if (StringUtil.isNotBlank(result)) {
+                        MessageBox.warn(result);
+                    } else {
+                        super.onFileAdded(dst);
+                    }
                 }
             } catch (Exception ex) {
                 MessageBox.exception(ex);
