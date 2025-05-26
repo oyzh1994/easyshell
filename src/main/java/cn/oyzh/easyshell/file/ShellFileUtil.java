@@ -156,6 +156,17 @@ public class ShellFileUtil {
      * @return 数字表示的权限
      */
     public static int toPermissionInt(String permission) {
+        String str = toPermissionStr(permission);
+        return Integer.parseInt(str, 8);
+    }
+
+    /**
+     * 将Unix风格的权限字符串（如"drwx------"）转换为字符表示（如700）
+     *
+     * @param permission 权限字符串
+     * @return 数字表示的权限
+     */
+    public static String toPermissionStr(String permission) {
         int[] permissions = new int[3];
         for (int i = 0; i < 3; i++) {
             int start = i * 3;
@@ -171,8 +182,7 @@ public class ShellFileUtil {
             }
             permissions[i] = octal;
         }
-        String str = "0" + permissions[0] + permissions[1] + permissions[2];
-        return Integer.parseInt(str, 8);
+        return "0" + permissions[0] + permissions[1] + permissions[2];
     }
 
     /**

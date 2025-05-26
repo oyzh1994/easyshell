@@ -7,8 +7,8 @@ import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -111,61 +111,28 @@ public class ShellFilePermissionController extends StageController {
     private FXCheckBox othersE;
 
     /**
+     * 权限
+     */
+    @FXML
+    private FXLabel perms;
+
+    /**
+     * 预览
+     */
+    @FXML
+    private FXLabel preview;
+
+    /**
      * 保存文件
      */
     @FXML
     private void save() {
         StageManager.showMask(() -> {
             try {
-                StringBuilder perms = new StringBuilder();
-                if (this.ownerR.isSelected()) {
-                    perms.append("r");
-                } else {
-                    perms.append("-");
-                }
-                if (this.ownerW.isSelected()) {
-                    perms.append("w");
-                } else {
-                    perms.append("-");
-                }
-                if (this.ownerE.isSelected()) {
-                    perms.append("x");
-                } else {
-                    perms.append("-");
-                }
-                if (this.groupsR.isSelected()) {
-                    perms.append("r");
-                } else {
-                    perms.append("-");
-                }
-                if (this.groupsW.isSelected()) {
-                    perms.append("w");
-                } else {
-                    perms.append("-");
-                }
-                if (this.groupsE.isSelected()) {
-                    perms.append("x");
-                } else {
-                    perms.append("-");
-                }
-                if (this.othersR.isSelected()) {
-                    perms.append("r");
-                } else {
-                    perms.append("-");
-                }
-                if (this.othersW.isSelected()) {
-                    perms.append("w");
-                } else {
-                    perms.append("-");
-                }
-                if (this.othersE.isSelected()) {
-                    perms.append("x");
-                } else {
-                    perms.append("-");
-                }
-                int permission = ShellFileUtil.toPermissionInt(perms.toString());
+                String perms = this.getPerms();
+                int permission = ShellFileUtil.toPermissionInt(perms);
                 if (this.client.chmod(permission, this.file.getFilePath())) {
-                    this.file.setPermissions(perms.toString());
+                    this.file.setPermissions(perms);
                     this.closeWindow();
                 } else {
                     MessageBox.warn(I18nHelper.operationFail());
@@ -175,6 +142,20 @@ public class ShellFilePermissionController extends StageController {
                 MessageBox.exception(ex);
             }
         });
+    }
+
+    @Override
+    protected void bindListeners() {
+        this.ownerR.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.ownerW.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.ownerE.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.groupsR.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.groupsW.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.groupsE.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.othersR.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.othersW.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        this.othersE.selectedChanged((observableValue, aBoolean, t1) -> this.flushPerms());
+        super.bindListeners();
     }
 
     @Override
@@ -215,6 +196,72 @@ public class ShellFilePermissionController extends StageController {
             this.othersE.setSelected(true);
         }
         this.appendTitle("-" + this.file.getFileName());
+        this.flushPerms();
+    }
+
+    /**
+     * 获取权限
+     *
+     * @return 权限
+     */
+    private String getPerms() {
+        StringBuilder perms = new StringBuilder();
+        if (this.ownerR.isSelected()) {
+            perms.append("r");
+        } else {
+            perms.append("-");
+        }
+        if (this.ownerW.isSelected()) {
+            perms.append("w");
+        } else {
+            perms.append("-");
+        }
+        if (this.ownerE.isSelected()) {
+            perms.append("x");
+        } else {
+            perms.append("-");
+        }
+        if (this.groupsR.isSelected()) {
+            perms.append("r");
+        } else {
+            perms.append("-");
+        }
+        if (this.groupsW.isSelected()) {
+            perms.append("w");
+        } else {
+            perms.append("-");
+        }
+        if (this.groupsE.isSelected()) {
+            perms.append("x");
+        } else {
+            perms.append("-");
+        }
+        if (this.othersR.isSelected()) {
+            perms.append("r");
+        } else {
+            perms.append("-");
+        }
+        if (this.othersW.isSelected()) {
+            perms.append("w");
+        } else {
+            perms.append("-");
+        }
+        if (this.othersE.isSelected()) {
+            perms.append("x");
+        } else {
+            perms.append("-");
+        }
+        return perms.toString();
+    }
+
+    /**
+     * 刷新权限
+     */
+    private void flushPerms() {
+        String perms = this.getPerms();
+        String permission = ShellFileUtil.toPermissionStr(perms);
+        this.perms.setText(perms);
+        this.preview.setText(permission.substring(1));
     }
 
     @Override
