@@ -19,24 +19,30 @@ public class ShellSSHUtil {
     /**
      * 解析工作目录
      *
-     * @param output 输出
+     * @param output  输出
+     * @param homeDir 用户home目录
      * @return 工作目录
      */
-    public static String resolveWorkerDir(String output) {
-        if (StringUtil.isBlank(output) || !output.contains("@")) {
+    public static String resolveWorkerDir(String output, String homeDir) {
+        if (StringUtil.isBlank(output) || !StringUtil.contains(output, "@")) {
             return null;
         }
         // 获取最后一行
         String line = output.lines().toList().getLast();
+        if (StringUtil.isBlank(line) || !StringUtil.contains(line, "@")) {
+            return null;
+        }
         // 移除ansi字符串
         line = SSHUtil.removeAnsi(line);
         // 针对部分情况下返回的ansi字符做处理
         if (line.endsWith("?25h")) {
             line = line.substring(0, line.length() - 6);
+        } else if (line.endsWith("?2004h")) {
+            line = line.substring(0, line.length() - 8);
         }
         // 目录
         String dir = null;
-        // linux、unix、macos
+        // linux、unix
         if (StringUtil.endWithAny(line, "# ", "@ ")) {
             line = line.substring(0, line.length() - 2);
             line = line.substring(line.lastIndexOf("@"));
@@ -45,8 +51,22 @@ public class ShellSSHUtil {
             line = line.substring(0, line.length() - 1);
             line = line.substring(line.lastIndexOf("@"));
             dir = line.substring(line.lastIndexOf(" ") + 1);
-            // windows的路径做一次处理
+            // 处理路径
             dir = ShellFileUtil.fixFilePath(dir);
+        } else if (StringUtil.endWithAny(line, "% ")) {// macos
+            line = line.substring(0, line.length() - 3);
+            line = line.substring(line.lastIndexOf("@"));
+            dir = line.substring(line.lastIndexOf(" ") + 1);
+        }
+        if (dir != null && homeDir != null) {
+            // home目录
+            if ("~".equals(dir)) {
+                dir = homeDir;
+            } else if (StringUtil.startWith(dir, "~")) {// home目录开头
+                dir = ShellFileUtil.concat(homeDir, dir.substring(1));
+            } else if (!StringUtil.startWith(dir, "/")) {// macos，home目录可能会被省略
+                dir = ShellFileUtil.concat(homeDir, dir);
+            }
         }
         return dir;
     }

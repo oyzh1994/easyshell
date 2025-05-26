@@ -105,15 +105,11 @@ public class ShellSSHClient extends ShellClient {
      * @param output 输出
      */
     private void doResolveWorkerDir(String output) {
-        String workDir = ShellSSHUtil.resolveWorkerDir(output);
+        String workDir = ShellSSHUtil.resolveWorkerDir(output, this.userHome);
         if (StringUtil.isEmpty(workDir)) {
             return;
         }
-        if (workDir.equals("~")) {
-            this.workDirProperty().set(this.userHome);
-        } else {
-            this.workDirProperty().set(workDir);
-        }
+        this.workDirProperty().set(workDir);
     }
 
     /**
