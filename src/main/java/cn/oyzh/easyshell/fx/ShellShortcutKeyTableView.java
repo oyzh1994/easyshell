@@ -9,10 +9,11 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/***
+/**
  * 快捷键列表
+ *
  * @author oyzh
- * @since 2024/04/13
+ * @since 2025/04/13
  */
 public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<String, Object>> {
 

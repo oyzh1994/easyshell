@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellPortScanResultTableView?>
 <?import cn.oyzh.fx.gui.button.CalcButton?>
 <?import cn.oyzh.fx.gui.button.ClearButton?>
 <?import cn.oyzh.fx.gui.button.ExecuteButton?>
@@ -13,11 +14,78 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
 <FXTabPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolController" realWidth="850" realHeight="600">
+    <FXTab text="%base.portScan">
+        <FXVBox flexHeight="100%" flexWidth="100%">
+            <InfoLabel text="%base.host">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <ClearableTextField fx:id="portScanHost" flexWidth="100% - 180" realHeight="30"
+                                tipText="%base.contentTip1" require="true">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </ClearableTextField>
+            <InfoLabel text="%base.range">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox>
+                <PortTextField realHeight="30" flexWidth="50% - 95" fx:id="portScanStartPort" value="1"
+                               require="true">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </PortTextField>
+                <PortTextField realHeight="30" flexWidth="50% - 90" fx:id="portScanEndPort" value="65535"
+                               require="true">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </PortTextField>
+            </FXHBox>
+            <InfoLabel text="%base.message">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXLabel fx:id="portScanMsg" flexWidth="100% - 180" realHeight="30">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </FXLabel>
+            <ShellPortScanResultTableView fx:id="portScanTable" flexHeight="100% - 340" flexWidth="100% - 40">
+                <columns>
+                    <FXTableColumn flexWidth="50%" valueName="port" text="%base.port"/>
+                    <FXTableColumn flexWidth="50% - 15" valueName="desc" text="%base.desc"/>
+                </columns>
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </ShellPortScanResultTableView>
+            <FXHBox flexWidth="100%" realHeight="50">
+                <ExecuteButton fx:id="portScanStartBtn" onAction="#execPortScan" realHeight="30">
+                    <HBox.margin>
+                        <Insets left="30" top="20"/>
+                    </HBox.margin>
+                </ExecuteButton>
+                <StopButton fx:id="portScanStopBtn" onAction="#stopPortScan" realHeight="30" disable="true">
+                    <HBox.margin>
+                        <Insets left="10" top="20"/>
+                    </HBox.margin>
+                </StopButton>
+            </FXHBox>
+        </FXVBox>
+    </FXTab>
     <FXTab text="Telnet">
         <FXVBox flexHeight="100%" flexWidth="100%">
             <InfoLabel text="%base.host">
@@ -27,7 +95,7 @@
             </InfoLabel>
             <FXHBox>
                 <ClearableTextField fx:id="telnetHost" flexWidth="100% - 265" realHeight="30"
-                                    tipText="%base.contentTip1">
+                                    tipText="%base.contentTip1" require="true">
                     <FXHBox.margin>
                         <Insets left="30" top="5"/>
                     </FXHBox.margin>

@@ -1,18 +1,22 @@
 package cn.oyzh.easyshell.controller.tool;
 
+import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
+import cn.oyzh.easyshell.dto.ShellPortScanResult;
+import cn.oyzh.easyshell.fx.ShellPortScanResultTableView;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -70,6 +74,54 @@ public class ShellToolController extends StageController {
      */
     @FXML
     private FXTextArea cacheArea;
+
+    /**
+     * 端口扫描消息
+     */
+    @FXML
+    private FXLabel portScanMsg;
+
+    /**
+     * 端口扫描线程
+     */
+    private Thread portScanThread;
+
+    /**
+     * 端口扫描停止按钮
+     */
+    @FXML
+    private FXButton portScanStopBtn;
+
+    /**
+     * 端口扫描开始按钮
+     */
+    @FXML
+    private FXButton portScanStartBtn;
+
+
+    /**
+     * 端口扫描地址
+     */
+    @FXML
+    private ClearableTextField portScanHost;
+
+    /**
+     * 端口扫描开始端口
+     */
+    @FXML
+    private PortTextField portScanStartPort;
+
+    /**
+     * 端口扫描结束端口
+     */
+    @FXML
+    private PortTextField portScanEndPort;
+
+    /**
+     * 端口扫描表
+     */
+    @FXML
+    private ShellPortScanResultTableView portScanTable;
 
     @Override
     public void onWindowShown(WindowEvent event) {
@@ -166,6 +218,9 @@ public class ShellToolController extends StageController {
      */
     @FXML
     private void execTelnet() {
+        if (!this.telnetHost.validate()) {
+            return;
+        }
         StageManager.showMask(() -> {
             try {
                 // 清除记录
@@ -221,5 +276,52 @@ public class ShellToolController extends StageController {
                 MessageBox.warn(I18nHelper.connectFail());
             }
         });
+    }
+
+    /**
+     * 执行端口扫描
+     */
+    @FXML
+    private void execPortScan() {
+        if (!this.portScanHost.validate()) {
+            return;
+        }
+        int startPort = this.portScanStartPort.getIntValue();
+        int endPort = this.portScanEndPort.getIntValue();
+        if (startPort >= endPort) {
+            this.portScanStartPort.requestFocus();
+            MessageBox.warn(I18nHelper.invalid());
+            return;
+        }
+        this.portScanStartBtn.disable();
+        this.portScanStopBtn.enable();
+        this.portScanTable.clearItems();
+        String host = this.portScanHost.getTextTrim();
+        AtomicInteger totalCount = new AtomicInteger(0);
+        AtomicInteger successCount = new AtomicInteger(0);
+        this.portScanThread = NetworkUtil.scanAsync(startPort, endPort, host, (port, success) -> {
+            totalCount.incrementAndGet();
+            if (success) {
+                successCount.incrementAndGet();
+                ShellPortScanResult result = new ShellPortScanResult();
+                result.setPort(port);
+                result.setDesc(NetworkUtil.detectDesc(port));
+                this.portScanTable.addItem(result);
+            }
+            this.portScanMsg.text(I18nHelper.scan() + ":" + totalCount.get() + " " + I18nHelper.available() + ":" + successCount.get());
+        }, () -> {
+            this.portScanStartBtn.enable();
+            this.portScanStopBtn.disable();
+        });
+    }
+
+    /**
+     * 停止端口扫描
+     */
+    @FXML
+    private void stopPortScan() {
+        ThreadUtil.interrupt(this.portScanThread);
+        this.portScanThread = null;
+        this.portScanStartBtn.enable();
     }
 }
