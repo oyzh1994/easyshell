@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
@@ -551,7 +552,9 @@ public class ShellServerExec implements AutoCloseable {
                 return this.client.exec("mv -f " + src + " " + dst);
             }
             if (this.client.isWindows()) {
-                return this.client.exec("move /Y " + src + " " + dst);
+                src = ShellFileUtil.fixWindowsFilePath(src);
+                dst = ShellFileUtil.fixWindowsFilePath(dst);
+                return this.client.exec("move /Y \"" + src + "\" " + dst + "\"");
             }
         } catch (Exception ee) {
             ee.printStackTrace();
@@ -574,7 +577,9 @@ public class ShellServerExec implements AutoCloseable {
                 return this.client.exec("cp -f " + src + " " + dst);
             }
             if (this.client.isWindows()) {
-                return this.client.exec("copy /Y " + src + " " + dst);
+                src = ShellFileUtil.fixWindowsFilePath(src);
+                dst = ShellFileUtil.fixWindowsFilePath(dst);
+                return this.client.exec("copy /Y \"" + src + "\" \"" + dst + "\"");
             }
         } catch (Exception ee) {
             ee.printStackTrace();

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.internal.exec;
 
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -177,7 +178,8 @@ public class ShellExec implements AutoCloseable {
 
     public String cat_docker_daemon(String filePath) {
         if (this.client.isWindows()) {
-            return this.client.exec("type " + ShellUtil.fixWindowsFilePath(filePath));
+            filePath = ShellFileUtil.fixWindowsFilePath(filePath);
+            return this.client.exec("type \"" + filePath + "\"");
         }
         return this.client.exec("cat " + filePath);
     }
@@ -195,9 +197,9 @@ public class ShellExec implements AutoCloseable {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
         }
         if (this.client.isWindows()) {
-            sourceFile = ShellUtil.fixWindowsFilePath(sourceFile);
-            targetFile = ShellUtil.fixWindowsFilePath(targetFile);
-            return this.client.exec("type " + sourceFile + " > " + targetFile);
+            sourceFile = ShellFileUtil.fixWindowsFilePath(sourceFile);
+            targetFile = ShellFileUtil.fixWindowsFilePath(targetFile);
+            return this.client.exec("type \"" + sourceFile + "\" > " + targetFile + "\"");
         }
         return this.client.exec("cat " + sourceFile + " > " + targetFile);
     }
@@ -211,9 +213,9 @@ public class ShellExec implements AutoCloseable {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
         }
         if (this.client.isWindows()) {
-            sourceFile = ShellUtil.fixWindowsFilePath(sourceFile);
-            targetFile = ShellUtil.fixWindowsFilePath(targetFile);
-            return this.client.exec("type " + sourceFile + " >> " + targetFile);
+            sourceFile = ShellFileUtil.fixWindowsFilePath(sourceFile);
+            targetFile = ShellFileUtil.fixWindowsFilePath(targetFile);
+            return this.client.exec("type \"" + sourceFile + "\" >> \"" + targetFile + "\"");
         }
         return this.client.exec("cat " + sourceFile + " >> " + targetFile);
     }

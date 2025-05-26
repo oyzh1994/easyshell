@@ -188,4 +188,17 @@ public class ShellFileUtil {
         filePath = StringUtil.replace(filePath, "\\", "/");
         return StringUtil.replace(filePath, "//", "/");
     }
+
+    /**
+     * 针对windows路径做出来
+     *
+     * @param filePath 文件路径
+     * @return 结果
+     */
+    public static String fixWindowsFilePath(String filePath) {
+        if (filePath.startsWith("/")) {
+            filePath = filePath.substring(1);
+        }
+        return StringUtil.replace(filePath, "/", "\\");
+    }
 }

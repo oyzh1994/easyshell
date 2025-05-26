@@ -22,12 +22,12 @@ public class ShellUtil {
         return StringUtil.containsIgnoreCase(output, "'" + cmd + "'");
     }
 
-    public static String fixWindowsFilePath(String filePath) {
-        if (filePath.startsWith("/")) {
-            filePath = filePath.substring(1);
-        }
-        return StringUtil.replace(filePath, "/", "\\");
-    }
+//    public static String fixWindowsFilePath(String filePath) {
+//        if (filePath.startsWith("/")) {
+//            filePath = filePath.substring(1);
+//        }
+//        return StringUtil.replace(filePath, "/", "\\");
+//    }
 
 //    public static String reverseWindowsFilePath(String filePath) {
 //        if (!filePath.startsWith("/")) {
