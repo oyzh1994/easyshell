@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.internal.server.ShellServerMonitor;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -204,7 +205,7 @@ public class ShellSSHMonitorTabController extends SubTabController {
             return;
         }
         try {
-            this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
+            this.refreshTask = TaskManager.startInterval("ssh:monitor:task", this::renderPane, 3_000, 0);
             JulLog.debug("RefreshTask started.");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -232,6 +233,11 @@ public class ShellSSHMonitorTabController extends SubTabController {
     private void renderPane() {
         try {
             JulLog.info("render monitor started.");
+            // 任务已取消
+            if (this.serverExec.getClient() == null) {
+                ExecutorUtil.cancel(this.refreshTask);
+                return;
+            }
             if (this.client != null) {
                 // 获取数据
                 ShellServerMonitor monitor = this.serverExec.monitor();

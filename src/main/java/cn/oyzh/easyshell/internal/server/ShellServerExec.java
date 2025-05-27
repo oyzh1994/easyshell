@@ -35,6 +35,10 @@ public class ShellServerExec implements AutoCloseable {
      */
     private ShellServerNetwork network;
 
+    public ShellSSHClient getClient() {
+        return client;
+    }
+
     public ShellServerExec(ShellSSHClient client) {
         this.client = client;
         this.disk = new ShellServerDisk();

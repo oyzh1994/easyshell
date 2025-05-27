@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -439,7 +440,12 @@ public class ShellSSHEffTabController extends SubTabController {
         }
         try {
             ShellServerExec serverExec = this.client().serverExec();
-            this.serverMonitorTask = ExecutorUtil.start(() -> {
+            this.serverMonitorTask = TaskManager.startInterval("ssh:eff_monitor:task", () -> {
+                // 任务已取消
+                if (serverExec.getClient() == null) {
+                    ExecutorUtil.cancel(this.serverMonitorTask);
+                    return;
+                }
                 // 获取数据
                 ShellServerMonitor monitor = serverExec.monitor();
                 if (monitor == null) {
@@ -459,7 +465,7 @@ public class ShellSSHEffTabController extends SubTabController {
                 sb.append(I18nHelper.diskRead()).append(":").append(diskRead).append("MB/s | ");
                 sb.append(I18nHelper.diskWrite()).append(":").append(diskWrite).append("MB/s");
                 this.serverMonitorInfo.text(sb.toString());
-            }, 0, 3_000);
+            }, 3_000, 0);
             JulLog.debug("MonitorTask started.");
         } catch (Exception ex) {
             ex.printStackTrace();

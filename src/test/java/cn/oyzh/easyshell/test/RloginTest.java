@@ -11,10 +11,18 @@ import java.io.IOException;
  */
 public class RloginTest {
 
-    @Test
-    public void test1() throws IOException {
+    public static void main(String[] args) throws IOException {
+        System.setProperty("java.net.preferIPv4Stack", "true");
         RLoginClient client = new RLoginClient();
         client.connect("192.168.3.156", 513);
-        client.rlogin("root", "123456", "vt100");
+        client.rlogin("root", "root", "vt100");
+    }
+
+    @Test
+    public void test1() throws IOException {
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        RLoginClient client = new RLoginClient();
+        client.connect("192.168.3.156", 513);
+        client.rlogin("root", "root", "vt100");
     }
 }
