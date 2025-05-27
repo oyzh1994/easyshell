@@ -14,6 +14,7 @@ public class RloginTest {
     @Test
     public void test1() throws IOException {
         RLoginClient client = new RLoginClient();
-        client.connect("192.168.3.156",513);
+        client.connect("192.168.3.156", 513);
+        client.rlogin("root", "123456", "vt100");
     }
 }

@@ -2,13 +2,11 @@ package cn.oyzh.easyshell.rlogin;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
-import org.apache.commons.net.bsd.RCommandClient;
 import org.apache.commons.net.bsd.RLoginClient;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 
 /**
  * @author oyzh
@@ -16,8 +14,14 @@ import java.net.InetAddress;
  */
 public class ShellRLoginClient implements BaseClient {
 
+    /**
+     * 客户端
+     */
     private RLoginClient client;
 
+    /**
+     * 连接
+     */
     private final ShellConnect shellConnect;
 
     public ShellRLoginClient(ShellConnect shellConnect) {
@@ -26,23 +30,17 @@ public class ShellRLoginClient implements BaseClient {
 
     private void initClient() {
         this.client = new RLoginClient();
-        RCommandClient.MAX_CLIENT_PORT = 10086;
-        this.client.setSocketFactory(new ShellRLoginSocketFactory());
+        this.client.setCharset(BaseClient.super.getCharset());
     }
 
     @Override
     public void start(int timeout) throws IOException {
         this.initClient();
         this.client.setConnectTimeout(timeout);
-        this.client.setCharset(BaseClient.super.getCharset());
-
-        InetAddress local = InetAddress.getLocalHost();
-
         this.client.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort());
-//        this.client.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort(), local, 11231);
         String user = this.shellConnect.getUser();
         String termType = this.shellConnect.getTermType();
-        this.client.rlogin("", user, termType);
+        this.client.rlogin(user, user, termType);
     }
 
     @Override

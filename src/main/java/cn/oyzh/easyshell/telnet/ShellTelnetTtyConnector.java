@@ -93,16 +93,20 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
     @Override
     public void write(String str) throws IOException {
         JulLog.debug("shell write : {}", str);
-        this.shellWriter.write(str);
-        this.shellWriter.flush();
+        if (this.shellWriter != null) {
+            this.shellWriter.write(str);
+            this.shellWriter.flush();
+        }
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
         JulLog.debug("shell write : {}", str);
-        this.shellWriter.write(str);
-        this.shellWriter.flush();
+        if (this.shellWriter != null) {
+            this.shellWriter.write(str);
+            this.shellWriter.flush();
+        }
     }
 
     @Override
@@ -114,5 +118,7 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
     public void close() {
         super.close();
         this.client.close();
+        this.shellReader = null;
+        this.shellWriter = null;
     }
 }
