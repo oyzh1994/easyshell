@@ -42,7 +42,7 @@
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
                 </DeleteSVGGlyph>
-                <ClearableTextField flexWidth="100% - 200" realHeight="24" fx:id="filterFile"
+                <ClearableTextField flexWidth="100% - 197" realHeight="24" fx:id="filterFile"
                                     tipText="%base.searchKWTip">
                     <FXHBox.margin>
                         <Insets left="5" top="3"/>

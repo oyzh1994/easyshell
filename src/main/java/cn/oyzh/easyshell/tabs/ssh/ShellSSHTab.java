@@ -8,6 +8,9 @@ import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeLifeCycle;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Cursor;
 
 /**
@@ -16,7 +19,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellSSHTab extends ShellConnectTab {
+public class ShellSSHTab extends ShellConnectTab implements NodeLifeCycle {
 
     public ShellSSHTab(ShellConnectTreeItem item) {
         this.init(item);
@@ -85,5 +88,15 @@ public class ShellSSHTab extends ShellConnectTab {
      */
     public ShellSSHClient client() {
         return this.controller().getClient();
+    }
+
+    @Override
+    public void onNodeInitialize() {
+        NodeLifeCycle.super.onNodeInitialize();
+        // 更新一下内容
+        StageAdapter adapter = StageManager.getAdapter(this.window());
+        if (adapter != null) {
+            adapter.updateContentLater();
+        }
     }
 }
