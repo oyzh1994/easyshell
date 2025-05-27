@@ -25,6 +25,7 @@ import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
@@ -32,6 +33,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.core.util.TermSize;
@@ -54,6 +56,18 @@ import java.util.concurrent.Future;
  * @since 2025/03/11
  */
 public class ShellSSHEffTabController extends SubTabController {
+
+    /**
+     * 左侧组件
+     */
+    @FXML
+    private FXVBox leftBox;
+
+    /**
+     * 右侧组件
+     */
+    @FXML
+    private FXVBox rightBox;
 
     /**
      * 终端组件
@@ -268,6 +282,21 @@ public class ShellSSHEffTabController extends SubTabController {
         this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
         this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
+
+        // 创建拉伸处理器
+        NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
+    }
+
+    /**
+     * 左侧拉伸事件
+     *
+     * @param newWidth 新宽度
+     */
+    private void onLeftResized(float newWidth) {
+        this.leftBox.setRealWidth(newWidth);
+        this.rightBox.setLayoutX(newWidth);
+        this.rightBox.setFlexWidth("100% - " + newWidth);
+        this.rightBox.parentAutosize();
     }
 
     @Override

@@ -23,14 +23,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXHBox flexWidth="100%" flexHeight="100%">
-        <FXVBox flexWidth="30%" flexHeight="100%">
+    <FXPane flexWidth="100%" flexHeight="100%">
+        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
             <FXHBox prefHeight="30" flexWidth="100%">
                 <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                     <FXHBox.margin>
@@ -114,24 +115,24 @@
             <FXHBox prefHeight="30">
                 <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="5" top="3"/>
                     </FXHBox.margin>
                 </FXToggleSwitch>
                 <FXToggleSwitch fx:id="serverMonitor" text="%shell.connect.tip13">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="5" top="3"/>
                     </FXHBox.margin>
                 </FXToggleSwitch>
             </FXHBox>
         </FXVBox>
-        <FXVBox flexWidth="70%" flexHeight="100%">
+        <FXVBox flexWidth="100% - 300" flexHeight="100%" layoutX="300" fx:id="rightBox">
             <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
             </ShellSSHTermWidget>
             <FXLabel fx:id="serverMonitorInfo" managedBindVisible="true" visible="false">
                 <FXVBox.margin>
-                    <Insets left="5" top="9"/>
+                    <Insets left="5" top="7"/>
                 </FXVBox.margin>
             </FXLabel>
         </FXVBox>
-    </FXHBox>
+    </FXPane>
 </FXTab>
