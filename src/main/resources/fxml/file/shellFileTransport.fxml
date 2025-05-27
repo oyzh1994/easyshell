@@ -137,8 +137,8 @@
                 </NextStepButton>
             </FXHBox>
         </FXVBox>
-        <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
-            <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100% - 200">
+        <FXPane fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+            <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100% - 240">
                 <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <HomeSVGGlyph onMousePrimaryClicked="#intoSourceHome">
@@ -242,7 +242,7 @@
                     </ShellFileTransportFileTableView>
                 </FXVBox>
             </FXHBox>
-            <ShellFileTransportTaskTableView flexWidth="100%" fx:id="transportTable" prefHeight="200">
+            <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable" prefHeight="240">
                 <columns>
                     <FXTableColumn prefWidth="90" valueName="clientName" text="%base.connectionName"/>
                     <FXTableColumn prefWidth="200" valueName="srcPath" text="%base.src"/>
@@ -255,6 +255,6 @@
                     <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileTransportTaskTableView>
-        </FXVBox>
+        </FXPane>
     </FXVBox>
 </FXPane>

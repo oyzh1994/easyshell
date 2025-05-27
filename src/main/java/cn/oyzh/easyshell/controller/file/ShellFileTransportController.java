@@ -20,7 +20,9 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeHeightResizer;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -56,7 +58,7 @@ public class ShellFileTransportController extends StageController {
      * 第二步
      */
     @FXML
-    private FXVBox step2;
+    private FXPane step2;
 
     /**
      * 来源信息名称
@@ -293,6 +295,21 @@ public class ShellFileTransportController extends StageController {
                 this.targetFile.setFilterText(newValue);
             }
         });
+
+        // 拉伸处理器
+        NodeHeightResizer.of(this.transportTable, this::onFileTableResize, 150f, 450f);
+    }
+
+    /**
+     * 文件拉伸处理
+     *
+     * @param newHeight 新高度
+     */
+    private void onFileTableResize(float newHeight) {
+        this.transportTable.setRealHeight(newHeight);
+        this.transportTable.setFlexY("100% - " + newHeight);
+        this.fileBox.setFlexHeight("100% - " + newHeight);
+        this.fileBox.parentAutosize();
     }
 
     @Override
