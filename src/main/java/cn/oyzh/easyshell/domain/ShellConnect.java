@@ -608,6 +608,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "vnc".equalsIgnoreCase(this.type);
     }
 
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isRloginType() {
+        return "rlogin".equalsIgnoreCase(this.type);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
-        realHeight="420">
+        realHeight="480">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">
@@ -66,6 +66,11 @@
         </VBox.margin>
     </FXRadioButton>
     <FXRadioButton toggleGroup="$type" text="%base.serialPort" userData="serial">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="Rlogin" userData="rlogin">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>

@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
 import cn.oyzh.easyshell.controller.connect.ShellAddLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellAddRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
@@ -16,6 +17,7 @@ import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.ShellUpdateRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
@@ -212,6 +214,21 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增rlogin连接
+     *
+     * @param group 分组
+     */
+    public static void addRloginConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddRLoginConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 修改ssh连接
@@ -333,6 +350,22 @@ public class ShellViewFactory {
     public static void updateVNCConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateVNCConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改rlogin连接
+     *
+     * @param connect 连接
+     */
+    public static void updateRloginConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRLoginConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

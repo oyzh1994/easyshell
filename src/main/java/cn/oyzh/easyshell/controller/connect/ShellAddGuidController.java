@@ -57,6 +57,8 @@ public class ShellAddGuidController extends StageController {
                 ShellViewFactory.addSerialConnect(group);
             } else if ("vnc".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addVNCConnect(group);
+            } else if ("rlogin".equalsIgnoreCase(this.type.selectedUserData())) {
+                ShellViewFactory.addRloginConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

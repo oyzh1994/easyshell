@@ -212,6 +212,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateSerialConnect(this.value);
         } else if (this.value.isVNCType()) {
             ShellViewFactory.updateVNCConnect(this.value);
+        } else if (this.value.isRloginType()) {
+            ShellViewFactory.updateRloginConnect(this.value);
         }
     }
 
