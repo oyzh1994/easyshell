@@ -1003,9 +1003,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             if (cursorY < getRowCount() && !hasUncommittedChars()) {
                 int cursorX = myCursor.getCoordX();
                 Pair<Character, TextStyle> sc = myTerminalTextBuffer.getStyledCharAt(cursorX, cursorY);
-                StringBuilder cursorChar = new StringBuilder(sc.getFirst());
+                String cursorChar = "" + sc.getFirst();
                 if (Character.isHighSurrogate(sc.getFirst())) {
-                    cursorChar.append(myTerminalTextBuffer.getStyledCharAt(cursorX + 1, cursorY).getFirst());
+                    cursorChar += myTerminalTextBuffer.getStyledCharAt(cursorX + 1, cursorY).getFirst();
                 }
                 TextStyle normalStyle = sc.getSecond() != null ? sc.getSecond() : myStyleState.getCurrent();
                 TextStyle cursorStyle;
@@ -1014,7 +1014,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 } else {
                     cursorStyle = normalStyle;
                 }
-                myCursor.drawCursor(cursorChar.toString(), gfx, cursorStyle);
+                myCursor.drawCursor(cursorChar, gfx, cursorStyle);
             }
         } finally {
             myTerminalTextBuffer.unlock();
