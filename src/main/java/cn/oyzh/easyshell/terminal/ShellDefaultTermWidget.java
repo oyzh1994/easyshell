@@ -156,7 +156,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
 
     @Override
     public void close() {
-        super.close();
+        try {
+            super.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         SystemUtil.gcLater();
     }
 }
