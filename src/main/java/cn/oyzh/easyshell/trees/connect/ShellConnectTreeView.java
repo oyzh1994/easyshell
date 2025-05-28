@@ -56,6 +56,15 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
         return (ShellRootTreeItem) super.root();
     }
 
+    @Override
+    public ShellConnectTreeItemFilter getItemFilter() {
+        // 初始化过滤器
+        if (this.itemFilter == null) {
+            this.itemFilter = new ShellConnectTreeItemFilter();
+        }
+        return (ShellConnectTreeItemFilter) this.itemFilter;
+    }
+
     /**
      * 关闭连接
      */

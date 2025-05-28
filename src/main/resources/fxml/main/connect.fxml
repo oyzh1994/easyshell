@@ -12,6 +12,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
     <graphic>
@@ -49,6 +50,11 @@
                     <Insets left="5" top="10"/>
                 </HBox.margin>
             </PositioningSVGGlyph>
+            <ClearableTextField realHeight="22" tipText="%base.searchKWTip" fx:id="filter">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
         </FXHBox>
         <ShellConnectTreeView fx:id="tree" flexHeight="100% - 30" flexWidth="100%"/>
 <!--        <FXHBox realHeight="30" flexWidth="100%">-->
