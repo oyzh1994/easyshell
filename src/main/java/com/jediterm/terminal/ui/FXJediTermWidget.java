@@ -55,7 +55,7 @@ import java.util.function.Consumer;
  */
 public class FXJediTermWidget extends FXStackPane implements TerminalSession, FXTerminalWidget, TerminalActionProvider {
 
-    protected final FXFXTerminalPanel myTerminalPanel;
+    protected final FXTerminalPanel myTerminalPanel;
 
     private final ScrollBar myScrollBar;
 
@@ -132,9 +132,8 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         myScrollBar = createScrollBar();
 
         this.setFocusTraversable(false);
-        var canvasPane = myTerminalPanel;
-        VBox.setVgrow(canvasPane, Priority.ALWAYS);
-        this.addChild(canvasPane);
+        VBox.setVgrow(myTerminalPanel, Priority.ALWAYS);
+        this.addChild(myTerminalPanel);
 
         myScrollBar.setOrientation(Orientation.VERTICAL);
 
@@ -157,8 +156,8 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         return styleState;
     }
 
-    protected FXFXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
-        return new FXFXTerminalPanel(settingsProvider, terminalTextBuffer, styleState);
+    protected FXTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
+        return new FXTerminalPanel(settingsProvider, terminalTextBuffer, styleState);
     }
 
     protected @NotNull JediTerminal createTerminal(@NotNull TerminalDisplay display,
@@ -177,7 +176,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         return getTerminalPanel();
     }
 
-    public FXFXTerminalPanel getTerminalPanel() {
+    public FXTerminalPanel getTerminalPanel() {
         return myTerminalPanel;
     }
 
@@ -308,6 +307,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         }
         myTerminalPanel.dispose();
         getExecutorServiceManager().shutdownWhenAllExecuted();
+        // 额外代码，清除监听器
         this.myListeners.clear();
     }
 

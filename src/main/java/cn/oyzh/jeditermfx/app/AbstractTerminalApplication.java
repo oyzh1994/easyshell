@@ -11,7 +11,7 @@ import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.model.SelectionUtil;
 import com.jediterm.terminal.model.TerminalSelection;
 import com.jediterm.terminal.ui.FXJediTermWidget;
-import com.jediterm.terminal.ui.FXFXTerminalPanel;
+import com.jediterm.terminal.ui.FXTerminalPanel;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -134,7 +134,7 @@ public abstract class AbstractTerminalApplication extends Application {
         });
         myDumpSelection.setOnAction(e -> {
             FXJediTermWidget widget = myWidget;
-            FXFXTerminalPanel terminalPanel = widget.getTerminalPanel();
+            FXTerminalPanel terminalPanel = widget.getTerminalPanel();
             TerminalSelection selection = terminalPanel.getSelection();
             if (selection != null) {
                 Pair<Point, Point> points = selection.pointsForRun(widget.getTerminal().getTerminalWidth());

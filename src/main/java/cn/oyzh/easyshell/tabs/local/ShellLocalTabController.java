@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
-import com.jediterm.terminal.ui.FXFXTerminalPanel;
+import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -63,7 +63,7 @@ public class ShellLocalTabController extends RichTabController {
      * 初始化背景
      */
     private void initBackground() {
-        FXFXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
         ShellConnectUtil.initBackground(this.shellConnect, terminalPanel);
     }

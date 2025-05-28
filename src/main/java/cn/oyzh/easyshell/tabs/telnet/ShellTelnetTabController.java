@@ -16,7 +16,7 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.core.util.TermSize;
-import com.jediterm.terminal.ui.FXFXTerminalPanel;
+import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -83,7 +83,7 @@ public class ShellTelnetTabController extends RichTabController {
      */
     private void initBackground() {
         ShellConnect connect = this.client.getShellConnect();
-        FXFXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
         ShellConnectUtil.initBackground(connect, terminalPanel);
     }

@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.terminal.ui.FXFXTerminalPanel;
+import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -161,7 +161,7 @@ public class ShellConnectUtil {
     /**
      * 初始化背景
      */
-    public static void initBackground(ShellConnect connect, FXFXTerminalPanel terminalPanel) {
+    public static void initBackground(ShellConnect connect, FXTerminalPanel terminalPanel) {
         if (!connect.isEnableBackground()) {
             return;
         }
