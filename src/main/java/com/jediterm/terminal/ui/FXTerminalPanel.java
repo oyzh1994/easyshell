@@ -192,7 +192,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private final List<TerminalSelectionChangesListener> selectionChangesListeners = new CopyOnWriteArrayList<>();
 
-    private String myWindowTitle = "Terminal";
+    private String myWindowTitle;
+    // private String myWindowTitle = "Terminal";
 
     private TerminalActionProvider myNextActionProvider;
 
@@ -206,7 +207,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private final AtomicBoolean needRepaint = new AtomicBoolean(true);
 
-    private int myMaxFPS = 50;
+    private int myMaxFPS;
+    // private int myMaxFPS = 50;
 
     private int myBlinkingPeriod = 500;
 
@@ -1958,7 +1960,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         String selectionText = getSelectionText();
         if (selectionText != null) {
             try {
-                URI uri = new URI(selectionText.trim());
+                URI uri = new URI(selectionText);
                 //noinspection ResultOfMethodCallIgnored
                 uri.toURL();
                 return true;
