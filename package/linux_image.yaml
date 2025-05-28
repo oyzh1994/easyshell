@@ -18,6 +18,8 @@ mainJar: '${projectPath}/target/easyshell-${appVersion}.jar'
 jdkPath: $SYSTEM
 # jpackage参数
 jpackage:
+  # 是否开启jpackage
+  enable: true
   # 是否详细模式
   verbose: true
   # 程序作者
@@ -142,3 +144,16 @@ jar:
     - git.properties
     - native-image.properties
     - spring-boot-jarmode-layertools-.*.jar
+    - io.netty.version.properties
+    # pty4j针对性裁剪
+    - .*com/pty4j/native/freebsd.*
+    - .*com/pty4j/native/darwin.*
+    - .*com/pty4j/native/win.*
+    # jna针对性裁剪
+    - .*com/sun/jna/aix.*
+    - .*com/sun/jna/sunos.*
+    - .*com/sun/jna/freebsd.*
+    - .*com/sun/jna/openbsd.*
+    - .*com/sun/jna/dragonflybsd.*
+    - .*com/sun/jna/darwin.*
+    - .*com/sun/jna/win32.*
