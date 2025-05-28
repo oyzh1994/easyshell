@@ -1,6 +1,6 @@
 package cn.oyzh.jeditermfx.app.example;
 
-import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
+import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.jediterm.terminal.TtyConnector;
 import javafx.application.Application;

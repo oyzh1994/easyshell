@@ -6,16 +6,10 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
-import cn.oyzh.jeditermfx.terminal.ui.FXBlinkingTextTracker;
-import cn.oyzh.jeditermfx.terminal.ui.FXFontMetrics;
-import cn.oyzh.jeditermfx.terminal.ui.FXScrollBarUtils;
-import cn.oyzh.jeditermfx.terminal.ui.FXTerminalAction;
-import cn.oyzh.jeditermfx.terminal.ui.FXTerminalActionPresentation;
-import cn.oyzh.jeditermfx.terminal.ui.FXTransformers;
-import cn.oyzh.jeditermfx.terminal.ui.hyperlinks.FXLinkInfoEx;
-import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseEvent;
-import cn.oyzh.jeditermfx.terminal.ui.input.FXMouseWheelEvent;
-import cn.oyzh.jeditermfx.terminal.ui.settings.FXDefaultSettingsProvider;
+import com.jediterm.terminal.ui.hyperlinks.FXLinkInfoEx;
+import com.jediterm.terminal.ui.input.FXMouseEvent;
+import com.jediterm.terminal.ui.input.FXMouseWheelEvent;
+import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.core.TerminalCoordinates;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.util.TermSize;
@@ -847,7 +841,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void establishFontMetrics() {
-        var fontMetrics = FXFontMetrics.create(myNormalFont, "W");
+        FXFontMetrics fontMetrics = FXFontMetrics.create(myNormalFont, "W");
         final float lineSpacing = getLineSpacing();
         double fontMetricsHeight = fontMetrics.getHeight();
 

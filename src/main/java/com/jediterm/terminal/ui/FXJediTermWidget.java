@@ -2,13 +2,6 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
-import cn.oyzh.jeditermfx.terminal.ui.FXJediTermDefaultSearchComponent;
-import cn.oyzh.jeditermfx.terminal.ui.FXTerminalAction;
-import cn.oyzh.jeditermfx.terminal.ui.FXTerminalActionPresentation;
-import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidget;
-import cn.oyzh.jeditermfx.terminal.ui.FXJediTermSearchComponent;
-import cn.oyzh.jeditermfx.terminal.ui.FXPreConnectHandler;
-import cn.oyzh.jeditermfx.terminal.ui.FXTerminalWidgetListener;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.typeahead.TypeAheadTerminalModel;
 import com.jediterm.terminal.ProcessTtyConnector;

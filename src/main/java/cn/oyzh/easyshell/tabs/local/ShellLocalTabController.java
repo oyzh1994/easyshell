@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;

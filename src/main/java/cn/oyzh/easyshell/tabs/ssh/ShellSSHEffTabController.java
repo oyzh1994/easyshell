@@ -35,7 +35,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;

@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jcraft.jsch.JSchException;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;

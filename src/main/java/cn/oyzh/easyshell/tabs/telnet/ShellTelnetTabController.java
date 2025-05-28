@@ -14,7 +14,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;

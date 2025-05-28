@@ -5,7 +5,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.jeditermfx.app.debug.TerminalDebugUtil;
 import cn.oyzh.jeditermfx.app.pty.LoggingTtyConnector;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
-import cn.oyzh.jeditermfx.terminal.ui.FXHyperlinkFilter;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.ui.FXJediTermWidget;
