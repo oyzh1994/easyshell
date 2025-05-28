@@ -137,4 +137,10 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
     private void connectImported(ShellConnectImportedEvent event) {
         this.root().reloadChild();
     }
+
+    @Override
+    public void setHighlightText(String highlightText) {
+        super.setHighlightText(highlightText);
+        this.getItemFilter().setKw(highlightText);
+    }
 }

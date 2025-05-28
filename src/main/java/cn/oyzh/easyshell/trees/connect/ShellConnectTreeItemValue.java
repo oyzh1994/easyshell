@@ -14,6 +14,7 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
 
     public ShellConnectTreeItemValue(ShellConnectTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override

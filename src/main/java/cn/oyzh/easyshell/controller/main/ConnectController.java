@@ -119,7 +119,7 @@ public class ConnectController extends SubStageController {
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
         this.filter.addTextChangeListener((observableValue, s, t1) -> {
-            this.tree.getItemFilter().setKw(t1);
+            this.tree.setHighlightText(t1);
             this.tree.filter();
         });
     }
