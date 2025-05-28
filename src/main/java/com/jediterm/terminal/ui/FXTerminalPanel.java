@@ -6,10 +6,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
-import com.jediterm.terminal.ui.hyperlinks.FXLinkInfoEx;
-import com.jediterm.terminal.ui.input.FXMouseEvent;
-import com.jediterm.terminal.ui.input.FXMouseWheelEvent;
-import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.core.TerminalCoordinates;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.util.TermSize;
@@ -44,6 +40,10 @@ import com.jediterm.terminal.model.TerminalSelectionChangesListener;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.model.hyperlinks.LinkInfo;
 import com.jediterm.terminal.model.hyperlinks.TextProcessing;
+import com.jediterm.terminal.ui.hyperlinks.FXLinkInfoEx;
+import com.jediterm.terminal.ui.input.FXMouseEvent;
+import com.jediterm.terminal.ui.input.FXMouseWheelEvent;
+import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.jediterm.terminal.util.CharUtils;
 import javafx.animation.KeyFrame;
@@ -1003,9 +1003,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             if (cursorY < getRowCount() && !hasUncommittedChars()) {
                 int cursorX = myCursor.getCoordX();
                 Pair<Character, TextStyle> sc = myTerminalTextBuffer.getStyledCharAt(cursorX, cursorY);
-                String cursorChar = "" + sc.getFirst();
+                StringBuilder cursorChar = new StringBuilder(sc.getFirst());
                 if (Character.isHighSurrogate(sc.getFirst())) {
-                    cursorChar += myTerminalTextBuffer.getStyledCharAt(cursorX + 1, cursorY).getFirst();
+                    cursorChar.append(myTerminalTextBuffer.getStyledCharAt(cursorX + 1, cursorY).getFirst());
                 }
                 TextStyle normalStyle = sc.getSecond() != null ? sc.getSecond() : myStyleState.getCurrent();
                 TextStyle cursorStyle;
@@ -1014,7 +1014,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 } else {
                     cursorStyle = normalStyle;
                 }
-                myCursor.drawCursor(cursorChar, gfx, cursorStyle);
+                myCursor.drawCursor(cursorChar.toString(), gfx, cursorStyle);
             }
         } finally {
             myTerminalTextBuffer.unlock();
@@ -1451,8 +1451,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return myBlinkingPeriod;
     }
 
+    private TextStyle lastTextStyle;
+
+    private TextStyle lastInversedStyle;
+
     @NotNull
     private TextStyle getInversedStyle(@NotNull TextStyle style) {
+        if (Objects.equals(style, this.lastTextStyle)) {
+            return this.lastInversedStyle;
+        }
         TextStyle.Builder builder = new TextStyle.Builder(style);
         builder.setOption(TextStyle.Option.INVERSE, !style.hasOption(TextStyle.Option.INVERSE));
         if (style.getForeground() == null) {
@@ -1461,7 +1468,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (style.getBackground() == null) {
             builder.setBackground(myStyleState.getDefaultBackground());
         }
-        return builder.build();
+        // 缓存数据
+        this.lastTextStyle = style;
+        this.lastInversedStyle = builder.build();
+        return this.lastInversedStyle;
     }
 
     private void drawCharacters(int x, int y, TextStyle style, CharBuffer buf, GraphicsContext gfx) {
@@ -1485,8 +1495,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), getHeight() - yCoord);
         double width = Math.min(textLength * this.myCharSize.getWidth(), FXTerminalPanel.this.getWidth() - xCoord);
 
-        if (style instanceof HyperlinkStyle) {
-            HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
+        if (style instanceof HyperlinkStyle hyperlinkStyle) {
 
             if (hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.ALWAYS || (isHoveredHyperlink(hyperlinkStyle) && hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.HOVER)) {
 
@@ -1537,10 +1546,17 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         }
 
         BreakIterator iterator = BreakIterator.getCharacterInstance();
-        char[] text = renderingBuffer.clone().getBuf();
+//        char[] text = renderingBuffer.clone().getBuf();
+        char[] text = renderingBuffer.getBuf();
         iterator.setText(new String(text));
         int endOffset;
         int startOffset = 0;
+        double descent = myDescent;
+        double charWidth = myCharSize.getWidth();
+        double yCoord = y * myCharSize.getHeight() + mySpaceBetweenLines / 2.0;
+        double yCoord1 = Math.round(yCoord);
+        double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - descent;
+        double baseLine1 = Math.round(baseLine);
         while ((endOffset = iterator.next()) != BreakIterator.DONE) {
             endOffset = extendEndOffset(text, iterator, startOffset, endOffset);
             int effectiveEndOffset = shiftDwcToEnd(text, startOffset, endOffset);
@@ -1550,14 +1566,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
             Font font = getFontToDisplay(text, startOffset, effectiveEndOffset, style);
             gfx.setFont(font);
-            double descent = myDescent;
-            double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - descent;
-            double charWidth = myCharSize.getWidth();
             double xCoord = (x + startOffset) * charWidth + getInsetX();
-            double yCoord = y * myCharSize.getHeight() + mySpaceBetweenLines / 2.0;
             gfx.save();
             gfx.beginPath();
-            gfx.rect(Math.round(xCoord), Math.round(yCoord), Math.round(this.getWidth() - xCoord), Math.round(this.getHeight() - yCoord));
+            gfx.rect(Math.round(xCoord), yCoord1, Math.round(this.getWidth() - xCoord), Math.round(this.getHeight() - yCoord));
             gfx.closePath();
             gfx.clip();
 
@@ -1569,10 +1581,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 xCoord += emptySpace / 2;
             }
             xCoord = Math.round(xCoord);
-            baseLine = Math.round(baseLine);
             //JulLog.debug("Drawing {} at {}:{}", str, xCoord, baseLine);
-            var str = new String(text, startOffset, effectiveEndOffset - startOffset);
-            gfx.fillText(str, xCoord, baseLine);
+            String str = new String(text, startOffset, effectiveEndOffset - startOffset);
+            gfx.fillText(str, xCoord, baseLine1);
             gfx.restore();
 
             startOffset = endOffset;

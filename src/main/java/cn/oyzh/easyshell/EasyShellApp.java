@@ -4,6 +4,7 @@ import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
@@ -131,6 +132,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
     public void start(Stage primaryStage) {
         try {
             super.start(primaryStage);
+            // 开启定期gc
+            SystemUtil.gcInterval(15_000);
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("start error", ex);
