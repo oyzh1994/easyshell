@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
-import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
@@ -21,7 +20,7 @@ import javafx.util.Callback;
  * shell连接树
  *
  * @author oyzh
- * @since 2023/1/29
+ * @since 2025/03/10
  */
 public class ShellConnectTreeView extends RichTreeView implements FXEventListener {
 
@@ -56,15 +55,6 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
         return (ShellRootTreeItem) super.root();
     }
 
-    @Override
-    public ShellConnectTreeItemFilter getItemFilter() {
-        // 初始化过滤器
-        if (this.itemFilter == null) {
-            this.itemFilter = new ShellConnectTreeItemFilter();
-        }
-        return (ShellConnectTreeItemFilter) this.itemFilter;
-    }
-
     /**
      * 关闭连接
      */
@@ -74,31 +64,31 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
         }
     }
 
-    @Override
-    public void expand() {
-        TreeItem<?> item = this.getSelectedItem();
-        if (item instanceof ShellConnectTreeItem treeItem) {
-            treeItem.expend();
-        } else if (item instanceof RichTreeItem<?> treeItem) {
-            treeItem.expend();
-        }
-        if (item != null) {
-            this.select(item);
-        }
-    }
-
-    @Override
-    public void collapse() {
-        TreeItem<?> item = this.getSelectedItem();
-        if (item instanceof ShellConnectTreeItem treeItem) {
-            treeItem.collapse();
-        } else if (item instanceof RichTreeItem<?> treeItem) {
-            treeItem.collapse();
-        }
-        if (item != null) {
-            this.select(item);
-        }
-    }
+//    @Override
+//    public void expand() {
+//        TreeItem<?> item = this.getSelectedItem();
+//        if (item instanceof ShellConnectTreeItem treeItem) {
+//            treeItem.expend();
+//        } else if (item instanceof RichTreeItem<?> treeItem) {
+//            treeItem.expend();
+//        }
+//        if (item != null) {
+//            this.select(item);
+//        }
+//    }
+//
+//    @Override
+//    public void collapse() {
+//        TreeItem<?> item = this.getSelectedItem();
+//        if (item instanceof ShellConnectTreeItem treeItem) {
+//            treeItem.collapse();
+//        } else if (item instanceof RichTreeItem<?> treeItem) {
+//            treeItem.collapse();
+//        }
+//        if (item != null) {
+//            this.select(item);
+//        }
+//    }
 
     /**
      * 添加分组
@@ -136,6 +126,15 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
     @EventSubscribe
     private void connectImported(ShellConnectImportedEvent event) {
         this.root().reloadChild();
+    }
+
+    @Override
+    public ShellConnectTreeItemFilter getItemFilter() {
+        // 初始化过滤器
+        if (this.itemFilter == null) {
+            this.itemFilter = new ShellConnectTreeItemFilter();
+        }
+        return (ShellConnectTreeItemFilter) this.itemFilter;
     }
 
     @Override

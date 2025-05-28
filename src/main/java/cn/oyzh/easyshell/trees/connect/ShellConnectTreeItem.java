@@ -79,7 +79,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
 
-        if (this.isLocalType() || this.isSerialType() || this.isTelnetType()) {
+        if (!(this.isSSHType() || this.isSFTPType() || this.isFTPType())) {
             transportFile.setDisable(true);
         }
 
@@ -97,6 +97,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isSSHType();
     }
 
+    public boolean isSFTPType() {
+        return value.isSFTPType();
+    }
+
+    public boolean isFTPType() {
+        return value.isFTPType();
+    }
+
     public boolean isLocalType() {
         return value.isLocalType();
     }
@@ -109,6 +117,9 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isTelnetType();
     }
 
+    public boolean isRloginType() {
+        return value.isRloginType();
+    }
 
 //    /**
 //     * 取消连接
@@ -329,7 +340,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //        }
     }
 
-    public String infoName() {
+    public String connectName() {
         return this.value.getName();
     }
 
