@@ -18,6 +18,8 @@ mainJar: '${projectPath}/target/easyshell-${appVersion}.jar'
 jdkPath: $SYSTEM
 # jpackage参数
 jpackage:
+  # 是否开启jpackage
+  enable: false
   # 是否详细模式
   verbose: true
   # 程序作者
