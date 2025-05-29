@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
     <graphic>
@@ -25,6 +26,11 @@
                     <Insets left="5" top="10"/>
                 </HBox.margin>
             </AddSVGGlyph>
+            <SplitViewSVGGlyph size="15" onMousePrimaryClicked="#splitView">
+                <HBox.margin>
+                    <Insets left="5" top="10"/>
+                </HBox.margin>
+            </SplitViewSVGGlyph>
             <TerminalSVGGlyph size="15" onMousePrimaryClicked="#openTerminal">
                 <HBox.margin>
                     <Insets left="5" top="10"/>

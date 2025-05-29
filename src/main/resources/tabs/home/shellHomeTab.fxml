@@ -43,7 +43,7 @@
                 <Insets left="20"/>
             </HBox.margin>
         </AddGroupButton>
-        <SplitViewButton onMousePrimaryClicked="#splitView">
+        <SplitViewButton text="%base.termSplitView" onMousePrimaryClicked="#splitView">
             <HBox.margin>
                 <Insets left="20"/>
             </HBox.margin>

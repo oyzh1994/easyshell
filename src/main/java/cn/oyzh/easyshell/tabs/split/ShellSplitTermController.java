@@ -86,16 +86,16 @@ public class ShellSplitTermController extends SubTabController {
      * @throws Exception 异常
      */
     private void init() throws Exception {
-        ShellSSHShell shell = client.openShell();
+        ShellSSHShell shell = this.client.openShell();
         this.initWidget();
-        shell.connect(client.connectTimeout());
+        shell.connect(this.client.connectTimeout());
         if (!shell.isConnected()) {
             MessageBox.warn(I18nHelper.connectFail());
             return;
         }
-        ShellConnect shellConnect = client.getShellConnect();
+        ShellConnect shellConnect = this.client.getShellConnect();
         // macos需要初始化部分参数
-        if (client.isMacos() && shellConnect.getCharset() != null) {
+        if (this.client.isMacos() && shellConnect.getCharset() != null) {
             TtyConnector connector = this.widget.getTtyConnector();
             connector.write("export LANG=en_US." + shellConnect.getCharset() + "\n");
         }

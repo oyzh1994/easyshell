@@ -51,6 +51,14 @@ public class ConnectController extends SubStageController {
     }
 
     /**
+     * 终端分屏
+     */
+    @FXML
+    private void splitView() {
+        ShellViewFactory.splitGuid();
+    }
+
+    /**
      * 定位节点
      */
     @FXML
