@@ -25,6 +25,10 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     private OutputStreamWriter shellWriter;
 
+    public ShellSSHClient getClient() {
+        return client;
+    }
+
     public void initShell(ShellSSHClient client) throws IOException {
         this.client = client;
         ShellSSHShell shell = client.getShell();

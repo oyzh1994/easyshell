@@ -35,9 +35,8 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
-import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -168,19 +167,19 @@ public class ShellSSHEffTabController extends SubTabController {
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
+//        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }
 
-    /**
-     * 初始化终端大小
-     */
-    private void initShellSize() {
-        int sizeW = (int) this.widget.getTerminalPanel().getWidth();
-        int sizeH = (int) this.widget.getTerminalPanel().getHeight();
-        TermSize termSize = this.widget.getTermSize();
-        ShellSSHShell shell = this.client().getShell();
-        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
-    }
+//    /**
+//     * 初始化终端大小
+//     */
+//    private void initShellSize() {
+//        int sizeW = (int) this.widget.getTerminalPanel().getWidth();
+//        int sizeH = (int) this.widget.getTerminalPanel().getHeight();
+//        TermSize termSize = this.widget.getTermSize();
+//        ShellSSHShell shell = this.client().getShell();
+//        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
+//    }
 
     /**
      * 初始化背景

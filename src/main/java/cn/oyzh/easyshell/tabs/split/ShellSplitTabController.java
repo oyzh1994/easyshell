@@ -13,25 +13,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ssh-tab内容组件
+ * 终端分屏-tab内容组件
  *
  * @author oyzh
- * @since 2025/04/16
+ * @since 2025/05/29
  */
 public class ShellSplitTabController extends ParentTabController {
 
     /**
-     * 效率
+     * 终端1
      */
     @FXML
     private ShellSplitTermController term1Controller;
 
+    /**
+     * 终端2
+     */
     @FXML
     private ShellSplitTermController term2Controller;
 
+    /**
+     * 终端3
+     */
     @FXML
     private ShellSplitTermController term3Controller;
 
+    /**
+     * 终端4
+     */
     @FXML
     private ShellSplitTermController term4Controller;
 

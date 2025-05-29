@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
@@ -15,12 +15,12 @@
         realHeight="420">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
-            <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">
+            <SplitViewSVGGlyph sizeStr="40,40" color="darkgreen">
                 <HBox.margin>
                     <Insets left="30" top="20"/>
                 </HBox.margin>
-            </LinuxSVGGlyph>
-            <FXText realHeight="25" text="%base.splitView" fontSize="15">
+            </SplitViewSVGGlyph>
+            <FXText realHeight="25" text="%base.termSplitView" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>

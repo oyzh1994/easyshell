@@ -32,31 +32,24 @@ public class ShellSplitTab extends ShellConnectTab implements NodeLifeCycle {
     @Override
     protected String url() {
         String type = ThreadLocalUtil.getVal("type");
-        // 模式1
-        if (StringUtil.isBlank(type) || type.equals("type1")) {
+        // 默认
+        if (StringUtil.isBlank(type)) {
             return "/tabs/split/shellSplitTab1.fxml";
         }
-        // 模式2
-        if (type.equals("type2")) {
-            return "/tabs/split/shellSplitTab2.fxml";
-        }
-        // 模式3
-        if (type.equals("type3")) {
-            return "/tabs/split/shellSplitTab3.fxml";
-        }
-        // 模式4
-        if (type.equals("type4")) {
-            return "/tabs/split/shellSplitTab4.fxml";
-        }
-        // 模式5
-        if (type.equals("type5")) {
-            return "/tabs/split/shellSplitTab5.fxml";
-        }
-        // 模式6
-        if (type.equals("type6")) {
-            return "/tabs/split/shellSplitTab6.fxml";
-        }
-        return "/tabs/split/shellSplitTab1.fxml";
+        return switch (type) {
+            // 模式2
+            case "type2" -> "/tabs/split/shellSplitTab2.fxml";
+            // 模式3
+            case "type3" -> "/tabs/split/shellSplitTab3.fxml";
+            // 模式4
+            case "type4" -> "/tabs/split/shellSplitTab4.fxml";
+            // 模式5
+            case "type5" -> "/tabs/split/shellSplitTab5.fxml";
+            // 模式6
+            case "type6" -> "/tabs/split/shellSplitTab6.fxml";
+            // 模式1或者默认
+            default -> "/tabs/split/shellSplitTab1.fxml";
+        };
     }
 
     @Override

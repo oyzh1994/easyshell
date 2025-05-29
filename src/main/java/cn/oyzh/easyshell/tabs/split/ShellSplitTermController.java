@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import javafx.event.Event;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * 分屏-终端tab内容组件
+ * 终端分屏-终端tab内容组件
  *
  * @author oyzh
  * @since 2025/05/29
@@ -66,19 +65,19 @@ public class ShellSplitTermController extends SubTabController {
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
+//        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }
 
-    /**
-     * 初始化终端大小
-     */
-    private void initShellSize() {
-        int sizeW = (int) this.widget.getTerminalPanel().getWidth();
-        int sizeH = (int) this.widget.getTerminalPanel().getHeight();
-        TermSize termSize = this.widget.getTermSize();
-        ShellSSHShell shell = this.client.getShell();
-        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
-    }
+//    /**
+//     * 初始化终端大小
+//     */
+//    private void initShellSize() {
+//        int sizeW = (int) this.widget.getTerminalPanel().getWidth();
+//        int sizeH = (int) this.widget.getTerminalPanel().getHeight();
+//        TermSize termSize = this.widget.getTermSize();
+//        ShellSSHShell shell = this.client.getShell();
+//        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
+//    }
 
     /**
      * 执行初始化
@@ -99,7 +98,6 @@ public class ShellSplitTermController extends SubTabController {
             TtyConnector connector = this.widget.getTtyConnector();
             connector.write("export LANG=en_US." + shellConnect.getCharset() + "\n");
         }
-        this.initShellSize();
         this.termBox.addChild(this.widget);
     }
 
@@ -129,10 +127,10 @@ public class ShellSplitTermController extends SubTabController {
      */
     @FXML
     private void doConnect() {
-        this.destroy();
         if (!this.connectionBox.validate()) {
             return;
         }
+        this.destroy();
         ShellConnect connect = this.connectionBox.getSelectedItem();
         this.client = new ShellSSHClient(connect);
         StageManager.showMask(() -> {
@@ -140,9 +138,12 @@ public class ShellSplitTermController extends SubTabController {
                 this.client.start();
                 if (this.client.isConnected()) {
                     this.init();
+                } else {
+                    this.destroy();
                 }
             } catch (Exception ex) {
                 MessageBox.exception(ex);
+                this.destroy();
             }
         });
     }

@@ -40,6 +40,6 @@ public class PtyProcessTtyConnector extends ProcessTtyConnector {
 
     @Override
     public String getName() {
-        return "Local";
+        return "";
     }
 }
