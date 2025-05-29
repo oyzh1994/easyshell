@@ -82,4 +82,13 @@ public class ShellHomeTabController extends RichTabController {
     private void changelog() {
         ShellEventUtil.changelog();
     }
+
+    /**
+     * 打开终端
+     */
+    @FXML
+    private void splitView() {
+        ShellViewFactory.splitGuid();
+    }
+
 }

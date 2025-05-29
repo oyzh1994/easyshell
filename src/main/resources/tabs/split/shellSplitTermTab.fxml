@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox?>
+<?import cn.oyzh.fx.gui.button.ExecuteButton?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.split.ShellSplitTermController"
+        flexWidth="100%" flexHeight="100%">
+    <FXHBox fx:id="termBox" flexWidth="100%" flexHeight="100% - 30">
+
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30">
+        <ShellSSHConnectComboBox require="true" fx:id="connectionBox" realHeight="26">
+            <FXHBox.margin>
+                <Insets left="5" top="2"/>
+            </FXHBox.margin>
+        </ShellSSHConnectComboBox>
+        <ExecuteButton text="%base.connect" onAction="#doConnect" realHeight="26">
+            <FXHBox.margin>
+                <Insets left="5" top="2"/>
+            </FXHBox.margin>
+        </ExecuteButton>
+    </FXHBox>
+</FXVBox>

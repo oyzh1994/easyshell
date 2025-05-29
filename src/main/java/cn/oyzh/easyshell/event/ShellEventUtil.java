@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
+import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -387,5 +388,15 @@ public class ShellEventUtil {
 //        event.data(config);
 //        EventUtil.post(event);
 //    }
+
+    /**
+     * 显示分屏页面
+     * @param type 类型
+     */
+    public static void showSplit(String type) {
+        ShellShowSplitEvent event = new ShellShowSplitEvent();
+        event.data(type);
+        EventUtil.post(event);
+    }
 
 }

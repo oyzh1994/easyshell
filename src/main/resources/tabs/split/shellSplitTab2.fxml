@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.split.ShellSplitTabController">
+    <FXHBox flexWidth="100%" flexHeight="50%">
+        <fx:include fx:id="term1" source="shellSplitTermTab.fxml"/>
+    </FXHBox>
+    <FXHBox flexWidth="100%" flexHeight="50%">
+        <fx:include fx:id="term2" source="shellSplitTermTab.fxml"/>
+    </FXHBox>
+</FXVBox>

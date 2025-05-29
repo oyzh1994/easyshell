@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.button.LocalTerminalButton?>
+<?import cn.oyzh.fx.gui.button.SplitViewButton?>
 <FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
@@ -42,6 +43,11 @@
                 <Insets left="20"/>
             </HBox.margin>
         </AddGroupButton>
+        <SplitViewButton onMousePrimaryClicked="#splitView">
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+        </SplitViewButton>
         <LocalTerminalButton onMousePrimaryClicked="#openTerminal">
             <HBox.margin>
                 <Insets left="20"/>

@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
+import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
@@ -16,6 +18,7 @@ import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
 import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
+import cn.oyzh.easyshell.tabs.split.ShellSplitTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
@@ -259,6 +262,21 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
         if (!keyTab.isSelected()) {
             this.select(keyTab);
+        }
+    }
+
+    /**
+     * 终端分屏事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void termSplit(ShellShowSplitEvent event) {
+        ThreadLocalUtil.setVal("type", event.data());
+        ShellSplitTab splitTab = new ShellSplitTab();
+        this.addTab(splitTab);
+        if (!splitTab.isSelected()) {
+            this.select(splitTab);
         }
     }
 }

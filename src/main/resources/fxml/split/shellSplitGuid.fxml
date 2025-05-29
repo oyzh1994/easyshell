@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.fx.gui.button.NextStepButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.split.ShellSplitGuidController" realWidth="600"
+        realHeight="420">
+    <FXHBox flexWidth="100%" realHeight="80">
+        <FXHBox flexHeight="100%" flexWidth="100%">
+            <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">
+                <HBox.margin>
+                    <Insets left="30" top="20"/>
+                </HBox.margin>
+            </LinuxSVGGlyph>
+            <FXText realHeight="25" text="%base.splitView" fontSize="15">
+                <HBox.margin>
+                    <Insets left="15" top="30"/>
+                </HBox.margin>
+            </FXText>
+        </FXHBox>
+    </FXHBox>
+    <InfoLabel text="%base.type">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <fx:define>
+        <FXToggleGroup fx:id="type"/>
+    </fx:define>
+    <FXRadioButton toggleGroup="$type" text="%shell.term.tip9" selected="true" userData="type1">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="%shell.term.tip10" userData="type2">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="%shell.term.tip11" userData="type3">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="%shell.term.tip12" userData="type4">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="%shell.term.tip13" userData="type5">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="%shell.term.tip14" userData="type6">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
+    <FXHBox>
+        <NextStepButton onAction="#toSplit" realHeight="30">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </NextStepButton>
+    </FXHBox>
+</FXVBox>
