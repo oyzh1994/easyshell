@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.docker;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.docker.ShellDockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.docker.ShellDockerImage;
 import cn.oyzh.easyshell.docker.ShellDockerParser;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -177,9 +177,9 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         StageManager.showMask(() -> {
             try {
                 String output = this.exec.docker_history(image.getImageId());
-                List<ShellDockerHistory> histories = ShellDockerParser.history(output);
+                List<ShellDockerImageHistory> histories = ShellDockerParser.history(output);
 //                FXUtil.runLater(() -> {
-//                    StageAdapter adapter = StageManager.parseStage(ShellDockerHistoryController.class);
+//                    StageAdapter adapter = StageManager.parseStage(ShellDockerImageHistoryController.class);
 //                    adapter.setProp("histories", histories);
 //                    adapter.display();
 //                });

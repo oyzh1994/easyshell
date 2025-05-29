@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * shell隧道配置
+ *
  * @author oyzh
  * @since 2025-04-16
  */

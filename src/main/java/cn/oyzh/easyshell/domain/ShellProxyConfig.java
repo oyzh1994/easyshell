@@ -6,6 +6,8 @@ import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 
 /**
+ * shell代理配置
+ *
  * @author oyzh
  * @since 2025-04-14
  */

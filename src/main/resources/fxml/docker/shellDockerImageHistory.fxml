@@ -5,7 +5,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox prefWidth="800" prefHeight="650" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerHistoryController">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController">
     <ShellDockerHistoryTableView flexWidth="100%" flexHeight="100%" fx:id="historyTable">
         <columns>
             <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>

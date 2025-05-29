@@ -1,21 +1,41 @@
 package cn.oyzh.easyshell.docker;
 
 /**
+ * docker资源
+ *
  * @author oyzh
  * @since 2025-03-13
  */
 public class ShellDockerResource {
 
+    /**
+     * 内存
+     */
     private long memory;
 
+    /**
+     * 内存交换区
+     */
     private long memorySwap;
 
+    /**
+     * cpu份额
+     */
     private long cpuShares;
 
+    /**
+     * cpus核心
+     */
     private long nanoCpus;
 
+    /**
+     * cpu时间
+     */
     private long cpuPeriod;
 
+    /**
+     * cpu配额
+     */
     private long cpuQuota;
 
     public long getMemory() {

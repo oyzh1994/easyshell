@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.internal.exec.ShellExec;
 import cn.oyzh.easyshell.internal.process.ShellProcessExec;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
@@ -154,32 +155,34 @@ public class ShellSSHClient extends ShellClient {
      */
     private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
-    public ShellSSHClient(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
-    }
-
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<ShellSSHConnState> state = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    @Override
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
+    }
 
     /**
-     * 获取状态
-     *
-     * @return 状态
+     * 当前状态监听器
      */
-    public ShellSSHConnState getState() {
-        return this.state.get();
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
+
+    public ShellSSHClient(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
+        this.addStateListener(this.stateListener);
     }
 
     /**
      * 更新状态
      */
     public void updateState() {
-        ShellSSHConnState state = this.getState();
-        if (state == ShellSSHConnState.CONNECTED) {
+        ShellConnState state = this.getState();
+        if (state == ShellConnState.CONNECTED) {
             if (this.session == null || !this.session.isConnected()) {
-                this.state.set(ShellSSHConnState.INTERRUPT);
+                this.state.set(ShellConnState.INTERRUPT);
             }
         }
     }
@@ -191,26 +194,6 @@ public class ShellSSHClient extends ShellClient {
             this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session);
         }
         return this.sftpClient;
-    }
-
-    /**
-     * 连接状态属性
-     *
-     * @return 连接状态属性
-     */
-    public ReadOnlyObjectProperty<ShellSSHConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
-    }
-
-    /**
-     * 添加连接状态监听器
-     *
-     * @param stateListener 监听器
-     */
-    public void addStateListener(ChangeListener<ShellSSHConnState> stateListener) {
-        if (stateListener != null) {
-            this.stateProperty().addListener(stateListener);
-        }
     }
 
     /**
@@ -401,7 +384,7 @@ public class ShellSSHClient extends ShellClient {
             if (this.session != null) {
                 this.session.disconnect();
                 this.session = null;
-                this.state.set(ShellSSHConnState.CLOSED);
+                this.state.set(ShellConnState.CLOSED);
             }
             // 销毁跳板转发器
             if (this.jumpForwarder != null) {
@@ -411,6 +394,7 @@ public class ShellSSHClient extends ShellClient {
             if (this.sftpClient != null) {
                 this.sftpClient.close();
             }
+            this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -423,7 +407,7 @@ public class ShellSSHClient extends ShellClient {
         }
         try {
             // 初始化连接池
-            this.state.set(ShellSSHConnState.CONNECTING);
+            this.state.set(ShellConnState.CONNECTING);
             // 初始化客户端
             this.initClient();
             // 开始连接时间
@@ -437,20 +421,20 @@ public class ShellSSHClient extends ShellClient {
             }
             // 判断连接结果
             if (this.session != null && this.session.isConnected()) {
-                this.state.set(ShellSSHConnState.CONNECTED);
+                this.state.set(ShellConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
                 // 添加到状态监听器队列
                 ShellSSHClientChecker.push(this);
-            } else if (this.state.get() == ShellSSHConnState.FAILED) {
+            } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
-                this.state.set(ShellSSHConnState.FAILED);
+                this.state.set(ShellConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
             JulLog.info("shellSSHClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
-            this.state.set(ShellSSHConnState.FAILED);
+            this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellSSHClient start error", ex);
             throw new ShellException(ex);
         }
@@ -463,7 +447,7 @@ public class ShellSSHClient extends ShellClient {
      */
     public boolean isConnecting() {
         if (!this.isClosed()) {
-            return this.state.get() == ShellSSHConnState.CONNECTING;
+            return this.state.get() == ShellConnState.CONNECTING;
         }
         return false;
     }

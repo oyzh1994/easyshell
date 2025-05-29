@@ -1,10 +1,9 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.docker.ShellDockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.fx.docker.ShellDockerHistoryTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -21,9 +20,9 @@ import java.util.List;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "docker/shellDockerHistory.fxml"
+        value = FXConst.FXML_PATH + "docker/shellDockerImageHistory.fxml"
 )
-public class ShellDockerHistoryController extends StageController {
+public class ShellDockerImageHistoryController extends StageController {
 
     /**
      * 历史表
@@ -34,7 +33,7 @@ public class ShellDockerHistoryController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        List<ShellDockerHistory> histories = this.getProp("histories");
+        List<ShellDockerImageHistory> histories = this.getProp("histories");
         this.historyTable.setItem(histories);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

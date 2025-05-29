@@ -2,6 +2,9 @@ package cn.oyzh.easyshell.internal;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ChangeListener;
 
 import java.nio.charset.Charset;
 
@@ -80,4 +83,56 @@ public interface BaseClient extends AutoCloseable {
      * @return 结果
      */
     boolean isConnected();
+
+    /**
+     * 连接状态属性
+     *
+     * @return 连接状态属性
+     */
+    ReadOnlyObjectProperty<ShellConnState> stateProperty();
+
+    /**
+     * 添加连接状态监听器
+     *
+     * @param stateListener 监听器
+     */
+    default void addStateListener(ChangeListener<ShellConnState> stateListener) {
+        if (stateListener != null && this.stateProperty() != null) {
+            this.stateProperty().addListener(stateListener);
+        }
+    }
+
+    /**
+     * 移除连接状态监听器
+     *
+     * @param stateListener 监听器
+     */
+    default void removeStateListener(ChangeListener<ShellConnState> stateListener) {
+        if (stateListener != null && this.stateProperty() != null) {
+            this.stateProperty().removeListener(stateListener);
+        }
+    }
+
+    /**
+     * 获取状态
+     *
+     * @return 状态
+     */
+    default ShellConnState getState() {
+        return this.stateProperty() == null ? null : this.stateProperty().get();
+    }
+
+    /**
+     * 状态变更事件
+     *
+     * @param state 状态
+     */
+    default void onStateChanged(ShellConnState state) {
+        if (state == ShellConnState.CLOSED) {
+            ShellEventUtil.connectionClosed(this);
+        } else if (state == ShellConnState.CONNECTED) {
+            ShellEventUtil.connectionConnected(this);
+        }
+    }
+
 }

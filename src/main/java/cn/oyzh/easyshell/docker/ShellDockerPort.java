@@ -1,13 +1,21 @@
 package cn.oyzh.easyshell.docker;
 
 /**
+ * docker端口信息
+ *
  * @author oyzh
  * @since 2025-03-13
  */
 public class ShellDockerPort {
 
+    /**
+     * 内部端口
+     */
     private String innerPort;
 
+    /**
+     * 外部端口
+     */
     private String outerPort;
 
     public String getInnerPort() {

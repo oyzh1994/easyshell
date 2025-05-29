@@ -2,6 +2,10 @@ package cn.oyzh.easyshell.telnet;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.WindowSizeOptionHandler;
 
@@ -25,10 +29,29 @@ public class ShellTelnetClient implements BaseClient {
      */
     private final ShellConnect shellConnect;
 
-    public ShellTelnetClient(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
+    /**
+     * 连接状态
+     */
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> BaseClient.super.onStateChanged(state3);
+
+    @Override
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
     }
 
+    public ShellTelnetClient(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
+        this.addStateListener(this.stateListener);
+    }
+
+    /**
+     * 初始化客户端
+     */
     private void initClient() {
         this.client = new TelnetClient();
         this.client.setCharset(BaseClient.super.getCharset());
@@ -38,7 +61,18 @@ public class ShellTelnetClient implements BaseClient {
     public void start(int timeout) throws IOException {
         this.initClient();
         this.client.setConnectTimeout(timeout);
-        this.client.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort());
+        try {
+            this.state.set(ShellConnState.CONNECTING);
+            this.client.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort());
+            if (this.client.isConnected()) {
+                this.state.set(ShellConnState.CONNECTED);
+            } else {
+                this.state.set(ShellConnState.FAILED);
+            }
+        } catch (Exception ex) {
+            this.state.set(ShellConnState.FAILED);
+            throw ex;
+        }
     }
 
     @Override
@@ -48,6 +82,8 @@ public class ShellTelnetClient implements BaseClient {
                 this.client.disconnect();
                 this.client = null;
             }
+            this.state.set(ShellConnState.CLOSED);
+            this.state.removeListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

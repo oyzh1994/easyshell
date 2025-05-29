@@ -1,12 +1,12 @@
-package cn.oyzh.easyshell.ssh;
+package cn.oyzh.easyshell.internal;
 
 /**
- * ssh连接状态
+ * shell连接状态
  *
  * @author oyzh
  * @since 2023/07/1
  */
-public enum ShellSSHConnState {
+public enum ShellConnState {
 
     /**
      * 未初始化
@@ -57,5 +57,10 @@ public enum ShellSSHConnState {
         }
     };
 
+    /**
+     * 是否已连接
+     *
+     * @return 结果
+     */
     public abstract boolean isConnected();
 }

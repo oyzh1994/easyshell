@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.ChannelSftp;
@@ -18,6 +19,9 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -41,15 +45,29 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
      */
     private final List<ShellSFTPChannel> delayChannels = new ArrayList<>();
 
-    private ShellSFTPChannel channel;
+    /**
+     * 连接状态
+     */
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    @Override
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
+    }
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
 
     public ShellSFTPClient(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
+        this(shellConnect, null);
     }
 
     public ShellSFTPClient(ShellConnect shellConnect, Session session) {
         this.shellConnect = shellConnect;
         this.session = session;
+        super.addStateListener(this.stateListener);
     }
 
     /**
@@ -88,6 +106,8 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
                 this.attr.clear();
                 this.attr = null;
             }
+            this.state.set(ShellConnState.CLOSED);
+            this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -105,14 +125,21 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
             long starTime = System.currentTimeMillis();
             // 执行连接
             if (this.session != null) {
+                this.state.set(ShellConnState.CONNECTING);
                 // 连接超时
                 this.session.setTimeout(timeout);
                 // 连接
                 this.session.connect(timeout);
             }
+            if (this.isConnected()) {
+                this.state.set(ShellConnState.CONNECTED);
+            } else {
+                this.state.set(ShellConnState.FAILED);
+            }
             long endTime = System.currentTimeMillis();
             JulLog.info("shellSFTPClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
+            this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellSFTPClient start error", ex);
             throw new ShellException(ex);
         }
@@ -122,22 +149,6 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     public boolean isConnected() {
         return this.session != null && this.session.isConnected();
     }
-
-//    /**
-//     * 获取通道
-//     *
-//     * @return 通道
-//     */
-//    private ShellSFTPChannel getChannel() {
-//        ShellSFTPChannel oldChannel = this.channel;
-//        ShellSFTPChannel newChannel = this.newChannel();
-//        if (newChannel != null) {
-//            IOUtil.close(oldChannel);
-//            this.channel = newChannel;
-//            return newChannel;
-//        }
-//        return oldChannel;
-//    }
 
     /**
      * 创建新通道

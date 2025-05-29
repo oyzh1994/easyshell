@@ -23,7 +23,7 @@ import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellUpdateVNCConnectController;
-import cn.oyzh.easyshell.controller.docker.ShellDockerHistoryController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerLogsController;
@@ -44,7 +44,7 @@ import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.docker.ShellDockerHistory;
+import cn.oyzh.easyshell.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.docker.ShellDockerPort;
 import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -666,9 +666,9 @@ public class ShellViewFactory {
      *
      * @param histories 历史
      */
-    public static void dockerHistory(List<ShellDockerHistory> histories) {
+    public static void dockerHistory(List<ShellDockerImageHistory> histories) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerHistoryController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerImageHistoryController.class, StageManager.getPrimaryStage());
             adapter.setProp("histories", histories);
             adapter.display();
         } catch (Exception ex) {

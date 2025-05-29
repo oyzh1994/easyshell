@@ -124,12 +124,12 @@ public class ShellDockerParser {
         return ports;
     }
 
-    public static List<ShellDockerHistory> history(String output) {
+    public static List<ShellDockerImageHistory> history(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
         JulLog.info(output);
-        List<ShellDockerHistory> histories = new ArrayList<>();
+        List<ShellDockerImageHistory> histories = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) {
             String[] columns = line.split("\r\t");
@@ -143,7 +143,7 @@ public class ShellDockerParser {
             } else {
                 comment = "";
             }
-            ShellDockerHistory history = new ShellDockerHistory();
+            ShellDockerImageHistory history = new ShellDockerImageHistory();
             history.setSize(size);
             history.setImageId(imageId);
             history.setComment(comment);

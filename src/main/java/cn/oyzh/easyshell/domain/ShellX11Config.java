@@ -9,6 +9,8 @@ import cn.oyzh.store.jdbc.Table;
 import java.io.Serializable;
 
 /**
+ * shell x11配置
+ *
  * @author oyzh
  * @since 2025/03/08
  */

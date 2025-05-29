@@ -2,12 +2,17 @@ package cn.oyzh.easyshell.vnc;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.fx.plus.information.MessageBox;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import org.jfxvnc.net.rfb.VncConnection;
 import org.jfxvnc.net.rfb.render.ProtocolConfiguration;
 import org.jfxvnc.net.rfb.render.RenderProtocol;
 import org.jfxvnc.ui.service.VncRenderService;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -39,22 +44,34 @@ public class ShellVNCClient implements BaseClient {
      */
     private final ShellConnect shellConnect;
 
+    /**
+     * 连接状态
+     */
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> BaseClient.super.onStateChanged(state3);
+
+    @Override
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
+    }
+
     public ShellVNCClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
+        this.addStateListener(this.stateListener);
     }
 
     /**
-     * 初始化串口
+     * 初始化客户端
      */
     protected void initClient() {
         // 获取指定名称的串口
         this.connection = new VncConnection();
         // 设置渲染组件
-        if (this.renderProtocol != null) {
-            this.connection.setRenderProtocol(this.renderProtocol);
-        } else {
-            this.connection.setRenderProtocol(NO_OP);
-        }
+        this.connection.setRenderProtocol(Objects.requireNonNullElse(this.renderProtocol, NO_OP));
         // 错误处理
         this.connection.addFaultListener(ex -> {
             ex.printStackTrace();
@@ -82,8 +99,19 @@ public class ShellVNCClient implements BaseClient {
             return;
         }
         this.initClient();
-        CompletableFuture<VncConnection> future = this.connection.connect();
-        future.get(timeout, TimeUnit.MILLISECONDS);
+        try {
+            this.state.set(ShellConnState.CONNECTING);
+            CompletableFuture<VncConnection> future = this.connection.connect();
+            future.get(timeout, TimeUnit.MILLISECONDS);
+            if (this.isConnected()) {
+                this.state.set(ShellConnState.CONNECTED);
+            } else {
+                this.state.set(ShellConnState.FAILED);
+            }
+        } catch (Exception ex) {
+            this.state.set(ShellConnState.FAILED);
+            throw ex;
+        }
     }
 
     @Override
@@ -91,7 +119,10 @@ public class ShellVNCClient implements BaseClient {
         try {
             if (this.connection != null) {
                 this.connection.disconnect();
+                this.connection = null;
             }
+            this.state.set(ShellConnState.CLOSED);
+            this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

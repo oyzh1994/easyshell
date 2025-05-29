@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
  * shell消息业务
  *
  * @author oyzh
- * @since 2024/04/23
+ * @since 2025/04/23
  */
 public class MessageController extends SubStageController   {
 

@@ -1,19 +1,36 @@
 package cn.oyzh.easyshell.docker;
 
 /**
+ * docker镜像
+ *
  * @author oyzh
  * @since 2025-03-13
  */
 public class ShellDockerImage {
 
+    /**
+     * 镜像id
+     */
     private String imageId;
 
+    /**
+     * 仓库
+     */
     private String repository;
 
+    /**
+     * 标签
+     */
     private String tag;
 
+    /**
+     * 创建时间
+     */
     private String created;
 
+    /**
+     * 大小
+     */
     private String size;
 
     public String getImageId() {

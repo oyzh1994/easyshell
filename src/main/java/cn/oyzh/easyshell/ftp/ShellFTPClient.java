@@ -5,13 +5,16 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellConnState;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.net.ftp.FTPClient;
@@ -53,8 +56,24 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
      */
     private transient boolean streamMode = false;
 
+    /**
+     * 连接状态
+     */
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
+
+    @Override
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
+    }
+
     public ShellFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
+        this.addStateListener(this.stateListener);
     }
 
     @Override
@@ -66,6 +85,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 this.ftpClient = null;
             }
             this.shellConnect = null;
+            this.state.set(ShellConnState.CLOSED);
+            this.state.removeListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -89,12 +110,13 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     }
 
     @Override
-    public void start(int timeout) {
+    public void start(int timeout) throws Exception {
         if (this.isConnected()) {
             return;
         }
         try {
             this.initClient();
+            this.state.set(ShellConnState.CONNECTING);
             // 连接信息
             int port = this.shellConnect.hostPort();
             String hostIp = this.shellConnect.hostIp();
@@ -105,6 +127,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             this.ftpClient.connect(hostIp, port);
             // 连接失败
             if (!this.isConnected()) {
+                this.state.set(ShellConnState.FAILED);
                 JulLog.warn("ftp connect fail.");
                 return;
             }
@@ -112,6 +135,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             if (StringUtil.isNotBlank(this.shellConnect.getUser())
                     && StringUtil.isNotBlank(this.shellConnect.getPassword())
                     && !this.ftpClient.login(this.shellConnect.getUser(), this.shellConnect.getPassword())) {
+                this.state.set(ShellConnState.FAILED);
                 JulLog.warn("ftp login fail.");
                 return;
             }
@@ -128,11 +152,13 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 this.ftpClient.enterLocalActiveMode();
             }
             this.lsFile("/");
+            this.state.set(ShellConnState.CONNECTED);
             long endTime = System.currentTimeMillis();
             JulLog.info("shellFTPClient connected used:{}ms.", (endTime - starTime));
         } catch (Exception ex) {
+            this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellFTPClient start error", ex);
-            throw new ShellException(ex);
+            throw ex;
         }
     }
 

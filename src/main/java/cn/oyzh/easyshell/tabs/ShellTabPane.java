@@ -5,7 +5,6 @@ import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
@@ -202,18 +201,18 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    /**
-     * 连接关闭事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void connectionClosed(ShellConnectionClosedEvent event) {
-        ShellSSHTab tab = this.getConnectTab(event.data());
-        if (tab != null) {
-            tab.closeTab();
-        }
-    }
+//    /**
+//     * 连接关闭事件
+//     *
+//     * @param event 事件
+//     */
+//    @EventSubscribe
+//    private void connectionClosed(ShellConnectionClosedEvent event) {
+//        ShellSSHTab tab = this.getConnectTab(event.data());
+//        if (tab != null) {
+//            tab.closeTab();
+//        }
+//    }
 
     /**
      * 连接编辑事件

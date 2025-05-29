@@ -3,17 +3,46 @@ package cn.oyzh.easyshell.docker;
 import cn.oyzh.common.util.StringUtil;
 
 /**
+ * docker容器定义
+ *
  * @author oyzh
  * @since 2025-03-12
  */
 public class ShellDockerContainer {
 
+    /**
+     * 容器id
+     */
     private String containerId;
+
+    /**
+     * 镜像
+     */
     private String image;
+
+    /**
+     * 命令
+     */
     private String command;
+
+    /**
+     * 创建时间
+     */
     private String created;
+
+    /**
+     * 状态
+     */
     private String status;
+
+    /**
+     * 端口
+     */
     private String ports;
+
+    /**
+     * 名称
+     */
     private String names;
 
     public String getContainerId() {

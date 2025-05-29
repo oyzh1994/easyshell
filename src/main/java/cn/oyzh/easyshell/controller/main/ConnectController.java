@@ -17,10 +17,10 @@ import java.util.List;
 
 
 /**
- * ssh连接业务
+ * shell连接业务
  *
  * @author oyzh
- * @since 2024/04/23
+ * @since 2025/04/23
  */
 public class ConnectController extends SubStageController {
 
@@ -51,19 +51,19 @@ public class ConnectController extends SubStageController {
     }
 
     /**
-     * 终端分屏
-     */
-    @FXML
-    private void splitView() {
-        ShellViewFactory.splitGuid();
-    }
-
-    /**
      * 定位节点
      */
     @FXML
     private void positionNode() {
         this.tree.scrollTo(this.tree.getSelectedItem());
+    }
+
+    /**
+     * 终端分屏
+     */
+    @FXML
+    private void splitView() {
+        ShellViewFactory.splitGuid();
     }
 
     @Override
@@ -87,16 +87,11 @@ public class ConnectController extends SubStageController {
     }
 
     private void dragFile(List<File> files) {
-        // if (ShellConst.isSftpVisible()) {
         ShellEventUtil.fileDragged(files);
-        // } else {
-        //     this.tree.root().dragFile(files);
-        // }
     }
 
     @FXML
     private void addConnect() {
-//        ShellEventUtil.showAddConnect();
         ShellViewFactory.addGuid(null);
     }
 
@@ -113,13 +108,11 @@ public class ConnectController extends SubStageController {
 
     @FXML
     private void importConnect() {
-//        ShellEventUtil.showImportConnect(null);
         ShellViewFactory.importConnect(null);
     }
 
     @FXML
     private void exportConnect() {
-//        ShellEventUtil.showExportConnect();
         ShellViewFactory.exportConnect();
     }
 
