@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellPortScanResultTableView?>
 <?import cn.oyzh.fx.gui.button.CalcButton?>
 <?import cn.oyzh.fx.gui.button.ClearButton?>
-<?import cn.oyzh.fx.gui.button.ExecuteButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
-<?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.StopButton?>
 <FXTab text="%base.cache" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolCacheTabController">
     <FXVBox flexHeight="100%" flexWidth="100%">

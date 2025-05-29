@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.tool.ShellNetworkScanResultTableView?>
+<?import cn.oyzh.fx.gui.button.ExecuteButton?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTab text="%base.networkScan" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolNetworkScanTabController">
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <InfoLabel text="%base.ipAddr">
+            <VBox.margin>
+                <Insets left="30" top="20"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexWidth="100%">
+            <NumberTextField fx:id="scanSegment1" realWidth="100" realHeight="30"
+                             minVal="0" maxVal="255" require="true" value="192">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </NumberTextField>
+            <FXLabel text=".">
+                <HBox.margin>
+                    <Insets left="3" top="15"/>
+                </HBox.margin>
+            </FXLabel>
+            <NumberTextField fx:id="scanSegment2" realWidth="100" realHeight="30"
+                             minVal="0" maxVal="255" require="true" value="168">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </NumberTextField>
+            <FXLabel text=".">
+                <HBox.margin>
+                    <Insets left="3" top="15"/>
+                </HBox.margin>
+            </FXLabel>
+            <NumberTextField fx:id="scanSegment3" realWidth="100" realHeight="30"
+                             minVal="0" maxVal="255" require="true" value="3">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </NumberTextField>
+            <FXLabel text=".">
+                <HBox.margin>
+                    <Insets left="3" top="15"/>
+                </HBox.margin>
+            </FXLabel>
+            <NumberTextField realHeight="30" realWidth="155" minVal="0" maxVal="255" fx:id="scanStart" value="1"
+                             require="true">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </NumberTextField>
+            <FXLabel text="-->">
+                <HBox.margin>
+                    <Insets left="3" top="10"/>
+                </HBox.margin>
+            </FXLabel>
+            <NumberTextField realHeight="30" realWidth="155" minVal="0" maxVal="255" fx:id="scanEnd" value="255"
+                             require="true">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </NumberTextField>
+        </FXHBox>
+        <ShellNetworkScanResultTableView fx:id="scanTable" flexHeight="100% - 190" flexWidth="100% - 180">
+            <columns>
+                <FXTableColumn flexWidth="100% - 535" valueName="host" text="%base.host"/>
+                <FXTableColumn prefWidth="65" valueName="sshStatus" text="SSH"/>
+                <FXTableColumn prefWidth="65" valueName="ftpStatus" text="FTP"/>
+                <FXTableColumn prefWidth="65" valueName="vncStatus" text="VNC"/>
+                <FXTableColumn prefWidth="65" valueName="rdpStatus" text="RDP"/>
+                <FXTableColumn prefWidth="65" valueName="rloginStatus" text="RLOGIN"/>
+                <FXTableColumn prefWidth="65" valueName="telnetStatus" text="TELNET"/>
+                <FXTableColumn prefWidth="65" valueName="httpStatus" text="HTTP"/>
+                <FXTableColumn prefWidth="65" valueName="httpsStatus" text="HTTPS"/>
+            </columns>
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </ShellNetworkScanResultTableView>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <ExecuteButton fx:id="scanStartBtn" onAction="#execNetworkScan" realHeight="30">
+                <HBox.margin>
+                    <Insets left="30" top="20"/>
+                </HBox.margin>
+            </ExecuteButton>
+            <StopButton fx:id="scanStopBtn" onAction="#stopNetworkScan" realHeight="30" disable="true">
+                <HBox.margin>
+                    <Insets left="10" top="20"/>
+                </HBox.margin>
+            </StopButton>
+        </FXHBox>
+    </FXVBox>
+</FXTab>

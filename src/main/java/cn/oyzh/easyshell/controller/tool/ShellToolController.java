@@ -42,6 +42,12 @@ public class ShellToolController extends ParentStageController {
     @FXML
     private ShellToolPortScanTabController portScanTabController;
 
+    /**
+     * 网络扫描
+     */
+    @FXML
+    private ShellToolNetworkScanTabController networkScanTabController;
+
     @Override
     public void onWindowShown(WindowEvent event) {
         this.stage.switchOnTab();
@@ -55,6 +61,7 @@ public class ShellToolController extends ParentStageController {
 
     @Override
     public List<? extends StageController> getSubControllers() {
-        return List.of(this.cacheTabController, this.telnetTabController, this.portScanTabController);
+        return List.of(this.cacheTabController, this.telnetTabController,
+                this.portScanTabController, this.networkScanTabController);
     }
 }

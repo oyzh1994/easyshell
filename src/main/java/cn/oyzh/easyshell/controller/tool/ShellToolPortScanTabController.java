@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.tool;
 import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dto.ShellPortScanResult;
-import cn.oyzh.easyshell.fx.ShellPortScanResultTableView;
+import cn.oyzh.easyshell.fx.tool.ShellPortScanResultTableView;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -125,5 +125,6 @@ public class ShellToolPortScanTabController extends SubStageController {
         ThreadUtil.interrupt(this.portScanThread);
         this.portScanThread = null;
         this.portScanStartBtn.enable();
+        this.portScanStopBtn.disable();
     }
 }

@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTabPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolController" realWidth="850" realHeight="600">
+    <fx:include fx:id="networkScanTab" source="shellToolNetworkScanTab.fxml"/>
     <fx:include fx:id="portScanTab" source="shellToolPortScanTab.fxml"/>
     <fx:include fx:id="telnetTab" source="shellToolTelnetTab.fxml"/>
     <fx:include fx:id="cacheTab" source="shellToolCacheTab.fxml"/>
