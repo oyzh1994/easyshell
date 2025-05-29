@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>cn.oyzh</groupId>
+        <groupId>io.github.oyzh1994</groupId>
         <artifactId>fx-base</artifactId>
         <version>1.3.4</version>
     </parent>
@@ -106,17 +106,17 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.oyzh</groupId>
+            <groupId>io.github.oyzh1994</groupId>
             <artifactId>ssh</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>cn.oyzh</groupId>
+            <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-gui</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>cn.oyzh</groupId>
+            <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-rich</artifactId>
         </dependency>
 
@@ -197,7 +197,7 @@
 
         <!-- fx打包 -->
         <dependency>
-            <groupId>cn.oyzh</groupId>
+            <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-pkg</artifactId>
             <scope>test</scope>
         </dependency>
