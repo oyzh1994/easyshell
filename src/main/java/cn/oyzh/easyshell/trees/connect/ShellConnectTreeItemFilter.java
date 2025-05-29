@@ -20,7 +20,7 @@ public class ShellConnectTreeItemFilter implements RichTreeItemFilter {
     @Override
     public boolean test(RichTreeItem<?> item) {
         if (StringUtil.isNotBlank(this.kw) && item instanceof ShellConnectTreeItem treeItem) {
-            return StringUtil.containsIgnoreCase(treeItem.infoName(), this.kw);
+            return StringUtil.containsIgnoreCase(treeItem.connectName(), this.kw);
         }
         return true;
     }
