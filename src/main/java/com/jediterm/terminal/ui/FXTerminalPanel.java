@@ -1548,8 +1548,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         }
 
         BreakIterator iterator = BreakIterator.getCharacterInstance();
-//        char[] text = renderingBuffer.clone().getBuf();
-        char[] text = renderingBuffer.getBuf();
+        char[] text = renderingBuffer.clone().getBuf();
         iterator.setText(new String(text));
         int endOffset;
         int startOffset = 0;
