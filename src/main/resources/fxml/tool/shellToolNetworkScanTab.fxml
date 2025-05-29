@@ -74,7 +74,7 @@
         </FXHBox>
         <ShellNetworkScanResultTableView fx:id="scanTable" flexHeight="100% - 190" flexWidth="100% - 180">
             <columns>
-                <FXTableColumn flexWidth="100% - 535" valueName="host" text="%base.host"/>
+                <FXTableColumn prefWidth="100" valueName="host" text="%base.host"/>
                 <FXTableColumn prefWidth="65" valueName="sshStatus" text="SSH"/>
                 <FXTableColumn prefWidth="65" valueName="ftpStatus" text="FTP"/>
                 <FXTableColumn prefWidth="65" valueName="vncStatus" text="VNC"/>
@@ -83,6 +83,12 @@
                 <FXTableColumn prefWidth="65" valueName="telnetStatus" text="TELNET"/>
                 <FXTableColumn prefWidth="65" valueName="httpStatus" text="HTTP"/>
                 <FXTableColumn prefWidth="65" valueName="httpsStatus" text="HTTPS"/>
+                <FXTableColumn prefWidth="65" valueName="mysqlStatus" text="Mysql"/>
+                <FXTableColumn prefWidth="65" valueName="redisStatus" text="Redis"/>
+                <FXTableColumn prefWidth="85" valueName="zookeeperStatus" text="Zookeeper"/>
+                <FXTableColumn prefWidth="65" valueName="oracleStatus" text="Oracle"/>
+                <FXTableColumn prefWidth="65" valueName="mongoStatus" text="Mongo"/>
+                <FXTableColumn prefWidth="85" valueName="postgreSQLStatus" text="PostgreSQL"/>
             </columns>
             <VBox.margin>
                 <Insets left="30" top="10"/>

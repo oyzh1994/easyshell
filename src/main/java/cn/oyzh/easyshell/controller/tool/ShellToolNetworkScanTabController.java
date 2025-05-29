@@ -158,6 +158,30 @@ public class ShellToolNetworkScanTabController extends SubStageController {
                         boolean rlogin = NetworkUtil.reachable(host, NetworkUtil.RLOGIN_PORT, 500);
                         result.setRloginAvailable(rlogin);
                     });
+                    tasks.add(() -> {
+                        boolean mysql = NetworkUtil.reachable(host, NetworkUtil.Mysql_PORT, 500);
+                        result.setMysqlAvailable(mysql);
+                    });
+                    tasks.add(() -> {
+                        boolean redis = NetworkUtil.reachable(host, NetworkUtil.Redis_PORT, 500);
+                        result.setRedisAvailable(redis);
+                    });
+                    tasks.add(() -> {
+                        boolean zookeeper = NetworkUtil.reachable(host, NetworkUtil.Zookeeper_PORT, 500);
+                        result.setZookeeperAvailable(zookeeper);
+                    });
+                    tasks.add(() -> {
+                        boolean oracle = NetworkUtil.reachable(host, NetworkUtil.Oracle_PORT, 500);
+                        result.setOracleAvailable(oracle);
+                    });
+                    tasks.add(() -> {
+                        boolean mongo = NetworkUtil.reachable(host, NetworkUtil.Mongo_PORT, 500);
+                        result.setMongoAvailable(mongo);
+                    });
+                    tasks.add(() -> {
+                        boolean postgreSQL = NetworkUtil.reachable(host, NetworkUtil.PostgreSQL_PORT, 500);
+                        result.setPostgreSQLAvailable(postgreSQL);
+                    });
                     ThreadUtil.submitVirtual(tasks);
                     this.scanTable.addItem(result);
                 }

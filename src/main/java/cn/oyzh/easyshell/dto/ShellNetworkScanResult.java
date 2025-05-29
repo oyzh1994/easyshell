@@ -59,6 +59,36 @@ public class ShellNetworkScanResult {
      */
     private boolean httpsAvailable;
 
+    /**
+     * mysql是否可用
+     */
+    private boolean mysqlAvailable;
+
+    /**
+     * zookeeper是否可用
+     */
+    private boolean redisAvailable;
+
+    /**
+     * zookeeper是否可用
+     */
+    private boolean zookeeperAvailable;
+
+    /**
+     * oracle是否可用
+     */
+    private boolean oracleAvailable;
+
+    /**
+     * mongo是否可用
+     */
+    private boolean mongoAvailable;
+
+    /**
+     * postgreSQL是否可用
+     */
+    private boolean postgreSQLAvailable;
+
     public String getHost() {
         return host;
     }
@@ -131,6 +161,54 @@ public class ShellNetworkScanResult {
         this.httpsAvailable = httpsAvailable;
     }
 
+    public boolean isMysqlAvailable() {
+        return mysqlAvailable;
+    }
+
+    public void setMysqlAvailable(boolean mysqlAvailable) {
+        this.mysqlAvailable = mysqlAvailable;
+    }
+
+    public boolean isRedisAvailable() {
+        return redisAvailable;
+    }
+
+    public void setRedisAvailable(boolean redisAvailable) {
+        this.redisAvailable = redisAvailable;
+    }
+
+    public boolean isZookeeperAvailable() {
+        return zookeeperAvailable;
+    }
+
+    public void setZookeeperAvailable(boolean zookeeperAvailable) {
+        this.zookeeperAvailable = zookeeperAvailable;
+    }
+
+    public boolean isOracleAvailable() {
+        return oracleAvailable;
+    }
+
+    public void setOracleAvailable(boolean oracleAvailable) {
+        this.oracleAvailable = oracleAvailable;
+    }
+
+    public boolean isMongoAvailable() {
+        return mongoAvailable;
+    }
+
+    public void setMongoAvailable(boolean mongoAvailable) {
+        this.mongoAvailable = mongoAvailable;
+    }
+
+    public boolean isPostgreSQLAvailable() {
+        return postgreSQLAvailable;
+    }
+
+    public void setPostgreSQLAvailable(boolean postgreSQLAvailable) {
+        this.postgreSQLAvailable = postgreSQLAvailable;
+    }
+
     public SVGGlyph getSshStatus() {
         return this.createSVG(this.isSshAvailable());
     }
@@ -138,7 +216,6 @@ public class ShellNetworkScanResult {
     public SVGGlyph getRdpStatus() {
         return this.createSVG(this.isRdpAvailable());
     }
-
 
     public SVGGlyph getVncStatus(){
         return this.createSVG(this.isVncAvailable());
@@ -162,6 +239,30 @@ public class ShellNetworkScanResult {
 
     public SVGGlyph getRloginStatus(){
         return this.createSVG(this.isRloginAvailable());
+    }
+
+    public SVGGlyph getMysqlStatus(){
+        return this.createSVG(this.isMysqlAvailable());
+    }
+
+    public SVGGlyph getRedisStatus(){
+        return this.createSVG(this.isRedisAvailable());
+    }
+
+    public SVGGlyph getZookeeperStatus(){
+        return this.createSVG(this.isZookeeperAvailable());
+    }
+
+    public SVGGlyph getOracleStatus(){
+        return this.createSVG(this.isOracleAvailable());
+    }
+
+    public SVGGlyph getMongoStatus(){
+        return this.createSVG(this.isMongoAvailable());
+    }
+
+    public SVGGlyph getPostgreSQLStatus(){
+        return this.createSVG(this.isPostgreSQLAvailable());
     }
 
     private SVGGlyph createSVG(boolean success){
