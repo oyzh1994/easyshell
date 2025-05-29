@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
  * @author oyzh
  * @since 2025-03-14
  */
-public class ShellDockerHistoryTableView extends FXTableView<ShellDockerImageHistory> {
+public class ShellDockerImageHistoryTableView extends FXTableView<ShellDockerImageHistory> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);

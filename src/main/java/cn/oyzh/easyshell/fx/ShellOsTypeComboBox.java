@@ -31,9 +31,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
     {
         this.addItem("Ubuntu");
         this.addItem("Centos");
-        this.addItem("Windows");
         this.addItem("Debian");
-        this.addItem("Macos");
         this.addItem("Arch");
         this.addItem("Raspberrypi");
         this.addItem("Deepin");
@@ -42,6 +40,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Redhat");
         this.addItem("Mint");
         this.addItem("Linux");
+        this.addItem("Macos");
+        this.addItem("Windows");
         // 设置单元格工厂
         this.setCellFactory(new Callback<>() {
             @Override

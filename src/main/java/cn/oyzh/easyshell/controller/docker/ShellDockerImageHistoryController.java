@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.easyshell.docker.ShellDockerImageHistory;
-import cn.oyzh.easyshell.fx.docker.ShellDockerHistoryTableView;
+import cn.oyzh.easyshell.fx.docker.ShellDockerImageHistoryTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -28,7 +28,7 @@ public class ShellDockerImageHistoryController extends StageController {
      * 历史表
      */
     @FXML
-    private ShellDockerHistoryTableView historyTable;
+    private ShellDockerImageHistoryTableView historyTable;
 
     @Override
     public void onWindowShown(WindowEvent event) {

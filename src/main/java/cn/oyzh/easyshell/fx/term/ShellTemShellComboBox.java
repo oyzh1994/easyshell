@@ -29,7 +29,6 @@ public class ShellTemShellComboBox extends FXComboBox<String> {
             } else {
                 this.setItem(List.of("/bin/bash"));
             }
-//            this.setItem(List.of("/bin/bash", "/bin/zsh"));
         } else if (OSUtil.isMacOS()) {
             String result = RuntimeUtil.execForStr("cat /etc/shells");
             if (StringUtil.isNotBlank(result)) {
@@ -39,9 +38,8 @@ public class ShellTemShellComboBox extends FXComboBox<String> {
                     }
                 });
             } else {
-                this.setItem(List.of("/bin/bash"));
+                this.setItem(List.of("/bin/bash", "/bin/zsh"));
             }
-//            this.setItem(List.of("/bin/zsh", "/bin/bash"));
         }
     }
 
