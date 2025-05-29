@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.scene.Node;
@@ -51,15 +52,6 @@ public class ShellConnectUtil {
         }
     }
 
-//    /**
-//     * 解析连接
-//     *
-//     * @param input 输入内容
-//     * @return 连接
-//     */
-//    public static ShellConnectInfo parse(String input) {
-//        return null;
-//    }
 
     /**
      * 测试连接
@@ -68,7 +60,7 @@ public class ShellConnectUtil {
      * @param shellConnect 连接信息
      */
     public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
-//        StageManager.showMask(adapter, () -> {
+        StageManager.showMask(adapter, () -> {
             try {
                 if (shellConnect.isSSHType()) {
                     ShellSSHClient client = new ShellSSHClient(shellConnect);
@@ -155,7 +147,7 @@ public class ShellConnectUtil {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }
-//        });
+        });
     }
 
     /**
