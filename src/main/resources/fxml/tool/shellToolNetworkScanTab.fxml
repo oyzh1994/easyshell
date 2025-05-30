@@ -83,6 +83,7 @@
                 <FXTableColumn prefWidth="65" valueName="telnetStatus" text="TELNET"/>
                 <FXTableColumn prefWidth="65" valueName="httpStatus" text="HTTP"/>
                 <FXTableColumn prefWidth="65" valueName="httpsStatus" text="HTTPS"/>
+                <FXTableColumn prefWidth="65" valueName="rtspStatus" text="RTSP"/>
                 <FXTableColumn prefWidth="65" valueName="mysqlStatus" text="Mysql"/>
                 <FXTableColumn prefWidth="65" valueName="redisStatus" text="Redis"/>
                 <FXTableColumn prefWidth="85" valueName="zookeeperStatus" text="Zookeeper"/>

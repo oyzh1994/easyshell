@@ -194,6 +194,10 @@ public class ShellToolNetworkScanTabController extends SubStageController {
                         boolean sqlServer = NetworkUtil.reachable(host, NetworkUtil.SQLServer_PORT, 500);
                         result.setSqlServerAvailable(sqlServer);
                     });
+                    tasks.add(() -> {
+                        boolean rtsp = NetworkUtil.reachable(host, NetworkUtil.RTSP_PORT, 500);
+                        result.setRtspAvailable(rtsp);
+                    });
                     ThreadUtil.submitVirtual(tasks);
                     this.scanTable.addItem(result);
                 }

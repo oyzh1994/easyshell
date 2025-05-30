@@ -45,6 +45,11 @@ public class ShellNetworkScanResult {
     private boolean telnetAvailable;
 
     /**
+     * rtsp是否可用
+     */
+    private boolean rtspAvailable;
+
+    /**
      * rlogin是否可用
      */
     private boolean rloginAvailable;
@@ -228,6 +233,14 @@ public class ShellNetworkScanResult {
         return sqlServerAvailable;
     }
 
+    public boolean isRtspAvailable() {
+        return rtspAvailable;
+    }
+
+    public void setRtspAvailable(boolean rtspAvailable) {
+        this.rtspAvailable = rtspAvailable;
+    }
+
     public void setSqlServerAvailable(boolean sqlServerAvailable) {
         this.sqlServerAvailable = sqlServerAvailable;
     }
@@ -307,6 +320,11 @@ public class ShellNetworkScanResult {
     public SVGGlyph getSqlServerStatus(){
         return this.createSVG(this.isSqlServerAvailable());
     }
+
+    public SVGGlyph getRtspStatus(){
+        return this.createSVG(this.isRtspAvailable());
+    }
+
 
     public SVGGlyph getMemcachedStatus(){
         return this.createSVG(this.isMemcachedAvailable());
