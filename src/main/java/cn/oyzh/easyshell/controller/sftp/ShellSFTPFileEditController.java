@@ -19,8 +19,8 @@
 //import cn.oyzh.fx.plus.window.StageAttribute;
 //import cn.oyzh.fx.plus.window.StageManager;
 //import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
-//import cn.oyzh.fx.rich.richtextfx.data.RichDataType;
-//import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox;
+//import cn.oyzh.fx.rich.RichDataType;
+//import cn.oyzh.fx.rich.RichDataTypeComboBox;
 //import cn.oyzh.i18n.I18nHelper;
 //import com.jcraft.jsch.SftpATTRS;
 //import javafx.fxml.FXML;

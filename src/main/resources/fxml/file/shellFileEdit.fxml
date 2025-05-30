@@ -5,7 +5,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
-<?import cn.oyzh.fx.rich.richtextfx.data.RichDataTypeComboBox?>
+<?import cn.oyzh.fx.rich.RichDataTypeComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
