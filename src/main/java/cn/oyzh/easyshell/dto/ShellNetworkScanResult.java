@@ -80,14 +80,29 @@ public class ShellNetworkScanResult {
     private boolean oracleAvailable;
 
     /**
-     * mongo是否可用
+     * mongoDB是否可用
      */
-    private boolean mongoAvailable;
+    private boolean mongoDBAvailable;
 
     /**
      * postgreSQL是否可用
      */
     private boolean postgreSQLAvailable;
+
+    /**
+     * Memcached是否可用
+     */
+    private boolean memcachedAvailable;
+
+    /**
+     * Elasticsearch是否可用
+     */
+    private boolean elasticsearchAvailable;
+
+    /**
+     * SQL Server是否可用
+     */
+    private boolean sqlServerAvailable;
 
     public String getHost() {
         return host;
@@ -193,12 +208,36 @@ public class ShellNetworkScanResult {
         this.oracleAvailable = oracleAvailable;
     }
 
-    public boolean isMongoAvailable() {
-        return mongoAvailable;
+    public boolean isMemcachedAvailable() {
+        return memcachedAvailable;
     }
 
-    public void setMongoAvailable(boolean mongoAvailable) {
-        this.mongoAvailable = mongoAvailable;
+    public void setMemcachedAvailable(boolean memcachedAvailable) {
+        this.memcachedAvailable = memcachedAvailable;
+    }
+
+    public boolean isElasticsearchAvailable() {
+        return elasticsearchAvailable;
+    }
+
+    public void setElasticsearchAvailable(boolean elasticsearchAvailable) {
+        this.elasticsearchAvailable = elasticsearchAvailable;
+    }
+
+    public boolean isSqlServerAvailable() {
+        return sqlServerAvailable;
+    }
+
+    public void setSqlServerAvailable(boolean sqlServerAvailable) {
+        this.sqlServerAvailable = sqlServerAvailable;
+    }
+
+    public boolean isMongoDBAvailable() {
+        return mongoDBAvailable;
+    }
+
+    public void setMongoDBAvailable(boolean mongoDBAvailable) {
+        this.mongoDBAvailable = mongoDBAvailable;
     }
 
     public boolean isPostgreSQLAvailable() {
@@ -257,12 +296,24 @@ public class ShellNetworkScanResult {
         return this.createSVG(this.isOracleAvailable());
     }
 
-    public SVGGlyph getMongoStatus(){
-        return this.createSVG(this.isMongoAvailable());
+    public SVGGlyph getMongoDBStatus(){
+        return this.createSVG(this.isMongoDBAvailable());
     }
 
     public SVGGlyph getPostgreSQLStatus(){
         return this.createSVG(this.isPostgreSQLAvailable());
+    }
+
+    public SVGGlyph getSqlServerStatus(){
+        return this.createSVG(this.isSqlServerAvailable());
+    }
+
+    public SVGGlyph getMemcachedStatus(){
+        return this.createSVG(this.isMemcachedAvailable());
+    }
+
+    public SVGGlyph getElasticsearchStatus(){
+        return this.createSVG(this.isElasticsearchAvailable());
     }
 
     private SVGGlyph createSVG(boolean success){
