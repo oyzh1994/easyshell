@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -82,7 +81,7 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
             }
         }
         // 执行排序
-        results.sort(Comparator.comparingInt(SSHConnect::getOrder));
+        results.sort(Comparator.comparingInt(ShellJumpConfig::getOrder));
         return results;
     }
 }

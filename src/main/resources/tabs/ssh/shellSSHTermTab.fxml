@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.easyshell.ssh.ShellSSHTermWidget?>
+<?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTermTabController"
        text="%base.terminal">
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
-    <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
 
-    </ShellSSHTermWidget>
+        </ShellSSHTermWidget>
+        <FXHBox flexWidth="100%" realHeight="30">
+            <HistorySVGGlyph fx:id="termHistory" tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </HistorySVGGlyph>
+            <FXToggleSwitch fx:id="serverMonitor" text="%base.monitor">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXToggleSwitch>
+            <FXLabel fx:id="serverMonitorInfo">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </FXLabel>
+        </FXHBox>
+    </FXVBox>
 </FXTab>

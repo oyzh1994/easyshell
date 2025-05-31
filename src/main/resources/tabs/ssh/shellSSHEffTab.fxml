@@ -24,6 +24,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -31,7 +32,7 @@
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
     <FXPane flexWidth="100%" flexHeight="100%">
-        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
             <FXHBox prefHeight="30" flexWidth="100%">
                 <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                     <FXHBox.margin>
@@ -112,27 +113,37 @@
                     <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                 </columns>
             </ShellSSHSFTPFileTableView>
-            <FXHBox prefHeight="30">
-                <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
-                    <FXHBox.margin>
-                        <Insets left="5" top="3"/>
-                    </FXHBox.margin>
-                </FXToggleSwitch>
-                <FXToggleSwitch fx:id="serverMonitor" text="%shell.connect.tip13">
-                    <FXHBox.margin>
-                        <Insets left="5" top="3"/>
-                    </FXHBox.margin>
-                </FXToggleSwitch>
-            </FXHBox>
+            <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
+                <FXVBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXVBox.margin>
+            </FXToggleSwitch>
         </FXVBox>
         <FXVBox flexWidth="100% - 300" flexHeight="100%" layoutX="300" fx:id="rightBox">
-            <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100%">
+            <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
             </ShellSSHTermWidget>
-            <FXLabel fx:id="serverMonitorInfo" managedBindVisible="true" visible="false">
-                <FXVBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXVBox.margin>
-            </FXLabel>
+            <FXHBox flexWidth="100%" realHeight="30">
+                <HistorySVGGlyph fx:id="termHistory" tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </HistorySVGGlyph>
+                <FXToggleSwitch fx:id="showFile" text="%base.file" selected="true">
+                    <FXHBox.margin>
+                        <Insets left="5" top="5"/>
+                    </FXHBox.margin>
+                </FXToggleSwitch>
+                <FXToggleSwitch fx:id="serverMonitor" text="%base.monitor">
+                    <FXHBox.margin>
+                        <Insets left="5" top="5"/>
+                    </FXHBox.margin>
+                </FXToggleSwitch>
+                <FXLabel fx:id="serverMonitorInfo">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </FXLabel>
+            </FXHBox>
         </FXVBox>
     </FXPane>
 </FXTab>

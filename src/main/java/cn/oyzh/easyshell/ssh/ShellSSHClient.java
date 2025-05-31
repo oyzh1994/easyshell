@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellTermHistory;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -20,6 +21,7 @@ import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
+import cn.oyzh.easyshell.store.ShellTermHistoryStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -65,6 +67,11 @@ public class ShellSSHClient extends ShellClient {
      * 工作目录属性
      */
     private StringProperty workDirProperty;
+
+    /**
+     * 终端历史存储
+     */
+    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
 
     /**
      * 是否解析工作目录
@@ -123,6 +130,23 @@ public class ShellSSHClient extends ShellClient {
             this.workDirProperty = new SimpleStringProperty();
         }
         return this.workDirProperty;
+    }
+
+    /**
+     * 保存终端历史
+     *
+     * @param output 输出
+     */
+    public void saveTermHistory(String output) {
+        String command = ShellSSHUtil.resolveCommand(output);
+        if (StringUtil.isNotBlank(command)) {
+            JulLog.error("command: " + command);
+            ShellTermHistory history = new ShellTermHistory();
+            history.setContent(command);
+            history.setIid(this.shellConnect.getId());
+            history.setSaveTime(System.currentTimeMillis());
+            this.termHistoryStore.save(history);
+        }
     }
 
     /**

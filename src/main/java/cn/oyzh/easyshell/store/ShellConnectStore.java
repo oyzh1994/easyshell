@@ -34,14 +34,19 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
-     * 隧道配置存储
-     */
-    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
-
-    /**
      * 代理配置存储
      */
     private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
+
+    /**
+     * 终端历史存储
+     */
+    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
+
+    /**
+     * 隧道配置存储
+     */
+    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
     public synchronized List<ShellConnect> load() {
         return super.selectList();
@@ -71,6 +76,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             this.x11ConfigStore.deleteByIid(model.getId());
             this.jumpConfigStore.deleteByIid(model.getId());
             this.proxyConfigStore.deleteByIid(model.getId());
+            this.termHistoryStore.deleteByIid(model.getId());
             this.tunnelingConfigStore.deleteByIid(model.getId());
         }
         return result;

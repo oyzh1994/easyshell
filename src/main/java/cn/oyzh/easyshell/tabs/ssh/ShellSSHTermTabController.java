@@ -1,13 +1,24 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.server.ShellServerExec;
+import cn.oyzh.easyshell.internal.server.ShellServerMonitor;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.JSchException;
@@ -19,6 +30,7 @@ import javafx.fxml.FXML;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.concurrent.Future;
 
 /**
  * ssh-终端tab内容组件
@@ -33,6 +45,29 @@ public class ShellSSHTermTabController extends SubTabController {
      */
     @FXML
     private ShellSSHTermWidget widget;
+
+    /**
+     * 服务监控信息
+     */
+    @FXML
+    private FXLabel serverMonitorInfo;
+
+    /**
+     * 监控任务
+     */
+    private Future<?> serverMonitorTask;
+
+    /**
+     * 服务监控
+     */
+    @FXML
+    private FXToggleSwitch serverMonitor;
+
+    /**
+     * 终端历史
+     */
+    @FXML
+    private SVGGlyph termHistory;
 
     /**
      * 初始化组件
@@ -88,6 +123,19 @@ public class ShellSSHTermTabController extends SubTabController {
     }
 
     @Override
+    public void onTabInit(RichTab tab) {
+        super.onTabInit(tab);
+        // 服务监控
+        this.serverMonitor.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.initMonitorTask();
+            } else {
+                this.closeMonitorTask();
+            }
+        });
+    }
+
+    @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.widget.close();
@@ -100,5 +148,83 @@ public class ShellSSHTermTabController extends SubTabController {
 
     public ShellSSHClient client() {
         return this.parent().getClient();
+    }
+
+    /**
+     * 初始化监控任务
+     */
+    private void initMonitorTask() {
+        // 处理组件
+//        this.widget.setFlexHeight("100% - 30");
+        this.serverMonitorInfo.display();
+        if (this.serverMonitorTask != null) {
+            return;
+        }
+        try {
+            ShellServerExec serverExec = this.client().serverExec();
+            this.serverMonitorTask = TaskManager.startInterval("ssh:eff_monitor:task", () -> {
+                // 任务已取消
+                if (serverExec.getClient() == null) {
+                    ExecutorUtil.cancel(this.serverMonitorTask);
+                    return;
+                }
+                // 获取数据
+                ShellServerMonitor monitor = serverExec.monitor();
+                if (monitor == null) {
+                    return;
+                }
+                StringBuilder sb = new StringBuilder();
+                double cpuUsage = NumberUtil.scale(monitor.getCpuUsage(), 2);
+                double memoryUsage = NumberUtil.scale(monitor.getMemoryUsage(), 2);
+                double networkRecv = NumberUtil.scale(monitor.getNetworkReceiveSpeed(), 2);
+                double networkSend = NumberUtil.scale(monitor.getNetworkSendSpeed(), 2);
+                double diskRead = NumberUtil.scale(monitor.getDiskReadSpeed(), 2);
+                double diskWrite = NumberUtil.scale(monitor.getDiskWriteSpeed(), 2);
+                sb.append("CPU:").append(cpuUsage).append("% | ");
+                sb.append(I18nHelper.memory()).append(":").append(memoryUsage).append("% | ");
+                sb.append(I18nHelper.networkInput()).append(":").append(networkRecv).append("KB/s | ");
+                sb.append(I18nHelper.networkOutput()).append(":").append(networkSend).append("KB/s | ");
+                sb.append(I18nHelper.diskRead()).append(":").append(diskRead).append("MB/s | ");
+                sb.append(I18nHelper.diskWrite()).append(":").append(diskWrite).append("MB/s");
+                this.serverMonitorInfo.text(sb.toString());
+            }, 3_000, 0);
+            JulLog.debug("MonitorTask started.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.error("init MonitorTask error", ex);
+        }
+    }
+
+    /**
+     * 关闭监控任务
+     */
+    public void closeMonitorTask() {
+        try {
+            ExecutorUtil.cancel(this.serverMonitorTask);
+            this.serverMonitorTask = null;
+//            // 处理组件
+//            this.widget.setFlexHeight("100%");
+            this.serverMonitorInfo.clear();
+            this.serverMonitorInfo.disappear();
+            JulLog.debug("MonitorTask closed.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.error("close monitorTask error", ex);
+        }
+    }
+
+    /**
+     * 终端历史
+     */
+    @FXML
+    private void termHistory() {
+        String iid = this.client().getShellConnect().getId();
+        ShellViewFactory.termHistory(this.termHistory, iid, h -> {
+            try {
+                this.widget.getTtyConnector().writeHistory(h.getContent());
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 }

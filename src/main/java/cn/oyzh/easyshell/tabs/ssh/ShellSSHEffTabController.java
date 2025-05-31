@@ -146,6 +146,18 @@ public class ShellSSHEffTabController extends SubTabController {
     private FXToggleSwitch serverMonitor;
 
     /**
+     * 终端历史
+     */
+    @FXML
+    private SVGGlyph termHistory;
+
+    /**
+     * 显示文件
+     */
+    @FXML
+    private FXToggleSwitch showFile;
+
+    /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -266,7 +278,9 @@ public class ShellSSHEffTabController extends SubTabController {
         });
         // 跟随终端目录
         this.followTerminalDir.selectedChanged((observable, oldValue, newValue) -> {
-            this.client().setResolveWorkerDir(newValue);
+            if (this.showFile.isSelected()) {
+                this.client().setResolveWorkerDir(newValue);
+            }
         });
         // 服务监控
         this.serverMonitor.selectedChanged((observable, oldValue, newValue) -> {
@@ -274,6 +288,14 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.initMonitorTask();
             } else {
                 this.closeMonitorTask();
+            }
+        });
+        // 文件列表
+        this.showFile.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.initFileBox();
+            } else {
+                this.hideFileBox();
             }
         });
         // 绑定提示快捷键
@@ -457,11 +479,31 @@ public class ShellSSHEffTabController extends SubTabController {
     }
 
     /**
+     * 初始化文件组件
+     */
+    private void initFileBox() {
+        this.leftBox.display();
+        this.rightBox.setLayoutX(this.leftBox.realWidth());
+        this.rightBox.setFlexWidth("100% - " + this.leftBox.realWidth());
+        this.rightBox.parentAutosize();
+    }
+
+    /**
+     * 隐藏文件组件
+     */
+    private void hideFileBox() {
+        this.leftBox.disappear();
+        this.rightBox.setLayoutX(0);
+        this.rightBox.setFlexWidth("100%");
+        this.rightBox.parentAutosize();
+    }
+
+    /**
      * 初始化监控任务
      */
     private void initMonitorTask() {
         // 处理组件
-        this.widget.setFlexHeight("100% - 30");
+//        this.widget.setFlexHeight("100% - 30");
         this.serverMonitorInfo.display();
         if (this.serverMonitorTask != null) {
             return;
@@ -508,8 +550,8 @@ public class ShellSSHEffTabController extends SubTabController {
         try {
             ExecutorUtil.cancel(this.serverMonitorTask);
             this.serverMonitorTask = null;
-            // 处理组件
-            this.widget.setFlexHeight("100%");
+//            // 处理组件
+//            this.widget.setFlexHeight("100%");
             this.serverMonitorInfo.clear();
             this.serverMonitorInfo.disappear();
             JulLog.debug("MonitorTask closed.");
@@ -519,4 +561,18 @@ public class ShellSSHEffTabController extends SubTabController {
         }
     }
 
+    /**
+     * 终端历史
+     */
+    @FXML
+    private void termHistory() {
+        String iid = this.client().getShellConnect().getId();
+        ShellViewFactory.termHistory(this.termHistory, iid, h -> {
+            try {
+                this.widget.getTtyConnector().writeHistory(h.getContent());
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+    }
 }

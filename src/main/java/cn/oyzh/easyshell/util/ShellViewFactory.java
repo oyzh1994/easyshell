@@ -50,16 +50,22 @@ import cn.oyzh.easyshell.docker.ShellDockerResource;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellTermHistory;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.PopupAdapter;
+import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import javafx.scene.Node;
 import javafx.stage.Window;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * shell页面工厂
@@ -848,6 +854,25 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellSplitGuidController.class, StageManager.getFrontWindow());
             adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 终端历史
+     *
+     * @param parent   历史
+     * @param iid      连接id
+     * @param callback 回调函数
+     */
+    public static void termHistory(Node parent, String iid, Consumer<ShellTermHistory> callback) {
+        try {
+            PopupAdapter adapter = PopupManager.parsePopup(ShellTermHistoryPopupController.class);
+            adapter.setProp("iid", iid);
+            adapter.setSubmitHandler(callback);
+            adapter.showPopup(parent);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

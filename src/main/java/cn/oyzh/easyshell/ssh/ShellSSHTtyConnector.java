@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
@@ -59,6 +61,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
+        this.saveTermHistory(str);
     }
 
     @Override
@@ -67,6 +70,43 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
+        this.saveTermHistory(str);
+    }
+
+    /**
+     * 写入历史
+     *
+     * @param str 内容
+     * @throws IOException 异常
+     */
+    public void writeHistory(String str) throws IOException {
+        this.shellWriter.write(str + "\r");
+        this.shellWriter.flush();
+    }
+
+    /**
+     * 终端历史
+     */
+    private final StringBuilder termHistory = new StringBuilder();
+
+    /**
+     * 保存终端历史
+     *
+     * @param output 输出
+     */
+    private void saveTermHistory(String output) {
+        // 针对回显字符，忽略
+        if (output.contains("@") && StringUtil.containsAny(output, "% ", "# ", "@ ", ">")) {
+            return;
+        }
+        if (this.client != null) {
+            this.termHistory.append(output);
+            if (output.endsWith("\r")) {
+                String command = this.termHistory.toString();
+                this.termHistory.setLength(0);
+                ThreadUtil.startVirtual(() -> this.client.saveTermHistory(command));
+            }
+        }
     }
 
     @Override
@@ -87,7 +127,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
     protected void doRead(char[] buf, int offset, int len) throws IOException {
         super.doRead(buf, offset, len);
         if (this.client != null) {
-            this.client.resolveWorkerDir(new String(buf, offset, len));
+            ThreadUtil.startVirtual(() -> this.client.resolveWorkerDir(new String(buf, offset, len)));
         }
     }
 }
