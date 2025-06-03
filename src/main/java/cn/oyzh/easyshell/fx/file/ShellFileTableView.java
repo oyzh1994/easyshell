@@ -572,6 +572,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 }
                 // 执行删除
                 this.client.doDelete(file);
+                // 取消收藏
+                ShellFileUtil.unCollectFile(this.client, file);
             }
             this.refreshFile();
         } catch (Exception ex) {
