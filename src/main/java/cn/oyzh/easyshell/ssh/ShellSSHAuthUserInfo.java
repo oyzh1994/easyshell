@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
@@ -24,7 +25,11 @@ public class ShellSSHAuthUserInfo implements UIKeyboardInteractive, UserInfo {
 
     @Override
     public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
-        if (StringUtil.containsAnyIgnoreCase(prompt[0], "Verification code", "验证码")) {
+        String content = ArrayUtil.first(prompt);
+        if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
+            return new String[]{this.password};
+        }
+        if (StringUtil.containsAnyIgnoreCase(content, "Verification code", "验证码")) {
             String verificationCode = MessageBox.prompt(I18nHelper.pleaseInputVerificationCode());
             if (StringUtil.isEmpty(verificationCode)) {
                 throw new SSHException("invalid verification code");
@@ -36,7 +41,7 @@ public class ShellSSHAuthUserInfo implements UIKeyboardInteractive, UserInfo {
 
     @Override
     public String getPassphrase() {
-        return null;
+        return this.password;
     }
 
     @Override
