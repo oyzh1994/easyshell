@@ -360,6 +360,28 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
+     * 收藏文件
+     *
+     * @param file 文件
+     */
+    protected void collectFile(E file) {
+        if (file != null && !this.checkInvalid(file)) {
+            ShellFileUtil.collectFile(this.client, file);
+        }
+    }
+
+    /**
+     * 取消收藏文件
+     *
+     * @param file 文件
+     */
+    protected void unCollectFile(E file) {
+        if (file != null && !this.checkInvalid(file)) {
+            ShellFileUtil.unCollectFile(this.client, file);
+        }
+    }
+
+    /**
      * 显示文件信息
      *
      * @param file 文件
@@ -876,12 +898,21 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (files.size() == 1) {
             E file = files.getFirst();
             // 编辑文件
-            FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
-            if (!ShellFileUtil.fileEditable(file)) {
-                editFile.setDisable(true);
+            if (ShellFileUtil.fileEditable(file)) {
+                FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
+                editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
+                menuItems.add(editFile);
             }
-            editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
-            menuItems.add(editFile);
+            // 收藏文件
+            if (file.isDirectory()) {
+                if (ShellFileUtil.isFileCollect(this.client, file)) {
+                    FXMenuItem unCollectFile = MenuItemHelper.unCollect("12", () -> this.unCollectFile(file));
+                    menuItems.add(unCollectFile);
+                } else {
+                    FXMenuItem collectFile = MenuItemHelper.collectFile("12", () -> this.collectFile(file));
+                    menuItems.add(collectFile);
+                }
+            }
             // 文件信息
             FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
             fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);

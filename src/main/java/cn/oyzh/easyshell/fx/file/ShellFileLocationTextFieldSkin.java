@@ -5,8 +5,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.WindowEvent;
 
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * 搜索文本输入框皮肤
@@ -60,12 +63,24 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin {
         super.onButtonClicked(e);
     }
 
-//    @Override
-//    protected void updateButtonVisibility() {
-//        boolean visible = this.getSkinnable().isVisible();
-//        boolean disable = this.getSkinnable().isDisable();
-//        boolean hasFocus = this.getSkinnable().isFocused();
-//        boolean shouldBeVisible = !disable && visible && hasFocus;
-//        this.button.setVisible(shouldBeVisible);
-//    }
+    /**
+     * 数据提供方
+     */
+    private Supplier<List<String>> itemListSupplier;
+
+    public Supplier<List<String>> getItemListSupplier() {
+        return itemListSupplier;
+    }
+
+    public void setItemListSupplier(Supplier<List<String>> itemListSupplier) {
+        this.itemListSupplier = itemListSupplier;
+    }
+
+    @Override
+    protected void onPopupShowing(WindowEvent event) {
+        super.onPopupShowing(event);
+        if (this.itemListSupplier != null) {
+            this.setItemList(this.itemListSupplier.get());
+        }
+    }
 }

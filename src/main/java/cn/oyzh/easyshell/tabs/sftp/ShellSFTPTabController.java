@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -237,6 +238,8 @@ public class ShellSFTPTabController extends RichTabController {
                         this.manage.text("(" + this.client.getTaskSize() + ")");
                     }
                 });
+                // 设置收藏处理
+                this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

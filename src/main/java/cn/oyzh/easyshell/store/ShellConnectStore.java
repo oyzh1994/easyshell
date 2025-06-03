@@ -39,6 +39,11 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     /**
+     * shell文件收藏
+     */
+    private final ShellFileCollectStore fileCollectStore = ShellFileCollectStore.INSTANCE;
+
+    /**
      * 终端历史存储
      */
     private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
@@ -76,6 +81,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             this.x11ConfigStore.deleteByIid(model.getId());
             this.jumpConfigStore.deleteByIid(model.getId());
             this.proxyConfigStore.deleteByIid(model.getId());
+            this.fileCollectStore.deleteByIid(model.getId());
             this.termHistoryStore.deleteByIid(model.getId());
             this.tunnelingConfigStore.deleteByIid(model.getId());
         }

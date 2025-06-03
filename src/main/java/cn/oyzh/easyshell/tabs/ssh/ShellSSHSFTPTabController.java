@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -169,21 +170,6 @@ public class ShellSSHSFTPTabController extends SubTabController {
      */
     private boolean initialized = false;
 
-//    /**
-//     * 删除管理器
-//     */
-//    private ShellSFTPDeleteManager deleteManager;
-//
-//    /**
-//     * 上传管理器
-//     */
-//    private ShellSFTPUploadManager uploadManager;
-//
-//    /**
-//     * 下载管理器
-//     */
-//    private ShellSFTPDownloadManager downloadManager;
-
     /**
      * 初始化
      */
@@ -193,33 +179,8 @@ public class ShellSSHSFTPTabController extends SubTabController {
         }
         this.initialized = true;
         this.fileTable.setSSHClient(this.client());
-//        this.deleteManager = this.sftpClient().getDeleteManager();
-//        this.uploadManager = this.sftpClient().getUploadManager();
-//        this.downloadManager = this.sftpClient().getDownloadManager();
-//        // 上传
-//        this.uploadManager.addMonitorFailedCallback(this, this::uploadFailed);
-//        this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
-//        this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
-//        this.uploadManager.addTaskStatusChangedCallback(this, this::uploadStatusChanged);
-//        // 下载
-//        this.downloadManager.addMonitorFailedCallback(this, this::downloadFailed);
-//        this.downloadManager.addMonitorChangedCallback(this, this::downloadMonitorChanged);
-//        this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
-//        this.downloadManager.addTaskStatusChangedCallback(this, this::downloadStatusChanged);
-//        // 删除
-//        this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
-//        this.deleteManager.addDeleteFailedCallback(this, this::deleteFailed);
-//        this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
         // 显示隐藏文件
         this.hiddenFile(this.setting.isShowHiddenFile());
-//        // 上传回调
-//        this.fileTable.setUploadFileCallback(files -> {
-//            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.uploadBox);
-//        });
-//        // 下载回调
-//        this.fileTable.setDownloadFileCallback(files -> {
-//            AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.downloadBox);
-//        });
         // 任务数量监听
         this.sftpClient().addTaskSizeListener(() -> {
             if (this.sftpClient().isTaskEmpty()) {
@@ -228,6 +189,8 @@ public class ShellSSHSFTPTabController extends SubTabController {
                 this.manage.text("(" + this.sftpClient().getTaskSize() + ")");
             }
         });
+        // 设置收藏处理
+        this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.sftpClient()));
     }
 
     @Override
@@ -242,14 +205,9 @@ public class ShellSSHSFTPTabController extends SubTabController {
             super.onTabInit(tab);
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
-                    // System.setProperty(ShellConst.SFTP_VISIBLE, "1");
                     this.init();
-                // } else {
-                //     System.clearProperty(ShellConst.SFTP_VISIBLE);
                 }
             });
-//            // 绑定属性
-//            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
             // 监听位置
             this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
@@ -258,17 +216,6 @@ public class ShellSSHSFTPTabController extends SubTabController {
                     this.location.text(t1);
                 }
             });
-//            // 隐藏文件
-//            this.hiddenFile.setSelected(this.setting.isShowHiddenFile());
-//            this.hiddenFile.selectedChanged((observableValue, aBoolean, t1) -> {
-//                try {
-//                    this.fileTable.setShowHiddenFile(t1);
-//                    this.setting.setShowHiddenFile(t1);
-//                    this.settingStore.update(this.setting);
-//                } catch (Exception ex) {
-//                    MessageBox.exception(ex);
-//                }
-//            });
             // 文件过滤
             this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
                 try {
@@ -287,10 +234,6 @@ public class ShellSSHSFTPTabController extends SubTabController {
                     this.filterFile.requestFocus();
                 } else if (KeyboardUtil.hide_keyCombination.match(event)) {
                     this.hiddenFile();
-//                } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
-//                    this.refreshFile();
-//                } else if (KeyboardUtil.delete_keyCombination.match(event)) {
-//                    this.deleteFile();
                 }
             });
             // 绑定提示快捷键

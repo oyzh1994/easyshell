@@ -1,9 +1,26 @@
 package cn.oyzh.easyshell.file;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellFileCollect;
+import cn.oyzh.easyshell.store.ShellFileCollectStore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 文件工具类
+ *
+ * @author oyzh
+ * @since 2025-04-28
+ */
 public class ShellFileUtil {
+
+    /**
+     * 文件收藏存储
+     */
+    private static final ShellFileCollectStore FILE_COLLECT_STORE = ShellFileCollectStore.INSTANCE;
 
     /**
      * 是否正常文件
@@ -210,5 +227,70 @@ public class ShellFileUtil {
             filePath = filePath.substring(1);
         }
         return StringUtil.replace(filePath, "/", "\\");
+    }
+
+    /**
+     * 获取文件收藏列表
+     *
+     * @param fileClient 文件客户端
+     * @return 文件收藏列表
+     */
+    public static List<ShellFileCollect> fileCollect(ShellFileClient<?> fileClient) {
+        String iid = fileClient.getShellConnect().getId();
+        List<ShellFileCollect> fileCollects = FILE_COLLECT_STORE.loadByIid(iid);
+        List<ShellFileCollect> collects = new ArrayList<>();
+        for (ShellFileCollect fileCollect : fileCollects) {
+            try {
+                ShellFile file = fileClient.fileInfo(fileCollect.getContent());
+                if (file == null || !file.isDirectory()) {
+                    FILE_COLLECT_STORE.delete(fileCollect.getId());
+                } else {
+                    collects.add(fileCollect);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                if (ExceptionUtil.hasMessage(ex, "No such file")) {
+                    FILE_COLLECT_STORE.delete(fileCollect.getId());
+                }
+            }
+        }
+        return collects;
+    }
+
+    /**
+     * 文件是否被收藏
+     *
+     * @param fileClient 文件客户端
+     * @param file       文件
+     * @return 结果
+     */
+    public static boolean isFileCollect(ShellFileClient<?> fileClient, ShellFile file) {
+        String iid = fileClient.getShellConnect().getId();
+        return FILE_COLLECT_STORE.exist(iid, file.getFilePath());
+    }
+
+    /**
+     * 收藏文件
+     *
+     * @param fileClient 文件客户端
+     * @param file       文件
+     */
+    public static void collectFile(ShellFileClient<?> fileClient, ShellFile file) {
+        String iid = fileClient.getShellConnect().getId();
+        ShellFileCollect collect = new ShellFileCollect();
+        collect.setContent(file.getFilePath());
+        collect.setIid(iid);
+        FILE_COLLECT_STORE.replace(collect);
+    }
+
+    /**
+     * 取消收藏文件
+     *
+     * @param fileClient 文件客户端
+     * @param file       文件
+     */
+    public static void unCollectFile(ShellFileClient<?> fileClient, ShellFile file) {
+        String iid = fileClient.getShellConnect().getId();
+        FILE_COLLECT_STORE.delete(iid, file.getFilePath());
     }
 }

@@ -8,6 +8,7 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
@@ -226,6 +227,8 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.fileTable.setEnabledLoading(true);
             }
         });
+        // 设置收藏处理
+        this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.sftpClient()));
     }
 
     /**

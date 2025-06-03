@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileConnectComboBox;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView;
@@ -131,18 +132,6 @@ public class ShellFileTransportController extends StageController {
      */
     @FXML
     private ShellFileLocationTextField targetLocation;
-
-//    /**
-//     * 隐藏来源文件
-//     */
-//    @FXML
-//    private FXToggleSwitch hiddenSourceFile;
-//
-//    /**
-//     * 隐藏目标文件
-//     */
-//    @FXML
-//    private FXToggleSwitch hiddenTargetFile;
 
     /**
      * 隐藏来源文件
@@ -411,6 +400,9 @@ public class ShellFileTransportController extends StageController {
         // 设置客户端
         this.sourceFile.setClient(this.sourceClient);
         this.targetFile.setClient(this.targetClient);
+        // 设置收藏处理
+        this.sourceLocation.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.sourceClient));
+        this.targetLocation.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.targetClient));
         // 处理传输列表
         ObservableList<ShellFileTransportTask> transportTasks = this.transportTable.getItems();
         // 列表监听
