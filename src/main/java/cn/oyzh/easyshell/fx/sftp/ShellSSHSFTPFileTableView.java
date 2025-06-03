@@ -70,26 +70,37 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         }
         // 强制删除
         if (CollectionUtil.isNotEmpty(files)) {
-            ShellFile f = files.getFirst();
-            FXMenuItem forceDel;
-            if (this.client.isWindows()) {
-                forceDel = FXMenuItem.newItem("rmdir /s /q", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
-            } else {
-                forceDel = FXMenuItem.newItem("rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            boolean isAllDir = true;
+            // 判断是否都是文件夹
+            for (ShellSFTPFile file : files) {
+                if (!file.isDirectory()) {
+                    isAllDir = false;
+                    break;
+                }
             }
-            menuItems.add(forceDel);
+            if (isAllDir) {
+                FXMenuItem forceDel = FXMenuItem.newItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+                menuItems.add(forceDel);
+            }
         }
         // 解压文件
         if (this.client.isLinux() && CollectionUtil.isNotEmpty(files)) {
-            ShellFile f = files.getFirst();
-            String extName = FileNameUtil.extName(f.getFileName());
-            boolean isCompress = FileNameUtil.isGzType(extName)
-                    || FileNameUtil.isXzType(extName)
-                    || FileNameUtil.isLzType(extName)
-                    || FileNameUtil.isZstType(extName)
-                    || FileNameUtil.isLzoType(extName)
-                    || FileNameUtil.isLzmaType(extName);
-            if (isCompress) {
+            boolean isAllCompress = true;
+            // 判断是否都是压缩包
+            for (ShellSFTPFile file : files) {
+                String extName = FileNameUtil.extName(file.getFileName());
+                boolean isCompress = FileNameUtil.isGzType(extName)
+                        || FileNameUtil.isXzType(extName)
+                        || FileNameUtil.isLzType(extName)
+                        || FileNameUtil.isZstType(extName)
+                        || FileNameUtil.isLzoType(extName)
+                        || FileNameUtil.isLzmaType(extName);
+                if (!isCompress) {
+                    isAllCompress = false;
+                    break;
+                }
+            }
+            if (isAllCompress) {
                 FXMenuItem unCompress = MenuItemHelper.unCompress("12", () -> this.uncompress(files));
                 menuItems.add(unCompress);
             }
@@ -108,26 +119,23 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void forceDel(List<ShellSFTPFile> files) {
-        if (files.size() != 1) {
-            return;
-        }
-        // 文件
-        ShellSFTPFile file = files.getFirst();
-        if (!file.isDirectory()) {
-            return;
-        }
-        // 提示
-        if (!MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName() + "?")) {
-            return;
-        }
         StageManager.showMask(() -> {
             try {
-                // 执行操作
-                String result = this.sshClient.serverExec().forceDel(file.getFilePath());
-                if (StringUtil.isNotBlank(result)) {
-                    MessageBox.warn(result);
-                } else {
-                    super.onFileDeleted(file.getFilePath());
+                for (ShellSFTPFile file : files) {
+                    if (!file.isDirectory()) {
+                        continue;
+                    }
+                    // 提示
+                    if (!MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName() + "?")) {
+                        continue;
+                    }
+                    // 执行操作
+                    String result = this.sshClient.serverExec().forceDel(file.getFilePath());
+                    if (StringUtil.isNotBlank(result)) {
+                        MessageBox.warn(result);
+                    } else {
+                        super.onFileDeleted(file.getFilePath());
+                    }
                 }
             } catch (Exception ex) {
                 MessageBox.exception(ex);
@@ -141,25 +149,12 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void uncompress(List<ShellSFTPFile> files) {
-        if (files.size() != 1) {
-            return;
-        }
-        // 文件
-        ShellSFTPFile file = files.getFirst();
-        String extName = FileNameUtil.extName(file.getFileName());
-        boolean isCompress = FileNameUtil.isGzType(extName)
-                || FileNameUtil.isXzType(extName)
-                || FileNameUtil.isLzType(extName)
-                || FileNameUtil.isZstType(extName)
-                || FileNameUtil.isLzoType(extName)
-                || FileNameUtil.isLzmaType(extName);
-        if (!isCompress) {
-            return;
-        }
         StageManager.showMask(() -> {
             try {
-                // 执行操作
-                this.sshClient.serverExec().uncompress(file.getFilePath());
+                // 执行解压
+                for (ShellSFTPFile file : files) {
+                    this.sshClient.serverExec().uncompress(file.getFilePath());
+                }
                 super.loadFileInner();
             } catch (Exception ex) {
                 MessageBox.exception(ex);
@@ -192,16 +187,9 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * 粘贴文件
      */
     protected void pasteFile() {
-        if (CollectionUtil.isEmpty(this.tempFiles)) {
-            return;
-        }
-        ShellFile f = this.tempFiles.getFirst();
-        if (StringUtil.equals(f.getParentPath(), this.getLocation())) {
-            return;
-        }
         StageManager.showMask(() -> {
             try {
-                for (ShellSFTPFile f1 : tempFiles) {
+                for (ShellSFTPFile f1 : this.tempFiles) {
                     String fName = ShellFileUtil.concat(this.getLocation(), f1.getFileName());
                     String dst = f1.isDirectory() ? this.getLocation() : fName;
                     // 判断文件是否存在
