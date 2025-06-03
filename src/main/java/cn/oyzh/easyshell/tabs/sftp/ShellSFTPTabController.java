@@ -55,42 +55,6 @@ public class ShellSFTPTabController extends RichTabController {
     @FXML
     private SVGLabel manage;
 
-//    /**
-//     * 上传组件
-//     */
-//    @FXML
-//    private FXHBox uploadBox;
-//
-//    /**
-//     * 上传标签
-//     */
-//    @FXML
-//    private FXLabel fileUpload;
-//
-//    /**
-//     * 上传进度
-//     */
-//    @FXML
-//    private FXProgressTextBar uploadProgress;
-//
-//    /**
-//     * 下载组件
-//     */
-//    @FXML
-//    private FXHBox downloadBox;
-//
-//    /**
-//     * 下载标签
-//     */
-//    @FXML
-//    private FXLabel fileDownload;
-//
-//    /**
-//     * 下载进度
-//     */
-//    @FXML
-//    private FXProgressTextBar downloadProgress;
-
     /**
      * 刷新文件
      */
@@ -121,30 +85,6 @@ public class ShellSFTPTabController extends RichTabController {
     @FXML
     private ClearableTextField filterFile;
 
-//    /**
-//     * 文件删除文本
-//     */
-//    @FXML
-//    private FXLabel fileDelete;
-//
-//    /**
-//     * 文件删除组件
-//     */
-//    @FXML
-//    private FXHBox deleteBox;
-
-//    /**
-//     * 上传文件按钮
-//     */
-//    @FXML
-//    private SVGGlyph uploadFile;
-//
-//    /**
-//     * 上传文件夹按钮
-//     */
-//    @FXML
-//    private SVGGlyph uploadDir;
-
     /**
      * 设置
      */
@@ -154,21 +94,6 @@ public class ShellSFTPTabController extends RichTabController {
      * 设置储存
      */
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
-
-//    /**
-//     * 删除管理器
-//     */
-//    private ShellSFTPDeleteManager deleteManager;
-//
-//    /**
-//     * 上传管理器
-//     */
-//    private ShellSFTPUploadManager uploadManager;
-//
-//    /**
-//     * 下载管理器
-//     */
-//    private ShellSFTPDownloadManager downloadManager;
 
     /**
      * sftp客户端
@@ -203,33 +128,8 @@ public class ShellSFTPTabController extends RichTabController {
                     ShellEventUtil.layout1();
                 }
                 this.fileTable.setClient(this.client);
-//                this.deleteManager = this.client.getDeleteManager();
-//                this.uploadManager = this.client.getUploadManager();
-//                this.downloadManager = this.client.getDownloadManager();
-//                // 上传
-//                this.uploadManager.addMonitorFailedCallback(this, this::uploadFailed);
-//                this.uploadManager.addMonitorChangedCallback(this, this::uploadMonitorChanged);
-//                this.uploadManager.addTaskSizeChangedCallback(this, this::uploadTaskSizeChanged);
-//                this.uploadManager.addTaskStatusChangedCallback(this, this::uploadStatusChanged);
-//                // 下载
-//                this.downloadManager.addMonitorFailedCallback(this, this::downloadFailed);
-//                this.downloadManager.addMonitorChangedCallback(this, this::downloadMonitorChanged);
-//                this.downloadManager.addTaskSizeChangedCallback(this, this::downloadTaskSizeChanged);
-//                this.downloadManager.addTaskStatusChangedCallback(this, this::downloadStatusChanged);
-//                // 删除
-//                this.deleteManager.addDeleteEndedCallback(this, this::deleteEnded);
-//                this.deleteManager.addDeleteFailedCallback(this, this::deleteFailed);
-//                this.deleteManager.addDeleteDeletedCallback(this, this::deleteDeleted);
                 // 显示隐藏文件
                 this.hiddenFile(this.setting.isShowHiddenFile());
-//                // 上传回调
-//                this.fileTable.setUploadFileCallback(files -> {
-//                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
-//                });
-//                // 下载回调
-//                this.fileTable.setDownloadFileCallback(files -> {
-//                    AnimationUtil.move(new FileSVGGlyph("150"), this.fileTable, this.manage);
-//                });
                 // 任务数量监听
                 this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty()) {
@@ -262,15 +162,6 @@ public class ShellSFTPTabController extends RichTabController {
     public void onTabInit(RichTab tab) {
         try {
             super.onTabInit(tab);
-            // tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            //     if (t1) {
-            //         System.setProperty(ShellConst.SFTP_VISIBLE, "1");
-            //     } else {
-            //         System.clearProperty(ShellConst.SFTP_VISIBLE);
-            //     }
-            // });
-//            // 绑定属性
-//            this.uploadDir.disableProperty().bind(this.uploadFile.disableProperty());
             // 监听位置
             this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {

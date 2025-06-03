@@ -40,7 +40,7 @@
             <columns>
                 <FXTableColumn prefWidth="120" valueName="imageId" text="%base.id"/>
                 <FXTableColumn prefWidth="320" valueName="repository" text="%base.repository"/>
-                <FXTableColumn flexWidth="100% - 814" valueName="tag" text="%base.tag"/>
+                <FXTableColumn flexWidth="100% - 825" valueName="tag" text="%base.tag"/>
                 <FXTableColumn prefWidth="220" valueName="created" text="%base.createTime"/>
                 <FXTableColumn prefWidth="150" valueName="size" text="%base.size"/>
             </columns>

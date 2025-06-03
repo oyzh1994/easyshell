@@ -67,7 +67,7 @@ public class ShellCopyIdKeyController extends StageController {
         super.onWindowShown(event);
         this.keys = this.getProp("keys");
         StringBuilder sb = new StringBuilder();
-        for (ShellKey key : keys) {
+        for (ShellKey key : this.keys) {
             sb.append(",").append(key.getName());
         }
         this.keyInfo.setText(sb.substring(1));
@@ -77,7 +77,7 @@ public class ShellCopyIdKeyController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.copyKeys1();
+        return I18nHelper.copyKeys1ToHost();
     }
 
     /**

@@ -46,7 +46,7 @@
             <columns>
                 <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
                 <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
-                <FXTableColumn flexWidth="100% - 794" valueName="command" text="%base.cmd"/>
+                <FXTableColumn flexWidth="100% - 805" valueName="command" text="%base.cmd"/>
                 <FXTableColumn prefWidth="200" valueName="created" text="%base.createTime"/>
                 <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
                 <FXTableColumn prefWidth="160" valueName="ports" text="%base.port"/>

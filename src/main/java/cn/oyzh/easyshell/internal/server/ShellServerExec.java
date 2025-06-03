@@ -182,8 +182,8 @@ public class ShellServerExec implements AutoCloseable {
                 cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
             }
             return Double.parseDouble(cpuUsage);
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return -1;
     }
@@ -259,8 +259,8 @@ public class ShellServerExec implements AutoCloseable {
                 output = output.replace("%", "");
             }
             return Double.parseDouble(output);
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return -1;
     }
@@ -274,8 +274,8 @@ public class ShellServerExec implements AutoCloseable {
                 }
                 return ulimit;
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return "N/A";
     }
@@ -287,8 +287,8 @@ public class ShellServerExec implements AutoCloseable {
                 return output == null ? "N/A" : output.trim();
             }
             return this.client.exec("uname -rs");
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return "N/A";
     }
@@ -301,8 +301,8 @@ public class ShellServerExec implements AutoCloseable {
                 return arch == null ? "N/A" : arch.trim();
             }
             return this.client.exec("uname -m");
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return "N/A";
     }
@@ -334,8 +334,8 @@ public class ShellServerExec implements AutoCloseable {
                 totalMemory = totalMemory.replace("\n", "");
             }
             return Long.parseLong(totalMemory);
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return -1;
     }
@@ -434,8 +434,8 @@ public class ShellServerExec implements AutoCloseable {
                 handleIds.add(mainId);
             }
             return new double[]{read, write};
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return new double[]{-1L, -1L};
     }
@@ -510,8 +510,8 @@ public class ShellServerExec implements AutoCloseable {
                 send += Double.parseDouble(cols[1]);
             }
             return new double[]{send, receive};
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return new double[]{-1L, -1L};
     }
@@ -535,8 +535,8 @@ public class ShellServerExec implements AutoCloseable {
                     return output.trim();
                 }
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return "N/A";
     }
@@ -560,8 +560,8 @@ public class ShellServerExec implements AutoCloseable {
                 dst = ShellFileUtil.fixWindowsFilePath(dst);
                 return this.client.exec("move /Y \"" + src + "\" " + dst + "\"");
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -585,8 +585,8 @@ public class ShellServerExec implements AutoCloseable {
                 dst = ShellFileUtil.fixWindowsFilePath(dst);
                 return this.client.exec("copy /Y \"" + src + "\" \"" + dst + "\"");
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -608,8 +608,8 @@ public class ShellServerExec implements AutoCloseable {
                 dir = ShellFileUtil.fixWindowsFilePath(dir);
                 return this.client.exec("rmdir /s /q \"" + dir + "\"");
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -625,8 +625,8 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isLinux()){
                 return this.client.exec("tar -axvf " + file);
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -643,8 +643,8 @@ public class ShellServerExec implements AutoCloseable {
             } else {
                 return this.client.exec("cat /etc/timezone");
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return "N/A";
     }
@@ -662,8 +662,8 @@ public class ShellServerExec implements AutoCloseable {
             } else {
                 return this.client.exec("echo $LANG");
             }
-        } catch (Exception ee) {
-            ee.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return "N/A";
     }
