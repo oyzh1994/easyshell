@@ -882,13 +882,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<E> files = this.getFilterSelectedItems();
-        // if (CollectionUtil.isEmpty(files)) {
-        //     return Collections.emptyList();
-        // }
-        // // 检查是否包含无效文件
-        // if (this.checkInvalid(files)) {
-        //     return Collections.emptyList();
-        // }
         List<MenuItem> menuItems = new ArrayList<>();
         // 创建文件
         FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
@@ -936,10 +929,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
         menuItems.add(refreshFile);
         // 删除文件
-        FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
-        deleteFile.setDisable(files.isEmpty());
-        menuItems.add(deleteFile);
+        if (!files.isEmpty()) {
+            FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+            deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
+            menuItems.add(deleteFile);
+        }
         return menuItems;
     }
 

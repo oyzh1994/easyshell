@@ -60,36 +60,18 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
-//        if (this.isConnecting()) {
-////            FXMenuItem cancelConnect = MenuItemHelper.cancelConnect("12", this::cancelConnect);
-////            items.add(cancelConnect);
-//        } else if (this.isConnected()) {
-////            FXMenuItem closeConnect = MenuItemHelper.closeConnect("12", this::closeConnect);
-//            FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
-//            FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
-//
-////            items.add(closeConnect);
-//            items.add(editConnect);
-//            items.add(cloneConnect);
-//        } else {
-//            FXMenuItem connect = MenuItemHelper.startConnect("12", this::onPrimaryDoubleClick);
         FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
-        FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
-        FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
-        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
-        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
-
-        if (!(this.isSSHType() || this.isSFTPType() || this.isFTPType())) {
-            transportFile.setDisable(true);
-        }
-
-//            items.add(connect);
         items.add(editConnect);
+        FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
         items.add(renameConnect);
-        items.add(transportFile);
+        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
         items.add(cloneConnect);
+        if (this.isSSHType() || this.isSFTPType() || this.isFTPType()) {
+            FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
+            items.add(transportFile);
+        }
+        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         items.add(deleteConnect);
-//        }
         return items;
     }
 

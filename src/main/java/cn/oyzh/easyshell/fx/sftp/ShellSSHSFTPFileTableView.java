@@ -53,58 +53,50 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         List<ShellSFTPFile> files = this.getFilterSelectedItems();
         List<MenuItem> menuItems = new ArrayList<>();
         // 复制文件
-        FXMenuItem copyFile = MenuItemHelper.copyFile("12", () -> this.copyFile(files));
-        copyFile.setDisable(files.isEmpty());
-        menuItems.add(copyFile);
-        // 剪切文件
-        FXMenuItem cutFile = MenuItemHelper.cutFile("12", () -> this.cutFile(files));
-        cutFile.setDisable(files.isEmpty());
-        menuItems.add(cutFile);
+        if (!files.isEmpty()) {
+            FXMenuItem copyFile = MenuItemHelper.copyFile("12", () -> this.copyFile(files));
+            menuItems.add(copyFile);
+            // 剪切文件
+            FXMenuItem cutFile = MenuItemHelper.cutFile("12", () -> this.cutFile(files));
+            menuItems.add(cutFile);
+        }
         // 粘贴文件
-        FXMenuItem pasteFile = MenuItemHelper.pasteFile("12", this::pasteFile);
-        // 判断是否禁用
         if (CollectionUtil.isNotEmpty(this.tempFiles)) {
             ShellFile f = this.tempFiles.getFirst();
-            pasteFile.setDisable(StringUtil.equals(f.getParentPath(), this.getLocation()));
-        } else {
-            pasteFile.setDisable(true);
+            if (StringUtil.notEquals(f.getParentPath(), this.getLocation())) {
+                FXMenuItem pasteFile = MenuItemHelper.pasteFile("12", this::pasteFile);
+                menuItems.add(pasteFile);
+            }
         }
-        menuItems.add(pasteFile);
         // 强制删除
-        FXMenuItem forceDel;
-        if (this.client.isWindows()) {
-            forceDel = FXMenuItem.newItem("rmdir /s /q", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
-        } else {
-            forceDel = FXMenuItem.newItem("rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
-        }
-        // 判断是否禁用
         if (CollectionUtil.isNotEmpty(files)) {
             ShellFile f = files.getFirst();
-            forceDel.setDisable(!f.isDirectory());
-        } else {
-            forceDel.setDisable(true);
-        }
-        menuItems.add(forceDel);
-        // 解压文件
-        if (this.client.isLinux()) {
-            FXMenuItem unCompress = MenuItemHelper.unCompress("12", () -> this.uncompress(files));
-            // 判断是否禁用
-            if (CollectionUtil.isNotEmpty(files)) {
-                ShellFile f = files.getFirst();
-                String extName = FileNameUtil.extName(f.getFileName());
-                boolean isCompress = FileNameUtil.isGzType(extName)
-                        || FileNameUtil.isXzType(extName)
-                        || FileNameUtil.isLzType(extName)
-                        || FileNameUtil.isZstType(extName)
-                        || FileNameUtil.isLzoType(extName)
-                        || FileNameUtil.isLzmaType(extName);
-                unCompress.setDisable(!isCompress);
+            FXMenuItem forceDel;
+            if (this.client.isWindows()) {
+                forceDel = FXMenuItem.newItem("rmdir /s /q", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
             } else {
-                unCompress.setDisable(true);
+                forceDel = FXMenuItem.newItem("rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
             }
-            menuItems.add(unCompress);
+            menuItems.add(forceDel);
         }
-        menuItems.add(MenuItemHelper.separator());
+        // 解压文件
+        if (this.client.isLinux() && CollectionUtil.isNotEmpty(files)) {
+            ShellFile f = files.getFirst();
+            String extName = FileNameUtil.extName(f.getFileName());
+            boolean isCompress = FileNameUtil.isGzType(extName)
+                    || FileNameUtil.isXzType(extName)
+                    || FileNameUtil.isLzType(extName)
+                    || FileNameUtil.isZstType(extName)
+                    || FileNameUtil.isLzoType(extName)
+                    || FileNameUtil.isLzmaType(extName);
+            if (isCompress) {
+                FXMenuItem unCompress = MenuItemHelper.unCompress("12", () -> this.uncompress(files));
+                menuItems.add(unCompress);
+            }
+        }
+        if (!menuItems.isEmpty()) {
+            menuItems.add(MenuItemHelper.separator());
+        }
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
         return menuItems;
@@ -210,9 +202,10 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         StageManager.showMask(() -> {
             try {
                 for (ShellSFTPFile f1 : tempFiles) {
-                    String dst = ShellFileUtil.concat(this.getLocation(), f1.getFileName());
+                    String fName = ShellFileUtil.concat(this.getLocation(), f1.getFileName());
+                    String dst = f1.isDirectory() ? this.getLocation() : fName;
                     // 判断文件是否存在
-                    if (this.client.exist(dst) && !MessageBox.confirm("[" + dst + "] " + ShellI18nHelper.fileTip4())) {
+                    if (this.client.exist(fName) && !MessageBox.confirm("[" + fName + "] " + ShellI18nHelper.fileTip4())) {
                         continue;
                     }
                     String result;
@@ -225,7 +218,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                     if (StringUtil.isNotBlank(result)) {
                         MessageBox.warn(result);
                     } else {
-                        super.onFileAdded(dst);
+                        super.onFileAdded(fName);
                     }
                 }
             } catch (Exception ex) {

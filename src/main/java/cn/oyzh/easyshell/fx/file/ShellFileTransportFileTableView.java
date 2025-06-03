@@ -47,21 +47,15 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        // if (CollectionUtil.isEmpty(files)) {
-        //     return Collections.emptyList();
-        // }
-        // // 检查是否包含无效文件
-        // if (this.checkInvalid(files)) {
-        //     return super.getMenuItems();
-        // }
         // 获取选中的文件
         List<ShellFile> files = this.getFilterSelectedItems();
         List<MenuItem> menuItems = new ArrayList<>();
-        // 传输文件
-        FXMenuItem transportFile = MenuItemHelper.transportFile("12", () -> this.transportFile(files));
-        transportFile.setDisable(files.isEmpty());
-        menuItems.add(transportFile);
-        menuItems.add(MenuItemHelper.separator());
+        if (!files.isEmpty()) {
+            // 传输文件
+            FXMenuItem transportFile = MenuItemHelper.transportFile("12", () -> this.transportFile(files));
+            menuItems.add(transportFile);
+            menuItems.add(MenuItemHelper.separator());
+        }
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
         return menuItems;

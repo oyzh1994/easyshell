@@ -553,7 +553,7 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isLinux()
                     || this.client.isMacos()
                     || this.client.isFreeBSD()) {
-                return this.client.exec("mv -f " + src + " " + dst);
+                return this.client.exec("mv -rf " + src + " " + dst);
             }
             if (this.client.isWindows()) {
                 src = ShellFileUtil.fixWindowsFilePath(src);
@@ -578,7 +578,7 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isLinux()
                     || this.client.isMacos()
                     || this.client.isFreeBSD()) {
-                return this.client.exec("cp -f " + src + " " + dst);
+                return this.client.exec("cp -rf " + src + " " + dst);
             }
             if (this.client.isWindows()) {
                 src = ShellFileUtil.fixWindowsFilePath(src);

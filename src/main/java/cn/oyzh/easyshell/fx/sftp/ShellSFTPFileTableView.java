@@ -105,78 +105,10 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         // 获取选中的文件
         List<ShellSFTPFile> files = this.getFilterSelectedItems();
         // 下载文件
-        FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
-        downloadFile.setDisable(files.isEmpty());
-        menuItems.add(downloadFile);
+        if (!files.isEmpty()) {
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
+            menuItems.add(downloadFile);
+        }
         return menuItems;
     }
-
-//    @Override
-//    public void filePermission(ShellSFTPFile file) {
-//        if (this.checkInvalid(file)) {
-//            return;
-//        }
-//        ShellViewFactory.sftpFilePermission(file, this.client);
-//    }
-
-//    @Override
-//    public void cd(String path) {
-//        if (!StringUtil.isBlank(path)) {
-//            try {
-//                if (this.client.exist(path)) {
-//                    this.setLocation(path);
-//                    this.loadFile();
-//                }
-//            } catch (Exception ex) {
-//                MessageBox.exception(ex);
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void editFile(ShellSFTPFile file) {
-//        if (!ShellFileUtil.fileEditable(file)) {
-//            return;
-//        }
-//        ShellViewFactory.fileEdit(file, this.client);
-//        this.onFileSaved(file);
-//    }
-
-//    @Override
-//    public void touch(String name) throws Exception {
-//        if (StringUtil.isEmpty(name)) {
-//            return;
-//        }
-//        name = name.trim();
-//        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
-//            return;
-//        }
-//        String filePath = ShellFileUtil.concat(this.getLocation(), name);
-//        this.client.touch(filePath);
-//        ShellSFTPFile file = this.client.fileInfo(filePath);
-//        this.files.add(file);
-//        this.refreshFile();
-//    }
-
-//    @Override
-//    public void createDir(String name) throws Exception {
-//        if (StringUtil.isEmpty(name)) {
-//            return;
-//        }
-//        name = name.trim();
-//        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
-//            return;
-//        }
-//        String filePath = ShellFileUtil.concat(this.getLocation(), name);
-//        this.client.createDir(filePath);
-//        ShellSFTPFile file = this.client.fileInfo(filePath);
-//        this.files.add(file);
-//        this.refreshFile();
-//    }
-
-//    @Override
-//    @EventSubscribe
-//    public void onFileSaved(ShellFileSavedEvent event) {
-//        super.onFileSaved(event);
-//    }
 }
