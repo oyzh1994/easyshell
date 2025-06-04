@@ -6,8 +6,8 @@ import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.OrderByParam;
 import cn.oyzh.store.jdbc.QueryParam;
+import cn.oyzh.store.jdbc.SelectParam;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ShellFileCollectStore extends JdbcStandardStore<ShellFileCollect> {
     /**
      * 最大数量
      */
-    public static int His_Max_Size = 20;
+    public static int Max_Size = 20;
 
     /**
      * 当前实例
@@ -75,16 +75,16 @@ public class ShellFileCollectStore extends JdbcStandardStore<ShellFileCollect> {
             return false;
         }
         // 查询总数
-        List<QueryParam> queryParams = new ArrayList<>(4);
-        queryParams.add(new QueryParam("iid", model.getIid()));
-        long count = super.selectCount(queryParams);
+        SelectParam selectParam = new SelectParam();
+        selectParam.addQueryColumn("id");
+        selectParam.setLimit(1L);
+        selectParam.setOffset((long) Max_Size);
+        selectParam.addQueryParam(new QueryParam("iid", model.getIid()));
+        selectParam.addOrderByParam(new OrderByParam("saveTime", "desc"));
+        ShellFileCollect data = super.selectOne(selectParam);
         // 删除超出限制的数据
-        if (count > His_Max_Size) {
-            DeleteParam deleteParam = new DeleteParam();
-            deleteParam.addQueryParams(queryParams);
-            deleteParam.addOrderByParam(new OrderByParam("saveTime", "desc"));
-            deleteParam.setLimit(1L);
-            super.delete(deleteParam);
+        if (data != null) {
+            super.delete(data.getId());
         }
         return true;
     }

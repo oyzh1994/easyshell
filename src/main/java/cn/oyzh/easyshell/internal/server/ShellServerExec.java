@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -622,7 +623,7 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String uncompress(String file) {
         try {
-            if (this.client.isLinux()){
+            if (this.client.isLinux()) {
                 return this.client.exec("tar -axvf " + file);
             }
         } catch (Exception ex) {
@@ -666,6 +667,39 @@ public class ShellServerExec implements AutoCloseable {
             ex.printStackTrace();
         }
         return "N/A";
+    }
+
+    /**
+     * 获取命令历史
+     *
+     * @param limit 限制数量
+     * @return 命令历史
+     */
+    public List<String> history(Integer limit) {
+        try {
+            String result = null;
+            String shellType = this.client.getShellType();
+            if (shellType == null) {
+                return null;
+            }
+            if (shellType.contains("/")) {
+                shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
+            }
+            if (this.client.isMacos() || this.client.isLinux() || this.client.isUnix()) {
+                result = this.client.exec("cat ~/." + shellType + "_history");
+            }
+            if (result != null) {
+                if (limit != null) {
+                    long count = result.lines().count();
+                    long skip = Math.max(0, count - limit);
+                    return result.lines().skip(skip).toList().reversed();
+                }
+                return result.lines().toList().reversed();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
     @Override

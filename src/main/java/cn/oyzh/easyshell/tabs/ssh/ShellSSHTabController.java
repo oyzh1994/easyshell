@@ -149,7 +149,7 @@ public class ShellSSHTabController extends ParentTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.getClient().close();
+        this.client.close();
         // 展开左侧
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();

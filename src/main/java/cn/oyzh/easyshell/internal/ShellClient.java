@@ -47,7 +47,7 @@ public abstract class ShellClient implements BaseClient {
     /**
      * 环境变量
      */
-    protected final List<String> environment = new ArrayList<>();
+    protected List<String> environment;
 
     @Override
     public ShellConnect getShellConnect() {
@@ -85,28 +85,14 @@ public abstract class ShellClient implements BaseClient {
         ChannelExec channel = null;
         try {
             ShellConnect shellConnect = this.getShellConnect();
-            String extCommand = null;
-            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which", "where")) {
-                extCommand = command;
-            } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
-                extCommand = "/usr/bin/" + command;
-            } else if (this.isWindows()) {
-                // 初始化环境
-                if (this.environment.isEmpty()) {
-                    this.initEnvironment();
-                }
-                extCommand = command;
-            } else if (this.isLinux() || this.isMacos()) {
-                // 初始化环境
-                if (this.environment.isEmpty()) {
-                    this.initEnvironment();
-                }
-                String exportPath = this.getExportPath();
-                extCommand = "export PATH=$PATH" + exportPath + " && " + command;
-            } else if (this.isUnix()) {
-                extCommand = command;
-            }
+            // 获取通道
             channel = (ChannelExec) this.session.openChannel("exec");
+            // 初始化环境变量
+            if (this.osType != null) {
+                channel.setEnv("PATH", this.getExportPath());
+            }
+            // 初始化字符集
+            channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
             // 客户端转发
             if (shellConnect.isJumpForward()) {
                 channel.setAgentForwarding(true);
@@ -117,17 +103,17 @@ public abstract class ShellClient implements BaseClient {
             }
             // 操作
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
-            channel.setCommand(extCommand);
+            channel.setCommand(command);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setOutputStream(stream);
             channel.setErrStream(stream);
-            channel.connect();
+            channel.connect(this.connectTimeout());
             while (channel.isConnected()) {
                 Thread.sleep(5);
             }
             String result;
             // 如果远程是windows，则要检查下字符集是否要指定
-            if (this.remoteCharset != null) {
+            if (StringUtil.isNotBlank(this.remoteCharset)) {
                 result = stream.toString(this.remoteCharset);
             } else {
                 result = stream.toString();
@@ -155,6 +141,10 @@ public abstract class ShellClient implements BaseClient {
      * @return 结果
      */
     public String getExportPath() {
+        // 初始化环境
+        if (this.environment == null) {
+            this.initEnvironment();
+        }
         StringBuilder builder = new StringBuilder();
         if (this.isWindows()) {
             for (String string : this.environment) {
@@ -173,13 +163,13 @@ public abstract class ShellClient implements BaseClient {
      * 初始化环境
      */
     protected void initEnvironment() {
+        this.environment = new ArrayList<>();
         if (this.isWindows()) {
             this.environment.add("C:/Windows/System");
             this.environment.add("C:/Windows/System32");
             this.environment.add("C:/Windows/SysWOW64");
             this.environment.add("C:/Program Files");
             this.environment.add("C:/Program Files (x86)");
-            JulLog.info("remote charset: {}", this.getRemoteCharset());
         } else {
             this.environment.add("/bin");
             this.environment.add("/sbin");
@@ -188,6 +178,7 @@ public abstract class ShellClient implements BaseClient {
             this.environment.add("/usr/local/bin");
             this.environment.add("/usr/local/sbin");
         }
+        JulLog.info("remote charset: {}", this.getRemoteCharset());
     }
 
     /**
@@ -242,8 +233,13 @@ public abstract class ShellClient implements BaseClient {
      */
     public String getRemoteCharset() {
         if (this.remoteCharset == null) {
-            String output = this.exec("chcp");
-            this.remoteCharset = ShellUtil.getCharsetFromChcp(output);
+            if (this.isWindows()) {
+                String output = this.exec("chcp");
+                this.remoteCharset = ShellUtil.getCharsetFromChcp(output);
+            } else if (this.isUnix() || this.isMacos() || this.isLinux()) {
+                String output = this.exec("echo $LANG");
+                this.remoteCharset = ShellUtil.getCharsetFromLang(output);
+            }
         }
         return this.remoteCharset;
     }

@@ -13,7 +13,6 @@ import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
@@ -196,9 +195,9 @@ public class ShellSSHProcessTabController extends SubTabController {
         return this.processTable;
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.closeRefreshTask();
-    }
+//    @Override
+//    public void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.closeRefreshTask();
+//    }
 }

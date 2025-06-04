@@ -21,8 +21,6 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
-import com.jcraft.jsch.JSchException;
-import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
@@ -75,22 +73,14 @@ public class ShellSSHTermTabController extends SubTabController {
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
-        Charset charset = this.client().getCharset();
+        ShellSSHClient client = this.client();
+        Charset charset = client.getCharset();
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initShell(this.client());
+        connector.initShell(client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-//        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initShellSize());
     }
-
-//    private void initShellSize() {
-//        int sizeW = (int) this.widget.getTerminalPanel().getWidth();
-//        int sizeH = (int) this.widget.getTerminalPanel().getHeight();
-//        TermSize termSize = this.widget.getTermSize();
-//        ShellSSHShell shell = this.client().getShell();
-//        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
-//    }
 
     /**
      * 初始化背景
@@ -102,7 +92,12 @@ public class ShellSSHTermTabController extends SubTabController {
         ShellConnectUtil.initBackground(connect, terminalPanel);
     }
 
-    public void init() throws IOException, JSchException {
+    /**
+     * 初始化
+     *
+     * @throws Exception 异常
+     */
+    public void init() throws Exception {
         ShellSSHClient client = this.client();
         ShellSSHShell shell = client.openShell();
         this.initWidget();
@@ -112,12 +107,12 @@ public class ShellSSHTermTabController extends SubTabController {
             this.closeTab();
             return;
         }
-        ShellConnect shellConnect = client.getShellConnect();
-        // macos需要初始化部分参数
-        if (client.isMacos() && shellConnect.getCharset() != null) {
-            TtyConnector connector = this.widget.getTtyConnector();
-            connector.write("export LANG=en_US." + shellConnect.getCharset() + "\n");
-        }
+//        ShellConnect shellConnect = client.getShellConnect();
+//        // macos需要初始化部分参数
+//        if (client.isMacos() && shellConnect.getCharset() != null ) {
+//            ShellSSHTtyConnector connector = this.widget.getTtyConnector();
+//            connector.writeLine("export LANG=en_US." + shellConnect.getCharset());
+//        }
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
     }
@@ -155,7 +150,6 @@ public class ShellSSHTermTabController extends SubTabController {
      */
     private void initMonitorTask() {
         // 处理组件
-//        this.widget.setFlexHeight("100% - 30");
         this.serverMonitorInfo.display();
         if (this.serverMonitorTask != null) {
             return;
@@ -202,14 +196,12 @@ public class ShellSSHTermTabController extends SubTabController {
         try {
             ExecutorUtil.cancel(this.serverMonitorTask);
             this.serverMonitorTask = null;
-//            // 处理组件
-//            this.widget.setFlexHeight("100%");
             this.serverMonitorInfo.clear();
             this.serverMonitorInfo.disappear();
             JulLog.debug("MonitorTask closed.");
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulLog.error("close monitorTask error", ex);
+            JulLog.error("close MonitorTask error", ex);
         }
     }
 
@@ -218,10 +210,9 @@ public class ShellSSHTermTabController extends SubTabController {
      */
     @FXML
     private void termHistory() {
-        String iid = this.client().getShellConnect().getId();
-        ShellViewFactory.termHistory(this.termHistory, iid, h -> {
+        ShellViewFactory.termHistory(this.termHistory, this.client(), h -> {
             try {
-                this.widget.getTtyConnector().writeHistory(h.getContent());
+                this.widget.getTtyConnector().writeLine(h);
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }

@@ -113,6 +113,19 @@ public class ShellUtil {
     }
 
     /**
+     * 从unix、macos、linux命令输出获取字符集名称
+     *
+     * @param lang 命令结果
+     * @return 字符集
+     */
+    public static String getCharsetFromLang(String lang) {
+        if (lang.contains(".")) {
+            return lang.substring(lang.lastIndexOf(".") + 1);
+        }
+        return lang;
+    }
+
+    /**
      * 转换为ssh连接
      *
      * @param connect shell连接

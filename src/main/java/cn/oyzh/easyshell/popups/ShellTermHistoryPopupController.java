@@ -1,11 +1,12 @@
 package cn.oyzh.easyshell.popups;
 
 import atlantafx.base.controls.Popover;
-import cn.oyzh.easyshell.domain.ShellTermHistory;
-import cn.oyzh.easyshell.fx.ShellTermHistoryListView;
-import cn.oyzh.easyshell.store.ShellTermHistoryStore;
+import cn.oyzh.easyshell.fx.term.ShellTermHistoryListView;
+import cn.oyzh.easyshell.internal.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.PopupWindow;
@@ -32,21 +33,21 @@ public class ShellTermHistoryPopupController extends PopupController {
     @FXML
     private ShellTermHistoryListView root;
 
-    /**
-     * 终端历史存储
-     */
-    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
-
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
-        String iid = this.getProp("iid");
-        List<ShellTermHistory> histories = this.termHistoryStore.loadByIid(iid);
-        this.root.init(histories);
-        this.root.setOnItemPicked(() -> {
-            ShellTermHistory history = this.root.getPickedItem();
-            this.submit(history);
-            this.closeWindow();
-        });
+        try {
+            ShellSSHClient client = this.getProp("client");
+            ShellServerExec serverExec = client.serverExec();
+            List<String> histories = serverExec.history(20);
+            this.root.init(histories);
+            this.root.setOnItemPicked(() -> {
+                String history = this.root.getPickedItem();
+                this.submit(history);
+                this.closeWindow();
+            });
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 }

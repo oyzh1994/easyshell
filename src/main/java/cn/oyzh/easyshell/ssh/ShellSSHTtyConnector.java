@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
@@ -61,7 +61,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
-        this.saveTermHistory(str);
+//        this.saveTermHistory(str);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
-        this.saveTermHistory(str);
+//        this.saveTermHistory(str);
     }
 
     /**
@@ -84,42 +84,55 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         this.shellWriter.flush();
     }
 
-    /**
-     * 终端历史
-     */
-    private final StringBuilder termHistory = new StringBuilder();
+//    /**
+//     * 终端历史
+//     */
+//    private final StringBuilder termHistory = new StringBuilder();
 
-    /**
-     * 保存终端历史
-     *
-     * @param output 输出
-     */
-    private void saveTermHistory(String output) {
-        // 针对回显字符，忽略
-        if (output.contains("@") && StringUtil.containsAny(output, "% ", "# ", "@ ", ">")) {
-            return;
-        }
-        if (this.client != null) {
-            this.termHistory.append(output);
-            if (output.endsWith("\r")) {
-                String command = this.termHistory.toString();
-                this.termHistory.setLength(0);
-                ThreadUtil.startVirtual(() -> this.client.saveTermHistory(command));
-            }
-        }
-    }
+//    /**
+//     * 保存终端历史
+//     *
+//     * @param output 输出
+//     */
+//    private void saveTermHistory(String output) {
+//        if (this.client != null) {
+//            this.termHistory.append(output);
+//            String command = this.termHistory.toString();
+//            // 针对回显字符，忽略
+//            if (command.contains("@") && StringUtil.containsAny(command, "% ", "# ", "@ ", ">")) {
+//                this.termHistory.setLength(0);
+//                return;
+//            }
+//            // 针对首次打开，出现登陆提示，忽略
+//            if (StringUtil.containsAny(command, "登陆:", "login:")) {
+//                this.termHistory.setLength(0);
+//                return;
+//            }
+//            // 针对macos设置字符集，忽略
+//            if (StringUtil.containsAny(command, "export LANG=")) {
+//                this.termHistory.setLength(0);
+//                return;
+//            }
+//            if (StringUtil.containsAny(command, "\r", "\n") || StringUtil.endsWithAny(output, "\r", "\n")) {
+//                command = command.lines().findFirst().get();
+//                JulLog.error("term history : {}", command);
+//                this.termHistory.setLength(0);
+//                this.client.saveTermHistory(command);
+//            }
+//        }
+//    }
 
     @Override
     public void close() {
         super.close();
         this.client = null;
         if (this.shellReader != null) {
-            try {
-                this.shellReader.close();
-                this.shellWriter.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            IOUtil.close(this.shellReader);
+            this.shellReader = null;
+        }
+        if (this.shellWriter != null) {
+            IOUtil.close(this.shellWriter);
+            this.shellWriter = null;
         }
     }
 

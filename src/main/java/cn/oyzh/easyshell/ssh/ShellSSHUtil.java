@@ -71,24 +71,32 @@ public class ShellSSHUtil {
         return dir;
     }
 
-    /**
-     * 解析命令
-     *
-     * @param output 输出
-     * @return 命令
-     */
-    public static String resolveCommand(String output) {
-        if (StringUtil.isBlank(output) || !output.endsWith("\r")) {
-            return null;
-        }
-        // 移除ansi字符串
-        output = SSHUtil.removeAnsi(output);
-        int index = output.lastIndexOf("\u007F");
-        if (index == -1) {
-            return output.substring(0, output.length() - 1);
-        }
-        return output.substring(index + 1, output.length() - 1);
-    }
+//    /**
+//     * 解析命令
+//     *
+//     * @param output 输出
+//     * @return 命令
+//     */
+//    public static String resolveCommand(String output) {
+//        if (StringUtil.isBlank(output)) {
+//            return null;
+//        }
+//        // 移除重复内容
+//        if (output.length() > 1 && output.charAt(1) == '\b') {
+//            output = output.substring(2);
+//        }
+//        // 移除换行字符
+//        while (output.endsWith("\r") || output.endsWith("\n") || output.endsWith("\b")) {
+//            output = output.substring(0, output.length() - 1).trim();
+//        }
+//        // 移除ansi字符串
+//        output = SSHUtil.removeAnsi(output);
+//        // 移除部分tty内容
+//        if (output.endsWith("?2004l")) {
+//            output = output.substring(0, output.length() - 8);
+//        }
+//        return output;
+//    }
 
     /**
      * 初始化代理

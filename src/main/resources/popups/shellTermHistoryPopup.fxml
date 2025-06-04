@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellTermHistoryListView?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermHistoryListView?>
 <ShellTermHistoryListView fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
                           fx:controller="cn.oyzh.easyshell.popups.ShellTermHistoryPopupController"
                           realHeight="450" realWidth="240">

@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellTermHistory;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -21,7 +20,6 @@ import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
-import cn.oyzh.easyshell.store.ShellTermHistoryStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -54,6 +52,11 @@ import java.util.stream.Collectors;
 public class ShellSSHClient extends ShellClient {
 
     /**
+     * shell类型
+     */
+    private String shellType;
+
+    /**
      * 最后一次输出
      */
     private String lastOutput;
@@ -68,10 +71,10 @@ public class ShellSSHClient extends ShellClient {
      */
     private StringProperty workDirProperty;
 
-    /**
-     * 终端历史存储
-     */
-    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
+//    /**
+//     * 终端历史存储
+//     */
+//    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
 
     /**
      * 是否解析工作目录
@@ -100,11 +103,13 @@ public class ShellSSHClient extends ShellClient {
      * @param output 输出
      */
     public void resolveWorkerDir(String output) {
-        this.lastOutput = output;
-        if (!this.resolveWorkerDir) {
+        if (StringUtil.equals(this.lastOutput, output)) {
             return;
         }
-        this.doResolveWorkerDir(output);
+        if (this.resolveWorkerDir) {
+            this.doResolveWorkerDir(output);
+        }
+        this.lastOutput = output;
     }
 
     /**
@@ -117,6 +122,7 @@ public class ShellSSHClient extends ShellClient {
         if (StringUtil.isEmpty(workDir)) {
             return;
         }
+        // 跟随目录
         this.workDirProperty().set(workDir);
     }
 
@@ -132,22 +138,22 @@ public class ShellSSHClient extends ShellClient {
         return this.workDirProperty;
     }
 
-    /**
-     * 保存终端历史
-     *
-     * @param output 输出
-     */
-    public void saveTermHistory(String output) {
-        String command = ShellSSHUtil.resolveCommand(output);
-        if (StringUtil.isNotBlank(command)) {
-            JulLog.error("command: " + command);
-            ShellTermHistory history = new ShellTermHistory();
-            history.setContent(command);
-            history.setIid(this.shellConnect.getId());
-            history.setSaveTime(System.currentTimeMillis());
-            this.termHistoryStore.save(history);
-        }
-    }
+//    /**
+//     * 保存终端历史
+//     *
+//     * @param output 输出
+//     */
+//    public void saveTermHistory(String output) {
+//        String command = ShellSSHUtil.resolveCommand(output);
+//        if (StringUtil.isNotBlank(command)) {
+//            JulLog.error("command: " + command);
+//            ShellTermHistory history = new ShellTermHistory();
+//            history.setContent(command);
+//            history.setIid(this.shellConnect.getId());
+//            history.setSaveTime(System.currentTimeMillis());
+//            this.termHistoryStore.save(history);
+//        }
+//    }
 
     /**
      * ssh跳板转发器
@@ -499,6 +505,12 @@ public class ShellSSHClient extends ShellClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+                // 初始化环境变量
+                if (this.osType != null) {
+                    channel.setEnv("PATH", this.getExportPath());
+                }
+                // 初始化字符集
+                channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
                 // 客户端转发
                 if (this.shellConnect.isJumpForward()) {
                     channel.setAgentForwarding(true);
@@ -507,8 +519,6 @@ public class ShellSSHClient extends ShellClient {
                 if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
-//                channel.setInputStream(System.in);
-//                channel.setOutputStream(System.out);
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
@@ -519,6 +529,51 @@ public class ShellSSHClient extends ShellClient {
         }
         return this.shell;
     }
+
+//    /**
+//     * 通过shell通道执行命令
+//     *
+//     * @param command 命令
+//     * @return 结果
+//     */
+//    public String execShell(String command) throws Exception {
+//        ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+//        // 客户端转发
+//        if (this.shellConnect.isJumpForward()) {
+//            channel.setAgentForwarding(true);
+//        }
+//        // x11转发
+//        if (this.shellConnect.isX11forwarding()) {
+//            channel.setXForwarding(true);
+//        }
+//        // 设置终端类型
+//        channel.setPty(true);
+//        channel.connect(this.connectTimeout());
+//        if (channel.isConnected()) {
+//            channel.setPtyType(this.shellConnect.getTermType());
+//            InputStream in = channel.getInputStream();
+//            OutputStream out = channel.getOutputStream();
+//            out.write(command.getBytes());
+//            out.flush();
+//            StringBuilder result = new StringBuilder();
+//            byte[] buffer = new byte[1024];
+//            boolean first = true;
+//            while (first || in.available() > 0) {
+//                if (first) {
+//                    ThreadUtil.sleep(50);
+//                    first = false;
+//                }
+//                int len = in.read(buffer);
+//                result.append(new String(buffer, 0, len, this.getCharset()));
+//                ThreadUtil.sleep(10);
+//            }
+//            IOUtil.close(in);
+//            IOUtil.close(out);
+//            channel.disconnect();
+//            return result.toString();
+//        }
+//        return null;
+//    }
 
     private ShellDockerExec dockerExec;
 
@@ -589,6 +644,20 @@ public class ShellSSHClient extends ShellClient {
             }
         }
         return this.whoami;
+    }
+
+    /**
+     * 获取终端类型
+     *
+     * @return 终端类型
+     */
+    public String getShellType() {
+        if (this.shellType == null) {
+            if (this.isUnix() || this.isLinux() || this.isMacos()) {
+                this.shellType = this.exec("echo $SHELL");
+            }
+        }
+        return this.shellType;
     }
 }
 

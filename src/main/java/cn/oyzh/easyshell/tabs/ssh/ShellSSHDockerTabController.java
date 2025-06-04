@@ -14,7 +14,6 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -119,11 +118,11 @@ public class ShellSSHDockerTabController extends ParentTabController {
 
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.getClient().close();
-    }
+//    @Override
+//    public void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.getClient().close();
+//    }
 
     public void loadContainer() {
         this.containerController.refreshContainer();

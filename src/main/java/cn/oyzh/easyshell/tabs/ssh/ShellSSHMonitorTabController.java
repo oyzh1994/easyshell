@@ -13,7 +13,6 @@ import cn.oyzh.fx.plus.controls.chart.FXLineChart;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.chart.XYChart;
 
@@ -271,10 +270,10 @@ public class ShellSSHMonitorTabController extends SubTabController {
             }
         });
     }
-
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.closeRefreshTask();
-    }
+//
+//    @Override
+//    public void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.closeRefreshTask();
+//    }
 }

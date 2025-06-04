@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
+public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
 //public class ShellDefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
 //    protected int maxLogSize = 200;
@@ -86,6 +86,10 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
 //    public int getLogStart() {
 //        return this.logStart;
 //    }
+
+    public void writeLine(String str) throws IOException {
+        this.write(str + "\r");
+    }
 
     @Override
     public void write(String str) throws IOException {
