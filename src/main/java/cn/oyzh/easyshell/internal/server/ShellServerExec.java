@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
+import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -175,8 +176,25 @@ public class ShellServerExec implements AutoCloseable {
                 return Double.parseDouble(cpuUsage);
             }
             if (this.client.isUnix()) {
-                String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print 100 - $15}'");
-                return Double.parseDouble(cpuUsage);
+                String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print $15\"=\"$19}'\n");
+                String[] arr = cpuUsage.split("=");
+                double usage;
+                if (arr.length == 2) {
+                    String val1 = arr[0];
+                    String val2 = arr[1];
+                    // 较新版本
+                    if (RegexUtil.isNumber(val2) || RegexUtil.isDecimal(val2)) {
+                        usage = 100 - Double.parseDouble(val2);
+                    } else {// 早期版本
+                        usage = 100 - Double.parseDouble(val1);
+                    }
+                } else {
+                    usage = 100 - Double.parseDouble(arr[0]);
+                }
+                if (usage < 0 || usage > 100) {
+                    return -1;
+                }
+                return usage;
             }
             String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
             if (StringUtil.isBlank(cpuUsage)) {
