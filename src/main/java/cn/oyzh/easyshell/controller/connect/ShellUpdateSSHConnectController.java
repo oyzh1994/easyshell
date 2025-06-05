@@ -47,7 +47,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -177,59 +176,11 @@ public class ShellUpdateSSHConnectController extends StageController {
     @FXML
     private ClearableTextField x11Cookie;
 
-//    /**
-//     * ssh面板
-//     */
-//    @FXML
-//    private FXTab sshTab;
-//
-//    /**
-//     * 开启ssh
-//     */
-//    @FXML
-//    private FXToggleSwitch sshForward;
-//
-//    /**
-//     * ssh主机地址
-//     */
-//    @FXML
-//    private ClearableTextField sshHost;
-//
-//    /**
-//     * ssh主机端口
-//     */
-//    @FXML
-//    private PortTextField sshPort;
-//
-//    /**
-//     * ssh主机端口
-//     */
-//    @FXML
-//    private NumberTextField sshTimeout;
-//
-//    /**
-//     * ssh主机用户
-//     */
-//    @FXML
-//    private ClearableTextField sshUser;
-//
-//    /**
-//     * ssh主机密码
-//     */
-//    @FXML
-//    private PasswordTextField sshPassword;
-//
-//    /**
-//     * ssh认证方式
-//     */
-//    @FXML
-//    private SSHAuthTypeCombobox sshAuthMethod;
-//
-//    /**
-//     * ssh证书
-//     */
-//    @FXML
-//    private ReadOnlyTextField sshCertificate;
+    /**
+     * 环境
+     */
+    @FXML
+    private FXTextArea env;
 
     /**
      * 认证方式
@@ -332,11 +283,6 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-//    /**
-//     * ssh配置储存对象
-//     */
-//    private final ShellJumpConfigStore sshConfigStore = ShellJumpConfigStore.INSTANCE;
-
     /**
      * x11配置储存对象
      */
@@ -358,35 +304,15 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.tabPane.select(0);
         if (!this.hostPort.validate()) {
             this.tabPane.select(0);
-//            ValidatorUtil.validFail(this.hostPort);
             return null;
         }
         if (!this.hostIp.validate()) {
             this.tabPane.select(0);
-//            ValidatorUtil.validFail(this.hostIp);
             return null;
         }
         hostText = hostIp + ":" + this.hostPort.getValue();
         return hostText;
     }
-
-//    /**
-//     * 获取ssh信息
-//     *
-//     * @return ssh连接信息
-//     */
-//    private ShellSSHConfig getSSHConfig() {
-//        ShellSSHConfig sshConfig = new ShellSSHConfig();
-//        sshConfig.setIid(this.shellConnect.getId());
-//        sshConfig.setHost(this.sshHost.getText());
-//        sshConfig.setUser(this.sshUser.getText());
-//        sshConfig.setPort(this.sshPort.getIntValue());
-//        sshConfig.setPassword(this.sshPassword.getPassword());
-//        sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
-//        sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
-//        sshConfig.setCertificatePath(this.sshCertificate.getText());
-//        return sshConfig;
-//    }
 
     /**
      * 获取x11配置信息
@@ -441,11 +367,6 @@ public class ShellUpdateSSHConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
-//            // ssh转发
-//            shellConnect.setSshForward(this.sshForward.isSelected());
-//            if (shellConnect.isSSHForward()) {
-//                shellConnect.setSshConfig(this.getSSHConfig());
-//            }
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
@@ -468,25 +389,20 @@ public class ShellUpdateSSHConnectController extends StageController {
         }
         String userName = this.userName.getTextTrim();
         if (!this.userName.validate()) {
-//            this.userName.requestFocus();
-//            ValidatorUtil.validFail(this.userName);
             return;
         }
         String password = this.password.getPassword();
         if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
-//            this.password.requestFocus();
             ValidatorUtil.validFail(this.password);
             return;
         }
         String certificate = this.certificate.getTextTrim();
         if (this.authMethod.isCertificateAuth() && StringUtil.isBlank(certificate)) {
-//            this.certificate.requestFocus();
             ValidatorUtil.validFail(this.certificate);
             return;
         }
         String keyId = this.key.getKeyId();
         if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
-//            this.key.requestFocus();
             ValidatorUtil.validFail(this.key);
             return;
         }
@@ -536,6 +452,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setTermType(termType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
+            this.shellConnect.setEnvironment(this.env.getTextTrim());
             // 认证信息
             this.shellConnect.setKeyId(keyId);
             this.shellConnect.setUser(userName.trim());
@@ -546,9 +463,6 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 隧道配置
             this.shellConnect.setTunnelingConfigs(this.tunnelingTableView.getItems());
-            // ssh配置
-//            this.shellConnect.setSshConfig(this.getSSHConfig());
-//            this.shellConnect.setSshForward(this.sshForward.isSelected());
             // 背景配置
             this.shellConnect.setBackgroundImage(backgroundImage);
             this.shellConnect.setEnableBackground(enableBackground);
@@ -586,14 +500,6 @@ public class ShellUpdateSSHConnectController extends StageController {
                 }
             }
         });
-//        // ssh配置
-//        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
-//            if (newValue) {
-//                NodeGroupUtil.enable(this.sshTab, "ssh");
-//            } else {
-//                NodeGroupUtil.disable(this.sshTab, "ssh");
-//            }
-//        });
         // 认证方式
         this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.authMethod.isPasswordAuth()) {
@@ -610,16 +516,6 @@ public class ShellUpdateSSHConnectController extends StageController {
                 NodeGroupUtil.display(this.tabPane, "key");
             }
         });
-//        // ssh认证方式
-//        this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
-//            if (this.sshAuthMethod.isPasswordAuth()) {
-//                this.sshPassword.display();
-//                NodeGroupUtil.disappear(this.tabPane, "sshCertificate");
-//            } else {
-//                this.sshPassword.disappear();
-//                NodeGroupUtil.display(this.tabPane, "sshCertificate");
-//            }
-//        });
         // 背景配置
         this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -659,6 +555,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
         this.osType.select(this.shellConnect.getOsType());
+        this.env.setText(this.shellConnect.getEnvironment());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
         this.termType.select(this.shellConnect.getTermType());

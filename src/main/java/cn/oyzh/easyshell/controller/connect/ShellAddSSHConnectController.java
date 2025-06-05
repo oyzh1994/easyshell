@@ -46,7 +46,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -171,59 +170,11 @@ public class ShellAddSSHConnectController extends StageController {
     @FXML
     private ClearableTextField x11Cookie;
 
-//    /**
-//     * ssh面板
-//     */
-//    @FXML
-//    private FXTab sshTab;
-//
-//    /**
-//     * 开启ssh
-//     */
-//    @FXML
-//    private FXToggleSwitch sshForward;
-//
-//    /**
-//     * ssh主机地址
-//     */
-//    @FXML
-//    private ClearableTextField sshHost;
-//
-//    /**
-//     * ssh主机端口
-//     */
-//    @FXML
-//    private PortTextField sshPort;
-//
-//    /**
-//     * ssh主机端口
-//     */
-//    @FXML
-//    private NumberTextField sshTimeout;
-//
-//    /**
-//     * ssh主机用户
-//     */
-//    @FXML
-//    private ClearableTextField sshUser;
-//
-//    /**
-//     * ssh主机密码
-//     */
-//    @FXML
-//    private PasswordTextField sshPassword;
-//
-//    /**
-//     * ssh认证方式
-//     */
-//    @FXML
-//    private SSHAuthTypeCombobox sshAuthMethod;
-//
-//    /**
-//     * ssh证书
-//     */
-//    @FXML
-//    private ReadOnlyTextField sshCertificate;
+    /**
+     * 环境
+     */
+    @FXML
+    private FXTextArea env;
 
     /**
      * 认证方式
@@ -342,35 +293,15 @@ public class ShellAddSSHConnectController extends StageController {
         this.tabPane.select(0);
         if (!this.hostPort.validate()) {
             this.tabPane.select(0);
-//            ValidatorUtil.validFail(this.hostPort);
             return null;
         }
         if (!this.hostIp.validate()) {
             this.tabPane.select(0);
-//            ValidatorUtil.validFail(this.hostIp);
             return null;
         }
         hostText = hostIp + ":" + this.hostPort.getValue();
         return hostText;
     }
-
-//    /**
-//     * 获取ssh信息
-//     *
-//     * @return ssh连接信息
-//     */
-//    private ShellSSHConfig getSSHConfig() {
-//        ShellSSHConfig sshConfig = new ShellSSHConfig();
-//        sshConfig.setIid(this.shellConnect.getId());
-//        sshConfig.setHost(this.sshHost.getText());
-//        sshConfig.setUser(this.sshUser.getText());
-//        sshConfig.setPort(this.sshPort.getIntValue());
-//        sshConfig.setPassword(this.sshPassword.getPassword());
-//        sshConfig.setAuthMethod(this.sshAuthMethod.getAuthType());
-//        sshConfig.setTimeout(this.sshTimeout.getIntValue() * 1000);
-//        sshConfig.setCertificatePath(this.sshCertificate.getText());
-//        return sshConfig;
-//    }
 
     /**
      * 获取x11配置信息
@@ -422,11 +353,6 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
-//            // ssh转发
-//            shellConnect.setSshForward(this.sshForward.isSelected());
-//            if (shellConnect.isSSHForward()) {
-//                shellConnect.setSshConfig(this.getSSHConfig());
-//            }
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
@@ -449,25 +375,20 @@ public class ShellAddSSHConnectController extends StageController {
         }
         String userName = this.userName.getTextTrim();
         if (!this.userName.validate()) {
-//            this.userName.requestFocus();
-//            ValidatorUtil.validFail(this.userName);
             return;
         }
         String password = this.password.getPassword();
         if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
-//            this.password.requestFocus();
             ValidatorUtil.validFail(this.password);
             return;
         }
         String certificate = this.certificate.getTextTrim();
         if (this.authMethod.isCertificateAuth() && StringUtil.isBlank(certificate)) {
-//            this.certificate.requestFocus();
             ValidatorUtil.validFail(this.certificate);
             return;
         }
         String keyId = this.key.getKeyId();
         if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
-//            this.key.requestFocus();
             ValidatorUtil.validFail(this.key);
             return;
         }
@@ -518,6 +439,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setHost(host.trim());
             shellConnect.setTermType(termType);
             shellConnect.setConnectTimeOut(connectTimeOut);
+            shellConnect.setEnvironment(this.env.getTextTrim());
             // 认证信息
             shellConnect.setKeyId(keyId);
             shellConnect.setUser(userName.trim());

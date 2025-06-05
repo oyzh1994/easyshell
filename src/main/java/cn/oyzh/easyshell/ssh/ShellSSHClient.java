@@ -41,6 +41,7 @@ import javafx.beans.value.ChangeListener;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -505,6 +506,13 @@ public class ShellSSHClient extends ShellClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+                // 用户环境
+                Map<String, String> userEnvs = this.shellConnect.environments();
+                if (CollectionUtil.isNotEmpty(userEnvs)) {
+                    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                        channel.setEnv(entry.getKey(), entry.getValue());
+                    }
+                }
                 // 初始化环境变量
                 if (this.osType != null) {
                     channel.setEnv("PATH", this.getExportPath());
@@ -636,6 +644,11 @@ public class ShellSSHClient extends ShellClient {
 
     private String whoami;
 
+    /**
+     * 我是谁
+     *
+     * @return 结果
+     */
     public String whoami() {
         if (this.whoami == null) {
             this.whoami = this.exec("whoami");
@@ -658,6 +671,42 @@ public class ShellSSHClient extends ShellClient {
             }
         }
         return this.shellType;
+    }
+
+    /**
+     * 获取shell名称
+     *
+     * @return 结果
+     */
+    public String getShellName() {
+        String shellType = this.getShellType();
+        if (shellType == null) {
+            return null;
+        }
+        if (shellType.contains("/")) {
+            shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
+        }
+        return shellType;
+    }
+
+    /**
+     * 是否zsh的shell
+     *
+     * @return 结果
+     */
+    public boolean isZshType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "zsh");
+    }
+
+    /**
+     * 是否bash的shell
+     *
+     * @return 结果
+     */
+    public boolean isBashType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "bash");
     }
 }
 

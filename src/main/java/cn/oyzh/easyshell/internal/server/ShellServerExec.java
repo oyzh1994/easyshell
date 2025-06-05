@@ -670,6 +670,15 @@ public class ShellServerExec implements AutoCloseable {
     }
 
     /**
+     * 持久化命令
+     */
+    public void persistentCommand() {
+        if (this.client.isLinux() || this.client.isUnix()) {
+            this.client.exec("history -a");
+        }
+    }
+
+    /**
      * 获取命令历史
      *
      * @param limit 限制数量
@@ -677,16 +686,13 @@ public class ShellServerExec implements AutoCloseable {
      */
     public List<String> history(Integer limit) {
         try {
-            String result = null;
-            String shellType = this.client.getShellType();
-            if (shellType == null) {
+            String shellName = this.client.getShellName();
+            if (shellName == null) {
                 return null;
             }
-            if (shellType.contains("/")) {
-                shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
-            }
+            String result = null;
             if (this.client.isMacos() || this.client.isLinux() || this.client.isUnix()) {
-                result = this.client.exec("cat ~/." + shellType + "_history");
+                result = this.client.exec("cat ~/." + shellName + "_history");
             }
             if (result != null) {
                 if (limit != null) {

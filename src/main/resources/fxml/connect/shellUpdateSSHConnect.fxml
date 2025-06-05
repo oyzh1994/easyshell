@@ -190,6 +190,16 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellTermTypeComboBox>
+                <InfoLabel text="%base.env">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="env" realHeight="150" flexWidth="100% - 180" tipText="%shell.connect.tip14">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.proxy" fx:id="proxyTab">

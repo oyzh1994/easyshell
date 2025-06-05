@@ -14,7 +14,9 @@ import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author oyzh
@@ -212,6 +214,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @Column
     private Boolean ftpPassiveMode;
+
+    /**
+     * 环境信息
+     */
+    @Column
+    private String environment;
 
     public Boolean getEnableProxy() {
         return enableProxy;
@@ -598,11 +606,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "ftp".equalsIgnoreCase(this.type);
     }
 
-//    @JSONField(serialize = false, deserialize = false)
-//    public boolean isFTPSType() {
-//        return "ftps".equalsIgnoreCase(this.type);
-//    }
-
     @JSONField(serialize = false, deserialize = false)
     public boolean isVNCType() {
         return "vnc".equalsIgnoreCase(this.type);
@@ -676,5 +679,35 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setFtpPassiveMode(Boolean ftpPassiveMode) {
         this.ftpPassiveMode = ftpPassiveMode;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
+
+    /**
+     * 获取环境值
+     *
+     * @return 结果
+     */
+    public Map<String, String> environments() {
+        if (StringUtil.isBlank(this.environment)) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> map = new HashMap<>();
+        this.environment.lines().forEach(line -> {
+            String[] arr = line.split("=");
+            if (arr.length != 2) {
+                return;
+            }
+            String key = arr[0].trim();
+            String value = arr[1].trim();
+            map.put(key, value);
+        });
+        return map;
     }
 }

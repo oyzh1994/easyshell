@@ -39,6 +39,9 @@ public class ShellTermHistoryPopupController extends PopupController {
         try {
             ShellSSHClient client = this.getProp("client");
             ShellServerExec serverExec = client.serverExec();
+            // 持久化命令
+            serverExec.persistentCommand();
+            // 获取最近20条历史
             List<String> histories = serverExec.history(20);
             this.root.init(histories);
             this.root.setOnItemPicked(() -> {

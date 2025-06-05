@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.internal;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -12,8 +13,11 @@ import com.jcraft.jsch.Session;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
+ * shell客户端
+ *
  * @author oyzh
  * @since 2025/04/25
  */
@@ -84,9 +88,37 @@ public abstract class ShellClient implements BaseClient {
     public String exec(String command) {
         ChannelExec channel = null;
         try {
+//            String extCommand = null;
+//            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which", "where")) {
+//                extCommand = command;
+//            } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
+//                extCommand = "/usr/bin/" + command;
+//            } else if (this.isWindows()) {
+//                // 初始化环境
+//                if (this.environment.isEmpty()) {
+//                    this.initEnvironment();
+//                }
+//                extCommand = command;
+//            } else if (this.isLinux() || this.isMacos()) {
+//                // 初始化环境
+//                if (this.environment.isEmpty()) {
+//                    this.initEnvironment();
+//                }
+//                String exportPath = this.getExportPath();
+//                extCommand = "export PATH=$PATH" + exportPath + " && " + command;
+//            } else if (this.isUnix()) {
+//                extCommand = command;
+//            }
             ShellConnect shellConnect = this.getShellConnect();
             // 获取通道
             channel = (ChannelExec) this.session.openChannel("exec");
+            // 用户环境
+            Map<String, String> userEnvs = this.shellConnect.environments();
+            if (CollectionUtil.isNotEmpty(userEnvs)) {
+                for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                    channel.setEnv(entry.getKey(), entry.getValue());
+                }
+            }
             // 初始化环境变量
             if (this.osType != null) {
                 channel.setEnv("PATH", this.getExportPath());
@@ -175,8 +207,10 @@ public abstract class ShellClient implements BaseClient {
             this.environment.add("/sbin");
             this.environment.add("/usr/bin");
             this.environment.add("/usr/sbin");
+            this.environment.add("/usr/games");
             this.environment.add("/usr/local/bin");
             this.environment.add("/usr/local/sbin");
+            this.environment.add("/usr/local/games");
         }
         JulLog.info("remote charset: {}", this.getRemoteCharset());
     }
