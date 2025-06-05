@@ -1,0 +1,10 @@
+1. 下载镜像
+macOS 11.0.1
+链接: https://pan.baidu.com/s/1EfrSkLgs7_UDv8kHNj0ITA?pwd=2syf 提取码: 2syf
+2. 安装镜像
+虚拟机安装
+vm解锁macos
+链接: https://pan.baidu.com/s/1zu1gHw3hMaZwVxcITSi9_Q?pwd=sueg 提取码: sueg
+网络设置为桥接模式
+3. 主要教程
+https://blog.csdn.net/weixin_52799373/article/details/137964523

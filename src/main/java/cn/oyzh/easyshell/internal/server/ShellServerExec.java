@@ -641,8 +641,10 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isWindows()) {
                 return this.client.exec("tzutil /g");
-            } else {
+            } else if (this.client.isMacos() || this.client.isLinux()) {
                 return this.client.exec("cat /etc/timezone");
+            } else {
+                return this.client.exec("cat /var/db/zoneinfo 2>/dev/null");
             }
         } catch (Exception ex) {
             ex.printStackTrace();

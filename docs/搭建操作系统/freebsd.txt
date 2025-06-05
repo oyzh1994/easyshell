@@ -1,0 +1,19 @@
+1. 下载镜像
+https://download.freebsd.org/releases/ISO-IMAGES/14.2/
+2. 安装镜像
+虚拟机安装
+注意，不要用vi命令，极为反人类，用ee命令替代
+注意，vmware版本不能是16，freebsd14.2版本网络不通，经测试17.5版本正常
+网络设置为桥接模式
+3. 主要教程
+https://blog.csdn.net/qq_36544785/article/details/135724038
+4. 配置ssh
+ee /etc/ssh/ssd_config
+# 允许root登录
+PermitRootLogin yes
+ee /etc/rc.conf
+# sshd自启动
+sshd_enable="yes"
+5. 启动ssh
+service sshd start
+service sshd status
