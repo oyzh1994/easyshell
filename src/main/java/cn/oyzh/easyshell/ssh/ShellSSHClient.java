@@ -666,9 +666,7 @@ public class ShellSSHClient extends ShellClient {
      */
     public String getShellType() {
         if (this.shellType == null) {
-            if (this.isUnix() || this.isLinux() || this.isMacos()) {
-                this.shellType = this.exec("echo $SHELL");
-            }
+            this.shellType = this.serverExec().getShellType();
         }
         return this.shellType;
     }
@@ -685,6 +683,8 @@ public class ShellSSHClient extends ShellClient {
         }
         if (shellType.contains("/")) {
             shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
+        } else if (shellType.contains("\\")) {
+            shellType = shellType.substring(shellType.lastIndexOf("\\") + 1);
         }
         return shellType;
     }

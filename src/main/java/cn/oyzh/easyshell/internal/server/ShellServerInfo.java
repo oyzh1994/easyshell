@@ -24,6 +24,11 @@ public class ShellServerInfo {
      */
     private String timezone;
 
+    /**
+     * shell名称
+     */
+    private String shellName;
+
     public String getTimezone() {
         return timezone;
     }
@@ -84,5 +89,13 @@ public class ShellServerInfo {
 
     public void setTotalMemory(double totalMemory) {
         this.totalMemory = totalMemory;
+    }
+
+    public String getShellName() {
+        return shellName;
+    }
+
+    public void setShellName(String shellName) {
+        this.shellName = shellName;
     }
 }

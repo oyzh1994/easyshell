@@ -56,12 +56,14 @@ public class ShellServerExec implements AutoCloseable {
         String locale = this.locale();
         String timezone = this.timezone();
         double totalMemory = this.totalMemory();
+        String shellName = this.client.getShellName();
         info.setArch(arch);
         info.setUname(uname);
         info.setUlimit(ulimit);
         info.setUptime(uptime);
         info.setLocale(locale);
         info.setTimezone(timezone);
+        info.setShellName(shellName);
         info.setTotalMemory(totalMemory);
         return info;
     }
@@ -659,9 +661,16 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isWindows()) {
                 return this.client.exec("tzutil /g");
-            } else if (this.client.isMacos() || this.client.isLinux()) {
+            } else if (this.client.isLinux()) {
                 return this.client.exec("cat /etc/timezone");
-            } else {
+            } else if (this.client.isMacos()) {
+                String output = this.client.exec("ls -l /etc/localtime");
+                String[] lines = output.split("->");
+                if (lines.length == 2) {
+                    return lines[1].replace("/var/db/timezone/zoneinfo/", "");
+                }
+                return "N/A";
+            } else if (this.client.isUnix()) {
                 return this.client.exec("cat /var/db/zoneinfo 2>/dev/null");
             }
         } catch (Exception ex) {
@@ -726,6 +735,21 @@ public class ShellServerExec implements AutoCloseable {
             ex.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 获取终端类型
+     *
+     * @return 终端类型
+     */
+    public String getShellType() {
+        String shellType;
+        if (this.client.isUnix() || this.client.isLinux() || this.client.isMacos()) {
+            shellType = this.client.exec("echo $SHELL");
+        } else {
+            shellType = this.client.exec("echo %ComSpec%");
+        }
+        return shellType;
     }
 
     @Override
