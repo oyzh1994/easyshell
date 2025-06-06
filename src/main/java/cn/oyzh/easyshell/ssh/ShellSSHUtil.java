@@ -42,8 +42,20 @@ public class ShellSSHUtil {
         }
         // 目录
         String dir = null;
-        // linux、unix
-        if (StringUtil.endWithAny(line, "# ", "@ ")) {
+        // linux特殊
+        if (StringUtil.endsWith(line, "]# ")) {
+            line = line.substring(0, line.length() - 3);
+            line = line.substring(line.lastIndexOf("["));
+            line = line.substring(line.lastIndexOf("@"));
+            dir = line.substring(line.lastIndexOf(" ") + 1);
+            if (!dir.startsWith("/")) {
+                dir = "/" + dir;
+            }
+        } else if (StringUtil.endsWith(line, " # ")) {// unix
+            line = line.substring(0, line.length() - 3);
+            line = line.substring(line.lastIndexOf("@"));
+            dir = line.substring(line.lastIndexOf(":") + 1);
+        } else if (StringUtil.endsWithAny(line, "# ", "@ ")) {// linux
             line = line.substring(0, line.length() - 2);
             line = line.substring(line.lastIndexOf("@"));
             dir = line.substring(line.lastIndexOf(":") + 1);
@@ -64,7 +76,7 @@ public class ShellSSHUtil {
                 dir = homeDir;
             } else if (StringUtil.startWith(dir, "~")) {// home目录开头
                 dir = ShellFileUtil.concat(homeDir, dir.substring(1));
-            } else if (!StringUtil.startWith(dir, "/")) {// macos，home目录可能会被省略
+            } else if (!StringUtil.startWith(dir, "/")) {// home目录可能会被省略
                 dir = ShellFileUtil.concat(homeDir, dir);
             }
         }

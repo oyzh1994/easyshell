@@ -662,17 +662,20 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 return this.client.exec("tzutil /g");
             } else if (this.client.isLinux()) {
-                return this.client.exec("cat /etc/timezone");
-            } else if (this.client.isMacos()) {
-                String output = this.client.exec("ls -l /etc/localtime");
-                String[] lines = output.split("->");
-                if (lines.length == 2) {
-                    return lines[1].replace("/var/db/timezone/zoneinfo/", "");
+                String output = this.client.exec("cat /etc/timezone");
+                if (StringUtil.isNotBlank(output)) {
+                    return output;
                 }
-                return "N/A";
             } else if (this.client.isUnix()) {
                 return this.client.exec("cat /var/db/zoneinfo 2>/dev/null");
             }
+            String output = this.client.exec("ls -l /etc/localtime");
+            String[] lines = output.split("->");
+            if (lines.length == 2) {
+                String time = lines[1].trim().split("zoneinfo")[1];
+                return time.substring(1);
+            }
+            return "N/A";
         } catch (Exception ex) {
             ex.printStackTrace();
         }
