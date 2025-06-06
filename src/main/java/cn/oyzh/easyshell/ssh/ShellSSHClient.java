@@ -350,6 +350,7 @@ public class ShellSSHClient extends ShellClient {
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
+            // this.session.setPassword(this.shellConnect.getPassword());
             this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
@@ -377,7 +378,7 @@ public class ShellSSHClient extends ShellClient {
 //        // 配置参数
 //        Properties config = new Properties();
 //        // 去掉首次连接确认
-//        config.put("StrictHostKeyChecking", "no");
+       this.session.setConfig("StrictHostKeyChecking", "no");
 //        // 设置配置
 //        this.session.setConfig(config);
         // 初始化x11
