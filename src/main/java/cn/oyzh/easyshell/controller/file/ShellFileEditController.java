@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
@@ -127,6 +128,12 @@ public class ShellFileEditController extends StageController {
                     this.format.select(RichDataType.XML);
                 } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
                     this.format.select(RichDataType.YAML);
+                // } else if (FileNameUtil.isJavaType(extName) ) {
+                //     this.format.select(RichDataType.JAVA);
+                // } else if (FileNameUtil.isPythonType(extName) ) {
+                //     this.format.select(RichDataType.PYTHON);
+                // } else if (FileNameUtil.isJsType(extName) ) {
+                //     this.format.select(RichDataType.JAVASCRIPT);
                 } else {
                     this.format.select(RichDataType.RAW);
                 }
@@ -143,11 +150,11 @@ public class ShellFileEditController extends StageController {
      * @return 数据
      */
     private String getData() {
-        byte[] content = FileUtil.readBytes(this.destPath);
-        if (content != null) {
-            return new String(content);
+        if (this.data.isEmpty()) {
+            byte[] content = FileUtil.readBytes(this.destPath);
+            return content == null ? "" : new String(content);
         }
-        return "";
+        return this.data.getText();
     }
 
     @Override
@@ -189,6 +196,12 @@ public class ShellFileEditController extends StageController {
                 this.data.showYamlData(this.getData());
             } else if (this.format.isStringFormat()) {
                 this.data.showStringData(this.getData());
+            // } else if (this.format.isJavaFormat()) {
+            //     this.data.showJavaData(this.getData());
+            // } else if (this.format.isPythonFormat()) {
+            //     this.data.showPythonData(this.getData());
+            // } else if (this.format.isJavaScriptFormat()) {
+            //     this.data.showJavaScriptData(this.getData());
             } else {
                 this.data.showRawData(this.getData());
             }
@@ -267,5 +280,15 @@ public class ShellFileEditController extends StageController {
         if (KeyboardUtil.isCtrlS(event)) {
             this.save();
         }
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.format.removeItem(RichDataType.HEX);
+        this.format.removeItem(RichDataType.BINARY);
+        // this.format.addItem(RichDataType.JAVA);
+        // this.format.addItem(RichDataType.PYTHON);
+        // this.format.addItem(RichDataType.JAVASCRIPT);
     }
 }
