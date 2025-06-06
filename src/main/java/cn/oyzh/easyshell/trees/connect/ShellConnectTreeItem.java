@@ -34,18 +34,6 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value;
     }
 
-//    /**
-//     * shell客户端
-//     */
-//    @Getter
-//    @Accessors(chain = true, fluent = true)
-//    private ShellSSHClient client;
-//
-//    /**
-//     * 已取消操作标志位
-//     */
-//    private boolean canceled;
-
     /**
      * shell连接存储
      */

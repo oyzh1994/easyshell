@@ -78,9 +78,9 @@ public class ShellFileCollectStore extends JdbcStandardStore<ShellFileCollect> {
         SelectParam selectParam = new SelectParam();
         selectParam.addQueryColumn("id");
         selectParam.setLimit(1L);
-        selectParam.setOffset((long) Max_Size);
+        selectParam.setOffset((long) Max_Size - 1);
         selectParam.addQueryParam(new QueryParam("iid", model.getIid()));
-        selectParam.addOrderByParam(new OrderByParam("saveTime", "desc"));
+        selectParam.addOrderByParam(new OrderByParam("saveTime", "asc"));
         ShellFileCollect data = super.selectOne(selectParam);
         // 删除超出限制的数据
         if (data != null) {

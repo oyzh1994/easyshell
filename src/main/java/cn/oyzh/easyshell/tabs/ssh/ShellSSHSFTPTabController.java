@@ -52,54 +52,6 @@ public class ShellSSHSFTPTabController extends SubTabController {
     @FXML
     private SVGLabel manage;
 
-//    /**
-//     * 上传组件
-//     */
-//    @FXML
-//    private FXHBox uploadBox;
-//
-//    /**
-//     * 上传标签
-//     */
-//    @FXML
-//    private FXLabel fileUpload;
-//
-//    /**
-//     * 上传进度
-//     */
-//    @FXML
-//    private FXProgressTextBar uploadProgress;
-//
-//    /**
-//     * 下载组件
-//     */
-//    @FXML
-//    private FXHBox downloadBox;
-//
-//    /**
-//     * 下载标签
-//     */
-//    @FXML
-//    private FXLabel fileDownload;
-//
-//    /**
-//     * 下载进度
-//     */
-//    @FXML
-//    private FXProgressTextBar downloadProgress;
-
-//    /**
-//     * 文件管理组件
-//     */
-//    @FXML
-//    private SVGGlyph sftpBox;
-
-//    /**
-//     * 隐藏文件
-//     */
-//    @FXML
-//    private FXToggleSwitch hiddenFile;
-
     /**
      * 刷新文件
      */

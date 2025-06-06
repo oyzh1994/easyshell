@@ -287,6 +287,14 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.hideFileBox();
             }
         });
+        // 文件过滤
+        this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+            try {
+                this.fileTable.setFilterText(t1);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
         // 绑定提示快捷键
         this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
         this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
