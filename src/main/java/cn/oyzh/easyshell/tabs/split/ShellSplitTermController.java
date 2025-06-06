@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -63,7 +62,7 @@ public class ShellSplitTermController extends SubTabController {
         connector.initShell(this.client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
+        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**

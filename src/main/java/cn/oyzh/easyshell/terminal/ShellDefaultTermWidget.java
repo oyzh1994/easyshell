@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXJediTermWidget;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.pty4j.PtyProcess;
@@ -33,14 +34,17 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     /**
      * 设置
      */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    protected final ShellSetting setting = ShellSettingStore.SETTING;
 
     public ShellDefaultTermWidget() {
-        super(new ShellSettingsProvider());
+        this(new ShellSettingsProvider());
     }
 
     public ShellDefaultTermWidget(SettingsProvider provider) {
         super(provider);
+        if (this.setting.isTermParseHyperlink()) {
+            this.addHyperlinkFilter(new FXHyperlinkFilter());
+        }
     }
 
     protected String[] getProcessCommand() {

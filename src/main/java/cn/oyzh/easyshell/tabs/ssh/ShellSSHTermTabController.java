@@ -21,7 +21,6 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -79,7 +78,7 @@ public class ShellSSHTermTabController extends SubTabController {
         connector.initShell(client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
+        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**

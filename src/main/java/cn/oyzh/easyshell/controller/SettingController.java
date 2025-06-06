@@ -286,6 +286,12 @@ public class SettingController extends StageController {
     private FXToggleSwitch termUseAntialiasing;
 
     /**
+     * 解析超链接-终端
+     */
+    @FXML
+    private FXToggleSwitch termParseHyperlink;
+
+    /**
      * 配置对象
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -350,6 +356,7 @@ public class SettingController extends StageController {
         this.termFps.selectFps(this.setting.getTermRefreshRate());
         this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
         this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
+        this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
         this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
         // 效率模式
@@ -384,6 +391,7 @@ public class SettingController extends StageController {
             this.setting.setTermType(this.termType.getSelectedItem());
             this.setting.setTermMaxLineCount(this.termMaxLineCount.getIntValue());
             this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());
+            this.setting.setTermParseHyperlink(this.termParseHyperlink.isSelected());
             this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());
             this.setting.setTermUseAntialiasing(this.termUseAntialiasing.isSelected());
             // 字体相关

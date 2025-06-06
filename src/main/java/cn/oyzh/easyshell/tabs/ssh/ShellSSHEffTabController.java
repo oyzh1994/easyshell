@@ -36,7 +36,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -178,7 +177,7 @@ public class ShellSSHEffTabController extends SubTabController {
         connector.initShell(this.client());
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
+        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**

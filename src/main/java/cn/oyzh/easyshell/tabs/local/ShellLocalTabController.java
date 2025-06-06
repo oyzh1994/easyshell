@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -47,7 +46,7 @@ public class ShellLocalTabController extends RichTabController {
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
+        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
         // macos需要初始化部分参数
         if (OSUtil.isMacOS()) {
             if (this.shellConnect.getTermType() != null) {

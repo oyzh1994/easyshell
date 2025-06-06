@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -31,7 +30,7 @@ public class ShellTerminalTabController extends RichTabController {
         ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) this.widget.createTtyConnector();
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
+        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
         // macos需要初始化终端类型
         if (OSUtil.isMacOS()) {
             connector.write("export LANG=en_US.utf-8\n");

@@ -83,6 +83,12 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean termUseAntialiasing;
 
+    /**
+     * 解析超链接-终端
+     */
+    @Column
+    private Boolean termParseHyperlink;
+
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
@@ -236,5 +242,13 @@ public class ShellSetting extends AppSetting {
 
     public void setEfficiencyMode(Boolean efficiencyMode) {
         this.efficiencyMode = efficiencyMode;
+    }
+
+    public boolean isTermParseHyperlink() {
+        return termParseHyperlink == null ? Boolean.TRUE : termParseHyperlink;
+    }
+
+    public void setTermParseHyperlink(Boolean termParseHyperlink) {
+        this.termParseHyperlink = termParseHyperlink;
     }
 }

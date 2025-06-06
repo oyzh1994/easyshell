@@ -31,7 +31,7 @@
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="700" realHeight="480">
+                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="480">
     <left>
         <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
         </SettingLeftTreeView>
@@ -201,7 +201,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </NumberTextField>
-
                 <InfoLabel text="%base.cursorBlinks">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -235,12 +234,17 @@
                     </FXToggleSwitch>
                     <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected">
                         <FXHBox.margin>
-                            <Insets left="10" top="5"/>
+                            <Insets left="5" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
                     <FXToggleSwitch tipText="%base.useAntialiasing" selected="true" fx:id="termUseAntialiasing">
                         <FXHBox.margin>
-                            <Insets left="10" top="5"/>
+                            <Insets left="5" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                    <FXToggleSwitch tipText="%base.parseHyperlink" selected="true" fx:id="termParseHyperlink">
+                        <FXHBox.margin>
+                            <Insets left="5" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
                 </FXHBox>
