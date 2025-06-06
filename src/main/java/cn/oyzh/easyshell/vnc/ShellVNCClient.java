@@ -68,19 +68,19 @@ public class ShellVNCClient implements BaseClient {
      * 初始化客户端
      */
     protected void initClient() {
-        // 获取指定名称的串口
+        // 创建连接
         this.connection = new VncConnection();
         // 设置渲染组件
         this.connection.setRenderProtocol(Objects.requireNonNullElse(this.renderProtocol, NO_OP));
         // 错误处理
-        this.connection.addFaultListener(ex -> {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        });
+        this.connection.addFaultListener(ex -> MessageBox.exception(ex));
+        // 配置
         ProtocolConfiguration config = this.connection.getConfiguration();
         // 基础属性
         config.sharedProperty().set(true);
         config.rawEncProperty().set(true);
+        config.zlibEncProperty().set(true);
+        config.hextileEncProperty().set(true);
         config.copyRectEncProperty().set(true);
         config.desktopSizeProperty().set(true);
         config.clientCursorProperty().set(true);

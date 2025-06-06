@@ -5,19 +5,18 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.node.NodeLifeCycle;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * ssh-组件tab
+ * shell-终端分屏组件tab
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025/05/29
  */
-public class ShellSplitTab extends ShellConnectTab implements NodeLifeCycle {
+public class ShellSplitTab extends ShellConnectTab {
 
     /**
      * 分屏索引

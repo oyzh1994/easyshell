@@ -73,6 +73,9 @@ public class KeyButtonEventHandler implements KeyButtonMap {
 
         if (event.getEventType() == KeyEvent.KEY_TYPED) {
             if (!isModifierPressed(event) && event.getCode() == KeyCode.UNDEFINED) {
+                if (event.getCharacter() == null || event.getCharacter().isEmpty()) {
+                    return;
+                }
                 int codePoint = event.getCharacter().codePointAt(0);
                 // space was triggered twice
                 if (!Character.isWhitespace(codePoint) && !Character.isISOControl(codePoint)) {

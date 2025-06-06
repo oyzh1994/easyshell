@@ -86,7 +86,6 @@ public class ShellVNCTabController extends RichTabController {
                 if (this.setting.isHiddenLeftAfterConnected()) {
                     ShellEventUtil.layout1();
                 }
-
                 // 初始化缩放
                 this.initScale();
             } catch (Exception ex) {
@@ -120,6 +119,12 @@ public class ShellVNCTabController extends RichTabController {
         }
     }
 
+    @Override
+    public void onTabCloseRequest(Event event) {
+        super.onTabCloseRequest(event);
+        this.vncView.unregisterInputEventListener();
+    }
+
     /**
      * 初始化缩放
      */
@@ -134,7 +139,7 @@ public class ShellVNCTabController extends RichTabController {
                 double scale2 = height / frameHeight;
                 this.renderService.setZoomLevel(Math.min(scale1, scale2));
             }
-        }, 100);
+        }, 200);
     }
 
     @Override

@@ -267,9 +267,7 @@ public class ShellSSHEffTabController extends SubTabController {
         });
         // 跟随终端目录
         this.followTerminalDir.selectedChanged((observable, oldValue, newValue) -> {
-            if (this.showFile.isSelected()) {
-                this.client().setResolveWorkerDir(newValue);
-            }
+            this.client().setResolveWorkerDir(newValue);
         });
         // 服务监控
         this.serverMonitor.selectedChanged((observable, oldValue, newValue) -> {
@@ -282,8 +280,10 @@ public class ShellSSHEffTabController extends SubTabController {
         // 文件列表
         this.showFile.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
+                this.client().setResolveWorkerDir(this.followTerminalDir.isSelected());
                 this.initFileBox();
             } else {
+                this.client().setResolveWorkerDir(false);
                 this.hideFileBox();
             }
         });

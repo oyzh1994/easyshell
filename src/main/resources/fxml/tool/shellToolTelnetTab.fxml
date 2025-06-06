@@ -20,7 +20,7 @@
                 <Insets left="30" top="20"/>
             </VBox.margin>
         </InfoLabel>
-        <FXHBox>
+        <FXHBox flexWidth="100%">
             <ClearableTextField fx:id="telnetHost" flexWidth="100% - 265" realHeight="30"
                                 tipText="%base.contentTip1" require="true">
                 <FXHBox.margin>

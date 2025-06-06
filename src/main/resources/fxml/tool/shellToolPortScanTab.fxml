@@ -32,7 +32,7 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <FXHBox>
+        <FXHBox flexWidth="100%">
             <PortTextField realHeight="30" flexWidth="50% - 95" fx:id="portScanStartPort" value="1"
                            require="true">
                 <HBox.margin>
