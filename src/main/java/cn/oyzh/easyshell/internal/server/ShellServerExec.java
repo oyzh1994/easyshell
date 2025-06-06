@@ -162,6 +162,11 @@ public class ShellServerExec implements AutoCloseable {
         return monitor;
     }
 
+    /**
+     * 获取cpu使用率
+     *
+     * @return cpu使用率
+     */
     public double cpuUsage() {
         try {
             if (this.client.isMacos()) {
