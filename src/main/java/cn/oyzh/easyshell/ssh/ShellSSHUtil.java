@@ -55,7 +55,7 @@ public class ShellSSHUtil {
             line = line.substring(0, line.length() - 3);
             line = line.substring(line.lastIndexOf("@"));
             dir = line.substring(line.lastIndexOf(":") + 1);
-        } else if (StringUtil.endsWithAny(line, "# ", "@ ")) {// linux
+        } else if (StringUtil.endsWithAny(line, "# ", "$ ")) {// linux
             line = line.substring(0, line.length() - 2);
             line = line.substring(line.lastIndexOf("@"));
             dir = line.substring(line.lastIndexOf(":") + 1);
