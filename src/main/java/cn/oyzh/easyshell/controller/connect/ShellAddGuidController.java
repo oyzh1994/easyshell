@@ -71,6 +71,7 @@ public class ShellAddGuidController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
+        this.stage.hideOnEscape();
     }
 
     @Override

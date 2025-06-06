@@ -9,6 +9,7 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
 
 /**
  * 终端分屏引导业务
@@ -41,6 +42,12 @@ public class ShellSplitGuidController extends StageController {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        this.stage.hideOnEscape();
     }
 
     @Override

@@ -14,11 +14,11 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.util.List;
@@ -89,6 +89,12 @@ public class ShellExportConnectController extends StageController {
         } catch (Exception ex) {
             MessageBox.exception(ex, I18nHelper.exportConnectionFail());
         }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        this.stage.hideOnEscape();
     }
 
     @Override

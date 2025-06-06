@@ -244,14 +244,14 @@
             </FXHBox>
             <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable" prefHeight="240">
                 <columns>
-                    <FXTableColumn prefWidth="90" valueName="clientName" text="%base.connectionName"/>
-                    <FXTableColumn prefWidth="200" valueName="srcPath" text="%base.src"/>
-                    <FXTableColumn prefWidth="200" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
+                    <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
                     <FXTableColumn flexWidth="100% - 1125" valueName="currentFile" text="%base.currentFile"/>
-                    <FXTableColumn prefWidth="150" valueName="progress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
                     <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                     <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                    <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
                     <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileTransportTaskTableView>

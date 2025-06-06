@@ -16,13 +16,13 @@
         </graphic>
         <ShellFileUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
             <columns>
-                <FXTableColumn prefWidth="240" valueName="srcPath" text="%base.src"/>
-                <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>
-                <FXTableColumn flexWidth="100% - 1025" valueName="currentFile" text="%base.currentFile"/>
+                <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
+                <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
+                <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
                 <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
                 <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                 <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
                 <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
             </columns>
         </ShellFileUploadTaskTableView>
@@ -33,13 +33,13 @@
         </graphic>
         <ShellFileDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
             <columns>
-                <FXTableColumn prefWidth="240" valueName="srcPath" text="%base.src"/>
-                <FXTableColumn prefWidth="240" valueName="destPath" text="%base.destPath"/>
-                <FXTableColumn flexWidth="100% - 1025" valueName="currentFile" text="%base.currentFile"/>
+                <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
+                <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
+                <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
                 <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
                 <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                 <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
                 <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
             </columns>
         </ShellFileDownloadTaskTableView>

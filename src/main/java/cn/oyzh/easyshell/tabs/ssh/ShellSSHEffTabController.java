@@ -48,10 +48,10 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * ssh-终端tab内容组件
+ * shell-效率模式tab内容组件
  *
  * @author oyzh
- * @since 2025/03/11
+ * @since 2025/05/23
  */
 public class ShellSSHEffTabController extends SubTabController {
 

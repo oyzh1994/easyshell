@@ -32,7 +32,7 @@
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
     <FXPane flexWidth="100%" flexHeight="100%">
-        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
+        <FXVBox prefWidth="320" flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
             <FXHBox prefHeight="30" flexWidth="100%">
                 <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                     <FXHBox.margin>
@@ -119,7 +119,7 @@
                 </FXVBox.margin>
             </FXToggleSwitch>
         </FXVBox>
-        <FXVBox flexWidth="100% - 300" flexHeight="100%" layoutX="300" fx:id="rightBox">
+        <FXVBox flexWidth="100% - 320" flexHeight="100%" layoutX="320" fx:id="rightBox">
             <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
             </ShellSSHTermWidget>
             <FXHBox flexWidth="100%" realHeight="30">

@@ -16,7 +16,7 @@
 <FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
-    <ImageView fitWidth="190" fitHeight="190" layoutX="50" layoutY="100">
+    <ImageView fitWidth="240" fitHeight="240" layoutX="40" layoutY="90">
         <Image url="/image/shell_no_bg.png"/>
     </ImageView>
     <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="260" layoutY="100">
