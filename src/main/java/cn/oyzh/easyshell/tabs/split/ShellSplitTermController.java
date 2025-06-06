@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.split;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.connect.ShellSSHConnectComboBox;
+import cn.oyzh.easyshell.fx.connect.ShellSSHConnectTextField;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
@@ -46,7 +46,7 @@ public class ShellSplitTermController extends SubTabController {
      * ssh连接组件
      */
     @FXML
-    private ShellSSHConnectComboBox connectionBox;
+    private ShellSSHConnectTextField connectionBox;
 
     /**
      * 初始化组件

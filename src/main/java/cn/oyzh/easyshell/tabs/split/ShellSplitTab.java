@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.split;
 
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
+import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;

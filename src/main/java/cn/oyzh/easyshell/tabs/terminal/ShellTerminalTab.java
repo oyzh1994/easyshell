@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
-import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
+import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;

@@ -4,7 +4,6 @@ import cn.oyzh.easyshell.domain.ShellFileCollect;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
-import javafx.scene.control.Skin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,15 +64,15 @@ public class ShellFileLocationTextField extends FXTextField {
         ShellFileLocationTextFieldSkin skin = (ShellFileLocationTextFieldSkin) this.getSkin();
         if (skin == null) {
             this.setSkin(this.createDefaultSkin());
-            skin = (ShellFileLocationTextFieldSkin) this.getSkin();
-            skin.setItemListSupplier(this::itemList);
         }
         return skin;
     }
 
     @Override
-    protected Skin<?> createDefaultSkin() {
-        return new ShellFileLocationTextFieldSkin(this);
+    protected ShellFileLocationTextFieldSkin createDefaultSkin() {
+        ShellFileLocationTextFieldSkin skin = new ShellFileLocationTextFieldSkin(this);
+        skin.setItemListSupplier(this::itemList);
+        return skin;
     }
 
     public void setOnJumpLocation(Consumer<String> onJumpLocation) {
@@ -107,5 +106,4 @@ public class ShellFileLocationTextField extends FXTextField {
         }
         return newList;
     }
-
 }

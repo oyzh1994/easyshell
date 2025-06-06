@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.connect;
+package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.fx.gui.tabs.RichTab;
 import javafx.scene.input.KeyCode;

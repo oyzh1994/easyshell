@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.rlogin;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.fx.connect.ShellConnectTab;
+import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
