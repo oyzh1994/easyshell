@@ -6,6 +6,9 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeLifeCycle;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Cursor;
 
 /**
@@ -14,7 +17,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellFTPTab extends ShellConnectTab {
+public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 
     public ShellFTPTab(ShellConnectTreeItem item) {
         this.init(item);
@@ -79,4 +82,14 @@ public class ShellFTPTab extends ShellConnectTab {
     public ShellFTPClient client() {
         return this.controller().client();
     }
+
+     @Override
+     public void onNodeInitialize() {
+         NodeLifeCycle.super.onNodeInitialize();
+         // 更新一下内容
+         StageAdapter adapter = StageManager.getAdapter(this.window());
+         if (adapter != null) {
+             adapter.updateContentLater();
+         }
+     }
 }

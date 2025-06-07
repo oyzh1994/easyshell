@@ -427,6 +427,7 @@ public class ShellSSHClient extends ShellClient {
                 this.sftpClient.close();
             }
             this.removeStateListener(this.stateListener);
+//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -26,7 +26,7 @@ public class ShellRLoginClient implements BaseClient {
     /**
      * 连接
      */
-    private final ShellConnect shellConnect;
+    private ShellConnect shellConnect;
 
     /**
      * 连接状态
@@ -89,6 +89,7 @@ public class ShellRLoginClient implements BaseClient {
             }
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

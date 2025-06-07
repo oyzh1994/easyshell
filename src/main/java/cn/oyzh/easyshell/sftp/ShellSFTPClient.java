@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -41,9 +42,14 @@ import java.util.function.Function;
 public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
 
     /**
+     * 通道管理器
+     */
+    private ShellSFTPChannelManager channelManager;
+
+    /**
      * 链接管理器
      */
-    private final ShellSFTPRealpathManager realpathManager;
+    private ShellSFTPRealpathManager realpathManager;
 
     /**
      * 延迟处理的文件通道
@@ -73,6 +79,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         this.shellConnect = shellConnect;
         this.session = session;
         super.addStateListener(this.stateListener);
+        this.channelManager = new ShellSFTPChannelManager(this);
         this.realpathManager = new ShellSFTPRealpathManager(this);
     }
 
@@ -89,14 +96,8 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         // 创建会话
         this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
-//        // 设置密码
-//        this.session.setPassword(this.shellConnect.getPassword());
-//        // 配置参数
-//        Properties config = new Properties();
-//        // 去掉首次连接确认
-//        config.put("StrictHostKeyChecking", "no");
-//        // 设置配置
-//        this.session.setConfig(config);
+        // 去掉首次连接确认
+        this.session.setConfig("StrictHostKeyChecking", "no");
     }
 
     @Override
@@ -112,8 +113,20 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
                 this.attr.clear();
                 this.attr = null;
             }
+            // 通道管理
+            if (this.channelManager != null) {
+                IOUtil.close(this.channelManager);
+                this.channelManager = null;
+            }
+            // 链接路径
+            if (this.realpathManager != null) {
+                IOUtil.close(this.realpathManager);
+                this.realpathManager = null;
+            }
+            this.delayChannels.clear();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -168,6 +181,8 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
                 this.session.connect(this.connectTimeout());
             }
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
+            // 设置字符集
+            channel.setFilenameEncoding(this.getCharset());
             ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathManager);
             sftpChannel.connect(this.connectTimeout());
             return sftpChannel;
@@ -175,6 +190,35 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取通道
+     *
+     * @return 通道
+     */
+    protected ShellSFTPChannel takeChannel() {
+        return this.channelManager.borrowChannel();
+    }
+
+    /**
+     * 返回通道
+     *
+     * @param channel 通道
+     */
+    protected void returnChannel(ShellSFTPChannel channel) {
+        this.channelManager.returnChannel(channel);
+    }
+
+    /**
+     * 关闭通道
+     *
+     * @param channel 通道
+     */
+    protected void closeChannel(ShellSFTPChannel channel) {
+        if (channel != null&& channel.isConnected()) {
+            channel.close();
+        }
     }
 
     public String exec_id_un(int uid) {
@@ -196,21 +240,41 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public void delete(String file) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.rm(file);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.rm(file);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.rmdir(dir);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.rmdir(dir);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             Vector<ChannelSftp.LsEntry> entries = channel.ls(dir);
             for (ChannelSftp.LsEntry entry : entries) {
                 String filename = entry.getFilename();
@@ -224,13 +288,27 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
                 }
             }
             this.deleteDir(dir);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.mkdir(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.mkdir(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
         return true;
     }
@@ -263,41 +341,95 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public String workDir() throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            return channel.pwd();
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             return channel.pwd();
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void cd(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.cd(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.cd(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     public SftpATTRS stat(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            return channel.stat(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             return channel.stat(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            return channel.exist(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             return channel.exist(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     public String realpath(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            return channel.realpath(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             return channel.realpath(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void touch(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.touch(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.touch(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
@@ -331,8 +463,17 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public boolean chmod(int permission, String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.chmod(permission, filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.chmod(permission, filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
         return true;
     }
@@ -358,15 +499,33 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
 
     @Override
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            return channel.lsFileNormal(filePath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             return channel.lsFileNormal(filePath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
-        try (ShellSFTPChannel channel = this.newChannel()) {
+//        try (ShellSFTPChannel channel = this.newChannel()) {
+//            channel.rename(filePath, newPath);
+//        }
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
             channel.rename(filePath, newPath);
+        } catch (Exception ex) {
+            this.closeChannel(channel);
+            throw ex;
+        } finally {
+            this.returnChannel(channel);
         }
         return true;
     }

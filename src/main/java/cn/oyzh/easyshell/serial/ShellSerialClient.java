@@ -25,7 +25,10 @@ public class ShellSerialClient implements BaseClient {
      */
     private SerialPort serialPort;
 
-    private final ShellConnect shellConnect;
+    /**
+     * 连接
+     */
+    private ShellConnect shellConnect;
 
     /**
      * 连接状态
@@ -124,6 +127,7 @@ public class ShellSerialClient implements BaseClient {
             }
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

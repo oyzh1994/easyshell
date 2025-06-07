@@ -43,15 +43,18 @@ public class ShellSFTPUtil {
      * @param file   文件
      * @param client 客户端
      * @throws SftpException 异常
+     *  @return 链接路径
      */
-    public static void realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
+    public static String realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
         // 读取链接文件
         if (file != null && file.isLink()&& file.isNormal()) {
             try {
                 String linkPath = client.realpath(file.getFilePath());
                 if (linkPath != null) {
+//                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(client.stat(linkPath));
                 }
+                return linkPath;
             } catch (SftpException e) {
                 if (ExceptionUtil.hasMessage(e, "No such file")) {
                     JulLog.warn("realpath:{} fail", file.getFilePath());
@@ -60,6 +63,7 @@ public class ShellSFTPUtil {
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -68,15 +72,18 @@ public class ShellSFTPUtil {
      * @param file    文件
      * @param channel sftp通道
      * @throws SftpException 异常
+     * @return 链接路径
      */
-    public static void realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
+    public static String realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
         // 读取链接文件
         if (file != null && file.isLink() && file.isNormal()) {
             try {
                 String linkPath = channel.realpath(file.getFilePath());
                 if (linkPath != null) {
+//                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(channel.stat(linkPath));
                 }
+                return linkPath;
             } catch (SftpException ex) {
                 if (ExceptionUtil.hasMessage(ex, "No such file")) {
                     JulLog.warn("realpath:{} fail", file.getFilePath());
@@ -85,5 +92,6 @@ public class ShellSFTPUtil {
                 }
             }
         }
+        return null;
     }
 }

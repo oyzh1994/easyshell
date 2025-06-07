@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -84,9 +85,9 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 this.ftpClient.disconnect();
                 this.ftpClient = null;
             }
-            this.shellConnect = null;
             this.state.set(ShellConnState.CLOSED);
-            this.state.removeListener(this.stateListener);
+            this.removeStateListener(this.stateListener);
+//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -396,13 +397,25 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     @Override
     public boolean exist(String filePath) throws Exception {
         try {
+            // 获取文件大小
             long size = this.ftpClient.size(filePath);
+            if (size != 550 && size >= 0) {
+                return true;
+            }
             // 如果是550，则要继续判断
             if (size == 550) {
+                // 获取文件本身
                 FTPFile file = this.ftpClient.mlistFile(filePath);
-                return file != null;
+                if (file != null) {
+                    return true;
+                }
             }
-            return true;
+            // 列举文件，可能是文件夹
+            FTPFile[] files = this.ftpClient.listFiles(filePath);
+            if (ArrayUtil.isNotEmpty(files)) {
+                return true;
+            }
+            return false;
         } catch (IndexOutOfBoundsException ignored) {
             return false;
         }

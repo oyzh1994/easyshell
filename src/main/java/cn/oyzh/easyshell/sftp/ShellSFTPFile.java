@@ -47,10 +47,10 @@ public class ShellSFTPFile implements ShellFile {
      */
     private String parentPath;
 
-    /**
-     * 链接路径
-     */
-    private String linkPath;
+//    /**
+//     * 链接路径
+//     */
+//    private String linkPath;
 
     /**
      * 链接属性
@@ -170,9 +170,9 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public String getFilePath() {
-        if (this.linkPath != null) {
-            return this.linkPath;
-        }
+//        if (this.linkPath != null) {
+//            return this.linkPath;
+//        }
         String fileName = this.getFileName();
         if (fileName.startsWith("/")) {
             return fileName;
@@ -225,6 +225,15 @@ public class ShellSFTPFile implements ShellFile {
         return DateHelper.formatDateTime(new Date(mtime * 1000L));
     }
 
+    /**
+     * 获取修改时间戳
+     *
+     * @return 结果
+     */
+    public int getMTime() {
+        return this.getAttrs().getMTime();
+    }
+
     @Override
     public void setModifyTime(String modifyTime) {
         Date date = DateHelper.parseDateTime(modifyTime);
@@ -273,7 +282,7 @@ public class ShellSFTPFile implements ShellFile {
                 this.group = file.group;
             }
             this.fileName = file.fileName;
-            this.linkPath = file.linkPath;
+//            this.linkPath = file.linkPath;
             this.linkAttrs = file.linkAttrs;
             this.parentPath = file.parentPath;
             this.updatePermissions();
@@ -290,4 +299,22 @@ public class ShellSFTPFile implements ShellFile {
         }
         return this.getAttrs().isDir();
     }
+
+//    /**
+//     * 设置链接文件
+//     *
+//     * @param linkPath 链接文件
+//     */
+//    public void setLinkPath(String linkPath) {
+//        this.linkPath = linkPath;
+//    }
+//
+//    /**
+//     * 获取链接路径
+//     *
+//     * @return 链接路径
+//     */
+//    public String getLinkPath() {
+//        return linkPath;
+//    }
 }
