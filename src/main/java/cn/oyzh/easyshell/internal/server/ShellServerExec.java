@@ -584,7 +584,8 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 src = ShellFileUtil.fixWindowsFilePath(src);
                 dst = ShellFileUtil.fixWindowsFilePath(dst);
-                return this.client.exec("move /Y \"" + src + "\" " + dst + "\"");
+                this.client.exec("move /Y \"" + src + "\" " + dst + "\"");
+                return null;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -609,7 +610,8 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 src = ShellFileUtil.fixWindowsFilePath(src);
                 dst = ShellFileUtil.fixWindowsFilePath(dst);
-                return this.client.exec("copy /Y \"" + src + "\" \"" + dst + "\"");
+                this.client.exec("copy /Y \"" + src + "\" \"" + dst + "\"");
+                return null;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
