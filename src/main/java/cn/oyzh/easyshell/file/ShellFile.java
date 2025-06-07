@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileCSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCmdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCompressSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileConfSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileCsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCssSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDllSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDmgSVGGlyph;
@@ -28,6 +29,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileExeSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileGifSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileGzSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileHtmlSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileIcnsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIcoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileImageSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIniSVGGlyph;
@@ -38,7 +40,10 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileJpgSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJsonSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJspSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileKmkSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileKtSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileLinkSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileLuaSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMarkdownSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMkvSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMovSVGGlyph;
@@ -60,6 +65,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileShSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSqlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSrtSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSvgSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileSwfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileTarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileTerminalSVGGlyph;
@@ -403,6 +409,18 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new FileCompressSVGGlyph("12");
             } else if (FileNameUtil.isTerminalType(extName)) {
                 glyph = new FileTerminalSVGGlyph("12");
+            } else if (FileNameUtil.isLuaType(extName)) {
+                glyph = new FileLuaSVGGlyph("12");
+            } else if (FileNameUtil.isKtType(extName)) {
+                glyph = new FileKtSVGGlyph("12");
+            } else if (FileNameUtil.isKmkType(extName)) {
+                glyph = new FileKmkSVGGlyph("12");
+            } else if (FileNameUtil.isIcnsType(extName)) {
+                glyph = new FileIcnsSVGGlyph("12");
+            } else if (FileNameUtil.isCsType(extName)) {
+                glyph = new FileCsSVGGlyph("12");
+            } else if (FileNameUtil.isSvgType(extName)) {
+                glyph = new FileSvgSVGGlyph("12");
             } else {
                 glyph = new FileSVGGlyph("12");
             }
