@@ -15,23 +15,34 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileBinSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBmpSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileBz2SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileCerSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileCfgSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileChmSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileClassSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCmdSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileComSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCompressSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileConfSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileCppSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileCssSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileDbSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDllSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDmgSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDotSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileDsstoreSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileDylibSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileEpubSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileExcelSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileExeSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileGifSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileGradleSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileGzSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileHtmlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIcnsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIcoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileImageSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileInfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIniSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileIsoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileJarSVGGlyph;
@@ -49,11 +60,13 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.FileMkvSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMovSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMp3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileMp4SVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileOcxSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePdfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePlistSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePptSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePsdSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FilePySVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FilePycSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRmSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FileRmvbSVGGlyph;
@@ -421,6 +434,34 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new FileCsSVGGlyph("12");
             } else if (FileNameUtil.isSvgType(extName)) {
                 glyph = new FileSvgSVGGlyph("12");
+            } else if (FileNameUtil.isCerType(extName)) {
+                glyph = new FileCerSVGGlyph("12");
+            } else if (FileNameUtil.isCfgType(extName)) {
+                glyph = new FileCfgSVGGlyph("12");
+            } else if (FileNameUtil.isChmType(extName)) {
+                glyph = new FileChmSVGGlyph("12");
+            } else if (FileNameUtil.isClassType(extName)) {
+                glyph = new FileClassSVGGlyph("12");
+            } else if (FileNameUtil.isComType(extName)) {
+                glyph = new FileComSVGGlyph("12");
+            } else if (FileNameUtil.isConfigType(extName)) {
+                glyph = new FileConfSVGGlyph("12");
+            } else if (FileNameUtil.isCppType(extName)) {
+                glyph = new FileCppSVGGlyph("12");
+            } else if (FileNameUtil.isDbType(extName)) {
+                glyph = new FileDbSVGGlyph("12");
+            } else if (FileNameUtil.isEpubType(extName)) {
+                glyph = new FileEpubSVGGlyph("12");
+            } else if (FileNameUtil.isGradleType(extName)) {
+                glyph = new FileGradleSVGGlyph("12");
+            } else if (FileNameUtil.isInfType(extName)) {
+                glyph = new FileInfSVGGlyph("12");
+            } else if (FileNameUtil.isOcxType(extName)) {
+                glyph = new FileOcxSVGGlyph("12");
+            } else if (FileNameUtil.isPycType(extName)) {
+                glyph = new FilePycSVGGlyph("12");
+            } else if (FileNameUtil.isDsstoreType(extName)) {
+                glyph = new FileDsstoreSVGGlyph("12");
             } else {
                 glyph = new FileSVGGlyph("12");
             }
