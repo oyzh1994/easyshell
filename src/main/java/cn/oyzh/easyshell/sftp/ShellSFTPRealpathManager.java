@@ -90,15 +90,21 @@ public class ShellSFTPRealpathManager implements AutoCloseable {
                             if (attrs == null) {
                                 attrs = this.client.stat(linkPath);
                                 file.setLinkAttrs(attrs);
-                                this.attrsCache.put(attrKey, attrs);
+                                if (attrs != null) {
+                                    this.attrsCache.put(attrKey, attrs);
+                                }
                             } else {
                                 file.setLinkAttrs(attrs);
                             }
                         } else {// 正常处理
                             linkPath = ShellSFTPUtil.realpath(file, this.client);
                             attrs = file.getLinkAttrs();
-                            this.pathCache.put(filePath, linkPath);
-                            this.attrsCache.put(attrKey, attrs);
+                            if (linkPath != null) {
+                                this.pathCache.put(filePath, linkPath);
+                            }
+                            if (attrs != null) {
+                                this.attrsCache.put(attrKey, attrs);
+                            }
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

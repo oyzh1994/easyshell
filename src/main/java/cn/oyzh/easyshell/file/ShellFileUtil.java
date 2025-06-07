@@ -126,7 +126,9 @@ public class ShellFileUtil {
                 "php", "css", "c", "cpp", "rs",
                 "js", "csv", "sql", "md", "ini",
                 "cfg", "sh", "bat", "py", "asp",
-                "aspx", "env", "tsv", "conf");
+                "aspx", "env", "tsv", "conf",
+                "plist"
+        );
     }
 
 //    /**

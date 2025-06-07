@@ -50,13 +50,15 @@ public class ShellSFTPChannelManager implements AutoCloseable {
      * @return 通道
      */
     public ShellSFTPChannel borrowChannel() {
-        if (this.channels.isEmpty()) {
-            this.init();
+        try {
+            if (this.channels.isEmpty()) {
+                this.init();
+            }
+            return this.channels.removeFirst();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        if (this.channels.isEmpty()) {
-            return null;
-        }
-        return this.channels.removeFirst();
+        return null;
     }
 
     /**

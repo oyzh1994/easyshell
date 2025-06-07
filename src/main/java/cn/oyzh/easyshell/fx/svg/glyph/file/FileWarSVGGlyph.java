@@ -6,13 +6,13 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2025-03-05
  */
-public class FileAspSVGGlyph extends SVGGlyph {
+public class FileWarSVGGlyph extends SVGGlyph {
 
-    public FileAspSVGGlyph() {
-        super("/font/file/file-asp.svg");
+    public FileWarSVGGlyph() {
+        super("/font/file/file-war.svg");
     }
 
-    public FileAspSVGGlyph(String size) {
+    public FileWarSVGGlyph(String size) {
         this();
         this.setSizeStr(size);
     }
