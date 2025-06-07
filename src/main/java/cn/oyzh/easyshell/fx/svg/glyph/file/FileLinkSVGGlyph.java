@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileLinkSVGGlyph extends SVGGlyph {
 
     public FileLinkSVGGlyph() {
-        super("/font/file/file-link.svg");
+        super("/font/file/file-symlink-file.svg");
     }
 
     public FileLinkSVGGlyph(String size) {

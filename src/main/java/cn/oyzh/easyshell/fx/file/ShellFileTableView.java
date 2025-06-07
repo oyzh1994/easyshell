@@ -174,15 +174,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
-     * 获取位置属性
-     *
-     * @return 位置属性
-     */
-    public StringProperty locationProperty() {
-        return this.locationProperty;
-    }
-
-    /**
      * 设置位置
      *
      * @param location 位置
@@ -192,6 +183,15 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.clearItems();
         }
         this.locationProperty.set(location);
+    }
+
+    /**
+     * 获取位置属性
+     *
+     * @return 位置属性
+     */
+    public StringProperty locationProperty() {
+        return this.locationProperty;
     }
 
     /**

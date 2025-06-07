@@ -46,11 +46,10 @@ public class ShellSFTPUtil {
      */
     public static void realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
         // 读取链接文件
-        if (file != null && file.isLink()) {
+        if (file != null && file.isLink()&& file.isNormal()) {
             try {
                 String linkPath = client.realpath(file.getFilePath());
                 if (linkPath != null) {
-//                file.setLinkPath(linkPath);
                     file.setLinkAttrs(client.stat(linkPath));
                 }
             } catch (SftpException e) {
@@ -72,18 +71,17 @@ public class ShellSFTPUtil {
      */
     public static void realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
         // 读取链接文件
-        if (file != null && file.isLink()) {
+        if (file != null && file.isLink() && file.isNormal()) {
             try {
                 String linkPath = channel.realpath(file.getFilePath());
                 if (linkPath != null) {
-//                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(channel.stat(linkPath));
                 }
-            } catch (SftpException e) {
-                if (ExceptionUtil.hasMessage(e, "No such file")) {
+            } catch (SftpException ex) {
+                if (ExceptionUtil.hasMessage(ex, "No such file")) {
                     JulLog.warn("realpath:{} fail", file.getFilePath());
                 } else {
-                    throw e;
+                    throw ex;
                 }
             }
         }

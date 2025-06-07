@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FolderLinkSVGGlyph extends SVGGlyph {
 
     public FolderLinkSVGGlyph() {
-        super("/font/file/folder-link.svg");
+        super("/font/file/file-symlink-directory.svg");
     }
 
     public FolderLinkSVGGlyph(String size) {

@@ -34,7 +34,8 @@ public class ShellSSHConnectTextField extends FXTextField {
     public ShellSSHConnectTextFieldSkin skin() {
         ShellSSHConnectTextFieldSkin skin = (ShellSSHConnectTextFieldSkin) this.getSkin();
         if (skin == null) {
-            this.setSkin(this.createDefaultSkin());
+            skin = this.createDefaultSkin();
+            this.setSkin(skin);
         }
         return skin;
     }

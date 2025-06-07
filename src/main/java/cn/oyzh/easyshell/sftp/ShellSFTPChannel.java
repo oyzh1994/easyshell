@@ -22,8 +22,14 @@ import java.util.stream.Collectors;
  */
 public class ShellSFTPChannel extends ShellSSHChannel {
 
-    public ShellSFTPChannel(ChannelSftp channel) {
+    /**
+     * 链接管理器
+     */
+    private final ShellSFTPRealpathManager realpathManager;
+
+    public ShellSFTPChannel(ChannelSftp channel, ShellSFTPRealpathManager realpathManager) {
         super(channel);
+        this.realpathManager = realpathManager;
     }
 
     @Override
@@ -41,21 +47,41 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         this.getChannel().cd(path);
     }
 
+    /**
+     * 获取链接路径
+     *
+     * @param path 路径
+     * @return 链接路径
+     * @throws SftpException 异常
+     */
     public String realpath(String path) throws SftpException {
         path = ShellFileUtil.fixFilePath(path);
         return this.getChannel().realpath(path);
     }
 
+    /**
+     * 列举文件
+     *
+     * @param path 文件路径
+     * @return 文件列表
+     * @throws SftpException 异常
+     */
     public List<ShellSFTPFile> lsFile(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
-        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
+        String filePath = ShellFileUtil.fixFilePath(path);
+        // 文件列表
         List<ShellSFTPFile> files = new ArrayList<>();
+        // 总列表
+        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
+        // 遍历列表
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            ShellSFTPFile file = new ShellSFTPFile(path, lsEntry);
-            // 读取链接文件
-            ShellSFTPUtil.realpath(file, this);
-            files.add(file);
+            files.add(new ShellSFTPFile(filePath, lsEntry));
         }
+        // 过滤链接文件
+        List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
+        // 处理链接文件
+        this.realpathManager.put(linkFiles);
+        // 等待完成
+        this.realpathManager.waitComplete();
         return files;
     }
 
@@ -106,6 +132,13 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         this.getChannel().rename(path, newPath);
     }
 
+    /**
+     * 获取文件属性
+     *
+     * @param path 路径
+     * @return 文件属性
+     * @throws SftpException 异常
+     */
     public SftpATTRS stat(String path) throws SftpException {
         path = ShellFileUtil.fixFilePath(path);
         return this.getChannel().stat(path);

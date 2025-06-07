@@ -77,17 +77,15 @@ public class ShellSFTPFile implements ShellFile {
         return this.attrs;
     }
 
-//    public void setAttrs(SftpATTRS attrs) {
-//        this.attrs = attrs;
-//        this.updatePermissions();
-//    }
-
     public SftpATTRS getLinkAttrs() {
         return linkAttrs;
     }
 
     public void setLinkAttrs(SftpATTRS linkAttrs) {
         this.linkAttrs = linkAttrs;
+        if (this.icon != null) {
+            this.refreshIcon();
+        }
     }
 
     public String getOwner() {
@@ -150,26 +148,17 @@ public class ShellSFTPFile implements ShellFile {
     @Override
     public SVGGlyph getIcon() {
         if (this.icon == null) {
-            this.icon = ShellFile.super.getIcon();
+            this.refreshIcon();
         }
         return this.icon;
     }
 
-//    public String getSize() {
-//        if (this.isDirectory() || this.isReturnDirectory() || this.isCurrentFile()) {
-//            return "-";
-//        }
-//        return NumberUtil.formatSize(this.getAttrs().getSize(), 4);
-//    }
-
-//
-//    public String getName() {
-//        String fileName = this.getFileName();
-//        if (fileName.contains("/")) {
-//            return fileName.substring(fileName.lastIndexOf("/") + 1);
-//        }
-//        return fileName;
-//    }
+    /**
+     * 刷新图标
+     */
+    private void refreshIcon() {
+        this.icon = ShellFile.super.getIcon();
+    }
 
     @Override
     public String getFileName() {
@@ -301,13 +290,4 @@ public class ShellSFTPFile implements ShellFile {
         }
         return this.getAttrs().isDir();
     }
-
-//    public String getLinkPath() {
-//        return linkPath;
-//    }
-//
-//    public void setLinkPath(String linkPath) {
-//        this.linkPath = linkPath;
-//    }
-
 }

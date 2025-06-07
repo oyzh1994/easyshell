@@ -204,7 +204,7 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         if (this.isFile() && this.isHiddenFile()) {
             return -8;
         }
-        if (this.isDirectory() ) {
+        if (this.isDirectory()) {
             return -7;
         }
         return 0;
@@ -231,6 +231,8 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         } else if (this.isLink() && this.isDirectory()) {
             glyph = new FolderLinkSVGGlyph("12");
         } else if (this.isLink() && this.isFile()) {
+            glyph = new FileLinkSVGGlyph("12");
+        } else if (this.isLink()) {
             glyph = new FileLinkSVGGlyph("12");
         } else if (this.isDirectory()) {
             glyph = new FolderSVGGlyph("12");

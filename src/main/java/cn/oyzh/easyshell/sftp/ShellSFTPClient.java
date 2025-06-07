@@ -41,6 +41,11 @@ import java.util.function.Function;
 public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
 
     /**
+     * 链接管理器
+     */
+    private final ShellSFTPRealpathManager realpathManager;
+
+    /**
      * 延迟处理的文件通道
      */
     private final List<ShellSFTPChannel> delayChannels = new ArrayList<>();
@@ -68,6 +73,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         this.shellConnect = shellConnect;
         this.session = session;
         super.addStateListener(this.stateListener);
+        this.realpathManager = new ShellSFTPRealpathManager(this);
     }
 
     /**
@@ -162,9 +168,9 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
                 this.session.connect(this.connectTimeout());
             }
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-            ShellSFTPChannel sftp = new ShellSFTPChannel(channel);
-            sftp.connect(this.connectTimeout());
-            return sftp;
+            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathManager);
+            sftpChannel.connect(this.connectTimeout());
+            return sftpChannel;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
