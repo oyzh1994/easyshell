@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SaveButton?>
+<?import cn.oyzh.fx.gui.font.FontFamilyTextField?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.setting.SettingLeftTreeView?>
 <?import cn.oyzh.fx.gui.setting.SettingMainPane?>
 <?import cn.oyzh.fx.gui.setting.SettingRightAction?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -14,9 +19,10 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.picker.FXColorPicker?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.FXSlider?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
-<?import cn.oyzh.fx.plus.font.FontFamilyComboBox?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
 <?import cn.oyzh.fx.plus.font.FontWeightComboBox?>
 <?import cn.oyzh.fx.plus.i18n.LocaleComboBox?>
@@ -24,12 +30,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
-<?import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox?>
-<?import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="480">
     <left>
@@ -269,11 +269,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="fontFamily">
+                    <FontFamilyTextField realHeight="30" flexWidth="100% - 225" fx:id="fontFamily">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
-                    </FontFamilyComboBox>
+                    </FontFamilyTextField>
                     <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetFontFamily">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
@@ -323,11 +323,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="editorFontFamily">
+                    <FontFamilyTextField realHeight="30" flexWidth="100% - 225" fx:id="editorFontFamily">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
-                    </FontFamilyComboBox>
+                    </FontFamilyTextField>
                     <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetEditorFontFamily">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
@@ -377,11 +377,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontFamilyComboBox realHeight="30" flexWidth="100% - 225" fx:id="terminalFontFamily">
+                    <FontFamilyTextField realHeight="30" flexWidth="100% - 225" fx:id="terminalFontFamily">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
-                    </FontFamilyComboBox>
+                    </FontFamilyTextField>
                     <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetTerminalFontFamily">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
