@@ -41,8 +41,8 @@ public class ShellTermHistoryPopupController extends PopupController {
             ShellServerExec serverExec = client.serverExec();
             // 持久化命令
             serverExec.persistentCommand();
-            // 获取最近20条历史
-            List<String> histories = serverExec.history(20);
+            // 获取最近50条历史
+            List<String> histories = serverExec.history(50);
             this.root.init(histories);
             this.root.setOnItemPicked(() -> {
                 String history = this.root.getPickedItem();

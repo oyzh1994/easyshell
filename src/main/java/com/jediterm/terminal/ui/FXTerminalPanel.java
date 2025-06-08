@@ -837,8 +837,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     @Override
     public void onResize(@NotNull TermSize newTermSize, @NotNull RequestOrigin origin) {
         myTermSize = newTermSize;
-//        this.canvas.setWidth(getPixelHeight());
-//        this.canvas.setHeight(getPixelWidth());
+//        this.canvas.setPrefWidth(getPixelHeight());
+//        this.canvas.setPrefHeight(getPixelWidth());
         Platform.runLater(() -> updateScrolling(true));
     }
 
@@ -1908,7 +1908,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     @Override
     public List<TerminalAction> getActions() {
-        return List.of(
+        List<TerminalAction> list = List.of(
                 new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getOpenUrlActionPresentation(), input -> {
                     return openSelectedTextAsURL();
                 }).withEnabledSupplier(this::isSelectedTextUrl),
@@ -1946,12 +1946,52 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     scrollDown();
                     return true;
                 }));
+//        if (mySettingsProvider instanceof FXTermSettingsProvider provider) {
+//            list = new ArrayList<>(list);
+//            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getIncrTermSizePresentation(), input -> {
+//                this.incrTermSize();
+//                return true;
+//            }));
+//            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getDecrTermSizePresentation(), input -> {
+//                this.decrTermSize();
+//                return true;
+//            }));
+//        }
+        return list;
     }
 
     public void selectAll() {
         TerminalSelection mySelection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
         updateSelection(mySelection);
+    }
+
+    public void incrTermSize() {
+        TermSize termSize =  this.myTermSize;
+        if (this.myTerminalStarter != null && termSize != null) {
+            int cols = (int) (termSize.getColumns() * 1.1);
+            int rows = (int) (termSize.getRows() * 1.1);
+            TermSize newSize = new TermSize(cols, rows);
+            newSize = JediTerminal.ensureTermMinimumSize(newSize);
+            if (!newSize.equals(termSize)) {
+                this.myTermSize = newSize;
+                this.onResize(newSize, RequestOrigin.User);
+            }
+        }
+    }
+
+    public void decrTermSize() {
+        TermSize termSize =  this.myTermSize;
+        if (this.myTerminalStarter != null && termSize != null) {
+            int cols = (int) (termSize.getColumns() * 0.9);
+            int rows = (int) (termSize.getRows() * 0.9);
+            TermSize newSize = new TermSize(cols, rows);
+            newSize = JediTerminal.ensureTermMinimumSize(newSize);
+            if (!newSize.equals(termSize)) {
+                this.myTermSize = newSize;
+                this.onResize(newSize, RequestOrigin.User);
+            }
+        }
     }
 
     @NotNull

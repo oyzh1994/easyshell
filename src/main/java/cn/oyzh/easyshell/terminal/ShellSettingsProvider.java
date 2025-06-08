@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
+import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.FXTerminalActionPresentation;
 import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
-import com.jediterm.terminal.emulator.ColorPalette;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -101,6 +101,22 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider {
                 : new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
         return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
     }
+
+//    @Override
+//    public @NotNull TerminalActionPresentation getIncrTermSizePresentation() {
+//        KeyCombination keyCombination = OSUtil.isMacOS()
+//                ? new KeyCodeCombination(KeyCode.MINUS, KeyCombination.META_DOWN)
+//                : new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN);
+//        return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
+//    }
+//
+//    @Override
+//    public @NotNull TerminalActionPresentation getDecrTermSizePresentation() {
+//        KeyCombination keyCombination = OSUtil.isMacOS()
+//                ? new KeyCodeCombination(KeyCode.PLUS, KeyCombination.META_DOWN)
+//                : new KeyCodeCombination(KeyCode.PLUS, KeyCombination.CONTROL_DOWN);
+//        return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
+//    }
 
     @Override
     public ColorPalette getTerminalColorPalette() {
