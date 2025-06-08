@@ -56,18 +56,24 @@ public class ShellSSHConnectTextField extends FXTextField {
             }
         });
         this.addTextChangeListener((observable, oldValue, newValue) -> {
-            if (this.skin().isSetTexting()) {
+            if (this.skin().isTexting()) {
                 return;
             }
+            // 移除选区
+            this.skin().clearSelection();
+            // 隐藏弹窗
             if (StringUtil.isBlank(newValue)) {
                 this.skin().setItemList(connects);
                 this.skin().hidePopup();
                 return;
             }
+            // 过滤内容
             List<ShellConnect> newList = connects.stream()
                     .filter(t -> StringUtil.containsIgnoreCase(t.getName(), newValue))
                     .collect(Collectors.toList());
+            // 设置内容
             this.skin().setItemList(newList);
+            // 内容为空，隐藏弹窗
             if (newList.isEmpty()) {
                 this.skin().hidePopup();
             } else {
@@ -87,5 +93,13 @@ public class ShellSSHConnectTextField extends FXTextField {
 
     public void selectedItemChanged(ChangeListener<ShellConnect> listener) {
         this.skin().selectItemChanged(listener);
+    }
+
+    @Override
+    public boolean validate() {
+        if (this.isRequire() && this.skin().getSelectedItem() == null) {
+            return false;
+        }
+        return super.validate();
     }
 }

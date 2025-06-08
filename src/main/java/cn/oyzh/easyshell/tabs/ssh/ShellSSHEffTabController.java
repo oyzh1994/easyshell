@@ -145,16 +145,22 @@ public class ShellSSHEffTabController extends SubTabController {
     private FXToggleSwitch serverMonitor;
 
     /**
+     * 显示文件
+     */
+    @FXML
+    private FXToggleSwitch showFile;
+
+    /**
      * 终端历史
      */
     @FXML
     private SVGGlyph termHistory;
 
     /**
-     * 显示文件
+     * 终端大小
      */
     @FXML
-    private FXToggleSwitch showFile;
+    private FXLabel termSize;
 
     /**
      * 设置
@@ -177,6 +183,11 @@ public class ShellSSHEffTabController extends SubTabController {
         connector.initShell(this.client());
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
+            }
+        });
         // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 

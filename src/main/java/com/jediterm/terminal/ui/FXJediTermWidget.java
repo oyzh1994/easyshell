@@ -296,7 +296,11 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
     public void close() {
         stopRunningSession();
         if (myTerminalStarter != null) {
-            myTerminalStarter.close();
+            try {
+                myTerminalStarter.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         myTerminalPanel.dispose();
         getExecutorServiceManager().shutdownWhenAllExecuted();

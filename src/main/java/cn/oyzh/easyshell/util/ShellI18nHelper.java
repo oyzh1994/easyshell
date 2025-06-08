@@ -121,6 +121,10 @@ public class ShellI18nHelper {
         return I18nResourceBundle.i18nString("shell.term.tip8");
     }
 
+    public static String termTip15() {
+        return I18nResourceBundle.i18nString("shell.term.tip15");
+    }
+
     public static String x11Tip1() {
         return I18nResourceBundle.i18nString("shell.x11.tip1");
     }

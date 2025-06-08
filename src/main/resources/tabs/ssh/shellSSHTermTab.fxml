@@ -20,6 +20,11 @@
 
         </ShellSSHTermWidget>
         <FXHBox flexWidth="100%" realHeight="30">
+            <FXLabel fx:id="termSize">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </FXLabel>
             <HistorySVGGlyph fx:id="termHistory" tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>

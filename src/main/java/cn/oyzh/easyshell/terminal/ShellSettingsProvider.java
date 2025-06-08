@@ -95,7 +95,11 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider {
 
     @Override
     public @NotNull FXTerminalActionPresentation getSelectAllActionPresentation() {
-        return new FXTerminalActionPresentation(I18nHelper.selectAll(), Collections.emptyList());
+        KeyCombination keyCombination = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN)
+                // CTRL + A is used for signal; use CTRL + SHIFT + A instead
+                : new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+        return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
     }
 
     @Override

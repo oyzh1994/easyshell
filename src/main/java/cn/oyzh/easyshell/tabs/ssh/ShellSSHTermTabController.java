@@ -67,6 +67,12 @@ public class ShellSSHTermTabController extends SubTabController {
     private SVGGlyph termHistory;
 
     /**
+     * 终端大小
+     */
+    @FXML
+    private FXLabel termSize;
+
+    /**
      * 初始化组件
      *
      * @throws IOException 异常
@@ -78,6 +84,11 @@ public class ShellSSHTermTabController extends SubTabController {
         connector.initShell(client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
+            }
+        });
         // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
