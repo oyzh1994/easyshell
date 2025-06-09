@@ -14,7 +14,7 @@ public class ShellAuthTypeCombobox extends SSHAuthTypeCombobox {
     }
 
     public boolean isManagerAuth() {
-        return this.getSelectedIndex() == 2;
+        return this.getSelectedIndex() == 3;
     }
 
     @Override

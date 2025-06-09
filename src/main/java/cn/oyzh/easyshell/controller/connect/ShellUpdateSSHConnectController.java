@@ -88,6 +88,12 @@ public class ShellUpdateSSHConnectController extends StageController {
     private ReadOnlyTextField certificate;
 
     /**
+     * ssh agent
+     */
+    @FXML
+    private ReadOnlyTextField sshAgent;
+
+    /**
      * 密钥
      */
     @FXML
@@ -503,17 +509,25 @@ public class ShellUpdateSSHConnectController extends StageController {
         // 认证方式
         this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.authMethod.isPasswordAuth()) {
-                NodeGroupUtil.disappear(this.tabPane, "key");
-                NodeGroupUtil.disappear(this.tabPane, "certificate");
                 NodeGroupUtil.display(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
             } else if (this.authMethod.isCertificateAuth()) {
-                NodeGroupUtil.disappear(this.tabPane, "key");
-                NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.display(this.tabPane, "certificate");
-            } else {
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+            } else if (this.authMethod.isSSHAgentAuth()) {
+                NodeGroupUtil.display(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
                 NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
-                NodeGroupUtil.display(this.tabPane, "key");
+            } else {
+                NodeGroupUtil.display(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
             }
         });
         // 背景配置
@@ -563,13 +577,15 @@ public class ShellUpdateSSHConnectController extends StageController {
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
-        this.certificate.setText(this.shellConnect.getCertificate());
         if (this.shellConnect.isPasswordAuth()) {
             this.authMethod.selectFirst();
         } else if (this.shellConnect.isCertificateAuth()) {
             this.authMethod.select(1);
-        } else {
+            this.certificate.setText(this.shellConnect.getCertificate());
+        } else if (this.authMethod.isSSHAgentAuth()) {
             this.authMethod.select(2);
+        } else if (this.authMethod.isManagerAuth()) {
+            this.authMethod.selectLast();
             // 选中密钥
             this.key.selectById(this.shellConnect.getKeyId());
         }
@@ -602,10 +618,6 @@ public class ShellUpdateSSHConnectController extends StageController {
                 this.proxyAuthType.select(1);
             }
         }
-//        // linux隐藏x11
-//        if (OSUtil.isLinux()) {
-//            NodeGroupUtil.disappear(this.getStage(), "x11");
-//        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -615,6 +627,11 @@ public class ShellUpdateSSHConnectController extends StageController {
         super.onStageInitialize(stage);
         this.x11Host.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        if (OSUtil.isWindows()) {
+            this.sshAgent.setText("Pageant");
+        } else {
+            this.sshAgent.setText("SSH Agent");
+        }
     }
 
     @Override
@@ -665,39 +682,11 @@ public class ShellUpdateSSHConnectController extends StageController {
         }
     }
 
-//    /**
-//     * 选择ssh证书
-//     */
-//    @FXML
-//    private void chooseSSHCertificate() {
-//        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-//        if (file != null) {
-//            this.sshCertificate.setText(file.getPath());
-//        }
-//    }
-
     /**
      * 选择背景图片
      */
     @FXML
     private void chooseBackgroundImage() {
-        //        SwingFileChooser chooser = new SwingFileChooser();
-//        chooser.setFileFilter(new FileFilter() {
-//            @Override
-//            public boolean accept(File f) {
-//                return f.isDirectory() || StringUtil.endWithAnyIgnoreCase(f.getName(), "jpg", "jpeg", "png", "gif");
-//            }
-//
-//            @Override
-//            public String getDescription() {
-//                return I18nHelper.pleaseSelectFile() + "(.jpg, .jpeg, .png, .gif)";
-//            }
-//        });
-//        chooser.showFileChooser(f -> {
-//            if (f != null && f.length != 0) {
-//                this.backgroundImage.setText(ArrayUtil.first(f).getPath());
-//            }
-//        });
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
         if (file != null) {
             this.backgroundImage.setText(file.getPath());

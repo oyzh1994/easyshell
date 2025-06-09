@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
@@ -13,10 +14,10 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
@@ -29,7 +30,11 @@ import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.util.SSHHolder;
+import cn.oyzh.ssh.util.SSHUtil;
+import com.jcraft.jsch.AgentIdentityRepository;
+import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelShell;
+import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -336,7 +341,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     /**
      * 初始化客户端
      */
-    private void initClient() throws JSchException {
+    private void initClient() throws JSchException, AgentProxyException {
         if (JulLog.isInfoEnabled()) {
             JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
         }
@@ -348,7 +353,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-            // this.session.setPassword(this.shellConnect.getPassword());
             this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
@@ -360,6 +364,14 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             SSHHolder.getJsch().addIdentity(priKeyFile);
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
+        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
+            IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
+            if (!(repository instanceof AgentIdentityRepository)) {
+                repository = SSHUtil.initAgentIdentityRepository();
+                SSHHolder.getAgentJsch().setIdentityRepository(repository);
+            }
+            // 创建会话
+            this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
@@ -465,6 +477,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellSSHClient start error", ex);
             throw new ShellException(ex);
+        } finally {
+            // 执行一次gc，快速回收内存
+            SystemUtil.gc();
         }
     }
 

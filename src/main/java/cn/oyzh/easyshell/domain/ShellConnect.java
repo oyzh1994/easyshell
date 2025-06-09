@@ -330,6 +330,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsIgnoreCase(this.authMethod, "manager");
     }
 
+    public boolean isSSHAgentAuth() {
+        return StringUtil.equalsIgnoreCase(this.authMethod, "sshAgent");
+    }
+
     @Override
     public void copy(ShellConnect t1) {
         // 基本

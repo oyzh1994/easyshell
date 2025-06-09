@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.telnet;
 
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -72,6 +73,9 @@ public class ShellTelnetClient implements BaseClient {
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
             throw ex;
+        } finally {
+            // 执行一次gc，快速回收内存
+            SystemUtil.gc();
         }
     }
 

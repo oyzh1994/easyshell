@@ -87,6 +87,12 @@ public class ShellAddSSHConnectController extends StageController {
     private ReadOnlyTextField certificate;
 
     /**
+     * ssh agent
+     */
+    @FXML
+    private ReadOnlyTextField sshAgent;
+
+    /**
      * 密钥
      */
     @FXML
@@ -450,9 +456,6 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 隧道配置
             shellConnect.setTunnelingConfigs(this.tunnelingTableView.getItems());
-            // ssh配置
-//            shellConnect.setSshConfig(this.getSSHConfig());
-//            shellConnect.setSshForward(this.sshForward.isSelected());
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);
             shellConnect.setEnableBackground(enableBackground);
@@ -494,40 +497,30 @@ public class ShellAddSSHConnectController extends StageController {
                 }
             }
         });
-//        // ssh配置
-//        this.sshForward.selectedChanged((observable, oldValue, newValue) -> {
-//            if (newValue) {
-//                NodeGroupUtil.enable(this.sshTab, "ssh");
-//            } else {
-//                NodeGroupUtil.disable(this.sshTab, "ssh");
-//            }
-//        });
         // 认证方式
         this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.authMethod.isPasswordAuth()) {
-                NodeGroupUtil.disappear(this.tabPane, "key");
-                NodeGroupUtil.disappear(this.tabPane, "certificate");
                 NodeGroupUtil.display(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
             } else if (this.authMethod.isCertificateAuth()) {
-                NodeGroupUtil.disappear(this.tabPane, "key");
-                NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.display(this.tabPane, "certificate");
-            } else {
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+            } else if (this.authMethod.isSSHAgentAuth()){
+                NodeGroupUtil.display(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
                 NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
-                NodeGroupUtil.display(this.tabPane, "key");
+            } else {
+                NodeGroupUtil.display(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
             }
         });
-//        // ssh认证方式
-//        this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
-//            if (this.sshAuthMethod.isPasswordAuth()) {
-//                this.sshPassword.display();
-//                NodeGroupUtil.disappear(this.tabPane, "sshCertificate");
-//            } else {
-//                this.sshPassword.disappear();
-//                NodeGroupUtil.display(this.tabPane, "sshCertificate");
-//            }
-//        });
         // 背景配置
         this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -576,6 +569,11 @@ public class ShellAddSSHConnectController extends StageController {
         super.onStageInitialize(stage);
         this.x11Host.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        if (OSUtil.isWindows()) {
+            this.sshAgent.setText("Pageant");
+        } else {
+            this.sshAgent.setText("SSH Agent");
+        }
     }
 
     @Override
@@ -626,39 +624,11 @@ public class ShellAddSSHConnectController extends StageController {
         }
     }
 
-//    /**
-//     * 选择ssh证书
-//     */
-//    @FXML
-//    private void chooseSSHCertificate() {
-//        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-//        if (file != null) {
-//            this.sshCertificate.setText(file.getPath());
-//        }
-//    }
-
     /**
      * 选择背景图片
      */
     @FXML
     private void chooseBackgroundImage() {
-        //        SwingFileChooser chooser = new SwingFileChooser();
-//        chooser.setFileFilter(new FileFilter() {
-//            @Override
-//            public boolean accept(File f) {
-//                return f.isDirectory() || StringUtil.endWithAnyIgnoreCase(f.getName(), "jpg", "jpeg", "png", "gif");
-//            }
-//
-//            @Override
-//            public String getDescription() {
-//                return I18nHelper.pleaseSelectFile() + "(.jpg, .jpeg, .png, .gif)";
-//            }
-//        });
-//        chooser.showFileChooser(f -> {
-//            if (f != null && f.length != 0) {
-//                this.backgroundImage.setText(ArrayUtil.first(f).getPath());
-//            }
-//        });
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
         if (file != null) {
             this.backgroundImage.setText(file.getPath());

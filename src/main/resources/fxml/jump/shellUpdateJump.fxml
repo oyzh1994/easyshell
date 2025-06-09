@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
-<?import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
@@ -17,6 +17,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController" realWidth="750"
         realHeight="530">
@@ -86,24 +87,37 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <SSHAuthTypeCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
+        <ShellAuthTypeCombobox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
             <FXHBox.margin>
                 <Insets left="30" top="5"/>
             </FXHBox.margin>
-        </SSHAuthTypeCombobox>
-        <PasswordTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
+        </ShellAuthTypeCombobox>
+        <PasswordTextField fx:id="sshPassword" managedBindVisible="true" tipText="%base.sshPwdTip" require="true" realHeight="30"
+                           groupId="password"
                            flexWidth="100% - 340">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </PasswordTextField>
-        <ReadOnlyTextField prefHeight="30" visible="false" managedBindVisible="true" groupId="sshCertificate"
+        <ShellKeyComboBox tipText="%base.privateKeyTip" fx:id="sshKey" visible="false" managedBindVisible="true" require="true" realHeight="30" groupId="sshKey"
+                          flexWidth="100% - 340">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ShellKeyComboBox>
+        <ReadOnlyTextField prefHeight="30" visible="false" managedBindVisible="true" groupId="sshAgent"
+                           fx:id="sshAgent" flexWidth="100% - 340">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ReadOnlyTextField>
+        <ReadOnlyTextField prefHeight="30" visible="false" managedBindVisible="true" groupId="certificate"
                            fx:id="sshCertificate" flexWidth="100% - 340">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </ReadOnlyTextField>
-        <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="sshCertificate"
+        <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate"
                         onMousePrimaryClicked="#chooseSSHCertificate">
             <HBox.margin>
                 <Insets left="5" top="12"/>

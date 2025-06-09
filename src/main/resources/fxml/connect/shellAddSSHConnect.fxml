@@ -85,6 +85,13 @@
                         </FXHBox.margin>
                     </PasswordTextField>
                     <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                       groupId="sshAgent"
+                                       fx:id="sshAgent" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ReadOnlyTextField>
+                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
                                        groupId="certificate"
                                        fx:id="certificate" flexWidth="100% - 340">
                         <HBox.margin>
@@ -97,8 +104,8 @@
                             <Insets left="5" top="12"/>
                         </HBox.margin>
                     </ChooseSVGGlyph>
-                    <ShellKeyComboBox realHeight="30" require="true" visible="false" managedBindVisible="true"
-                                      groupId="key"
+                    <ShellKeyComboBox tipText="%base.privateKeyTip" realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                      groupId="sshKey"
                                       fx:id="key" flexWidth="100% - 340">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
@@ -185,7 +192,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellTermTypeComboBox fx:id="termType" prefWidth="200" prefHeight="30" tipText="%shell.connect.tip14">
+                <ShellTermTypeComboBox fx:id="termType" prefWidth="200" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -195,7 +202,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXTextArea fx:id="env" realHeight="150" flexWidth="100% - 180">
+                <FXTextArea fx:id="env" realHeight="150" flexWidth="100% - 180" tipText="%shell.connect.tip14">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

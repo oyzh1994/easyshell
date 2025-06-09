@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -162,6 +163,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellSFTPClient start error", ex);
             throw new ShellException(ex);
+        } finally {
+            // 执行一次gc，快速回收内存
+            SystemUtil.gc();
         }
     }
 

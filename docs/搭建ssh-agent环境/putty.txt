@@ -1,0 +1,12 @@
+1. 下载putty
+https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+2. 在putty安装目录找到puttygen.exe
+启动puttygen.exe
+生成一组密钥，私钥保存为ppk，公钥复制保存为.pub
+3. 在putty安装目录找到pageant.exe
+启动pageant.exe
+添加key，把私钥导入
+每次启动加载密钥参考这个
+https://zhuanlan.zhihu.com/p/358553787
+4. 在服务器vim ~/.ssh/authorized_keys
+把putty的公钥粘贴进去

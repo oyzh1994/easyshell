@@ -1,10 +1,13 @@
 package cn.oyzh.easyshell.controller.jump;
 
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
+import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -18,7 +21,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -76,10 +79,22 @@ public class ShellAddJumpController extends StageController {
     private PasswordTextField sshPassword;
 
     /**
+     * ssh密钥
+     */
+    @FXML
+    private ShellKeyComboBox sshKey;
+
+    /**
+     * ssh agent
+     */
+    @FXML
+    private ReadOnlyTextField sshAgent;
+
+    /**
      * ssh认证方式
      */
     @FXML
-    private SSHAuthTypeCombobox sshAuthMethod;
+    private ShellAuthTypeCombobox sshAuthMethod;
 
     /**
      * ssh证书
@@ -151,6 +166,11 @@ public class ShellAddJumpController extends StageController {
             ValidatorUtil.validFail(this.sshCertificate);
             return;
         }
+        ShellKey key = this.sshKey.getSelectedItem();
+        if (this.sshAuthMethod.isManagerAuth() && key == null) {
+            ValidatorUtil.validFail(this.sshKey);
+            return;
+        }
         try {
             int port = this.sshPort.getIntValue();
             String host = this.sshHost.getTextTrim();
@@ -164,7 +184,14 @@ public class ShellAddJumpController extends StageController {
             config.setPassword(password);
             config.setAuthMethod(authType);
             config.setTimeout(timeout * 1000);
-            config.setCertificatePath(certificate);
+            // 按需设置为路径或者id
+            if (this.sshAuthMethod.isManagerAuth()) {
+                config.setCertificatePath(key.getId());
+            } else {
+                config.setCertificatePath(certificate);
+            }
+            config.setCertificatePubKey(key.getPublicKey());
+            config.setCertificatePriKey(key.getPrivateKey());
             config.setEnabled(this.enable.isSelected());
             // 设置数据
             this.setProp("jumpConfig", config);
@@ -180,11 +207,25 @@ public class ShellAddJumpController extends StageController {
         // ssh认证方式
         this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.sshAuthMethod.isPasswordAuth()) {
-                this.sshPassword.display();
-                NodeGroupUtil.disappear(this.stage, "sshCertificate");
+                NodeGroupUtil.display(this.stage, "password");
+                NodeGroupUtil.disappear(this.stage, "sshKey");
+                NodeGroupUtil.disappear(this.stage, "sshAgent");
+                NodeGroupUtil.disappear(this.stage, "certificate");
+            } else if (this.sshAuthMethod.isCertificateAuth()) {
+                NodeGroupUtil.display(this.stage, "certificate");
+                NodeGroupUtil.disappear(this.stage, "sshKey");
+                NodeGroupUtil.disappear(this.stage, "password");
+                NodeGroupUtil.disappear(this.stage, "sshAgent");
+            } else if (this.sshAuthMethod.isSSHAgentAuth()) {
+                NodeGroupUtil.display(this.stage, "sshAgent");
+                NodeGroupUtil.disappear(this.stage, "sshKey");
+                NodeGroupUtil.disappear(this.stage, "password");
+                NodeGroupUtil.disappear(this.stage, "certificate");
             } else {
-                this.sshPassword.disappear();
-                NodeGroupUtil.display(this.stage, "sshCertificate");
+                NodeGroupUtil.display(this.stage, "sshKey");
+                NodeGroupUtil.disappear(this.stage, "password");
+                NodeGroupUtil.disappear(this.stage, "sshAgent");
+                NodeGroupUtil.disappear(this.stage, "certificate");
             }
         });
     }
@@ -209,6 +250,16 @@ public class ShellAddJumpController extends StageController {
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
         if (file != null) {
             this.sshCertificate.setText(file.getPath());
+        }
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        if (OSUtil.isWindows()) {
+            this.sshAgent.setText("Pageant");
+        } else {
+            this.sshAgent.setText("SSH Agent");
         }
     }
 }

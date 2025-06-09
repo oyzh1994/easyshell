@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ftp;
 
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -160,6 +161,9 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellFTPClient start error", ex);
             throw ex;
+        } finally {
+            // 执行一次gc，快速回收内存
+            SystemUtil.gc();
         }
     }
 

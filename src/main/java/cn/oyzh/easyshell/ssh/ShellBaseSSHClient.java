@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 import java.io.ByteArrayOutputStream;
@@ -273,8 +274,16 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * 初始化回话
      */
-    protected void initSession() {
+    protected void initSession() throws JSchException {
         if (this.session != null) {
+            // 设置守护线程
+            this.session.setDaemonThread(true);
+            // 连续3次失败后断开连接
+            this.session.setServerAliveCountMax(3);
+            // 每60秒发送一次TCP keep-alive包
+            this.session.setServerAliveInterval(60_000);
+            // 可选：设置TCP层面的keep-alive
+            this.session.setConfig("TCPKeepAlive", "yes");
             // 去掉首次连接确认
             this.session.setConfig("StrictHostKeyChecking", "no");
             // 设置线程工厂
@@ -295,7 +304,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
                 // 设置压缩级别（可选，范围 1-9，默认 6）
                 this.session.setConfig("compression.level", "9");
+                this.session.setConfig("Compression", "yes");
+                this.session.setConfig("CompressionLevel", "9");
             } else {
+                this.session.setConfig("Compression", "no");
                 this.session.setConfig("compression.s2c", "none");
                 this.session.setConfig("compression.c2s", "none");
             }
