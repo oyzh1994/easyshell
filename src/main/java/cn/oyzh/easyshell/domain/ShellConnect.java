@@ -710,4 +710,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         });
         return map;
     }
+
+    // @Override
+    // public boolean equals(Object obj) {
+    //     if (obj instanceof ShellConnect connect && StringUtil.equals(connect.getId(), this.getId())) {
+    //         return true;
+    //     }
+    //     return super.equals(obj);
+    // }
 }

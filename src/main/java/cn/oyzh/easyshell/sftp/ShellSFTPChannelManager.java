@@ -39,8 +39,12 @@ public class ShellSFTPChannelManager implements AutoCloseable {
      * 初始化
      */
     private void init() {
-        if (this.channels.size() < this.initSize) {
-            this.channels.add(this.client.newChannel());
+        while (this.channels.size() < this.initSize) {
+            ShellSFTPChannel channel = this.client.newChannel();
+            if (channel == null) {
+                break;
+            }
+            this.channels.add(channel);
         }
     }
 

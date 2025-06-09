@@ -133,8 +133,13 @@ public class ShellSFTPFile implements ShellFile {
     public ShellSFTPFile(String parentPath, ChannelSftp.LsEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
-        this.owner = entry.getLongname().split("\\s+")[2];
-        this.group = entry.getLongname().split("\\s+")[3];
+        String[] arr = entry.getLongname().split("\\s+");
+        if (arr.length > 2) {
+            this.owner = arr[2];
+        }
+        if (arr.length > 3) {
+            this.group = arr[3];
+        }
         this.updatePermissions();
     }
 

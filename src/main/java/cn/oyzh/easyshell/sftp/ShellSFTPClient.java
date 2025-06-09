@@ -78,9 +78,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public ShellSFTPClient(ShellConnect shellConnect, Session session) {
         this.shellConnect = shellConnect;
         this.session = session;
-        super.addStateListener(this.stateListener);
         this.channelManager = new ShellSFTPChannelManager(this);
         this.realpathManager = new ShellSFTPRealpathManager(this);
+        super.addStateListener(this.stateListener);
     }
 
     /**
@@ -126,7 +126,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             this.delayChannels.clear();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
-//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
