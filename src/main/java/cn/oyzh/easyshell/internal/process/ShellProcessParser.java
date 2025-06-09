@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh.process;
+package cn.oyzh.easyshell.internal.process;
 
 
 import cn.oyzh.common.util.NumberUtil;

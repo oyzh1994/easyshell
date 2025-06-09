@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx;
 
-import cn.oyzh.easyshell.ssh.exec.ShellDiskInfo;
+import cn.oyzh.easyshell.internal.exec.ShellDiskInfo;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 

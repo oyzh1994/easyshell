@@ -1,6 +1,6 @@
-package cn.oyzh.easyshell.ssh.process;
+package cn.oyzh.easyshell.internal.process;
 
-import cn.oyzh.easyshell.ssh.server.ShellServerExec;
+import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 

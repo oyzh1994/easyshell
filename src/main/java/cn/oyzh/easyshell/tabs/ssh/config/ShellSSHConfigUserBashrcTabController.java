@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh.config;
 
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.internal.exec.ShellExec;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
