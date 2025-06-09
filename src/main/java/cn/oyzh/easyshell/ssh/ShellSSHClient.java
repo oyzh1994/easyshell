@@ -103,9 +103,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * @param output 输出
      */
     public void resolveWorkerDir(String output) {
-        if (StringUtil.equals(this.lastOutput, output)) {
-            return;
-        }
+        // if (StringUtil.equals(this.lastOutput, output)) {
+        //     return;
+        // }
         if (this.resolveWorkerDir) {
             this.doResolveWorkerDir(output);
         }
@@ -119,11 +119,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private void doResolveWorkerDir(String output) {
         String workDir = ShellSSHUtil.resolveWorkerDir(output, this.userHome);
-        if (StringUtil.isEmpty(workDir)) {
-            return;
-        }
         // 跟随目录
-        this.workDirProperty().set(workDir);
+        if (StringUtil.isNotBlank(workDir)) {
+            this.workDirProperty().set(workDir);
+        }
     }
 
     /**
@@ -201,7 +200,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
 
     public ShellSSHClient(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
+        super(shellConnect);
         this.addStateListener(this.stateListener);
     }
 
@@ -374,16 +373,14 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
-//        // 配置参数
-//        Properties config = new Properties();
-//        // 去掉首次连接确认
-       this.session.setConfig("StrictHostKeyChecking", "no");
-//        // 设置配置
-//        this.session.setConfig(config);
         // 初始化x11
         this.initX11();
         // 初始化代理
         this.initProxy();
+        // 启用压缩
+        this.useCompression();
+        // 初始化会话
+        this.initSession();
     }
 
     @Override
@@ -395,9 +392,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.shell.close();
                 this.shell = null;
             }
-            if (this.shellExec != null) {
-                this.shellExec.close();
-                this.shellExec = null;
+            if (this.sshExec != null) {
+                this.sshExec.close();
+                this.sshExec = null;
             }
             if (this.serverExec != null) {
                 this.serverExec.close();
@@ -426,7 +423,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.sftpClient.close();
             }
             this.removeStateListener(this.stateListener);
-//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -625,13 +621,13 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.serverExec;
     }
 
-    private ShellSSHExec shellExec;
+    private ShellSSHExec sshExec;
 
-    public ShellSSHExec shellExec() {
-        if (this.shellExec == null) {
-            this.shellExec = new ShellSSHExec(this);
+    public ShellSSHExec sshExec() {
+        if (this.sshExec == null) {
+            this.sshExec = new ShellSSHExec(this);
         }
-        return this.shellExec;
+        return this.sshExec;
     }
 
     private ShellProcessExec processExec;

@@ -57,7 +57,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
             try {
                 String filePath = this.filePath.getText();
                 if (this.sftpClient().exist(filePath)) {
-                    ShellSSHExec exec = this.client().shellExec();
+                    ShellSSHExec exec = this.client().sshExec();
                     String output = exec.cat_docker_daemon(filePath);
                     this.data.setText(output);
                 }
@@ -84,7 +84,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     private void save() {
         String text = this.data.getText();
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().sshExec();
             ShellSFTPClient sftpClient = this.sftpClient();
             try {
                 // 创建json文件

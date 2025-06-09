@@ -7,6 +7,8 @@ import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
+import cn.oyzh.store.jdbc.QueryParam;
+import cn.oyzh.store.jdbc.SelectParam;
 
 import java.util.List;
 
@@ -55,6 +57,12 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
 
     public synchronized List<ShellConnect> load() {
         return super.selectList();
+    }
+
+    public synchronized List<ShellConnect> loadSSH() {
+        SelectParam selectParam = new SelectParam();
+        selectParam.addQueryParam(QueryParam.of("type", "ssh"));
+        return super.selectList(selectParam);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -53,6 +54,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      */
     protected List<String> environment;
 
+    public ShellBaseSSHClient(ShellConnect connect) {
+        this.shellConnect = connect;
+    }
+
     @Override
     public ShellConnect getShellConnect() {
         return shellConnect;
@@ -86,53 +91,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * @return 结果
      */
     public String exec(String command) {
-        ChannelExec channel = null;
+        // 获取通道
+        ChannelExec channel = this.newExecChannel();
         try {
-//            String extCommand = null;
-//            if (StringUtil.startWithAnyIgnoreCase(command, "source", "which", "where")) {
-//                extCommand = command;
-//            } else if (StringUtil.startWithAnyIgnoreCase(command, "uname")) {
-//                extCommand = "/usr/bin/" + command;
-//            } else if (this.isWindows()) {
-//                // 初始化环境
-//                if (this.environment.isEmpty()) {
-//                    this.initEnvironment();
-//                }
-//                extCommand = command;
-//            } else if (this.isLinux() || this.isMacos()) {
-//                // 初始化环境
-//                if (this.environment.isEmpty()) {
-//                    this.initEnvironment();
-//                }
-//                String exportPath = this.getExportPath();
-//                extCommand = "export PATH=$PATH" + exportPath + " && " + command;
-//            } else if (this.isUnix()) {
-//                extCommand = command;
-//            }
-            ShellConnect shellConnect = this.getShellConnect();
-            // 获取通道
-            channel = (ChannelExec) this.session.openChannel("exec");
-            // 用户环境
-            Map<String, String> userEnvs = this.shellConnect.environments();
-            if (CollectionUtil.isNotEmpty(userEnvs)) {
-                for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                    channel.setEnv(entry.getKey(), entry.getValue());
-                }
-            }
-            // 初始化环境变量
-            if (this.osType != null) {
-                channel.setEnv("PATH", this.getExportPath());
-            }
-            // 初始化字符集
-            channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-            // 客户端转发
-            if (shellConnect.isJumpForward()) {
-                channel.setAgentForwarding(true);
-            }
-            // x11转发
-            if (shellConnect.isX11forwarding()) {
-                channel.setXForwarding(true);
-            }
             // 操作
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
             channel.setCommand(command);
@@ -306,5 +267,73 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             }
         }
         return this.userHome;
+    }
+
+    /**
+     * 初始化回话
+     */
+    protected void initSession() {
+        if (this.session != null) {
+            // 去掉首次连接确认
+            this.session.setConfig("StrictHostKeyChecking", "no");
+            // 设置线程工厂
+            this.session.setThreadFactory(ThreadUtil::newThreadVirtual);
+        }
+    }
+
+    /**
+     * 启用压缩
+     */
+    protected void useCompression() {
+        if (this.session != null) {
+            // 启用压缩（等效于 SSHJ 的 useCompression()）
+            this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+            this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+
+            // 设置压缩级别（可选，范围 1-9，默认 6）
+            this.session.setConfig("compression.level", "6");
+        }
+    }
+
+    /**
+     * 创建exec通道
+     *
+     * @return exec通道
+     */
+    protected ChannelExec newExecChannel() {
+        try {
+            // 如果会话关了，则先启动会话
+            if (this.isClosed()) {
+                this.session.connect(this.connectTimeout());
+            }
+            ChannelExec channel = (ChannelExec) this.session.openChannel("exec");
+            // 获取连接
+            ShellConnect shellConnect = this.getShellConnect();
+            // 用户环境
+            Map<String, String> userEnvs = this.shellConnect.environments();
+            if (CollectionUtil.isNotEmpty(userEnvs)) {
+                for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                    channel.setEnv(entry.getKey(), entry.getValue());
+                }
+            }
+            // 初始化环境变量
+            if (this.osType != null) {
+                channel.setEnv("PATH", this.getExportPath());
+            }
+            // 初始化字符集
+            channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+            // 客户端转发
+            if (shellConnect.isJumpForward()) {
+                channel.setAgentForwarding(true);
+            }
+            // x11转发
+            if (shellConnect.isX11forwarding()) {
+                channel.setXForwarding(true);
+            }
+            return channel;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

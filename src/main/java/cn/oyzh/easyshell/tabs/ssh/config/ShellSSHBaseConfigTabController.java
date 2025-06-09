@@ -91,7 +91,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         }
         String text = this.data.getText();
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().sshExec();
             ShellSFTPClient sftpClient = this.sftpClient();
             try {
                 // 创建临时文件
@@ -132,7 +132,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         if (StringUtil.isBlank(filePath)) {
             return;
         }
-        ShellSSHExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().sshExec();
         StageManager.showMask(() -> {
             String output = exec.source(this.filePath());
             if (!StringUtil.isBlank(output)) {
@@ -140,13 +140,6 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
             }
         });
     }
-
-//    @FXML
-//    private void onDataKeyPressed(KeyEvent event) {
-//        if (KeyboardUtil.isCtrlS(event)) {
-//            this.save();
-//        }
-//    }
 
     @Override
     public void onTabInit(RichTab tab) {

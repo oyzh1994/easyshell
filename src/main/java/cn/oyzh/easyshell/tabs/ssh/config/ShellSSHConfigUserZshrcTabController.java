@@ -30,7 +30,7 @@ public class ShellSSHConfigUserZshrcTabController extends ShellSSHBaseConfigTabC
 
     @Override
     protected String fileContent() {
-        ShellSSHExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().sshExec();
         return exec.cat_user_zshrc();
     }
 }

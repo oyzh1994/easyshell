@@ -43,7 +43,7 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
             return;
         }
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().sshExec();
             String output = exec.memory_info();
             this.memoryInfo.text(output);
         });

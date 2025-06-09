@@ -43,7 +43,7 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
             return;
         }
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().sshExec();
             String output = exec.network_interface_info();
             this.networkCardInfo.text(output);
         });

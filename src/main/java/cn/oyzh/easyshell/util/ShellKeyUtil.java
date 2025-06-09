@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -200,26 +201,33 @@ public class ShellKeyUtil {
     public static boolean sshCopyId(List<ShellKey> keys, ShellSSHClient client) {
         try {
             ShellSFTPClient sftpClient = client.sftpClient();
-            // ssh已知公钥文件
-            String sshFile;
+            // ssh已知公钥文件列表
+            List<String> sshFiles = new ArrayList<>();
             // windows
             if (client.isWindows()) {
-                sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
+                String sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator();
                 // 检查文件夹
                 if (!sftpClient.exist(sshFile)) {
                     sftpClient.createDirRecursive(sshFile);
                 }
                 sshFile = sshFile + "authorized_keys";
+                sshFiles.add(sshFile);
+                // 这个是admin专用的ssh公钥文件
+                String adminSSHFile = "C:\\ProgramData\\ssh\\administrators_authorized_keys";
+                sshFiles.add(adminSSHFile);
             } else {
-                sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator() + "authorized_keys";
+                String sshFile = client.getUserHome() + ".ssh" + client.getFileSeparator() + "authorized_keys";
+                sshFiles.add(sshFile);
             }
             for (ShellKey key : keys) {
                 // 远程临时公钥
                 String remoteFile = client.getUserHome() + key.getId() + ".pub";
                 // 上传
                 sftpClient.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile, null);
-                // 追加到已知公钥
-                client.shellExec().append_file(remoteFile, sshFile);
+                // 追加到已知公钥文件
+                for (String sshFile : sshFiles) {
+                    client.sshExec().append_file(remoteFile, sshFile);
+                }
                 try {
                     // 删除临时公钥文件
                     sftpClient.delete(remoteFile);

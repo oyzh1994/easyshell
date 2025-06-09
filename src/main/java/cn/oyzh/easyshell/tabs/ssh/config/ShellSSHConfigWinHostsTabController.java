@@ -30,7 +30,7 @@ public class ShellSSHConfigWinHostsTabController extends ShellSSHBaseConfigTabCo
 
     @Override
     protected String fileContent() {
-        ShellSSHExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().sshExec();
         return exec.cat_hosts();
     }
 }

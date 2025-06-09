@@ -30,7 +30,7 @@ public class ShellSSHConfigBashTabController extends ShellSSHBaseConfigTabContro
 
     @Override
     protected String fileContent() {
-        ShellSSHExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().sshExec();
         return exec.cat_bash_bashrc();
     }
 }

@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2025-06-07
  */
-public class ShellSFTPChannelManager implements AutoCloseable {
+public class ShellSFTPChannelPool implements AutoCloseable {
 
     /**
      * 初始通道数量
@@ -26,11 +26,11 @@ public class ShellSFTPChannelManager implements AutoCloseable {
      */
     private List<ShellSFTPChannel> channels = new CopyOnWriteArrayList<>();
 
-    public ShellSFTPChannelManager(ShellSFTPClient client) {
+    public ShellSFTPChannelPool(ShellSFTPClient client) {
         this(client, 3);
     }
 
-    public ShellSFTPChannelManager(ShellSFTPClient client, int initSize) {
+    public ShellSFTPChannelPool(ShellSFTPClient client, int initSize) {
         this.client = client;
         this.initSize = initSize;
     }
@@ -40,7 +40,7 @@ public class ShellSFTPChannelManager implements AutoCloseable {
      */
     private void init() {
         while (this.channels.size() < this.initSize) {
-            ShellSFTPChannel channel = this.client.newChannel();
+            ShellSFTPChannel channel = this.client.newSFTPChannel();
             if (channel == null) {
                 break;
             }

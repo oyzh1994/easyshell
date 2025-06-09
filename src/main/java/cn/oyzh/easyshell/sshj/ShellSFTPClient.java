@@ -49,7 +49,7 @@
 //     /**
 //      * 通道管理器
 //      */
-//     private ShellSFTPChannelManager channelManager;
+//     private ShellSFTPChannelPool channelManager;
 //
 //     /**
 //      * 链接管理器
@@ -85,7 +85,7 @@
 //         this.shellConnect = shellConnect;
 //         this.session = session;
 //         super.addStateListener(this.stateListener);
-//         this.channelManager = new ShellSFTPChannelManager(this);
+//         this.channelManager = new ShellSFTPChannelPool(this);
 //         this.realpathManager = new ShellSFTPRealpathManager(this);
 //     }
 //

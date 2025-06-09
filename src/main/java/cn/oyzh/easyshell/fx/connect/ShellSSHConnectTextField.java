@@ -44,7 +44,8 @@ public class ShellSSHConnectTextField extends FXTextField {
     protected ShellSSHConnectTextFieldSkin createDefaultSkin() {
         ShellSSHConnectTextFieldSkin skin = new ShellSSHConnectTextFieldSkin(this);
         ShellConnectStore store = ShellConnectStore.INSTANCE;
-        List<ShellConnect> connects = store.load();
+        // 仅ssh连接
+        List<ShellConnect> connects = store.loadSSH();
         skin.setItemList(connects);
         skin.setConverter(new SimpleStringConverter<>() {
             @Override

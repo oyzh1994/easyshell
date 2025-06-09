@@ -65,7 +65,7 @@ public class ShellSSHServerDiskTabController extends SubTabController {
     }
 
     public void init() {
-        ShellSSHExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().sshExec();
         List<ShellSSHDiskInfo> shellDiskInfos = exec.disk_info();
         this.diskTable.setItem(shellDiskInfos);
     }
