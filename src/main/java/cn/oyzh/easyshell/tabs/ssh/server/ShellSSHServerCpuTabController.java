@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh.server;
 
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -43,7 +43,7 @@ public class ShellSSHServerCpuTabController extends SubTabController {
             return;
         }
         StageManager.showMask(() -> {
-            ShellExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().shellExec();
             String output = exec.cpu_info();
             this.cpuInfo.text(output);
         });

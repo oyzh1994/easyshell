@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -625,11 +625,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.serverExec;
     }
 
-    private ShellExec shellExec;
+    private ShellSSHExec shellExec;
 
-    public ShellExec shellExec() {
+    public ShellSSHExec shellExec() {
         if (this.shellExec == null) {
-            this.shellExec = new ShellExec(this);
+            this.shellExec = new ShellSSHExec(this);
         }
         return this.shellExec;
     }

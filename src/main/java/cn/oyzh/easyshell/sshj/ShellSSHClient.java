@@ -15,7 +15,7 @@
 // import cn.oyzh.easyshell.exception.ShellException;
 // import cn.oyzh.easyshell.internal.BaseClient;
 // import cn.oyzh.easyshell.internal.ShellConnState;
-// import cn.oyzh.easyshell.internal.exec.ShellExec;
+// import cn.oyzh.easyshell.internal.exec.ShellSSHExec;
 // import cn.oyzh.easyshell.internal.process.ShellProcessExec;
 // import cn.oyzh.easyshell.internal.server.ShellServerExec;
 // import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -603,11 +603,11 @@
 //         return this.serverExec;
 //     }
 //
-//     private ShellExec shellExec;
+//     private ShellSSHExec shellExec;
 //
-//     public ShellExec shellExec() {
+//     public ShellSSHExec shellExec() {
 //         if (this.shellExec == null) {
-//             this.shellExec = new ShellExec(this);
+//             this.shellExec = new ShellSSHExec(this);
 //         }
 //         return this.shellExec;
 //     }

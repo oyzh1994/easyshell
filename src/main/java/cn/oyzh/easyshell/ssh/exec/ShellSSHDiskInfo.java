@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.ssh.exec;
  * @author oyzh
  * @since 2025-03-18
  */
-public class ShellDiskInfo {
+public class ShellSSHDiskInfo {
 
     private String fileSystem;
 

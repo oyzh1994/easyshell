@@ -10,16 +10,16 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-18
  */
-public class ShellExecParser {
+public class ShellSSHExecParser {
 
-    public static List<ShellDiskInfo> diskForLinux(String output) {
+    public static List<ShellSSHDiskInfo> diskForLinux(String output) {
         try {
             String[] lines = output.split("\n");
-            List<ShellDiskInfo> list = new ArrayList<>();
+            List<ShellSSHDiskInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                ShellDiskInfo info = new ShellDiskInfo();
+                ShellSSHDiskInfo info = new ShellSSHDiskInfo();
                 info.setFileSystem(cols[0]);
                 info.setSize(cols[1]);
                 info.setUsed(cols[2]);
@@ -35,14 +35,14 @@ public class ShellExecParser {
         return Collections.emptyList();
     }
 
-    public static List<ShellDiskInfo> diskForMacos(String output) {
+    public static List<ShellSSHDiskInfo> diskForMacos(String output) {
         try {
             String[] lines = output.split("\n");
-            List<ShellDiskInfo> list = new ArrayList<>();
+            List<ShellSSHDiskInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+");
-                ShellDiskInfo info = new ShellDiskInfo();
+                ShellSSHDiskInfo info = new ShellSSHDiskInfo();
                 info.setFileSystem(cols[0]);
                 info.setSize(cols[1]);
                 info.setUsed(cols[2]);
@@ -58,14 +58,14 @@ public class ShellExecParser {
         return Collections.emptyList();
     }
 
-    public static List<ShellDiskInfo> diskForWindows(String output) {
+    public static List<ShellSSHDiskInfo> diskForWindows(String output) {
         try {
             String[] lines = output.split("\n");
-            List<ShellDiskInfo> list = new ArrayList<>();
+            List<ShellSSHDiskInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length - 1; i++) {
                 String line = lines[i];
                 String[] cols = line.split("\\s+", -1);
-                ShellDiskInfo info = new ShellDiskInfo();
+                ShellSSHDiskInfo info = new ShellSSHDiskInfo();
                 long free = Long.parseLong(cols[0]);
                 long size = Long.parseLong(cols[2]);
                 long used = size - free;

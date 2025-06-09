@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh.config;
 
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
@@ -30,7 +30,7 @@ public class ShellSSHConfigWinEnvironmentTabController extends ShellSSHBaseConfi
 
     @Override
     protected String fileContent() {
-        ShellExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().shellExec();
         return exec.cat_environment();
     }
 }

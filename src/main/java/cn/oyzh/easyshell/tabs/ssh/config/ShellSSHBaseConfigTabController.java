@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
@@ -91,7 +91,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         }
         String text = this.data.getText();
         StageManager.showMask(() -> {
-            ShellExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().shellExec();
             ShellSFTPClient sftpClient = this.sftpClient();
             try {
                 // 创建临时文件
@@ -132,7 +132,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         if (StringUtil.isBlank(filePath)) {
             return;
         }
-        ShellExec exec = this.client().shellExec();
+        ShellSSHExec exec = this.client().shellExec();
         StageManager.showMask(() -> {
             String output = exec.source(this.filePath());
             if (!StringUtil.isBlank(output)) {

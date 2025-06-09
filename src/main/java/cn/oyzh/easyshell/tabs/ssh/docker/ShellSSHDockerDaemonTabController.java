@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -57,7 +57,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
             try {
                 String filePath = this.filePath.getText();
                 if (this.sftpClient().exist(filePath)) {
-                    ShellExec exec = this.client().shellExec();
+                    ShellSSHExec exec = this.client().shellExec();
                     String output = exec.cat_docker_daemon(filePath);
                     this.data.setText(output);
                 }
@@ -84,7 +84,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     private void save() {
         String text = this.data.getText();
         StageManager.showMask(() -> {
-            ShellExec exec = this.client().shellExec();
+            ShellSSHExec exec = this.client().shellExec();
             ShellSFTPClient sftpClient = this.sftpClient();
             try {
                 // 创建json文件

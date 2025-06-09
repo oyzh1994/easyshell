@@ -13,11 +13,11 @@ import java.util.List;
  * @author oyzh
  * @since 2023/8/16
  */
-public class ShellExec implements AutoCloseable {
+public class ShellSSHExec implements AutoCloseable {
 
     private ShellSSHClient client;
 
-    public ShellExec(ShellSSHClient client) {
+    public ShellSSHExec(ShellSSHClient client) {
         this.client = client;
     }
 
@@ -42,16 +42,16 @@ public class ShellExec implements AutoCloseable {
         return this.client.exec("lscpu");
     }
 
-    public List<ShellDiskInfo> disk_info() {
+    public List<ShellSSHDiskInfo> disk_info() {
         if (this.client.isWindows()) {
             String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
-            return ShellExecParser.diskForWindows(output);
+            return ShellSSHExecParser.diskForWindows(output);
         } else {
             String output = this.client.exec("df -h");
             if (this.client.isMacos()) {
-                return ShellExecParser.diskForMacos(output);
+                return ShellSSHExecParser.diskForMacos(output);
             }
-            return ShellExecParser.diskForLinux(output);
+            return ShellSSHExecParser.diskForLinux(output);
         }
     }
 

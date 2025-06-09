@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh.server;
 
-import cn.oyzh.easyshell.ssh.exec.ShellDiskInfo;
-import cn.oyzh.easyshell.ssh.exec.ShellExec;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHDiskInfo;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.fx.ShellDiskInfoTableView;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
@@ -65,8 +65,8 @@ public class ShellSSHServerDiskTabController extends SubTabController {
     }
 
     public void init() {
-        ShellExec exec = this.client().shellExec();
-        List<ShellDiskInfo> shellDiskInfos = exec.disk_info();
+        ShellSSHExec exec = this.client().shellExec();
+        List<ShellSSHDiskInfo> shellDiskInfos = exec.disk_info();
         this.diskTable.setItem(shellDiskInfos);
     }
 }

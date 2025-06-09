@@ -3,8 +3,8 @@
 //
 // import cn.oyzh.common.util.StringUtil;
 // import cn.oyzh.easyshell.file.ShellFileUtil;
-// import cn.oyzh.easyshell.internal.exec.ShellDiskInfo;
-// import cn.oyzh.easyshell.internal.exec.ShellExecParser;
+// import cn.oyzh.easyshell.internal.exec.ShellSSHDiskInfo;
+// import cn.oyzh.easyshell.internal.exec.ShellSSHExecParser;
 // import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 // import cn.oyzh.easyshell.util.ShellUtil;
 //
@@ -14,11 +14,11 @@
 //  * @author oyzh
 //  * @since 2023/8/16
 //  */
-// public class ShellExec implements AutoCloseable {
+// public class ShellSSHExec implements AutoCloseable {
 //
 //     private ShellSSHClient client;
 //
-//     public ShellExec(ShellSSHClient client) {
+//     public ShellSSHExec(ShellSSHClient client) {
 //         this.client = client;
 //     }
 //
@@ -43,16 +43,16 @@
 //         return this.client.exec("lscpu");
 //     }
 //
-//     public List<ShellDiskInfo> disk_info() {
+//     public List<ShellSSHDiskInfo> disk_info() {
 //         if (this.client.isWindows()) {
 //             String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
-//             return ShellExecParser.diskForWindows(output);
+//             return ShellSSHExecParser.diskForWindows(output);
 //         } else {
 //             String output = this.client.exec("df -h");
 //             if (this.client.isMacos()) {
-//                 return ShellExecParser.diskForMacos(output);
+//                 return ShellSSHExecParser.diskForMacos(output);
 //             }
-//             return ShellExecParser.diskForLinux(output);
+//             return ShellSSHExecParser.diskForLinux(output);
 //         }
 //     }
 //
