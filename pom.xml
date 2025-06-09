@@ -199,6 +199,14 @@
         </dependency>
         <!-- vnc协议依赖结束 -->
 
+        <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>0.40.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- fx打包 -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
