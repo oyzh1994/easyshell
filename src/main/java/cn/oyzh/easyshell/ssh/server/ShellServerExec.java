@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.internal.server;
+package cn.oyzh.easyshell.ssh.server;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.thread.DownLatch;

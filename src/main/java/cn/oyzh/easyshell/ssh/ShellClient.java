@@ -1,11 +1,11 @@
-package cn.oyzh.easyshell.internal;
+package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
+import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
