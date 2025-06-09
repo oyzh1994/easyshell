@@ -47,6 +47,11 @@ public class ShellSFTPFile implements ShellFile {
      */
     private String parentPath;
 
+//    /**
+//     * 链接路径
+//     */
+//    private String linkPath;
+
     /**
      * 链接属性
      */
@@ -128,13 +133,8 @@ public class ShellSFTPFile implements ShellFile {
     public ShellSFTPFile(String parentPath, ChannelSftp.LsEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
-        String[] arr = entry.getLongname().split("\\s+");
-        if (arr.length >= 2) {
-            this.owner = arr[2];
-        }
-        if (arr.length >= 3) {
-            this.group = arr[3];
-        }
+        this.owner = entry.getLongname().split("\\s+")[2];
+        this.group = entry.getLongname().split("\\s+")[3];
         this.updatePermissions();
     }
 
@@ -282,6 +282,7 @@ public class ShellSFTPFile implements ShellFile {
                 this.group = file.group;
             }
             this.fileName = file.fileName;
+//            this.linkPath = file.linkPath;
             this.linkAttrs = file.linkAttrs;
             this.parentPath = file.parentPath;
             this.updatePermissions();
@@ -298,4 +299,22 @@ public class ShellSFTPFile implements ShellFile {
         }
         return this.getAttrs().isDir();
     }
+
+//    /**
+//     * 设置链接文件
+//     *
+//     * @param linkPath 链接文件
+//     */
+//    public void setLinkPath(String linkPath) {
+//        this.linkPath = linkPath;
+//    }
+//
+//    /**
+//     * 获取链接路径
+//     *
+//     * @return 链接路径
+//     */
+//    public String getLinkPath() {
+//        return linkPath;
+//    }
 }

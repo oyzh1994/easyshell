@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.ssh;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -13,7 +12,6 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.internal.exec.ShellExec;
 import cn.oyzh.easyshell.internal.process.ShellProcessExec;
@@ -31,19 +29,15 @@ import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.util.SSHHolder;
-import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
-import com.jcraft.jsch.Session;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +49,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellSSHClient implements BaseClient {
+public class ShellSSHClient extends ShellClient {
 
     /**
      * shell类型
@@ -77,319 +71,10 @@ public class ShellSSHClient implements BaseClient {
      */
     private StringProperty workDirProperty;
 
-    /**
-     * 系统类型
-     */
-    protected String osType;
-
-    /**
-     * 会话
-     */
-    protected Session session;
-
-    /**
-     * 用户目录
-     */
-    protected String userHome;
-
-    /**
-     * 远程字符集
-     */
-    protected String remoteCharset;
-
-    /**
-     * shell信息
-     */
-    protected ShellConnect shellConnect;
-
-    /**
-     * 环境变量
-     */
-    protected List<String> environment;
-
-    /**
-     * ssh跳板转发器
-     */
-    private SSHJumpForwarder jumpForwarder;
-
-    /**
-     * ssh隧道转发器
-     */
-    private SSHTunnelingForwarder tunnelForwarder;
-
-    /**
-     * shell密钥存储
-     */
-    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
-
-    /**
-     * x11配置存储
-     */
-    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
-
-    /**
-     * 隧道转发存储
-     */
-    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
-
-    /**
-     * 代理配置存储
-     */
-    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
-
-    /**
-     * 连接状态
-     */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
-
-    @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
-    }
-
-    /**
-     * 当前状态监听器
-     */
-    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> BaseClient.super.onStateChanged(state3);
-
-    public ShellSSHClient(ShellConnect shellConnect) {
-        this.shellConnect = shellConnect;
-        this.addStateListener(this.stateListener);
-    }
-
-    @Override
-    public ShellConnect getShellConnect() {
-        return shellConnect;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    /**
-     * 获取系统类型
-     *
-     * @return 系统类型
-     */
-    protected String osType() {
-        if (this.osType == null) {
-            String output = this.exec("which");
-            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "which")) {
-                this.osType = "Windows";
-            } else {
-                this.osType = this.exec("uname");
-            }
-        }
-        return this.osType;
-    }
-
-    /**
-     * 执行命令
-     *
-     * @param command 命令
-     * @return 结果
-     */
-    public String exec(String command) {
-        ChannelExec channel = null;
-        try {
-            ShellConnect shellConnect = this.getShellConnect();
-            // 获取通道
-            channel = (ChannelExec) this.session.openChannel("exec");
-            // 用户环境
-            Map<String, String> userEnvs = this.shellConnect.environments();
-            if (CollectionUtil.isNotEmpty(userEnvs)) {
-                for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                    channel.setEnv(entry.getKey(), entry.getValue());
-                }
-            }
-            // 初始化环境变量
-            if (this.osType != null) {
-                channel.setEnv("PATH", this.getExportPath());
-            }
-            // 初始化字符集
-            channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-            // 客户端转发
-            if (shellConnect.isJumpForward()) {
-                channel.setAgentForwarding(true);
-            }
-            // x11转发
-            if (shellConnect.isX11forwarding()) {
-                channel.setXForwarding(true);
-            }
-            // 操作
-            ShellSSHClientActionUtil.forAction(this.connectName(), command);
-            channel.setCommand(command);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            channel.setOutputStream(stream);
-            channel.setErrStream(stream);
-            channel.connect(this.connectTimeout());
-            while (channel.isConnected()) {
-                Thread.sleep(5);
-            }
-            String result;
-            // 如果远程是windows，则要检查下字符集是否要指定
-            if (StringUtil.isNotBlank(this.remoteCharset)) {
-                result = stream.toString(this.remoteCharset);
-            } else {
-                result = stream.toString();
-            }
-            IOUtil.close(stream);
-            if (StringUtil.endsWith(result, "\r\n")) {
-                result = result.substring(0, result.length() - 2);
-            } else if (StringUtil.endWithAny(result, "\n", "\r")) {
-                result = result.substring(0, result.length() - 1);
-            }
-            return result;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (channel != null) {
-                channel.disconnect();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取path变量
-     *
-     * @return 结果
-     */
-    public String getExportPath() {
-        // 初始化环境
-        if (this.environment == null) {
-            this.initEnvironment();
-        }
-        StringBuilder builder = new StringBuilder();
-        if (this.isWindows()) {
-            for (String string : this.environment) {
-                builder.append(string).append(";");
-            }
-            builder.deleteCharAt(builder.length() - 1);
-        } else {
-            for (String string : this.environment) {
-                builder.append(":").append(string);
-            }
-        }
-        return builder.toString();
-    }
-
-    /**
-     * 初始化环境
-     */
-    protected void initEnvironment() {
-        this.environment = new ArrayList<>();
-        if (this.isWindows()) {
-            this.environment.add("C:/Windows/System");
-            this.environment.add("C:/Windows/System32");
-            this.environment.add("C:/Windows/SysWOW64");
-            this.environment.add("C:/Program Files");
-            this.environment.add("C:/Program Files (x86)");
-        } else {
-            this.environment.add("/bin");
-            this.environment.add("/sbin");
-            this.environment.add("/usr/bin");
-            this.environment.add("/usr/sbin");
-            this.environment.add("/usr/games");
-            this.environment.add("/usr/local/bin");
-            this.environment.add("/usr/local/sbin");
-            this.environment.add("/usr/local/games");
-        }
-        JulLog.info("remote charset: {}", this.getRemoteCharset());
-    }
-
-    /**
-     * 是否macos系统
-     *
-     * @return 结果
-     */
-    public boolean isMacos() {
-        return StringUtil.containsIgnoreCase(this.osType(), "Darwin");
-    }
-
-    /**
-     * 是否linux系统
-     *
-     * @return 结果
-     */
-    public boolean isLinux() {
-        return StringUtil.containsIgnoreCase(this.osType(), "Linux");
-    }
-
-    /**
-     * 是否unix系统
-     *
-     * @return 结果
-     */
-    public boolean isUnix() {
-        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix");
-    }
-
-    /**
-     * 是否freebsd系统
-     *
-     * @return 结果
-     */
-    public boolean isFreeBSD() {
-        return StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
-    }
-
-    /**
-     * 是否windows系统
-     *
-     * @return 结果
-     */
-    public boolean isWindows() {
-        return StringUtil.equals(this.osType(), "Windows");
-    }
-
-    /**
-     * 获取远程字符集
-     *
-     * @return 远程字符集
-     */
-    public String getRemoteCharset() {
-        if (this.remoteCharset == null) {
-            if (this.isWindows()) {
-                String output = this.exec("chcp");
-                this.remoteCharset = ShellUtil.getCharsetFromChcp(output);
-            } else if (this.isUnix() || this.isMacos() || this.isLinux()) {
-                String output = this.exec("echo $LANG");
-                this.remoteCharset = ShellUtil.getCharsetFromLang(output);
-            }
-        }
-        return this.remoteCharset;
-    }
-
-    /**
-     * 获取文件分割符
-     *
-     * @return 文件分割符
-     */
-    public String getFileSeparator() {
-        if (this.isWindows()) {
-            return "\\";
-        }
-        return "/";
-    }
-
-    /**
-     * 获取用户目录
-     *
-     * @return 用户目录
-     */
-    public String getUserHome() {
-        if (this.userHome == null) {
-            if (this.isWindows()) {
-                this.userHome = this.exec("echo %HOME%");
-                this.userHome += "\\";
-            } else {
-                this.userHome = this.exec("echo $HOME");
-                this.userHome += "/";
-            }
-        }
-        return this.userHome;
-    }
+//    /**
+//     * 终端历史存储
+//     */
+//    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
 
     /**
      * 是否解析工作目录
@@ -451,6 +136,73 @@ public class ShellSSHClient implements BaseClient {
             this.workDirProperty = new SimpleStringProperty();
         }
         return this.workDirProperty;
+    }
+
+//    /**
+//     * 保存终端历史
+//     *
+//     * @param output 输出
+//     */
+//    public void saveTermHistory(String output) {
+//        String command = ShellSSHUtil.resolveCommand(output);
+//        if (StringUtil.isNotBlank(command)) {
+//            JulLog.error("command: " + command);
+//            ShellTermHistory history = new ShellTermHistory();
+//            history.setContent(command);
+//            history.setIid(this.shellConnect.getId());
+//            history.setSaveTime(System.currentTimeMillis());
+//            this.termHistoryStore.save(history);
+//        }
+//    }
+
+    /**
+     * ssh跳板转发器
+     */
+    private SSHJumpForwarder jumpForwarder;
+
+    /**
+     * ssh隧道转发器
+     */
+    private SSHTunnelingForwarder tunnelForwarder;
+
+    /**
+     * shell密钥存储
+     */
+    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+
+    /**
+     * x11配置存储
+     */
+    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
+
+    /**
+     * 隧道转发存储
+     */
+    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
+
+    /**
+     * 代理配置存储
+     */
+    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
+
+    /**
+     * 连接状态
+     */
+    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+
+    @Override
+    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
+        return this.state.getReadOnlyProperty();
+    }
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
+
+    public ShellSSHClient(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
+        this.addStateListener(this.stateListener);
     }
 
     /**
@@ -585,7 +337,7 @@ public class ShellSSHClient implements BaseClient {
     /**
      * 初始化客户端
      */
-    protected void initClient() throws JSchException {
+    private void initClient() throws JSchException {
         if (JulLog.isInfoEnabled()) {
             JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
         }
@@ -622,8 +374,12 @@ public class ShellSSHClient implements BaseClient {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
-       // 去掉首次连接确认
+//        // 配置参数
+//        Properties config = new Properties();
+//        // 去掉首次连接确认
        this.session.setConfig("StrictHostKeyChecking", "no");
+//        // 设置配置
+//        this.session.setConfig(config);
         // 初始化x11
         this.initX11();
         // 初始化代理
@@ -670,6 +426,7 @@ public class ShellSSHClient implements BaseClient {
                 this.sftpClient.close();
             }
             this.removeStateListener(this.stateListener);
+//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -781,6 +538,51 @@ public class ShellSSHClient implements BaseClient {
         }
         return this.shell;
     }
+
+//    /**
+//     * 通过shell通道执行命令
+//     *
+//     * @param command 命令
+//     * @return 结果
+//     */
+//    public String execShell(String command) throws Exception {
+//        ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+//        // 客户端转发
+//        if (this.shellConnect.isJumpForward()) {
+//            channel.setAgentForwarding(true);
+//        }
+//        // x11转发
+//        if (this.shellConnect.isX11forwarding()) {
+//            channel.setXForwarding(true);
+//        }
+//        // 设置终端类型
+//        channel.setPty(true);
+//        channel.connect(this.connectTimeout());
+//        if (channel.isConnected()) {
+//            channel.setPtyType(this.shellConnect.getTermType());
+//            InputStream in = channel.getInputStream();
+//            OutputStream out = channel.getOutputStream();
+//            out.write(command.getBytes());
+//            out.flush();
+//            StringBuilder result = new StringBuilder();
+//            byte[] buffer = new byte[1024];
+//            boolean first = true;
+//            while (first || in.available() > 0) {
+//                if (first) {
+//                    ThreadUtil.sleep(50);
+//                    first = false;
+//                }
+//                int len = in.read(buffer);
+//                result.append(new String(buffer, 0, len, this.getCharset()));
+//                ThreadUtil.sleep(10);
+//            }
+//            IOUtil.close(in);
+//            IOUtil.close(out);
+//            channel.disconnect();
+//            return result.toString();
+//        }
+//        return null;
+//    }
 
     private ShellDockerExec dockerExec;
 
