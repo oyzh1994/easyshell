@@ -21,7 +21,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2025/04/25
  */
-public abstract class ShellClient implements BaseClient {
+public abstract class ShellBaseSSHClient implements BaseClient {
 
     /**
      * 系统类型

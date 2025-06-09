@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.ssh.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
 import cn.oyzh.ssh.util.SSHHolder;
@@ -39,7 +39,7 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025/04/16
  */
-public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
+public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClient<ShellSFTPFile> {
 
     /**
      * 通道管理器

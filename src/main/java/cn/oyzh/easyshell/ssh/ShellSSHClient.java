@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/08/16
  */
-public class ShellSSHClient extends ShellClient {
+public class ShellSSHClient extends ShellBaseSSHClient {
 
     /**
      * shell类型
