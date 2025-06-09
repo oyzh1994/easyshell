@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.sshj;
 //
 //
-// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPChannel;
+// import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
 //
 // import java.util.List;
 // import java.util.concurrent.CopyOnWriteArrayList;

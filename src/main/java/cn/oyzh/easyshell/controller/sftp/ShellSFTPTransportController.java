@@ -7,9 +7,9 @@
 //import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 //import cn.oyzh.easyshell.fx.sftp.SftpTransportTaskTableView;
 //import cn.oyzh.easyshell.fx.sftp.ShellFileTransportFileTableView;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
+//import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 //import cn.oyzh.easyshell.sftp.ShellClientUtil;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
+//import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 //import cn.oyzh.fx.gui.text.field.ClearableTextField;

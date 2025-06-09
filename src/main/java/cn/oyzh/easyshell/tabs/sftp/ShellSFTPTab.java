@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.sftp;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
-import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;

@@ -6,8 +6,8 @@
 //import cn.oyzh.common.util.UUIDUtil;
 //import cn.oyzh.easyshell.ShellConst;
 //import cn.oyzh.easyshell.domain.ShellSetting;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
+//import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+//import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.store.ShellSettingStore;
 //import cn.oyzh.fx.gui.text.field.ClearableTextField;
 //import cn.oyzh.fx.plus.FXConst;

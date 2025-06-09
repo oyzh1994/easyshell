@@ -1,8 +1,8 @@
 //package cn.oyzh.easyshell.controller.sftp;
 //
 //import cn.oyzh.easyshell.file.ShellFileUtil;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
+//import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+//import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 //import cn.oyzh.fx.plus.FXConst;
 //import cn.oyzh.fx.plus.controller.StageController;

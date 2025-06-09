@@ -5,8 +5,8 @@
 //import cn.oyzh.common.thread.ThreadUtil;
 //import cn.oyzh.common.util.CollectionUtil;
 //import cn.oyzh.common.util.IOUtil;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
+//import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+//import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.file.ShellFileStatus;
 //import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 //import cn.oyzh.easyshell.file.ShellFileUtil;

@@ -5,8 +5,8 @@
 //import cn.oyzh.common.function.WeakConsumer;
 //import cn.oyzh.common.function.WeakRunnable;
 //import cn.oyzh.common.log.JulLog;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPChannel;
-//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
+//import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+//import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.file.ShellFileUtil;
 //import cn.oyzh.fx.plus.information.MessageBox;
 //import com.jcraft.jsch.ChannelSftp;
