@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.popups;
 
 import atlantafx.base.controls.Popover;
 import cn.oyzh.easyshell.fx.term.ShellTermHistoryListView;
-import cn.oyzh.easyshell.internal.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;

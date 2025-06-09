@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
-import cn.oyzh.easyshell.internal.server.ShellServerExec;
-import cn.oyzh.easyshell.internal.server.ShellServerInfo;
+import cn.oyzh.easyshell.ssh.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh.server.ShellServerInfo;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerCpuTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerDiskTabController;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.internal.server;
+package cn.oyzh.easyshell.ssh.server;
 
 /**
  * @author oyzh
