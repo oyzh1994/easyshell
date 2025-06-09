@@ -5,7 +5,7 @@
 // import cn.oyzh.easyshell.file.ShellFileUtil;
 // import cn.oyzh.easyshell.internal.exec.ShellDiskInfo;
 // import cn.oyzh.easyshell.internal.exec.ShellExecParser;
-// import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPChannel;
 // import cn.oyzh.easyshell.util.ShellUtil;
 //
 // import java.util.List;

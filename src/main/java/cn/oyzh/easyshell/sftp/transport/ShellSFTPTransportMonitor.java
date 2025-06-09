@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.common.log.JulLog;
 //import cn.oyzh.common.thread.ThreadUtil;
-//import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
 //import cn.oyzh.easyshell.sftp.ShellSFTPMonitor;
 //import cn.oyzh.i18n.I18nHelper;
 //

@@ -2,10 +2,10 @@
 //
 // import cn.oyzh.common.exception.ExceptionUtil;
 // import cn.oyzh.common.log.JulLog;
-// import cn.oyzh.easyshell.sftp.ShellSFTPAttr;
-// import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
-// import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-// import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPAttr;
+// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPChannel;
+// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
+// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPFile;
 // import com.jcraft.jsch.SftpException;
 // import net.schmizz.sshj.sftp.FileAttributes;
 // import net.schmizz.sshj.sftp.FileMode;
@@ -20,11 +20,11 @@
 //
 // public class ShellSFTPUtil {
 //
-//     public static String getOwner(int uid, cn.oyzh.easyshell.sftp.ShellSFTPClient client) {
+//     public static String getOwner(int uid, cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient client) {
 //         if (client.isWindows()) {
 //             return "-";
 //         }
-//         cn.oyzh.easyshell.sftp.ShellSFTPAttr attr = client.getAttr();
+//         cn.oyzh.easyshell.ssh.sftp.ShellSFTPAttr attr = client.getAttr();
 //         String ownerName = attr.getOwner(uid);
 //         if (ownerName == null) {
 //             ownerName = client.exec_id_un(uid);
@@ -33,7 +33,7 @@
 //         return ownerName;
 //     }
 //
-//     public static String getGroup(int gid, cn.oyzh.easyshell.sftp.ShellSFTPClient client) {
+//     public static String getGroup(int gid, cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient client) {
 //         if (client.isWindows()) {
 //             return "-";
 //         }

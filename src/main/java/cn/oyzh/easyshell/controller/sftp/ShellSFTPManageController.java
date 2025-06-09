@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.easyshell.fx.file.ShellFileDownloadTaskTableView;
 //import cn.oyzh.easyshell.fx.file.ShellFileUploadTaskTableView;
-//import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
 //import cn.oyzh.easyshell.util.ShellI18nHelper;
 //import cn.oyzh.fx.plus.FXConst;
 //import cn.oyzh.fx.plus.controller.StageController;

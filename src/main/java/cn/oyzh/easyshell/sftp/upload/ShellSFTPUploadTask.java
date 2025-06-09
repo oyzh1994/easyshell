@@ -4,7 +4,7 @@
 //import cn.oyzh.common.log.JulLog;
 //import cn.oyzh.common.thread.ThreadUtil;
 //import cn.oyzh.common.util.ArrayUtil;
-//import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+//import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
 //import cn.oyzh.easyshell.file.ShellFileStatus;
 //import cn.oyzh.easyshell.sftp.ShellSFTPTask;
 //import cn.oyzh.easyshell.file.ShellFileUtil;

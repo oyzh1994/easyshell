@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
 import cn.oyzh.easyshell.internal.server.ShellServerExec;
 import cn.oyzh.easyshell.internal.server.ShellServerMonitor;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;

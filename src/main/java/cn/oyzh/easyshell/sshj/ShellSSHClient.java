@@ -18,7 +18,7 @@
 // import cn.oyzh.easyshell.internal.exec.ShellExec;
 // import cn.oyzh.easyshell.internal.process.ShellProcessExec;
 // import cn.oyzh.easyshell.internal.server.ShellServerExec;
-// import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+// import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
 // import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
 // import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
 // import cn.oyzh.easyshell.ssh.ShellSSHShell;

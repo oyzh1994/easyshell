@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.sftp;
+package cn.oyzh.easyshell.ssh.sftp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.IOUtil;
@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.internal.ShellClient;
+import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
 import cn.oyzh.ssh.util.SSHHolder;
