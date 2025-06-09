@@ -97,7 +97,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
         // 启用压缩
-        this.useCompression();
+        this.useCompression(false);
         // 初始化会话
         this.initSession();
     }
@@ -182,6 +182,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 this.session.connect(this.connectTimeout());
             }
             ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
+            channel.setInputStream(null);
+            channel.setOutputStream(null);
             // 设置字符集
             channel.setFilenameEncoding(this.getCharset());
             ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathManager);

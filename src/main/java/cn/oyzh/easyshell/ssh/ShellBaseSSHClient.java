@@ -98,8 +98,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
             channel.setCommand(command);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            channel.setOutputStream(stream);
             channel.setErrStream(stream);
+            channel.setInputStream(null);
+            channel.setOutputStream(stream);
             channel.connect(this.connectTimeout());
             while (channel.isConnected()) {
                 Thread.sleep(5);
@@ -282,16 +283,22 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     }
 
     /**
-     * 启用压缩
+     * 使用压缩
+     *
+     * @param useCompression 是否使用压缩
      */
-    protected void useCompression() {
+    protected void useCompression(boolean useCompression) {
         if (this.session != null) {
-            // 启用压缩（等效于 SSHJ 的 useCompression()）
-            this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-            this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-
-            // 设置压缩级别（可选，范围 1-9，默认 6）
-            this.session.setConfig("compression.level", "6");
+            // 启用压缩
+            if (useCompression) {
+                this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+                this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+                // 设置压缩级别（可选，范围 1-9，默认 6）
+                this.session.setConfig("compression.level", "9");
+            } else {
+                this.session.setConfig("compression.s2c", "none");
+                this.session.setConfig("compression.c2s", "none");
+            }
         }
     }
 
