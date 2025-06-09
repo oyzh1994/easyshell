@@ -10,12 +10,9 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.ssh.ShellClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
-import cn.oyzh.ssh.util.SSHHolder;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -39,7 +36,7 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025/04/16
  */
-public class ShellSFTPClient extends ShellClient implements ShellFileClient<ShellSFTPFile> {
+public class ShellSFTPClient extends ShellSSHClient implements ShellFileClient<ShellSFTPFile> {
 
     /**
      * 通道管理器
@@ -76,6 +73,7 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
     }
 
     public ShellSFTPClient(ShellConnect shellConnect, Session session) {
+        super(shellConnect);
         this.shellConnect = shellConnect;
         this.session = session;
         super.addStateListener(this.stateListener);
@@ -83,22 +81,22 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
         this.realpathManager = new ShellSFTPRealpathManager(this);
     }
 
-    /**
-     * 初始化客户端
-     */
-    private void initClient() throws JSchException {
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
-        }
-        // 连接信息
-        int port = this.shellConnect.hostPort();
-        String hostIp = this.shellConnect.hostIp();
-        // 创建会话
-        this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-        this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
-        // 去掉首次连接确认
-        this.session.setConfig("StrictHostKeyChecking", "no");
-    }
+    // /**
+    //  * 初始化客户端
+    //  */
+    // private void initClient() throws JSchException {
+    //     if (JulLog.isInfoEnabled()) {
+    //         JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
+    //     }
+    //     // 连接信息
+    //     int port = this.shellConnect.hostPort();
+    //     String hostIp = this.shellConnect.hostIp();
+    //     // 创建会话
+    //     this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
+    //     this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
+    //     // 去掉首次连接确认
+    //     this.session.setConfig("StrictHostKeyChecking", "no");
+    // }
 
     @Override
     public void close() {
@@ -126,7 +124,6 @@ public class ShellSFTPClient extends ShellClient implements ShellFileClient<Shel
             this.delayChannels.clear();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
-//            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
