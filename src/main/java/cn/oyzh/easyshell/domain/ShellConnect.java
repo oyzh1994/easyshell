@@ -221,8 +221,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String environment;
 
-    public Boolean getEnableProxy() {
-        return enableProxy;
+    /**
+     * 启用压缩
+     */
+    @Column
+    private Boolean enableCompress;
+
+    public void setEnableCompress(Boolean enableCompress) {
+        this.enableCompress = enableCompress;
+    }
+
+    public Boolean isEnableCompress() {
+        return enableCompress != null && enableCompress;
     }
 
     public void setEnableProxy(Boolean enableProxy) {

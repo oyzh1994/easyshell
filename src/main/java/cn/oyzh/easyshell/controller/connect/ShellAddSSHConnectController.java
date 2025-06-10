@@ -37,6 +37,7 @@ import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -284,6 +285,12 @@ public class ShellAddSSHConnectController extends StageController {
     private ShellTunnelingTableView tunnelingTableView;
 
     /**
+     * 启用压缩
+     */
+    @FXML
+    private FXCheckBox enableCompress;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -436,6 +443,7 @@ public class ShellAddSSHConnectController extends StageController {
             String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
+            boolean enableCompress = this.enableCompress.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
@@ -446,6 +454,8 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setTermType(termType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             shellConnect.setEnvironment(this.env.getTextTrim());
+            // 启用压缩
+            shellConnect.setEnableCompress(enableCompress);
             // 认证信息
             shellConnect.setKeyId(keyId);
             shellConnect.setUser(userName.trim());

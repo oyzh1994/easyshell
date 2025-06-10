@@ -392,10 +392,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         this.initX11();
         // 初始化代理
         this.initProxy();
-        // 启用压缩
-        this.useCompression(false);
         // 初始化会话
         this.initSession();
+        // 启用压缩
+        this.useCompression(this.shellConnect.isEnableCompress());
     }
 
     @Override

@@ -38,6 +38,7 @@ import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -285,6 +286,12 @@ public class ShellUpdateSSHConnectController extends StageController {
     private ShellTunnelingTableView tunnelingTableView;
 
     /**
+     * 启用压缩
+     */
+    @FXML
+    private FXCheckBox enableCompress;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -449,6 +456,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
+            boolean enableCompress = this.enableCompress.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -459,6 +467,8 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setTermType(termType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             this.shellConnect.setEnvironment(this.env.getTextTrim());
+            // 启用压缩
+            this.shellConnect.setEnableCompress(enableCompress);
             // 认证信息
             this.shellConnect.setKeyId(keyId);
             this.shellConnect.setUser(userName.trim());
@@ -589,7 +599,8 @@ public class ShellUpdateSSHConnectController extends StageController {
             // 选中密钥
             this.key.selectById(this.shellConnect.getKeyId());
         }
-        String iid = this.shellConnect.getId();
+        // 启用压缩
+        this.enableCompress.setSelected(this.shellConnect.isEnableCompress());
         // 背景配置
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
@@ -599,7 +610,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.tunnelingTableView.setItem(this.shellConnect.getTunnelingConfigs());
         // x11配置
         this.x11forwarding.setSelected(this.shellConnect.isX11forwarding());
-        ShellX11Config x11Config = this.x11ConfigStore.getByIid(iid);
+        ShellX11Config x11Config = this.shellConnect.getX11Config();
         if (x11Config != null) {
             this.x11Host.setValue(x11Config.getHost());
             this.x11Port.setValue(x11Config.getPort());
@@ -607,7 +618,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         }
         // 代理配置
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
-        ShellProxyConfig proxyConfig = this.proxyConfigStore.getByIid(iid);
+        ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
         if (proxyConfig != null) {
             this.proxyHost.setValue(proxyConfig.getHost());
             this.proxyPort.setValue(proxyConfig.getPort());

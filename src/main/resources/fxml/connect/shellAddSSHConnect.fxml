@@ -38,6 +38,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController" realWidth="750"
         realHeight="480">
@@ -129,6 +130,18 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="enableCompress" text="%base.enableCompress" fontSize="11">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
                 </FXHBox>
             </FXVBox>
         </FXTab>
