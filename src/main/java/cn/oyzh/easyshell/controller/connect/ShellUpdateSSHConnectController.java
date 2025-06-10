@@ -592,9 +592,9 @@ public class ShellUpdateSSHConnectController extends StageController {
         } else if (this.shellConnect.isCertificateAuth()) {
             this.authMethod.select(1);
             this.certificate.setText(this.shellConnect.getCertificate());
-        } else if (this.authMethod.isSSHAgentAuth()) {
+        } else if (this.shellConnect.isSSHAgentAuth()) {
             this.authMethod.select(2);
-        } else if (this.authMethod.isManagerAuth()) {
+        } else if (this.shellConnect.isManagerAuth()) {
             this.authMethod.selectLast();
             // 选中密钥
             this.key.selectById(this.shellConnect.getKeyId());

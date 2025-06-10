@@ -164,23 +164,26 @@ public class ShellImportKeyController extends StageController {
             return;
         }
         String fileName = file.getName();
+        String extName = FileNameUtil.extName(fileName);
         // 设置名称
         if (this.name.isEmpty()) {
             this.name.text(FileNameUtil.removeExtName(fileName));
         }
         // 读取公钥
-        String publicKey = FileUtil.readUtf8String(file);
-        this.publicKey.text(this.handlePubKey(publicKey));
-        File prifile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName));
-        // ppk格式
-        if (!prifile.exists()) {
-            prifile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName) + ".ppk");
+        String content = FileUtil.readUtf8String(file);
+        this.publicKey.text(this.handlePubKey(content));
+        // putty
+        if ("ppk".equalsIgnoreCase(extName)) {
+            this.privateKey.text(this.handlePriKey(content));
+        } else {
+            File prifile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName));
+            // 读取私钥
+            if (prifile.exists()) {
+                String privateKey = FileUtil.readUtf8String(prifile);
+                this.privateKey.text(this.handlePriKey(privateKey));
+            }
         }
-        // 读取私钥
-        if (prifile.exists()) {
-            String privateKey = FileUtil.readUtf8String(prifile);
-            this.privateKey.text(this.handlePriKey(privateKey));
-        }
+
     }
 
     /**
@@ -207,18 +210,24 @@ public class ShellImportKeyController extends StageController {
             return;
         }
         String fileName = file.getName();
+        String extName = FileNameUtil.extName(fileName);
         // 设置名称
         if (this.name.isEmpty()) {
             this.name.text(FileNameUtil.removeExtName(fileName));
         }
         // 读取私钥
-        String privateKey = FileUtil.readUtf8String(file);
-        this.privateKey.text(this.handlePriKey(privateKey));
-        File pubFile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName) + ".pub");
-        // 读取公钥
-        if (pubFile.exists()) {
-            String publicKey = FileUtil.readUtf8String(pubFile);
-            this.publicKey.text(this.handlePubKey(publicKey));
+        String content = FileUtil.readUtf8String(file);
+        this.privateKey.text(this.handlePriKey(content));
+        // putty
+        if ("ppk".equalsIgnoreCase(extName)) {
+            this.publicKey.text(this.handlePubKey(content));
+        } else {
+            File pubFile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName) + ".pub");
+            // 读取公钥
+            if (pubFile.exists()) {
+                String publicKey = FileUtil.readUtf8String(pubFile);
+                this.publicKey.text(this.handlePubKey(publicKey));
+            }
         }
     }
 
@@ -267,22 +276,23 @@ public class ShellImportKeyController extends StageController {
      */
     private String handlePubKey(String pubKey) {
         // putty公钥
-        if (pubKey.contains("\"")) {
+        if (StringUtil.startWithIgnoreCase(pubKey, "PuTTY")) {
             String[] lines = pubKey.split("\n");
-            String comment = lines[1];
-            comment = comment.split(":")[1].trim();
+            String type = lines[0].split(":")[1].trim();
+            String comment = lines[2].split(":")[1].trim();
             comment = comment.substring(1, comment.length() - 1);
             StringBuilder builder = new StringBuilder();
-            if (comment.contains("rsa")) {
-                builder.append("ssh-rsa ");
-            } else if (comment.contains("eddsa")) {
-                builder.append("ssh-ed25519 ");
-            } else if (comment.contains("ecdsa")) {
-                builder.append(comment).append(" ");
-            } else if (comment.contains("dsa")) {
-                builder.append("ssh-dss ");
-            }
+            builder.append(type).append(" ");
+            boolean pubStart = false;
             for (int i = 2; i < lines.length - 1; i++) {
+                String line = lines[i];
+                if (line.startsWith("Public-Lines")) {
+                    pubStart = true;
+                    continue;
+                }
+                if (!pubStart) {
+                    continue;
+                }
                 builder.append(lines[i]);
             }
             builder.append(" ").append(comment);

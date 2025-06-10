@@ -50,17 +50,17 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ReadOnlyTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180">
+    <FXTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ReadOnlyTextArea>
+    </FXTextArea>
     <InfoLabel text="%base.privateKey">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180">
+    <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

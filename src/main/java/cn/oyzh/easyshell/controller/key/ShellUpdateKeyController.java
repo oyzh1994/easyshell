@@ -49,7 +49,7 @@ public class ShellUpdateKeyController extends StageController {
      * 公钥
      */
     @FXML
-    private ReadOnlyTextArea publicKey;
+    private FXTextArea publicKey;
 
     /**
      * 密钥类型
@@ -81,19 +81,20 @@ public class ShellUpdateKeyController extends StageController {
         String name = this.name.getTextTrim();
         // 名称检查
         if (StringUtil.isBlank(name)) {
-//            this.name.requestFocus();
             ValidatorUtil.validFail(this.name);
             return;
         }
+        String publicKey = this.publicKey.getTextTrim();
+        if (!this.publicKey.validate()) {
+            return;
+        }
         String privateKey = this.privateKey.getTextTrim();
-        if (StringUtil.isBlank(privateKey)) {
-//            MessageBox.warn(ShellI18nHelper.keyTip1());
-//            this.privateKey.requestFocus();
-            ValidatorUtil.validFail(this.privateKey);
+        if (!this.publicKey.validate()) {
             return;
         }
         try {
             this.key.setName(name);
+            this.key.setPublicKey(publicKey);
             this.key.setPrivateKey(privateKey);
             // 保存数据
             if (this.keyStore.update(this.key)) {

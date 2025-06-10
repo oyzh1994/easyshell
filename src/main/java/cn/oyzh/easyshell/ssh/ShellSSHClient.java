@@ -34,6 +34,7 @@ import cn.oyzh.ssh.util.SSHUtil;
 import com.jcraft.jsch.AgentIdentityRepository;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelShell;
+import com.jcraft.jsch.Identity;
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
@@ -373,13 +374,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 }
                 SSHHolder.getAgentJsch().setIdentityRepository(repository);
             }
+            for (Identity identity : repository.getIdentities()) {
+                JulLog.info("Identity: {}", identity);
+            }
             // 创建会话
             this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
             if (key == null) {
-                MessageBox.warn("certificate file not exist");
+                MessageBox.warn("key not found");
                 return;
             }
             String keyName = "key_" + key.getId();

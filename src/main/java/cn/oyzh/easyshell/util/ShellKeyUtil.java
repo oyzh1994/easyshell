@@ -4,7 +4,6 @@ import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,19 +219,21 @@ public class ShellKeyUtil {
                 sshFiles.add(sshFile);
             }
             for (ShellKey key : keys) {
-                // 远程临时公钥
-                String remoteFile = client.getUserHome() + key.getId() + ".pub";
-                // 上传
-                sftpClient.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile, null);
+                // // 远程临时公钥
+                // String remoteFile = client.getUserHome() + key.getId() + ".pub";
+                // // 上传
+                // sftpClient.put(new ByteArrayInputStream(key.getPublicKeyBytes()), remoteFile, null);
+                String pubKey = key.getPublicKey();
                 // 追加到已知公钥文件
                 for (String sshFile : sshFiles) {
-                    client.sshExec().append_file(remoteFile, sshFile);
+                    client.sshExec().append(pubKey, sshFile);
+                    // client.sshExec().append_file(remoteFile, sshFile);
                 }
-                try {
-                    // 删除临时公钥文件
-                    sftpClient.delete(remoteFile);
-                } catch (Exception ignored) {
-                }
+                // try {
+                //     // 删除临时公钥文件
+                //     sftpClient.delete(remoteFile);
+                // } catch (Exception ignored) {
+                // }
             }
             return true;
         } catch (Exception ex) {
