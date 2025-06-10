@@ -1,0 +1,8 @@
+1. 启动ssh-agent服务(如果ssh服务已启动，可忽略)
+eval "$(ssh-agent -s)"
+echo $SSH_AGENT_PID
+2. 添加私钥到ssh-agent服务
+# 设置私钥权限
+chmod 0600 私钥
+# 添加私钥
+ssh-add 私钥

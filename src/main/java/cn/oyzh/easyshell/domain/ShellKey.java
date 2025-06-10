@@ -117,6 +117,10 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
     }
 
     public String getPrivateKey() {
+        // 修复私钥不以\n结束的问题
+        if (StringUtil.isNotBlank(privateKey) && !privateKey.endsWith("\n")) {
+            this.privateKey = privateKey + "\n";
+        }
         return privateKey;
     }
 
@@ -126,6 +130,11 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
     }
 
     public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
+        // 修复私钥不以\n结束的问题
+        if (StringUtil.isNotBlank(privateKey) && !privateKey.endsWith("\n")) {
+            this.privateKey = privateKey + "\n";
+        } else {
+            this.privateKey = privateKey;
+        }
     }
 }

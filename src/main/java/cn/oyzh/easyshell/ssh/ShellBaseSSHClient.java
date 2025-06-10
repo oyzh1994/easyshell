@@ -413,7 +413,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 SSHHolder.getAgentJsch().setIdentityRepository(repository);
             }
             for (Identity identity : repository.getIdentities()) {
-                JulLog.info("Identity: {}", identity);
+                JulLog.info("Identity: {}", identity.getName());
             }
             // 创建会话
             this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
