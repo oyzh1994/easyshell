@@ -22,8 +22,6 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellProxyConfigStore;
-import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -297,16 +295,6 @@ public class ShellUpdateSSHConnectController extends StageController {
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
-     * x11配置储存对象
-     */
-    private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
-
-    /**
-     * 代理配置储存对象
-     */
-    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
-
-    /**
      * 获取连接地址
      *
      * @return 连接地址
@@ -504,6 +492,7 @@ public class ShellUpdateSSHConnectController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 连接ip处理
         this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
             // 内容包含“:”，则直接切割字符为ip端口

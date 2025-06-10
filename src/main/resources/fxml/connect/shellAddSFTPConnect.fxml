@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
@@ -46,18 +51,52 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.password">
+                <InfoLabel text="%base.auth">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
-                                   realHeight="30"
-                                   flexWidth="100% - 180">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </PasswordTextField>
+                <FXHBox>
+                    <ShellAuthTypeCombobox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </ShellAuthTypeCombobox>
+                    <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
+                                       realHeight="30"
+                                       flexWidth="100% - 340">
+                        <FXHBox.margin>
+                            <Insets left="10" top="5"/>
+                        </FXHBox.margin>
+                    </PasswordTextField>
+                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                       groupId="sshAgent"
+                                       fx:id="sshAgent" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ReadOnlyTextField>
+                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                       groupId="certificate"
+                                       fx:id="certificate" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ReadOnlyTextField>
+                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate"
+                                    onMousePrimaryClicked="#chooseCertificate">
+                        <HBox.margin>
+                            <Insets left="5" top="12"/>
+                        </HBox.margin>
+                    </ChooseSVGGlyph>
+                    <ShellKeyComboBox tipText="%base.privateKeyTip" realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                      groupId="sshKey"
+                                      fx:id="key" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ShellKeyComboBox>
+                </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -75,6 +114,18 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="enableCompress" text="%base.enableCompress" fontSize="11">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
                 </FXHBox>
             </FXVBox>
         </FXTab>

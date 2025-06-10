@@ -11,12 +11,9 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.ssh.ShellSSHAuthUserInfo;
-import cn.oyzh.ssh.util.SSHHolder;
+import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -82,25 +79,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this.sftpChannelPool = new ShellSFTPChannelPool(this);
         this.realpathManager = new ShellSFTPRealpathManager(this);
         super.addStateListener(this.stateListener);
-    }
-
-    /**
-     * 初始化客户端
-     */
-    private void initClient() throws JSchException {
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
-        }
-        // 连接信息
-        int port = this.shellConnect.hostPort();
-        String hostIp = this.shellConnect.hostIp();
-        // 创建会话
-        this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-        this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
-        // 启用压缩
-        this.useCompression(false);
-        // 初始化会话
-        this.initSession();
     }
 
     @Override

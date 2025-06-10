@@ -5,7 +5,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -13,18 +15,25 @@ import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.io.File;
 
 /**
  * sftp连接新增业务
@@ -49,6 +58,24 @@ public class ShellAddSFTPConnectController extends StageController {
      */
     @FXML
     private PasswordTextField password;
+
+    /**
+     * 证书
+     */
+    @FXML
+    private ReadOnlyTextField certificate;
+
+    /**
+     * ssh agent
+     */
+    @FXML
+    private ReadOnlyTextField sshAgent;
+
+    /**
+     * 密钥
+     */
+    @FXML
+    private ShellKeyComboBox key;
 
     /**
      * tab组件
@@ -93,10 +120,22 @@ public class ShellAddSFTPConnectController extends StageController {
     private NumberTextField connectTimeOut;
 
     /**
+     * 认证方式
+     */
+    @FXML
+    private ShellAuthTypeCombobox authMethod;
+
+    /**
      * 系统类型
      */
     @FXML
     private ShellOsTypeComboBox osType;
+
+    /**
+     * 启用压缩
+     */
+    @FXML
+    private FXCheckBox enableCompress;
 
     /**
      * 分组
@@ -145,8 +184,11 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             // 认证信息
+            shellConnect.setKeyId(this.key.getKeyId());
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
+            shellConnect.setAuthMethod(this.authMethod.getAuthType());
+            shellConnect.setCertificate(this.certificate.getTextTrim());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -165,6 +207,20 @@ public class ShellAddSFTPConnectController extends StageController {
             return;
         }
         String password = this.password.getPassword();
+        if (this.authMethod.isPasswordAuth() && StringUtil.isBlank(password)) {
+            ValidatorUtil.validFail(this.password);
+            return;
+        }
+        String certificate = this.certificate.getTextTrim();
+        if (this.authMethod.isCertificateAuth() && StringUtil.isBlank(certificate)) {
+            ValidatorUtil.validFail(this.certificate);
+            return;
+        }
+        String keyId = this.key.getKeyId();
+        if (this.authMethod.isManagerAuth() && StringUtil.isBlank(keyId)) {
+            ValidatorUtil.validFail(this.key);
+            return;
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -176,6 +232,7 @@ public class ShellAddSFTPConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
+            boolean enableCompress = this.enableCompress.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -183,9 +240,14 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            // 启用压缩
+            shellConnect.setEnableCompress(enableCompress);
             // 认证信息
+            shellConnect.setKeyId(keyId);
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
+            shellConnect.setCertificate(certificate);
+            shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // 分组及类型
             shellConnect.setType("sftp");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -206,6 +268,7 @@ public class ShellAddSFTPConnectController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 连接ip处理
         this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
             // 内容包含“:”，则直接切割字符为ip端口
@@ -218,16 +281,36 @@ public class ShellAddSFTPConnectController extends StageController {
                 }
             }
         });
+        // 认证方式
+        this.authMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.authMethod.isPasswordAuth()) {
+                NodeGroupUtil.display(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
+            } else if (this.authMethod.isCertificateAuth()) {
+                NodeGroupUtil.display(this.tabPane, "certificate");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+            } else if (this.authMethod.isSSHAgentAuth()) {
+                NodeGroupUtil.display(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
+            } else {
+                NodeGroupUtil.display(this.tabPane, "sshKey");
+                NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "password");
+                NodeGroupUtil.disappear(this.tabPane, "certificate");
+            }
+        });
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -235,5 +318,26 @@ public class ShellAddSFTPConnectController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        if (OSUtil.isWindows()) {
+            this.sshAgent.setText("Pageant");
+        } else {
+            this.sshAgent.setText("SSH Agent");
+        }
+    }
+
+    /**
+     * 选择证书
+     */
+    @FXML
+    private void chooseCertificate() {
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+        if (file != null) {
+            this.certificate.setText(file.getPath());
+        }
     }
 }

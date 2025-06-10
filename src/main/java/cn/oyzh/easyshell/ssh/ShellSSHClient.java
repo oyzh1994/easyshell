@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.ssh;
 
-import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
@@ -8,7 +7,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.docker.ShellDockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
@@ -24,18 +22,12 @@ import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
-import cn.oyzh.ssh.util.SSHHolder;
-import cn.oyzh.ssh.util.SSHUtil;
-import com.jcraft.jsch.AgentIdentityRepository;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.Identity;
-import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -231,12 +223,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.sftpClient;
     }
 
-    /**
-     * 初始化连接
-     *
-     * @return 连接
-     */
-    private String initHost() {
+    @Override
+    protected String initHost() {
         // 连接地址
         String host;
         // 初始化跳板转发
@@ -339,67 +327,14 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
-    /**
-     * 初始化客户端
-     */
-    private void initClient() throws JSchException, AgentProxyException {
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
-        }
-        // 连接信息
-        String host = this.initHost();
-        String hostIp = host.split(":")[0];
-        int port = Integer.parseInt(host.split(":")[1]);
-        // 密码
-        if (this.shellConnect.isPasswordAuth()) {
-            // 创建会话
-            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
-        } else if (this.shellConnect.isCertificateAuth()) {// 证书
-            String priKeyFile = this.shellConnect.getCertificate();
-            // 检查私钥是否存在
-            if (!FileUtil.exist(priKeyFile)) {
-                MessageBox.warn("certificate file not exist");
-                return;
-            }
-            SSHHolder.getJsch().addIdentity(priKeyFile);
-            // 创建会话
-            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-            IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
-            if (!(repository instanceof AgentIdentityRepository)) {
-                repository = SSHUtil.initAgentIdentityRepository();
-                if (CollectionUtil.isEmpty(repository.getIdentities())) {
-                    throw new AgentProxyException("identities is empty");
-                }
-                SSHHolder.getAgentJsch().setIdentityRepository(repository);
-            }
-            for (Identity identity : repository.getIdentities()) {
-                JulLog.info("Identity: {}", identity);
-            }
-            // 创建会话
-            this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-        } else if (this.shellConnect.isManagerAuth()) {// 密钥
-            ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
-            // 检查私钥是否存在
-            if (key == null) {
-                MessageBox.warn("key not found");
-                return;
-            }
-            String keyName = "key_" + key.getId();
-            // 添加认证
-            SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
-            // 创建会话
-            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-        }
+    @Override
+    protected void initClient() throws JSchException, AgentProxyException {
+        // 执行初始化
+        super.initClient();
         // 初始化x11
         this.initX11();
         // 初始化代理
         this.initProxy();
-        // 初始化会话
-        this.initSession();
-        // 启用压缩
-        this.useCompression(this.shellConnect.isEnableCompress());
     }
 
     @Override
