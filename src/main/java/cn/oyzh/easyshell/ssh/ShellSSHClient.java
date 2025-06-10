@@ -368,6 +368,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
             if (!(repository instanceof AgentIdentityRepository)) {
                 repository = SSHUtil.initAgentIdentityRepository();
+                if (CollectionUtil.isEmpty(repository.getIdentities())) {
+                    throw new AgentProxyException("identities is empty");
+                }
                 SSHHolder.getAgentJsch().setIdentityRepository(repository);
             }
             // 创建会话

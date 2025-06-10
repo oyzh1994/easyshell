@@ -15,7 +15,6 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.util.OpenSSHRSAUtil;
@@ -101,22 +100,17 @@ public class ShellImportKeyController extends StageController {
         String name = this.name.getTextTrim();
         // 名称检查
         if (StringUtil.isBlank(name)) {
-//            this.name.requestFocus();
             ValidatorUtil.validFail(this.name);
             return;
         }
         // 密钥检查
         String publicKey = this.publicKey.getTextTrim();
         if (StringUtil.isBlank(publicKey)) {
-//            MessageBox.warn(ShellI18nHelper.keyTip1());
-//            this.publicKey.requestFocus();
             ValidatorUtil.validFail(this.publicKey);
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
         if (StringUtil.isBlank(privateKey)) {
-//            MessageBox.warn(ShellI18nHelper.keyTip1());
-//            this.privateKey.requestFocus();
             ValidatorUtil.validFail(this.privateKey);
             return;
         }
@@ -168,16 +162,23 @@ public class ShellImportKeyController extends StageController {
             MessageBox.warn(I18nHelper.invalidFile());
             return;
         }
+        String fileName = file.getName();
+        // 设置名称
+        if (this.name.isEmpty()) {
+            this.name.text(FileNameUtil.removeExtName(fileName));
+        }
         // 读取公钥
         String publicKey = FileUtil.readUtf8String(file);
-        this.publicKey.text(publicKey);
-
-        String fileName = file.getName();
+        this.publicKey.text(this.handlePubKey(publicKey));
         File prifile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName));
+        // ppk格式
+        if (!prifile.exists()) {
+            prifile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName) + ".ppk");
+        }
         // 读取私钥
         if (prifile.exists()) {
             String privateKey = FileUtil.readUtf8String(prifile);
-            this.privateKey.text(privateKey);
+            this.privateKey.text(this.handlePriKey(privateKey));
         }
     }
 
@@ -204,15 +205,19 @@ public class ShellImportKeyController extends StageController {
             MessageBox.warn(I18nHelper.invalidFile());
             return;
         }
+        String fileName = file.getName();
+        // 设置名称
+        if (this.name.isEmpty()) {
+            this.name.text(FileNameUtil.removeExtName(fileName));
+        }
         // 读取私钥
         String privateKey = FileUtil.readUtf8String(file);
-        this.privateKey.text(privateKey);
-        String fileName = file.getName();
+        this.privateKey.text(this.handlePriKey(privateKey));
         File pubFile = new File(file.getParentFile(), FileNameUtil.removeExtName(fileName) + ".pub");
         // 读取公钥
         if (pubFile.exists()) {
             String publicKey = FileUtil.readUtf8String(pubFile);
-            this.publicKey.text(publicKey);
+            this.publicKey.text(this.handlePubKey(publicKey));
         }
     }
 
@@ -246,4 +251,75 @@ public class ShellImportKeyController extends StageController {
             this.keyLength.clear();
         }
     }
+
+    /**
+     * 处理公钥
+     *
+     * @param pubKey 公钥
+     * @return 结果
+     */
+    private String handlePubKey(String pubKey) {
+        // putty公钥
+        if (pubKey.contains("\"")) {
+            String[] lines = pubKey.split("\n");
+            String comment = lines[1];
+            comment = comment.split(":")[1].trim();
+            comment = comment.substring(1, comment.length() - 1);
+            StringBuilder builder = new StringBuilder();
+            if (comment.contains("rsa")) {
+                builder.append("ssh-rsa ");
+            } else if (comment.contains("eddsa")) {
+                builder.append("ssh-ed25519 ");
+            } else if (comment.contains("dsa")) {
+                builder.append("ssh-dss ");
+            }
+            for (int i = 2; i < lines.length - 1; i++) {
+                builder.append(lines[i]);
+            }
+            builder.append(" ").append(comment);
+            pubKey = builder.toString();
+        }
+        return pubKey;
+    }
+
+    /**
+     * 处理私钥
+     *
+     * @param priKey 私钥
+     * @return 结果
+     */
+    private String handlePriKey(String priKey) {
+        // putty私钥
+        if (StringUtil.startWithIgnoreCase(priKey, "PuTTY")) {
+            String[] lines = priKey.split("\n");
+            StringBuilder builder = new StringBuilder();
+            String keyType = this.keyType.getTextTrim();
+            if (StringUtil.equalsAnyIgnoreCase(keyType, "ssh-rsa")) {
+                builder.append("-----BEGIN RSA PRIVATE KEY-----");
+            } else {
+                builder.append("-----BEGIN PRIVATE KEY-----");
+            }
+            builder.append("\n");
+            boolean priStart = false;
+            for (int i = 2; i < lines.length - 1; i++) {
+                String line = lines[i];
+                if (line.startsWith("Private-Lines")) {
+                    priStart = true;
+                    continue;
+                }
+                if (!priStart) {
+                    continue;
+                }
+                builder.append(line).append("\n");
+            }
+            if (StringUtil.equalsAnyIgnoreCase(keyType, "ssh-rsa")) {
+                builder.append("-----END RSA PRIVATE KEY-----");
+            } else {
+                builder.append("-----BEGIN PRIVATE KEY-----");
+            }
+            priKey = builder.toString();
+        }
+        return priKey;
+    }
+
 }
