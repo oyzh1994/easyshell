@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.ssh.util.OpenSSHECDSAUtil;
 import cn.oyzh.ssh.util.OpenSSHRSAUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -64,7 +65,7 @@ public class ShellImportKeyController extends StageController {
      * 密钥长度
      */
     @FXML
-    private ReadOnlyTextField keyLength;
+    private ClearableTextField keyLength;
 
     /**
      * 密钥存储对象
@@ -230,6 +231,8 @@ public class ShellImportKeyController extends StageController {
             this.keyType.setText("ED25519");
         } else if (StringUtil.startWithIgnoreCase(publicKey, "ssh-rsa")) {
             this.keyType.setText("RSA");
+        } else if (StringUtil.startWithIgnoreCase(publicKey, "ecdsa")) {
+            this.keyType.setText("ECDSA");
         } else {
             this.keyType.clear();
         }
@@ -246,6 +249,10 @@ public class ShellImportKeyController extends StageController {
         } else if ("RSA".equals(keyType)) {
             String pubKey = this.publicKey.getTextTrim();
             int len = OpenSSHRSAUtil.getKeyLength(pubKey);
+            this.keyLength.setValue(len);
+        } else if ("ECDSA".equals(keyType)) {
+            String pubKey = this.publicKey.getTextTrim();
+            int len = OpenSSHECDSAUtil.getKeyLength(pubKey);
             this.keyLength.setValue(len);
         } else {
             this.keyLength.clear();
@@ -270,6 +277,8 @@ public class ShellImportKeyController extends StageController {
                 builder.append("ssh-rsa ");
             } else if (comment.contains("eddsa")) {
                 builder.append("ssh-ed25519 ");
+            } else if (comment.contains("ecdsa")) {
+                builder.append(comment).append(" ");
             } else if (comment.contains("dsa")) {
                 builder.append("ssh-dss ");
             }
@@ -294,8 +303,10 @@ public class ShellImportKeyController extends StageController {
             String[] lines = priKey.split("\n");
             StringBuilder builder = new StringBuilder();
             String keyType = this.keyType.getTextTrim();
-            if (StringUtil.equalsAnyIgnoreCase(keyType, "ssh-rsa")) {
+            if (StringUtil.equalsIgnoreCase(keyType, "ssh-rsa")) {
                 builder.append("-----BEGIN RSA PRIVATE KEY-----");
+            } else if (StringUtil.containsAnyIgnoreCase(keyType, "ecdsa")) {
+                builder.append("-----BEGIN EC PRIVATE KEY-----");
             } else {
                 builder.append("-----BEGIN PRIVATE KEY-----");
             }
@@ -312,8 +323,10 @@ public class ShellImportKeyController extends StageController {
                 }
                 builder.append(line).append("\n");
             }
-            if (StringUtil.equalsAnyIgnoreCase(keyType, "ssh-rsa")) {
+            if (StringUtil.equalsIgnoreCase(keyType, "ssh-rsa")) {
                 builder.append("-----END RSA PRIVATE KEY-----");
+            } else if (StringUtil.containsIgnoreCase(keyType, "ecdsa")) {
+                builder.append("-----END EC PRIVATE KEY-----");
             } else {
                 builder.append("-----BEGIN PRIVATE KEY-----");
             }

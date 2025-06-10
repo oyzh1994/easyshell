@@ -12,7 +12,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -77,22 +76,17 @@ public class ShellAddKeyController extends StageController {
         String name = this.name.getTextTrim();
         // 名称检查
         if (StringUtil.isBlank(name)) {
-//            this.name.requestFocus();
             ValidatorUtil.validFail(this.name);
             return;
         }
         // 密钥检查
         String publicKey = this.publicKey.getTextTrim();
         if (StringUtil.isBlank(publicKey)) {
-//            MessageBox.warn(ShellI18nHelper.keyTip1());
-//            this.publicKey.requestFocus();
             ValidatorUtil.validFail(this.publicKey);
             return;
         }
         String privateKey = this.privateKey.getTextTrim();
         if (StringUtil.isBlank(privateKey)) {
-//            MessageBox.warn(ShellI18nHelper.keyTip1());
-//            this.privateKey.requestFocus();
             ValidatorUtil.validFail(this.privateKey);
             return;
         }
@@ -123,6 +117,7 @@ public class ShellAddKeyController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         this.keyType.selectedItemChanged((observableValue, number, t1) -> {
             this.keyLength.init(t1);
             this.publicKey.clear();

@@ -17,11 +17,6 @@
                 <Insets left="10" top="7"/>
             </FXHBox.margin>
         </AddSVGGlyph>
-<!--        <EditSVGGlyph onMousePrimaryClicked="#updateKey" tipText="%base.edit">-->
-<!--            <FXHBox.margin>-->
-<!--                <Insets left="10" top="10"/>-->
-<!--            </FXHBox.margin>-->
-<!--        </EditSVGGlyph>-->
         <ImportSVGGlyph onMousePrimaryClicked="#importKey" tipText="%base.import">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

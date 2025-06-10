@@ -41,11 +41,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ReadOnlyTextField fx:id="keyLength" realHeight="30" flexWidth="100% - 180">
+    <ClearableTextField fx:id="keyLength" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ReadOnlyTextField>
+    </ClearableTextField>
     <InfoLabel text="%base.publicKey">
         <VBox.margin>
             <Insets left="30" top="10"/>

@@ -25,6 +25,12 @@ public class ShellKeyLengthComboBox extends FXComboBox<Integer> {
                 this.addItem(256);
                 this.select(0);
                 break;
+            case "ECDSA":
+                this.addItem(256);
+                this.addItem(384);
+                this.addItem(521);
+                this.select(0);
+                break;
         }
     }
 }
