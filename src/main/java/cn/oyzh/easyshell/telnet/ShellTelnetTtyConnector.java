@@ -27,7 +27,7 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
         return client;
     }
 
-    public void initTelnet(ShellTelnetClient client) {
+    public void init(ShellTelnetClient client) {
         this.client = client;
         this.shellReader = new InputStreamReader(client.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(client.getOutputStream(), this.myCharset);

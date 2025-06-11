@@ -23,7 +23,7 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
 
     private OutputStreamWriter shellWriter;
 
-    public void initTelnet(ShellRLoginClient client) {
+    public void init(ShellRLoginClient client) {
         this.client = client;
         this.shellReader = new InputStreamReader(client.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(client.getOutputStream(), this.myCharset);

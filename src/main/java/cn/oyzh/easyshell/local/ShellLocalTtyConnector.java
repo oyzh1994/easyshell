@@ -12,6 +12,10 @@ import java.util.List;
  */
 public class ShellLocalTtyConnector extends ShellDefaultTtyConnector {
 
+    public void init(ShellLocalClient client) {
+
+    }
+
     public ShellLocalTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }

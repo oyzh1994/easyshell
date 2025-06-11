@@ -11,6 +11,7 @@ import cn.oyzh.store.jdbc.QueryParam;
 import cn.oyzh.store.jdbc.SelectParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * shell信息存储
@@ -59,10 +60,37 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         return super.selectList();
     }
 
-    public synchronized List<ShellConnect> loadSSH() {
+    /**
+     * 加载ssh类型
+     *
+     * @return ssh类型连接
+     */
+    public synchronized List<ShellConnect> loadSSHType() {
         SelectParam selectParam = new SelectParam();
         selectParam.addQueryParam(QueryParam.of("type", "ssh"));
         return super.selectList(selectParam);
+    }
+
+    /**
+     * 加载终端类型
+     *
+     * @return 终端类型连接
+     */
+    public synchronized List<ShellConnect> loadTermType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isTermType).collect(Collectors.toList());
+    }
+
+    /**
+     * 加载文件类型
+     *
+     * @return 终端类型连接
+     */
+    public synchronized List<ShellConnect> loadFileType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isFileType).collect(Collectors.toList());
     }
 
     @Override

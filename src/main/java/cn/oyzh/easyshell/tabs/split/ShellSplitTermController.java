@@ -1,16 +1,32 @@
 package cn.oyzh.easyshell.tabs.split;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.connect.ShellSSHConnectTextField;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
+import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.local.ShellLocalTermWidget;
+import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
+import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
+import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
+import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
+import cn.oyzh.easyshell.serial.ShellSerialClient;
+import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
+import cn.oyzh.easyshell.serial.ShellSerialTtyConnector;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.telnet.ShellTelnetClient;
+import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
+import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
+import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import com.jediterm.terminal.TtyConnector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -26,15 +42,14 @@ import java.nio.charset.Charset;
 public class ShellSplitTermController extends SubTabController {
 
     /**
-     * ssh客户端
+     * 客户端
      */
-    private ShellSSHClient client;
+    private BaseClient client;
 
     /**
      * 终端组件
      */
-    @FXML
-    private ShellSSHTermWidget widget;
+    private ShellDefaultTermWidget widget;
 
     /**
      * 终端容器
@@ -43,10 +58,10 @@ public class ShellSplitTermController extends SubTabController {
     private FXHBox termBox;
 
     /**
-     * ssh连接组件
+     * 连接组件
      */
     @FXML
-    private ShellSSHConnectTextField connect;
+    private ShellConnectTextField connect;
 
     /**
      * 初始化组件
@@ -54,13 +69,42 @@ public class ShellSplitTermController extends SubTabController {
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
-        this.widget = new ShellSSHTermWidget();
+        Charset charset = this.client.getCharset();
+        TtyConnector ttyConnector = null;
+        if (this.client instanceof ShellSSHClient sshClient) {
+            ShellSSHTermWidget widget = new ShellSSHTermWidget();
+            ShellSSHTtyConnector connector = widget.createTtyConnector(charset);
+            connector.init(sshClient);
+            ttyConnector = connector;
+            this.widget = widget;
+        } else if (this.client instanceof ShellRLoginClient rLoginClient) {
+            ShellRLoginTermWidget widget = new ShellRLoginTermWidget();
+            ShellRLoginTtyConnector connector = widget.createTtyConnector(charset);
+            connector.init(rLoginClient);
+            ttyConnector = connector;
+            this.widget = widget;
+        } else if (this.client instanceof ShellTelnetClient telnetClient) {
+            ShellTelnetTermWidget widget = new ShellTelnetTermWidget();
+            ShellTelnetTtyConnector connector = widget.createTtyConnector(charset);
+            connector.init(telnetClient);
+            ttyConnector = connector;
+            this.widget = widget;
+        } else if (this.client instanceof ShellSerialClient serialClient) {
+            ShellSerialTermWidget widget = new ShellSerialTermWidget();
+            ShellSerialTtyConnector connector = widget.createTtyConnector(charset);
+            connector.init(serialClient);
+            ttyConnector = connector;
+            this.widget = widget;
+        } else if (this.client instanceof ShellLocalClient localClient) {
+            ShellLocalTermWidget widget = new ShellLocalTermWidget();
+            ShellLocalTtyConnector connector = widget.createTtyConnector(charset);
+            connector.init(localClient);
+            ttyConnector = connector;
+            this.widget = widget;
+        }
+        this.widget.openSession(ttyConnector);
         this.widget.setFlexWidth("100%");
         this.widget.setFlexHeight("100%");
-        Charset charset = this.client.getCharset();
-        ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initShell(this.client);
-        this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
     }
 
@@ -70,12 +114,16 @@ public class ShellSplitTermController extends SubTabController {
      * @throws Exception 异常
      */
     private void init() throws Exception {
-        ShellSSHShell shell = this.client.openShell();
-        this.initWidget();
-        shell.connect(this.client.connectTimeout());
-        if (!shell.isConnected()) {
-            MessageBox.warn(I18nHelper.connectFail());
-            return;
+        if (this.client instanceof ShellSSHClient sshClient) {
+            ShellSSHShell shell = sshClient.openShell();
+            this.initWidget();
+            shell.connect(this.client.connectTimeout());
+            if (!shell.isConnected()) {
+                MessageBox.warn(I18nHelper.connectFail());
+                return;
+            }
+        } else {
+            this.initWidget();
         }
         this.termBox.addChild(this.widget);
     }
@@ -89,7 +137,7 @@ public class ShellSplitTermController extends SubTabController {
             this.widget = null;
         }
         if (this.client != null) {
-            this.client.close();
+            IOUtil.close(this.client);
             this.client = null;
         }
         this.termBox.clearChild();
@@ -125,7 +173,17 @@ public class ShellSplitTermController extends SubTabController {
             if (this.connect.getSelectedItem() != connect) {
                 this.connect.select(connect);
             }
-            this.client = new ShellSSHClient(connect);
+            if (connect.isSSHType()) {
+                this.client = new ShellSSHClient(connect);
+            } else if (connect.isRloginType()) {
+                this.client = new ShellRLoginClient(connect);
+            } else if (connect.isSerialType()) {
+                this.client = new ShellSerialClient(connect);
+            } else if (connect.isTelnetType()) {
+                this.client = new ShellSerialClient(connect);
+            } else if (connect.isLocalType()) {
+                this.client = new ShellLocalClient(connect);
+            }
             this.client.start();
             if (this.client.isConnected()) {
                 this.init();

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-06-06
  */
-public class ShellSSHConnectTextField extends FXTextField {
+public class ShellConnectTextField extends FXTextField {
 
     {
         // 覆盖默认菜单
@@ -29,12 +29,17 @@ public class ShellSSHConnectTextField extends FXTextField {
     }
 
     /**
+     * 连接列表
+     */
+    private List<ShellConnect> connects;
+
+    /**
      * 当前皮肤
      *
      * @return 皮肤
      */
-    public ShellSSHConnectTextFieldSkin skin() {
-        ShellSSHConnectTextFieldSkin skin = (ShellSSHConnectTextFieldSkin) this.getSkin();
+    public ShellConnectTextFieldSkin skin() {
+        ShellConnectTextFieldSkin skin = (ShellConnectTextFieldSkin) this.getSkin();
         if (skin == null) {
             skin = this.createDefaultSkin();
             this.setSkin(skin);
@@ -43,14 +48,12 @@ public class ShellSSHConnectTextField extends FXTextField {
     }
 
     @Override
-    protected ShellSSHConnectTextFieldSkin createDefaultSkin() {
-        AtomicReference<ShellSSHConnectTextFieldSkin> ref = new AtomicReference<>();
+    protected ShellConnectTextFieldSkin createDefaultSkin() {
+        AtomicReference<ShellConnectTextFieldSkin> ref = new AtomicReference<>();
         FXUtil.runWait(() -> {
-            ShellSSHConnectTextFieldSkin skin = new ShellSSHConnectTextFieldSkin(this);
-            ShellConnectStore store = ShellConnectStore.INSTANCE;
-            // 仅ssh连接
-            List<ShellConnect> connects = store.loadSSH();
-            skin.setItemList(connects);
+            ShellConnectTextFieldSkin skin = new ShellConnectTextFieldSkin(this);
+            this.loadConnects();
+            skin.setItemList(this.connects);
             skin.setConverter(new SimpleStringConverter<>() {
                 @Override
                 public String toString(ShellConnect o) {
@@ -68,12 +71,12 @@ public class ShellSSHConnectTextField extends FXTextField {
                 this.skin().clearSelection();
                 // 隐藏弹窗
                 if (StringUtil.isBlank(newValue)) {
-                    this.skin().setItemList(connects);
+                    this.skin().setItemList(this.connects);
                     this.skin().hidePopup();
                     return;
                 }
                 // 过滤内容
-                List<ShellConnect> newList = connects.stream()
+                List<ShellConnect> newList = this.connects.stream()
                         .filter(t -> StringUtil.containsIgnoreCase(t.getName(), newValue))
                         .collect(Collectors.toList());
                 // 设置内容
@@ -108,5 +111,41 @@ public class ShellSSHConnectTextField extends FXTextField {
             return false;
         }
         return super.validate();
+    }
+
+    /**
+     * 过滤模式
+     * ssh ssh连接
+     * file ssh、sftp、ftp连接
+     * term ssh、local、串口、telnet、rlogin连接
+     * all 全部连接
+     */
+    private String filterMode = "ssh";
+
+    public String getFilterMode() {
+        return filterMode;
+    }
+
+    public void setFilterMode(String filterMode) {
+        this.filterMode = filterMode;
+        if (this.connects != null) {
+            this.loadConnects();
+        }
+    }
+
+    /**
+     * 加载连接
+     */
+    protected void loadConnects() {
+        ShellConnectStore store = ShellConnectStore.INSTANCE;
+        if ("ssh".equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadSSHType();
+        } else if ("file".equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadFileType();
+        } else if ("term".equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadTermType();
+        } else {
+            this.connects = store.load();
+        }
     }
 }

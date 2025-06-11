@@ -81,7 +81,7 @@ public class ShellSSHTermTabController extends SubTabController {
         ShellSSHClient client = this.client();
         Charset charset = client.getCharset();
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initShell(client);
+        connector.init(client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
@@ -89,7 +89,6 @@ public class ShellSSHTermTabController extends SubTabController {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**

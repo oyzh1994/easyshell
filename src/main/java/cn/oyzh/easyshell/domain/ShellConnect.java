@@ -625,7 +625,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "vnc".equalsIgnoreCase(this.type);
     }
 
-
     @JSONField(serialize = false, deserialize = false)
     public boolean isRloginType() {
         return "rlogin".equalsIgnoreCase(this.type);
@@ -732,4 +731,22 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //     }
     //     return super.equals(obj);
     // }
+
+    /**
+     * 是否终端类型
+     *
+     * @return 结果
+     */
+    public boolean isTermType() {
+        return this.isSSHType() || this.isLocalType() || this.isTelnetType() || this.isSerialType() || this.isRloginType();
+    }
+
+    /**
+     * 是否文件类型
+     *
+     * @return 结果
+     */
+    public boolean isFileType() {
+        return this.isSSHType() || this.isSFTPType() || this.isFTPType();
+    }
 }

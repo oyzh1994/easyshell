@@ -21,7 +21,7 @@ public class ShellSplitListView extends FXListView<FXHBox> {
 
     {
         ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
-        List<ShellConnect> connects = connectStore.loadSSH();
+        List<ShellConnect> connects = connectStore.loadTermType();
         Insets insets1 = new Insets(10, 0, 0, 0);
         Insets insets2 = new Insets(11, 0, 0, 0);
         for (ShellConnect connect : connects) {

@@ -31,7 +31,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         return client;
     }
 
-    public void initShell(ShellSSHClient client) throws IOException {
+    public void init(ShellSSHClient client) throws IOException {
         this.client = client;
         ShellSSHShell shell = client.getShell();
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);

@@ -63,10 +63,9 @@ public class ShellSerialTabController extends RichTabController {
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellSerialTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initSerial(this.client);
+        connector.init(this.client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**

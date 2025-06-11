@@ -180,7 +180,7 @@ public class ShellSSHEffTabController extends SubTabController {
     private void initWidget() throws IOException {
         Charset charset = this.client().getCharset();
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initShell(this.client());
+        connector.init(this.client());
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {

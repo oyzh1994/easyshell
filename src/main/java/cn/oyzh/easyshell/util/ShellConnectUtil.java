@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -102,16 +103,16 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
-//                } else if (shellConnect.isFTPSType()) {
-//                    ShellFTPSClient client = new ShellFTPSClient(shellConnect);
-//                    // 开始连接
-//                    client.start(5_000);
-//                    if (client.isConnected()) {
-//                        client.close();
-//                        MessageBox.okToast(I18nHelper.connectSuccess());
-//                    } else {
-//                        MessageBox.warn(I18nHelper.connectFail());
-//                    }
+                } else if (shellConnect.isLocalType()) {
+                    ShellLocalClient client = new ShellLocalClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
                 } else if (shellConnect.isVNCType()) {
                     ShellVNCClient client = new ShellVNCClient(shellConnect);
                     // 开始连接

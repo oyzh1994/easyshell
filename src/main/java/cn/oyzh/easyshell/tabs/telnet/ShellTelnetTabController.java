@@ -63,18 +63,11 @@ public class ShellTelnetTabController extends RichTabController {
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.initTelnet(this.client);
+        connector.init(this.client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
         // 初始化一次pty大小
         this.widget.initPtySize();
-//        TermSize termSize = this.widget.getTermSize();
-//        this.client.setPtySize(termSize.getColumns(), termSize.getRows());
-//        // 监听并动态修改pty大小
-//        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
-//            this.client.setPtySize(newValue.getColumns(), newValue.getRows());
-//        });
     }
 
     /**

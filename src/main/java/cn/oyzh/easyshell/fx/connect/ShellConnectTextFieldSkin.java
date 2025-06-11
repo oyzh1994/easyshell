@@ -10,9 +10,9 @@ import javafx.scene.control.TextField;
  * @author oyzh
  * @since 2025/06/06
  */
-public class ShellSSHConnectTextFieldSkin extends SelectTextFiledSkin<ShellConnect> {
+public class ShellConnectTextFieldSkin extends SelectTextFiledSkin<ShellConnect> {
 
-    public ShellSSHConnectTextFieldSkin(TextField textField) {
+    public ShellConnectTextFieldSkin(TextField textField) {
         super(textField);
     }
 }

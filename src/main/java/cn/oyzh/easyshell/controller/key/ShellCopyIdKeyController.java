@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.key;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.fx.connect.ShellSSHConnectTextField;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
@@ -37,7 +37,7 @@ public class ShellCopyIdKeyController extends StageController {
      * 连接列表
      */
     @FXML
-    private ShellSSHConnectTextField host;
+    private ShellConnectTextField host;
 
     /**
      * 密钥信息

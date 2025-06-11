@@ -29,7 +29,7 @@ public class ShellSerialClient implements BaseClient {
     /**
      * 连接
      */
-    private ShellConnect shellConnect;
+    private final ShellConnect shellConnect;
 
     /**
      * 连接状态

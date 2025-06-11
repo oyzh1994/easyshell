@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.fx.connect.ShellSSHConnectTextField;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView;
@@ -77,13 +77,13 @@ public class ShellFileTransportController extends StageController {
      * 来源信息
      */
     @FXML
-    private ShellSSHConnectTextField sourceInfo;
+    private ShellConnectTextField sourceInfo;
 
     /**
      * 目标信息
      */
     @FXML
-    private ShellSSHConnectTextField targetInfo;
+    private ShellConnectTextField targetInfo;
 
     /**
      * 来源主机

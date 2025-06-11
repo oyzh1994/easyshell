@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.connect.ShellSSHConnectTextField?>
+<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.fx.gui.button.ExecuteButton?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -12,11 +12,11 @@
 
     </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30">
-        <ShellSSHConnectTextField require="true" fx:id="connect" realHeight="26">
+        <ShellConnectTextField filterMode="term" require="true" fx:id="connect" realHeight="26">
             <FXHBox.margin>
                 <Insets left="5" top="2"/>
             </FXHBox.margin>
-        </ShellSSHConnectTextField>
+        </ShellConnectTextField>
         <ExecuteButton text="%base.connect" onAction="#doConnect" realHeight="26">
             <FXHBox.margin>
                 <Insets left="5" top="2"/>
