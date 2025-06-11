@@ -2,12 +2,14 @@ package cn.oyzh.easyshell.tabs.split;
 
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -23,9 +25,10 @@ public class ShellSplitTab extends ShellConnectTab {
      */
     private static final AtomicInteger INDEX = new AtomicInteger(0);
 
-    public ShellSplitTab() {
+    public ShellSplitTab(List<ShellConnect> connects) {
         super();
         this.flush();
+        this.controller().init(connects);
     }
 
     @Override
@@ -46,6 +49,10 @@ public class ShellSplitTab extends ShellConnectTab {
             case "type5" -> "/tabs/split/shellSplitTab5.fxml";
             // 模式6
             case "type6" -> "/tabs/split/shellSplitTab6.fxml";
+            // 模式7
+            case "type7" -> "/tabs/split/shellSplitTab7.fxml";
+            // 模式8
+            case "type8" -> "/tabs/split/shellSplitTab8.fxml";
             // 模式1或者默认
             default -> "/tabs/split/shellSplitTab1.fxml";
         };

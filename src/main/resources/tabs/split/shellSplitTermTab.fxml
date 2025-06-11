@@ -12,7 +12,7 @@
 
     </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30">
-        <ShellSSHConnectTextField require="true" fx:id="connectionBox" realHeight="26">
+        <ShellSSHConnectTextField require="true" fx:id="connect" realHeight="26">
             <FXHBox.margin>
                 <Insets left="5" top="2"/>
             </FXHBox.margin>

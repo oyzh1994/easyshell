@@ -272,7 +272,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void termSplit(ShellShowSplitEvent event) {
         ThreadLocalUtil.setVal("type", event.data());
-        ShellSplitTab splitTab = new ShellSplitTab();
+        ShellSplitTab splitTab = new ShellSplitTab(event.getConnects());
         this.addTab(splitTab);
         if (!splitTab.isSelected()) {
             this.select(splitTab);

@@ -46,7 +46,7 @@ public class ShellSplitTermController extends SubTabController {
      * ssh连接组件
      */
     @FXML
-    private ShellSSHConnectTextField connectionBox;
+    private ShellSSHConnectTextField connect;
 
     /**
      * 初始化组件
@@ -62,7 +62,6 @@ public class ShellSplitTermController extends SubTabController {
         connector.initShell(this.client);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**
@@ -78,12 +77,6 @@ public class ShellSplitTermController extends SubTabController {
             MessageBox.warn(I18nHelper.connectFail());
             return;
         }
-        // ShellConnect shellConnect = this.client.getShellConnect();
-        // // macos需要初始化部分参数
-        // if (this.client.isMacos() && shellConnect.getCharset() != null) {
-        //     TtyConnector connector = this.widget.getTtyConnector();
-        //     connector.write("export LANG=en_US." + shellConnect.getCharset() + "\n");
-        // }
         this.termBox.addChild(this.widget);
     }
 
@@ -113,24 +106,35 @@ public class ShellSplitTermController extends SubTabController {
      */
     @FXML
     private void doConnect() {
-        if (!this.connectionBox.validate()) {
+        if (!this.connect.validate()) {
             return;
         }
         this.destroy();
-        ShellConnect connect = this.connectionBox.getSelectedItem();
-        this.client = new ShellSSHClient(connect);
-        StageManager.showMask(() -> {
-            try {
-                this.client.start();
-                if (this.client.isConnected()) {
-                    this.init();
-                } else {
-                    this.destroy();
-                }
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
+        ShellConnect connect = this.connect.getSelectedItem();
+        StageManager.showMask(() -> this.doConnect(connect));
+    }
+
+    /**
+     * 执行连接
+     *
+     * @param connect 连接
+     */
+    public void doConnect(ShellConnect connect) {
+        try {
+            // 外部选择的连接
+            if (this.connect.getSelectedItem() != connect) {
+                this.connect.select(connect);
+            }
+            this.client = new ShellSSHClient(connect);
+            this.client.start();
+            if (this.client.isConnected()) {
+                this.init();
+            } else {
                 this.destroy();
             }
-        });
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+            this.destroy();
+        }
     }
 }

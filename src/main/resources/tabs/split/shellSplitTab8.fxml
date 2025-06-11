@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.split.ShellSplitTabController" flexWidth="100%" flexHeight="100%">
+    <FXHBox flexWidth="100%" flexHeight="33.33%">
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term1" source="shellSplitTermTab.fxml"/>
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term2" source="shellSplitTermTab.fxml"/>
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term3" source="shellSplitTermTab.fxml"/>
+    </FXHBox>
+    <FXHBox flexWidth="100%" flexHeight="33.33%">
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term4" source="shellSplitTermTab.fxml"/>
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term5" source="shellSplitTermTab.fxml"/>
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term6" source="shellSplitTermTab.fxml"/>
+    </FXHBox>
+    <FXHBox flexWidth="100%" flexHeight="33.33%">
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term7" source="shellSplitTermTab.fxml"/>
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term8" source="shellSplitTermTab.fxml"/>
+        <fx:include flexWidth="33.33%" flexHeight="100%" fx:id="term9" source="shellSplitTermTab.fxml"/>
+    </FXHBox>
+</FXVBox>

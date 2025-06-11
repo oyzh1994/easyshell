@@ -391,11 +391,14 @@ public class ShellEventUtil {
 
     /**
      * 显示分屏页面
-     * @param type 类型
+     *
+     * @param type     类型
+     * @param connects 连接列表
      */
-    public static void showSplit(String type) {
+    public static void showSplit(String type, List<ShellConnect> connects) {
         ShellShowSplitEvent event = new ShellShowSplitEvent();
         event.data(type);
+        event.setConnects(connects);
         EventUtil.post(event);
     }
 

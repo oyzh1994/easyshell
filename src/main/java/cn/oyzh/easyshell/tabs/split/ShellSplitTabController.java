@@ -1,11 +1,14 @@
 package cn.oyzh.easyshell.tabs.split;
 
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
-import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -45,9 +48,62 @@ public class ShellSplitTabController extends ParentTabController {
     private ShellSplitTermController term4Controller;
 
     /**
+     * 终端5
+     */
+    @FXML
+    private ShellSplitTermController term5Controller;
+
+    /**
+     * 终端6
+     */
+    @FXML
+    private ShellSplitTermController term6Controller;
+
+    /**
+     * 终端7
+     */
+    @FXML
+    private ShellSplitTermController term7Controller;
+
+    /**
+     * 终端8
+     */
+    @FXML
+    private ShellSplitTermController term8Controller;
+
+    /**
+     * 终端9
+     */
+    @FXML
+    private ShellSplitTermController term9Controller;
+
+    /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
+     * 初始化
+     *
+     * @param connects 连接列表
+     */
+    public void init(List<ShellConnect> connects) {
+        if (CollectionUtil.isNotEmpty(connects)) {
+            List<ShellSplitTermController> controllers = this.getSubControllers();
+            List<Runnable> tasks = new ArrayList<>();
+            // 从controller批量处理
+            for (int i = 0; i < controllers.size(); i++) {
+                ShellSplitTermController controller = controllers.get(i);
+                ShellConnect connect = CollectionUtil.get(connects, i);
+                if (connect == null) {
+                    break;
+                }
+                tasks.add(() -> controller.doConnect(connect));
+            }
+            // 异步批量初始化
+            StageManager.showMask(() -> ThreadUtil.submitVirtual(tasks));
+        }
+    }
 
     @Override
     public void onTabInit(RichTab tab) {
@@ -68,8 +124,8 @@ public class ShellSplitTabController extends ParentTabController {
     }
 
     @Override
-    public List<? extends RichTabController> getSubControllers() {
-        List<RichTabController> controllers = new ArrayList<>();
+    public List<ShellSplitTermController> getSubControllers() {
+        List<ShellSplitTermController> controllers = new ArrayList<>();
         controllers.add(this.term1Controller);
         controllers.add(this.term2Controller);
         if (this.term3Controller != null) {
@@ -77,6 +133,21 @@ public class ShellSplitTabController extends ParentTabController {
         }
         if (this.term4Controller != null) {
             controllers.add(this.term4Controller);
+        }
+        if (this.term5Controller != null) {
+            controllers.add(this.term5Controller);
+        }
+        if (this.term6Controller != null) {
+            controllers.add(this.term6Controller);
+        }
+        if (this.term7Controller != null) {
+            controllers.add(this.term7Controller);
+        }
+        if (this.term8Controller != null) {
+            controllers.add(this.term8Controller);
+        }
+        if (this.term9Controller != null) {
+            controllers.add(this.term9Controller);
         }
         return controllers;
     }
