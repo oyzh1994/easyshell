@@ -127,4 +127,13 @@ public class ShellRLoginTabController extends RichTabController {
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
+
+    /**
+     * 运行片段
+     *
+     * @param content 内容
+     */
+    public void runSnippet(String content) throws IOException {
+        this.widget.getTtyConnector().write(content);
+    }
 }

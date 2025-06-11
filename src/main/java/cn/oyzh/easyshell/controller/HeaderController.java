@@ -73,6 +73,14 @@ public class HeaderController extends StageController {
     }
 
     /**
+     * 片段
+     */
+    @FXML
+    private void snippet() {
+        ShellViewFactory.snippet();
+    }
+
+    /**
      * 消息
      */
     @FXML

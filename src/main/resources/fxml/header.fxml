@@ -4,11 +4,11 @@
 <?import cn.oyzh.fx.gui.svg.glyph.MessageSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.QuitSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ToolsSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
@@ -23,6 +23,11 @@
             <Insets left="10" top="15"/>
         </VBox.margin>
     </KeySVGGlyph>
+    <SnippetSVGGlyph onMousePrimaryClicked="#snippet" size="13">
+        <VBox.margin>
+            <Insets left="10" top="15"/>
+        </VBox.margin>
+    </SnippetSVGGlyph>
     <MessageSVGGlyph onMousePrimaryClicked="#message" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>

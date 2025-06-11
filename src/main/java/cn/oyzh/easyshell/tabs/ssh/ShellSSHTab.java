@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
@@ -16,7 +16,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellSSHTab extends ShellConnectTab {
+public class ShellSSHTab extends ShellTermTab {
 
     public ShellSSHTab(ShellConnectTreeItem item) {
         this.init(item);
@@ -96,4 +96,10 @@ public class ShellSSHTab extends ShellConnectTab {
     //         adapter.updateContentLater();
     //     }
     // }
+
+    @Override
+    public void runSnippet(String content) throws Exception {
+        super.runSnippet(content);
+        this.controller().runSnippet(content);
+    }
 }

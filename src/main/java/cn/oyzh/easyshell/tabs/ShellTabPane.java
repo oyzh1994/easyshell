@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
+import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
@@ -27,6 +28,7 @@ import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.event.FXEventListener;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
@@ -278,4 +280,29 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             this.select(splitTab);
         }
     }
+
+    /**
+     * 运行片段事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void runSnippet(ShellRunSnippetEvent event) {
+        String content = event.data();
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellTermTab tab1) {
+                try {
+                    if (event.isRunAll()) {
+                        tab1.runSnippet(content);
+                    } else if (tab.isSelected()) {
+                        tab1.runSnippet(content);
+                        break;
+                    }
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            }
+        }
+    }
+
 }

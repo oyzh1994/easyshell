@@ -15,6 +15,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,5 +181,18 @@ public class ShellSSHTabController extends ParentTabController {
             controllers.add(this.sftpTabController);
         }
         return controllers;
+    }
+
+    /**
+     * 运行片段
+     *
+     * @param content 内容
+     */
+    public void runSnippet(String content) throws IOException {
+        if (this.effTabController != null) {
+            this.effTabController.runSnippet(content);
+        } else if (this.termTabController != null) {
+            this.termTabController.runSnippet(content);
+        }
     }
 }

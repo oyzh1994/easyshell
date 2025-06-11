@@ -12,6 +12,7 @@ import cn.oyzh.fx.plus.window.StageManager;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,5 +151,16 @@ public class ShellSplitTabController extends ParentTabController {
             controllers.add(this.term9Controller);
         }
         return controllers;
+    }
+
+    /**
+     * 运行片段
+     *
+     * @param content 内容
+     */
+    public void runSnippet(String content) throws IOException {
+        for (ShellSplitTermController controller : this.getSubControllers()) {
+            controller.runSnippet(content);
+        }
     }
 }

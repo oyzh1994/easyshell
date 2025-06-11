@@ -6,10 +6,12 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -42,46 +44,50 @@ public class ShellSSHConnectTextField extends FXTextField {
 
     @Override
     protected ShellSSHConnectTextFieldSkin createDefaultSkin() {
-        ShellSSHConnectTextFieldSkin skin = new ShellSSHConnectTextFieldSkin(this);
-        ShellConnectStore store = ShellConnectStore.INSTANCE;
-        // 仅ssh连接
-        List<ShellConnect> connects = store.loadSSH();
-        skin.setItemList(connects);
-        skin.setConverter(new SimpleStringConverter<>() {
-            @Override
-            public String toString(ShellConnect o) {
-                if (o == null) {
-                    return "";
+        AtomicReference<ShellSSHConnectTextFieldSkin> ref = new AtomicReference<>();
+        FXUtil.runWait(() -> {
+            ShellSSHConnectTextFieldSkin skin = new ShellSSHConnectTextFieldSkin(this);
+            ShellConnectStore store = ShellConnectStore.INSTANCE;
+            // 仅ssh连接
+            List<ShellConnect> connects = store.loadSSH();
+            skin.setItemList(connects);
+            skin.setConverter(new SimpleStringConverter<>() {
+                @Override
+                public String toString(ShellConnect o) {
+                    if (o == null) {
+                        return "";
+                    }
+                    return o.getName();
                 }
-                return o.getName();
-            }
+            });
+            this.addTextChangeListener((observable, oldValue, newValue) -> {
+                if (this.skin().isTexting()) {
+                    return;
+                }
+                // 移除选区
+                this.skin().clearSelection();
+                // 隐藏弹窗
+                if (StringUtil.isBlank(newValue)) {
+                    this.skin().setItemList(connects);
+                    this.skin().hidePopup();
+                    return;
+                }
+                // 过滤内容
+                List<ShellConnect> newList = connects.stream()
+                        .filter(t -> StringUtil.containsIgnoreCase(t.getName(), newValue))
+                        .collect(Collectors.toList());
+                // 设置内容
+                this.skin().setItemList(newList);
+                // 内容为空，隐藏弹窗
+                if (newList.isEmpty()) {
+                    this.skin().hidePopup();
+                } else {
+                    this.skin().showPopup();
+                }
+            });
+            ref.set(skin);
         });
-        this.addTextChangeListener((observable, oldValue, newValue) -> {
-            if (this.skin().isTexting()) {
-                return;
-            }
-            // 移除选区
-            this.skin().clearSelection();
-            // 隐藏弹窗
-            if (StringUtil.isBlank(newValue)) {
-                this.skin().setItemList(connects);
-                this.skin().hidePopup();
-                return;
-            }
-            // 过滤内容
-            List<ShellConnect> newList = connects.stream()
-                    .filter(t -> StringUtil.containsIgnoreCase(t.getName(), newValue))
-                    .collect(Collectors.toList());
-            // 设置内容
-            this.skin().setItemList(newList);
-            // 内容为空，隐藏弹窗
-            if (newList.isEmpty()) {
-                this.skin().hidePopup();
-            } else {
-                this.skin().showPopup();
-            }
-        });
-        return skin;
+        return ref.get();
     }
 
     public void select(ShellConnect connect) {

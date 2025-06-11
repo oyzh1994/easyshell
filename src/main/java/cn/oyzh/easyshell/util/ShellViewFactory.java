@@ -39,6 +39,7 @@ import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
+import cn.oyzh.easyshell.controller.snippet.ShellSnippetController;
 import cn.oyzh.easyshell.controller.split.ShellSplitGuidController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
@@ -878,4 +879,23 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    /**
+     * 片段
+     */
+    public static void snippet() {
+        try {
+            StageAdapter adapter = StageManager.getStage(ShellSnippetController.class);
+            if (adapter == null) {
+                adapter = StageManager.parseStage(ShellSnippetController.class);
+                adapter.show();
+            } else {
+                adapter.toFront();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 }

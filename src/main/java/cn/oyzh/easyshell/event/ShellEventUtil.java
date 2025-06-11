@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
+import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
@@ -400,6 +401,19 @@ public class ShellEventUtil {
         event.data(type);
         event.setConnects(connects);
         EventUtil.post(event);
+    }
+
+    /**
+     * 执行片段
+     *
+     * @param content 内容
+     * @param runAll  是否在所有tab执行
+     */
+    public static void runSnippet(String content, boolean runAll) {
+        ShellRunSnippetEvent event = new ShellRunSnippetEvent();
+        event.data(content);
+        event.setRunAll(runAll);
+        EventUtil.postAsync(event);
     }
 
 }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.split;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.tabs.ShellConnectTab;
+import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author oyzh
  * @since 2025/05/29
  */
-public class ShellSplitTab extends ShellConnectTab {
+public class ShellSplitTab extends ShellTermTab {
 
     /**
      * 分屏索引
@@ -77,5 +77,11 @@ public class ShellSplitTab extends ShellConnectTab {
     @Override
     public ShellSplitTabController controller() {
         return (ShellSplitTabController) super.controller();
+    }
+
+    @Override
+    public void runSnippet(String content) throws Exception {
+        super.runSnippet(content);
+        this.controller().runSnippet(content);
     }
 }

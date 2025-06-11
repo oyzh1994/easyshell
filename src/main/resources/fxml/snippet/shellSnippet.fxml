@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.split.ShellSnippetTextAreaPane?>
+<?import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeView?>
+<?import cn.oyzh.fx.gui.label.TipsLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXHBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.snippet.ShellSnippetController" realWidth="600"
+        realHeight="260">
+    <ShellSnippetTreeView fx:id="snippetTreeView" realWidth="140" flexHeight="100%">
+
+    </ShellSnippetTreeView>
+    <FXVBox flexWidth="100% - 240" flexHeight="100%">
+        <ShellSnippetTextAreaPane onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%" flexHeight="100% - 40">
+
+        </ShellSnippetTextAreaPane>
+        <FXHBox realHeight="40">
+            <RunSVGGlyph tipText="%base.send" appendTipText="(Ctrl+R/Meta+R)" onMousePrimaryClicked="#run">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </RunSVGGlyph>
+            <SaveSVGGlyph onMousePrimaryClicked="#save" tipText="Ctrl+S/Meta+S">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </SaveSVGGlyph>
+            <FXCheckBox fx:id="sendAll" text="%base.allTab" fontSize="11">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FXCheckBox>
+            <FXCheckBox fx:id="sendClear" text="%shell.snippet.tip1" selected="true" fontSize="11">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FXCheckBox>
+            <FXCheckBox fx:id="sendLine" text="%shell.snippet.tip2" selected="true" fontSize="11">
+                <FXHBox.margin>
+                    <Insets left="10" top="10"/>
+                </FXHBox.margin>
+            </FXCheckBox>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox realWidth="100" flexHeight="1005">
+        <TipsLabel text="\\r = CR">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </TipsLabel>
+        <TipsLabel text="\\n = LF">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </TipsLabel>
+        <TipsLabel text="\\t = TAB">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </TipsLabel>
+        <TipsLabel text="\\a = Bell">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </TipsLabel>
+        <TipsLabel text="\\e = Escape">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </TipsLabel>
+        <TipsLabel text="\\b = Backspace">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </TipsLabel>
+    </FXVBox>
+</FXHBox>
