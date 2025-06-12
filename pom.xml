@@ -179,12 +179,12 @@
         <!--            <scope>compile</scope>-->
         <!--        </dependency>-->
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-ui &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.jfxvnc</groupId>-->
-<!--            <artifactId>jfxvnc-ui</artifactId>-->
-<!--            <version>1.2.0</version>-->
-<!--        </dependency>-->
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-ui &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jfxvnc</groupId>-->
+        <!--            <artifactId>jfxvnc-ui</artifactId>-->
+        <!--            <version>1.2.0</version>-->
+        <!--        </dependency>-->
 
         <!-- vnc协议依赖开始 -->
         <dependency>
