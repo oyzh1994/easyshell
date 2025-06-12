@@ -449,7 +449,7 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <FXButton text="%base.load" onMousePrimaryClicked="#loadX11Cookie">
+                    <FXButton fx:id="x11CookieBth" text="%base.load" onMousePrimaryClicked="#loadX11Cookie">
                         <HBox.margin>
                             <Insets left="5" top="5"/>
                         </HBox.margin>

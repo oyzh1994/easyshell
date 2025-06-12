@@ -36,6 +36,7 @@ import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -180,6 +181,12 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private ClearableTextField x11Cookie;
+
+    /**
+     * x11 cookie加载按钮
+     */
+    @FXML
+    private FXButton x11CookieBth;
 
     /**
      * 环境
@@ -627,6 +634,8 @@ public class ShellUpdateSSHConnectController extends StageController {
         super.onStageInitialize(stage);
         this.x11Host.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        this.x11Cookie.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        this.x11CookieBth.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         if (OSUtil.isWindows()) {
             this.sshAgent.setText("Pageant");
         } else {
