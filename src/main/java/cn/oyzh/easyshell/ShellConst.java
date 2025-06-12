@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell;
 
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.JarUtil;
 
 import java.io.File;
@@ -40,9 +41,9 @@ public class ShellConst {
      */
     public static String getStorePath() {
         if (JarUtil.isInJar()) {
-            return System.getProperty("user.home") + File.separator + ".easyshell" + File.separator;
+            return SystemUtil.userHome() + File.separator + ".easyshell" + File.separator;
         }
-        return System.getProperty("user.home") + File.separator + ".easyshell_dev" + File.separator;
+        return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
     }
 
     /**

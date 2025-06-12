@@ -20,7 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * 代码片段业务
+ * 片段业务
  *
  * @author oyzh
  * @since 2025/06/11
@@ -49,6 +49,9 @@ public class ShellSnippetController extends StageController {
     @FXML
     private FXCheckBox sendLine;
 
+    /**
+     * 片段内容
+     */
     @FXML
     private ShellSnippetTextAreaPane content;
 
@@ -97,15 +100,16 @@ public class ShellSnippetController extends StageController {
                 content = content.concat("\r");
             }
         }
-        content=  content.replace("\\t","\t");
-        content=  content.replace("\\n","\n");
-        content=  content.replace("\\r","\r");
-        content=  content.replace("\\b","\b");
+        content = content.replace("\\t", "\t");
+        content = content.replace("\\n", "\n");
+        content = content.replace("\\r", "\r");
+        content = content.replace("\\b", "\b");
         // 执行片段
         ShellEventUtil.runSnippet(content, this.sendAll.isSelected());
         // 清除内容
         if (this.sendClear.isSelected()) {
             this.content.clear();
+            this.snippet = null;
         }
     }
 
@@ -127,7 +131,9 @@ public class ShellSnippetController extends StageController {
         this.snippet.setName(name);
         this.snippet.setContent(this.content.getText());
         this.snippetStore.replace(this.snippet);
-        this.snippetTreeView.addSnippet(this.snippet);
+        if (this.snippet.getId() == null) {
+            this.snippetTreeView.addSnippet(this.snippet);
+        }
     }
 
     @Override
