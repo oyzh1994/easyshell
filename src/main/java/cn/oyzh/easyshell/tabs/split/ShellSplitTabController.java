@@ -102,7 +102,7 @@ public class ShellSplitTabController extends ParentTabController {
                 tasks.add(() -> controller.doConnect(connect));
             }
             // 异步批量初始化
-            StageManager.showMask(() -> ThreadUtil.submitVirtual(tasks));
+            StageManager.showMask(StageManager.getPrimaryStage(), () -> ThreadUtil.submitVirtual(tasks));
         }
     }
 
