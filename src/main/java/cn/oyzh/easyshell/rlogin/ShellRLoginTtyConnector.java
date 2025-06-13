@@ -52,11 +52,6 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
         return 0;
     }
 
-    // /**
-    //  * 是否已输入用户名
-    //  */
-    // private boolean inputUser = false;
-
     /**
      * 是否已输入密码
      */
@@ -66,25 +61,14 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
     protected void doRead(char[] buf, int offset, int len) throws IOException {
         super.doRead(buf, offset, len);
         String line = new String(buf, offset, len);
-
-        // // 用户名
-        // if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:")) {
-        //     this.inputUser = true;
-        //     String user = this.client.getShellConnect().getUser();
-        //     if (StringUtil.isNotBlank(user)) {
-        //         this.shellWriter.write(user + "\n");
-        //         this.shellWriter.flush();
-        //     }
-        // }
-
         // 密码
         if (!this.inputPasswd && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
             this.inputPasswd = true;
             String password = this.client.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
-                this.shellWriter.write(password + "\n");
+                this.shellWriter.write(password + "\r");
             } else {
-                this.shellWriter.write("\n");
+                this.shellWriter.write("\r");
             }
             this.shellWriter.flush();
         }
