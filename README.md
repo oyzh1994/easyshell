@@ -1,6 +1,6 @@
 # 项目
 ###### 项目说明
-这是一个使用javafx编写的ssh客户端，支持基本的连接管理，分组管理、ssh连接、sftp文件管理、docker管理、x11转发(需要安装第三方x-server)、服务监控、本地终端等功能，支持linux和macos远程，还支持暗色主题、系统主题跟随等能力
+这是一个使用javafx编写的跨平台仿真客户端
 
 ###### 下载地址
 https://gitee.com/oyzh1994/easyshell/releases
@@ -208,3 +208,13 @@ chmod -R 755 /路径/EasyShell.app(可拖入命令行窗口)
 ![41.png](resource/md/41.png)
 ###### 截图42
 ![42.png](resource/md/42.png)
+###### 截图43
+![43.png](resource/md/43.png)
+###### 截图44
+![44.png](resource/md/44.png)
+###### 截图45
+![45.png](resource/md/45.png)
+###### 截图46
+![46.png](resource/md/46.png)
+###### 截图47
+![47.png](resource/md/47.png)

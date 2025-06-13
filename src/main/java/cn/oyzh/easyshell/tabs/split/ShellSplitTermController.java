@@ -180,7 +180,7 @@ public class ShellSplitTermController extends SubTabController {
             } else if (connect.isSerialType()) {
                 this.client = new ShellSerialClient(connect);
             } else if (connect.isTelnetType()) {
-                this.client = new ShellSerialClient(connect);
+                this.client = new ShellTelnetClient(connect);
             } else if (connect.isLocalType()) {
                 this.client = new ShellLocalClient(connect);
             }
