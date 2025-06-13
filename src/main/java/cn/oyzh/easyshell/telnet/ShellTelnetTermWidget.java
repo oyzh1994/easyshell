@@ -39,9 +39,10 @@ public class ShellTelnetTermWidget extends ShellDefaultTermWidget {
      */
     public void initPtySize() {
         ShellTelnetClient client = this.client();
-        if (client != null) {
-            TermSize termSize = this.getTermSize();
-            client.setPtySize(termSize.getColumns(), termSize.getRows());
+        if (client == null) {
+            return;
         }
+        TermSize termSize = this.getTermSize();
+        client.setPtySize(termSize.getColumns(), termSize.getRows());
     }
 }

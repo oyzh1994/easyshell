@@ -93,10 +93,20 @@ public class ShellTelnetClient implements BaseClient {
         }
     }
 
+    /**
+     * telnet窗口大小处理器
+     */
     private WindowSizeOptionHandler sizeHandler;
 
+    /**
+     * 设置终端大学
+     *
+     * @param cols 列
+     * @param rows 行
+     */
     public void setPtySize(int cols, int rows) {
         try {
+            // 删除旧的
             if (this.sizeHandler != null) {
                 this.client.deleteOptionHandler(this.sizeHandler.getOptionCode());
                 this.sizeHandler = null;

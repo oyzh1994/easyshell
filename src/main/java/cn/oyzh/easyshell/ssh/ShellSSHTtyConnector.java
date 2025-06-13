@@ -61,7 +61,6 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
-//        this.saveTermHistory(str);
     }
 
     @Override
@@ -70,57 +69,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
-//        this.saveTermHistory(str);
     }
-
-    /**
-     * 写入历史
-     *
-     * @param str 内容
-     * @throws IOException 异常
-     */
-    public void writeHistory(String str) throws IOException {
-        this.shellWriter.write(str + "\r");
-        this.shellWriter.flush();
-    }
-
-//    /**
-//     * 终端历史
-//     */
-//    private final StringBuilder termHistory = new StringBuilder();
-
-//    /**
-//     * 保存终端历史
-//     *
-//     * @param output 输出
-//     */
-//    private void saveTermHistory(String output) {
-//        if (this.client != null) {
-//            this.termHistory.append(output);
-//            String command = this.termHistory.toString();
-//            // 针对回显字符，忽略
-//            if (command.contains("@") && StringUtil.containsAny(command, "% ", "# ", "@ ", ">")) {
-//                this.termHistory.setLength(0);
-//                return;
-//            }
-//            // 针对首次打开，出现登陆提示，忽略
-//            if (StringUtil.containsAny(command, "登陆:", "login:")) {
-//                this.termHistory.setLength(0);
-//                return;
-//            }
-//            // 针对macos设置字符集，忽略
-//            if (StringUtil.containsAny(command, "export LANG=")) {
-//                this.termHistory.setLength(0);
-//                return;
-//            }
-//            if (StringUtil.containsAny(command, "\r", "\n") || StringUtil.endsWithAny(output, "\r", "\n")) {
-//                command = command.lines().findFirst().get();
-//                JulLog.error("term history : {}", command);
-//                this.termHistory.setLength(0);
-//                this.client.saveTermHistory(command);
-//            }
-//        }
-//    }
 
     @Override
     public void close() {
