@@ -113,6 +113,7 @@ public class ShellSetting extends AppSetting {
             this.termRefreshRate = setting.termRefreshRate;
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
+            this.termParseHyperlink = setting.termParseHyperlink;
             this.termCopyOnSelected = setting.termCopyOnSelected;
             this.termUseAntialiasing = setting.termUseAntialiasing;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
@@ -237,7 +238,7 @@ public class ShellSetting extends AppSetting {
     }
 
     public boolean isEfficiencyMode() {
-        return BooleanUtil.isTrue(this.efficiencyMode);
+        return this.efficiencyMode == null || BooleanUtil.isTrue(this.efficiencyMode);
     }
 
     public void setEfficiencyMode(Boolean efficiencyMode) {
