@@ -44,10 +44,10 @@ public class ShellLocalTabController extends RichTabController {
         Charset charset = Charset.forName(this.shellConnect.getCharset());
         // 初始化部分参数
         if (this.shellConnect.getTermType() != null) {
-            this.widget.putEnvironment("TERM", this.shellConnect.getTermType() + "\n");
+            this.widget.putEnvironment("TERM", this.shellConnect.getTermType());
         }
         if (this.shellConnect.getCharset() != null) {
-            this.widget.putEnvironment("LANG", "en_US." + charset + "\n");
+            this.widget.putEnvironment("LANG", "en_US." + charset);
         }
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);

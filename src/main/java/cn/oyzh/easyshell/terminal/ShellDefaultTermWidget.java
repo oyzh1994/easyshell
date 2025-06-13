@@ -107,7 +107,10 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         return new ShellDefaultTtyConnector(process, charset, Arrays.asList(command));
     }
 
-    private HashMap<String, String> envs = new HashMap<>(System.getenv());
+    /**
+     * 环境列表
+     */
+    private HashMap<String, String> envs;
 
     public Map<String, String> getEnvironments() {
         if (this.envs == null) {
