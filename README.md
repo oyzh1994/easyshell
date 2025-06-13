@@ -108,6 +108,15 @@ xdg-desktop-menu: No writable system menu directory found.
 sudo mkdir /usr/share/desktop-directories/  
 ###### 双击安装rpm包提示出现问题
 rpm -ivh xx.rpm
+###### rpm升级
+rpm -U xx.rpm
+###### rpm卸载
+rpm -e easyshell
+###### deb升级
+dpkg -r easyshell
+dpkg -i xx.deb
+###### deb卸载
+dpkg -r easyshell
 
 # Macos系统
 ###### mac执行dmg安装后，启动台不显示程序图标解决方案
