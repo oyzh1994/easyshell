@@ -1,5 +1,7 @@
 # 1. 安装依赖
-apt install -y telnetd xinetd
+apt install -y telnetd
+# 可选，如果没有就安装
+apt install -y xinetd
 # 2. 启用配置
 touch /etc/xinetd.d/telnet
 vim /etc/xinetd.d/telnet
@@ -19,6 +21,10 @@ chmod 755 /usr/sbin/in.telnetd
 # 4. 关闭防火墙(或者自己添加端口)
 systemctl stop ufw
 systemctl disable ufw
-# 5. 启动并启用telnet服务
+# 5. 启动并启用xinetd服务
+# 启动
 systemctl start xinetd
+# 重启
+systemctl restart xinetd
+# 启用
 systemctl enable xinetd
