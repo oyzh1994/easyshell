@@ -48,7 +48,7 @@ public class ShellSSHUtil {
             line = line.substring(line.lastIndexOf("["));
             line = line.substring(line.lastIndexOf("@"));
             dir = line.substring(line.lastIndexOf(" ") + 1);
-            if (!dir.startsWith("/")) {
+            if (!"~".equals(dir) && !dir.startsWith("/")) {
                 dir = "/" + dir;
             }
         } else if (StringUtil.endsWith(line, " # ")) {// unix
