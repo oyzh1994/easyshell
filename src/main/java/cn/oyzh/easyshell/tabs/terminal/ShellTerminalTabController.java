@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -30,12 +29,9 @@ public class ShellTerminalTabController extends RichTabController {
         ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) this.widget.createTtyConnector();
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-        // macos需要初始化终端类型
-        if (OSUtil.isMacOS()) {
-            connector.write("export LANG=en_US.utf-8\n");
-            connector.write("export TERM=xterm-256color\n");
-        }
+        // // 初始化部分参数
+        // connector.write("export LANG=en_US.utf-8\n");
+        // connector.write("export TERM=xterm-256color\n");
     }
 
     @Override

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.local;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
@@ -43,19 +42,16 @@ public class ShellLocalTabController extends RichTabController {
 
     private void initWidget() throws IOException {
         Charset charset = Charset.forName(this.shellConnect.getCharset());
+        // 初始化部分参数
+        if (this.shellConnect.getTermType() != null) {
+            this.widget.putEnvironment("TERM", this.shellConnect.getTermType() + "\n");
+        }
+        if (this.shellConnect.getCharset() != null) {
+            this.widget.putEnvironment("LANG", "en_US." + charset + "\n");
+        }
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
-        // macos需要初始化部分参数
-        if (OSUtil.isMacOS()) {
-            if (this.shellConnect.getTermType() != null) {
-                connector.write("export TERM=" + this.shellConnect.getTermType() + "\n");
-            }
-            if (this.shellConnect.getCharset() != null) {
-                connector.write("export LANG=en_US." + this.shellConnect.getCharset() + "\n");
-            }
-        }
     }
 
     /**

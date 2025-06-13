@@ -107,16 +107,33 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         return new ShellDefaultTtyConnector(process, charset, Arrays.asList(command));
     }
 
-    protected Map<String, String> getEnvironments() {
-        HashMap<String, String> envs = new HashMap<>(System.getenv());
-        if (OSUtil.isMacOS()) {
-            envs.put("LC_CTYPE", Charsets.UTF_8.name());
-            envs.put("TERM", "xterm-256color");
+    private HashMap<String, String> envs = new HashMap<>(System.getenv());
+
+    public Map<String, String> getEnvironments() {
+        if (this.envs == null) {
+            this.envs = new HashMap<>(System.getenv());
+            if (OSUtil.isMacOS()) {
+                this.envs.put("LC_CTYPE", Charsets.UTF_8.name());
+                this.envs.put("LANG", "en_US.utf-8");
+                this.envs.put("TERM", "xterm-256color");
+            } else if (OSUtil.isLinux()) {
+                this.envs.put("LANG", "en_US.utf-8");
+                this.envs.put("TERM", "xterm-256color");
+            } else if (OSUtil.isWindows()) {
+                this.envs.put("TERM", "xterm-256color");
+            }
         }
-        if (OSUtil.isWindows()) {
-            envs.put("TERM", "xterm-256color");
-        }
-        return envs;
+        return this.envs;
+    }
+
+    /**
+     * 添加环境变量
+     *
+     * @param key   名称
+     * @param value 值
+     */
+    public void putEnvironment(String key, String value) {
+        this.getEnvironments().put(key, value);
     }
 
     public void openSession() throws IOException {
