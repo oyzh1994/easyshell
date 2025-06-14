@@ -4,25 +4,25 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ShellAddFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
-import cn.oyzh.easyshell.controller.connect.ShellAddLocalConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddRLoginConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddSFTPConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddSSHConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddSerialConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddTelnetConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellAddVNCConnectController;
+import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
+import cn.oyzh.easyshell.controller.connect.sftp.ShellAddSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController;
+import cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController;
+import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectController;
+import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateFTPConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateLocalConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateRLoginConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateSFTPConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateSSHConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateSerialConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateTelnetConnectController;
-import cn.oyzh.easyshell.controller.connect.ShellUpdateVNCConnectController;
+import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.rlogin.ShellUpdateRLoginConnectController;
+import cn.oyzh.easyshell.controller.connect.sftp.ShellUpdateSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.ssh.ShellUpdateSSHConnectController;
+import cn.oyzh.easyshell.controller.connect.serial.ShellUpdateSerialConnectController;
+import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.connect.vnc.ShellUpdateVNCConnectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
@@ -196,7 +196,7 @@ public class ShellViewFactory {
 //     */
 //    public static void addFTPSConnect(ShellGroup group) {
 //        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellAddFTPSConnectController.class);
+//            StageAdapter adapter = StageManager.parseStage(ShellAddS3ConnectController.class);
 //            adapter.setProp("group", group);
 //            adapter.display();
 //        } catch (Exception ex) {
@@ -341,7 +341,7 @@ public class ShellViewFactory {
 //     */
 //    public static void updateFTPSConnect(ShellConnect connect) {
 //        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellUpdateFTPSConnectController.class);
+//            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3ConnectController.class);
 //            adapter.setProp("shellConnect", connect);
 //            adapter.display();
 //        } catch (Exception ex) {

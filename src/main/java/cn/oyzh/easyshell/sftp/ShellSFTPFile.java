@@ -175,9 +175,6 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public String getFilePath() {
-//        if (this.linkPath != null) {
-//            return this.linkPath;
-//        }
         String fileName = this.getFileName();
         if (fileName.startsWith("/")) {
             return fileName;
