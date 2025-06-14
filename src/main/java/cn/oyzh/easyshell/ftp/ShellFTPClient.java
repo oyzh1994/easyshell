@@ -183,6 +183,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
+    private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
+
     public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
     }
@@ -194,8 +196,6 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
     }
-
-    private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
 
     @Override
     public ObservableList<ShellFileTransportTask> transportTasks() {

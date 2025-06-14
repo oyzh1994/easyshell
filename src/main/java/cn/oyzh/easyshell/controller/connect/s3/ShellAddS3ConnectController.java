@@ -140,7 +140,7 @@ public class ShellAddS3ConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("ftps");
+            shellConnect.setType("s3");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             // 认证信息
@@ -186,7 +186,7 @@ public class ShellAddS3ConnectController extends StageController {
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             // 分组及类型
-            shellConnect.setType("ftps");
+            shellConnect.setType("s3");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {

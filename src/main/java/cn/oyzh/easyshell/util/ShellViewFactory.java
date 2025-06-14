@@ -4,24 +4,26 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
-import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
-import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
-import cn.oyzh.easyshell.controller.connect.sftp.ShellAddSFTPConnectController;
-import cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController;
-import cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController;
-import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectController;
-import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
+import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellUpdateRLoginConnectController;
-import cn.oyzh.easyshell.controller.connect.sftp.ShellUpdateSFTPConnectController;
-import cn.oyzh.easyshell.controller.connect.ssh.ShellUpdateSSHConnectController;
+import cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController;
+import cn.oyzh.easyshell.controller.connect.s3.ShellUpdateS3ConnectController;
+import cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.serial.ShellUpdateSerialConnectController;
+import cn.oyzh.easyshell.controller.connect.sftp.ShellAddSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.sftp.ShellUpdateSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController;
+import cn.oyzh.easyshell.controller.connect.ssh.ShellUpdateSSHConnectController;
+import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
+import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellUpdateVNCConnectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
@@ -189,21 +191,21 @@ public class ShellViewFactory {
         }
     }
 
-//    /**
-//     * 新增ftps连接
-//     *
-//     * @param group 分组
-//     */
-//    public static void addFTPSConnect(ShellGroup group) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellAddS3ConnectController.class);
-//            adapter.setProp("group", group);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    /**
+     * 新增s3连接
+     *
+     * @param group 分组
+     */
+    public static void addS3Connect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddS3ConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 新增vnc连接
@@ -334,21 +336,21 @@ public class ShellViewFactory {
         }
     }
 
-//    /**
-//     * 修改ftps连接
-//     *
-//     * @param connect 连接
-//     */
-//    public static void updateFTPSConnect(ShellConnect connect) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3ConnectController.class);
-//            adapter.setProp("shellConnect", connect);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    /**
+     * 修改s3连接
+     *
+     * @param connect 连接
+     */
+    public static void updateS3Connect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3ConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 修改vnc连接

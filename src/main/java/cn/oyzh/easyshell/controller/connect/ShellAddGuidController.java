@@ -51,8 +51,8 @@ public class ShellAddGuidController extends StageController {
                 ShellViewFactory.addSFTPConnect(group);
             } else if ("ftp".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addFTPConnect(group);
-//            } else if ("ftps".equalsIgnoreCase(this.type.selectedUserData())) {
-//                ShellViewFactory.addFTPSConnect(group);
+            } else if ("s3".equalsIgnoreCase(this.type.selectedUserData())) {
+                ShellViewFactory.addS3Connect(group);
             } else if ("serial".equalsIgnoreCase(this.type.selectedUserData())) {
                 ShellViewFactory.addSerialConnect(group);
             } else if ("vnc".equalsIgnoreCase(this.type.selectedUserData())) {

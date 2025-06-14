@@ -630,6 +630,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "rlogin".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isS3Type() {
+        return "s3".equalsIgnoreCase(this.type);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }
@@ -747,6 +752,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * @return 结果
      */
     public boolean isFileType() {
-        return this.isSSHType() || this.isSFTPType() || this.isFTPType();
+        return this.isSSHType() || this.isSFTPType() || this.isFTPType() || this.isS3Type();
     }
 }

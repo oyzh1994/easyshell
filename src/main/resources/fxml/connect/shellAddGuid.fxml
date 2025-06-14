@@ -70,6 +70,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </FXRadioButton>
+    <FXRadioButton toggleGroup="$type" text="S3" userData="s3">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </FXRadioButton>
     <FXRadioButton toggleGroup="$type" text="%base.localTerminal" userData="local">
         <VBox.margin>
             <Insets left="30" top="10"/>

@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
+import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -95,6 +96,16 @@ public class ShellConnectUtil {
                     }
                 } else if (shellConnect.isFTPType()) {
                     ShellFTPClient client = new ShellFTPClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+                } else if (shellConnect.isS3Type()) {
+                    ShellS3Client client = new ShellS3Client(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

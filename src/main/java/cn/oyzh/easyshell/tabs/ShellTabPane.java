@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
+import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
 import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
 import cn.oyzh.easyshell.tabs.split.ShellSplitTab;
@@ -188,6 +189,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellSFTPTab(event.data());
         } else if (connect.isFTPType()) {
             tab = new ShellFTPTab(event.data());
+        } else if (connect.isS3Type()) {
+            tab = new ShellS3Tab(event.data());
         } else if (connect.isSerialType()) {
             tab = new ShellSerialTab(event.data());
         } else if (connect.isVNCType()) {
