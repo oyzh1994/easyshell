@@ -13,60 +13,47 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30">
-    <TransportSVGGlyph onMousePrimaryClicked="#transport" size="12">
+    <TransportSVGGlyph tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12">
         <VBox.margin>
             <Insets left="10" top="60"/>
         </VBox.margin>
     </TransportSVGGlyph>
-    <KeySVGGlyph onMousePrimaryClicked="#key" size="13">
+    <KeySVGGlyph tipText="%base.key1Manager" onMousePrimaryClicked="#key" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </KeySVGGlyph>
-    <SnippetSVGGlyph onMousePrimaryClicked="#snippet" size="13">
+    <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </SnippetSVGGlyph>
-    <MessageSVGGlyph onMousePrimaryClicked="#message" size="13">
+    <MessageSVGGlyph tipText="%base.message" onMousePrimaryClicked="#message" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </MessageSVGGlyph>
-    <ToolsSVGGlyph onMousePrimaryClicked="#tool" size="13">
+    <ToolsSVGGlyph tipText="%base.tool" onMousePrimaryClicked="#tool" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </ToolsSVGGlyph>
-    <AboutSVGGlyph onMousePrimaryClicked="#about" size="13">
+    <AboutSVGGlyph tipText="%base.about" onMousePrimaryClicked="#about" size="13">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </AboutSVGGlyph>
-<!--    <Layout1SVGGlyph onMousePrimaryClicked="#layout1" size="12">-->
-<!--        <VBox.margin>-->
-<!--            <Insets left="10" top="15"/>-->
-<!--        </VBox.margin>-->
-<!--    </Layout1SVGGlyph>-->
-<!--    <Layout2SVGGlyph onMousePrimaryClicked="#layout2" size="12">-->
-<!--        <VBox.margin>-->
-<!--            <Insets left="10" top="15"/>-->
-<!--        </VBox.margin>-->
-<!--    </Layout2SVGGlyph>-->
     <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </LayoutSVGPane>
-<!--    <FXPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 278">-->
-
-<!--    </FXPane>-->
-    <QuitSVGGlyph onMousePrimaryClicked="#quit" size="12">
+    <QuitSVGGlyph tipText="%base.quit" onMousePrimaryClicked="#quit" size="12">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </QuitSVGGlyph>
-    <SettingSVGGlyph onMousePrimaryClicked="#setting" size="14">
+    <SettingSVGGlyph tipText="%base.setting" onMousePrimaryClicked="#setting" size="14">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>

@@ -12,6 +12,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.stage.WindowEvent;
 
 /**
  * 主页头部业务
@@ -117,6 +118,7 @@ public class HeaderController extends StageController {
      */
     @EventSubscribe
     private void layout1(Layout1Event event) {
+        this.layoutPane.setTipText(I18nHelper.showLeftSide());
         this.layoutPane.layout2();
     }
 
@@ -127,6 +129,7 @@ public class HeaderController extends StageController {
      */
     @EventSubscribe
     private void layout2(Layout2Event event) {
+        this.layoutPane.setTipText(I18nHelper.hiddenLeftSide());
         this.layoutPane.layout1();
     }
 
@@ -152,11 +155,12 @@ public class HeaderController extends StageController {
 //    @FXML
 //    private FXPane splitPane;
 
-//    @Override
-//    public void onWindowShowing(WindowEvent event) {
-//        super.onWindowShowing(event);
+    @Override
+    public void onWindowShowing(WindowEvent event) {
+        super.onWindowShowing(event);
 //        if (OSUtil.isWindows()) {
 //            this.splitPane.setFlexHeight("100% - 282");
 //        }
-//    }
+        this.layoutPane.setTipText(I18nHelper.hiddenLeftSide());
+    }
 }
