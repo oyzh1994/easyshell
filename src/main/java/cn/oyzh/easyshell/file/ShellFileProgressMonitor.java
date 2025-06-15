@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ftp;
+package cn.oyzh.easyshell.file;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,14 +14,14 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellFTPProgressMonitor {
+public class ShellFileProgressMonitor {
 
     public static ShellFTPInputStream of(InputStream in, Function<Long, Boolean> callback) {
         return new ShellFTPInputStream(in, callback);
     }
 
-    public static ShellFTPOuputStream of(OutputStream out, Function<Long, Boolean> callback) {
-        return new ShellFTPOuputStream(out, callback);
+    public static ShellFTPOutputStream of(OutputStream out, Function<Long, Boolean> callback) {
+        return new ShellFTPOutputStream(out, callback);
     }
 
     public static class ShellFTPInputStream extends InputStream {
@@ -66,13 +66,13 @@ public class ShellFTPProgressMonitor {
         }
     }
 
-    public static class ShellFTPOuputStream extends OutputStream {
+    public static class ShellFTPOutputStream extends OutputStream {
 
         private OutputStream out;
 
         private Function<Long, Boolean> callback;
 
-        public ShellFTPOuputStream(OutputStream out, Function<Long, Boolean> callback) {
+        public ShellFTPOutputStream(OutputStream out, Function<Long, Boolean> callback) {
             this.out = out;
             this.callback = callback;
         }

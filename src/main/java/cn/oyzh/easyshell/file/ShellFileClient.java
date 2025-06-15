@@ -469,4 +469,51 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     default boolean isForked() {
         return false;
     }
+
+    /**
+     * 判断是否支持某些操作
+     *
+     * @param action 操作
+     * @return 结果
+     */
+    default boolean isSupport(String action) {
+        if ("putStream".equals(action)) {
+            return true;
+        }
+        if ("createDir".equals(action)) {
+            return true;
+        }
+        if ("createDirRecursive".equals(action)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否支持putStream操作
+     *
+     * @return 结果
+     */
+    default boolean isPutStreamSupport() {
+        return this.isSupport("putStream");
+    }
+
+    /**
+     * 判断是否支持createDir操作
+     *
+     * @return 结果
+     */
+    default boolean isCreateDirSupport() {
+        return this.isSupport("createDir");
+    }
+
+    /**
+     * 判断是否支持createDirRecursive操作
+     *
+     * @return 结果
+     */
+    default boolean isCreateDirRecursiveSupport() {
+        return this.isSupport("createDirRecursive");
+    }
+
 }

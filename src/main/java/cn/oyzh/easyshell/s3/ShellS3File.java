@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import software.amazon.awssdk.services.s3.model.Bucket;
@@ -7,14 +8,19 @@ import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.time.Instant;
+import java.util.Date;
 
+/**
+ * s3文件
+ *
+ * @author oyzh
+ * @since 2025-06-14
+ */
 public class ShellS3File implements ShellFile {
 
     private String fileName;
 
     private String parentPath;
-
-    private String modifyTime;
 
     private Bucket bucket;
 
@@ -23,6 +29,10 @@ public class ShellS3File implements ShellFile {
     private CommonPrefix prefix;
 
     private String bucketName;
+
+    private Instant lastModified;
+
+    private long fileSize;
 
     public ShellS3File(S3Object s3Object, String bucket) {
         this.bucketName = bucket;
@@ -50,13 +60,17 @@ public class ShellS3File implements ShellFile {
         this.parentPath = "/";
     }
 
-    public ShellS3File() {
-
+    public ShellS3File(ShellS3Path s3Path, Instant lastModified, Long fileSize) {
+        this.lastModified = lastModified;
+        this.fileName = s3Path.fileName();
+        this.bucketName = s3Path.bucketName();
+        this.parentPath = s3Path.parentPath();
+        this.fileSize = fileSize;
     }
 
     @Override
     public boolean isFile() {
-        return this.s3Object != null;
+        return this.s3Object != null && !this.s3Object.key().endsWith("/");
     }
 
     @Override
@@ -79,13 +93,12 @@ public class ShellS3File implements ShellFile {
         if (this.s3Object != null) {
             return this.s3Object.size();
         }
-        return 0;
+        return this.fileSize;
     }
 
     @Override
     public void setFileSize(long fileSize) {
-
-
+        this.fileSize = fileSize;
     }
 
     @Override
@@ -100,7 +113,10 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public boolean isDirectory() {
-        return this.bucket != null || this.prefix != null;
+        if (this.bucket != null || this.prefix != null) {
+            return true;
+        }
+        return this.s3Object != null && this.s3Object.key().endsWith("/");
     }
 
     @Override
@@ -120,27 +136,26 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public String getModifyTime() {
-        return this.modifyTime;
+        Instant instant;
+        if (this.s3Object != null) {
+            instant = this.s3Object.lastModified();
+        } else {
+            instant = this.lastModified;
+        }
+        if (instant != null) {
+            Date date = new Date(instant.toEpochMilli());
+            return DateHelper.formatDateTime(date);
+        }
+        return "-";
     }
 
     @Override
     public void setModifyTime(String modifyTime) {
-        this.modifyTime = modifyTime;
     }
 
     @Override
     public void copy(ShellFile t1) {
 
-    }
-
-    public void setMTime(Instant mTime) {
-        this.setModifyTime(mTime.toString());
-    }
-
-    public void setFilePath(String filePath) {
-        int index = filePath.lastIndexOf("/");
-        this.parentPath = filePath.substring(0, index);
-        this.fileName = filePath.substring(index + 1);
     }
 
     @Override
@@ -152,5 +167,13 @@ public class ShellS3File implements ShellFile {
         fPath = ShellFileUtil.concat(fPath, this.getParentPath());
         fPath = ShellFileUtil.concat(fPath, this.getFileName());
         return fPath;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
     }
 }

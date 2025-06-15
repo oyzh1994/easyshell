@@ -210,7 +210,8 @@ public class ShellFileTransportTask {
                 }
                 // 执行传输
                 in = this.localClient.getStream(file, null);
-                out = this.remoteClient.putStream(remoteFilePath, (Function<Long, Boolean>) count -> {
+                // 执行函数
+                Function<Long, Boolean> func = count -> {
                     currSize.addAndGet(count);
                     this.currentSize += count;
                     // 更新速度
@@ -221,8 +222,14 @@ public class ShellFileTransportTask {
                     this.updateFileSize();
                     // 判断是否继续
                     return this.status != ShellFileStatus.CANCELED;
-                });
-                in.transferTo(out);
+                };
+                // 流复制
+                if (this.remoteClient.isSupport("putStream")) {
+                    out = this.remoteClient.putStream(remoteFilePath, func);
+                    in.transferTo(out);
+                } else {// 正常处理
+                    this.remoteClient.put(in, remoteFilePath, func);
+                }
                 // 关闭流
                 IOUtil.close(in);
                 IOUtil.close(out);

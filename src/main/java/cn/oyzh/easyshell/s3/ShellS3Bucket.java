@@ -1,6 +1,12 @@
 package cn.oyzh.easyshell.s3;
 
-public class ShellS3Bucket   {
+/**
+ * s3桶
+ *
+ * @author oyzh
+ * @since 2025-06-14
+ */
+public class ShellS3Bucket {
 
     private String name;
 

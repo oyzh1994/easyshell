@@ -24,6 +24,10 @@ public class ShellS3Path {
         return "/";
     }
 
+    public String prefix(){
+        return ShellS3Util.toPrefix( this.filePath());
+    }
+
     public String fileName() {
         int index = path.lastIndexOf("/");
         return path.substring(index + 1);

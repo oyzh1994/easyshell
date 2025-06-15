@@ -81,13 +81,10 @@
     <ShellS3FileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 595" valueName="fileName"
+            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 345" valueName="fileName"
                            text="%base.name"/>
             <FXTableColumn prefWidth="130" valueName="fileSizeDisplay" text="%base.size"/>
             <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
         </columns>
     </ShellS3FileTableView>
 </FXVBox>

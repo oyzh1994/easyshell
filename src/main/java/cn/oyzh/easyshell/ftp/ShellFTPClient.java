@@ -7,6 +7,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
@@ -265,7 +266,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         this.streamMode = true;
         InputStream in;
         if (callback != null) {
-            in = ShellFTPProgressMonitor.of(localFile, callback);
+            in = ShellFileProgressMonitor.of(localFile, callback);
         } else {
             in = localFile;
         }
@@ -283,7 +284,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         OutputStream out = this.ftpClient.storeFileStream(remoteFile);
         OutputStream stream;
         if (callback != null) {
-            stream = ShellFTPProgressMonitor.of(out, callback);
+            stream = ShellFileProgressMonitor.of(out, callback);
         } else {
             stream = out;
         }
@@ -296,7 +297,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         this.streamMode = true;
         OutputStream out;
         if (callback != null) {
-            out = ShellFTPProgressMonitor.of(new FileOutputStream(localFile), callback);
+            out = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
         } else {
             out = new FileOutputStream(localFile);
         }
@@ -311,7 +312,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         InputStream in = this.ftpClient.retrieveFileStream(remoteFile.getFilePath());
         InputStream stream;
         if (callback != null) {
-            stream = ShellFTPProgressMonitor.of(in, callback);
+            stream = ShellFileProgressMonitor.of(in, callback);
         } else {
             stream = in;
         }
