@@ -204,7 +204,7 @@ public class ShellFileTransportTask {
                     String remoteDir = ShellFileUtil.concat(this.remotePath, pPath);
                     remoteFilePath = ShellFileUtil.concat(remoteDir, file.getFileName());
                     // 创建父目录
-                    if (!this.remoteClient.exist(remoteDir)) {
+                    if (!this.remoteClient.exist(remoteDir) && this.remoteClient.isCreateDirRecursiveSupport()) {
                         this.remoteClient.createDirRecursive(remoteDir);
                     }
                 }
@@ -224,7 +224,7 @@ public class ShellFileTransportTask {
                     return this.status != ShellFileStatus.CANCELED;
                 };
                 // 流复制
-                if (this.remoteClient.isSupport("putStream")) {
+                if (this.remoteClient.isPutStreamSupport()) {
                     out = this.remoteClient.putStream(remoteFilePath, func);
                     in.transferTo(out);
                 } else {// 正常处理

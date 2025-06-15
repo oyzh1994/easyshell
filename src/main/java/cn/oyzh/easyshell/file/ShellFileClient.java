@@ -477,6 +477,15 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 结果
      */
     default boolean isSupport(String action) {
+        if ("cd".equals(action)) {
+            return true;
+        }
+        if ("chmod".equals(action)) {
+            return true;
+        }
+        if ("workDir".equals(action)) {
+            return true;
+        }
         if ("putStream".equals(action)) {
             return true;
         }
@@ -487,6 +496,33 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 判断是否支持cd操作
+     *
+     * @return 结果
+     */
+    default boolean isCdSupport() {
+        return this.isSupport("cd");
+    }
+
+    /**
+     * 判断是否支持chmod操作
+     *
+     * @return 结果
+     */
+    default boolean isChmodSupport() {
+        return this.isSupport("chmod");
+    }
+
+    /**
+     * 判断是否支持workDir操作
+     *
+     * @return 结果
+     */
+    default boolean isWorkDirSupport() {
+        return this.isSupport("workDir");
     }
 
     /**

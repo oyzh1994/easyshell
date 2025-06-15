@@ -236,6 +236,19 @@ public class ShellFTPTabController extends RichTabController {
         }
     }
 
+    /**
+     * 进入home目录
+     */
+    @FXML
+    private void intoHome() {
+        try {
+            this.fileTable.intoHome();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
     @FXML
     private void mkdir() {
         this.fileTable.createDir();

@@ -234,7 +234,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     protected synchronized void loadFileInner() throws Exception {
         String currPath = this.getLocation();
         if (currPath == null) {
-            this.setLocation(this.client.workDir());
+            if (this.client.isWorkDirSupport()) {
+                this.setLocation(this.client.workDir());
+            } else {
+                this.setLocation("/");
+            }
             currPath = this.getLocation();
         } else if (currPath.isBlank()) {
             currPath = "/";
@@ -711,6 +715,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param name 文件名
      */
     public void createDir(String name) throws Exception {
+        if (!this.client.isCreateDirSupport()) {
+            return;
+        }
         if (StringUtil.isEmpty(name)) {
             return;
         }
@@ -876,7 +883,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 进入home目录
      */
     public void intoHome() throws Exception {
-        this.intoDir(this.client.workDir());
+        if (this.client.isWorkDirSupport()) {
+            this.intoDir(this.client.workDir());
+        } else {
+            this.intoDir("/");
+        }
     }
 
     @Override
@@ -887,9 +898,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
         menuItems.add(touchFile);
         // 创建文件夹
-        FXMenuItem createDir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::createDir);
-        menuItems.add(createDir);
-        menuItems.add(MenuItemHelper.separator());
+        if (this.client.isCreateDirSupport()) {
+            FXMenuItem createDir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::createDir);
+            menuItems.add(createDir);
+            menuItems.add(MenuItemHelper.separator());
+        }
         if (files.size() == 1) {
             E file = files.getFirst();
             // 编辑文件
@@ -920,9 +933,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
             menuItems.add(renameFile);
             // 文件权限
-            FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
-            menuItems.add(filePermission);
-            menuItems.add(MenuItemHelper.separator());
+            if (this.client.isChmodSupport()) {
+                FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
+                menuItems.add(filePermission);
+                menuItems.add(MenuItemHelper.separator());
+            }
         }
         // 刷新文件
         FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);

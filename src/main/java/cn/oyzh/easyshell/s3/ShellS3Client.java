@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -29,7 +30,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
@@ -260,24 +260,17 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        //if (!filePath.endsWith("/")) {
-        //    filePath = filePath + "/";
-        //}
-        //this.touch(filePath);
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createDirRecursive(String filePath) throws Exception {
-        //if (!filePath.endsWith("/")) {
-        //    filePath = filePath + "/";
-        //}
-        //this.touch(filePath);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String workDir() throws Exception {
-        return "";
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -289,7 +282,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     public void get(ShellS3File remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         GetObjectRequest getRequest = GetObjectRequest.builder()
                 .bucket(remoteFile.getBucketName())
-                .key(remoteFile.getFilePath())
+                .key(remoteFile.getFileKey())
                 .build();
         this.s3Client.getObject(getRequest, Paths.get(localFile));
     }
@@ -325,7 +318,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
@@ -370,34 +363,35 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     public ShellS3File fileInfo(String filePath) throws Exception {
         ShellS3Path s3Path = ShellS3Path.of(filePath);
         String bucketName = s3Path.bucketName();
-        try {
-            // 查找文件
-            String fPath = s3Path.filePath();
-            HeadObjectRequest request = HeadObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(fPath)
-                    .build();
-            HeadObjectResponse response = this.s3Client.headObject(request);
-            return new ShellS3File(s3Path, response.lastModified(), response.contentLength());
-        } catch (NoSuchKeyException e) {
-            // 查找目录
-            String parentPath = s3Path.parentPath();
-            String prefix = ShellS3Util.toPrefix(parentPath);
-            ListObjectsRequest request = ListObjectsRequest.builder()
-                    .bucket(bucketName)
-                    .prefix(prefix)
-                    .delimiter("/")
-                    .build();
-            ListObjectsResponse response = this.s3Client.listObjects(request);
-            List<CommonPrefix> list = response.commonPrefixes();
-            if (!list.isEmpty()) {
-                String tPath = ShellFileUtil.concat(filePath, "/");
-                for (CommonPrefix commonPrefix : list) {
-                    String cPrefix = "/" + bucketName;
-                    cPrefix = ShellFileUtil.concat(cPrefix, commonPrefix.prefix());
-                    if (StringUtil.equals(cPrefix, tPath)) {
-                        return new ShellS3File(commonPrefix, bucketName);
-                    }
+        // 查找文件
+        String parentPath = s3Path.parentPath();
+        String prefix = ShellS3Util.toPrefix(parentPath);
+        ListObjectsRequest request = ListObjectsRequest.builder()
+                .bucket(bucketName)
+                .prefix(prefix)
+                .delimiter("/")
+                .build();
+        ListObjectsResponse response = this.s3Client.listObjects(request);
+        // 文件
+        List<S3Object> list1 = response.contents();
+        if (CollectionUtil.isNotEmpty(list1)) {
+            for (S3Object object : list1) {
+                String cPrefix = "/" + bucketName;
+                cPrefix = ShellFileUtil.concat(cPrefix, object.key());
+                if (StringUtil.equals(cPrefix, filePath)) {
+                    return new ShellS3File(object, bucketName);
+                }
+            }
+        }
+        // 目录
+        String dirPath = ShellFileUtil.concat(filePath, "/");
+        List<CommonPrefix> list2 = response.commonPrefixes();
+        if (CollectionUtil.isNotEmpty(list2)) {
+            for (CommonPrefix commonPrefix : list2) {
+                String cPrefix = "/" + bucketName;
+                cPrefix = ShellFileUtil.concat(cPrefix, commonPrefix.prefix());
+                if (StringUtil.equals(cPrefix, dirPath)) {
+                    return new ShellS3File(commonPrefix, bucketName);
                 }
             }
         }
@@ -406,6 +400,15 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean isSupport(String action) {
+        if ("cd".equals(action)) {
+            return false;
+        }
+        if ("chmod".equals(action)) {
+            return false;
+        }
+        if ("workDir".equals(action)) {
+            return false;
+        }
         if ("putStream".equals(action)) {
             return false;
         }

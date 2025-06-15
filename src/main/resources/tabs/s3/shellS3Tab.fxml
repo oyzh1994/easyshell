@@ -7,6 +7,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
@@ -20,6 +21,11 @@
         fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3TabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
     <FXHBox prefHeight="30" flexWidth="100%">
+        <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
+            <FXHBox.margin>
+                <Insets left="5" top="7"/>
+            </FXHBox.margin>
+        </HomeSVGGlyph>
         <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

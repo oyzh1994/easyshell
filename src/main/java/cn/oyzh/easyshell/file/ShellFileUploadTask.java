@@ -187,7 +187,7 @@ public class ShellFileUploadTask {
                     String remoteDir = ShellFileUtil.concat(this.remotePath, pPath);
                     remoteFilePath = ShellFileUtil.concat(remoteDir, file.getName());
                     // 创建父目录
-                    if (!this.client.exist(remoteDir)) {
+                    if (!this.client.exist(remoteDir) && this.client.isCreateDirRecursiveSupport()) {
                         this.client.createDirRecursive(remoteDir);
                     }
                 }

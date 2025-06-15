@@ -18,29 +18,58 @@ import java.util.Date;
  */
 public class ShellS3File implements ShellFile {
 
+    /**
+     * 文件名称
+     */
     private String fileName;
 
+    /**
+     * 父路径
+     */
     private String parentPath;
 
+    /**
+     * 桶
+     */
     private Bucket bucket;
 
+    /**
+     * 文件对象
+     */
     private S3Object s3Object;
 
+    /**
+     * 文件前缀
+     */
     private CommonPrefix prefix;
 
+    /**
+     * 桶名称
+     */
     private String bucketName;
 
+    /**
+     * 最后修改时间
+     */
     private Instant lastModified;
 
-    private long fileSize;
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
 
     public ShellS3File(S3Object s3Object, String bucket) {
         this.bucketName = bucket;
         this.s3Object = s3Object;
-        String fPath = ShellFileUtil.concat("/" + bucket, s3Object.key());
-        ShellS3Path path = ShellS3Path.of(fPath);
-        this.fileName = path.fileName();
-        this.parentPath = path.parentPath();
+        String key = s3Object.key();
+        int index = key.lastIndexOf("/");
+        if (index != -1) {
+            this.fileName = key.substring(index + 1);
+            this.parentPath = "/" + key.substring(0, index);
+        } else {
+            this.fileName = key;
+            this.parentPath = "/";
+        }
     }
 
     public ShellS3File(CommonPrefix prefix, String bucket) {
@@ -90,10 +119,10 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public long getFileSize() {
-        if (this.s3Object != null) {
-            return this.s3Object.size();
+        if (this.fileSize != null) {
+            return this.fileSize;
         }
-        return this.fileSize;
+        return this.s3Object.size();
     }
 
     @Override
@@ -136,11 +165,11 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public String getModifyTime() {
-        Instant instant;
-        if (this.s3Object != null) {
-            instant = this.s3Object.lastModified();
-        } else {
+        Instant instant = null;
+        if (this.lastModified != null) {
             instant = this.lastModified;
+        } else if (this.s3Object != null) {
+            instant = this.s3Object.lastModified();
         }
         if (instant != null) {
             Date date = new Date(instant.toEpochMilli());
@@ -155,7 +184,28 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public void copy(ShellFile t1) {
-
+        if (t1 instanceof ShellS3File file) {
+            if (file.prefix != null) {
+                this.prefix = file.prefix;
+            }
+            if (file.bucket != null) {
+                this.bucket = file.bucket;
+            }
+            if (file.s3Object != null) {
+                this.s3Object = file.s3Object;
+            }
+            if (file.bucketName != null) {
+                this.bucketName = file.bucketName;
+            }
+            if (file.lastModified != null) {
+                this.lastModified = file.lastModified;
+            }
+            if (file.fileSize != null) {
+                this.fileSize = file.fileSize;
+            }
+            this.fileName = file.fileName;
+            this.parentPath = file.parentPath;
+        }
     }
 
     @Override
@@ -167,6 +217,10 @@ public class ShellS3File implements ShellFile {
         fPath = ShellFileUtil.concat(fPath, this.getParentPath());
         fPath = ShellFileUtil.concat(fPath, this.getFileName());
         return fPath;
+    }
+
+    public String getFileKey() {
+        return ShellFile.super.getFilePath();
     }
 
     public String getBucketName() {

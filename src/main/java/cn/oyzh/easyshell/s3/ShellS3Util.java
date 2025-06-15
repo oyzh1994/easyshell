@@ -1,20 +1,29 @@
 package cn.oyzh.easyshell.s3;
 
+/**
+ * s3工具类
+ *
+ * @author oyzh
+ * @since 2025-06-14
+ */
 public class ShellS3Util {
 
-    public static String[] parse(String path){
-        int index = path.indexOf("/");
-        String bucket=path.substring(0,index);
-        String filePath=path.substring(index);
-        return new String[]{bucket,filePath};
-    }
-
-    public static String toPrefix(String fPath){
+    /**
+     * 转换为s3前缀
+     *
+     * @param fPath 文件路径
+     * @return s3前缀
+     */
+    public static String toPrefix(String fPath) {
         String fPrefix;
         if ("/".equals(fPath)) {
             fPrefix = "";
         } else if (!fPath.endsWith("/")) {
-            fPrefix = fPath.substring(1) + "/";
+            if (fPath.startsWith("/")) {
+                fPrefix = fPath.substring(1) + "/";
+            } else {
+                fPrefix = fPath + "/";
+            }
         } else {
             fPrefix = fPath;
         }
