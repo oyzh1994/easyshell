@@ -41,6 +41,12 @@ public class ShellAddS3BucketController extends StageController {
     private FXToggleSwitch versioning;
 
     /**
+     * 对象锁定
+     */
+    @FXML
+    private FXToggleSwitch objectLock;
+
+    /**
      * 区域
      */
     @FXML
@@ -65,7 +71,9 @@ public class ShellAddS3BucketController extends StageController {
         try {
             ShellS3Bucket bucket = new ShellS3Bucket();
             boolean versioning = this.versioning.isSelected();
+            boolean objectLock = this.objectLock.isSelected();
             bucket.setName(name);
+            bucket.setObjectLock(objectLock);
             bucket.setVersioning(versioning);
             bucket.setRegion(this.client.region().id());
             // 创建桶
@@ -77,6 +85,19 @@ public class ShellAddS3BucketController extends StageController {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.objectLock.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.versioning.setSelected(true);
+                this.versioning.disable();
+            } else {
+                this.versioning.enable();
+            }
+        });
     }
 
     @Override

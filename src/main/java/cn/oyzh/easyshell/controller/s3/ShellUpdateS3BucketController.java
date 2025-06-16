@@ -38,6 +38,12 @@ public class ShellUpdateS3BucketController extends StageController {
     private FXToggleSwitch versioning;
 
     /**
+     * 对象锁定
+     */
+    @FXML
+    private FXToggleSwitch objectLock;
+
+    /**
      * 区域
      */
     @FXML
@@ -60,7 +66,9 @@ public class ShellUpdateS3BucketController extends StageController {
     private void update() {
         try {
             boolean versioning = this.versioning.isSelected();
+            boolean objectLock = this.objectLock.isSelected();
             this.bucket.setVersioning(versioning);
+            this.bucket.setObjectLock(objectLock);
             // 修改桶
             this.client.updateBucket(this.bucket);
             this.setProp("bucket", this.bucket);
@@ -73,6 +81,19 @@ public class ShellUpdateS3BucketController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.objectLock.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.versioning.setSelected(true);
+                this.versioning.disable();
+            } else {
+                this.versioning.enable();
+            }
+        });
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.client = this.getProp("client");
@@ -80,6 +101,8 @@ public class ShellUpdateS3BucketController extends StageController {
         this.name.setText(this.bucket.getName());
         this.region.setText(this.bucket.getRegion());
         this.versioning.setSelected(this.bucket.isVersioning());
+        this.objectLock.setSelected(this.bucket.isObjectLock());
+        this.objectLock.disable();
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

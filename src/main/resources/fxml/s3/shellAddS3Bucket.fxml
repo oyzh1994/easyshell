@@ -14,7 +14,7 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController" realWidth="750"
-        realHeight="320">
+        realHeight="400">
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -32,6 +32,16 @@
         </VBox.margin>
     </InfoLabel>
     <FXToggleSwitch fx:id="versioning" realHeight="30" text="%base.enable">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXToggleSwitch>
+    <InfoLabel text="%base.objectLocking">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXToggleSwitch fx:id="objectLock" realHeight="30" text="%base.enable">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

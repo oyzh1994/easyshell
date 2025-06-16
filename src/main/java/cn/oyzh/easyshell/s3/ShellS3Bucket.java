@@ -34,6 +34,11 @@ public class ShellS3Bucket {
      */
     private boolean versioning;
 
+    /**
+     * 对象锁定
+     */
+    private boolean objectLock;
+
     public String getName() {
         return name;
     }
@@ -73,5 +78,17 @@ public class ShellS3Bucket {
 
     public String getVersioningStatus() {
         return this.versioning ? I18nHelper.enable() : I18nHelper.disable();
+    }
+
+    public boolean isObjectLock() {
+        return objectLock;
+    }
+
+    public void setObjectLock(boolean objectLock) {
+        this.objectLock = objectLock;
+    }
+
+    public String getObjectLockStatus() {
+        return this.objectLock ? I18nHelper.enable() : I18nHelper.disable();
     }
 }

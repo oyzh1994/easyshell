@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -33,15 +34,22 @@ import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetBucketVersioningRequest;
 import software.amazon.awssdk.services.s3.model.GetBucketVersioningResponse;
+import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.ObjectLockConfiguration;
+import software.amazon.awssdk.services.s3.model.ObjectLockEnabled;
 import software.amazon.awssdk.services.s3.model.PutBucketVersioningRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectLockConfigurationRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.VersioningConfiguration;
 
@@ -451,6 +459,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 s3Bucket.setRegion(bucket.bucketRegion());
                 s3Bucket.setCreationDate(bucket.creationDate());
                 s3Bucket.setVersioning(this.isBucketVersioning(bucket.name()));
+                s3Bucket.setObjectLock(this.isBucketObjectLock(bucket.name()));
                 list.add(s3Bucket);
             }
             return list;
@@ -467,6 +476,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         String bucketName = bucket.getName();
         CreateBucketRequest request = CreateBucketRequest.builder()
                 .bucket(bucketName)
+                .objectLockEnabledForBucket(bucket.isObjectLock())
                 .createBucketConfiguration(
                         CreateBucketConfiguration.builder()
                                 .locationConstraint(this.region().id())
@@ -486,7 +496,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public void updateBucket(ShellS3Bucket bucket) {
         String bucketName = bucket.getName();
-        this.setBucketVersioning(bucketName, true);
+        // if (bucket.isObjectLock()) {
+        //     this.enableBucketObjectLocking(bucketName);
+        // }
+        this.setBucketVersioning(bucketName, bucket.isVersioning());
     }
 
     /**
@@ -547,5 +560,45 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                         .build())
                 .build();
         this.s3Client.putBucketVersioning(request);
+    }
+
+    /**
+     * 判断桶是否启用对象锁定
+     *
+     * @param bucketName 桶名称
+     * @return 结果
+     */
+    public boolean isBucketObjectLock(String bucketName) {
+        try {
+            GetObjectLockConfigurationResponse response = this.s3Client.getObjectLockConfiguration(
+                    GetObjectLockConfigurationRequest.builder()
+                            .bucket(bucketName)
+                            .build());
+            // 检查对象锁定是否启用
+            return response.objectLockConfiguration().objectLockEnabled() == ObjectLockEnabled.ENABLED;
+        } catch (NoSuchBucketException | NoSuchKeyException e) {
+            return false;
+        } catch (S3Exception ex) {
+            if (ExceptionUtil.hasMessage(ex, "does not exist")) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 开启桶对象锁定
+     *
+     * @param bucketName 桶名称
+     */
+    public void enableBucketObjectLocking(String bucketName) {
+        ObjectLockConfiguration objectLockConfig = ObjectLockConfiguration.builder()
+                .objectLockEnabled("Enabled")
+                .build();
+        PutObjectLockConfigurationRequest lockConfigRequest = PutObjectLockConfigurationRequest.builder()
+                .bucket(bucketName)
+                .objectLockConfiguration(objectLockConfig)
+                .build();
+        this.s3Client.putObjectLockConfiguration(lockConfigRequest);
     }
 }
