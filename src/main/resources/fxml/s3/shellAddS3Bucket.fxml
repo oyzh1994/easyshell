@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController" realWidth="750"
-        realHeight="700">
+        realHeight="260">
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>

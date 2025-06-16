@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.fxml.FXML;
 
@@ -20,7 +20,7 @@ public class ShellS3BucketTabController extends SubTabController {
      * 根节点
      */
     @FXML
-    private FXVBox root;
+    private FXTab root;
 
     /**
      * 桶表格
@@ -42,15 +42,15 @@ public class ShellS3BucketTabController extends SubTabController {
      */
     public void init() {
         this.bucketTable.setClient(this.client());
+        this.refreshBucket();
     }
 
     @Override
     public void onTabInit(RichTab tab) {
         try {
-            this.bucketTable.setClient(this.client());
-            tab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    this.refreshBucket();
+                    this.init();
                 }
             });
         } catch (Exception ex) {
@@ -61,22 +61,12 @@ public class ShellS3BucketTabController extends SubTabController {
 
     @FXML
     private void refreshBucket() {
-        try {
-            this.bucketTable.loadBucket();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        this.bucketTable.loadBucket();
     }
 
     @FXML
     private void deleteBucket() {
-        try {
-            this.bucketTable.deleteBucket(this.bucketTable.getSelectedItem());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        this.bucketTable.deleteBucket(this.bucketTable.getSelectedItem(), false);
     }
 
     @FXML

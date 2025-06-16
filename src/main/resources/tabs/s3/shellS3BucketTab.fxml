@@ -1,44 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.BucketSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3BucketTabController"
-        text="%base.bucket">
+       fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3BucketTabController"
+       text="%base.bucket">
     <graphic>
         <BucketSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXVBox fx:id="root" flexWidth="100%" flexHeight="100%">
+    <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
             <RefreshSVGGlyph onMousePrimaryClicked="#refreshBucket" tipText="%base.refresh">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
-            <FileAddSVGGlyph onMousePrimaryClicked="#addBucket" tipText="%base.add">
+            <AddSVGGlyph onMousePrimaryClicked="#addBucket" tipText="%base.add">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
-            </FileAddSVGGlyph>
-            <DeleteSVGGlyph  onMousePrimaryClicked="#deleteBucket" tipText="%base.delete">
+            </AddSVGGlyph>
+            <DeleteSVGGlyph onMousePrimaryClicked="#deleteBucket" tipText="%base.delete">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

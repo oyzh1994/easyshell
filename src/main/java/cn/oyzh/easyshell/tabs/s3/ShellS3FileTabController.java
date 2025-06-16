@@ -13,9 +13,9 @@ import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -37,7 +37,7 @@ public class ShellS3FileTabController extends SubTabController {
      * 根节点
      */
     @FXML
-    private FXVBox root;
+    private FXTab root;
 
     /**
      * 当前位置
@@ -147,7 +147,7 @@ public class ShellS3FileTabController extends SubTabController {
                 this.fileTable.cd(path);
             });
             // 快捷键
-            this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
                 } else if (KeyboardUtil.hide_keyCombination.match(event)) {

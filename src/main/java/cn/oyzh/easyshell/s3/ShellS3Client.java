@@ -21,6 +21,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.Bucket;
@@ -28,12 +29,15 @@ import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectVersionsRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectVersionsResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
@@ -43,9 +47,10 @@ import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -296,11 +301,16 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public void get(ShellS3File remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
-        GetObjectRequest getRequest = GetObjectRequest.builder()
+        GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(remoteFile.getBucketName())
                 .key(remoteFile.getFileKey())
                 .build();
-        this.s3Client.getObject(getRequest, Paths.get(localFile));
+        if (callback != null) {
+            ShellFileProgressMonitor.ShellFTPOutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
+            this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
+        } else {
+            this.s3Client.getObject(request, Path.of(localFile));
+        }
     }
 
     @Override
@@ -475,5 +485,73 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 )
                 .build();
         this.s3Client.createBucket(request);
+    }
+
+    /**
+     * 删除桶
+     *
+     * @param bucket 桶对象
+     * @param force  是否强制删除
+     */
+    public void deleteBucket(ShellS3Bucket bucket, boolean force) {
+        if (force) {
+            this.deleteAllObjectVersions(bucket.getName());
+        }
+        DeleteBucketRequest request = DeleteBucketRequest.builder()
+                .bucket(bucket.getName())
+                .build();
+        this.s3Client.deleteBucket(request);
+    }
+
+    /**
+     * 删除所有对象及版本
+     *
+     * @param bucketName 桶名称
+     */
+    private void deleteAllObjectVersions(String bucketName) {
+        // 列出所有对象版本
+        ListObjectVersionsRequest listRequest = ListObjectVersionsRequest.builder()
+                .bucket(bucketName)
+                .build();
+        ListObjectVersionsResponse response;
+        do {
+            response = this.s3Client.listObjectVersions(listRequest);
+            ListObjectVersionsResponse finalResponse = response;
+            // 删除所有对象版本
+            if (!response.versions().isEmpty()) {
+                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(delete -> {
+                            finalResponse.versions().forEach(version -> {
+                                delete.objects(obj -> obj
+                                        .key(version.key())
+                                        .versionId(version.versionId()));
+                            });
+                        })
+                        .build();
+                this.s3Client.deleteObjects(deleteRequest);
+            }
+
+            // 删除所有删除标记（DeleteMarker）
+            if (!response.deleteMarkers().isEmpty()) {
+                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(delete -> {
+                            finalResponse.deleteMarkers().forEach(marker -> {
+                                delete.objects(obj -> obj
+                                        .key(marker.key())
+                                        .versionId(marker.versionId()));
+                            });
+                        })
+                        .build();
+                this.s3Client.deleteObjects(deleteRequest);
+            }
+
+            // 处理分页
+            listRequest = listRequest.toBuilder()
+                    .keyMarker(response.nextKeyMarker())
+                    .versionIdMarker(response.nextVersionIdMarker())
+                    .build();
+        } while (response.isTruncated());
     }
 }
