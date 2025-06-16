@@ -13,19 +13,19 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.s3.ShellUpdateS3BucketController" realWidth="750"
         realHeight="320">
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ClearableTextField fx:id="name" tipText="%base.nameTip" require="true" realHeight="30"
+    <ReadOnlyTextField fx:id="name" tipText="%base.nameTip" require="true" realHeight="30"
                         flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ClearableTextField>
+    </ReadOnlyTextField>
     <InfoLabel text="%base.versioning">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -47,7 +47,7 @@
         </VBox.margin>
     </ReadOnlyTextField>
     <FXHBox flexWidth="100%">
-        <SubmitButton onAction="#add">
+        <SubmitButton onAction="#update">
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>

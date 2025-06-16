@@ -48,9 +48,11 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
         menuItems.add(add);
         MenuItem refresh = MenuItemHelper.refreshBucket("12", this::loadBucket);
         menuItems.add(refresh);
-        menuItems.add(MenuItemHelper.separator());
         ShellS3Bucket bucket = this.getSelectedItem();
         if (bucket != null) {
+            menuItems.add(MenuItemHelper.separator());
+            MenuItem update = MenuItemHelper.updateBucket("12", () -> this.updateBucket(bucket));
+            menuItems.add(update);
             MenuItem delete = MenuItemHelper.deleteBucket("12", () -> this.deleteBucket(bucket, false));
             menuItems.add(delete);
             MenuItem forceDelete = MenuItemHelper.forceDeleteBucket("12", () -> this.deleteBucket(bucket, true));
@@ -81,16 +83,16 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
      * @param force  强制
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
-        try {
-            if (bucket != null && MessageBox.confirm(I18nHelper.deleteBucket() + " " + bucket.getName() + "?")) {
-                StageManager.showMask(() -> {
+        if (bucket != null && MessageBox.confirm(I18nHelper.deleteBucket() + " " + bucket.getName() + "?")) {
+            StageManager.showMask(() -> {
+                try {
                     this.client.deleteBucket(bucket, force);
                     this.loadBucket();
-                });
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
         }
     }
 
@@ -103,6 +105,23 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
             ShellS3Bucket bucket = adapter.getProp("bucket");
             if (bucket != null) {
                 this.loadBucket();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改桶
+     *
+     * @param bucket 桶
+     */
+    public void updateBucket(ShellS3Bucket bucket) {
+        try {
+            StageAdapter adapter = ShellViewFactory.updateS3Bucket(this.client, bucket);
+            if (adapter != null) {
+                this.refresh();
             }
         } catch (Exception ex) {
             ex.printStackTrace();

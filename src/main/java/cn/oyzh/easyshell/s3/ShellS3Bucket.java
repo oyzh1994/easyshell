@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.s3;
 
 import cn.oyzh.common.date.DateHelper;
+import cn.oyzh.i18n.I18nHelper;
 
 import java.time.Instant;
 import java.util.Date;
@@ -27,6 +28,11 @@ public class ShellS3Bucket {
      * 创建时间
      */
     private String creationDate;
+
+    /**
+     * 版本控制
+     */
+    private boolean versioning;
 
     public String getName() {
         return name;
@@ -57,4 +63,15 @@ public class ShellS3Bucket {
         this.creationDate = DateHelper.formatDateTimeSimple(date);
     }
 
+    public boolean isVersioning() {
+        return versioning;
+    }
+
+    public void setVersioning(boolean versioning) {
+        this.versioning = versioning;
+    }
+
+    public String getVersioningStatus() {
+        return this.versioning ? I18nHelper.enable() : I18nHelper.disable();
+    }
 }

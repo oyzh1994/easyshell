@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.util.StringUtil;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -257,5 +259,117 @@ public class ShellS3Util {
                 s3Client.deleteObjects(deleteRequest);
             }
         }
+    }
+
+    /**
+     * 删除版本控制的桶对象
+     *
+     * @param s3Client   s3客户端
+     * @param bucketName 桶名称
+     */
+    public static void deleteVersionedBucketObjects(S3Client s3Client, String bucketName) {
+        // 1. 删除所有对象版本（包括删除标记）
+        ListObjectVersionsRequest listRequest = ListObjectVersionsRequest.builder()
+                .bucket(bucketName)
+                .build();
+
+        ListObjectVersionsResponse response;
+        do {
+            response = s3Client.listObjectVersions(listRequest);
+
+            // 删除普通版本
+            if (!response.versions().isEmpty()) {
+                List<ObjectIdentifier> versions = new ArrayList<>();
+                response.versions().forEach(version -> {
+                    versions.add(ObjectIdentifier.builder()
+                            .key(version.key())
+                            .versionId(version.versionId())
+                            .build());
+                });
+
+                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(Delete.builder().objects(versions).build())
+                        .build();
+
+                s3Client.deleteObjects(deleteRequest);
+            }
+
+            // 删除删除标记
+            if (!response.deleteMarkers().isEmpty()) {
+                List<ObjectIdentifier> markers = new ArrayList<>();
+                response.deleteMarkers().forEach(marker -> {
+                    markers.add(ObjectIdentifier.builder()
+                            .key(marker.key())
+                            .versionId(marker.versionId())
+                            .build());
+                });
+
+                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(Delete.builder().objects(markers).build())
+                        .build();
+
+                s3Client.deleteObjects(deleteRequest);
+            }
+
+            // 处理分页
+            listRequest = listRequest.toBuilder()
+                    .keyMarker(response.nextKeyMarker())
+                    .versionIdMarker(response.nextVersionIdMarker())
+                    .build();
+
+        } while (response.isTruncated());
+    }
+
+    /**
+     * 删除无版本控制的桶对象
+     *
+     * @param s3Client   s3客户端
+     * @param bucketName 桶名称
+     */
+    public static void deleteNonVersionedBucketObjects(S3Client s3Client, String bucketName) {
+        // 1. 清空Bucket中的所有对象
+        ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .build();
+
+        ListObjectsV2Response response;
+        do {
+            response = s3Client.listObjectsV2(listRequest);
+
+            if (response.keyCount() > 0) {
+                List<ObjectIdentifier> objects = new ArrayList<>();
+                response.contents().forEach(item -> {
+                    objects.add(ObjectIdentifier.builder()
+                            .key(item.key())
+                            .build());
+                });
+
+                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(Delete.builder().objects(objects).build())
+                        .build();
+
+                s3Client.deleteObjects(deleteRequest);
+            }
+
+            listRequest = listRequest.toBuilder()
+                    .continuationToken(response.nextContinuationToken())
+                    .build();
+
+        } while (response.isTruncated());
+    }
+
+    /**
+     * 创建Region对象
+     * @param region 区域
+     * @return Region
+     */
+    public static Region ofRegion(String region) {
+        if (StringUtil.isBlank(region)) {
+            return Region.US_EAST_1;
+        }
+        return Region.of(region);
     }
 }

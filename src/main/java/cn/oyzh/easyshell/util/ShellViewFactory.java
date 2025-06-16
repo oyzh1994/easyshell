@@ -42,6 +42,7 @@ import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController;
+import cn.oyzh.easyshell.controller.s3.ShellUpdateS3BucketController;
 import cn.oyzh.easyshell.controller.snippet.ShellSnippetController;
 import cn.oyzh.easyshell.controller.split.ShellSplitGuidController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
@@ -58,6 +59,7 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
+import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -904,12 +906,32 @@ public class ShellViewFactory {
 
     /**
      * 添加bucket
+     *
      * @param client 客户端
      */
     public static StageAdapter addS3Bucket(ShellS3Client client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddS3BucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 修改bucket
+     *
+     * @param client 客户端
+     */
+    public static StageAdapter updateS3Bucket(ShellS3Client client, ShellS3Bucket bucket) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3BucketController.class, StageManager.getFrontWindow());
+            adapter.setProp("client", client);
+            adapter.setProp("bucket", bucket);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {

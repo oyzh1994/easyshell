@@ -31,20 +31,19 @@ import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetBucketVersioningRequest;
 import software.amazon.awssdk.services.s3.model.GetBucketVersioningResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
-import software.amazon.awssdk.services.s3.model.ListObjectVersionsRequest;
-import software.amazon.awssdk.services.s3.model.ListObjectVersionsResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.PutBucketVersioningRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.model.VersioningConfiguration;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -451,6 +450,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 s3Bucket.setName(bucket.name());
                 s3Bucket.setRegion(bucket.bucketRegion());
                 s3Bucket.setCreationDate(bucket.creationDate());
+                s3Bucket.setVersioning(this.isBucketVersioning(bucket.name()));
                 list.add(s3Bucket);
             }
             return list;
@@ -464,8 +464,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * @param bucket 桶对象
      */
     public void createBucket(ShellS3Bucket bucket) {
+        String bucketName = bucket.getName();
         CreateBucketRequest request = CreateBucketRequest.builder()
-                .bucket(bucket.getName())
+                .bucket(bucketName)
                 .createBucketConfiguration(
                         CreateBucketConfiguration.builder()
                                 .locationConstraint(this.region().id())
@@ -473,6 +474,19 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 )
                 .build();
         this.s3Client.createBucket(request);
+        if (bucket.isVersioning()) {
+            this.setBucketVersioning(bucketName, true);
+        }
+    }
+
+    /**
+     * 修改桶
+     *
+     * @param bucket 桶对象
+     */
+    public void updateBucket(ShellS3Bucket bucket) {
+        String bucketName = bucket.getName();
+        this.setBucketVersioning(bucketName, true);
     }
 
     /**
@@ -482,67 +496,19 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * @param force  是否强制删除
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
+        // 删除数据
         if (force) {
-            this.deleteAllObjectVersions(bucket.getName(), null);
+            if (bucket.isVersioning()) {
+                ShellS3Util.deleteVersionedBucketObjects(this.s3Client, bucket.getName());
+            } else {
+                ShellS3Util.deleteNonVersionedBucketObjects(this.s3Client, bucket.getName());
+            }
         }
+        // 删除桶
         DeleteBucketRequest request = DeleteBucketRequest.builder()
                 .bucket(bucket.getName())
                 .build();
         this.s3Client.deleteBucket(request);
-    }
-
-    /**
-     * 删除所有对象及版本
-     *
-     * @param bucketName 桶名称
-     * @param prefix     前缀
-     */
-    private void deleteAllObjectVersions(String bucketName, String prefix) {
-        // 列出所有对象版本
-        ListObjectVersionsRequest listRequest = ListObjectVersionsRequest.builder()
-                .bucket(bucketName)
-                .prefix(prefix == null ? "" : prefix)
-                .build();
-        ListObjectVersionsResponse response;
-        do {
-            response = this.s3Client.listObjectVersions(listRequest);
-            ListObjectVersionsResponse finalResponse = response;
-            // 删除所有对象版本
-            if (!response.versions().isEmpty()) {
-                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
-                        .bucket(bucketName)
-                        .delete(delete -> {
-                            finalResponse.versions().forEach(version -> {
-                                delete.objects(obj -> obj
-                                        .key(version.key())
-                                        .versionId(version.versionId()));
-                            });
-                        })
-                        .build();
-                this.s3Client.deleteObjects(deleteRequest);
-            }
-
-            // 删除所有删除标记（DeleteMarker）
-            if (!response.deleteMarkers().isEmpty()) {
-                DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
-                        .bucket(bucketName)
-                        .delete(delete -> {
-                            finalResponse.deleteMarkers().forEach(marker -> {
-                                delete.objects(obj -> obj
-                                        .key(marker.key())
-                                        .versionId(marker.versionId()));
-                            });
-                        })
-                        .build();
-                this.s3Client.deleteObjects(deleteRequest);
-            }
-
-            // 处理分页
-            listRequest = listRequest.toBuilder()
-                    .keyMarker(response.nextKeyMarker())
-                    .versionIdMarker(response.nextVersionIdMarker())
-                    .build();
-        } while (response.isTruncated());
     }
 
     /**
@@ -552,9 +518,34 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * @return 结果
      */
     public boolean isBucketVersioning(String bucketName) {
+        GetBucketVersioningRequest request = GetBucketVersioningRequest.builder().bucket(bucketName).build();
         // 验证桶是否启用版本控制
-        GetBucketVersioningResponse versioningResponse = s3Client.getBucketVersioning(
-                GetBucketVersioningRequest.builder().bucket(bucketName).build());
+        GetBucketVersioningResponse versioningResponse = this.s3Client.getBucketVersioning(request);
         return "Enabled".equals(versioningResponse.statusAsString());
+    }
+
+    /**
+     * 设置桶版本控制
+     *
+     * @param bucketName 桶名称
+     * @param enable     是否开启
+     */
+    public void setBucketVersioning(String bucketName, boolean enable) {
+        // 判断是否已经开启了版本控制
+        boolean versioning = this.isBucketVersioning(bucketName);
+        // 判断是否符合当前状态
+        if (enable && versioning) {
+            return;
+        }
+        if (!enable && !versioning) {
+            return;
+        }
+        PutBucketVersioningRequest request = PutBucketVersioningRequest.builder()
+                .bucket(bucketName)
+                .versioningConfiguration(VersioningConfiguration.builder()
+                        .status(enable ? "Enabled" : "Suspended")
+                        .build())
+                .build();
+        this.s3Client.putBucketVersioning(request);
     }
 }

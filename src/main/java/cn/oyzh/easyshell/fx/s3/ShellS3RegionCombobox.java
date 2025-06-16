@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.s3;
 
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.s3.ShellS3Util;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import software.amazon.awssdk.regions.Region;
 
@@ -20,10 +20,6 @@ public class ShellS3RegionCombobox extends FXComboBox<Region> {
     }
 
     public void selectRegion(String region) {
-        if (StringUtil.isBlank(region)) {
-            this.select(Region.US_EAST_1);
-        } else {
-            this.select(Region.of(region));
-        }
+        this.select(ShellS3Util.ofRegion(region));
     }
 }
