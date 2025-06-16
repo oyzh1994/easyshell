@@ -36,12 +36,13 @@
         </FXHBox>
         <ShellS3BucketTableView fx:id="bucketTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 585" valueName="name"
+                <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 685" valueName="name"
                                text="%base.name"/>
                 <FXTableColumn prefWidth="130" valueName="region" text="%base.region"/>
                 <FXTableColumn prefWidth="180" valueName="creationDate" text="%base.createTime"/>
-                <FXTableColumn prefWidth="130" valueName="versioningStatus" text="%base.versioning"/>
-                <FXTableColumn prefWidth="130" valueName="objectLockStatus" text="%base.objectLocking"/>
+                <FXTableColumn prefWidth="120" valueName="versioningStatus" text="%base.versioning"/>
+                <FXTableColumn prefWidth="120" valueName="objectLockStatus" text="%base.objectLocking"/>
+                <FXTableColumn prefWidth="120" valueName="retentionStatus" text="%base.retention"/>
             </columns>
         </ShellS3BucketTableView>
     </FXVBox>

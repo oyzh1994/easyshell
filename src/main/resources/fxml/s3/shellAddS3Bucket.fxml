@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3RetentionModeCombobox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3RetentionValidityTypeCombobox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
-<?import cn.oyzh.fx.gui.button.GenerateKeyButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController" realWidth="750"
-        realHeight="400">
+        realHeight="480">
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -26,26 +27,55 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ClearableTextField>
-    <InfoLabel text="%base.versioning">
+    <InfoLabel text="%base.options">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXToggleSwitch fx:id="versioning" realHeight="30" text="%base.enable">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </FXToggleSwitch>
-    <InfoLabel text="%base.objectLocking">
+    <FXHBox>
+        <FXToggleSwitch fx:id="versioning" realHeight="30" text="%base.versioning">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXToggleSwitch>
+        <FXToggleSwitch fx:id="objectLock" realHeight="30" text="%base.objectLocking">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXToggleSwitch>
+        <FXToggleSwitch fx:id="retention" realHeight="30" text="%base.retention">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXToggleSwitch>
+    </FXHBox>
+    <InfoLabel text="%base.retentionMode">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXToggleSwitch fx:id="objectLock" realHeight="30" text="%base.enable">
+    <ShellS3RetentionModeCombobox disable="true" groupId="retention" fx:id="retentionMode" initIndex="0" realHeight="30">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </FXToggleSwitch>
+    </ShellS3RetentionModeCombobox>
+    <InfoLabel text="%base.retentionValidity">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox groupId="retention" disable="true">
+        <NumberTextField value="180" fx:id="retentionValidity" tipText="%base.contentTip1" realHeight="30" flexWidth="100% - 245">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </NumberTextField>
+        <ShellS3RetentionValidityTypeCombobox fx:id="retentionValidityType"  initIndex="0" realHeight="30">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </ShellS3RetentionValidityTypeCombobox>
+    </FXHBox>
     <InfoLabel text="%base.region">
         <VBox.margin>
             <Insets left="30" top="10"/>

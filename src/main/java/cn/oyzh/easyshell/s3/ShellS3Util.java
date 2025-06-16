@@ -293,7 +293,7 @@ public class ShellS3Util {
 
                 DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
                         .bucket(bucketName)
-                        .bypassGovernanceRetention(true) // 关键参数，绕过治理模式限制
+                        // .bypassGovernanceRetention(true) // 关键参数，绕过治理模式限制
                         .delete(Delete.builder().objects(versions).build())
                         .build();
 
@@ -312,7 +312,7 @@ public class ShellS3Util {
 
                 DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
                         .bucket(bucketName)
-                        .bypassGovernanceRetention(true) // 关键参数，绕过治理模式限制
+                        // .bypassGovernanceRetention(true) // 关键参数，绕过治理模式限制
                         .delete(Delete.builder().objects(markers).build())
                         .build();
 

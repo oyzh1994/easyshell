@@ -1,12 +1,16 @@
 package cn.oyzh.easyshell.controller.s3;
 
+import cn.oyzh.easyshell.fx.s3.ShellS3RetentionModeCombobox;
+import cn.oyzh.easyshell.fx.s3.ShellS3RetentionValidityTypeCombobox;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -50,6 +54,30 @@ public class ShellUpdateS3BucketController extends StageController {
     private ReadOnlyTextField region;
 
     /**
+     * 保留
+     */
+    @FXML
+    private FXToggleSwitch retention;
+
+    /**
+     * 保留期
+     */
+    @FXML
+    private NumberTextField retentionValidity;
+
+    /**
+     * 保留模式
+     */
+    @FXML
+    private ShellS3RetentionModeCombobox retentionMode;
+
+    /**
+     * 保留时间
+     */
+    @FXML
+    private ShellS3RetentionValidityTypeCombobox retentionValidityType;
+
+    /**
      * 客户端
      */
     private ShellS3Client client;
@@ -67,10 +95,21 @@ public class ShellUpdateS3BucketController extends StageController {
         try {
             boolean versioning = this.versioning.isSelected();
             boolean objectLock = this.objectLock.isSelected();
-            this.bucket.setVersioning(versioning);
-            this.bucket.setObjectLock(objectLock);
+
+            int retentionMode = this.retentionMode.getSelectedIndex();
+            int retentionValidity = this.retentionValidity.getIntValue();
+            int retentionValidityType = this.retentionValidityType.getSelectedIndex();
+
+            ShellS3Bucket bucket = new ShellS3Bucket();
+            bucket.setVersioning(versioning);
+            bucket.setObjectLock(objectLock);
+            // 保留
+            bucket.setRetentionMode(retentionMode);
+            bucket.setRetentionValidity(retentionValidity);
+            bucket.setRetentionValidityType(retentionValidityType);
             // 修改桶
-            this.client.updateBucket(this.bucket);
+            this.client.updateBucket(bucket);
+            this.bucket.copy(bucket);
             this.setProp("bucket", this.bucket);
             MessageBox.okToast(I18nHelper.operationSuccess());
             this.closeWindow();
@@ -91,6 +130,16 @@ public class ShellUpdateS3BucketController extends StageController {
                 this.versioning.enable();
             }
         });
+        this.retention.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.objectLock.setSelected(true);
+                this.objectLock.disable();
+                NodeGroupUtil.enable(this.stage, "retention");
+            } else {
+                this.objectLock.enable();
+                NodeGroupUtil.disable(this.stage, "retention");
+            }
+        });
     }
 
     @Override
@@ -103,6 +152,11 @@ public class ShellUpdateS3BucketController extends StageController {
         this.versioning.setSelected(this.bucket.isVersioning());
         this.objectLock.setSelected(this.bucket.isObjectLock());
         this.objectLock.disable();
+        this.retention.setSelected(this.bucket.isRetention());
+        this.retention.disable();
+        this.retentionMode.select(this.bucket.getRetentionMode());
+        this.retentionValidity.setValue(this.bucket.getRetentionValidity());
+        this.retentionValidityType.select(this.bucket.getRetentionValidityType());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

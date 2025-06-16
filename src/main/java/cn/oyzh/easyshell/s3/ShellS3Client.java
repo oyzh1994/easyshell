@@ -30,6 +30,7 @@ import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.DefaultRetention;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetBucketVersioningRequest;
@@ -46,6 +47,8 @@ import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.ObjectLockConfiguration;
 import software.amazon.awssdk.services.s3.model.ObjectLockEnabled;
+import software.amazon.awssdk.services.s3.model.ObjectLockRetentionMode;
+import software.amazon.awssdk.services.s3.model.ObjectLockRule;
 import software.amazon.awssdk.services.s3.model.PutBucketVersioningRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectLockConfigurationRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -459,6 +462,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 s3Bucket.setCreationDate(bucket.creationDate());
                 s3Bucket.setVersioning(this.isBucketVersioning(bucket.name()));
                 s3Bucket.setObjectLock(this.isBucketObjectLock(bucket.name()));
+                s3Bucket.setRetention(this.getBucketRetention(bucket.name()));
                 list.add(s3Bucket);
             }
             return list;
@@ -483,8 +487,18 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 )
                 .build();
         this.s3Client.createBucket(request);
+        // 版本控制
         if (bucket.isVersioning()) {
             this.setBucketVersioning(bucketName, true);
+        }
+        // 保留
+        if (bucket.isRetention()) {
+            ObjectLockRetentionMode mode = bucket.getRetentionMode() == 0 ? ObjectLockRetentionMode.COMPLIANCE : ObjectLockRetentionMode.GOVERNANCE;
+            if (bucket.getRetentionValidityType() == 0) {
+                this.setBucketRetentionByDays(bucketName, bucket.getRetentionValidity(), mode);
+            } else {
+                this.setBucketRetentionByYears(bucketName, bucket.getRetentionValidity(), mode);
+            }
         }
     }
 
@@ -495,10 +509,17 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public void updateBucket(ShellS3Bucket bucket) {
         String bucketName = bucket.getName();
-        // if (bucket.isObjectLock()) {
-        //     this.enableBucketObjectLocking(bucketName);
-        // }
+        // 版本控制
         this.setBucketVersioning(bucketName, bucket.isVersioning());
+        // 保留
+        if (bucket.isRetention()) {
+            ObjectLockRetentionMode mode = bucket.getRetentionMode() == 0 ? ObjectLockRetentionMode.COMPLIANCE : ObjectLockRetentionMode.GOVERNANCE;
+            if (bucket.getRetentionValidityType() == 0) {
+                this.setBucketRetentionByDays(bucketName, bucket.getRetentionValidity(), mode);
+            } else {
+                this.setBucketRetentionByYears(bucketName, bucket.getRetentionValidity(), mode);
+            }
+        }
     }
 
     /**
@@ -600,4 +621,80 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 .build();
         this.s3Client.putObjectLockConfiguration(lockConfigRequest);
     }
+
+    /**
+     * 设置通的按天保留模式
+     *
+     * @param bucketName 桶名称
+     * @param days       天数
+     * @param mode       模式
+     */
+    public void setBucketRetentionByDays(String bucketName, int days, ObjectLockRetentionMode mode) {
+        ObjectLockConfiguration lockConfig = ObjectLockConfiguration.builder()
+                .objectLockEnabled("Enabled")
+                .rule(ObjectLockRule.builder()
+                        .defaultRetention(DefaultRetention.builder()
+                                .mode(mode) // GOVERNANCE或COMPLIANCE
+                                .days(days)
+                                .build())
+                        .build())
+                .build();
+
+        PutObjectLockConfigurationRequest request = PutObjectLockConfigurationRequest.builder()
+                .bucket(bucketName)
+                .objectLockConfiguration(lockConfig)
+                .build();
+
+        this.s3Client.putObjectLockConfiguration(request);
+    }
+
+    /**
+     * 设置通的按年保留模式
+     *
+     * @param bucketName 桶名称
+     * @param years      年数
+     * @param mode       模式
+     */
+    public void setBucketRetentionByYears(String bucketName, int years, ObjectLockRetentionMode mode) {
+        ObjectLockConfiguration lockConfig = ObjectLockConfiguration.builder()
+                .objectLockEnabled("Enabled")
+                .rule(ObjectLockRule.builder()
+                        .defaultRetention(DefaultRetention.builder()
+                                .mode(mode) // GOVERNANCE或COMPLIANCE
+                                .years(years)
+                                .build())
+                        .build())
+                .build();
+        PutObjectLockConfigurationRequest request = PutObjectLockConfigurationRequest.builder()
+                .bucket(bucketName)
+                .objectLockConfiguration(lockConfig)
+                .build();
+
+        this.s3Client.putObjectLockConfiguration(request);
+    }
+
+    // 获取Bucket的默认保留规则
+    public DefaultRetention getBucketRetention(String bucketName) {
+        try {
+            GetObjectLockConfigurationRequest request = GetObjectLockConfigurationRequest.builder()
+                    .bucket(bucketName)
+                    .build();
+
+            GetObjectLockConfigurationResponse response = s3Client.getObjectLockConfiguration(request);
+            ObjectLockConfiguration config = response.objectLockConfiguration();
+
+            if (config == null || config.rule() == null || config.rule().defaultRetention() == null) {
+                return null; // 未配置默认保留规则
+            }
+
+            return config.rule().defaultRetention();
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                System.out.println("Bucket未启用对象锁定或不存在: " + bucketName);
+                return null;
+            }
+            throw e;
+        }
+    }
+
 }
