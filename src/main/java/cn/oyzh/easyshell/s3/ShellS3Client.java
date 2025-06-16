@@ -32,6 +32,8 @@ import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.GetBucketVersioningRequest;
+import software.amazon.awssdk.services.s3.model.GetBucketVersioningResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
@@ -40,10 +42,7 @@ import software.amazon.awssdk.services.s3.model.ListObjectVersionsRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectVersionsResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
-import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
@@ -98,7 +97,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     private void initClient() {
-        String endpoint = "http://" + this.connect.getHost();
+        String endpoint = this.connect.getHost();
+        if (!StringUtil.startWithAnyIgnoreCase(endpoint, "http://", "https://")) {
+            endpoint = "http://" + endpoint;
+        }
         String accessKey = this.connect.getUser();
         String secretKey = this.connect.getPassword();
         // 创建凭证提供者
@@ -192,39 +194,25 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     @Override
     public void delete(String file) throws Exception {
         ShellS3Path s3Path = ShellS3Path.of(file);
-        DeleteObjectRequest request = DeleteObjectRequest.builder()
-                .bucket(s3Path.bucketName())
-                .key(s3Path.filePath())
-                .build();
-        this.s3Client.deleteObject(request);
+        String filePath = s3Path.filePath();
+        String bucketName = s3Path.bucketName();
+        if (this.isBucketVersioning(s3Path.bucketName())) {
+            ShellS3Util.deleteAllVersions(s3Client, bucketName, filePath);
+        } else {
+            ShellS3Util.deleteNormalFile(s3Client, bucketName, filePath);
+        }
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
         ShellS3Path s3Path = ShellS3Path.of(dir);
-        List<ObjectIdentifier> objectIdentifiers = new ArrayList<>();
-        String continuationToken = null;
-        do {
-            ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
-                    .bucket(s3Path.bucketName())
-                    .prefix(s3Path.prefix())
-                    .continuationToken(continuationToken)
-                    .build();
-            ListObjectsV2Response listResponse = this.s3Client.listObjectsV2(listRequest);
-            // 将结果转换为ObjectIdentifier列表
-            listResponse.contents().forEach(s3Object -> {
-                objectIdentifiers.add(ObjectIdentifier.builder()
-                        .key(s3Object.key())
-                        .build());
-            });
-
-            continuationToken = listResponse.nextContinuationToken();
-        } while (continuationToken != null);
-        DeleteObjectsRequest deleteRequest = DeleteObjectsRequest.builder()
-                .bucket(s3Path.bucketName())
-                .delete(d -> d.objects(objectIdentifiers))
-                .build();
-        this.s3Client.deleteObjects(deleteRequest);
+        String prefix = s3Path.prefix();
+        String bucketName = s3Path.bucketName();
+        if (this.isBucketVersioning(s3Path.bucketName())) {
+            ShellS3Util.deleteAllVersionsInDirectory(s3Client, bucketName, prefix);
+        } else {
+            ShellS3Util.deleteNonVersionedDirectory(s3Client, bucketName, prefix);
+        }
     }
 
     @Override
@@ -495,7 +483,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
         if (force) {
-            this.deleteAllObjectVersions(bucket.getName());
+            this.deleteAllObjectVersions(bucket.getName(), null);
         }
         DeleteBucketRequest request = DeleteBucketRequest.builder()
                 .bucket(bucket.getName())
@@ -507,11 +495,13 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * 删除所有对象及版本
      *
      * @param bucketName 桶名称
+     * @param prefix     前缀
      */
-    private void deleteAllObjectVersions(String bucketName) {
+    private void deleteAllObjectVersions(String bucketName, String prefix) {
         // 列出所有对象版本
         ListObjectVersionsRequest listRequest = ListObjectVersionsRequest.builder()
                 .bucket(bucketName)
+                .prefix(prefix == null ? "" : prefix)
                 .build();
         ListObjectVersionsResponse response;
         do {
@@ -553,5 +543,18 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                     .versionIdMarker(response.nextVersionIdMarker())
                     .build();
         } while (response.isTruncated());
+    }
+
+    /**
+     * 判断桶是否启用版本控制
+     *
+     * @param bucketName 桶名称
+     * @return 结果
+     */
+    public boolean isBucketVersioning(String bucketName) {
+        // 验证桶是否启用版本控制
+        GetBucketVersioningResponse versioningResponse = s3Client.getBucketVersioning(
+                GetBucketVersioningRequest.builder().bucket(bucketName).build());
+        return "Enabled".equals(versioningResponse.statusAsString());
     }
 }

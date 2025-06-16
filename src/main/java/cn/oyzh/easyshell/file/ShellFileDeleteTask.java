@@ -78,6 +78,7 @@ public class ShellFileDeleteTask {
             if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
                 this.status = ShellFileStatus.FAILED;
             }
+            throw ex;
         } finally {
             this.remoteFile.stopWaiting();
         }

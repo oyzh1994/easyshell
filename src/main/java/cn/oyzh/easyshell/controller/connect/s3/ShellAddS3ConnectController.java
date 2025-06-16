@@ -214,13 +214,22 @@ public class ShellAddS3ConnectController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 连接ip处理
         this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
+            if (this.hostIp.isIgnoreChanged()) {
+                this.hostIp.setIgnoreChanged(false);
+                return;
+            }
             // 内容包含“:”，则直接切割字符为ip端口
             if (t1 != null && t1.contains(":")) {
                 try {
-                    this.hostIp.setText(t1.split(":")[0]);
-                    this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
+                    String[] split = t1.split(":");
+                    if (split.length == 2) {
+                        this.hostIp.setIgnoreChanged(true);
+                        this.hostIp.setText(t1.split(":")[0]);
+                        this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

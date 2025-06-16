@@ -144,7 +144,7 @@ public class ShellUpdateS3ConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("ftp");
+            shellConnect.setType("s3");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
@@ -209,11 +209,19 @@ public class ShellUpdateS3ConnectController extends StageController {
     protected void bindListeners() {
         // 连接ip处理
         this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
+            if (this.hostIp.isIgnoreChanged()) {
+                this.hostIp.setIgnoreChanged(false);
+                return;
+            }
             // 内容包含“:”，则直接切割字符为ip端口
             if (t1 != null && t1.contains(":")) {
                 try {
-                    this.hostIp.setText(t1.split(":")[0]);
-                    this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
+                    this.hostIp.setIgnoreChanged(true);
+                    String[] split = t1.split(":");
+                    if (split.length == 2) {
+                        this.hostIp.setText(t1.split(":")[0]);
+                        this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -223,7 +231,6 @@ public class ShellUpdateS3ConnectController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
-        super.onWindowShown(event);
         this.shellConnect = this.getProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
@@ -238,6 +245,7 @@ public class ShellUpdateS3ConnectController extends StageController {
         this.password.setText(this.shellConnect.getPassword());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+        super.onWindowShown(event);
     }
 
     @Override
