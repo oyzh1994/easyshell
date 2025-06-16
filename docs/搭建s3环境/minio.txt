@@ -1,0 +1,4 @@
+1. 下载minio
+docker pull swr.cn-north-4.myhuaweicloud.com/ddn-k8s/quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z
+2. 启动minio
+docker run -itd -p 9000:9000 -p 9090:9090 -e "MINIO_ACCESS_KEY=minio" -e "MINIO_SECRET_KEY=minio_123456" swr.cn-north-4.myhuaweicloud.com/ddn-k8s/quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z server /data --console-address ":9090" -address ":9000"
