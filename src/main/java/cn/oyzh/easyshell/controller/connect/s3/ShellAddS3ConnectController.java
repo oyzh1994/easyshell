@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.s3.ShellS3RegionCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -98,6 +99,12 @@ public class ShellAddS3ConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
+     * 区域
+     */
+    @FXML
+    private ShellS3RegionCombobox region;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -171,12 +178,14 @@ public class ShellAddS3ConnectController extends StageController {
         try {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
+            String region = this.region.getRegion();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
             shellConnect.setName(name);
+            shellConnect.setRegion(region);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);

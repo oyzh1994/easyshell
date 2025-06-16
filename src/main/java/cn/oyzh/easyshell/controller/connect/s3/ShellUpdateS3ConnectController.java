@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.s3.ShellS3RegionCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -100,6 +101,12 @@ public class ShellUpdateS3ConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
+     * 区域
+     */
+    @FXML
+    private ShellS3RegionCombobox region;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -168,6 +175,7 @@ public class ShellUpdateS3ConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
+            String region = this.region.getRegion();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -175,6 +183,7 @@ public class ShellUpdateS3ConnectController extends StageController {
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
+            this.shellConnect.setRegion(region);
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
@@ -222,6 +231,7 @@ public class ShellUpdateS3ConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
+        this.region.selectRegion(this.shellConnect.getRegion());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());

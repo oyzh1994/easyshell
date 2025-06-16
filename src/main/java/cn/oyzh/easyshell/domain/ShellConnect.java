@@ -227,6 +227,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private Boolean enableCompress;
 
+    /**
+     * 区域，仅s3协议
+     */
+    @Column
+    private String region;
+
     public void setEnableCompress(Boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
@@ -357,6 +363,14 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.charset = t1.charset;
         this.termType = t1.termType;
         this.connectTimeOut = t1.connectTimeOut;
+        // ftp
+        this.sslMode = t1.sslMode;
+        this.ftpPassiveMode = t1.ftpPassiveMode;
+        // s3
+        this.region = t1.region;
+        // ssh
+        this.environment = t1.environment;
+        this.enableCompress = t1.enableCompress;
         // 认证
         this.keyId = t1.keyId;
         this.password = t1.password;
@@ -753,5 +767,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     public boolean isFileType() {
         return this.isSSHType() || this.isSFTPType() || this.isFTPType() || this.isS3Type();
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

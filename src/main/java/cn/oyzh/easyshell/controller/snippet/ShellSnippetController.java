@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.snippet;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.split.ShellSnippetTextAreaPane;
+import cn.oyzh.easyshell.fx.snippet.ShellSnippetTextAreaPane;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeView;
 import cn.oyzh.fx.plus.FXConst;

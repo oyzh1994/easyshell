@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.split;
+package cn.oyzh.easyshell.fx.snippet;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;

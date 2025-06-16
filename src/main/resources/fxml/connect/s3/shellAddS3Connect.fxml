@@ -18,9 +18,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3RegionCombobox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController" realWidth="750"
-       realHeight="480">
+        fx:controller="cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController" realWidth="750"
+        realHeight="480">
    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
        <FXTab text="%base.base">
            <FXVBox flexWidth="100%" flexHeight="100%">
@@ -41,7 +43,7 @@
                    </VBox.margin>
                </InfoLabel>
                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                   flexWidth="100% - 180" maxLen="1024" text="root">
+                                   flexWidth="100% - 180" maxLen="1024">
                    <VBox.margin>
                        <Insets left="30" top="5"/>
                    </VBox.margin>
@@ -70,12 +72,24 @@
                            <Insets left="30" top="5"/>
                        </HBox.margin>
                    </ClearableTextField>
-                   <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="21">
+                   <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="9000">
                        <HBox.margin>
                            <Insets left="10" top="5"/>
                        </HBox.margin>
                    </PortTextField>
                </FXHBox>
+               <InfoLabel text="%base.region">
+                   <VBox.margin>
+                       <Insets left="30" top="10"/>
+                   </VBox.margin>
+               </InfoLabel>
+               <ShellS3RegionCombobox fx:id="region" groupId="region"
+                                  realHeight="30"
+                                  flexWidth="100% - 180">
+                   <VBox.margin>
+                       <Insets left="30" top="5"/>
+                   </VBox.margin>
+               </ShellS3RegionCombobox>
            </FXVBox>
        </FXTab>
        <FXTab text="%base.extra">

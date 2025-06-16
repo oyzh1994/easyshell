@@ -65,12 +65,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="Rlogin" userData="rlogin">
+    <FXRadioButton toggleGroup="$type" text="S3" userData="s3">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="S3" userData="s3">
+    <FXRadioButton toggleGroup="$type" text="Rlogin" userData="rlogin">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>

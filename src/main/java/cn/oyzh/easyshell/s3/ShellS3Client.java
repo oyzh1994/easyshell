@@ -26,6 +26,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
+import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
+import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -45,6 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -76,6 +79,19 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         this.addStateListener(this.stateListener);
     }
 
+    /**
+     * 获取区域
+     *
+     * @return 区域
+     */
+    public Region region() {
+        String region = this.connect.getRegion();
+        if (StringUtil.isBlank(region)) {
+            return Region.US_EAST_1;
+        }
+        return Region.of(region);
+    }
+
     private void initClient() {
         String endpoint = "http://" + this.connect.getHost();
         String accessKey = this.connect.getUser();
@@ -86,7 +102,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         this.s3Client = S3Client.builder()
                 .endpointOverride(java.net.URI.create(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
-                .region(Region.US_EAST_1) // MinIO 不强制要求区域，使用任意有效区域即可
+                .region(this.region())
                 .build();
     }
 
@@ -419,5 +435,45 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return false;
         }
         return ShellFileClient.super.isSupport(action);
+    }
+
+    /**
+     * 列举桶
+     *
+     * @return 桶列表
+     */
+    public List<ShellS3Bucket> listBuckets() {
+        ListBucketsRequest request = ListBucketsRequest.builder().build();
+        ListBucketsResponse response = this.s3Client.listBuckets(request);
+        if (response.hasBuckets()) {
+            List<ShellS3Bucket> list = new ArrayList<>();
+            List<Bucket> buckets = response.buckets();
+            for (Bucket bucket : buckets) {
+                ShellS3Bucket s3Bucket = new ShellS3Bucket();
+                s3Bucket.setName(bucket.name());
+                s3Bucket.setRegion(bucket.bucketRegion());
+                s3Bucket.setCreationDate(bucket.creationDate());
+                list.add(s3Bucket);
+            }
+            return list;
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * 创建桶
+     *
+     * @param bucket 桶对象
+     */
+    public void createBucket(ShellS3Bucket bucket) {
+        CreateBucketRequest request = CreateBucketRequest.builder()
+                .bucket(bucket.getName())
+                .createBucketConfiguration(
+                        CreateBucketConfiguration.builder()
+                                .locationConstraint(this.region().id())
+                                .build()
+                )
+                .build();
+        this.s3Client.createBucket(request);
     }
 }
