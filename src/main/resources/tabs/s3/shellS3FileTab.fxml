@@ -36,7 +36,7 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </ReturnFolderSVGGlyph>
-            <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 370">
+            <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 330">
                 <FXHBox.margin>
                     <Insets left="5" top="4"/>
                 </FXHBox.margin>
@@ -46,41 +46,31 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
-            <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false"
+            <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"
                                 onMousePrimaryClicked="#uploadFile">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FileUploadSVGGlyph>
-            <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false"
+            <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"
                                   onMousePrimaryClicked="#uploadFolder">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FolderUploadSVGGlyph>
-            <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
+            <FileAddSVGGlyph fx:id="touchFile" onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FileAddSVGGlyph>
-            <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </FolderAddSVGGlyph>
             <DeleteSVGGlyph fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
-                <HBox.margin>
-                    <Insets left="5" top="8"/>
-                </HBox.margin>
-            </HiddenSVGPane>
             <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
                 <HBox.margin>
-                    <Insets left="5" top="8"/>
+                    <Insets left="5" top="7"/>
                 </HBox.margin>
             </BoxSVGLabel>
             <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">

@@ -67,7 +67,10 @@ public class ShellS3Path {
     public String bucketName() {
         int index = this.path.indexOf("/", 1);
         if (index == -1) {
-            return this.path.substring(1);
+            if (this.path.length() > 1) {
+                return this.path.substring(1);
+            }
+            return null;
         }
         return this.path.substring(1, index);
     }

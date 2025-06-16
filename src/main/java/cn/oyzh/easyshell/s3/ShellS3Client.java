@@ -38,6 +38,7 @@ import software.amazon.awssdk.services.s3.model.GetBucketVersioningResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
@@ -253,17 +254,34 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        try {
-            ShellS3Path s3Path = ShellS3Path.of(filePath);
-            HeadObjectRequest request = HeadObjectRequest.builder()
-                    .bucket(s3Path.bucketName())
-                    .key(s3Path.filePath())
-                    .build();
-            this.s3Client.headObject(request);
-            return true;
-        } catch (NoSuchKeyException e) {
+        ShellS3Path s3Path = ShellS3Path.of(filePath);
+        String bucketName = s3Path.bucketName();
+        if (bucketName == null) {
             return false;
         }
+        boolean notBucket = StringUtil.checkCountOccurrences(filePath, '/', 2);
+        // 对象
+        if (notBucket) {
+            try {
+                HeadObjectRequest request = HeadObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(s3Path.filePath())
+                        .build();
+                this.s3Client.headObject(request);
+                return true;
+            } catch (NoSuchKeyException ignored) {
+            }
+        } else { // 桶
+            try {
+                HeadBucketRequest request = HeadBucketRequest.builder()
+                        .bucket(bucketName)
+                        .build();
+                this.s3Client.headBucket(request);
+                return true;
+            } catch (NoSuchBucketException ignored) {
+            }
+        }
+        return false;
     }
 
     @Override
@@ -386,39 +404,47 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     public ShellS3File fileInfo(String filePath) throws Exception {
         ShellS3Path s3Path = ShellS3Path.of(filePath);
         String bucketName = s3Path.bucketName();
-        // 查找文件
-        String parentPath = s3Path.parentPath();
-        String prefix = ShellS3Util.toPrefix(parentPath);
-        ListObjectsRequest request = ListObjectsRequest.builder()
-                .bucket(bucketName)
-                .prefix(prefix)
-                .delimiter("/")
-                .build();
-        ListObjectsResponse response = this.s3Client.listObjects(request);
-        // 文件
-        List<S3Object> list1 = response.contents();
-        if (CollectionUtil.isNotEmpty(list1)) {
-            for (S3Object object : list1) {
-                String cPrefix = "/" + bucketName;
-                cPrefix = ShellFileUtil.concat(cPrefix, object.key());
-                if (StringUtil.equals(cPrefix, filePath)) {
-                    return new ShellS3File(object, bucketName);
+        if (bucketName == null) {
+            return null;
+        }
+        boolean notBucket = StringUtil.checkCountOccurrences(filePath, '/', 2);
+        if (notBucket) {
+            // 查找文件
+            String parentPath = s3Path.parentPath();
+            String prefix = ShellS3Util.toPrefix(parentPath);
+            ListObjectsRequest request = ListObjectsRequest.builder()
+                    .bucket(bucketName)
+                    .prefix(prefix)
+                    .delimiter("/")
+                    .build();
+            ListObjectsResponse response = this.s3Client.listObjects(request);
+            // 文件
+            List<S3Object> list1 = response.contents();
+            if (CollectionUtil.isNotEmpty(list1)) {
+                for (S3Object object : list1) {
+                    String cPrefix = "/" + bucketName;
+                    cPrefix = ShellFileUtil.concat(cPrefix, object.key());
+                    if (StringUtil.equals(cPrefix, filePath)) {
+                        return new ShellS3File(object, bucketName);
+                    }
                 }
             }
-        }
-        // 目录
-        String dirPath = ShellFileUtil.concat(filePath, "/");
-        List<CommonPrefix> list2 = response.commonPrefixes();
-        if (CollectionUtil.isNotEmpty(list2)) {
-            for (CommonPrefix commonPrefix : list2) {
-                String cPrefix = "/" + bucketName;
-                cPrefix = ShellFileUtil.concat(cPrefix, commonPrefix.prefix());
-                if (StringUtil.equals(cPrefix, dirPath)) {
-                    return new ShellS3File(commonPrefix, bucketName);
+            // 目录
+            String dirPath = ShellFileUtil.concat(filePath, "/");
+            List<CommonPrefix> list2 = response.commonPrefixes();
+            if (CollectionUtil.isNotEmpty(list2)) {
+                for (CommonPrefix commonPrefix : list2) {
+                    String cPrefix = "/" + bucketName;
+                    cPrefix = ShellFileUtil.concat(cPrefix, commonPrefix.prefix());
+                    if (StringUtil.equals(cPrefix, dirPath)) {
+                        return new ShellS3File(commonPrefix, bucketName);
+                    }
                 }
             }
+            return null;
         }
-        return null;
+        return new ShellS3File(this.getBucket(bucketName));
+
     }
 
     @Override
@@ -468,6 +494,26 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return list;
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 获取桶
+     *
+     * @param bucketName 桶名称
+     * @return ShellS3Bucket
+     */
+    public Bucket getBucket(String bucketName) {
+        ListBucketsRequest request = ListBucketsRequest.builder().build();
+        ListBucketsResponse response = this.s3Client.listBuckets(request);
+        if (response.hasBuckets()) {
+            List<Bucket> buckets = response.buckets();
+            for (Bucket bucket : buckets) {
+                if (bucket.name().equals(bucketName)) {
+                    return bucket;
+                }
+            }
+        }
+        return null;
     }
 
     /**

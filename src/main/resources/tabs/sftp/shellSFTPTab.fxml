@@ -70,7 +70,7 @@
         </DeleteSVGGlyph>
         <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
             <HBox.margin>
-                <Insets left="5" top="8"/>
+                <Insets left="5" top="7"/>
             </HBox.margin>
         </BoxSVGLabel>
         <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">

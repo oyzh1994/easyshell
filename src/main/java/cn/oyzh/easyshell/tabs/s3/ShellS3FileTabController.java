@@ -3,13 +3,13 @@ package cn.oyzh.easyshell.tabs.s3;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -18,7 +18,6 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
@@ -58,16 +57,28 @@ public class ShellS3FileTabController extends SubTabController {
     private SVGGlyph refreshFile;
 
     /**
+     * 创建文件
+     */
+    @FXML
+    private SVGGlyph touchFile;
+
+    /**
+     * 上传文件夹
+     */
+    @FXML
+    private SVGGlyph uploadDir;
+
+    /**
+     * 上传文件
+     */
+    @FXML
+    private SVGGlyph uploadFile;
+
+    /**
      * 删除文件
      */
     @FXML
     private SVGGlyph deleteFile;
-
-    /**
-     * 隐藏文件
-     */
-    @FXML
-    private HiddenSVGPane hiddenPane;
 
     /**
      * 文件表格
@@ -85,11 +96,6 @@ public class ShellS3FileTabController extends SubTabController {
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
-     * 设置储存
-     */
-    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     @Override
     public ShellS3TabController parent() {
@@ -110,8 +116,7 @@ public class ShellS3FileTabController extends SubTabController {
             ShellEventUtil.layout1();
         }
         this.fileTable.setClient(client);
-        // 显示隐藏文件
-        this.hiddenFile(this.setting.isShowHiddenFile());
+        this.fileTable.refreshFile();
         // 任务数量监听
         client.addTaskSizeListener(() -> {
             if (client.isTaskEmpty()) {
@@ -120,6 +125,8 @@ public class ShellS3FileTabController extends SubTabController {
                 this.manage.text("(" + client.getTaskSize() + ")");
             }
         });
+        // 设置收藏处理
+        this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client()));
     }
 
     @Override
@@ -133,6 +140,7 @@ public class ShellS3FileTabController extends SubTabController {
                 } else {
                     this.location.text(t1);
                 }
+                this.initFileAction();
             });
             // 文件过滤
             this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
@@ -150,12 +158,9 @@ public class ShellS3FileTabController extends SubTabController {
             this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
-                } else if (KeyboardUtil.hide_keyCombination.match(event)) {
-                    this.hiddenFile();
                 }
             });
             // 绑定提示快捷键
-            this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
             this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
             this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
             this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
@@ -165,6 +170,15 @@ public class ShellS3FileTabController extends SubTabController {
         }
     }
 
+    /**
+     * 初始化文件操作
+     */
+    private void initFileAction() {
+        this.touchFile.setDisable(!this.fileTable.isSupportTouchAction());
+        this.uploadDir.setDisable(!this.fileTable.isSupportUploadAction());
+        this.uploadFile.setDisable(!this.fileTable.isSupportUploadAction());
+        this.deleteFile.setDisable(!this.fileTable.isSupportDeleteAction());
+    }
 
     @FXML
     private void refreshFile() {
@@ -210,11 +224,6 @@ public class ShellS3FileTabController extends SubTabController {
     }
 
     @FXML
-    private void mkdir() {
-        this.fileTable.createDir();
-    }
-
-    @FXML
     private void touchFile() {
         this.fileTable.touch();
     }
@@ -249,39 +258,11 @@ public class ShellS3FileTabController extends SubTabController {
         }
     }
 
-
-    /**
-     * 隐藏文件
-     */
-    @FXML
-    private void hiddenFile() {
-        this.hiddenFile(!this.hiddenPane.isHidden());
-    }
-
     /**
      * 管理上传、下载
      */
     @FXML
     private void manage() {
         ShellViewFactory.fileManage(this.client());
-    }
-
-    /**
-     * 隐藏文件
-     *
-     * @param hidden 是否隐藏
-     */
-    private void hiddenFile(boolean hidden) {
-        if (hidden) {
-            this.hiddenPane.hidden();
-            this.fileTable.setShowHiddenFile(false);
-            this.hiddenPane.setTipText(I18nHelper.showHiddenFiles());
-        } else {
-            this.hiddenPane.show();
-            this.fileTable.setShowHiddenFile(true);
-            this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
-        }
-        this.setting.setShowHiddenFile(hidden);
-        this.settingStore.update(this.setting);
     }
 }

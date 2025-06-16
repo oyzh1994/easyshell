@@ -895,10 +895,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         List<E> files = this.getFilterSelectedItems();
         List<MenuItem> menuItems = new ArrayList<>();
         // 创建文件
-        FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
-        menuItems.add(touchFile);
+        if (this.isSupportTouchAction()) {
+            FXMenuItem touchFile = MenuItemHelper.touchFile("12", this::touch);
+            menuItems.add(touchFile);
+        }
         // 创建文件夹
-        if (this.client.isCreateDirSupport()) {
+        if (this.isSupportMkdirAction()) {
             FXMenuItem createDir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::createDir);
             menuItems.add(createDir);
             menuItems.add(MenuItemHelper.separator());
@@ -922,18 +924,22 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 }
             }
             // 文件信息
-            FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
-            fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
-            menuItems.add(fileInfo);
+            if (this.isSupportFileInfoAction()) {
+                FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
+                fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+                menuItems.add(fileInfo);
+            }
             // 复制路径
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
             menuItems.add(copyFilePath);
             // 重命名文件
-            FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
-            renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
-            menuItems.add(renameFile);
+            if (this.isSupportRenameAction()) {
+                FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
+                renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
+                menuItems.add(renameFile);
+            }
             // 文件权限
-            if (this.client.isChmodSupport()) {
+            if (this.isSupportPermissionAction()) {
                 FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
                 menuItems.add(filePermission);
                 menuItems.add(MenuItemHelper.separator());
@@ -945,9 +951,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         menuItems.add(refreshFile);
         // 删除文件
         if (!files.isEmpty()) {
-            FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-            deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
-            menuItems.add(deleteFile);
+            if (this.isSupportDeleteAction()) {
+                FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
+                deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
+                menuItems.add(deleteFile);
+            }
         }
         return menuItems;
     }
@@ -961,4 +969,47 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         List<E> list = super.getSelectedItems();
         return list.stream().filter(f -> !this.checkInvalid(f)).collect(Collectors.toList());
     }
+
+    /**
+     * 是否支持操作
+     *
+     * @param action 操作
+     * @return 结果
+     */
+    public boolean isSupportAction(String action) {
+        return true;
+    }
+
+    public boolean isSupportTouchAction() {
+        return this.isSupportAction("touch");
+    }
+
+    public boolean isSupportMkdirAction() {
+        return this.isSupportAction("mkdir");
+    }
+
+    public boolean isSupportFileInfoAction() {
+        return this.isSupportAction("fileInfo");
+    }
+
+    public boolean isSupportDownloadAction() {
+        return this.isSupportAction("download");
+    }
+
+    public boolean isSupportUploadAction() {
+        return this.isSupportAction("upload");
+    }
+
+    public boolean isSupportRenameAction() {
+        return this.isSupportAction("rename");
+    }
+
+    public boolean isSupportDeleteAction() {
+        return this.isSupportAction("delete");
+    }
+
+    public boolean isSupportPermissionAction() {
+        return this.isSupportAction("permission");
+    }
+
 }

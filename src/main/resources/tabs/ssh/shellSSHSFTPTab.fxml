@@ -86,7 +86,7 @@
             </HiddenSVGPane>
             <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
                 <HBox.margin>
-                    <Insets left="5" top="8"/>
+                    <Insets left="5" top="7"/>
                 </HBox.margin>
             </BoxSVGLabel>
             <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
