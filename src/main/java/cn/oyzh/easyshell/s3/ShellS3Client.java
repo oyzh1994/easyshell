@@ -205,9 +205,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         String bucketName = s3Path.bucketName();
         if (this.isBucketVersioning(s3Path.bucketName())) {
             ShellS3Util.deleteAllVersions(s3Client, bucketName, filePath);
-        } else {
-            ShellS3Util.deleteNormalFile(s3Client, bucketName, filePath);
         }
+        ShellS3Util.deleteNormalFile(s3Client, bucketName, filePath);
     }
 
     @Override
