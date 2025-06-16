@@ -6,7 +6,7 @@ import software.amazon.awssdk.regions.Region;
 
 /**
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-06-16
  */
 public class ShellS3RegionCombobox extends FXComboBox<Region> {
 
