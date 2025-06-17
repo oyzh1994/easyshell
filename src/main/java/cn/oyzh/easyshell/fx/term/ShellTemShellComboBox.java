@@ -17,7 +17,7 @@ public class ShellTemShellComboBox extends FXComboBox<String> {
 
     {
         if (OSUtil.isWindows()) {
-            this.setItem(List.of("cmd.exe", "powershell.exe"));
+            this.setItem(List.of("cmd.exe", "powershell.exe", "git-bash", "git-sh"));
         } else if (OSUtil.isLinux()) {
             String result = RuntimeUtil.execForStr("cat /etc/shells");
             if (StringUtil.isNotBlank(result)) {

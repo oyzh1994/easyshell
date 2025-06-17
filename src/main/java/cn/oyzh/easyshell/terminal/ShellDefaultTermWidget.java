@@ -54,7 +54,18 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
             if (OSUtil.isMacOS()) {
                 return new String[]{termType, "--login"};
             }
-//            return new String[]{termType, "-l"};
+            if (OSUtil.isWindows()) {
+                if ("git-sh".equals(termType)) {
+                    return new String[]{"C:\\Program Files\\Git\\bin\\sh.exe", "--login", "-i"};
+                }
+                if ("git-bash".equals(termType)) {
+                    return new String[]{"C:\\Program Files\\Git\\bin\\bash.exe", "--login", "-i"};
+                }
+                if ("cmd.exe".equals(termType)) {
+                    return new String[]{termType, "-l"};
+                }
+                return new String[]{termType};
+            }
             return new String[]{termType};
         }
         String[] command = new String[]{"/bin/bash"};
@@ -81,6 +92,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     protected PtyProcess createProcess() throws IOException {
         Map<String, String> envs = this.getEnvironments();
         String[] command = this.getProcessCommand();
+        // this.fixBashEnvironment(envs, command[0]);
         String workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
         JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
         return new PtyProcessBuilder()
@@ -128,6 +140,30 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         }
         return this.envs;
     }
+
+    // protected void fixBashEnvironment(Map<String, String> envs, String bash) {
+    //     if (OSUtil.isWindows()) {
+    //         String comSpec = envs.get("ComSpec");
+    //         if (StringUtil.isBlank(comSpec)) {
+    //             if ("cmd.exe".equals(bash)) {
+    //                 comSpec = RuntimeUtil.execForStr("where cmd.exe");
+    //             } else if ("powershell.exe".equals(bash)) {
+    //                 comSpec = RuntimeUtil.execForStr("where powershell.exe");
+    //             } else {
+    //                 comSpec = bash;
+    //             }
+    //         } else if ("cmd.exe".equals(bash) && !StringUtil.containsIgnoreCase(comSpec, "cmd.exe")) {
+    //             comSpec = RuntimeUtil.execForStr("where cmd.exe");
+    //         } else if ("powershell.exe".equals(bash) && !StringUtil.containsIgnoreCase(comSpec, "powershell.exe")) {
+    //             comSpec = RuntimeUtil.execForStr("where powershell.exe");
+    //         } else if (bash.contains("bash.exe") && !StringUtil.containsIgnoreCase(comSpec, "bash.exe")) {
+    //             comSpec = bash;
+    //         } else if (bash.contains("sh.exe") && !StringUtil.containsIgnoreCase(comSpec, "sh.exe")) {
+    //             comSpec = bash;
+    //         }
+    //         envs.put("ComSpec", comSpec);
+    //     }
+    // }
 
     /**
      * 添加环境变量

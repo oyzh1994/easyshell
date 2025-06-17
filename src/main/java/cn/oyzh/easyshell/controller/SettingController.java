@@ -635,7 +635,17 @@ public class SettingController extends StageController {
     private void testBashPath() {
         String bash = this.termType.getSelectedItem();
         if (OSUtil.isWindows()) {
-            String result = RuntimeUtil.execForStr("where " + bash);
+            String result;
+            // git-bash
+            if (bash.contains("git-bash")) {
+                String filePath = "C:\\Program Files\\Git\\bin\\bash.exe";
+                result = FileUtil.exist(filePath) ? "find" : null;
+            } else if (bash.contains("git-sh")) {
+                String filePath = "C:\\Program Files\\Git\\bin\\sh.exe";
+                result = FileUtil.exist(filePath) ? "find" : null;
+            } else {// cmd、powershell
+                result = RuntimeUtil.execForStr("where " + bash);
+            }
             if (StringUtil.isNotBlank(result)) {
                 MessageBox.info(I18nHelper.testSuccess());
             } else {
