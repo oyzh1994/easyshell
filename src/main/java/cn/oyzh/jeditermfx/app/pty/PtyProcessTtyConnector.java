@@ -7,6 +7,9 @@ import com.pty4j.WinSize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -41,5 +44,13 @@ public class PtyProcessTtyConnector extends ProcessTtyConnector {
     @Override
     public String getName() {
         return "";
+    }
+
+    public InputStream input() throws IOException {
+        return null;
+    }
+
+    public OutputStream output() throws IOException{
+        return null;
     }
 }
