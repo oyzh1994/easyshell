@@ -1,4 +1,4 @@
-package zmodem1;
+package zmodem;
 
 import org.apache.commons.net.io.CopyStreamEvent;
 

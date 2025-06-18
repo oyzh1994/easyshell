@@ -5,5 +5,6 @@ package zmodem.xfer.util;
  */
 public interface XCRC {
     int getCRCLength();
+
     long calcCRC(byte[] block);
 }

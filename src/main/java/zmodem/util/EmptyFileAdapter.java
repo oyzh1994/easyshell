@@ -1,4 +1,4 @@
-package zmodem1.util;
+package zmodem.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;

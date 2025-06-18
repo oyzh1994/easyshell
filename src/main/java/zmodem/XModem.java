@@ -14,7 +14,7 @@ public class XModem {
         this.modem = new Modem(inputStream, outputStream);
     }
 
-    public void send(Path file,boolean useBlock1K) throws IOException, InterruptedException {
+    public void send(Path file, boolean useBlock1K) throws IOException, InterruptedException {
         modem.send(file, useBlock1K);
     }
 

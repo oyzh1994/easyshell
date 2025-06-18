@@ -5,11 +5,7 @@ import zmodem.xfer.util.CRC8;
 import zmodem.xfer.util.XCRC;
 import zmodem.xfer.zm.util.Modem;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -64,7 +60,7 @@ public class YModem {
 
             //send block 0
             BasicFileAttributes readAttributes = Files.readAttributes(file, BasicFileAttributes.class);
-            String fileNameString = file.getFileName().toString() + (char)0 + ((Long) Files.size(file)).toString()+" "+ Long.toOctalString(readAttributes.lastModifiedTime().toMillis() / 1000);
+            String fileNameString = file.getFileName().toString() + (char) 0 + ((Long) Files.size(file)).toString() + " " + Long.toOctalString(readAttributes.lastModifiedTime().toMillis() / 1000);
             byte[] fileNameBytes = Arrays.copyOf(fileNameString.getBytes(), 128);
             modem.sendBlock(0, Arrays.copyOf(fileNameBytes, 128), 128, crc);
 

@@ -1,6 +1,9 @@
 package zmodem;
 
 
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+import org.apache.commons.net.io.CopyStreamListener;
 import zmodem.util.FileAdapter;
 import zmodem.xfer.zm.util.ZModemReceive;
 import zmodem.xfer.zm.util.ZModemSend;
@@ -8,59 +11,56 @@ import zmodem.xfer.zm.util.ZModemSend;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 
 public class ZModem {
 
-    private InputStream netIs;
-    private OutputStream netOs;
+    private final InputStream netIs;
+    private final OutputStream netOs;
+    private final ShellSSHTtyConnector connector;
+    private final AtomicBoolean isCancelled = new AtomicBoolean(false);
 
 
-    public ZModem(InputStream netin, OutputStream netout) {
+    public ZModem(InputStream netin, OutputStream netout,ShellSSHTtyConnector connector) {
         netIs = netin;
         netOs = netout;
-
+        this.connector=connector;
     }
 
-    public void receive(FileAdapter destDir) throws IOException {
+    public void receive(Supplier<FileAdapter> destDir, CopyStreamListener listener) throws IOException {
         ZModemReceive sender = new ZModemReceive(destDir, netIs, netOs);
-        sender.receive();
+        sender.addCopyStreamListener(listener);
+        sender.receive(isCancelled::get);
         netOs.flush();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
     }
 
-    public void send(Map<String, FileAdapter> lst) throws IOException {
-        ZModemSend sender = new ZModemSend(lst, netIs, netOs);
-        sender.send();
+    public void send(Supplier<List<FileAdapter>> filesSupplier, CopyStreamListener listener) throws Exception {
+        ZModemSend sender = new ZModemSend(filesSupplier, netIs, netOs);
+        sender.addCopyStreamListener(listener);
+        sender.send(isCancelled::get);
+        ThreadUtil.sleep(300);
         netOs.flush();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
+        ThreadUtil.sleep(300);
+
+        connector.reset();
     }
 
     public void cancel() {
+        isCancelled.compareAndSet(false, true);
     }
 
     public InputStream getNetIs() {
         return netIs;
     }
 
-    public void setNetIs(InputStream netIs) {
-        this.netIs = netIs;
-    }
-
     public OutputStream getNetOs() {
         return netOs;
     }
 
-    public void setNetOs(OutputStream netOs) {
-        this.netOs = netOs;
+    public AtomicBoolean getIsCancelled() {
+        return isCancelled;
     }
 }
