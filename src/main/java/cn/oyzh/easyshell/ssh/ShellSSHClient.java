@@ -481,6 +481,14 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 if (this.shellConnect.isX11forwarding()) {
                     channel.setXForwarding(true);
                 }
+                //byte[] modes = new byte[]{
+                //        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // ISPEED=38400
+                //        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // OSPEED=38400
+                //        (byte)0x1F, (byte)0x00, (byte)0x00, (byte)0x50, (byte)0x00, // 行数80
+                //        (byte)0x20, (byte)0x00, (byte)0x00, (byte)0x19, (byte)0x00, // 列数25
+                //        (byte)0x00 // TTY_OP_END
+                //};
+                //channel.setTerminalMode(modes);
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());

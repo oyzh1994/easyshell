@@ -3,9 +3,7 @@ package cn.oyzh.easyshell.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
-import cn.oyzh.ssh.util.SSHUtil;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -60,47 +58,25 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         return len;
     }
 
-    private String lastRead;
-    private StringBuilder builder = new StringBuilder();
+    //private ShellZModemProcessor zModemProcessor=new ShellZModemProcessor();
 
     @Override
     public void write(String str) throws IOException {
         JulLog.debug("shell write : {}", str);
-        builder.append(str);
-        System.out.println(builder);
-        String s1="\u001B[A\r";
-        String s2="\r";
-       this.lastRead= SSHUtil.removeAnsi(this.lastRead);
-        while (true){
-            if(this.lastRead.contains("\b")){
-                this.lastRead=this.lastRead.replace("\b","");
-            }
-            if(this.lastRead.contains("\\a")){
-                this.lastRead=this.lastRead.replace("\\a","");
-            }
-
-            if(this.lastRead.contains("\r")){
-                this.lastRead=this.lastRead.replace("\r","");
-            }
-            if(this.lastRead.contains("\t")){
-                this.lastRead=this.lastRead.replace("\t","");
-            }
-            if(this.lastRead.contains("\n")){
-                this.lastRead=this.lastRead.replace("\n","");
-            }
-            break;
-        }if (StringUtil.equalsAny(str,"\r") && "rz".equals(this.lastRead)) {
-
-            System.out.println("拦截rz-1");
-        } else if (StringUtil.containsAny(builder.toString(), "rz\r", "rz\n")) {
-            System.out.println("拦截rz");
-        } else {
-            this.shellWriter.write(str);
-            this.shellWriter.flush();
-        }
-        if (str.endsWith("\r") || str.endsWith("\n")) {
-            builder.setLength(0);
-        }
+        //if (this.zModemProcessor.isRZ(str)) {
+        //    System.out.println("拦截rz");
+        //    this.zModemProcessor.doSend(this.client,()->{
+        //        try {
+        //            this.shellWriter.write("\nclear\r");
+        //        this.shellWriter.flush();
+        //        } catch (IOException e) {
+        //            throw new RuntimeException(e);
+        //        }
+        //    });
+        //} else {
+        this.shellWriter.write(str);
+        this.shellWriter.flush();
+        //}
     }
 
     @Override
@@ -128,9 +104,9 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         super.doRead(buf, offset, len);
         String str = new String(buf, offset, len);
         if (this.client != null) {
-            ThreadUtil.startVirtual(() -> this.client.resolveWorkerDir(new String(buf, offset, len)));
+            ThreadUtil.startVirtual(() -> this.client.resolveWorkerDir(str));
         }
-        lastRead = str;
+        //this.zModemProcessor.setRead(str);
         return len;
     }
 

@@ -34,6 +34,8 @@ public class ShellSSHUtil {
         }
         // 移除ansi字符串
         line = SSHUtil.removeAnsi(line);
+        // 移除控制字符串
+        line = SSHUtil.removeControl(line);
         // 针对部分情况下返回的ansi字符做处理
         if (line.endsWith("?25h")) {
             line = line.substring(0, line.length() - 6);

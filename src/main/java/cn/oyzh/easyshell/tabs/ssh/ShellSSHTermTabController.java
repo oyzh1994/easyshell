@@ -14,7 +14,6 @@ import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -83,8 +82,9 @@ public class ShellSSHTermTabController extends SubTabController {
         Charset charset = client.getCharset();
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.init(client);
-        ZModemPtyConnectorAdaptor adaptor = new ZModemPtyConnectorAdaptor(widget.getTerminal(), connector);
-        this.widget.openSession(adaptor);
+        //ZModemPtyConnectorAdaptor adaptor = new ZModemPtyConnectorAdaptor(widget.getTerminal(), connector);
+        //this.widget.openSession(adaptor);
+        this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {

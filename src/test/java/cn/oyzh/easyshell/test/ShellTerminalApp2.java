@@ -46,7 +46,7 @@ public class ShellTerminalApp2 extends Application {
             session.connect();
 
             channel = (ChannelShell) session.openChannel("shell");
-            channel.setPty(true);
+            channel.setPty(false);
             channel.setPtySize(1000, 1000, 1000, 1000);
 //            channel.setPtyType("xterm");
             channel.connect();
