@@ -17,6 +17,9 @@ import zmodem1.xfer.zm.packet.DataPacket;
 import zmodem1.xfer.zm.packet.Finish;
 import zmodem1.xfer.zm.packet.Format;
 import zmodem1.xfer.zm.packet.Header;
+import zmodem1.xfer.zm.util.ZMOptions;
+import zmodem1.xfer.zm.util.ZMPacket;
+import zmodem1.xfer.zm.util.ZModemCharacter;
 import zmodem1.zm.io.ZMPacketInputStream;
 import zmodem1.zm.io.ZMPacketOutputStream;
 
@@ -147,7 +150,7 @@ public class ZModemReceive {
 
         Expect expect = Expect.NOTHING;
 
-        byte[] recvOpt = {0, 4, 0, ZMOptions.with(ZMOptions.ESCCTL, ZMOptions.ESC8)};
+        byte[] recvOpt = {0, 4, 0, zmodem1.xfer.zm.util.ZMOptions.with(zmodem1.xfer.zm.util.ZMOptions.ESCCTL, ZMOptions.ESC8)};
 
         try {
 
@@ -187,13 +190,13 @@ public class ZModemReceive {
                 if (packet instanceof Header header) {
                     switch (header.type()) {
                         case ZRQINIT:
-                            os.write(new Header(Format.HEX, ZModemCharacter.ZRINIT, recvOpt));
+                            os.write(new Header(Format.HEX, zmodem1.xfer.zm.util.ZModemCharacter.ZRINIT, recvOpt));
                             break;
                         case ZFILE:
                             expect = Expect.FILENAME;
                             break;
                         case ZEOF:
-                            os.write(new Header(Format.HEX, ZModemCharacter.ZRINIT, recvOpt));
+                            os.write(new Header(Format.HEX, zmodem1.xfer.zm.util.ZModemCharacter.ZRINIT, recvOpt));
                             expect = Expect.NOTHING;
                             file = null;
                             fileOs.flush();
@@ -205,7 +208,7 @@ public class ZModemReceive {
                             expect = Expect.DATA;
                             break;
                         case ZFIN:
-                            os.write(new Header(Format.HEX, ZModemCharacter.ZFIN));
+                            os.write(new Header(Format.HEX, zmodem1.xfer.zm.util.ZModemCharacter.ZFIN));
                             end = true;
                             break;
                         default:
@@ -218,7 +221,7 @@ public class ZModemReceive {
                 if (packet instanceof DataPacket data) {
                     switch (expect) {
                         case NOTHING:
-                            os.write(new Header(Format.HEX, ZModemCharacter.ZRINIT, recvOpt));
+                            os.write(new Header(Format.HEX, zmodem1.xfer.zm.util.ZModemCharacter.ZRINIT, recvOpt));
                             break;
                         case FILENAME:
                             if (!initDestination()) {
@@ -228,11 +231,11 @@ public class ZModemReceive {
                             }
                             decodeFileNameData(data);
                             if (file.length() == filesize) {
-                                os.write(new Header(Format.HEX, ZModemCharacter.ZSKIP));
+                                os.write(new Header(Format.HEX, zmodem1.xfer.zm.util.ZModemCharacter.ZSKIP));
                                 adapter.bytesTransferred(new FileCopyStreamEvent(this, file.getName(), remaining, index,
                                         this.filesize, fOffset, 0, true));
                             } else {
-                                os.write(new Header(Format.HEX, ZModemCharacter.ZRPOS, (int) file.length()));
+                                os.write(new Header(Format.HEX, zmodem1.xfer.zm.util.ZModemCharacter.ZRPOS, (int) file.length()));
                             }
                             expect = Expect.NOTHING;
                             break;

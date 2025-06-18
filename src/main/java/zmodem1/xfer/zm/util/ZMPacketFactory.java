@@ -2,6 +2,7 @@ package zmodem1.xfer.zm.util;
 
 
 import zmodem1.xfer.zm.packet.DataPacket;
+import zmodem1.xfer.zm.util.ZModemCharacter;
 
 public class ZMPacketFactory {
 

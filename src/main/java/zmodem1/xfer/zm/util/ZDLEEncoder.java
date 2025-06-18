@@ -3,6 +3,7 @@ package zmodem1.xfer.zm.util;
 
 import zmodem1.xfer.zm.packet.Format;
 import zmodem1.xfer.zm.proto.Escape;
+import zmodem1.xfer.zm.util.ZModemCharacter;
 
 public class ZDLEEncoder {
 

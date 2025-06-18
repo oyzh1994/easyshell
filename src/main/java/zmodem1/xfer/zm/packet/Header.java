@@ -1,7 +1,13 @@
 package zmodem1.xfer.zm.packet;
 
 
-import zmodem1.xfer.util.*;
+import zmodem1.xfer.util.Arrays;
+import zmodem1.xfer.util.Buffer;
+import zmodem1.xfer.util.ByteBuffer;
+import zmodem1.xfer.util.CRC;
+import zmodem1.xfer.util.HexBuffer;
+import zmodem1.xfer.util.InvalidChecksumException;
+import zmodem1.xfer.zm.packet.Format;
 import zmodem1.xfer.zm.util.ZDLEEncoder;
 import zmodem1.xfer.zm.util.ZMPacket;
 import zmodem1.xfer.zm.util.ZModemCharacter;
@@ -10,10 +16,10 @@ public class Header extends ZMPacket {
 
     public static Header unmarshall(Buffer buff) {
 
-        Format fmt = null;
+        zmodem1.xfer.zm.packet.Format fmt = null;
 
         while (fmt == null)
-            fmt = Format.fromByte(buff.get());
+            fmt = zmodem1.xfer.zm.packet.Format.fromByte(buff.get());
 
         if (fmt.hex())
             buff = buff.asHexBuffer();
@@ -43,25 +49,25 @@ public class Header extends ZMPacket {
     }
 
 
-    private Format format;
+    private zmodem1.xfer.zm.packet.Format format;
     private ZModemCharacter type;
     private byte[] data = {0, 0, 0, 0};
 
-    private Header(Format fFmt) {
+    private Header(zmodem1.xfer.zm.packet.Format fFmt) {
         format = fFmt;
     }
 
-    public Header(Format fFmt, ZModemCharacter fType) {
+    public Header(zmodem1.xfer.zm.packet.Format fFmt, ZModemCharacter fType) {
         this(fFmt);
         type = fType;
     }
 
-    public Header(Format fFmt, ZModemCharacter fType, byte[] flags) {
+    public Header(zmodem1.xfer.zm.packet.Format fFmt, ZModemCharacter fType, byte[] flags) {
         this(fFmt, fType);
         setFlags(flags);
     }
 
-    public Header(Format fFmt, ZModemCharacter fType, int pos) {
+    public Header(zmodem1.xfer.zm.packet.Format fFmt, ZModemCharacter fType, int pos) {
         this(fFmt, fType);
         setPos(pos);
     }

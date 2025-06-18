@@ -1,9 +1,13 @@
 package zmodem1.xfer.util;
 
 
+import zmodem1.xfer.util.Arrays;
 import zmodem1.xfer.util.Arrays.Endianness;
+import zmodem1.xfer.util.Buffer;
+import zmodem1.xfer.util.ByteBuffer;
 
 public class HexBuffer implements Buffer {
+
 
     private static final byte[] hx = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
@@ -159,52 +163,52 @@ public class HexBuffer implements Buffer {
         return put(index, (byte) value);
     }
 
-    public ByteBuffer asByteBuffer() {
+    public zmodem1.xfer.util.ByteBuffer asByteBuffer() {
         return new ByteBuffer(_wrapped);
     }
 
     public short getShort() {
-        return Arrays.toShort(new byte[]{get(), get()}, Endianness.Little);
+        return zmodem1.xfer.util.Arrays.toShort(new byte[]{get(), get()}, Endianness.Little);
     }
 
     public Buffer putShort(short value) {
-        return put(Arrays.fromShort(value, Endianness.Little));
+        return put(zmodem1.xfer.util.Arrays.fromShort(value, Endianness.Little));
     }
 
     public short getShort(int index) {
-        return Arrays.toShort(new byte[]{get(index), get(index + 1)}, Endianness.Little);
+        return zmodem1.xfer.util.Arrays.toShort(new byte[]{get(index), get(index + 1)}, Endianness.Little);
     }
 
     public Buffer putShort(int index, short value) {
-        return put(index, Arrays.fromShort(value, Endianness.Little));
+        return put(index, zmodem1.xfer.util.Arrays.fromShort(value, Endianness.Little));
     }
 
     public int getInt() {
-        return Arrays.toInt(new byte[]{get(), get(), get(), get()}, Endianness.Little);
+        return zmodem1.xfer.util.Arrays.toInt(new byte[]{get(), get(), get(), get()}, Endianness.Little);
     }
 
     public Buffer putInt(int value) {
-        return put(Arrays.fromInt(value, Endianness.Little));
+        return put(zmodem1.xfer.util.Arrays.fromInt(value, Endianness.Little));
     }
 
     public int getInt(int index) {
-        return Arrays.toInt(new byte[]{get(index), get(index + 1), get(index + 2), get(index + 3)}, Endianness.Little);
+        return zmodem1.xfer.util.Arrays.toInt(new byte[]{get(index), get(index + 1), get(index + 2), get(index + 3)}, Endianness.Little);
     }
 
     public Buffer putInt(int index, int value) {
-        return put(index, Arrays.fromInt(value, Endianness.Little));
+        return put(index, zmodem1.xfer.util.Arrays.fromInt(value, Endianness.Little));
     }
 
     public long getLong() {
-        return Arrays.toLong(new byte[]{get(), get(), get(), get(), get(), get(), get(), get()}, Endianness.Little);
+        return zmodem1.xfer.util.Arrays.toLong(new byte[]{get(), get(), get(), get(), get(), get(), get(), get()}, Endianness.Little);
     }
 
     public Buffer putLong(long value) {
-        return put(Arrays.fromLong(value, Endianness.Little));
+        return put(zmodem1.xfer.util.Arrays.fromLong(value, Endianness.Little));
     }
 
     public long getLong(int index) {
-        return Arrays.toLong(new byte[]{get(index), get(index + 1), get(index + 2), get(index + 3), get(index + 4), get(index + 5), get(index + 6), get(index + 7)}, Endianness.Little);
+        return zmodem1.xfer.util.Arrays.toLong(new byte[]{get(index), get(index + 1), get(index + 2), get(index + 3), get(index + 4), get(index + 5), get(index + 6), get(index + 7)}, Endianness.Little);
     }
 
     public Buffer putLong(int index, long value) {

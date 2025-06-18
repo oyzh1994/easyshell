@@ -6,7 +6,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor;
+import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor1;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
@@ -200,8 +200,8 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
 
     @Override
     public ShellDefaultTtyConnector getTtyConnector() {
-        if(super.getTtyConnector()  instanceof ZModemPtyConnectorAdaptor adaptor) {
-            return (ShellDefaultTtyConnector)adaptor.getConnector();
+        if (super.getTtyConnector() instanceof ZModemPtyConnectorAdaptor1 adaptor) {
+            return (ShellDefaultTtyConnector) adaptor.getConnector();
         }
         return (ShellDefaultTtyConnector) super.getTtyConnector();
     }

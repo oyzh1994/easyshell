@@ -1,5 +1,8 @@
 package zmodem1.xfer.util;
 
+import zmodem1.xfer.util.ByteBuffer;
+import zmodem1.xfer.util.HexBuffer;
+
 public interface Buffer {
     public byte get();
 

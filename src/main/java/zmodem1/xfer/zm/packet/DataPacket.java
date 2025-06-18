@@ -1,7 +1,11 @@
 package zmodem1.xfer.zm.packet;
 
 
-import zmodem1.xfer.util.*;
+import zmodem1.xfer.util.Arrays;
+import zmodem1.xfer.util.Buffer;
+import zmodem1.xfer.util.ByteBuffer;
+import zmodem1.xfer.util.CRC;
+import zmodem1.xfer.util.InvalidChecksumException;
 import zmodem1.xfer.zm.util.ZDLEEncoder;
 import zmodem1.xfer.zm.util.ZMPacket;
 import zmodem1.xfer.zm.util.ZModemCharacter;

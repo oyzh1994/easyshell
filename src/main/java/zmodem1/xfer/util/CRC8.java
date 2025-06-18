@@ -1,5 +1,7 @@
 package zmodem1.xfer.util;
 
+import zmodem1.xfer.util.XCRC;
+
 /**
  * Created by asirotinkin on 11.11.2014.
  */

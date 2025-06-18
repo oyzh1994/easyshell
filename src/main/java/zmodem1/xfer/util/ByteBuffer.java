@@ -1,6 +1,10 @@
 package zmodem1.xfer.util;
 
 
+import zmodem1.xfer.util.Arrays;
+import zmodem1.xfer.util.Buffer;
+import zmodem1.xfer.util.HexBuffer;
+
 public class ByteBuffer implements Buffer {
 
     private java.nio.ByteBuffer _wrapped;

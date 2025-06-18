@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zmodem1.FileCopyStreamEvent;
 import zmodem1.util.FileAdapter;
+import zmodem1.xfer.util.ASCII;
 import zmodem1.xfer.util.InvalidChecksumException;
 import zmodem1.xfer.zm.packet.Cancel;
 import zmodem1.xfer.zm.packet.DataPacket;
@@ -146,7 +147,8 @@ public class ZModemSend {
             while (!end) {
                 try {
                     packet = is.read();
-                    System.out.println("------------");
+                    System.out.println(packet);
+                    // System.out.println("------------");
                 } catch (InvalidChecksumException ice) {
                     ++errorCount;
                     if (errorCount > 20) {
@@ -193,6 +195,9 @@ public class ZModemSend {
                         default:
                             end = true;
                             os.write(new Cancel());
+                            netOs.write(ASCII.CR.value());
+                            netOs.write(ASCII.LF.value());
+                            netOs.write(ASCII.XON.value());
                             break;
                     }
 

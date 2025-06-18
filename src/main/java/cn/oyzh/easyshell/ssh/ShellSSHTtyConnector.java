@@ -4,7 +4,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
-import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -30,18 +29,8 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     private OutputStreamWriter shellWriter;
 
-    private ZModemPtyConnectorAdaptor connectorAdaptor;
-
     public ShellSSHClient getClient() {
         return client;
-    }
-
-    public ZModemPtyConnectorAdaptor getConnectorAdaptor() {
-        return connectorAdaptor;
-    }
-
-    public void setConnectorAdaptor(ZModemPtyConnectorAdaptor connectorAdaptor) {
-        this.connectorAdaptor = connectorAdaptor;
     }
 
     public void init(ShellSSHClient client) throws IOException {
@@ -57,9 +46,6 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public int read(char[] buf, int offset, int length) throws IOException {
-        if (connectorAdaptor != null) {
-            connectorAdaptor.read(buf, offset, length);
-        }
         int len;
         if (this.shellReader == null) {
             len = super.read(buf, offset, length);
@@ -77,9 +63,6 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
-        if (connectorAdaptor != null) {
-            connectorAdaptor.write(str);
-        }
     }
 
     @Override
@@ -88,9 +71,6 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         JulLog.debug("shell write : {}", str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
-        if (connectorAdaptor != null) {
-            connectorAdaptor.write(bytes);
-        }
     }
 
     @Override
@@ -123,5 +103,8 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
     @Override
     public OutputStream output() throws IOException {
         return this.client.getShell().getOutputStream();
+    }
+
+    public void reset() throws Exception {
     }
 }
