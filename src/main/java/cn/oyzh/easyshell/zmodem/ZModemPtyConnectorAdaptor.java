@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.zmodem;
 
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
@@ -44,13 +43,13 @@ public class ZModemPtyConnectorAdaptor implements TtyConnector {
 
     private Terminal terminal;
 
-    private ShellSSHTtyConnector connector;
+    private PtyProcessTtyConnector connector;
 
     public PtyProcessTtyConnector getConnector() {
         return connector;
     }
 
-    public ZModemPtyConnectorAdaptor(Terminal terminal, ShellSSHTtyConnector connector) {
+    public ZModemPtyConnectorAdaptor(Terminal terminal, PtyProcessTtyConnector connector) {
         this.terminal = terminal;
         this.connector = connector;
     }
@@ -176,12 +175,12 @@ public class ZModemPtyConnectorAdaptor implements TtyConnector {
     private class ZModemProcessor implements CopyStreamListener {
         // 如果为 true 表示是接收（sz）文件
         private final boolean sz;
-        private final ShellSSHTtyConnector connector;
+        private final PtyProcessTtyConnector connector;
         private final Terminal terminal;
         private final ZModem zmodem;
         private long lastRefreshTime = 0L;
 
-        public ZModemProcessor(boolean sz, ShellSSHTtyConnector connector, Terminal terminal, InputStream input, OutputStream output) {
+        public ZModemProcessor(boolean sz, PtyProcessTtyConnector connector, Terminal terminal, InputStream input, OutputStream output) {
             this.sz = sz;
             this.connector = connector;
             this.terminal = terminal;

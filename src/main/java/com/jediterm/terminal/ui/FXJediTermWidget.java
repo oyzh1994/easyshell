@@ -430,6 +430,7 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
                     myStarter.start();
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 JulLog.error("Exception running terminal", e);
             } finally {
                 try {

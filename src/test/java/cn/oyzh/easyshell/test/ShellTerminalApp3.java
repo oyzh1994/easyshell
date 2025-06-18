@@ -1,10 +1,6 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor;
-import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,14 +8,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.connection.ConnectionException;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.TransportException;
+import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.security.PublicKey;
+import java.util.List;
 
-public class ShellTerminalApp2 extends Application {
+public class ShellTerminalApp3 extends Application {
 
     private ShellTestTermWidget widget = new ShellTestTermWidget();
     private TextField inputField, hostField, userField;
@@ -27,10 +29,10 @@ public class ShellTerminalApp2 extends Application {
 
     private Session session;
 
-    private ChannelShell channel;
+    private Session.Shell channel;
 
-    private InputStream in;
-
+    //private InputStream in;
+    //
     private OutputStream out;
 
     private void connect() {
@@ -39,19 +41,32 @@ public class ShellTerminalApp2 extends Application {
         String pass = passField.getText();
 
         try {
-            JSch jsch = new JSch();
-            session = jsch.getSession(user, host, 22);
-            session.setPassword(pass);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect();
+            SSHClient ssh = new SSHClient();
+            // 禁用主机密钥验证（不推荐在生产环境使用）
+            ssh.addHostKeyVerifier(new HostKeyVerifier() {
+                @Override
+                public boolean verify(String hostname, int port, PublicKey key) {
+                    return true; // 始终信任
+                }
 
-            channel = (ChannelShell) session.openChannel("shell");
-            channel.setPty(true);
-            channel.setPtySize(80, 25, 600, 600);
-//            channel.setPtyType("xterm");
-            channel.connect();
+                @Override
+                public List<String> findExistingAlgorithms(String hostname, int port) {
+                    return List.of();
+                }
+            });
 
-            in = channel.getInputStream();
+            ssh.connect(host, 22);
+            ssh.authPassword(user, pass);
+
+            session = ssh.startSession();
+
+            session.allocateDefaultPTY();
+
+
+            channel = session.startShell();
+
+
+            //in = channel.getInputStream();
             out = channel.getOutputStream();
 
             ShellTestTtyConnector connector=  widget.createTtyConnector(Charset.defaultCharset());
@@ -60,11 +75,16 @@ public class ShellTerminalApp2 extends Application {
             ZModemPtyConnectorAdaptor adaptor=new ZModemPtyConnectorAdaptor(widget.getTerminal(),connector);
 
             this.widget.openSession(adaptor);
+            //this.widget.openSession(connector);
 
             //// 启动线程读取输出
             //new Thread(this::readOutput).start();
-        } catch (JSchException | IOException e) {
-            //appendText("Connection error: " + e.getMessage());
+        } catch (IOException e) {
+            try {
+                appendText("Connection error: " + e.getMessage());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -81,24 +101,34 @@ public class ShellTerminalApp2 extends Application {
     //            builder.append(data);
     //            if (!builder.isEmpty()) {
     //                String output = builder.toString();
-    //                Platform.runLater(() -> appendText(output));
+    //                Platform.runLater(() -> {
+    //                    try {
+    //                        appendText(output);
+    //                    } catch (IOException e) {
+    //                        throw new RuntimeException(e);
+    //                    }
+    //                });
     //            }
     //        }
     //    } catch (IOException e) {
-    //        //appendText("Read error: " + e.getMessage());
+    //        try {
+    //            appendText("Read error: " + e.getMessage());
+    //        } catch (IOException ex) {
+    //            throw new RuntimeException(ex);
+    //        }
     //    }
     //}
-
-    private void sendCommand() {
-        String cmd = inputField.getText() + "\n";
-        inputField.clear();
-        try {
-            out.write(cmd.getBytes());
-            out.flush();
-        } catch (IOException e) {
-            //appendText("Send error: " + e.getMessage());
-        }
-    }
+    //
+    //private void sendCommand() {
+    //    String cmd = inputField.getText() + "\n";
+    //    inputField.clear();
+    //    try {
+    //        out.write(cmd.getBytes());
+    //        out.flush();
+    //    } catch (IOException e) {
+    //        throw new RuntimeException(e);
+    //    }
+    //}
 
     private void sendCtrlCCommand() {
         inputField.clear();
@@ -106,7 +136,6 @@ public class ShellTerminalApp2 extends Application {
             out.write(0x03);
             out.flush();
         } catch (IOException e) {
-            //appendText("Send error: " + e.getMessage());
         }
     }
 
@@ -116,17 +145,16 @@ public class ShellTerminalApp2 extends Application {
             out.write(27);
             out.flush();
         } catch (IOException e) {
-            //appendText("Send error: " + e.getMessage());
         }
     }
 
-    //private void appendText(String text) {
-    //    outputArea.appendText(text);
-    //}
+    private void appendText(String text) throws IOException {
+        widget.getTtyConnector().write(text);
+    }
 
-    public void disconnect() {
-        if (channel != null) channel.disconnect();
-        if (session != null) session.disconnect();
+    public void disconnect() throws TransportException, ConnectionException {
+        if (channel != null) channel.close();
+        if (session != null) session.close();
     }
 
     public static void main(String[] args) {
@@ -148,15 +176,21 @@ public class ShellTerminalApp2 extends Application {
         });
         Button button1 = new Button("断开");
         button1.setOnAction(event -> {
-            disconnect();
+            try {
+                disconnect();
+            } catch (TransportException e) {
+                throw new RuntimeException(e);
+            } catch (ConnectionException e) {
+                throw new RuntimeException(e);
+            }
         });
         HBox box = new HBox(button, button1);
         root.getChildren().add(box);
         root.getChildren().add(inputField = new TextField());
-        Button button2 = new Button("发送");
-        button2.setOnAction(event -> {
-            sendCommand();
-        });
+        //Button button2 = new Button("发送");
+        //button2.setOnAction(event -> {
+        //    sendCommand();
+        //});
         Button button3 = new Button("中断");
         button3.setOnAction(event -> {
             sendCtrlCCommand();
@@ -165,8 +199,10 @@ public class ShellTerminalApp2 extends Application {
         button4.setOnAction(event -> {
             sendEscCommand();
         });
-        HBox box1 = new HBox(button2, button3, button4);
+        HBox box1 = new HBox( button3, button4);
         root.getChildren().add(box1);
+
+
         root.getChildren().add(widget);
         widget.setPrefHeight(600);
         widget.setPrefWidth(800);
@@ -181,10 +217,10 @@ public class ShellTerminalApp2 extends Application {
 
     }
 
-    public static class SSHTerminalApp2Test {
+    public static class SSHTerminalApp3Test {
 
         public static void main(String[] args) throws URISyntaxException {
-            ShellTerminalApp2.main(args);
+            ShellTerminalApp3.main(args);
         }
 
     }
