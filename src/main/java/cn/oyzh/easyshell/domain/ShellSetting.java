@@ -89,6 +89,24 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean termParseHyperlink;
 
+    /**
+     * ssh协议，显示文件
+     */
+    @Column
+    private Boolean sshShowFile;
+
+    /**
+     * ssh协议，显示服务监控
+     */
+    @Column
+    private Boolean sshServerMonitor;
+
+    /**
+     * ssh协议，跟随终端目录
+     */
+    @Column
+    private Boolean sshFollowTerminalDir;
+
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
@@ -251,5 +269,29 @@ public class ShellSetting extends AppSetting {
 
     public void setTermParseHyperlink(Boolean termParseHyperlink) {
         this.termParseHyperlink = termParseHyperlink;
+    }
+
+    public boolean isSshShowFile() {
+        return this.sshShowFile == null || this.sshShowFile;
+    }
+
+    public void setSshShowFile(Boolean sshShowFile) {
+        this.sshShowFile = sshShowFile;
+    }
+
+    public boolean isSshServerMonitor() {
+        return BooleanUtil.isTrue(this.sshServerMonitor);
+    }
+
+    public void setSshServerMonitor(Boolean sshServerMonitor) {
+        this.sshServerMonitor = sshServerMonitor;
+    }
+
+    public boolean isSshFollowTerminalDir() {
+        return BooleanUtil.isTrue(this.sshFollowTerminalDir);
+    }
+
+    public void setSshFollowTerminalDir(Boolean sshFollowTerminalDir) {
+        this.sshFollowTerminalDir = sshFollowTerminalDir;
     }
 }

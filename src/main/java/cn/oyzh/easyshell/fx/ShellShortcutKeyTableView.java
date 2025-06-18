@@ -65,6 +65,8 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         } else {
             data.add(KeyValueProperty.of("Ctrl + Down (^ + ↓)", ShellI18nHelper.termTip8()));
         }
+        data.add(KeyValueProperty.of("HOME", I18nHelper.headOfLine()));
+        data.add(KeyValueProperty.of("END", I18nHelper.endOfLine()));
         this.setItem(data);
     }
 }

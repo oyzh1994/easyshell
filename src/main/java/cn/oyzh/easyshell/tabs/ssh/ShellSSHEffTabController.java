@@ -188,7 +188,6 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
-        // this.widget.addHyperlinkFilter(new FXHyperlinkFilter());
     }
 
     /**
@@ -243,16 +242,14 @@ public class ShellSSHEffTabController extends SubTabController {
             this.closeTab();
             return;
         }
-//        ShellConnect shellConnect = client.getShellConnect();
-//        // macos需要初始化部分参数
-//        if (client.isMacos() && shellConnect.getCharset() != null) {
-//            ShellSSHTtyConnector connector = this.widget.getTtyConnector();
-//            connector.writeLine("export LANG=en_US." + shellConnect.getCharset());
-//        }
         // 初始化文件
         this.initFile();
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
+        // 初始化
+        this.showFile.setSelected(this.setting.isSshShowFile());
+        this.serverMonitor.setSelected(this.setting.isSshServerMonitor());
+        this.followTerminalDir.setSelected(this.setting.isSshFollowTerminalDir());
     }
 
     @Override
@@ -279,6 +276,9 @@ public class ShellSSHEffTabController extends SubTabController {
         // 跟随终端目录
         this.followTerminalDir.selectedChanged((observable, oldValue, newValue) -> {
             this.client().setResolveWorkerDir(newValue);
+            // 存储
+            this.setting.setSshFollowTerminalDir(newValue);
+            this.settingStore.update(this.setting);
         });
         // 服务监控
         this.serverMonitor.selectedChanged((observable, oldValue, newValue) -> {
@@ -287,6 +287,9 @@ public class ShellSSHEffTabController extends SubTabController {
             } else {
                 this.closeMonitorTask();
             }
+            // 存储
+            this.setting.setSshServerMonitor(newValue);
+            this.settingStore.update(this.setting);
         });
         // 文件列表
         this.showFile.selectedChanged((observable, oldValue, newValue) -> {
@@ -297,6 +300,9 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.client().setResolveWorkerDir(false);
                 this.hideFileBox();
             }
+            // 存储
+            this.setting.setSshShowFile(newValue);
+            this.settingStore.update(this.setting);
         });
         // 文件过滤
         this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {

@@ -6,12 +6,14 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -73,6 +75,16 @@ public class ShellSSHTermTabController extends SubTabController {
     private FXLabel termSize;
 
     /**
+     * 设置
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
+     * 设置存储
+     */
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
+    /**
      * 初始化组件
      *
      * @throws IOException 异常
@@ -118,14 +130,10 @@ public class ShellSSHTermTabController extends SubTabController {
             this.closeTab();
             return;
         }
-//        ShellConnect shellConnect = client.getShellConnect();
-//        // macos需要初始化部分参数
-//        if (client.isMacos() && shellConnect.getCharset() != null ) {
-//            ShellSSHTtyConnector connector = this.widget.getTtyConnector();
-//            connector.writeLine("export LANG=en_US." + shellConnect.getCharset());
-//        }
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
+        // 初始化
+        this.serverMonitor.setSelected(this.setting.isSshServerMonitor());
     }
 
     @Override
@@ -138,6 +146,9 @@ public class ShellSSHTermTabController extends SubTabController {
             } else {
                 this.closeMonitorTask();
             }
+            // 存储
+            this.setting.setSshServerMonitor(newValue);
+            this.settingStore.update(this.setting);
         });
     }
 
