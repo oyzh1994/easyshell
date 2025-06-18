@@ -50,26 +50,9 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
         return len;
     }
 
-    protected void doRead(char[] buf, int offset, int len) throws IOException {
-//        char[] arr = ArraysKt.copyOfRange(buf, offset, len);
-//        char[] arr;
-//        if (len != buf.length) {
-//            arr = ArraysKt.copyOfRange(buf, offset, len);
-//        } else {
-//            arr = buf;
-//        }
+    protected int doRead(char[] buf, int offset, int len) throws IOException {
         JulLog.debug("shell read: {}", new String(buf));
-//        this.myDataChunks.add(arr);
-//        String lines = this.textBuffer.getScreenLines();
-//        TerminalState terminalState =
-//                new TerminalState(lines, TerminalDebugUtil.getStyleLines(this.textBuffer),
-//                        this.textBuffer.getHistoryBuffer().getLines());
-//        this.myStates.add(terminalState);
-//        if (this.myDataChunks.size() > this.maxLogSize) {
-//            this.myDataChunks.removeFirst();
-//            this.myStates.removeFirst();
-//            this.logStart++;
-//        }
+        return len;
     }
 
 //    @Override

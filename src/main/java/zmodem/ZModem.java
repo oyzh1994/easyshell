@@ -45,7 +45,7 @@ public class ZModem {
         netOs.flush();
         ThreadUtil.sleep(300);
 
-        connector.reset();
+        // connector.reset();
     }
 
     public void cancel() {

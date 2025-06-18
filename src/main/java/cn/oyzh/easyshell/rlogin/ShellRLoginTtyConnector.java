@@ -58,7 +58,7 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
     private boolean inputPasswd = false;
 
     @Override
-    protected void doRead(char[] buf, int offset, int len) throws IOException {
+    protected int doRead(char[] buf, int offset, int len) throws IOException {
         super.doRead(buf, offset, len);
         String line = new String(buf, offset, len);
         // 密码
@@ -72,6 +72,7 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
             }
             this.shellWriter.flush();
         }
+        return len;
     }
 
     @Override

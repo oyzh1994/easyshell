@@ -55,6 +55,9 @@ public class ZModemSend {
     }
 
     public boolean nextFile() throws IOException {
+        if (true) {
+            return false;
+        }
 
         IOUtils.closeQuietly(fileIs);
 
