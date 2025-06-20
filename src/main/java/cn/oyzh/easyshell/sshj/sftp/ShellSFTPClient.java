@@ -19,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.Response;
@@ -207,7 +208,19 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void deleteDirRecursive(String dir) throws Exception {
         SFTPClient client = this.takeSFTPClient();
         try {
-            client.rmdir(dir);
+            List<RemoteResourceInfo> entries = client.ls(dir);
+            for (RemoteResourceInfo entry : entries) {
+                String filename = entry.getName();
+                if (ShellFileUtil.isNormal(filename)) {
+                    String fullPath = dir + "/" + filename;
+                    if (entry.getAttributes().getType() == FileMode.Type.DIRECTORY) {
+                        this.deleteDirRecursive(fullPath);
+                    } else {
+                        this.delete(fullPath);
+                    }
+                }
+            }
+            this.deleteDir(dir);
         } catch (Exception ex) {
             this.closeClient(client);
             throw ex;
@@ -374,7 +387,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String fName = ShellFileUtil.name(filePath);
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         // 读取链接文件
-        ShellSFTPUtil.realpath(file, this);
+        this.realpathCache.realpath(file, this);
         // 拥有者、分组
         if (this.isWindows()) {
             file.setOwner("-");
@@ -396,8 +409,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 ShellSFTPFile file = new ShellSFTPFile(filePath, info);
                 files.add(file);
                 // 处理链接文件
-                if(file.isLink()){
-                    realpathCache.realpath(file, this);
+                if (file.isLink()) {
+                    this.realpathCache.realpath(file, this);
                 }
             }
             return files;
@@ -474,5 +487,16 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     public SFTPClient newSFTPClient() throws IOException {
         return this.sshClient.newSFTPClient();
+    }
+
+    @Override
+    public boolean isSupport(String action) {
+        if ("cd".equals(action)) {
+            return false;
+        }
+        if ("putStream".equals(action)) {
+            return false;
+        }
+        return ShellFileClient.super.isSupport(action);
     }
 }
