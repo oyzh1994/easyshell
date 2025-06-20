@@ -41,7 +41,15 @@ import java.util.function.Function;
  */
 public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClient<ShellSFTPFile> {
 
-    private ShellSFTPClintPool clintPool = new ShellSFTPClintPool(this);
+    /**
+     * 客户端池
+     */
+    private final ShellSFTPClintPool clintPool = new ShellSFTPClintPool(this);
+
+    /**
+     * 链接路径处理
+     */
+    private final ShellSFTPRealpathCache realpathCache = new ShellSFTPRealpathCache();
 
     /**
      * 连接状态
@@ -249,11 +257,14 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         SFTPClient client = this.takeSFTPClient();
         try {
             return client.stat(filePath);
-        } catch (Exception ex) {
-            this.closeClient(client);
+        } catch (SFTPException ex) {
+            if (ex.getStatusCode() == Response.StatusCode.NO_SUCH_FILE) {
+                return null;
+            }
             throw ex;
         } finally {
-            this.returnSFTPClient(client);
+            this.closeClient(client);
+            //this.returnSFTPClient(client);
         }
     }
 
@@ -278,7 +289,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public String realpath(String filePath) throws Exception {
         SFTPClient client = this.takeSFTPClient();
         try {
-            return client.readlink(filePath);
+            return client.canonicalize(filePath);
         } catch (Exception ex) {
             this.closeClient(client);
             throw ex;
@@ -384,6 +395,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             for (RemoteResourceInfo info : infos) {
                 ShellSFTPFile file = new ShellSFTPFile(filePath, info);
                 files.add(file);
+                // 处理链接文件
+                if(file.isLink()){
+                    realpathCache.realpath(file, this);
+                }
             }
             return files;
         } catch (Exception ex) {

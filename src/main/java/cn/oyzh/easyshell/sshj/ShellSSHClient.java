@@ -126,7 +126,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     private Session shellSession() throws TransportException, ConnectionException {
         if (this.shellSession == null) {
             this.shellSession = this.newSession();
-            // this.session.allocateDefaultPTY();
             this.setPtySize(80, 24, 0, 0);
         }
         return this.shellSession;
@@ -570,11 +569,27 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return StringUtil.endWithIgnoreCase(shellName, "bash");
     }
 
-    public void setPtySize(int columns, int rows, int sizeW, int sizeH) {
+    /**
+     * PTY大小初始化标志位
+     */
+    private boolean ptySizeInitialized;
+
+    /**
+     * 设置pty大小
+     *
+     * @param columns 列
+     * @param rows    行
+     * @param sizeW   宽
+     * @param sizeH   高
+     */
+    public synchronized void setPtySize(int columns, int rows, int sizeW, int sizeH) {
         try {
-            if (this.shell != null && this.shell.isOpen()) {
-                this.shell.changeWindowDimensions(columns, rows, sizeW, sizeH);
+            if (this.ptySizeInitialized) {
+                if (this.shell != null && this.shell.isOpen()) {
+                    this.shell.changeWindowDimensions(columns, rows, sizeW, sizeH);
+                }
             } else {
+                this.ptySizeInitialized = true;
                 Map<PTYMode, Integer> modes = new HashMap<>();
                 this.shellSession().allocatePTY(this.shellConnect.getTermType(), columns, rows, sizeW, sizeH, modes);
             }
