@@ -82,7 +82,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
 
     public Session newSession() throws TransportException, ConnectionException {
         Session session = this.sshClient.startSession();
-        session.allocateDefaultPTY();
         // // 用户环境
         // Map<String, String> userEnvs = this.shellConnect.environments();
         // if (CollectionUtil.isNotEmpty(userEnvs)) {

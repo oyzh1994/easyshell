@@ -27,10 +27,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import net.schmizz.sshj.connection.ConnectionException;
+import net.schmizz.sshj.connection.channel.direct.PTYMode;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ssh客户端
@@ -123,6 +126,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     private Session shellSession() throws TransportException, ConnectionException {
         if (this.shellSession == null) {
             this.shellSession = this.newSession();
+            // this.session.allocateDefaultPTY();
+            this.setPtySize(80, 24, 0, 0);
         }
         return this.shellSession;
     }
@@ -567,9 +572,12 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     public void setPtySize(int columns, int rows, int sizeW, int sizeH) {
         try {
-            // this.shellSession().allocateDefaultPTY();
-            // Map<PTYMode, Integer> modes = new HashMap<>();
-            // this.shellSession().allocatePTY(this.shellConnect.getTermType(), columns, rows, sizeW, sizeH, modes);
+            if (this.shell != null && this.shell.isOpen()) {
+                this.shell.changeWindowDimensions(columns, rows, sizeW, sizeH);
+            } else {
+                Map<PTYMode, Integer> modes = new HashMap<>();
+                this.shellSession().allocatePTY(this.shellConnect.getTermType(), columns, rows, sizeW, sizeH, modes);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
