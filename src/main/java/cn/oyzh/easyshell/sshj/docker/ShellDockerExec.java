@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.sshj.docker;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.sshj.ShellBaseSSHClient;
+import cn.oyzh.easyshell.sshj.ShellSSHClient;
 
 /**
  * @author oyzh
@@ -9,9 +9,9 @@ import cn.oyzh.easyshell.sshj.ShellBaseSSHClient;
  */
 public class ShellDockerExec implements AutoCloseable {
 
-    private ShellBaseSSHClient client;
+    private ShellSSHClient client;
 
-    public ShellDockerExec(ShellBaseSSHClient client) {
+    public ShellDockerExec(ShellSSHClient client) {
         this.client = client;
     }
 

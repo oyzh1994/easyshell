@@ -70,7 +70,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 初始化客户端
      */
-    private void initClient() throws IOException {
+    protected void initClient() throws IOException {
         if (JulLog.isInfoEnabled()) {
             JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
         }

@@ -23,14 +23,14 @@ public class ShellSSHClientChecker {
     /**
      * 客户端列表
      */
-    private static final List<ShellBaseSSHClient> CLIENTS = new CopyOnWriteArrayList<>();
+    private static final List<ShellSSHClient> CLIENTS = new CopyOnWriteArrayList<>();
 
     /**
      * 添加客户端
      *
      * @param client 客户端
      */
-    public static void push(ShellBaseSSHClient client) {
+    public static void push(ShellSSHClient client) {
         CLIENTS.add(client);
         doCheck();
     }
@@ -39,7 +39,7 @@ public class ShellSSHClientChecker {
      * 移除客户端
      * @param client 客户端
      */
-    public static void remove(ShellBaseSSHClient client) {
+    public static void remove(ShellSSHClient client) {
         CLIENTS.remove(client);
     }
 
@@ -50,8 +50,8 @@ public class ShellSSHClientChecker {
         if (taskFuture == null) {
             // 创建任务
             taskFuture = TaskManager.startInterval("client:check", () -> {
-                List<ShellBaseSSHClient> closedList = null;
-                for (ShellBaseSSHClient client : CLIENTS) {
+                List<ShellSSHClient> closedList = null;
+                for (ShellSSHClient client : CLIENTS) {
                     client.updateState();
                     // 如果客户端已关闭，则从队列里面移除
                     if (client.isClosed()) {
