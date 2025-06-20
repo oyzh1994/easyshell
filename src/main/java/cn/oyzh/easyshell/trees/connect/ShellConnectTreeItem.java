@@ -259,7 +259,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      */
     public void value(ShellConnect value) {
         this.value = value;
-//        this.client = new ShellSSHClient(value);
+//        this.client = new ShellBaseSSHClient(value);
 //        this.client.addStateListener((observable, o, n) -> this.refresh());
         super.setValue(new ShellConnectTreeItemValue(this));
     }

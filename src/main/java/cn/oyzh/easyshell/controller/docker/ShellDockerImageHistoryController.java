@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.docker.ShellDockerImageHistory;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.fx.docker.ShellDockerImageHistoryTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;

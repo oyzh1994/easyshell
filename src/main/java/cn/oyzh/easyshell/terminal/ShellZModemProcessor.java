@@ -3,7 +3,7 @@
 //import cn.oyzh.common.util.CollectionUtil;
 //import cn.oyzh.common.util.StringUtil;
 //import cn.oyzh.easyshell.file.ShellFileUtil;
-//import cn.oyzh.easyshell.ssh.ShellSSHClient;
+//import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 //import cn.oyzh.fx.plus.chooser.FXChooser;
 //import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 //import cn.oyzh.fx.plus.information.MessageBox;
@@ -69,7 +69,7 @@
 //        return false;
 //    }
 //
-//    public void doSend(ShellSSHClient client, Runnable callback) {
+//    public void doSend(ShellBaseSSHClient client, Runnable callback) {
 //        String wordDir = client.workDirProperty().get();
 //        List<File> files = FileChooserHelper.chooseMultiple("请选择文件", FXChooser.allExtensionFilter());
 //        if (CollectionUtil.isEmpty(files)) {

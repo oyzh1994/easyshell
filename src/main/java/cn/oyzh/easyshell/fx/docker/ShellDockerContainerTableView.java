@@ -2,11 +2,11 @@ package cn.oyzh.easyshell.fx.docker;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.docker.ShellDockerContainer;
-import cn.oyzh.easyshell.docker.ShellDockerExec;
-import cn.oyzh.easyshell.docker.ShellDockerParser;
-import cn.oyzh.easyshell.docker.ShellDockerPort;
-import cn.oyzh.easyshell.docker.ShellDockerResource;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerContainer;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerParser;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerPort;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerResource;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;

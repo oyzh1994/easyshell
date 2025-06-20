@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.docker;
+package cn.oyzh.easyshell.ssh.docker;
 
 /**
  * docker端口信息
