@@ -125,7 +125,6 @@ public class ShellSFTPUtil {
 
     public static LocalSourceFile emptyFile(String filePath) {
         InMemorySourceFile file = new InMemorySourceFile() {
-            @Override
             public String getName() {
                 return ShellFileUtil.name(filePath);
             }

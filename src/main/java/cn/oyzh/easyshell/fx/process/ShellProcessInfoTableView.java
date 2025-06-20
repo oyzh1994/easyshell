@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.fx.process;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.process.ShellProcessExec;
-import cn.oyzh.easyshell.ssh.process.ShellProcessInfo;
+import cn.oyzh.easyshell.sshj.process.ShellProcessExec;
+import cn.oyzh.easyshell.sshj.process.ShellProcessInfo;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;

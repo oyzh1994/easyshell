@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.tabs.ssh.docker;
 
-import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.easyshell.fx.docker.ShellDockerContainerStatusComboBox;
 import cn.oyzh.easyshell.fx.docker.ShellDockerContainerTableView;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.sshj.ShellSSHClient;
+import cn.oyzh.easyshell.sshj.docker.ShellDockerExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;

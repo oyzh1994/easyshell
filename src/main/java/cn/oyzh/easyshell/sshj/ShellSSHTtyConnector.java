@@ -3,10 +3,9 @@ package cn.oyzh.easyshell.sshj;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
+import net.schmizz.sshj.connection.channel.direct.Session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,19 +24,19 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
     /**
      * ssh客户端
      */
-    private cn.oyzh.easyshell.ssh.ShellSSHClient client;
+    private ShellSSHClient client;
 
     private InputStreamReader shellReader;
 
     private OutputStreamWriter shellWriter;
 
-    public cn.oyzh.easyshell.ssh.ShellSSHClient getClient() {
+    public ShellSSHClient getClient() {
         return client;
     }
 
     public void init(ShellSSHClient client) throws IOException {
         this.client = client;
-        ShellSSHShell shell = client.getShell();
+        Session.Shell shell = client.openShell();
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }

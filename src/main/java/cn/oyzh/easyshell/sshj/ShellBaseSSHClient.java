@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.sshj;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -12,7 +11,6 @@ import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHHolder;
-import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.JSchException;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.ConnectionException;
@@ -20,12 +18,10 @@ import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * shell客户端
@@ -84,25 +80,25 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         return shellConnect;
     }
 
-    public Session getSession() throws TransportException, ConnectionException {
-        if (this.session == null) {
-            this.session = this.sshClient.startSession();
-            // 用户环境
-            Map<String, String> userEnvs = this.shellConnect.environments();
-            if (CollectionUtil.isNotEmpty(userEnvs)) {
-                for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                    this.session.setEnvVar(entry.getKey(), entry.getValue());
-                }
-            }
-            // 初始化环境变量
-            if (this.osType != null) {
-                this.session.setEnvVar("PATH", this.getExportPath());
-            }
-            // 初始化字符集
-            this.session.setEnvVar("LANG", "en_US." + this.getCharset().displayName());
-        }
-        return this.session;
+    public Session newSession() throws TransportException, ConnectionException {
+        Session session = this.sshClient.startSession();
+        session.allocateDefaultPTY();
+        // // 用户环境
+        // Map<String, String> userEnvs = this.shellConnect.environments();
+        // if (CollectionUtil.isNotEmpty(userEnvs)) {
+        //     for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+        //         session.setEnvVar(entry.getKey(), entry.getValue());
+        //     }
+        // }
+        // // 初始化环境变量
+        // if (this.osType != null) {
+        //     session.setEnvVar("PATH", this.getExportPath());
+        // }
+        // // 初始化字符集
+        // session.setEnvVar("LANG", "en_US." + this.getCharset().displayName());
+        return session;
     }
+
 
     /**
      * 获取系统类型
@@ -128,24 +124,25 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * @return 结果
      */
     public String exec(String command) {
+        Session session = null;
         Session.Command channel = null;
         try {
+            session = this.newSession();
             // 获取通道
-            channel = this.session.exec(command);
+            channel = session.exec(command);
+
             // 操作
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            while (channel.isOpen()) {
-                Thread.sleep(5);
-            }
+            InputStream in = channel.getInputStream();
+            byte[] bytes = in.readAllBytes();
             String result;
             // 如果远程是windows，则要检查下字符集是否要指定
             if (StringUtil.isNotBlank(this.remoteCharset)) {
-                result = stream.toString(this.remoteCharset);
+                result = new String(bytes, this.remoteCharset);
             } else {
-                result = stream.toString();
+                result = new String(bytes);
             }
-            IOUtil.close(stream);
+            // IOUtil.close(in);
             if (StringUtil.endsWith(result, "\r\n")) {
                 result = result.substring(0, result.length() - 2);
             } else if (StringUtil.endWithAny(result, "\n", "\r")) {
@@ -155,6 +152,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
+            IOUtil.close(session);
             IOUtil.close(channel);
         }
         return null;
@@ -334,19 +332,19 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         }
     }
 
-    /**
-     * 创建exec通道
-     *
-     * @return exec通道
-     */
-    protected Session.Shell newExecChannel() {
-        try {
-            return this.getSession().startShell();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
+    // /**
+    //  * 创建exec通道
+    //  *
+    //  * @return exec通道
+    //  */
+    // protected Session.Shell newExecChannel() {
+    //     try {
+    //         return this.getSession().startShell();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //     }
+    //     return null;
+    // }
 
     /**
      * 初始化连接
@@ -360,13 +358,24 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * 初始化客户端
      */
-    protected void initClient() throws JSchException, AgentProxyException, IOException {
+    protected void initClient() throws Exception {
         // 连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
         this.sshClient = new SSHClient();
+        this.sshClient.addHostKeyVerifier(new HostKeyVerifier() {
+            @Override
+            public boolean verify(String hostname, int port, PublicKey key) {
+                return true;
+            }
 
+            @Override
+            public List<String> findExistingAlgorithms(String hostname, int port) {
+                return List.of();
+            }
+        });
+        this.sshClient.connect(hostIp, port);
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             // // 创建会话
@@ -410,18 +419,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             // // 创建会话
             // this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
-        this.sshClient.addHostKeyVerifier(new HostKeyVerifier() {
-            @Override
-            public boolean verify(String hostname, int port, PublicKey key) {
-                return true;
-            }
-
-            @Override
-            public List<String> findExistingAlgorithms(String hostname, int port) {
-                return List.of();
-            }
-        });
-        this.sshClient.connect(hostIp, port);
         // 初始化会话
         this.initSession();
         // 启用压缩

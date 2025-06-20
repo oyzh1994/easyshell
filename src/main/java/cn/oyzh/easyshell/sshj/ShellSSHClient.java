@@ -21,16 +21,15 @@ import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
-import com.jcraft.jsch.AgentProxyException;
-import com.jcraft.jsch.JSchException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.TransportException;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -100,7 +99,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * @param output 输出
      */
     private void doResolveWorkerDir(String output) {
-        String workDir = cn.oyzh.easyshell.ssh.ShellSSHUtil.resolveWorkerDir(output, this.userHome);
+        String workDir = ShellSSHUtil.resolveWorkerDir(output, this.userHome);
         // 跟随目录
         if (StringUtil.isNotBlank(workDir)) {
             this.workDirProperty().set(workDir);
@@ -118,6 +117,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
         return this.workDirProperty;
     }
+
+    private Session shellSession;
+
+    private Session shellSession() throws TransportException, ConnectionException {
+        if (this.shellSession == null) {
+            this.shellSession = this.newSession();
+        }
+        return this.shellSession;
+    }
+
 
     /**
      * ssh跳板转发器
@@ -175,7 +184,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public void updateState() {
         ShellConnState state = this.getState();
         if (state == ShellConnState.CONNECTED) {
-            if (this.session == null || !this.session.isOpen()) {
+            if (this.sshClient == null || !this.sshClient.isConnected()) {
                 this.state.set(ShellConnState.INTERRUPT);
             }
         }
@@ -295,7 +304,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    protected void initClient() throws JSchException, AgentProxyException, IOException {
+    protected void initClient() throws Exception {
         // 执行初始化
         super.initClient();
         // 初始化x11
@@ -308,7 +317,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public void close() {
         try {
             // 从监听器队列移除
-           ShellSSHClientChecker.remove(this);
+            ShellSSHClientChecker.remove(this);
             if (this.shell != null) {
                 this.shell.close();
                 this.shell = null;
@@ -362,7 +371,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 判断连接结果
-            if (this.session != null && this.session.isOpen()) {
+            if (this.sshClient != null && this.sshClient.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
@@ -399,7 +408,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     @Override
     public boolean isConnected() {
-        return this.sftpClient != null && this.sftpClient.isConnected() && this.state.get().isConnected();
+        return this.sshClient != null && this.sshClient.isConnected() && this.state.get().isConnected();
     }
 
     /**
@@ -419,9 +428,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public Session.Shell openShell() {
         if (this.shell == null || this.shell.isOpen()) {
             try {
-                Session.Shell channel =  this.session.startShell();
-                // 设置终端类型
-                this.session.allocatePTY(this.shellConnect.getTermType(),80,24,0,0,null);
+                Session.Shell channel = this.shellSession().startShell();
+                // // 设置终端类型
+                // this.setPtySize(80, 24, 0, 0);
                 this.shell = channel;
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -554,6 +563,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public boolean isBashType() {
         String shellName = this.getShellName();
         return StringUtil.endWithIgnoreCase(shellName, "bash");
+    }
+
+    public void setPtySize(int columns, int rows, int sizeW, int sizeH) {
+        try {
+            // this.shellSession().allocateDefaultPTY();
+            // Map<PTYMode, Integer> modes = new HashMap<>();
+            // this.shellSession().allocatePTY(this.shellConnect.getTermType(), columns, rows, sizeW, sizeH, modes);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
 

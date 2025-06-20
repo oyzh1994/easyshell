@@ -11,13 +11,12 @@ import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
-import cn.oyzh.easyshell.ssh.server.ShellServerExec;
-import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHShell;
-import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
-import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.sshj.ShellSSHClient;
+import cn.oyzh.easyshell.sshj.ShellSSHTermWidget;
+import cn.oyzh.easyshell.sshj.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.sshj.server.ShellServerExec;
+import cn.oyzh.easyshell.sshj.server.ShellServerMonitor;
+import cn.oyzh.easyshell.sshj.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -233,15 +232,15 @@ public class ShellSSHEffTabController extends SubTabController {
      * @throws Exception 异常
      */
     public void init() throws Exception {
-        ShellSSHClient client = this.client();
-        ShellSSHShell shell = client.openShell();
+        // ShellSSHClient client = this.client();
+        // Session.Shell shell = client.openShell();
         this.initWidget();
-        shell.connect(client.connectTimeout());
-        if (!shell.isConnected()) {
-            MessageBox.warn(I18nHelper.connectFail());
-            this.closeTab();
-            return;
-        }
+        // shell.connect(client.connectTimeout());
+        // if (!shell.isConnected()) {
+        //     MessageBox.warn(I18nHelper.connectFail());
+        //     this.closeTab();
+        //     return;
+        // }
         // 初始化文件
         this.initFile();
         // 异步加载背景

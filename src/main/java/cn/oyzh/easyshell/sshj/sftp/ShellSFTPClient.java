@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sshj.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -20,7 +21,9 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import net.schmizz.sshj.sftp.Response;
 import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.sftp.SFTPException;
 import net.schmizz.sshj.xfer.LocalSourceFile;
 
 import java.io.IOException;
@@ -38,8 +41,7 @@ import java.util.function.Function;
  */
 public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClient<ShellSFTPFile> {
 
-
-    private SFTPClient sftpClient;
+    private ShellSFTPClintPool clintPool = new ShellSFTPClintPool(this);
 
     /**
      * 连接状态
@@ -67,17 +69,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         super.addStateListener(this.stateListener);
     }
 
-    /**
-     * 初始化客户端
-     */
-    protected void initClient() throws IOException {
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("initClient user:{} password:{} host:{}", this.shellConnect.getUser(), this.shellConnect.getPassword(), this.shellConnect.getHost());
-        }
-        // 连接信息
-        int port = this.shellConnect.hostPort();
-        String hostIp = this.shellConnect.hostIp();
-        this.sshClient = new SSHClient();
+    @Override
+    protected void initClient() throws Exception {
+        super.initClient();
     }
 
     @Override
@@ -106,14 +100,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             return;
         }
         try {
-            // 初始化客户端
-            this.initClient();
-            this.sshClient.setTimeout(timeout);
             // 开始连接时间
             long starTime = System.currentTimeMillis();
-            // 执行连接
-            if (this.sftpClient != null) {
-                this.state.set(ShellConnState.CONNECTING);
+            this.state.set(ShellConnState.CONNECTING);
+            if (this.sshClient == null) {
+                this.initClient();
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
@@ -132,6 +123,33 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public boolean isConnected() {
         return this.sshClient != null && this.sshClient.isConnected();
+    }
+
+    /**
+     * 获取通道
+     *
+     * @return 通道
+     */
+    protected SFTPClient takeSFTPClient() {
+        return this.clintPool.borrowChannel();
+    }
+
+    /**
+     * 返回通道
+     *
+     * @param client 通道
+     */
+    protected void returnSFTPClient(SFTPClient client) {
+        this.clintPool.returnChannel(client);
+    }
+
+    /**
+     * 关闭通道
+     *
+     * @param client 通道
+     */
+    protected void closeClient(SFTPClient client) {
+        IOUtil.closeQuietly(client);
     }
 
     public String exec_id_un(int uid) {
@@ -153,28 +171,68 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void delete(String file) throws Exception {
-        this.sftpClient.rm(file);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.rm(file);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        this.sftpClient.rmdir(dir);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.rmdir(dir);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        this.sftpClient.rmdir(dir);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.rmdir(dir);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        this.sftpClient.mkdir(filePath);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.mkdir(filePath);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
         return true;
     }
 
     @Override
     public void createDirRecursive(String filePath) throws Exception {
-        this.sftpClient.mkdirs(filePath);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.mkdirs(filePath);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
@@ -188,28 +246,73 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     public FileAttributes stat(String filePath) throws Exception {
-        return this.sftpClient.stat(filePath);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            return client.stat(filePath);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        return this.sftpClient.stat(filePath) != null;
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.stat(filePath);
+        } catch (SFTPException ex) {
+            if (ex.getStatusCode() == Response.StatusCode.NO_SUCH_FILE || ex.getStatusCode() == Response.StatusCode.NO_SUCH_PATH) {
+                return false;
+            }
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
+        return true;
     }
 
     public String realpath(String filePath) throws Exception {
-        return this.sftpClient.readlink(filePath);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            return client.readlink(filePath);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public void touch(String filePath) throws Exception {
         LocalSourceFile file = ShellSFTPUtil.emptyFile(filePath);
-        this.sftpClient.put(file, filePath);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.put(file, filePath);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         LocalSourceFile file = ShellSFTPUtil.streamFile(localFile, remoteFile);
-        this.sftpClient.put(file, remoteFile);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.put(file, remoteFile);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
@@ -219,19 +322,37 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
-        this.sftpClient.get(remoteFile.getFilePath(), localFile);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.get(remoteFile.getFilePath(), localFile);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
     }
 
     @Override
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
-        RemoteFile file = this.sftpClient.open(remoteFile.getFilePath());
-        RemoteFile.RemoteFileInputStream inputStream = file.new RemoteFileInputStream();
-        return inputStream;
+        try (SFTPClient client = this.takeSFTPClient()) {
+            RemoteFile file = client.open(remoteFile.getFilePath());
+            RemoteFile.RemoteFileInputStream inputStream = file.new RemoteFileInputStream();
+            return inputStream;
+        }
     }
 
     @Override
     public boolean chmod(int permission, String filePath) throws Exception {
-        this.sftpClient.chmod(filePath, permission);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.chmod(filePath, permission);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
         return true;
     }
 
@@ -256,18 +377,34 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-        List<RemoteResourceInfo> infos = this.sftpClient.ls(filePath);
-        List<ShellSFTPFile> files = new ArrayList<ShellSFTPFile>();
-        for (RemoteResourceInfo info : infos) {
-            ShellSFTPFile file = new ShellSFTPFile(filePath, info);
-            files.add(file);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            List<RemoteResourceInfo> infos = client.ls(filePath);
+            List<ShellSFTPFile> files = new ArrayList<>();
+            for (RemoteResourceInfo info : infos) {
+                ShellSFTPFile file = new ShellSFTPFile(filePath, info);
+                files.add(file);
+            }
+            return files;
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
         }
-        return files;
     }
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
-        this.sftpClient.rename(filePath, newPath);
+        SFTPClient client = this.takeSFTPClient();
+        try {
+            client.rename(filePath, newPath);
+        } catch (Exception ex) {
+            this.closeClient(client);
+            throw ex;
+        } finally {
+            this.returnSFTPClient(client);
+        }
         return true;
     }
 
@@ -318,5 +455,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             ex.printStackTrace();
         }
         return this;
+    }
+
+    public SFTPClient newSFTPClient() throws IOException {
+        return this.sshClient.newSFTPClient();
     }
 }

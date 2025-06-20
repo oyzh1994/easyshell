@@ -1,7 +1,5 @@
 package cn.oyzh.easyshell.sshj;
 
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
@@ -31,7 +29,7 @@ public class ShellSSHTermWidget extends ShellDefaultTermWidget {
         return (ShellSSHTtyConnector) super.getTtyConnector();
     }
 
-    public cn.oyzh.easyshell.ssh.ShellSSHClient client() {
+    public ShellSSHClient client() {
         ShellSSHTtyConnector connector = this.getTtyConnector();
         return connector == null ? null : connector.getClient();
     }
@@ -44,10 +42,9 @@ public class ShellSSHTermWidget extends ShellDefaultTermWidget {
         if (client == null) {
             return;
         }
-        ShellSSHShell shell = client.getShell();
         TermSize termSize = this.getTermSize();
         int sizeW = (int) this.getTerminalPanel().getWidth();
         int sizeH = (int) this.getTerminalPanel().getHeight();
-        shell.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
+        client.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 }
