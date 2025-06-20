@@ -225,7 +225,6 @@
             <groupId>com.hierynomus</groupId>
             <artifactId>sshj</artifactId>
             <version>0.40.0</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- fx打包 -->
