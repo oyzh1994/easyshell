@@ -16,21 +16,24 @@ import java.util.function.Function;
  */
 public class ShellFileProgressMonitor {
 
-    public static ShellFTPInputStream of(InputStream in, Function<Long, Boolean> callback) {
-        return new ShellFTPInputStream(in, callback);
+    public static ShellFileInputStream of(InputStream in, Function<Long, Boolean> callback) {
+        return new ShellFileInputStream(in, callback);
     }
 
-    public static ShellFTPOutputStream of(OutputStream out, Function<Long, Boolean> callback) {
-        return new ShellFTPOutputStream(out, callback);
+    public static ShellFileOutputStream of(OutputStream out, Function<Long, Boolean> callback) {
+        return new ShellFileOutputStream(out, callback);
     }
 
-    public static class ShellFTPInputStream extends InputStream {
+    /**
+     * shell文件输入流
+     */
+    public static class ShellFileInputStream extends InputStream {
 
         private InputStream in;
 
         private Function<Long, Boolean> callback;
 
-        public ShellFTPInputStream(InputStream in, Function<Long, Boolean> callback) {
+        public ShellFileInputStream(InputStream in, Function<Long, Boolean> callback) {
             this.in = in;
             this.callback = callback;
         }
@@ -60,19 +63,24 @@ public class ShellFileProgressMonitor {
 
         @Override
         public void close() throws IOException {
-            this.in.close();
-            this.in = null;
-            this.callback = null;
+            if (this.in != null) {
+                this.in.close();
+                this.in = null;
+                this.callback = null;
+            }
         }
     }
 
-    public static class ShellFTPOutputStream extends OutputStream {
+    /**
+     * shell文件输出流
+     */
+    public static class ShellFileOutputStream extends OutputStream {
 
         private OutputStream out;
 
         private Function<Long, Boolean> callback;
 
-        public ShellFTPOutputStream(OutputStream out, Function<Long, Boolean> callback) {
+        public ShellFileOutputStream(OutputStream out, Function<Long, Boolean> callback) {
             this.out = out;
             this.callback = callback;
         }
@@ -97,10 +105,12 @@ public class ShellFileProgressMonitor {
 
         @Override
         public void close() throws IOException {
-            this.out.flush();
-            this.out.close();
-            this.out = null;
-            this.callback = null;
+            if (this.out != null) {
+                this.out.flush();
+                this.out.close();
+                this.out = null;
+                this.callback = null;
+            }
         }
     }
 }

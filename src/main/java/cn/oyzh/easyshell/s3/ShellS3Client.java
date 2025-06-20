@@ -321,7 +321,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 .key(remoteFile.getFileKey())
                 .build();
         if (callback != null) {
-            ShellFileProgressMonitor.ShellFTPOutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
+            ShellFileProgressMonitor.ShellFileOutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
             this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
         } else {
             this.s3Client.getObject(request, Path.of(localFile));

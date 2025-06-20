@@ -6,6 +6,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -154,6 +155,8 @@ public class ShellFileDownloadTask {
                 if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
                     this.error = ex;
                     this.updateStatus(this.status);
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
                 }
             }
         });
@@ -251,8 +254,13 @@ public class ShellFileDownloadTask {
                 this.doDownload();
                 this.finishDownload();
             } catch (Exception ex) {
-                this.error = ex;
-                this.updateStatus(this.status);
+                // 忽略中断、取消异常
+                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                    this.error = ex;
+                    this.updateStatus(this.status);
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
             }
         });
     }

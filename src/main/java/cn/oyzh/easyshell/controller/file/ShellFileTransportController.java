@@ -333,11 +333,11 @@ public class ShellFileTransportController extends StageController {
                 ValidatorUtil.validFail(this.targetInfo);
                 return;
             }
-            // 检查连接是否一样
-            if (sourceInfo.compare(targetInfo)) {
-                ValidatorUtil.validFail(this.sourceInfo);
-                return;
-            }
+            //// 检查连接是否一样
+            //if (sourceInfo.compare(targetInfo)) {
+            //    ValidatorUtil.validFail(this.sourceInfo);
+            //    return;
+            //}
             // 连接初始化
             if (this.sourceClient == null || this.sourceClient.isClosed() || this.targetClient == null || this.targetClient.isClosed()) {
                 StageManager.showMask(() -> {

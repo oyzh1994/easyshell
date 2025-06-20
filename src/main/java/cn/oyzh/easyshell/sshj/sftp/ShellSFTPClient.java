@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
@@ -25,6 +26,7 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.Response;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
+import net.schmizz.sshj.xfer.FileSystemFile;
 import net.schmizz.sshj.xfer.LocalSourceFile;
 
 import java.io.IOException;
@@ -327,7 +329,13 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        LocalSourceFile file = ShellSFTPUtil.streamFile(localFile, remoteFile);
+        InputStream stream;
+        if (callback == null) {
+            stream = localFile;
+        } else {
+            stream = ShellFileProgressMonitor.of(localFile, callback);
+        }
+        LocalSourceFile file = ShellSFTPUtil.streamFile(stream, remoteFile);
         SFTPClient client = this.takeSFTPClient();
         try {
             client.put(file, remoteFile);
@@ -348,7 +356,17 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         SFTPClient client = this.takeSFTPClient();
         try {
-            client.get(remoteFile.getFilePath(), localFile);
+            if (callback != null) {
+                FileSystemFile destFile = new FileSystemFile(localFile) {
+                    @Override
+                    public OutputStream getOutputStream(boolean append) throws IOException {
+                        return ShellFileProgressMonitor.of(super.getOutputStream(append), callback);
+                    }
+                };
+                client.get(remoteFile.getFilePath(), destFile);
+            } else {
+                client.get(remoteFile.getFilePath(), localFile);
+            }
         } catch (Exception ex) {
             this.closeClient(client);
             throw ex;
@@ -361,8 +379,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
         try (SFTPClient client = this.takeSFTPClient()) {
             RemoteFile file = client.open(remoteFile.getFilePath());
-            RemoteFile.RemoteFileInputStream inputStream = file.new RemoteFileInputStream();
-            return inputStream;
+            RemoteFile.RemoteFileInputStream stream = file.new RemoteFileInputStream();
+            if (callback != null) {
+                return ShellFileProgressMonitor.of(stream, callback);
+            }
+            return stream;
         }
     }
 
