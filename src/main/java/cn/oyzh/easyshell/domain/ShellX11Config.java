@@ -98,6 +98,10 @@ public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config
         this.cookie = cookie;
     }
 
+    public int screen() {
+        return this.port - 6000;
+    }
+
     @Override
     public void copy(ShellX11Config t1) {
         this.port = t1.getPort();
@@ -113,4 +117,5 @@ public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config
         x11Config.copy(config);
         return x11Config;
     }
+
 }

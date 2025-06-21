@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sshj;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -11,9 +12,7 @@ import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHHolder;
-import com.jcraft.jsch.JSchException;
 import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
@@ -22,6 +21,7 @@ import java.io.InputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * shell客户端
@@ -36,10 +36,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      */
     protected String osType;
 
-    /**
-     * 会话
-     */
-    protected Session session;
+    ///**
+    // * 会话
+    // */
+    //protected Session session;
 
     /**
      * ssh客户端
@@ -80,24 +80,37 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         return shellConnect;
     }
 
-    public Session newSession() throws TransportException, ConnectionException {
-        Session session = this.sshClient.startSession();
-        // // 用户环境
-        // Map<String, String> userEnvs = this.shellConnect.environments();
-        // if (CollectionUtil.isNotEmpty(userEnvs)) {
-        //     for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-        //         session.setEnvVar(entry.getKey(), entry.getValue());
-        //     }
-        // }
-        // // 初始化环境变量
-        // if (this.osType != null) {
-        //     session.setEnvVar("PATH", this.getExportPath());
-        // }
-        // // 初始化字符集
-        // session.setEnvVar("LANG", "en_US." + this.getCharset().displayName());
-        return session;
+    /**
+     * 创建新会话
+     *
+     * @return Session
+     * @throws Exception 异常
+     */
+    public Session newSession() throws Exception {
+        return this.sshClient.startSession();
     }
 
+    /**
+     * 初始化环境
+     *
+     * @param session 会话
+     * @throws Exception 异常
+     */
+    protected void initEnvironments(Session session) throws Exception {
+        // 用户环境
+        Map<String, String> userEnvs = this.shellConnect.environments();
+        if (CollectionUtil.isNotEmpty(userEnvs)) {
+            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                session.setEnvVar(entry.getKey(), entry.getValue());
+            }
+        }
+        // 初始化环境变量
+        if (this.osType != null) {
+            session.setEnvVar("PATH", this.getExportPath());
+        }
+        // 初始化字符集
+        session.setEnvVar("LANG", "en_US." + this.getCharset().displayName());
+    }
 
     /**
      * 获取系统类型
@@ -126,10 +139,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         Session session = null;
         Session.Command channel = null;
         try {
+            // 获取会话
             session = this.newSession();
             // 获取通道
             channel = session.exec(command);
-
             // 操作
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
             InputStream in = channel.getInputStream();
@@ -298,36 +311,34 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         return this.userHome;
     }
 
-    /**
-     * 初始化回话
-     */
-    protected void initSession() throws JSchException {
-        if (this.session != null) {
-            // // 设置守护线程
-            // this.session.setDaemonThread(true);
-            // // 连续3次失败后断开连接
-            // this.session.setServerAliveCountMax(3);
-            // // 每60秒发送一次TCP keep-alive包
-            // this.session.setServerAliveInterval(60_000);
-            // // 可选：设置TCP层面的keep-alive
-            // this.session.setConfig("TCPKeepAlive", "yes");
-            // // 去掉首次连接确认
-            // this.session.setConfig("StrictHostKeyChecking", "no");
-
-        }
-    }
+    ///**
+    // * 初始化回话
+    // */
+    //protected void initSession() throws JSchException {
+    //    if (this.session != null) {
+    //        // // 设置守护线程
+    //        // this.session.setDaemonThread(true);
+    //        // // 连续3次失败后断开连接
+    //        // this.session.setServerAliveCountMax(3);
+    //        // // 每60秒发送一次TCP keep-alive包
+    //        // this.session.setServerAliveInterval(60_000);
+    //        // // 可选：设置TCP层面的keep-alive
+    //        // this.session.setConfig("TCPKeepAlive", "yes");
+    //        // // 去掉首次连接确认
+    //        // this.session.setConfig("StrictHostKeyChecking", "no");
+    //
+    //    }
+    //}
 
     /**
      * 使用压缩
      *
-     * @param useCompression 是否使用压缩
+     * @param session 会话
      */
-    protected void useCompression(boolean useCompression) throws TransportException {
-        if (this.session != null) {
+    protected void useCompression(Session session) throws TransportException {
+        if (session != null && this.shellConnect.isEnableCompress()) {
             // 启用压缩
-            if (useCompression) {
-                this.sshClient.useCompression();
-            }
+            this.sshClient.useCompression();
         }
     }
 
@@ -418,9 +429,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             // // 创建会话
             // this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
-        // 初始化会话
-        this.initSession();
+        //// 初始化会话
+        //this.initSession();
         // 启用压缩
-        this.useCompression(this.shellConnect.isEnableCompress());
+        //this.useCompression(this.shellConnect.isEnableCompress());
     }
 }
