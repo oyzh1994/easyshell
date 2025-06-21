@@ -136,7 +136,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             if (key == null) {
                 return;
             }
-            File dir = DirChooserHelper.chooseDownload(I18nHelper.pleaseSelectDirectory());
+            File dir = DirChooserHelper.chooseDesktop(I18nHelper.pleaseSelectDirectory());
             if (dir == null) {
                 return;
             }

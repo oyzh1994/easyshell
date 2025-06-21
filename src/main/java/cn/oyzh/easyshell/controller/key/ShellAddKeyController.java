@@ -15,9 +15,7 @@ import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.util.OpenSSHECDSAUtil;
-import cn.oyzh.ssh.util.OpenSSHED25519Util;
-import cn.oyzh.ssh.util.OpenSSHRSAUtil;
+import cn.oyzh.ssh.util.SSHKeyUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -146,15 +144,15 @@ public class ShellAddKeyController extends StageController {
             try {
                 String[] key;
                 if (this.keyType.isRsaType()) {
-                    key = OpenSSHRSAUtil.generateKey(length);
+                    key = SSHKeyUtil.generateRSA(length);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else if (this.keyType.isEd25519Type()) {
-                    key = OpenSSHED25519Util.generateKey();
+                    key = SSHKeyUtil.generateEd25519();
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else {
-                    key = OpenSSHECDSAUtil.generateKey(length);
+                    key = SSHKeyUtil.generateEcdsa(length);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 }

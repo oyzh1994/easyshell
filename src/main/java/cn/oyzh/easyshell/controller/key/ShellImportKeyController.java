@@ -17,8 +17,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.util.OpenSSHECDSAUtil;
-import cn.oyzh.ssh.util.OpenSSHRSAUtil;
+import cn.oyzh.ssh.util.SSHKeyUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -75,9 +74,14 @@ public class ShellImportKeyController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 监听公钥变化事件
+        // 监听密钥变化事件
         this.publicKey.addTextChangeListener((observableValue, s, t1) -> {
-            this.fillPubKey();
+            this.fillKeyType();
+            this.fillKeySize();
+        });
+        this.privateKey.addTextChangeListener((observableValue, s, t1) -> {
+            this.fillKeyType();
+            this.fillKeySize();
         });
     }
 
@@ -117,6 +121,13 @@ public class ShellImportKeyController extends StageController {
         }
         try {
             String keyType = this.keyType.getText();
+            //if (StringUtil.containsIgnoreCase(keyType, "rsa")) {
+            //    keyType = "RSA";
+            //} else if (StringUtil.containsIgnoreCase(keyType, "ed25519")) {
+            //    keyType = "ED25519";
+            //} else if (StringUtil.containsIgnoreCase(keyType, "ecdsa")) {
+            //    keyType = "ECDSA";
+            //}
             int keyLength = Integer.parseInt(this.keyLength.getText());
 
             ShellKey shellKey = new ShellKey();
@@ -232,36 +243,57 @@ public class ShellImportKeyController extends StageController {
     }
 
     /**
-     * 填充公钥
+     * 填充密钥类型
      */
-    private void fillPubKey() {
-        String publicKey = this.publicKey.getTextTrim();
-        if (StringUtil.startWithIgnoreCase(publicKey, "ssh-ed25519")) {
-            this.keyType.setText("ED25519");
-        } else if (StringUtil.startWithIgnoreCase(publicKey, "ssh-rsa")) {
-            this.keyType.setText("RSA");
-        } else if (StringUtil.startWithIgnoreCase(publicKey, "ecdsa")) {
-            this.keyType.setText("ECDSA");
+    private void fillKeyType() {
+        String privateKey = this.privateKey.getTextTrim();
+        String keyType = SSHKeyUtil.getKeyType(privateKey);
+        if (keyType == null) {
+            String publicKey = this.publicKey.getTextTrim();
+            keyType = SSHKeyUtil.getKeyType(publicKey);
+        }
+        if (keyType != null) {
+            this.keyType.setText(keyType);
         } else {
             this.keyType.clear();
         }
-        this.fillKeyLength();
+        //if (StringUtil.startWithIgnoreCase(publicKey, "ssh-ed25519")) {
+        //    this.keyType.setText("ED25519");
+        //} else if (StringUtil.startWithIgnoreCase(publicKey, "ssh-rsa")) {
+        //    this.keyType.setText("RSA");
+        //} else if (StringUtil.startWithIgnoreCase(publicKey, "ecdsa")) {
+        //    this.keyType.setText("ECDSA");
+        //} else {
+        //    this.keyType.clear();
+        //}
+        //this.fillKeyLength();
     }
 
     /**
      * 填充密钥长度
      */
-    private void fillKeyLength() {
-        String keyType = this.keyType.getText();
-        if ("ED25519".equals(keyType)) {
-            this.keyLength.setValue(256);
-        } else if ("RSA".equals(keyType)) {
-            String pubKey = this.publicKey.getTextTrim();
-            int len = OpenSSHRSAUtil.getKeyLength(pubKey);
-            this.keyLength.setValue(len);
-        } else if ("ECDSA".equals(keyType)) {
-            String pubKey = this.publicKey.getTextTrim();
-            int len = OpenSSHECDSAUtil.getKeyLength(pubKey);
+    private void fillKeySize() {
+        //String keyType = this.keyType.getText();
+        //if ("ED25519".equals(keyType)) {
+        //    this.keyLength.setValue(256);
+        //} else if ("RSA".equals(keyType)) {
+        //    String priKey = this.privateKey.getTextTrim();
+        //    int len = SSHKeyUtil.getKeySize(priKey);
+        //    this.keyLength.setValue(len);
+        //} else if ("ECDSA".equals(keyType)) {
+        //    String pubKey = this.publicKey.getTextTrim();
+        //    int len = OpenSSHECDSAUtil.getKeyLength(pubKey);
+        //    this.keyLength.setValue(len);
+        //} else {
+        //    this.keyLength.clear();
+        //}
+        String privateKey = this.privateKey.getTextTrim();
+        int len = SSHKeyUtil.getKeySize(privateKey);
+        if (len == -1) {
+            String publicKey = this.publicKey.getTextTrim();
+            len = SSHKeyUtil.getKeySize(publicKey);
+        }
+        if (len != -1) {
             this.keyLength.setValue(len);
         } else {
             this.keyLength.clear();

@@ -6,6 +6,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
@@ -14,16 +15,14 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
-import net.schmizz.sshj.transport.verification.HostKeyVerifier;
-import net.schmizz.sshj.userauth.keyprovider.OpenSSHKeyFile;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import net.schmizz.sshj.userauth.method.AuthMethod;
 import net.schmizz.sshj.userauth.method.AuthPassword;
 import net.schmizz.sshj.userauth.password.PasswordFinder;
 import net.schmizz.sshj.userauth.password.Resource;
 
-import java.io.File;
 import java.io.InputStream;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -367,26 +366,22 @@ public abstract class ShellBaseSSHClient implements BaseClient {
 
     /**
      * 初始化客户端
+     *
+     * @param timeout 超时时间
      */
-    protected void initClient() throws Exception {
+    protected void initClient(int timeout) throws Exception {
         // 连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
         this.sshClient = new SSHClient();
-        this.sshClient.addHostKeyVerifier(new HostKeyVerifier() {
-            @Override
-            public boolean verify(String hostname, int port, PublicKey key) {
-                return true;
-            }
-
-            @Override
-            public List<String> findExistingAlgorithms(String hostname, int port) {
-                return List.of();
-            }
-        });
+        // 证书检验
+        this.sshClient.addHostKeyVerifier(new PromiscuousVerifier());
+        // 设置超时时间
+        this.sshClient.setConnectTimeout(timeout);
+        // 连接
         this.sshClient.connect(hostIp, port);
-        // 密码
+        // 密码认证
         if (this.shellConnect.isPasswordAuth()) {
             List<AuthMethod> authMethods = new ArrayList<>();
             // 认证方法，密码&验证码
@@ -407,16 +402,17 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 authMethods.add(authInteractive);
             }
             this.sshClient.auth(this.shellConnect.getUser(), authMethods);
-        } else if (this.shellConnect.isCertificateAuth()) {// 证书
+        } else if (this.shellConnect.isCertificateAuth()) {// 证书认证
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
             if (!FileUtil.exist(priKeyFile)) {
-                MessageBox.warn("certificate file not exist");
+                MessageBox.warn("priKeyFile file not exist");
                 return;
             }
-            OpenSSHKeyFile keyFile = new OpenSSHKeyFile();
-            keyFile.init(new File(priKeyFile));
-            this.sshClient.authPublickey(this.shellConnect.getUser(), List.of(keyFile));
+            // 加载
+            KeyProvider provider = this.sshClient.loadKeys(priKeyFile);
+            // 认证
+            this.sshClient.authPublickey(this.shellConnect.getUser(), provider);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
             // IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
             // if (!(repository instanceof AgentIdentityRepository)) {
@@ -432,21 +428,16 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             // // 创建会话
             // this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
-            // ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
-            // // 检查私钥是否存在
-            // if (key == null) {
-            //     MessageBox.warn("key not found");
-            //     return;
-            // }
-            // String keyName = "key_" + key.getId();
-            // // 添加认证
-            // SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
-            // // 创建会话
-            // this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
+            ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
+            // 检查私钥是否存在
+            if (key == null) {
+                MessageBox.warn("key not found");
+                return;
+            }
+            // 加载
+            KeyProvider provider = this.sshClient.loadKeys(key.getPrivateKey(), key.getPublicKey(), null);
+            // 认证
+            this.sshClient.authPublickey(this.shellConnect.getUser(), provider);
         }
-        //// 初始化会话
-        //this.initSession();
-        // 启用压缩
-        //this.useCompression(this.shellConnect.isEnableCompress());
     }
 }

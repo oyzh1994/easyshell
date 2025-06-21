@@ -347,9 +347,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    protected void initClient() throws Exception {
+    protected void initClient(int timout) throws Exception {
         // 执行初始化
-        super.initClient();
+        super.initClient(timout);
         // 初始化x11
         this.initX11();
         // 初始化代理
@@ -416,7 +416,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 初始化连接池
             this.state.set(ShellConnState.CONNECTING);
             // 初始化客户端
-            this.initClient();
+            this.initClient(timeout);
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 判断连接结果

@@ -81,8 +81,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    protected void initClient() throws Exception {
-        super.initClient();
+    protected void initClient(int timeout) throws Exception {
+        super.initClient(timeout);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             long starTime = System.currentTimeMillis();
             this.state.set(ShellConnState.CONNECTING);
             if (this.sshClient == null) {
-                this.initClient();
+                this.initClient(timeout);
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);

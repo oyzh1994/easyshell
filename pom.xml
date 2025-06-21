@@ -224,7 +224,14 @@
         <dependency>
             <groupId>com.hierynomus</groupId>
             <artifactId>sshj</artifactId>
-            <version>0.40.0</version>
+            <version>${sshj.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-core -->
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-core</artifactId>
+            <version>${sshd-core.version}</version>
         </dependency>
 
         <!-- fx打包 -->
