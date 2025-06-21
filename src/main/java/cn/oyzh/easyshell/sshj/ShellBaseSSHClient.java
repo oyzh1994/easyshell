@@ -11,12 +11,17 @@ import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.ssh.util.SSHHolder;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
+import net.schmizz.sshj.userauth.keyprovider.OpenSSHKeyFile;
+import net.schmizz.sshj.userauth.method.AuthMethod;
+import net.schmizz.sshj.userauth.method.AuthPassword;
+import net.schmizz.sshj.userauth.password.PasswordFinder;
+import net.schmizz.sshj.userauth.password.Resource;
 
+import java.io.File;
 import java.io.InputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -35,11 +40,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * 系统类型
      */
     protected String osType;
-
-    ///**
-    // * 会话
-    // */
-    //protected Session session;
 
     /**
      * ssh客户端
@@ -388,8 +388,25 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.sshClient.connect(hostIp, port);
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
-            ShellSSHAuthInteractive authInteractive = new ShellSSHAuthInteractive(this.shellConnect.getPassword());
-            this.sshClient.auth(this.shellConnect.getUser(), List.of(authInteractive));
+            List<AuthMethod> authMethods = new ArrayList<>();
+            // 认证方法，密码&验证码
+            if (StringUtil.isNotEmpty(this.shellConnect.getPassword())) {
+                AuthPassword authPassword = new AuthPassword(new PasswordFinder() {
+                    @Override
+                    public char[] reqPassword(Resource<?> resource) {
+                        return shellConnect.getPassword().toCharArray();
+                    }
+
+                    @Override
+                    public boolean shouldRetry(Resource<?> resource) {
+                        return false;
+                    }
+                });
+                ShellSSHAuthInteractive authInteractive = new ShellSSHAuthInteractive(this.shellConnect.getPassword());
+                authMethods.add(authPassword);
+                authMethods.add(authInteractive);
+            }
+            this.sshClient.auth(this.shellConnect.getUser(), authMethods);
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
@@ -397,9 +414,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 MessageBox.warn("certificate file not exist");
                 return;
             }
-            SSHHolder.getJsch().addIdentity(priKeyFile);
-            // // 创建会话
-            // this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
+            OpenSSHKeyFile keyFile = new OpenSSHKeyFile();
+            keyFile.init(new File(priKeyFile));
+            this.sshClient.authPublickey(this.shellConnect.getUser(), List.of(keyFile));
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
             // IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
             // if (!(repository instanceof AgentIdentityRepository)) {

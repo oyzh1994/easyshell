@@ -4,10 +4,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.SSHException;
-import net.schmizz.sshj.common.Message;
-import net.schmizz.sshj.common.SSHPacket;
-import net.schmizz.sshj.transport.TransportException;
-import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.method.AuthKeyboardInteractive;
 import net.schmizz.sshj.userauth.method.ChallengeResponseProvider;
 import net.schmizz.sshj.userauth.password.Resource;
@@ -24,11 +20,6 @@ public class ShellSSHAuthInteractive extends AuthKeyboardInteractive {
 
     public ShellSSHAuthInteractive(String password) {
         super(new MixedChallengeResponseProvider(password));
-    }
-
-    @Override
-    public void handle(Message cmd, SSHPacket buf) throws UserAuthException, TransportException {
-        super.handle(cmd, buf);
     }
 
     public static class MixedChallengeResponseProvider implements ChallengeResponseProvider {
