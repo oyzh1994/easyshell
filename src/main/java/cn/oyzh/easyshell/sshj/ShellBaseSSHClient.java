@@ -388,10 +388,8 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.sshClient.connect(hostIp, port);
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
-            // // 创建会话
-            // this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-            // this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
-            this.sshClient.authPassword(this.shellConnect.getUser(), this.shellConnect.getPassword());
+            ShellSSHAuthInteractive authInteractive = new ShellSSHAuthInteractive(this.shellConnect.getPassword());
+            this.sshClient.auth(this.shellConnect.getUser(), List.of(authInteractive));
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在

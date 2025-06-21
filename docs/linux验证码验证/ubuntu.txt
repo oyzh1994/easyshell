@@ -4,16 +4,16 @@ apt install libpam-google-authenticator
 google-authenticator -t -f -d -w 3 -e 10 -r 3 -R 30
 # 3. 修改pam配置
 vim /etc/pam.d/sshd
-# 禁用密码认证
+# 禁用密码认证(注意是可选的，不禁用就需要密码和验证码双重认证，反之只需要用户名和验证码验证)
 # @include common-auth
 # 添加pam认证
 auth required pam_google_authenticator.so nullok
 # 4. 修改ssh配置
 sudo vim /etc/ssh/sshd_config
 # 开启配置
-KbdInteractiveAuthentication yes
-# 新增配置
 ChallengeResponseAuthentication yes
+# 新增配置
+KbdInteractiveAuthentication yes
 # 5. 重启ssh服务
 systemctl restart sshd
 

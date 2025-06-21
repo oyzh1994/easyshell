@@ -1,0 +1,8 @@
+1. 安装依赖
+apt update
+apt install openssh-server
+2. 设置root可登录
+vim /etc/ssh/sshd_config
+PermitRootLogin yes
+3. 重启服务
+systemctl restart sshd
