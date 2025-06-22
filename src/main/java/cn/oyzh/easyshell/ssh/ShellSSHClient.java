@@ -4,7 +4,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -12,10 +11,11 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
@@ -38,7 +38,6 @@ import javafx.beans.value.ChangeListener;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -460,27 +459,30 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         if (this.shell == null || this.shell.isClosed()) {
             try {
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
-                // 用户环境
-                Map<String, String> userEnvs = this.shellConnect.environments();
-                if (CollectionUtil.isNotEmpty(userEnvs)) {
-                    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                        channel.setEnv(entry.getKey(), entry.getValue());
-                    }
-                }
-                // 初始化环境变量
-                if (this.osType != null) {
-                    channel.setEnv("PATH", this.getExportPath());
-                }
-                // 初始化字符集
-                channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-                // 客户端转发
-                if (this.shellConnect.isJumpForward()) {
-                    channel.setAgentForwarding(true);
-                }
-                // x11转发
-                if (this.shellConnect.isX11forwarding()) {
-                    channel.setXForwarding(true);
-                }
+                channel.setInputStream(null);
+                channel.setOutputStream(null);
+                //// 用户环境
+                //Map<String, String> userEnvs = this.shellConnect.environments();
+                //if (CollectionUtil.isNotEmpty(userEnvs)) {
+                //    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                //        channel.setEnv(entry.getKey(), entry.getValue());
+                //    }
+                //}
+                //// 初始化环境变量
+                //if (this.osType != null) {
+                //    channel.setEnv("PATH", this.getExportPath());
+                //}
+                //// 初始化字符集
+                //channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+                super.initEnvironments(channel);
+                //// 客户端转发
+                //if (this.shellConnect.isJumpForward()) {
+                //    channel.setAgentForwarding(true);
+                //}
+                //// x11转发
+                //if (this.shellConnect.isX11forwarding()) {
+                //    channel.setXForwarding(true);
+                //}
                 //byte[] modes = new byte[]{
                 //        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // ISPEED=38400
                 //        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // OSPEED=38400

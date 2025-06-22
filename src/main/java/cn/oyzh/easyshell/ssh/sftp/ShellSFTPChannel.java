@@ -25,7 +25,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     /**
      * 链接管理器
      */
-    private final ShellSFTPRealpathCache realpathCache;
+    private ShellSFTPRealpathCache realpathCache;
 
     public ShellSFTPChannel(ChannelSftp channel, ShellSFTPRealpathCache realpathCache) {
         super(channel);
@@ -74,11 +74,11 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         // 遍历列表
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            ShellSFTPFile file=  new ShellSFTPFile(filePath, lsEntry);
+            ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
             files.add(file);
             // 处理链接文件
-            if(file.isLink()){
-                this.realpathCache.realpath(file,this);
+            if (file.isLink()) {
+                this.realpathCache.realpath(file, this);
             }
         }
         //// 过滤链接文件
@@ -151,7 +151,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     /**
      * 上传
-     * @param src 源
+     *
+     * @param src  源
      * @param dest 目标
      * @throws SftpException 异常
      */
@@ -161,7 +162,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     /**
      * 上传
-     * @param src 源
+     *
+     * @param src  源
      * @param dest 目标
      * @throws SftpException 异常
      */
@@ -171,9 +173,10 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     /**
      * 上传
+     *
      * @param dest 目标
-     * @throws SftpException 异常
      * @return 目标
+     * @throws SftpException 异常
      */
     public OutputStream put(String dest) throws SftpException {
         dest = ShellFileUtil.fixFilePath(dest);
@@ -182,9 +185,10 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     /**
      * 下载
+     *
      * @param src 源
-     * @throws SftpException 异常
      * @return 文件
+     * @throws SftpException 异常
      */
     public InputStream get(String src) throws SftpException {
         src = ShellFileUtil.fixFilePath(src);
@@ -193,7 +197,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     /**
      * 下载
-     * @param src 源
+     *
+     * @param src  源
      * @param dest 目标
      * @throws SftpException 异常
      */
@@ -205,7 +210,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     /**
      * 下载
-     * @param src 源
+     *
+     * @param src  源
      * @param dest 目标
      * @throws SftpException 异常
      */
@@ -270,5 +276,11 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     public void chmod(int permission, String path) throws SftpException {
         path = ShellFileUtil.fixFilePath(path);
         this.getChannel().chmod(permission, path);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        this.realpathCache = null;
     }
 }

@@ -17,6 +17,8 @@ import cn.oyzh.ssh.util.SSHUtil;
 import com.jcraft.jsch.AgentIdentityRepository;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Identity;
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSchException;
@@ -339,29 +341,32 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 this.session.connect(this.connectTimeout());
             }
             ChannelExec channel = (ChannelExec) this.session.openChannel("exec");
-            // 获取连接
-            ShellConnect shellConnect = this.getShellConnect();
-            // 用户环境
-            Map<String, String> userEnvs = this.shellConnect.environments();
-            if (CollectionUtil.isNotEmpty(userEnvs)) {
-                for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                    channel.setEnv(entry.getKey(), entry.getValue());
-                }
-            }
-            // 初始化环境变量
-            if (this.osType != null) {
-                channel.setEnv("PATH", this.getExportPath());
-            }
-            // 初始化字符集
-            channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-            // 客户端转发
-            if (shellConnect.isJumpForward()) {
-                channel.setAgentForwarding(true);
-            }
-            // x11转发
-            if (shellConnect.isX11forwarding()) {
-                channel.setXForwarding(true);
-            }
+            channel.setInputStream(null);
+            channel.setOutputStream(null);
+            //// 获取连接
+            //ShellConnect shellConnect = this.getShellConnect();
+            //// 用户环境
+            //Map<String, String> userEnvs = this.shellConnect.environments();
+            //if (CollectionUtil.isNotEmpty(userEnvs)) {
+            //    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+            //        channel.setEnv(entry.getKey(), entry.getValue());
+            //    }
+            //}
+            //// 初始化环境变量
+            //if (this.osType != null) {
+            //    channel.setEnv("PATH", this.getExportPath());
+            //}
+            //// 初始化字符集
+            //channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+            //// 客户端转发
+            //if (shellConnect.isJumpForward()) {
+            //    channel.setAgentForwarding(true);
+            //}
+            //// x11转发
+            //if (shellConnect.isX11forwarding()) {
+            //    channel.setXForwarding(true);
+            //}
+            this.initEnvironments(channel);
             return channel;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -435,5 +440,92 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.initSession();
         // 启用压缩
         this.useCompression();
+    }
+
+    /**
+     * 初始化环境
+     *
+     * @param channel 通道
+     */
+    public void initEnvironments(ChannelExec channel) {
+        // 用户环境
+        Map<String, String> userEnvs = this.shellConnect.environments();
+        if (CollectionUtil.isNotEmpty(userEnvs)) {
+            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                channel.setEnv(entry.getKey(), entry.getValue());
+            }
+        }
+        // 初始化环境变量
+        if (this.osType != null) {
+            channel.setEnv("PATH", this.getExportPath());
+        }
+        // 初始化字符集
+        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+        // 客户端转发
+        if (this.shellConnect.isJumpForward()) {
+            channel.setAgentForwarding(true);
+        }
+        // x11转发
+        if (this.shellConnect.isX11forwarding()) {
+            channel.setXForwarding(true);
+        }
+    }
+
+    /**
+     * 初始化环境
+     *
+     * @param channel 通道
+     */
+    public void initEnvironments(ChannelShell channel) {
+        // 用户环境
+        Map<String, String> userEnvs = this.shellConnect.environments();
+        if (CollectionUtil.isNotEmpty(userEnvs)) {
+            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                channel.setEnv(entry.getKey(), entry.getValue());
+            }
+        }
+        // 初始化环境变量
+        if (this.osType != null) {
+            channel.setEnv("PATH", this.getExportPath());
+        }
+        // 初始化字符集
+        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+        // 客户端转发
+        if (this.shellConnect.isJumpForward()) {
+            channel.setAgentForwarding(true);
+        }
+        // x11转发
+        if (this.shellConnect.isX11forwarding()) {
+            channel.setXForwarding(true);
+        }
+    }
+
+    /**
+     * 初始化环境
+     *
+     * @param channel 通道
+     */
+    public void initEnvironments(ChannelSftp channel) {
+        // 用户环境
+        Map<String, String> userEnvs = this.shellConnect.environments();
+        if (CollectionUtil.isNotEmpty(userEnvs)) {
+            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+                channel.setEnv(entry.getKey(), entry.getValue());
+            }
+        }
+        // 初始化环境变量
+        if (this.osType != null) {
+            channel.setEnv("PATH", this.getExportPath());
+        }
+        // 初始化字符集
+        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+        // 客户端转发
+        if (this.shellConnect.isJumpForward()) {
+            channel.setAgentForwarding(true);
+        }
+        // x11转发
+        if (this.shellConnect.isX11forwarding()) {
+            channel.setXForwarding(true);
+        }
     }
 }

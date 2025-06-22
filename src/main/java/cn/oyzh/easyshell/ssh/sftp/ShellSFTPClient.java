@@ -170,8 +170,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             channel.setOutputStream(null);
             // 设置字符集
             channel.setFilenameEncoding(this.getCharset());
+            // 创建通道
             ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathCache);
             sftpChannel.connect(this.connectTimeout());
+            // 初始化冠军
+            super.initEnvironments(channel);
             return sftpChannel;
         } catch (Exception ex) {
             ex.printStackTrace();
