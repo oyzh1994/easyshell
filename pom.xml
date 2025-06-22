@@ -158,13 +158,19 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-jpms</artifactId>
+            <version>${jna.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--### JetBrains ###-->
@@ -233,6 +239,25 @@
             <artifactId>sshd-core</artifactId>
             <version>${sshd-core.version}</version>
         </dependency>
+
+        <!-- <dependency> -->
+        <!--     <groupId>org.eclipse.jgit</groupId> -->
+        <!--     <artifactId>org.eclipse.jgit</artifactId> -->
+        <!--     <version>7.2.0.202503040940-r</version> -->
+        <!-- </dependency> -->
+
+        <!-- <dependency> -->
+        <!--     <groupId>org.eclipse.jgit</groupId> -->
+        <!--     <artifactId>org.eclipse.jgit.ssh.apache.agent</artifactId> -->
+        <!--     <version>7.2.0.202503040940-r</version> -->
+        <!-- </dependency> -->
+
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/com.spotify/ssh-agent-proxy &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>com.spotify</groupId> -->
+        <!--     <artifactId>ssh-agent-proxy</artifactId> -->
+        <!--     <version>0.2.1</version> -->
+        <!-- </dependency> -->
 
         <!-- fx打包 -->
         <dependency>

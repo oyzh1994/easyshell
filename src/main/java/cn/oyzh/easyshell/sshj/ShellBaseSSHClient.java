@@ -12,6 +12,11 @@ import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
+import com.jcraft.jsch.agentproxy.AgentProxy;
+import com.jcraft.jsch.agentproxy.Connector;
+import com.jcraft.jsch.agentproxy.ConnectorFactory;
+import com.jcraft.jsch.agentproxy.Identity;
+import com.jcraft.jsch.agentproxy.sshj.AuthAgent;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
@@ -420,19 +425,14 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             // 认证
             this.sshClient.authPublickey(this.shellConnect.getUser(), provider);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-            // IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
-            // if (!(repository instanceof AgentIdentityRepository)) {
-            //     repository = SSHUtil.initAgentIdentityRepository();
-            //     if (CollectionUtil.isEmpty(repository.getIdentities())) {
-            //         throw new AgentProxyException("identities is empty");
-            //     }
-            //     SSHHolder.getAgentJsch().setIdentityRepository(repository);
-            // }
-            // for (Identity identity : repository.getIdentities()) {
-            //     JulLog.info("Identity: {}", identity.getName());
-            // }
-            // // 创建会话
-            // this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
+            Connector connector= ConnectorFactory.getDefault().createConnector();
+            AgentProxy agentProxy= new AgentProxy(connector);
+            Identity[] identities = agentProxy.getIdentities();
+            List<AuthMethod> authMethods = new ArrayList<>();
+            for (Identity identity : identities) {
+                authMethods.add(new AuthAgent(agentProxy, identity));
+            }
+            this.sshClient.auth(this.shellConnect.getUser(), authMethods);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
