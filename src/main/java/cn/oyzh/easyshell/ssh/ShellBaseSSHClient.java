@@ -307,14 +307,12 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     }
 
     /**
-     * 使用压缩
-     *
-     * @param useCompression 是否使用压缩
+     * 启用压缩
      */
-    protected void useCompression(boolean useCompression) {
+    protected void useCompression() {
         if (this.session != null) {
             // 启用压缩
-            if (useCompression) {
+            if (this.shellConnect.isEnableCompress()) {
                 this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
                 this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
                 // 设置压缩级别（可选，范围 1-9，默认 6）
@@ -392,7 +390,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         if (this.shellConnect.isPasswordAuth()) {
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthUserInfo(this.shellConnect.getPassword()));
+            this.session.setUserInfo(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
@@ -436,6 +434,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         // 初始化会话
         this.initSession();
         // 启用压缩
-        this.useCompression(this.shellConnect.isEnableCompress());
+        this.useCompression();
     }
 }

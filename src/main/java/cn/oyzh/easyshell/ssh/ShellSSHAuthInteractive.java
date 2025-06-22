@@ -15,11 +15,11 @@ import com.jcraft.jsch.UserInfo;
  * @author oyzh
  * @since 2025/05/22
  */
-public class ShellSSHAuthUserInfo implements UIKeyboardInteractive, UserInfo {
+public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo {
 
     private final String password;
 
-    public ShellSSHAuthUserInfo(String password) {
+    public ShellSSHAuthInteractive(String password) {
         this.password = password;
     }
 
