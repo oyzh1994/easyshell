@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh.server;
 
-import cn.oyzh.easyshell.sshj.ShellSSHClient;
-import cn.oyzh.easyshell.sshj.exec.ShellSSHExec;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;

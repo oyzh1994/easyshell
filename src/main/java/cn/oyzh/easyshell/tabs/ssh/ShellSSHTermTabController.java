@@ -7,11 +7,12 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.sshj.ShellSSHClient;
-import cn.oyzh.easyshell.sshj.ShellSSHTermWidget;
-import cn.oyzh.easyshell.sshj.ShellSSHTtyConnector;
-import cn.oyzh.easyshell.sshj.server.ShellServerExec;
-import cn.oyzh.easyshell.sshj.server.ShellServerMonitor;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHShell;
+import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
+import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -120,15 +121,15 @@ public class ShellSSHTermTabController extends SubTabController {
      * @throws Exception 异常
      */
     public void init() throws Exception {
-        // ShellSSHClient client = this.client();
-        // Session.Shell shell = client.openShell();
+        ShellSSHClient client = this.client();
+        ShellSSHShell shell = client.openShell();
         this.initWidget();
-        // shell.connect(client.connectTimeout());
-        // if (!shell.isConnected()) {
-        //     MessageBox.warn(I18nHelper.connectFail());
-        //     this.closeTab();
-        //     return;
-        // }
+        shell.connect(client.connectTimeout());
+        if (!shell.isConnected()) {
+            MessageBox.warn(I18nHelper.connectFail());
+            this.closeTab();
+            return;
+        }
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
         // 初始化

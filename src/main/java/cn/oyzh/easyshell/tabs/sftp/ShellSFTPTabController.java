@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
-import cn.oyzh.easyshell.sshj.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
