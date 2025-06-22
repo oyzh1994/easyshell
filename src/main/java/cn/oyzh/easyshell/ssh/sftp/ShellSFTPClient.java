@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
@@ -24,6 +25,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -421,7 +423,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         try (ShellSFTPChannel channel = this.newSFTPChannel()) {
-            channel.put(localFile, remoteFile, this.newMonitor(callback), ChannelSftp.OVERWRITE);
+            if (callback == null) {
+                channel.put(localFile, remoteFile);
+            } else {
+                channel.put(ShellFileProgressMonitor.of(localFile, callback), remoteFile);
+            }
         }
     }
 
@@ -429,13 +435,21 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
         ShellSFTPChannel channel = this.newSFTPChannel();
         this.delayChannels.add(channel);
-        return channel.put(remoteFile, this.newMonitor(callback));
+        if (callback == null) {
+            return channel.put(remoteFile);
+        }
+        return ShellFileProgressMonitor.of(channel.put(remoteFile), callback);
     }
 
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
+        String fPath = remoteFile.getFilePath();
         try (ShellSFTPChannel channel = this.newSFTPChannel()) {
-            channel.get(remoteFile.getFilePath(), localFile, this.newMonitor(callback), ChannelSftp.OVERWRITE);
+            if (callback == null) {
+                channel.get(fPath, localFile);
+            } else {
+                channel.get(fPath, ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback));
+            }
         }
     }
 
@@ -443,7 +457,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
         ShellSFTPChannel channel = this.newSFTPChannel();
         this.delayChannels.add(channel);
-        return channel.get(remoteFile.getFilePath(), this.newMonitor(callback));
+        String fPath = remoteFile.getFilePath();
+        if (callback == null) {
+            return channel.get(fPath);
+        }
+        return ShellFileProgressMonitor.of(channel.get(fPath), callback);
     }
 
     @Override
@@ -553,6 +571,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this.delayChannels.clear();
     }
 
+    @Deprecated
     private SftpProgressMonitor newMonitor(Function<Long, Boolean> callback) {
         return callback == null ? null : new SftpProgressMonitor() {
             @Override

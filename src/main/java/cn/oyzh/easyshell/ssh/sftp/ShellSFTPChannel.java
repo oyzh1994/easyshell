@@ -149,59 +149,116 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         return this.getChannel().stat(path);
     }
 
+    /**
+     * 上传
+     * @param src 源
+     * @param dest 目标
+     * @throws SftpException 异常
+     */
+    public void put(String src, String dest) throws SftpException {
+        this.getChannel().put(src, dest);
+    }
+
+    /**
+     * 上传
+     * @param src 源
+     * @param dest 目标
+     * @throws SftpException 异常
+     */
+    public void put(InputStream src, String dest) throws SftpException {
+        this.getChannel().put(src, dest);
+    }
+
+    /**
+     * 上传
+     * @param dest 目标
+     * @throws SftpException 异常
+     * @return 目标
+     */
+    public OutputStream put(String dest) throws SftpException {
+        dest = ShellFileUtil.fixFilePath(dest);
+        return this.getChannel().put(dest);
+    }
+
+    /**
+     * 下载
+     * @param src 源
+     * @throws SftpException 异常
+     * @return 文件
+     */
+    public InputStream get(String src) throws SftpException {
+        src = ShellFileUtil.fixFilePath(src);
+        return this.getChannel().get(src);
+    }
+
+    /**
+     * 下载
+     * @param src 源
+     * @param dest 目标
+     * @throws SftpException 异常
+     */
+    public void get(String src, String dest) throws SftpException {
+        src = ShellFileUtil.fixFilePath(src);
+        dest = ShellFileUtil.fixFilePath(dest);
+        this.getChannel().get(src, dest);
+    }
+
+    /**
+     * 下载
+     * @param src 源
+     * @param dest 目标
+     * @throws SftpException 异常
+     */
+    public void get(String src, OutputStream dest) throws SftpException {
+        src = ShellFileUtil.fixFilePath(src);
+        this.getChannel().get(src, dest);
+    }
+
+    @Deprecated
     public void put(String src, String dest, SftpProgressMonitor monitor) throws SftpException {
         this.put(src, dest, monitor, ChannelSftp.OVERWRITE);
     }
 
+    @Deprecated
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         src = ShellFileUtil.fixFilePath(src);
         dest = ShellFileUtil.fixFilePath(dest);
         this.getChannel().put(src, dest, monitor, mode);
     }
 
+    @Deprecated
     public void put(InputStream src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         dest = ShellFileUtil.fixFilePath(dest);
         this.getChannel().put(src, dest, monitor, mode);
     }
 
-    public void put(String src, String dest) throws SftpException {
-        this.put(src, dest, null, ChannelSftp.OVERWRITE);
-    }
-
-    public void put(InputStream src, String dest) throws SftpException {
-        this.put(src, dest, null, ChannelSftp.OVERWRITE);
-    }
-
+    @Deprecated
     public OutputStream put(String dest, SftpProgressMonitor monitor) throws SftpException {
         return this.put(dest, monitor, ChannelSftp.OVERWRITE);
     }
 
+    @Deprecated
+    public OutputStream put(String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
+        dest = ShellFileUtil.fixFilePath(dest);
+        return this.getChannel().put(dest, monitor, mode);
+    }
+
+    @Deprecated
     public void get(String src, String dest, SftpProgressMonitor monitor) throws SftpException {
         this.get(src, dest, monitor, ChannelSftp.OVERWRITE);
     }
 
+    @Deprecated
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
         src = ShellFileUtil.fixFilePath(src);
         dest = ShellFileUtil.fixFilePath(dest);
         this.getChannel().get(src, dest, monitor, mode);
     }
 
-    public InputStream get(String src) throws SftpException {
-        return this.get(src, (SftpProgressMonitor) null);
-    }
-
+    @Deprecated
     public InputStream get(String src, SftpProgressMonitor monitor) throws SftpException {
         src = ShellFileUtil.fixFilePath(src);
         return this.getChannel().get(src, monitor);
-    }
-
-    public void get(String src, String dest) throws SftpException {
-        this.get(src, dest, null, ChannelSftp.OVERWRITE);
-    }
-
-    public OutputStream put(String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        dest = ShellFileUtil.fixFilePath(dest);
-        return this.getChannel().put(dest, monitor, mode);
     }
 
     /**
