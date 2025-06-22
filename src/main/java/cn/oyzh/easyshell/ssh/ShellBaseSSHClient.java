@@ -318,9 +318,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
                 this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
                 // 设置压缩级别（可选，范围 1-9，默认 6）
-                this.session.setConfig("compression.level", "9");
                 this.session.setConfig("Compression", "yes");
                 this.session.setConfig("CompressionLevel", "9");
+                this.session.setConfig("compression.level", "9");
             } else {
                 this.session.setConfig("Compression", "no");
                 this.session.setConfig("compression.s2c", "none");

@@ -54,10 +54,13 @@ public class ShellTerminalApp2 extends Application {
             in = channel.getInputStream();
             out = channel.getOutputStream();
 
-            ShellTestTtyConnector connector=  widget.createTtyConnector(Charset.defaultCharset());
+            ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
             connector.init(channel);
 
-            ZModemPtyConnectorAdaptor adaptor=new ZModemPtyConnectorAdaptor(widget.getTerminal(),connector);
+            //channel.setInputStream(connector.getProcess().getInputStream());
+            //channel.setOutputStream(connector.getProcess().getOutputStream());
+
+            ZModemPtyConnectorAdaptor adaptor = new ZModemPtyConnectorAdaptor(widget.getTerminal(), connector);
 
             this.widget.openSession(adaptor);
 
@@ -172,7 +175,7 @@ public class ShellTerminalApp2 extends Application {
         widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("");
+        passField.setText("Oyzh.1994");
         hostField.setText("120.24.176.61");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

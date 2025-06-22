@@ -48,7 +48,6 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-
     public ShellTestTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
@@ -69,7 +68,8 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        JulLog.debug("shell write : {}", str);
+        JulLog.warn("shell write : {}", str);
+        //super.write(str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
     }
@@ -106,7 +106,7 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public InputStream input() throws IOException {
-        if(this.shell1!=null){
+        if (this.shell1 != null) {
             return this.shell1.getInputStream();
         }
         return this.shell.getInputStream();
@@ -114,7 +114,7 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public OutputStream output() throws IOException {
-        if(this.shell1!=null){
+        if (this.shell1 != null) {
             return this.shell1.getOutputStream();
         }
         return this.shell.getOutputStream();
