@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2025-06-07
  */
+@Deprecated
 public class ShellSFTPRealpathManager implements AutoCloseable {
 
     /**

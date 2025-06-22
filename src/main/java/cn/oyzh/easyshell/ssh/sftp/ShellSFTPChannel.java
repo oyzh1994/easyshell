@@ -25,11 +25,11 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     /**
      * 链接管理器
      */
-    private final ShellSFTPRealpathManager realpathManager;
+    private final ShellSFTPRealpathCache realpathCache;
 
-    public ShellSFTPChannel(ChannelSftp channel, ShellSFTPRealpathManager realpathManager) {
+    public ShellSFTPChannel(ChannelSftp channel, ShellSFTPRealpathCache realpathCache) {
         super(channel);
-        this.realpathManager = realpathManager;
+        this.realpathCache = realpathCache;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @return 文件列表
      * @throws SftpException 异常
      */
-    public List<ShellSFTPFile> lsFile(String path) throws SftpException {
+    public List<ShellSFTPFile> lsFile(String path) throws Exception {
         String filePath = ShellFileUtil.fixFilePath(path);
         // 文件列表
         List<ShellSFTPFile> files = new ArrayList<>();
@@ -74,18 +74,23 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         // 遍历列表
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            files.add(new ShellSFTPFile(filePath, lsEntry));
+            ShellSFTPFile file=  new ShellSFTPFile(filePath, lsEntry);
+            files.add(file);
+            // 处理链接文件
+            if(file.isLink()){
+                this.realpathCache.realpath(file,this);
+            }
         }
-        // 过滤链接文件
-        List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
-        // 处理链接文件
-        this.realpathManager.put(linkFiles);
-        // 等待完成
-        this.realpathManager.waitComplete();
+        //// 过滤链接文件
+        //List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
+        //// 处理链接文件
+        //this.realpathManager.put(linkFiles);
+        //// 等待完成
+        //this.realpathManager.waitComplete();
         return files;
     }
 
-    public List<ShellSFTPFile> lsFileNormal(String path) throws SftpException {
+    public List<ShellSFTPFile> lsFileNormal(String path) throws Exception {
         List<ShellSFTPFile> files = this.lsFile(path);
         return files.stream().filter(ShellSFTPFile::isNormal).collect(Collectors.toList());
     }

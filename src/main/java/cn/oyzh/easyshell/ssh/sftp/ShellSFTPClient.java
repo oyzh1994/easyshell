@@ -47,7 +47,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 链接管理器
      */
-    private ShellSFTPRealpathManager realpathManager;
+    private ShellSFTPRealpathCache realpathCache;
 
     /**
      * 延迟处理的文件通道
@@ -76,8 +76,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public ShellSFTPClient(ShellConnect shellConnect, Session session) {
         super(shellConnect);
         this.session = session;
+        this.realpathCache = new ShellSFTPRealpathCache();
         this.sftpChannelPool = new ShellSFTPChannelPool(this);
-        this.realpathManager = new ShellSFTPRealpathManager(this);
         super.addStateListener(this.stateListener);
     }
 
@@ -100,9 +100,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 this.sftpChannelPool = null;
             }
             // 链接路径
-            if (this.realpathManager != null) {
-                IOUtil.close(this.realpathManager);
-                this.realpathManager = null;
+            if (this.realpathCache != null) {
+                IOUtil.close(this.realpathCache);
+                this.realpathCache = null;
             }
             this.delayChannels.clear();
             this.state.set(ShellConnState.CLOSED);
@@ -168,7 +168,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             channel.setOutputStream(null);
             // 设置字符集
             channel.setFilenameEncoding(this.getCharset());
-            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathManager);
+            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathCache);
             sftpChannel.connect(this.connectTimeout());
             return sftpChannel;
         } catch (Exception ex) {
@@ -470,7 +470,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String fName = ShellFileUtil.name(filePath);
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         // 读取链接文件
-        ShellSFTPUtil.realpath(file, this);
+        this.realpathCache.realpath(file, this);
         // 拥有者、分组
         if (this.isWindows()) {
             file.setOwner("-");

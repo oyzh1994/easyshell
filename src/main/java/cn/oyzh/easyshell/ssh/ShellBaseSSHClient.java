@@ -118,9 +118,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             channel.setInputStream(null);
             channel.setOutputStream(stream);
             channel.connect(this.connectTimeout());
-            //while (channel.isConnected()) {
-            //    Thread.sleep(5);
-            //}
+            while (channel.isConnected()) {
+                Thread.sleep(1);
+            }
             String result;
             // 如果远程是windows，则要检查下字符集是否要指定
             if (StringUtil.isNotBlank(this.remoteCharset)) {
