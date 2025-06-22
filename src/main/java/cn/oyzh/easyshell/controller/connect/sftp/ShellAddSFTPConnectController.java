@@ -11,14 +11,13 @@ import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -32,8 +31,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
 
 /**
  * sftp连接新增业务
@@ -63,7 +60,13 @@ public class ShellAddSFTPConnectController extends StageController {
      * 证书
      */
     @FXML
-    private ReadOnlyTextField certificate;
+    private ChooseFileTextField certificate;
+
+    /**
+     * 证书密码
+     */
+    @FXML
+    private PasswordTextField certificatePwd;
 
     /**
      * ssh agent
@@ -189,6 +192,7 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
+            shellConnect.setCertificatePwd(this.certificatePwd.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -233,6 +237,7 @@ public class ShellAddSFTPConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             boolean enableCompress = this.enableCompress.isSelected();
+            String certificatePwd = this.certificatePwd.getPassword();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -247,6 +252,7 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             shellConnect.setCertificate(certificate);
+            shellConnect.setCertificatePwd(certificatePwd);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // 分组及类型
             shellConnect.setType("sftp");
@@ -330,14 +336,14 @@ public class ShellAddSFTPConnectController extends StageController {
         }
     }
 
-    /**
-     * 选择证书
-     */
-    @FXML
-    private void chooseCertificate() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-        if (file != null) {
-            this.certificate.setText(file.getPath());
-        }
-    }
+    ///**
+    // * 选择证书
+    // */
+    //@FXML
+    //private void chooseCertificate() {
+    //    File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+    //    if (file != null) {
+    //        this.certificate.setText(file.getPath());
+    //    }
+    //}
 }

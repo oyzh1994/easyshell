@@ -26,13 +26,13 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -86,7 +86,13 @@ public class ShellAddSSHConnectController extends StageController {
      * 证书
      */
     @FXML
-    private ReadOnlyTextField certificate;
+    private ChooseFileTextField certificate;
+
+    /**
+     * 证书密码
+     */
+    @FXML
+    private PasswordTextField certificatePwd;
 
     /**
      * ssh agent
@@ -373,6 +379,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
+            shellConnect.setCertificatePwd(this.certificatePwd.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
@@ -451,6 +458,7 @@ public class ShellAddSSHConnectController extends StageController {
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             boolean enableCompress = this.enableCompress.isSelected();
+            String certificatePwd = this.certificatePwd.getPassword();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
@@ -468,6 +476,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             shellConnect.setCertificate(certificate);
+            shellConnect.setCertificatePwd(certificatePwd);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
@@ -502,6 +511,7 @@ public class ShellAddSSHConnectController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 连接ip处理
         this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
             // 内容包含“:”，则直接切割字符为ip端口
@@ -526,15 +536,15 @@ public class ShellAddSSHConnectController extends StageController {
                 NodeGroupUtil.disappear(this.tabPane, "sshKey");
                 NodeGroupUtil.disappear(this.tabPane, "sshAgent");
                 NodeGroupUtil.disappear(this.tabPane, "password");
-            } else if (this.authMethod.isSSHAgentAuth()){
+            } else if (this.authMethod.isSSHAgentAuth()) {
                 NodeGroupUtil.display(this.tabPane, "sshAgent");
                 NodeGroupUtil.disappear(this.tabPane, "sshKey");
                 NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
             } else {
                 NodeGroupUtil.display(this.tabPane, "sshKey");
-                NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.disappear(this.tabPane, "sshAgent");
+                NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
             }
         });
@@ -632,16 +642,16 @@ public class ShellAddSSHConnectController extends StageController {
         }
     }
 
-    /**
-     * 选择证书
-     */
-    @FXML
-    private void chooseCertificate() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-        if (file != null) {
-            this.certificate.setText(file.getPath());
-        }
-    }
+    ///**
+    // * 选择证书
+    // */
+    //@FXML
+    //private void chooseCertificate() {
+    //    File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+    //    if (file != null) {
+    //        this.certificate.setText(file.getPath());
+    //    }
+    //}
 
     /**
      * 选择背景图片

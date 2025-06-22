@@ -23,6 +23,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.sftp.ShellUpdateSFTPConnectController" realWidth="750"
         realHeight="480">
@@ -76,19 +77,20 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </ReadOnlyTextField>
-                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                    <ChooseFileTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
                                        groupId="certificate"
-                                       fx:id="certificate" flexWidth="100% - 340">
+                                       fx:id="certificate" flexWidth="100% - 445">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
-                    </ReadOnlyTextField>
-                    <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate"
-                                    onMousePrimaryClicked="#chooseCertificate">
+                    </ChooseFileTextField>
+                    <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                         groupId="certificate"
+                                         fx:id="certificatePwd" prefWidth="100">
                         <HBox.margin>
-                            <Insets left="5" top="12"/>
+                            <Insets left="5" top="5"/>
                         </HBox.margin>
-                    </ChooseSVGGlyph>
+                    </PasswordTextField>
                     <ShellKeyComboBox tipText="%base.privateKeyTip" realHeight="30" require="true" visible="false" managedBindVisible="true"
                                       groupId="sshKey"
                                       fx:id="key" flexWidth="100% - 340">

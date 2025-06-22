@@ -25,13 +25,13 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -85,7 +85,13 @@ public class ShellUpdateSSHConnectController extends StageController {
      * 证书
      */
     @FXML
-    private ReadOnlyTextField certificate;
+    private ChooseFileTextField certificate;
+
+    /**
+     * 证书密码
+     */
+    @FXML
+    private PasswordTextField certificatePwd;
 
     /**
      * ssh agent
@@ -375,6 +381,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
+            shellConnect.setCertificatePwd(this.certificatePwd.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
@@ -452,6 +459,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             boolean enableCompress = this.enableCompress.isSelected();
+            String certificatePwd = this.certificatePwd.getPassword();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -469,6 +477,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
             this.shellConnect.setCertificate(certificate);
+            this.shellConnect.setCertificatePwd(certificatePwd);
             this.shellConnect.setAuthMethod(this.authMethod.getAuthType());
             // 跳板机配置
             this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
@@ -588,6 +597,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         } else if (this.shellConnect.isCertificateAuth()) {
             this.authMethod.select(1);
             this.certificate.setText(this.shellConnect.getCertificate());
+            this.certificatePwd.setText(this.shellConnect.getCertificatePwd());
         } else if (this.shellConnect.isSSHAgentAuth()) {
             this.authMethod.select(2);
         } else if (this.shellConnect.isManagerAuth()) {
@@ -680,16 +690,16 @@ public class ShellUpdateSSHConnectController extends StageController {
         }
     }
 
-    /**
-     * 选择证书
-     */
-    @FXML
-    private void chooseCertificate() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-        if (file != null) {
-            this.certificate.setText(file.getPath());
-        }
-    }
+    ///**
+    // * 选择证书
+    // */
+    //@FXML
+    //private void chooseCertificate() {
+    //    File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+    //    if (file != null) {
+    //        this.certificate.setText(file.getPath());
+    //    }
+    //}
 
     /**
      * 选择背景图片

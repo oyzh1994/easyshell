@@ -115,6 +115,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String certificate;
 
     /**
+     * 证书密码
+     */
+    @Column
+    private String certificatePwd;
+
+    /**
      * 密钥id
      */
     @Column
@@ -775,5 +781,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getCertificatePwd() {
+        return certificatePwd;
+    }
+
+    public void setCertificatePwd(String certificatePwd) {
+        this.certificatePwd = certificatePwd;
     }
 }

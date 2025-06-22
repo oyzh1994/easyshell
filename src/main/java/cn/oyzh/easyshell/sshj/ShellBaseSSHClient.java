@@ -410,8 +410,13 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 MessageBox.warn("priKeyFile file not exist");
                 return;
             }
+            // 证书密码
+            PasswordFinder passwordFinder = null;
+            if (StringUtil.isNotBlank(this.shellConnect.getCertificatePwd())) {
+                passwordFinder = PasswordUtils.createOneOff(this.shellConnect.getCertificatePwd().toCharArray());
+            }
             // 加载
-            KeyProvider provider = this.sshClient.loadKeys(priKeyFile, "123456".toCharArray());
+            KeyProvider provider = this.sshClient.loadKeys(priKeyFile, passwordFinder);
             // 认证
             this.sshClient.authPublickey(this.shellConnect.getUser(), provider);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
@@ -435,6 +440,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 MessageBox.warn("key not found");
                 return;
             }
+            // 证书密码
             PasswordFinder passwordFinder = null;
             if (StringUtil.isNotBlank(key.getPassword())) {
                 passwordFinder = PasswordUtils.createOneOff(key.getPassword().toCharArray());
