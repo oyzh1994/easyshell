@@ -5,6 +5,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -46,13 +47,23 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ClearableTextField>
+    <InfoLabel text="%base.password">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <PasswordTextField fx:id="keyPassword" tipText="%base.optional" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </PasswordTextField>
     <InfoLabel text="%base.publicKey">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180">
+        <FXTextArea fx:id="publicKey" realHeight="100" flexWidth="100% - 180">
             <FXHBox.margin>
                 <Insets left="30" top="5"/>
             </FXHBox.margin>
@@ -76,7 +87,7 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180">
+        <FXTextArea fx:id="privateKey" realHeight="120" flexWidth="100% - 180">
             <FXHBox.margin>
                 <Insets left="30" top="5"/>
             </FXHBox.margin>
@@ -94,7 +105,7 @@
             </ChooseSVGGlyph>
         </FXVBox>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="50">
+    <FXHBox flexWidth="100%">
         <ImportButton onAction="#importKey" iconSizePercent="0.8">
             <HBox.margin>
                 <Insets left="30" top="20"/>

@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -67,6 +68,12 @@ public class ShellImportKeyController extends StageController {
     private ClearableTextField keyLength;
 
     /**
+     * 密码
+     */
+    @FXML
+    private PasswordTextField keyPassword;
+
+    /**
      * 密钥存储对象
      */
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
@@ -121,21 +128,16 @@ public class ShellImportKeyController extends StageController {
         }
         try {
             String keyType = this.keyType.getText();
-            //if (StringUtil.containsIgnoreCase(keyType, "rsa")) {
-            //    keyType = "RSA";
-            //} else if (StringUtil.containsIgnoreCase(keyType, "ed25519")) {
-            //    keyType = "ED25519";
-            //} else if (StringUtil.containsIgnoreCase(keyType, "ecdsa")) {
-            //    keyType = "ECDSA";
-            //}
+            String password = this.keyPassword.getPassword();
             int keyLength = Integer.parseInt(this.keyLength.getText());
 
             ShellKey shellKey = new ShellKey();
-            shellKey.setPublicKey(publicKey);
-            shellKey.setPrivateKey(privateKey);
             shellKey.setName(name);
             shellKey.setType(keyType);
             shellKey.setLength(keyLength);
+            shellKey.setPassword(password);
+            shellKey.setPublicKey(publicKey);
+            shellKey.setPrivateKey(privateKey);
 
             // 保存数据
             if (this.keyStore.insert(shellKey)) {

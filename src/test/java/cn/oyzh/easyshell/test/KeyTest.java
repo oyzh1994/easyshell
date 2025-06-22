@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.test;
 
+import cn.oyzh.ssh.util.SSHKeyUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sshd.common.config.keys.KeyUtils;
 import org.apache.sshd.common.config.keys.writer.openssh.OpenSSHKeyPairResourceWriter;
@@ -32,5 +33,13 @@ public class KeyTest {
         System.out.println(baos.toString());
         System.out.println(baos1.toString());
 
+    }
+
+    @Test
+    public void test2() throws Exception {
+        String[] res=  SSHKeyUtil.generateDsa(2048,"111");
+
+        System.out.println(res[0]);
+        System.out.println(res[1]);
     }
 }

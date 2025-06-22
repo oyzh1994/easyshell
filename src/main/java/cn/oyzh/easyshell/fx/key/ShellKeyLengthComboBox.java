@@ -31,6 +31,10 @@ public class ShellKeyLengthComboBox extends FXComboBox<Integer> {
                 this.addItem(521);
                 this.select(0);
                 break;
+            case "DSA":
+                this.addItem(2048);
+                this.select(0);
+                break;
         }
     }
 }

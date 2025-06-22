@@ -25,9 +25,10 @@
     </FXHBox>
     <ShellKeyTableView fx:id="keyTable" flexWidth="100% - 20" flexHeight="100% - 30">
         <columns>
-            <FXTableColumn flexWidth="100% - 315" valueName="name" text="%base.name"/>
+            <FXTableColumn flexWidth="100% - 465" valueName="name" text="%base.name"/>
             <FXTableColumn prefWidth="150" valueName="type" text="%base.type"/>
             <FXTableColumn prefWidth="150" valueName="length" text="%base.length"/>
+            <FXTableColumn prefWidth="150" valueName="password" text="%base.password"/>
         </columns>
         <FXVBox.margin>
             <Insets left="10"/>

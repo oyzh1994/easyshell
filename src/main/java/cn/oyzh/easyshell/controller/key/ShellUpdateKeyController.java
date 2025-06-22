@@ -4,17 +4,14 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -64,6 +61,12 @@ public class ShellUpdateKeyController extends StageController {
     private ReadOnlyTextField keyLength;
 
     /**
+     * 密码
+     */
+    @FXML
+    private PasswordTextField keyPassword;
+
+    /**
      * 密钥
      */
     private ShellKey key;
@@ -93,7 +96,9 @@ public class ShellUpdateKeyController extends StageController {
             return;
         }
         try {
+            String password = this.keyPassword.getPassword();
             this.key.setName(name);
+            this.key.setPassword(password);
             this.key.setPublicKey(publicKey);
             this.key.setPrivateKey(privateKey);
             // 保存数据
@@ -110,7 +115,6 @@ public class ShellUpdateKeyController extends StageController {
         }
     }
 
-
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
@@ -118,6 +122,7 @@ public class ShellUpdateKeyController extends StageController {
         this.name.setText(this.key.getName());
         this.keyType.setText(this.key.getType());
         this.publicKey.setText(this.key.getPublicKey());
+        this.keyPassword.setText(this.key.getPassword());
         this.keyLength.setText(this.key.getLength() + "");
         this.privateKey.setText(this.key.getPrivateKey());
         this.stage.switchOnTab();

@@ -20,6 +20,7 @@ import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import net.schmizz.sshj.userauth.method.AuthMethod;
 import net.schmizz.sshj.userauth.method.AuthPassword;
 import net.schmizz.sshj.userauth.password.PasswordFinder;
+import net.schmizz.sshj.userauth.password.PasswordUtils;
 import net.schmizz.sshj.userauth.password.Resource;
 
 import java.io.InputStream;
@@ -410,7 +411,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 return;
             }
             // 加载
-            KeyProvider provider = this.sshClient.loadKeys(priKeyFile);
+            KeyProvider provider = this.sshClient.loadKeys(priKeyFile, "123456".toCharArray());
             // 认证
             this.sshClient.authPublickey(this.shellConnect.getUser(), provider);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
@@ -434,8 +435,12 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 MessageBox.warn("key not found");
                 return;
             }
+            PasswordFinder passwordFinder = null;
+            if (StringUtil.isNotBlank(key.getPassword())) {
+                passwordFinder = PasswordUtils.createOneOff(key.getPassword().toCharArray());
+            }
             // 加载
-            KeyProvider provider = this.sshClient.loadKeys(key.getPrivateKey(), key.getPublicKey(), null);
+            KeyProvider provider = this.sshClient.loadKeys(key.getPrivateKey(), key.getPublicKey(), passwordFinder);
             // 认证
             this.sshClient.authPublickey(this.shellConnect.getUser(), provider);
         }

@@ -2,8 +2,8 @@
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -35,6 +35,16 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ReadOnlyTextField>
+    <InfoLabel text="%base.password">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <PasswordTextField fx:id="keyPassword" tipText="%base.optional" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </PasswordTextField>
     <InfoLabel text="%base.length">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -50,7 +60,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXTextArea fx:id="publicKey" realHeight="150" flexWidth="100% - 180" require="true">
+    <FXTextArea fx:id="publicKey" realHeight="100" flexWidth="100% - 180" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -60,12 +70,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXTextArea fx:id="privateKey" realHeight="150" flexWidth="100% - 180" require="true">
+    <FXTextArea fx:id="privateKey" realHeight="120" flexWidth="100% - 180" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
     </FXTextArea>
-    <FXHBox flexWidth="100%" realHeight="50">
+    <FXHBox flexWidth="100%">
         <SubmitButton onAction="#save">
             <HBox.margin>
                 <Insets left="30" top="20"/>

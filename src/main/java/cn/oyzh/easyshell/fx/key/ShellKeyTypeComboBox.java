@@ -14,6 +14,7 @@ public class ShellKeyTypeComboBox extends FXComboBox<String> {
         this.addItem("RSA");
         this.addItem("ED25519");
         this.addItem("ECDSA");
+        this.addItem("DSA");
     }
 
     public boolean isRsaType() {
@@ -26,5 +27,9 @@ public class ShellKeyTypeComboBox extends FXComboBox<String> {
 
     public boolean isEcdsaType() {
         return this.getSelectedIndex() == 2;
+    }
+
+    public boolean isDsaType() {
+        return this.getSelectedIndex() == 3;
     }
 }

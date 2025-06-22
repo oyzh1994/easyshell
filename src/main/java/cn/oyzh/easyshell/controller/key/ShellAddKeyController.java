@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -63,6 +64,12 @@ public class ShellAddKeyController extends StageController {
     private ShellKeyLengthComboBox keyLength;
 
     /**
+     * 密码
+     */
+    @FXML
+    private PasswordTextField keyPassword;
+
+    /**
      * 密钥存储对象
      */
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
@@ -91,6 +98,7 @@ public class ShellAddKeyController extends StageController {
         }
         try {
             String keyType = this.keyType.getSelectedItem();
+            String password = this.keyPassword.getPassword();
             int keyLength = this.keyLength.getSelectedItem();
 
             ShellKey shellKey = new ShellKey();
@@ -99,6 +107,7 @@ public class ShellAddKeyController extends StageController {
             shellKey.setName(name);
             shellKey.setType(keyType);
             shellKey.setLength(keyLength);
+            shellKey.setPassword(password);
 
             // 保存数据
             if (this.keyStore.insert(shellKey)) {
@@ -142,17 +151,22 @@ public class ShellAddKeyController extends StageController {
         Integer length = this.keyLength.getSelectedItem();
         StageManager.showMask(() -> {
             try {
+                String password = this.keyPassword.getPassword();
                 String[] key;
                 if (this.keyType.isRsaType()) {
-                    key = SSHKeyUtil.generateRSA(length);
+                    key = SSHKeyUtil.generateRsa(length, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else if (this.keyType.isEd25519Type()) {
-                    key = SSHKeyUtil.generateEd25519();
+                    key = SSHKeyUtil.generateEd25519(256, password);
+                    // ssh公钥
+                    this.publicKey.setText(key[0]);
+                } else if (this.keyType.isEcdsaType()) {
+                    key = SSHKeyUtil.generateEcdsa(length, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else {
-                    key = SSHKeyUtil.generateEcdsa(length);
+                    key = SSHKeyUtil.generateDsa(length, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 }

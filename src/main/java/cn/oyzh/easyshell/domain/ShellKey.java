@@ -43,6 +43,12 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
     private long length;
 
     /**
+     * 密码
+     */
+    @Column
+    private String password;
+
+    /**
      * 公钥
      */
     @Column
@@ -105,6 +111,14 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
 
     public String getPublicKey() {
         return publicKey;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @JSONField(serialize = false, deserialize = false)
