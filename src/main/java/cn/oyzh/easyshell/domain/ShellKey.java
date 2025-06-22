@@ -126,6 +126,11 @@ public class ShellKey implements ObjectComparator<ShellKey>, Serializable, Objec
         return publicKey == null ? null : publicKey.getBytes();
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public byte[] getPasswordBytes() {
+        return password == null ? null : password.getBytes();
+    }
+
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }

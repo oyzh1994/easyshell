@@ -118,9 +118,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             channel.setInputStream(null);
             channel.setOutputStream(stream);
             channel.connect(this.connectTimeout());
-            while (channel.isConnected()) {
-                Thread.sleep(5);
-            }
+            //while (channel.isConnected()) {
+            //    Thread.sleep(5);
+            //}
             String result;
             // 如果远程是windows，则要检查下字符集是否要指定
             if (StringUtil.isNotBlank(this.remoteCharset)) {
@@ -400,7 +400,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 MessageBox.warn("certificate file not exist");
                 return;
             }
-            SSHHolder.getJsch().addIdentity(priKeyFile);
+            // 添加认证，并指定密码
+            //SSHHolder.getJsch().addIdentity(priKeyFile);
+            SSHHolder.getJsch().addIdentity(priKeyFile, this.shellConnect.getCertificatePwd());
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
@@ -425,8 +427,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 return;
             }
             String keyName = "key_" + key.getId();
-            // 添加认证
-            SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), null);
+            // 添加认证，并指定密码
+            //SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(),null);
+            SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), key.getPasswordBytes());
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
