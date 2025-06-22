@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.sftp;
+package cn.oyzh.easyshell.ssh.sftp;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

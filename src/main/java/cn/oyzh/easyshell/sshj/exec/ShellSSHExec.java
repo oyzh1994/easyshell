@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.sshj.exec;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.sftp.ShellSFTPChannel;
+import cn.oyzh.easyshell.ssh.sftp.ShellSFTPChannel;
 import cn.oyzh.easyshell.sshj.ShellBaseSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
