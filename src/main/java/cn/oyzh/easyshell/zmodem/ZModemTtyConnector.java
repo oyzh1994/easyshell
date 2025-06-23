@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.zmodem;
 
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.Terminal;
 import com.jediterm.terminal.TtyConnector;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 /**
  * https://wiki.synchro.net/ref:zmodem
  */
-public class ZModemPtyConnectorAdaptor implements TtyConnector {
+public class ZModemTtyConnector implements TtyConnector {
 
     private final char[] prefix = new char[]{
             (char) ZModemCharacter.ZPAD.value(),
@@ -43,13 +43,13 @@ public class ZModemPtyConnectorAdaptor implements TtyConnector {
 
     private Terminal terminal;
 
-    private PtyProcessTtyConnector connector;
+    private ShellDefaultTtyConnector connector;
 
-    public PtyProcessTtyConnector getConnector() {
+    public ShellDefaultTtyConnector getConnector() {
         return connector;
     }
 
-    public ZModemPtyConnectorAdaptor(Terminal terminal, PtyProcessTtyConnector connector) {
+    public ZModemTtyConnector(Terminal terminal, ShellDefaultTtyConnector connector) {
         this.terminal = terminal;
         this.connector = connector;
     }
@@ -175,14 +175,12 @@ public class ZModemPtyConnectorAdaptor implements TtyConnector {
     private class ZModemProcessor implements CopyStreamListener {
         // 如果为 true 表示是接收（sz）文件
         private final boolean sz;
-        private final PtyProcessTtyConnector connector;
         private final Terminal terminal;
         private final ZModem zmodem;
         private long lastRefreshTime = 0L;
 
-        public ZModemProcessor(boolean sz, PtyProcessTtyConnector connector, Terminal terminal, InputStream input, OutputStream output) {
+        public ZModemProcessor(boolean sz, ShellDefaultTtyConnector connector, Terminal terminal, InputStream input, OutputStream output) {
             this.sz = sz;
-            this.connector = connector;
             this.terminal = terminal;
             this.zmodem = new ZModem(input, output, connector);
         }

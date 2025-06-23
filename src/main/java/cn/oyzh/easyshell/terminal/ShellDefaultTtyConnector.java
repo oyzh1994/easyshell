@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
@@ -17,7 +18,7 @@ import java.util.List;
  * @since 2025-03-04
  */
 public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
-//public class ShellDefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
+// public class ShellDefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
 //    protected int maxLogSize = 200;
 //
@@ -88,7 +89,7 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
     }
 
 //    public void setWidget(FXJediTermWidget widget) {
-////        this.textBuffer = widget.getTerminalTextBuffer();
+    /// /        this.textBuffer = widget.getTerminalTextBuffer();
 //    }
 
     private SimpleObjectProperty<TermSize> terminalSizeProperty;
@@ -128,5 +129,27 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
     @Override
     public @NotNull PtyProcess getProcess() {
         return (PtyProcess) super.getProcess();
+    }
+
+    /**
+     * 重置tty连接器回调
+     */
+    private Runnable resetTtyConnectorCallback;
+
+    public Runnable getResetTtyConnectorCallback() {
+        return resetTtyConnectorCallback;
+    }
+
+    public void setResetTtyConnectorCallback(Runnable resetTtyConnectorCallback) {
+        this.resetTtyConnectorCallback = resetTtyConnectorCallback;
+    }
+
+    /**
+     * 重置tty连接器
+     */
+    public void resetTtyConnector() {
+        if (this.resetTtyConnectorCallback != null) {
+            this.resetTtyConnectorCallback.run();
+        }
     }
 }

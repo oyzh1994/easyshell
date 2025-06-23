@@ -16,13 +16,17 @@ import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
+import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -40,9 +44,15 @@ import java.util.concurrent.Future;
 public class ShellSSHTermTabController extends SubTabController {
 
     /**
-     * 终端组件
+     * 终端容器
      */
     @FXML
+    private FXVBox widgetBox;
+
+    /**
+     * 终端组件
+     */
+    // @FXML
     private ShellSSHTermWidget widget;
 
     /**
@@ -90,19 +100,53 @@ public class ShellSSHTermTabController extends SubTabController {
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
+        // 关闭和移除旧的组件
+        if (this.widget != null) {
+            this.widget.close();
+            this.widgetBox.removeChild(this.widget);
+            TtyConnector connector = this.widget.getTtyConnector();
+            if (connector != null) {
+                connector.close();
+            }
+        }
+        // 初始化组件
+        this.widget = new ShellSSHTermWidget();
+        this.widget.setFlexWidth("100%");
+        this.widget.setFlexHeight("100% - 30");
+        this.widgetBox.addChild(0, this.widget);
+        this.widget.openSession(this.initTtyConnector());
+        // 获取焦点
+        FXUtil.runLater(this.widget::requestFocus);
+    }
+
+    /**
+     * 初始化tty连接器
+     *
+     * @return tty连接器
+     * @throws IOException 异常
+     */
+    private TtyConnector initTtyConnector() throws IOException {
         ShellSSHClient client = this.client();
         Charset charset = client.getCharset();
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.init(client);
-        //ZModemPtyConnectorAdaptor adaptor = new ZModemPtyConnectorAdaptor(widget.getTerminal(), connector);
-        //this.widget.openSession(adaptor);
-        this.widget.openSession(connector);
-        this.widget.onTermination(exitCode -> this.widget.close());
+        ZModemTtyConnector adaptor = this.widget.createZModemTtyConnector(connector);
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
+        connector.setResetTtyConnectorCallback(() -> {
+            try {
+                ShellSSHShell shell = client.reopenShell();
+                this.initWidget();
+                shell.connect(client.connectTimeout());
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+                this.closeTab();
+            }
+        });
+        return adaptor;
     }
 
     /**

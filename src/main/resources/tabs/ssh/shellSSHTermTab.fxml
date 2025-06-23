@@ -15,10 +15,10 @@
     <graphic>
         <LinuxSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXVBox flexWidth="100%" flexHeight="100%">
-        <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
+    <FXVBox flexWidth="100%" flexHeight="100%" fx:id="widgetBox">
+        <!-- <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30"> -->
 
-        </ShellSSHTermWidget>
+        <!-- </ShellSSHTermWidget> -->
         <FXHBox flexWidth="100%" realHeight="30">
             <FXLabel fx:id="termSize">
                 <FXHBox.margin>

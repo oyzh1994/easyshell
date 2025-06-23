@@ -1,6 +1,11 @@
 package cn.oyzh.easyshell.test;
 
-import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor;
+import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
+import com.jcraft.jsch.agentproxy.AgentProxy;
+import com.jcraft.jsch.agentproxy.Connector;
+import com.jcraft.jsch.agentproxy.ConnectorFactory;
+import com.jcraft.jsch.agentproxy.Identity;
+import com.jcraft.jsch.agentproxy.sshj.AuthAgent;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,13 +17,14 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
-import net.schmizz.sshj.transport.verification.HostKeyVerifier;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import net.schmizz.sshj.userauth.method.AuthMethod;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShellTerminalApp3 extends Application {
@@ -31,7 +37,7 @@ public class ShellTerminalApp3 extends Application {
 
     private Session.Shell channel;
 
-    //private InputStream in;
+    // private InputStream in;
     //
     private OutputStream out;
 
@@ -40,23 +46,25 @@ public class ShellTerminalApp3 extends Application {
         String user = userField.getText();
         String pass = passField.getText();
 
+        // System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+
         try {
             SSHClient ssh = new SSHClient();
             // 禁用主机密钥验证（不推荐在生产环境使用）
-            ssh.addHostKeyVerifier(new HostKeyVerifier() {
-                @Override
-                public boolean verify(String hostname, int port, PublicKey key) {
-                    return true; // 始终信任
-                }
-
-                @Override
-                public List<String> findExistingAlgorithms(String hostname, int port) {
-                    return List.of();
-                }
-            });
+            ssh.addHostKeyVerifier(new PromiscuousVerifier());
 
             ssh.connect(host, 22);
-            ssh.authPassword(user, pass);
+            // ssh.authPassword(user, pass);
+
+            Connector connector1 = ConnectorFactory.getDefault().createConnector();
+            AgentProxy agentProxy = new AgentProxy(connector1);
+            Identity[] identities = agentProxy.getIdentities();
+            List<AuthMethod> authMethods = new ArrayList<>();
+            for (Identity identity : identities) {
+                System.out.println(identity);
+                authMethods.add(new AuthAgent(agentProxy, identity));
+            }
+            ssh.auth(user, new AuthAgent(agentProxy, identities[0]));
 
             session = ssh.startSession();
 
@@ -66,69 +74,19 @@ public class ShellTerminalApp3 extends Application {
             channel = session.startShell();
 
 
-            //in = channel.getInputStream();
+            // in = channel.getInputStream();
             out = channel.getOutputStream();
 
-            ShellTestTtyConnector connector=  widget.createTtyConnector(Charset.defaultCharset());
+            ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
             connector.init(channel);
 
-            ZModemPtyConnectorAdaptor adaptor=new ZModemPtyConnectorAdaptor(widget.getTerminal(),connector);
+            ZModemTtyConnector adaptor = new ZModemTtyConnector(widget.getTerminal(), connector);
 
             this.widget.openSession(adaptor);
-            //this.widget.openSession(connector);
-
-            //// 启动线程读取输出
-            //new Thread(this::readOutput).start();
-        } catch (IOException e) {
-            try {
-                appendText("Connection error: " + e.getMessage());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
-    //private void readOutput() {
-    //    try {
-    //        byte[] buffer = new byte[4 * 1024];
-    //        while (true) {
-    //            StringBuilder builder = new StringBuilder();
-    //            int len = in.read(buffer);
-    //            if (len <= 0) {
-    //                continue;
-    //            }
-    //            String data = new String(buffer, 0, len);
-    //            builder.append(data);
-    //            if (!builder.isEmpty()) {
-    //                String output = builder.toString();
-    //                Platform.runLater(() -> {
-    //                    try {
-    //                        appendText(output);
-    //                    } catch (IOException e) {
-    //                        throw new RuntimeException(e);
-    //                    }
-    //                });
-    //            }
-    //        }
-    //    } catch (IOException e) {
-    //        try {
-    //            appendText("Read error: " + e.getMessage());
-    //        } catch (IOException ex) {
-    //            throw new RuntimeException(ex);
-    //        }
-    //    }
-    //}
-    //
-    //private void sendCommand() {
-    //    String cmd = inputField.getText() + "\n";
-    //    inputField.clear();
-    //    try {
-    //        out.write(cmd.getBytes());
-    //        out.flush();
-    //    } catch (IOException e) {
-    //        throw new RuntimeException(e);
-    //    }
-    //}
 
     private void sendCtrlCCommand() {
         inputField.clear();
@@ -187,8 +145,8 @@ public class ShellTerminalApp3 extends Application {
         HBox box = new HBox(button, button1);
         root.getChildren().add(box);
         root.getChildren().add(inputField = new TextField());
-        //Button button2 = new Button("发送");
-        //button2.setOnAction(event -> {
+        // Button button2 = new Button("发送");
+        // button2.setOnAction(event -> {
         //    sendCommand();
         //});
         Button button3 = new Button("中断");
@@ -199,7 +157,7 @@ public class ShellTerminalApp3 extends Application {
         button4.setOnAction(event -> {
             sendEscCommand();
         });
-        HBox box1 = new HBox( button3, button4);
+        HBox box1 = new HBox(button3, button4);
         root.getChildren().add(box1);
 
 

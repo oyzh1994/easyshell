@@ -451,6 +451,19 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     /**
+     * 重新打开shell
+     *
+     * @return 新shell
+     */
+    public ShellSSHShell reopenShell() {
+        if (this.shell != null && this.shell.isConnected()) {
+            this.shell.close();
+        }
+        this.shell = null;
+        return this.openShell();
+    }
+
+    /**
      * 打开shell通道
      *
      * @return ShellSSHShell
@@ -458,39 +471,43 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public ShellSSHShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
+                // 如果会话关了，则先启动会话
+                if (this.isClosed()) {
+                    this.session.connect(this.shellConnect.getConnectTimeOut());
+                }
                 ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
                 channel.setInputStream(null);
                 channel.setOutputStream(null);
                 //// 用户环境
-                //Map<String, String> userEnvs = this.shellConnect.environments();
-                //if (CollectionUtil.isNotEmpty(userEnvs)) {
+                // Map<String, String> userEnvs = this.shellConnect.environments();
+                // if (CollectionUtil.isNotEmpty(userEnvs)) {
                 //    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
                 //        channel.setEnv(entry.getKey(), entry.getValue());
                 //    }
                 //}
                 //// 初始化环境变量
-                //if (this.osType != null) {
+                // if (this.osType != null) {
                 //    channel.setEnv("PATH", this.getExportPath());
                 //}
                 //// 初始化字符集
-                //channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+                // channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
                 super.initEnvironments(channel);
                 //// 客户端转发
-                //if (this.shellConnect.isJumpForward()) {
+                // if (this.shellConnect.isJumpForward()) {
                 //    channel.setAgentForwarding(true);
                 //}
                 //// x11转发
-                //if (this.shellConnect.isX11forwarding()) {
+                // if (this.shellConnect.isX11forwarding()) {
                 //    channel.setXForwarding(true);
                 //}
-                //byte[] modes = new byte[]{
+                // byte[] modes = new byte[]{
                 //        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // ISPEED=38400
                 //        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // OSPEED=38400
                 //        (byte)0x1F, (byte)0x00, (byte)0x00, (byte)0x50, (byte)0x00, // 行数80
                 //        (byte)0x20, (byte)0x00, (byte)0x00, (byte)0x19, (byte)0x00, // 列数25
                 //        (byte)0x00 // TTY_OP_END
                 //};
-                //channel.setTerminalMode(modes);
+                // channel.setTerminalMode(modes);
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());

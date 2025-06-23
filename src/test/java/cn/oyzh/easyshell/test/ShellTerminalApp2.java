@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.test;
 
-import cn.oyzh.easyshell.zmodem.ZModemPtyConnectorAdaptor;
+import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
+import cn.oyzh.fx.plus.util.FXUtil;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -21,8 +22,9 @@ import java.nio.charset.Charset;
 
 public class ShellTerminalApp2 extends Application {
 
-    private ShellTestTermWidget widget = new ShellTestTermWidget();
+    private ShellTestTermWidget widget;
     private TextField inputField, hostField, userField;
+    private VBox root;
     private TextField passField;
 
     private Session session;
@@ -37,60 +39,59 @@ public class ShellTerminalApp2 extends Application {
         String host = hostField.getText();
         String user = userField.getText();
         String pass = passField.getText();
-
         try {
-            JSch jsch = new JSch();
-            session = jsch.getSession(user, host, 22);
-            session.setPassword(pass);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect();
-
-            channel = (ChannelShell) session.openChannel("shell");
-            channel.setPty(true);
-            channel.setPtySize(80, 25, 600, 600);
-//            channel.setPtyType("xterm");
-            channel.connect();
-
-            in = channel.getInputStream();
-            out = channel.getOutputStream();
-
-            ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
-            connector.init(channel);
-
-            //channel.setInputStream(connector.getProcess().getInputStream());
-            //channel.setOutputStream(connector.getProcess().getOutputStream());
-
-            ZModemPtyConnectorAdaptor adaptor = new ZModemPtyConnectorAdaptor(widget.getTerminal(), connector);
-
-            this.widget.openSession(adaptor);
-
-            //// 启动线程读取输出
-            //new Thread(this::readOutput).start();
-        } catch (JSchException | IOException e) {
-            //appendText("Connection error: " + e.getMessage());
+            this.initWidget(user, host, pass);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
-    //private void readOutput() {
-    //    try {
-    //        byte[] buffer = new byte[4 * 1024];
-    //        while (true) {
-    //            StringBuilder builder = new StringBuilder();
-    //            int len = in.read(buffer);
-    //            if (len <= 0) {
-    //                continue;
-    //            }
-    //            String data = new String(buffer, 0, len);
-    //            builder.append(data);
-    //            if (!builder.isEmpty()) {
-    //                String output = builder.toString();
-    //                Platform.runLater(() -> appendText(output));
-    //            }
-    //        }
-    //    } catch (IOException e) {
-    //        //appendText("Read error: " + e.getMessage());
-    //    }
-    //}
+    private void initWidget(String user, String host, String pass) throws JSchException, IOException {
+        JSch jsch = new JSch();
+        widget = new ShellTestTermWidget();
+        root.getChildren().add(widget);
+        widget.setPrefHeight(600);
+        widget.setPrefWidth(800);
+        session = jsch.getSession(user, host, 22);
+        session.setPassword(pass);
+        session.setConfig("StrictHostKeyChecking", "no");
+        // session.setConfig("max_input_buffer_size", (64 * 1024) + "");
+        session.connect();
+
+        channel = (ChannelShell) session.openChannel("shell");
+        channel.setInputStream(System.in);
+        channel.setOutputStream(System.out);
+        channel.setPty(true);
+        channel.setPtyType("xterm");
+
+        // channel.setPtySize(80, 25, 600, 600);
+
+        in = channel.getInputStream();
+        out = channel.getOutputStream();
+
+        ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
+        connector.init(channel);
+        connector.setReset(()->FXUtil.runLater(this::connect));
+        ZModemTtyConnector adaptor = new ZModemTtyConnector(widget.getTerminal(), connector);
+        this.widget.openSession(adaptor);
+        channel.connect();
+        // out.write(("stty -ixon -ixoff\n").getBytes());
+
+        InputStream err = channel.getExtInputStream();
+
+        new Thread(() -> {
+            try {
+                byte[] errBuffer = new byte[1024];
+                int errBytesRead;
+                while ((errBytesRead = err.read(errBuffer)) != -1) {
+                    System.err.print(new String(errBuffer, 0, errBytesRead));
+                }
+                System.err.println("--------------1");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+    }
 
     private void sendCommand() {
         String cmd = inputField.getText() + "\n";
@@ -99,7 +100,7 @@ public class ShellTerminalApp2 extends Application {
             out.write(cmd.getBytes());
             out.flush();
         } catch (IOException e) {
-            //appendText("Send error: " + e.getMessage());
+            // appendText("Send error: " + e.getMessage());
         }
     }
 
@@ -109,7 +110,7 @@ public class ShellTerminalApp2 extends Application {
             out.write(0x03);
             out.flush();
         } catch (IOException e) {
-            //appendText("Send error: " + e.getMessage());
+            // appendText("Send error: " + e.getMessage());
         }
     }
 
@@ -119,17 +120,31 @@ public class ShellTerminalApp2 extends Application {
             out.write(27);
             out.flush();
         } catch (IOException e) {
-            //appendText("Send error: " + e.getMessage());
+            // appendText("Send error: " + e.getMessage());
         }
     }
 
-    //private void appendText(String text) {
+    // private void appendText(String text) {
     //    outputArea.appendText(text);
     //}
 
     public void disconnect() {
-        if (channel != null) channel.disconnect();
-        if (session != null) session.disconnect();
+        if (channel != null) {
+            new Thread(() -> {
+                channel.disconnect();
+            }).start();
+        }
+        if (session != null) {
+            new Thread(() -> {
+                session.disconnect();
+            }).start();
+        }
+        if (widget != null) {
+            new Thread(() -> {
+                widget.close();
+            }).start();
+            root.getChildren().remove(widget);
+        }
     }
 
     public static void main(String[] args) {
@@ -139,8 +154,10 @@ public class ShellTerminalApp2 extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        VBox root = new VBox();
+        root = new VBox();
         root.setSpacing(10);
+        root.setPrefWidth(800);
+        root.setPrefHeight(800);
         root.getChildren().add(hostField = new TextField());
         root.getChildren().add(userField = new TextField());
         root.getChildren().add(passField = new TextField());
@@ -170,12 +187,12 @@ public class ShellTerminalApp2 extends Application {
         });
         HBox box1 = new HBox(button2, button3, button4);
         root.getChildren().add(box1);
-        root.getChildren().add(widget);
-        widget.setPrefHeight(600);
-        widget.setPrefWidth(800);
+        // root.getChildren().add(widget);
+        // widget.setPrefHeight(600);
+        // widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("Oyzh.1994");
+        passField.setText("");
         hostField.setText("120.24.176.61");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -189,9 +206,6 @@ public class ShellTerminalApp2 extends Application {
         public static void main(String[] args) throws URISyntaxException {
             ShellTerminalApp2.main(args);
         }
-
     }
-
-
 }
 
