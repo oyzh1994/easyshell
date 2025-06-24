@@ -109,6 +109,12 @@ public class ShellSSHTermTabController extends SubTabController {
                 connector.close();
             }
         }
+        // 已关闭
+        ShellSSHClient client = this.client();
+        ShellSSHShell shell = client.getShell();
+        if (shell == null) {
+            return;
+        }
         // 初始化组件
         this.widget = new ShellSSHTermWidget();
         this.widget.setFlexWidth("100%");

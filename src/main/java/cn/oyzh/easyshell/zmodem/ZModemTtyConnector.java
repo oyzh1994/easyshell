@@ -2,11 +2,12 @@ package cn.oyzh.easyshell.zmodem;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
+import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.Terminal;
 import com.jediterm.terminal.TtyConnector;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.io.CopyStreamEvent;
 import org.apache.commons.net.io.CopyStreamListener;
 import zmodem.FileCopyStreamEvent;
@@ -16,7 +17,6 @@ import zmodem.util.EmptyFileAdapter;
 import zmodem.util.FileAdapter;
 import zmodem.xfer.zm.util.ZModemCharacter;
 
-import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 /**
  * https://wiki.synchro.net/ref:zmodem
@@ -76,31 +75,33 @@ public class ZModemTtyConnector implements TtyConnector {
             return i;
         }
 
-        // char[] zmodemFrame = buffer;
         char[] zmodemFrame = Arrays.copyOfRange(buffer, e, i);
 
         zmodem = new ZModemProcessor(
                 // sz: * * 0x18 B 0 0
                 // rz: * * 0x18 B 0 1
                 zmodemFrame.length > 5 && zmodemFrame[5] == 48,
-                connector,
-                terminal,
                 new ZModemInputStream(connector.input(), new String(zmodemFrame).getBytes()),
-                connector.output()
+                this.connector.output()
         );
-
         return e;
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
+        // this.connector.write(bytes);
+        if (zmodem != null) {
+            if (bytes[0] == 0x03) {
+                zmodem.cancel();
+            }
+            return;
+        }
         this.connector.write(bytes);
     }
 
     @Override
     public void write(String string) throws IOException {
         this.connector.write(string);
-
     }
 
     @Override
@@ -125,7 +126,6 @@ public class ZModemTtyConnector implements TtyConnector {
 
     @Override
     public void close() {
-
         this.connector.close();
     }
 
@@ -140,17 +140,6 @@ public class ZModemTtyConnector implements TtyConnector {
             }
         }
         return -1;
-    }
-
-    public void write(byte[] buffer, int offset, int len) throws IOException {
-        if (zmodem != null) {
-            if (buffer[offset] == 0x03) {
-                zmodem.cancel();
-            }
-            return;
-        }
-        buffer = Arrays.copyOfRange(buffer, offset, offset + len);
-        connector.write(buffer);
     }
 
     private static class ZModemInputStream extends InputStream {
@@ -175,13 +164,11 @@ public class ZModemTtyConnector implements TtyConnector {
     private class ZModemProcessor implements CopyStreamListener {
         // 如果为 true 表示是接收（sz）文件
         private final boolean sz;
-        private final Terminal terminal;
         private final ZModem zmodem;
         private long lastRefreshTime = 0L;
 
-        public ZModemProcessor(boolean sz, ShellDefaultTtyConnector connector, Terminal terminal, InputStream input, OutputStream output) {
+        public ZModemProcessor(boolean sz, InputStream input, OutputStream output) {
             this.sz = sz;
-            this.terminal = terminal;
             this.zmodem = new ZModem(input, output, connector);
         }
 
@@ -194,115 +181,110 @@ public class ZModemTtyConnector implements TtyConnector {
         }
 
         private void receive() throws IOException {
-            zmodem.receive(new Supplier<FileAdapter>() {
-                @Override
-                public FileAdapter get() {
-                    try {
-                        List<File> files = openFilesDialog(JFileChooser.DIRECTORIES_ONLY);
-                        File file = files.isEmpty() ? null : files.get(0);
-                        if (file != null) {
-                            FileUtil.forceMkdir(file);
-                        }
-                        return file == null ? EmptyFileAdapter.INSTANCE : new CustomFile(file);
-                    } catch (Exception e) {
-                        return EmptyFileAdapter.INSTANCE;
-                    }
+            this.zmodem.receive(() -> {
+                File file = this.openDirDialog();
+                if (file != null) {
+                    FileUtil.forceMkdir(file);
                 }
+                return file == null ? EmptyFileAdapter.INSTANCE : new CustomFile(file);
             }, this);
         }
 
         private void send() throws Exception {
-            zmodem.send(new Supplier<List<FileAdapter>>() {
-                @Override
-                public List<FileAdapter> get() {
-                    List<FileAdapter> files = new ArrayList<>();
-                    try {
-                        for (File file : openFilesDialog(JFileChooser.FILES_ONLY)) {
-                            files.add(new CustomFile(file));
-                        }
-                    } catch (Exception e) {
-                    }
-                    return files;
+            this.zmodem.send(() -> {
+                List<FileAdapter> files = new ArrayList<>();
+                List<File> fileList = this.openFileDialog();
+                for (File file : fileList) {
+                    files.add(new CustomFile(file));
                 }
+                return files;
             }, this);
         }
 
+        /**
+         * 当前文件索引
+         */
+        private int curIndex = -1;
+
         private void refreshProgress(FileCopyStreamEvent event) throws IOException {
-            int width = 24;
+            // 文件索引变化，则换行
+            if (this.curIndex != event.getIndex()) {
+                this.curIndex = event.getIndex();
+                terminal.nextLine();
+            }
+            // 是否跳过
             boolean skip = event.isSkip();
-            boolean completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
-            double rate = (event.getBytesTransferred() * 1.0 / event.getTotalBytesTransferred()) * 100.0;
-            String progress = completed ? "100" : String.format("%.2f", Math.min(rate, 99.99));
+            // 文件总数
             long total = event.getRemaining() + event.getIndex() - 1;
             StringBuilder sb = new StringBuilder();
 
-            sb.append(ControlCharacters.CR);
-            sb.append(ControlCharacters.ESC).append("[0J");
-            sb.append('[').append(ControlCharacters.ESC).append("[35m").append(event.getIndex());
-            sb.append(ControlCharacters.ESC).append("[39m").append('/');
-            sb.append(ControlCharacters.ESC).append("[35m").append(total)
-                    .append(ControlCharacters.ESC).append("[39m").append(']');
+            // 文件索引
             sb.append(ControlCharacters.TAB);
-            sb.append(StringUtils.abbreviate(StringUtils.rightPad(event.getFilename(), width), width));
+            sb.append(event.getIndex());
+            sb.append("/");
+            sb.append(total);
+
+            // 文件名
             sb.append(ControlCharacters.TAB);
-            sb.append(
-                    StringUtils.abbreviate(
-                            StringUtils.rightPad(
-                                    String.format("%d/%d", event.getBytesTransferred(), event.getTotalBytesTransferred()),
-                                    width
-                            ), width
-                    )
-            );
+            sb.append(event.getFilename());
+
+            // 文件大小
+            sb.append(ControlCharacters.TAB);
+            sb.append(String.format("%d/%d", event.getBytesTransferred(), event.getTotalBytesTransferred()));
             sb.append(ControlCharacters.TAB);
 
-            if (skip) {
-                sb.append("[skip]");
-            } else {
+            // 处理进度
+            if (skip) {// 跳过
+                sb.append(I18nHelper.skip());
+            } else {// 进度
+                boolean completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
+                double rate = (event.getBytesTransferred() * 1.0 / event.getTotalBytesTransferred()) * 100.0;
+                String progress = completed ? "100" : String.format("%.2f", Math.min(rate, 99.99));
                 sb.append(progress).append('%');
             }
 
-            // 换行
-            if ((completed && event.getRemaining() > 1) || skip) {
-                sb.append(ControlCharacters.LF);
-                sb.append(ControlCharacters.CR);
-            }
-
-            if (completed && total == event.getIndex()) {
-               sb.append(ControlCharacters.LF);
-               sb.append(ControlCharacters.CR);
-            }
-
-            if (completed || skip) {
-                terminal.writeUnwrappedString(sb.toString());
-                return;
-            }
-
+            // 刷新屏幕
             long now = System.currentTimeMillis();
-            if (now - lastRefreshTime > 100) {
-                lastRefreshTime = now;
-                terminal.writeUnwrappedString(sb.toString());
+            if (now - this.lastRefreshTime > 200) {
+                this.lastRefreshTime = now;
+                terminal.saveCursor();
+                terminal.writeCharacters(sb.toString());
+                terminal.restoreCursor();
             }
         }
 
-        private List<File> openFilesDialog(int fileSelectionMode) {
+        /**
+         * 文件选择器
+         *
+         * @return 文件
+         */
+        private List<File> openFileDialog() {
             CompletableFuture<List<File>> future = new CompletableFuture<>();
-
             try {
-                try {
-                    List<File> files = FileChooserHelper.chooseMultiple("请选择文件", FXChooser.allExtensionFilter());
-                    future.complete(files);
-                } catch (Exception e) {
-                    future.completeExceptionally(e);
-                }
-            } catch (Exception e) {
-                return Collections.emptyList();
-            }
-
-            try {
+                List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseChooseFile(), FXChooser.allExtensionFilter());
+                future.complete(files);
                 return future.get();
-            } catch (Exception e) {
-                return Collections.emptyList();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return Collections.emptyList();
+        }
+
+        /**
+         * 文件夹选择器
+         *
+         * @return 文件夹
+         */
+        private File openDirDialog() {
+            CompletableFuture<File> future = new CompletableFuture<>();
+            try {
+                File file = DirChooserHelper.chooseDesktop(I18nHelper.pleaseChooseDir());
+                future.complete(file);
+                return future.get();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return null;
         }
 
         @Override

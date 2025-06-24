@@ -25,8 +25,14 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
      */
     private ShellSSHClient client;
 
+    /**
+     * 读取器
+     */
     private InputStreamReader shellReader;
 
+    /**
+     * 写入器
+     */
     private OutputStreamWriter shellWriter;
 
     public ShellSSHClient getClient() {
@@ -58,25 +64,11 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         return len;
     }
 
-    //private ShellZModemProcessor zModemProcessor=new ShellZModemProcessor();
-
     @Override
     public void write(String str) throws IOException {
         JulLog.debug("shell write : {}", str);
-        //if (this.zModemProcessor.isRZ(str)) {
-        //    System.out.println("拦截rz");
-        //    this.zModemProcessor.doSend(this.client,()->{
-        //        try {
-        //            this.shellWriter.write("\nclear\r");
-        //        this.shellWriter.flush();
-        //        } catch (IOException e) {
-        //            throw new RuntimeException(e);
-        //        }
-        //    });
-        //} else {
         this.shellWriter.write(str);
         this.shellWriter.flush();
-        //}
     }
 
     @Override
@@ -106,20 +98,26 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         if (this.client != null) {
             ThreadUtil.startVirtual(() -> this.client.resolveWorkerDir(str));
         }
-        //this.zModemProcessor.setRead(str);
         return len;
     }
 
     @Override
-    public InputStream input() throws IOException {
-        return this.client.getShell().getInputStream();
+    public InputStream input() {
+        try {
+            return this.client.getShell().getInputStream();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     @Override
-    public OutputStream output() throws IOException {
-        return this.client.getShell().getOutputStream();
-    }
-
-    public void reset() throws Exception {
+    public OutputStream output() {
+        try {
+            return this.client.getShell().getOutputStream();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

@@ -59,25 +59,11 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         return len;
     }
 
-    //private ShellZModemProcessor zModemProcessor=new ShellZModemProcessor();
-
     @Override
     public void write(String str) throws IOException {
         JulLog.debug("shell write : {}", str);
-        //if (this.zModemProcessor.isRZ(str)) {
-        //    System.out.println("拦截rz");
-        //    this.zModemProcessor.doSend(this.client,()->{
-        //        try {
-        //            this.shellWriter.write("\nclear\r");
-        //        this.shellWriter.flush();
-        //        } catch (IOException e) {
-        //            throw new RuntimeException(e);
-        //        }
-        //    });
-        //} else {
         this.shellWriter.write(str);
         this.shellWriter.flush();
-        //}
     }
 
     @Override
@@ -107,20 +93,16 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         if (this.client != null) {
             ThreadUtil.startVirtual(() -> this.client.resolveWorkerDir(str));
         }
-        //this.zModemProcessor.setRead(str);
         return len;
     }
 
     @Override
-    public InputStream input() throws IOException {
+    public InputStream input()   {
         return this.client.getShell().getInputStream();
     }
 
     @Override
-    public OutputStream output() throws IOException {
+    public OutputStream output()   {
         return this.client.getShell().getOutputStream();
-    }
-
-    public void reset() throws Exception {
     }
 }

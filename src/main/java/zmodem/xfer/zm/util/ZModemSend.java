@@ -1,6 +1,6 @@
 package zmodem.xfer.zm.util;
 
-import org.apache.commons.io.IOUtils;
+import cn.oyzh.common.util.IOUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.net.io.CopyStreamAdapter;
 import org.apache.commons.net.io.CopyStreamListener;
@@ -55,11 +55,7 @@ public class ZModemSend {
     }
 
     public boolean nextFile() throws IOException {
-        //if (true) {
-        //    return false;
-        //}
-
-        IOUtils.closeQuietly(fileIs);
+        IOUtil.closeQuietly(fileIs);
 
         if (files == null) {
             files = destinationSupplier.get();
@@ -151,7 +147,6 @@ public class ZModemSend {
                 try {
                     packet = is.read();
                     System.out.println(packet);
-                    // System.out.println("------------");
                 } catch (InvalidChecksumException ice) {
                     ++errorCount;
                     if (errorCount > 20) {
@@ -211,7 +206,7 @@ public class ZModemSend {
                 log.error(e.getMessage(), e);
             }
         } finally {
-            IOUtils.closeQuietly(fileIs);
+            IOUtil.closeQuietly(fileIs);
         }
 
     }

@@ -1,17 +1,16 @@
 package zmodem.util;
 
-import org.apache.commons.io.input.RandomAccessFileInputStream;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 
 public class CustomFile implements FileAdapter {
-    File file = null;
+    private File file = null;
 
     public CustomFile(File file) {
         super();
@@ -25,12 +24,12 @@ public class CustomFile implements FileAdapter {
 
     @Override
     public InputStream getInputStream() throws IOException {
-       //return new FileInputStream(file);
-        return RandomAccessFileInputStream.builder()
-                .setCloseOnClose(true)
-                .setRandomAccessFile(new RandomAccessFile(file, "r"))
-                .setBufferSize(1024 * 8)
-                .get();
+        return new FileInputStream(file);
+        // return RandomAccessFileInputStream.builder()
+        //         .setCloseOnClose(true)
+        //         .setRandomAccessFile(new RandomAccessFile(file, "r"))
+        //         .setBufferSize(1024 * 8)
+        //         .get();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package zmodem.xfer.zm.util;
 
-import org.apache.commons.io.IOUtils;
+import cn.oyzh.common.util.IOUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -50,7 +50,6 @@ public class ZModemReceive {
         FILENAME, DATA, NOTHING;
     }
 
-
     public ZModemReceive(Supplier<FileAdapter> destDir, InputStream netin, OutputStream netout) throws IOException {
         destinationSupplier = destDir;
         netIs = netin;
@@ -67,7 +66,7 @@ public class ZModemReceive {
                 offset = 0;
         }
 
-        IOUtils.closeQuietly(fileOs);
+        IOUtil.closeQuietly(fileOs);
 
         fileOs = file.getOutputStream(append);
         fOffset = offset;
@@ -197,7 +196,7 @@ public class ZModemReceive {
                             expect = Expect.NOTHING;
                             file = null;
                             fileOs.flush();
-                            IOUtils.closeQuietly(fileOs);
+                            IOUtil.closeQuietly(fileOs);
                             fileOs = null;
                             break;
                         case ZDATA:
@@ -256,7 +255,7 @@ public class ZModemReceive {
                 log.error(e.getMessage(), e);
             }
         } finally {
-            IOUtils.closeQuietly(fileOs);
+            IOUtil.closeQuietly(fileOs);
         }
 
     }

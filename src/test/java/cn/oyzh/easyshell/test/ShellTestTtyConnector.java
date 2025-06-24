@@ -78,7 +78,7 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        if(str.equals("reset--1")){
+        if (str.equals("reset--1")) {
             // reset.run();
 
             try {
@@ -89,7 +89,7 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
             return;
         }
         JulLog.warn("shell write : {}", str);
-        //super.write(str);
+        // super.write(str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
     }
@@ -125,19 +125,29 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
     }
 
     @Override
-    public InputStream input() throws IOException {
-        if (this.shell1 != null) {
-            return this.shell1.getInputStream();
+    public InputStream input() {
+        try {
+            if (this.shell1 != null) {
+                return this.shell1.getInputStream();
+            }
+            return this.shell.getInputStream();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return this.shell.getInputStream();
+        return null;
     }
 
     @Override
-    public OutputStream output() throws IOException {
-        if (this.shell1 != null) {
-            return this.shell1.getOutputStream();
+    public OutputStream output() {
+        try {
+            if (this.shell1 != null) {
+                return this.shell1.getOutputStream();
+            }
+            return this.shell.getOutputStream();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return this.shell.getOutputStream();
+        return null;
     }
 
 }

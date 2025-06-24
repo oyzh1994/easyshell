@@ -46,11 +46,21 @@ public class PtyProcessTtyConnector extends ProcessTtyConnector {
         return "";
     }
 
-    public InputStream input() throws IOException {
+    /**
+     * 获取真实的输入流
+     *
+     * @return 输入流
+     */
+    public InputStream input() {
         return null;
     }
 
-    public OutputStream output() throws IOException{
+    /**
+     * 获取真实的输出流
+     *
+     * @return 输出流
+     */
+    public OutputStream output() {
         return null;
     }
 }
