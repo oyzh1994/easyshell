@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.zmodem;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -222,6 +223,11 @@ public class ZModemTtyConnector implements TtyConnector {
             }
         }
 
+        /**
+         * 接收
+         *
+         * @throws IOException 异常
+         */
         private void receive() throws IOException {
             this.zmodem.receive(() -> {
                 File file = this.openDirDialog();
@@ -232,6 +238,11 @@ public class ZModemTtyConnector implements TtyConnector {
             }, this);
         }
 
+        /**
+         * 发送
+         *
+         * @throws Exception 异常
+         */
         private void send() throws Exception {
             this.zmodem.send(() -> {
                 List<FileAdapter> files = new ArrayList<>();
@@ -285,14 +296,13 @@ public class ZModemTtyConnector implements TtyConnector {
             boolean completed = false;
             // 处理进度
             if (skip) {// 跳过
-                sb.append(I18nHelper.skip());
+                sb.append(I18nHelper.skip()).append(ControlCharacters.CR);
             } else {// 进度
                 completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
                 double rate = (event.getBytesTransferred() * 1.0 / event.getTotalBytesTransferred()) * 100.0;
-                String progress = completed ? "100" : String.format("%.2f", rate);
-                sb.append(progress).append('%');
+                sb.append(NumberUtil.scale(rate, 2)).append('%').append(ControlCharacters.CR);
             }
-
+            
             // 刷新屏幕
             long now = System.currentTimeMillis();
             // 达到刷新阈值或当前文件传输完成或跳过，则执行刷新

@@ -146,7 +146,7 @@ public class ZModemSend {
             while (!end) {
                 try {
                     packet = is.read();
-                    System.out.println(packet);
+                    // System.out.println(packet);
                 } catch (InvalidChecksumException ice) {
                     ++errorCount;
                     if (errorCount > 20) {
@@ -212,9 +212,9 @@ public class ZModemSend {
     }
 
     private void fireBytesTransferred(boolean skip) {
-        if (this.filesize == fOffset) {
-            System.out.println();
-        }
+        // if (this.filesize == fOffset) {
+        //     System.out.println();
+        // }
         adapter.bytesTransferred(new FileCopyStreamEvent(this, file.getName(), files.size() - index + 1, index,
                 this.filesize, fOffset, 0, skip));
     }
