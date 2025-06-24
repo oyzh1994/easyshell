@@ -234,12 +234,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean enableCompress;
 
     /**
+     * 启用zmodem
+     */
+    @Column
+    private Boolean  enableZmodem;
+
+    /**
      * 区域，仅s3协议
      */
     @Column
     private String region;
 
-    public void setEnableCompress(Boolean enableCompress) {
+    public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
 
@@ -247,11 +253,19 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return enableCompress != null && enableCompress;
     }
 
-    public void setEnableProxy(Boolean enableProxy) {
+    public void setEnableZmodem(boolean enableZmodem) {
+        this.enableZmodem = enableZmodem;
+    }
+
+    public Boolean isEnableZmodem() {
+        return enableZmodem != null && enableZmodem;
+    }
+
+    public void setEnableProxy(boolean enableProxy) {
         this.enableProxy = enableProxy;
     }
 
-    public Boolean isEnableProxy() {
+    public boolean isEnableProxy() {
         return enableProxy != null && enableProxy;
     }
 
@@ -271,15 +285,15 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.keyId = keyId;
     }
 
-    public Boolean getEnableBackground() {
+    public boolean getEnableBackground() {
         return enableBackground;
     }
 
-    public Boolean isEnableBackground() {
+    public boolean isEnableBackground() {
         return enableBackground != null && enableBackground;
     }
 
-    public void setEnableBackground(Boolean enableBackground) {
+    public void setEnableBackground(boolean enableBackground) {
         this.enableBackground = enableBackground;
     }
 
@@ -376,6 +390,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.region = t1.region;
         // ssh
         this.environment = t1.environment;
+        this.enableZmodem = t1.enableZmodem;
         this.enableCompress = t1.enableCompress;
         // 认证
         this.keyId = t1.keyId;
@@ -495,11 +510,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.connectTimeOut = connectTimeOut;
     }
 
-    public Boolean getX11forwarding() {
+    public boolean getX11forwarding() {
         return x11forwarding;
     }
 
-    public void setX11forwarding(Boolean x11forwarding) {
+    public void setX11forwarding(boolean x11forwarding) {
         this.x11forwarding = x11forwarding;
     }
 
@@ -707,7 +722,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return BooleanUtil.isTrue(sslMode);
     }
 
-    public void setSSLMode(Boolean sslMode) {
+    public void setSSLMode(boolean sslMode) {
         this.sslMode = sslMode;
     }
 
@@ -715,7 +730,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return BooleanUtil.isTrue(ftpPassiveMode);
     }
 
-    public void setFtpPassiveMode(Boolean ftpPassiveMode) {
+    public void setFtpPassiveMode(boolean ftpPassiveMode) {
         this.ftpPassiveMode = ftpPassiveMode;
     }
 

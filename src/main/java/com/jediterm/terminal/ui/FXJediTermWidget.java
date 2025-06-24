@@ -2,6 +2,7 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
+import cn.oyzh.fx.plus.util.FXUtil;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.typeahead.TypeAheadTerminalModel;
 import com.jediterm.terminal.ProcessTtyConnector;
@@ -256,6 +257,11 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
             session.stop();
         }
     }
+
+    // public void stopSession() {
+    //    this.stopRunningSession();
+    //    this.myRunningSession.set(null);
+    // }
 
     public boolean isSessionRunning() {
         return myRunningSession.get() != null;

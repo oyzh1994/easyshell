@@ -182,6 +182,21 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         }
     }
 
+    // /**
+    //  * 重新打开会话
+    //  *
+    //  * @param ttyConnector tty连接器
+    //  */
+    // public void reopenSession(TtyConnector ttyConnector) {
+    //     super.stopSession();
+    //     // 关闭旧的
+    //     TtyConnector connector = this.getTtyConnector();
+    //     if (connector != null) {
+    //         connector.close();
+    //     }
+    //     this.openSession(ttyConnector);
+    // }
+
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
             FXJediTermWidget session = this.createTerminalSession(ttyConnector);
@@ -221,11 +236,15 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     @Override
     public void close() {
         try {
+            // TtyConnector connector = this.getTtyConnector();
+            // if (connector != null) {
+            //     connector.close();
+            // }
             super.close();
+            SystemUtil.gcLater();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        SystemUtil.gcLater();
     }
 
     /**

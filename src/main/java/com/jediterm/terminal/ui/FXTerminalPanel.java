@@ -536,12 +536,16 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private @Nullable HyperlinkStyle findHyperlink(@Nullable Cell cell) {
-        if (cell != null && cell.getColumn() >= 0 && cell.getColumn() < myTerminalTextBuffer.getWidth() && cell.getLine() >= -myTerminalTextBuffer.getHistoryLinesCount() &&
-                cell.getLine() <= myTerminalTextBuffer.getHeight()) {
-            TextStyle style = myTerminalTextBuffer.getStyleAt(cell.getColumn(), cell.getLine());
-            if (style instanceof HyperlinkStyle) {
-                return (HyperlinkStyle) style;
+        try {
+            if (cell != null && cell.getColumn() >= 0 && cell.getColumn() < myTerminalTextBuffer.getWidth() && cell.getLine() >= -myTerminalTextBuffer.getHistoryLinesCount() &&
+                    cell.getLine() <= myTerminalTextBuffer.getHeight()) {
+                TextStyle style = myTerminalTextBuffer.getStyleAt(cell.getColumn(), cell.getLine());
+                if (style instanceof HyperlinkStyle) {
+                    return (HyperlinkStyle) style;
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }

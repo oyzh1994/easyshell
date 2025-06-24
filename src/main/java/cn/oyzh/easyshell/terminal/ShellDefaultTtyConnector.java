@@ -149,7 +149,10 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
      */
     public void resetTtyConnector() {
         if (this.resetTtyConnectorCallback != null) {
-            this.resetTtyConnectorCallback.run();
+            // 只允许执行一次，执行完成就销毁
+            Runnable func = this.resetTtyConnectorCallback;
+            this.resetTtyConnectorCallback = null;
+            func.run();
         }
     }
 }

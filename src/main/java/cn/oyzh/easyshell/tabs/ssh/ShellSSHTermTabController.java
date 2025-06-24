@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -34,6 +35,7 @@ import javafx.fxml.FXML;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * ssh-终端tab内容组件
@@ -112,7 +114,9 @@ public class ShellSSHTermTabController extends SubTabController {
         // 已关闭
         ShellSSHClient client = this.client();
         ShellSSHShell shell = client.getShell();
+        // 已关闭
         if (shell == null) {
+            this.closeTab();
             return;
         }
         // 初始化组件
@@ -133,26 +137,52 @@ public class ShellSSHTermTabController extends SubTabController {
      */
     private TtyConnector initTtyConnector() throws IOException {
         ShellSSHClient client = this.client();
+        ShellConnect connect = client.getShellConnect();
         Charset charset = client.getCharset();
+        TtyConnector ttyConnector;
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.init(client);
-        ZModemTtyConnector adaptor = this.widget.createZModemTtyConnector(connector);
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
-        connector.setResetTtyConnectorCallback(() -> {
+        if (connect.isEnableZmodem()) {
+            connector.setResetTtyConnectorCallback(this::openShell);
+            ttyConnector = this.widget.createZModemTtyConnector(connector);
+        } else {
+            ttyConnector = connector;
+        }
+        return ttyConnector;
+    }
+
+    /**
+     * 打开shell
+     *
+     * @return 结果
+     */
+    private boolean openShell() {
+        DownLatch latch = DownLatch.of();
+        ShellSSHClient client = this.client();
+        AtomicReference<Exception> ref = new AtomicReference<>();
+        ThreadUtil.start(() -> {
             try {
                 ShellSSHShell shell = client.reopenShell();
                 this.initWidget();
                 shell.connect(client.connectTimeout());
             } catch (Exception ex) {
-                MessageBox.exception(ex);
-                this.closeTab();
+                ref.set(ex);
+            } finally {
+                latch.countDown();
             }
         });
-        return adaptor;
+        latch.await();
+        if (ref.get() != null) {
+            MessageBox.exception(ref.get());
+            this.closeTab();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -171,15 +201,17 @@ public class ShellSSHTermTabController extends SubTabController {
      * @throws Exception 异常
      */
     public void init() throws Exception {
-        ShellSSHClient client = this.client();
-        ShellSSHShell shell = client.openShell();
-        this.initWidget();
-        shell.connect(client.connectTimeout());
-        if (!shell.isConnected()) {
-            MessageBox.warn(I18nHelper.connectFail());
-            this.closeTab();
+        // ShellSSHClient client = this.client();
+        // ShellSSHShell shell = client.openShell();
+        if (!this.openShell()) {
             return;
         }
+        // shell.connect(client.connectTimeout());
+        // if (!shell.isConnected()) {
+        //     MessageBox.warn(I18nHelper.connectFail());
+        //     this.closeTab();
+        //     return;
+        // }
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
         // 初始化

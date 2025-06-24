@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -35,7 +36,9 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
+import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -46,6 +49,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * shell-效率模式tab内容组件
@@ -70,7 +74,7 @@ public class ShellSSHEffTabController extends SubTabController {
     /**
      * 终端组件
      */
-    @FXML
+    // @FXML
     private ShellSSHTermWidget widget;
 
     /**
@@ -173,21 +177,92 @@ public class ShellSSHEffTabController extends SubTabController {
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
-     * 初始化终端
+     * 初始化组件
      *
      * @throws IOException 异常
      */
     private void initWidget() throws IOException {
-        Charset charset = this.client().getCharset();
+        // 关闭和移除旧的组件
+        if (this.widget != null) {
+            this.widget.close();
+            this.rightBox.removeChild(this.widget);
+            TtyConnector connector = this.widget.getTtyConnector();
+            if (connector != null) {
+                connector.close();
+            }
+        }
+        // 已关闭
+        ShellSSHClient client = this.client();
+        ShellSSHShell shell = client.getShell();
+        // 已关闭
+        if (shell == null) {
+            this.closeTab();
+            return;
+        }
+        // 初始化组件
+        this.widget = new ShellSSHTermWidget();
+        this.widget.setFlexWidth("100%");
+        this.widget.setFlexHeight("100% - 30");
+        this.rightBox.addChild(0, this.widget);
+        this.widget.openSession(this.initTtyConnector());
+        // 获取焦点
+        FXUtil.runLater(this.widget::requestFocus);
+    }
+
+    /**
+     * 初始化tty连接器
+     *
+     * @return tty连接器
+     * @throws IOException 异常
+     */
+    private TtyConnector initTtyConnector() throws IOException {
+        ShellSSHClient client = this.client();
+        ShellConnect connect = client.getShellConnect();
+        Charset charset = client.getCharset();
+        TtyConnector ttyConnector;
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.init(this.client());
-        this.widget.openSession(connector);
-        this.widget.onTermination(exitCode -> this.widget.close());
+        connector.init(client);
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
+        if (connect.isEnableZmodem()) {
+            connector.setResetTtyConnectorCallback(this::openShell);
+            ttyConnector = this.widget.createZModemTtyConnector(connector);
+        } else {
+            ttyConnector = connector;
+        }
+        return ttyConnector;
+    }
+
+    /**
+     * 打开shell
+     *
+     * @return 结果
+     */
+    private boolean openShell() {
+        DownLatch latch = DownLatch.of();
+        ShellSSHClient client = this.client();
+        AtomicReference<Exception> ref = new AtomicReference<>();
+        ThreadUtil.start(() -> {
+            try {
+                ShellSSHShell shell = client.reopenShell();
+                this.initWidget();
+                shell.connect(client.connectTimeout());
+            } catch (Exception ex) {
+                ref.set(ex);
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await();
+        if (ref.get() != null) {
+            MessageBox.exception(ref.get());
+            this.closeTab();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -233,13 +308,16 @@ public class ShellSSHEffTabController extends SubTabController {
      * @throws Exception 异常
      */
     public void init() throws Exception {
-        ShellSSHClient client = this.client();
-        ShellSSHShell shell = client.openShell();
-        this.initWidget();
-        shell.connect(client.connectTimeout());
-        if (!shell.isConnected()) {
-            MessageBox.warn(I18nHelper.connectFail());
-            this.closeTab();
+        // ShellSSHClient client = this.client();
+        // ShellSSHShell shell = client.openShell();
+        // this.initWidget();
+        // shell.connect(client.connectTimeout());
+        // if (!shell.isConnected()) {
+        //     MessageBox.warn(I18nHelper.connectFail());
+        //     this.closeTab();
+        //     return;
+        // }
+        if (!this.openShell()) {
             return;
         }
         // 初始化文件

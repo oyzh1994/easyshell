@@ -304,6 +304,12 @@ public class ShellAddSSHConnectController extends StageController {
     private FXCheckBox enableCompress;
 
     /**
+     * 启用zmodem
+     */
+    @FXML
+    private FXCheckBox enableZmodem;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -457,6 +463,7 @@ public class ShellAddSSHConnectController extends StageController {
             String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
+            boolean enableZmodem = this.enableZmodem.isSelected();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
             boolean enableBackground = this.enableBackground.isSelected();
@@ -469,6 +476,8 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setTermType(termType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             shellConnect.setEnvironment(this.env.getTextTrim());
+            // 启用zmodem
+            shellConnect.setEnableZmodem(enableZmodem);
             // 启用压缩
             shellConnect.setEnableCompress(enableCompress);
             // 认证信息

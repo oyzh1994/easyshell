@@ -1,10 +1,12 @@
 package cn.oyzh.easyshell.zmodem;
 
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.Terminal;
 import com.jediterm.terminal.TtyConnector;
@@ -28,20 +30,35 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * https://wiki.synchro.net/ref:zmodem
+ * zmodem协议tty连接器
+ *
+ * @author oyzh
+ * @since 2025/06/24
  */
 public class ZModemTtyConnector implements TtyConnector {
 
-    private final char[] prefix = new char[]{
+    /**
+     * zmodem协议前缀
+     */
+    public static final char[] ZMODEM_PREFIX = new char[]{
             (char) ZModemCharacter.ZPAD.value(),
             (char) ZModemCharacter.ZPAD.value(),
             (char) ZModemCharacter.ZDLE.value()
     };
 
-    private volatile ZModemProcessor zmodem;
-
+    /**
+     * 终端容器
+     */
     private Terminal terminal;
 
+    /**
+     * zmodem处理器
+     */
+    private volatile ZModemProcessor zmodem;
+
+    /**
+     * tty连接器
+     */
     private ShellDefaultTtyConnector connector;
 
     public ShellDefaultTtyConnector getConnector() {
@@ -55,33 +72,29 @@ public class ZModemTtyConnector implements TtyConnector {
 
     @Override
     public int read(char[] buffer, int offset, int length) throws IOException {
-        if (zmodem != null) {
-            try {
-                zmodem.process();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            zmodem = null;
+        // 处理zomdem
+        if (this.zmodem != null) {
+            this.zmodem.process();
+            this.zmodem = null;
         }
 
-        int i = connector.read(buffer, offset, length);
+        int i = this.connector.read(buffer, offset, length);
         if (i < 1) {
             return i;
         }
 
         char[] bufferSlice = Arrays.copyOfRange(buffer, 0, i);
-        int e = indexOf(bufferSlice, prefix);
+        int e = indexOfZmodem(bufferSlice);
         if (e == -1) {
             return i;
         }
-
         char[] zmodemFrame = Arrays.copyOfRange(buffer, e, i);
-
-        zmodem = new ZModemProcessor(
+        // 创建zmode处理器
+        this.zmodem = new ZModemProcessor(
                 // sz: * * 0x18 B 0 0
                 // rz: * * 0x18 B 0 1
                 zmodemFrame.length > 5 && zmodemFrame[5] == 48,
-                new ZModemInputStream(connector.input(), new String(zmodemFrame).getBytes()),
+                new ZModemInputStream(this.connector.input(), new String(zmodemFrame).getBytes()),
                 this.connector.output()
         );
         return e;
@@ -89,11 +102,9 @@ public class ZModemTtyConnector implements TtyConnector {
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        // this.connector.write(bytes);
-        if (zmodem != null) {
-            if (bytes[0] == 0x03) {
-                zmodem.cancel();
-            }
+        // 取消zmodem
+        if (this.zmodem != null && bytes.length > 0 && bytes[0] == 0x03) {
+            this.zmodem.cancel();
             return;
         }
         this.connector.write(bytes);
@@ -106,7 +117,7 @@ public class ZModemTtyConnector implements TtyConnector {
 
     @Override
     public boolean isConnected() {
-        return this.connector.isConnected();
+        return this.connector != null && this.connector.isConnected();
     }
 
     @Override
@@ -126,22 +137,39 @@ public class ZModemTtyConnector implements TtyConnector {
 
     @Override
     public void close() {
-        this.connector.close();
+        if (this.connector != null) {
+            this.zmodem = null;
+            this.terminal = null;
+            this.connector = null;
+            JulLog.info("close zmodem tty");
+        }
     }
 
-    private int indexOf(char[] a, char[] b) {
-        if (a.length < b.length) {
+    /**
+     * 获取zmodem协议前缀位置
+     *
+     * @param a 数组
+     * @return 结果
+     */
+    private static int indexOfZmodem(char[] a) {
+        if (a.length < ZMODEM_PREFIX.length) {
             return -1;
         }
-        for (int i = 0; i <= a.length - b.length; i++) {
-            char[] range = Arrays.copyOfRange(a, i, i + b.length);
-            if (Arrays.equals(range, b)) {
+        for (int i = 0; i <= a.length - ZMODEM_PREFIX.length; i++) {
+            char[] range = Arrays.copyOfRange(a, i, i + ZMODEM_PREFIX.length);
+            if (Arrays.equals(range, ZMODEM_PREFIX)) {
                 return i;
             }
         }
         return -1;
     }
 
+    /**
+     * zmodem输入流
+     *
+     * @author oyzh
+     * @since 20025/06/24
+     */
     private static class ZModemInputStream extends InputStream {
         private final InputStream input;
         private final byte[] buffer;
@@ -154,13 +182,19 @@ public class ZModemTtyConnector implements TtyConnector {
 
         @Override
         public int read() throws IOException {
-            if (index < buffer.length) {
-                return buffer[index++];
+            if (this.index < buffer.length) {
+                return this.buffer[index++];
             }
-            return input.read();
+            return this.input.read();
         }
     }
 
+    /**
+     * zmodem处理器
+     *
+     * @author oyzh
+     * @since 20025/06/24
+     */
     private class ZModemProcessor implements CopyStreamListener {
         // 如果为 true 表示是接收（sz）文件
         private final boolean sz;
@@ -172,11 +206,19 @@ public class ZModemTtyConnector implements TtyConnector {
             this.zmodem = new ZModem(input, output, connector);
         }
 
-        public void process() throws Exception {
-            if (sz) {
-                receive();
-            } else {
-                send();
+        /**
+         * 处理
+         */
+        public void process() {
+            try {
+                if (this.sz) {
+                    this.receive();
+                } else {
+                    this.send();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
         }
 
@@ -206,6 +248,12 @@ public class ZModemTtyConnector implements TtyConnector {
          */
         private int curIndex = -1;
 
+        /**
+         * 刷新进度
+         *
+         * @param event 事件
+         * @throws IOException 异常
+         */
         private void refreshProgress(FileCopyStreamEvent event) throws IOException {
             // 文件索引变化，则换行
             if (this.curIndex != event.getIndex()) {
@@ -233,19 +281,22 @@ public class ZModemTtyConnector implements TtyConnector {
             sb.append(String.format("%d/%d", event.getBytesTransferred(), event.getTotalBytesTransferred()));
             sb.append(ControlCharacters.TAB);
 
+            // 当前传输是否完成
+            boolean completed = false;
             // 处理进度
             if (skip) {// 跳过
                 sb.append(I18nHelper.skip());
             } else {// 进度
-                boolean completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
+                completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
                 double rate = (event.getBytesTransferred() * 1.0 / event.getTotalBytesTransferred()) * 100.0;
-                String progress = completed ? "100" : String.format("%.2f", Math.min(rate, 99.99));
+                String progress = completed ? "100" : String.format("%.2f", rate);
                 sb.append(progress).append('%');
             }
 
             // 刷新屏幕
             long now = System.currentTimeMillis();
-            if (now - this.lastRefreshTime > 200) {
+            // 达到刷新阈值或当前文件传输完成或跳过，则执行刷新
+            if (now - this.lastRefreshTime > 200 || completed || skip) {
                 this.lastRefreshTime = now;
                 terminal.saveCursor();
                 terminal.writeCharacters(sb.toString());
