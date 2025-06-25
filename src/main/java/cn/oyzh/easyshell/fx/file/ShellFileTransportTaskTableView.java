@@ -51,7 +51,7 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
             for (ShellFileTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
                 sftpTransportTask.cancel();
             }
-            this.removeItem(tasks);
+            // this.removeItem(tasks);
         });
         menuItems.add(cancel);
         ShellFileTransportTask task = tasks.getFirst();

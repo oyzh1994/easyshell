@@ -46,13 +46,13 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
         if (CollectionUtil.isEmpty(tasks)) {
             return Collections.emptyList();
         }
-        List<ShellFileUploadTask> list = new ArrayList<>(tasks);
+        // List<ShellFileUploadTask> list = new ArrayList<>(tasks);
         List<MenuItem> menuItems = new ArrayList<>();
         MenuItem cancel = MenuItemHelper.cancelUpload("12", () -> {
-            for (ShellFileUploadTask task : list) {
+            for (ShellFileUploadTask task : tasks) {
                 task.cancel();
             }
-            this.removeItem(list);
+            // this.removeItem(list);
         });
         menuItems.add(cancel);
         ShellFileUploadTask task = tasks.getFirst();
