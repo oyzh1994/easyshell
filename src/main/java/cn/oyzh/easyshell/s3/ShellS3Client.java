@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.s3;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -60,6 +61,7 @@ import software.amazon.awssdk.services.s3.model.VersioningConfiguration;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,7 +120,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
         // 构建 S3 客户端，指定 endpoint 和凭证
         this.s3Client = S3Client.builder()
-                .endpointOverride(java.net.URI.create(endpoint))
+                .endpointOverride(URI.create(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .region(this.region())
                 .build();
@@ -126,14 +128,18 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public void start(int timeout) throws Exception {
-        this.initClient();
         try {
+            this.initClient();
             this.state.set(ShellConnState.CONNECTING);
             this.s3Client.listBuckets();
             this.state.set(ShellConnState.CONNECTED);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             throw ex;
+        } finally {
+            // 执行一次gc，快速回收内存
+            SystemUtil.gc();
         }
     }
 
@@ -144,7 +150,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean isConnected() {
-        return this.state.get().isConnected();
+        return this.s3Client != null && this.state.get().isConnected();
     }
 
     @Override
@@ -155,12 +161,12 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     @Override
     public void close() {
         try {
-            this.state.set(ShellConnState.CLOSED);
-            this.removeStateListener(this.stateListener);
             if (this.s3Client != null) {
                 IOUtil.close(this.s3Client);
                 this.s3Client = null;
             }
+            this.state.set(ShellConnState.CLOSED);
+            this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

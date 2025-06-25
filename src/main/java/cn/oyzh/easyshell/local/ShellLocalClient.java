@@ -49,7 +49,8 @@ public class ShellLocalClient implements BaseClient {
         try {
             this.state.set(ShellConnState.CONNECTING);
                 this.state.set(ShellConnState.CONNECTED);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {

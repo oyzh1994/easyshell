@@ -86,7 +86,8 @@ public class ShellSerialClient implements BaseClient {
             } else {
                 this.state.set(ShellConnState.CONNECTED);
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {

@@ -1,13 +1,12 @@
 package zmodem.xfer.zm.util;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
+import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.common.util.StringUtil;
 import org.apache.commons.net.io.CopyStreamAdapter;
 import org.apache.commons.net.io.CopyStreamListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import zmodem.FileCopyStreamEvent;
 import zmodem.util.EmptyFileAdapter;
 import zmodem.util.FileAdapter;
@@ -28,8 +27,6 @@ import java.util.function.Supplier;
 
 
 public class ZModemReceive {
-
-    private static final Logger log = LoggerFactory.getLogger(ZModemReceive.class);
 
     private final CopyStreamAdapter adapter = new CopyStreamAdapter();
     private final Supplier<FileAdapter> destinationSupplier;
@@ -92,15 +89,15 @@ public class ZModemReceive {
             filename.write(b);
         }
 
-        final String[] segments = extract.toString().split(StringUtils.SPACE);
-        if (ArrayUtils.isNotEmpty(segments)) {
+        final String[] segments = extract.toString().split(StringUtil.SPACE);
+        if (ArrayUtil.isNotEmpty(segments)) {
             // filesize
             if (segments.length >= 1) {
-                this.filesize = NumberUtils.toLong(segments[0]);
+                this.filesize = NumberUtil.toLong(segments[0]);
             }
             // remaining
             if (segments.length >= 5) {
-                this.remaining = NumberUtils.toInt(segments[4]);
+                this.remaining = NumberUtil.toInt(segments[4]);
             }
         }
 
@@ -157,8 +154,8 @@ public class ZModemReceive {
                 try {
                     packet = is.read();
                 } catch (InvalidChecksumException ice) {
-                    if (log.isErrorEnabled()) {
-                        log.error(ice.getMessage(), ice);
+                    if (JulLog.isErrorEnabled()) {
+                        JulLog.error(ice.getMessage(), ice);
                     }
                     ++errorCount;
                     if (errorCount >= 3) {
@@ -251,8 +248,8 @@ public class ZModemReceive {
                 }
             }
         } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error(e.getMessage(), e);
+            if (JulLog.isErrorEnabled()) {
+                JulLog.error(e.getMessage(), e);
             }
         } finally {
             IOUtil.closeQuietly(fileOs);

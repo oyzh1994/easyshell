@@ -339,7 +339,7 @@ public class ZModemTtyConnector implements TtyConnector {
         private File openDirDialog() {
             CompletableFuture<File> future = new CompletableFuture<>();
             try {
-                File file = DirChooserHelper.chooseDesktop(I18nHelper.pleaseChooseDir());
+                File file = DirChooserHelper.chooseDownload(I18nHelper.pleaseChooseDir());
                 future.complete(file);
                 return future.get();
             } catch (Exception ex) {

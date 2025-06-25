@@ -139,7 +139,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             }
             long endTime = System.currentTimeMillis();
             JulLog.info("shellSFTPClient connected used:{}ms.", (endTime - starTime));
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellSFTPClient start error", ex);
             throw new ShellException(ex);

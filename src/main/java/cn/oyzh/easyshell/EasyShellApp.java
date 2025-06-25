@@ -74,6 +74,10 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 抗锯齿优化
 //            System.setProperty("prism.text", "t2k");
 //            System.setProperty("prism.lcdtext", "false");
+            // 设置默认异常捕捉器
+            Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+                JulLog.error("thread:{} caught error", t.getName(), e);
+            });
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
@@ -199,10 +203,4 @@ public class EasyShellApp extends FXApplication implements EventListener {
             JulLog.warn("不支持系统托盘!", ex);
         }
     }
-
-
-
-
-
-
 }

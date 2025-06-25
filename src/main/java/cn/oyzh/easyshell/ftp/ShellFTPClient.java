@@ -158,7 +158,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             this.state.set(ShellConnState.CONNECTED);
             long endTime = System.currentTimeMillis();
             JulLog.info("shellFTPClient connected used:{}ms.", (endTime - starTime));
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("shellFTPClient start error", ex);
             throw ex;

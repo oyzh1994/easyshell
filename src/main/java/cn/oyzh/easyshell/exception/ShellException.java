@@ -16,7 +16,7 @@ public class ShellException extends RuntimeException {
         super(message);
     }
 
-    public ShellException(Exception ex) {
+    public ShellException(Throwable ex) {
         super(ex);
     }
 }

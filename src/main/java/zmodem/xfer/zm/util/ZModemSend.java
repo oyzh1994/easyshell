@@ -1,11 +1,10 @@
 package zmodem.xfer.zm.util;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.net.io.CopyStreamAdapter;
 import org.apache.commons.net.io.CopyStreamListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import zmodem.FileCopyStreamEvent;
 import zmodem.util.FileAdapter;
 import zmodem.xfer.util.ASCII;
@@ -29,7 +28,6 @@ import java.util.function.Supplier;
 public class ZModemSend {
 
     private static final int packLen = 1024 * 8;
-    private static final Logger log = LoggerFactory.getLogger(ZModemSend.class);
 
     private final byte[] data = new byte[packLen];
     private final CopyStreamAdapter adapter = new CopyStreamAdapter();
@@ -109,7 +107,7 @@ public class ZModemSend {
         fOffset += len;
 
         if (len != data.length)
-            return ArrayUtils.subarray(data, 0, len);
+            return ArrayUtil.subarray(data, 0, len);
         else
             return data;
     }
@@ -202,8 +200,8 @@ public class ZModemSend {
                 }
             }
         } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error(e.getMessage(), e);
+            if (JulLog.isErrorEnabled()) {
+                JulLog.error(e.getMessage(), e);
             }
         } finally {
             IOUtil.closeQuietly(fileIs);

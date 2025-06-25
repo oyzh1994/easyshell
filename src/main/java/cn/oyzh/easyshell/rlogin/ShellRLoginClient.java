@@ -75,7 +75,8 @@ public class ShellRLoginClient implements BaseClient {
             } else {
                 this.state.set(ShellConnState.FAILED);
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
