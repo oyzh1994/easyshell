@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh.sftp;
+package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;

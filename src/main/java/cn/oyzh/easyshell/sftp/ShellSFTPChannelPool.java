@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh.sftp;
+package cn.oyzh.easyshell.sftp;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -83,7 +83,7 @@ public class ShellSFTPChannelPool implements AutoCloseable {
             channel.close();
         }
         this.channels.clear();
-        // this.channels = null;
-        // this.client = null;
+        this.channels = null;
+        this.client = null;
     }
 }

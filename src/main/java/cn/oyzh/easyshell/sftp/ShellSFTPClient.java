@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh.sftp;
+package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
@@ -477,7 +477,13 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String fName = ShellFileUtil.name(filePath);
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         // 读取链接文件
-        this.realpathCache.realpath(file, this);
+        ShellSFTPChannel channel = this.takeSFTPChannel();
+        try {
+            this.realpathCache.realpath(file, channel);
+        } finally {
+            this.returnSFTPChannel(channel);
+        }
+        ShellSFTPUtil.realpath(file, this);
         // 拥有者、分组
         if (this.isWindows()) {
             file.setOwner("-");
@@ -587,7 +593,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public ShellFileClient<ShellSFTPFile> forkClient() {
         try {
-            ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null, this.realpathCache, this.sftpChannelPool) {
+            ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null) {
+                // ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null, this.realpathCache, this.sftpChannelPool) {
                 @Override
                 public boolean isForked() {
                     return true;

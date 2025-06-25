@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh.sftp;
+package cn.oyzh.easyshell.sftp;
 
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -60,15 +60,15 @@ public class ShellSFTPRealpathCache implements AutoCloseable {
         }
     }
 
-    /**
-     * 读取链接
-     *
-     * @param file   文件
-     * @param client 客户端
-     */
-    public void realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
-        this.realpath(file, client.takeSFTPChannel());
-    }
+    // /**
+    //  * 读取链接
+    //  *
+    //  * @param file   文件
+    //  * @param client 客户端
+    //  */
+    // public void realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
+    //     this.realpath(file, client.takeSFTPChannel());
+    // }
 
     @Override
     public void close() throws Exception {

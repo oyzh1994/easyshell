@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh.sftp;
+package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;

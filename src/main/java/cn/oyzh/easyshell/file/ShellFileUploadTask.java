@@ -146,7 +146,7 @@ public class ShellFileUploadTask {
             try {
                 this.client = this.client.forkClient();
                 // 尝试锁定当前任务
-                this.competitor.tryLock(this);
+                // this.competitor.tryLock(this);
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);
                 // 初始化文件
                 this.initFile();
@@ -162,7 +162,7 @@ public class ShellFileUploadTask {
                 }
             } finally {
                 // 释放锁
-                this.competitor.release(this);
+                // this.competitor.release(this);
             }
         });
     }
