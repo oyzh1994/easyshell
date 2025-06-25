@@ -7,6 +7,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -189,6 +190,16 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
+    }
+
+    /**
+     * 上传竞争器
+     */
+    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
+
+    @Override
+    public ShellFileCompetitor uploadCompetitor() {
+        return this.uploadCompetitor;
     }
 
     public ObservableList<ShellFileUploadTask> uploadTasks() {

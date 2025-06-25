@@ -83,7 +83,7 @@ public class ShellSFTPChannelPool implements AutoCloseable {
             channel.close();
         }
         this.channels.clear();
-        this.channels = null;
-        this.client = null;
+        // this.channels = null;
+        // this.client = null;
     }
 }

@@ -7,6 +7,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
@@ -379,6 +380,16 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     @Override
     public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return this.deleteTasks;
+    }
+
+    /**
+     * 上传竞争器
+     */
+    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
+
+    @Override
+    public ShellFileCompetitor uploadCompetitor() {
+        return this.uploadCompetitor;
     }
 
     @Override

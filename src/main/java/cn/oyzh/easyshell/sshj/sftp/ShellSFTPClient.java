@@ -5,6 +5,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
@@ -455,6 +456,16 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             this.returnSFTPClient(client);
         }
         return true;
+    }
+
+    /**
+     * 上传竞争器
+     */
+    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
+
+    @Override
+    public ShellFileCompetitor uploadCompetitor() {
+        return this.uploadCompetitor;
     }
 
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();

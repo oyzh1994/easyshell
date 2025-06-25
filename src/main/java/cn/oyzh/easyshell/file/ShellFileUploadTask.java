@@ -111,9 +111,12 @@ public class ShellFileUploadTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellFileUploadTask(File localFile, String remotePath, ShellFileClient<?> client) {
+    private ShellFileCompetitor competitor;
+
+    public ShellFileUploadTask(ShellFileCompetitor competitor, File localFile, String remotePath, ShellFileClient<?> client) {
         this.client = client;
         this.localFile = localFile;
+        this.competitor = competitor;
         this.remotePath = remotePath;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
@@ -142,6 +145,8 @@ public class ShellFileUploadTask {
         this.worker = ThreadUtil.start(() -> {
             try {
                 this.client = this.client.forkClient();
+                // 尝试锁定当前任务
+                this.competitor.tryLock(this);
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);
                 // 初始化文件
                 this.initFile();
@@ -155,6 +160,9 @@ public class ShellFileUploadTask {
                     this.error = ex;
                     this.updateStatus(this.status);
                 }
+            } finally {
+                // 释放锁
+                this.competitor.release(this);
             }
         });
     }

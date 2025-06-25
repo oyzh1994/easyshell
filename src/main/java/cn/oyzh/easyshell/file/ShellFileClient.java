@@ -284,7 +284,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @param remotePath 远程路径
      */
     default void doUpload(File localFile, String remotePath) {
-        ShellFileUploadTask uploadTask = new ShellFileUploadTask(localFile, remotePath, this);
+        ShellFileUploadTask uploadTask = new ShellFileUploadTask(this.uploadCompetitor(), localFile, remotePath, this);
         this.uploadTasks().add(uploadTask);
         uploadTask.doUpload(() -> {
             synchronized (this.uploadTasks()) {
@@ -292,6 +292,13 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
             }
         });
     }
+
+    /**
+     * 获取上传竞争器
+     *
+     * @return 上传竞争器
+     */
+    ShellFileCompetitor uploadCompetitor();
 
     /**
      * 获取上传任务列表

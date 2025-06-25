@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh.sftp;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHChannel;
 import com.jcraft.jsch.ChannelSftp;
@@ -128,8 +129,9 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     public void touch(String path) throws SftpException {
         path = ShellFileUtil.fixFilePath(path);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes());
-        this.getChannel().put(inputStream, path);
+        ByteArrayInputStream stream = new ByteArrayInputStream("".getBytes());
+        this.getChannel().put(stream, path);
+        IOUtil.close(stream);
     }
 
     public void rename(String path, String newPath) throws SftpException {
@@ -169,6 +171,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      */
     public void put(InputStream src, String dest) throws SftpException {
         this.getChannel().put(src, dest);
+        IOUtil.close(src);
     }
 
     /**
@@ -218,6 +221,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     public void get(String src, OutputStream dest) throws SftpException {
         src = ShellFileUtil.fixFilePath(src);
         this.getChannel().get(src, dest);
+        IOUtil.close(dest);
     }
 
     @Deprecated

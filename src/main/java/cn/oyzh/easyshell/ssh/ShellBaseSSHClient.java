@@ -344,26 +344,26 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             channel.setInputStream(null);
             channel.setOutputStream(null);
             //// 获取连接
-            //ShellConnect shellConnect = this.getShellConnect();
+            // ShellConnect shellConnect = this.getShellConnect();
             //// 用户环境
-            //Map<String, String> userEnvs = this.shellConnect.environments();
-            //if (CollectionUtil.isNotEmpty(userEnvs)) {
+            // Map<String, String> userEnvs = this.shellConnect.environments();
+            // if (CollectionUtil.isNotEmpty(userEnvs)) {
             //    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
             //        channel.setEnv(entry.getKey(), entry.getValue());
             //    }
             //}
             //// 初始化环境变量
-            //if (this.osType != null) {
+            // if (this.osType != null) {
             //    channel.setEnv("PATH", this.getExportPath());
             //}
             //// 初始化字符集
-            //channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+            // channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
             //// 客户端转发
-            //if (shellConnect.isJumpForward()) {
+            // if (shellConnect.isJumpForward()) {
             //    channel.setAgentForwarding(true);
             //}
             //// x11转发
-            //if (shellConnect.isX11forwarding()) {
+            // if (shellConnect.isX11forwarding()) {
             //    channel.setXForwarding(true);
             //}
             this.initEnvironments(channel);
@@ -404,7 +404,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 return;
             }
             // 添加认证，并指定密码
-            //SSHHolder.getJsch().addIdentity(priKeyFile);
+            // SSHHolder.getJsch().addIdentity(priKeyFile);
             SSHHolder.getJsch().addIdentity(priKeyFile, this.shellConnect.getCertificatePwd());
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
@@ -431,7 +431,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             }
             String keyName = "key_" + key.getId();
             // 添加认证，并指定密码
-            //SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(),null);
+            // SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(),null);
             SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), key.getPasswordBytes());
             // 创建会话
             this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);

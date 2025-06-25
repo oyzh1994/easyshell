@@ -55,6 +55,12 @@ public class ShellSSHChannel implements AutoCloseable {
         }
     }
 
+    /**
+     * 执行连接
+     *
+     * @param connectTimeout 超时时间
+     * @throws JSchException 异常
+     */
     public void connect(int connectTimeout) throws JSchException {
         if (!this.isConnected()) {
             this.channel.connect(connectTimeout);
