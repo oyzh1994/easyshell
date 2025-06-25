@@ -50,7 +50,7 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
             for (ShellFileDownloadTask task : tasks) {
                 task.cancel();
             }
-            this.removeItem(tasks);
+            // this.removeItem(tasks);
         });
         menuItems.add(cancel);
         ShellFileDownloadTask task = tasks.getFirst();

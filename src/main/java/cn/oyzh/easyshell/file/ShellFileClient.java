@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.function.ExceptionConsumer;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.collections.ListChangeListener;
@@ -256,7 +257,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @param file 文件
      */
     default void doDelete(E file) {
-        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(file, this);
+        ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(this.deleteCompetitor(), file, this);
         this.deleteTasks().add(deleteTask);
         deleteTask.doDelete(() -> {
                     synchronized (this.deleteTasks()) {
@@ -269,6 +270,13 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
                     }
                 });
     }
+
+    /**
+     * 获取删除竞争器
+     *
+     * @return 删除竞争器
+     */
+    Competitor deleteCompetitor();
 
     /**
      * 获取删除任务列表
@@ -298,7 +306,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      *
      * @return 上传竞争器
      */
-    ShellFileCompetitor uploadCompetitor();
+    Competitor uploadCompetitor();
 
     /**
      * 获取上传任务列表
@@ -324,7 +332,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @param localPath  本地路径
      */
     default void doDownload(E remoteFile, String localPath) {
-        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(remoteFile, localPath, this);
+        ShellFileDownloadTask downloadTask = new ShellFileDownloadTask(this.downloadCompetitor(), remoteFile, localPath, this);
         this.downloadTasks().add(downloadTask);
         downloadTask.doDownload(() -> {
             synchronized (this.downloadTasks()) {
@@ -332,6 +340,13 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
             }
         });
     }
+
+    /**
+     * 获取下载竞争器
+     *
+     * @return 下载竞争器
+     */
+    Competitor downloadCompetitor();
 
     /**
      * 获取下载任务列表
@@ -348,7 +363,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @param remoteClient 远程客户端
      */
     default void doTransport(String remotePath, E localFile, ShellFileClient<E> remoteClient) {
-        ShellFileTransportTask transportTask = new ShellFileTransportTask(remotePath, localFile, remoteClient, this);
+        ShellFileTransportTask transportTask = new ShellFileTransportTask(this.transportCompetitor(), remotePath, localFile, remoteClient, this);
         this.transportTasks().add(transportTask);
         transportTask.doTransport(() -> {
             synchronized (this.transportTasks()) {
@@ -356,6 +371,13 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
             }
         });
     }
+
+    /**
+     * 获取传输竞争器
+     *
+     * @return 传输竞争器
+     */
+    Competitor transportCompetitor();
 
     /**
      * 获取传输任务列表

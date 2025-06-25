@@ -4,6 +4,7 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -111,9 +112,12 @@ public class ShellFileUploadTask {
      */
     private transient ShellFileStatus status;
 
-    private ShellFileCompetitor competitor;
+    /**
+     * 竞争器
+     */
+    private final Competitor competitor;
 
-    public ShellFileUploadTask(ShellFileCompetitor competitor, File localFile, String remotePath, ShellFileClient<?> client) {
+    public ShellFileUploadTask(Competitor competitor, File localFile, String remotePath, ShellFileClient<?> client) {
         this.client = client;
         this.localFile = localFile;
         this.competitor = competitor;
@@ -144,9 +148,12 @@ public class ShellFileUploadTask {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
+                // 尝试锁定
+                if (!this.competitor.tryLock(this)) {
+                    this.updateStatus(ShellFileStatus.FAILED);
+                    return;
+                }
                 this.client = this.client.forkClient();
-                // 尝试锁定当前任务
-                // this.competitor.tryLock(this);
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);
                 // 初始化文件
                 this.initFile();
@@ -161,8 +168,8 @@ public class ShellFileUploadTask {
                     this.updateStatus(this.status);
                 }
             } finally {
-                // 释放锁
-                // this.competitor.release(this);
+                // 释放
+                this.competitor.release(this);
             }
         });
     }
@@ -241,6 +248,7 @@ public class ShellFileUploadTask {
      */
     public void cancel() {
         this.error = null;
+        this.competitor.release(this);
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
         this.finishUpload();

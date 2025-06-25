@@ -4,6 +4,7 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -112,9 +113,15 @@ public class ShellFileDownloadTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellFileDownloadTask(ShellFile remoteFile, String localPath, ShellFileClient client) {
+    /**
+     * 竞争器
+     */
+    private final Competitor competitor;
+
+    public ShellFileDownloadTask(Competitor competitor, ShellFile remoteFile, String localPath, ShellFileClient client) {
         this.client = client;
         this.localPath = localPath;
+        this.competitor = competitor;
         this.remoteFile = remoteFile;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
@@ -142,6 +149,11 @@ public class ShellFileDownloadTask {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
+                // 尝试锁定
+                if (!this.competitor.tryLock(this)) {
+                    this.updateStatus(ShellFileStatus.FAILED);
+                    return;
+                }
                 this.client = this.client.forkClient();
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);
                 // 初始化文件
@@ -158,6 +170,9 @@ public class ShellFileDownloadTask {
                     ex.printStackTrace();
                     MessageBox.exception(ex);
                 }
+            } finally {
+                // 释放
+                this.competitor.release(this);
             }
         });
     }
@@ -236,6 +251,7 @@ public class ShellFileDownloadTask {
      */
     public void cancel() {
         this.error = null;
+        this.competitor.release(this);
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
         this.finishDownload();

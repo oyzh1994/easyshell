@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -122,9 +123,15 @@ public class ShellFileTransportTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellFileTransportTask(String remotePath, ShellFile localFile, ShellFileClient remoteClient, ShellFileClient localClient) {
+    /**
+     * 竞争器
+     */
+    private final Competitor competitor;
+
+    public ShellFileTransportTask(Competitor competitor, String remotePath, ShellFile localFile, ShellFileClient remoteClient, ShellFileClient localClient) {
         this.localFile = localFile;
         this.remotePath = remotePath;
+        this.competitor = competitor;
         this.localClient = localClient;
         this.remoteClient = remoteClient;
         this.clientName = localClient.connectName();
@@ -157,6 +164,11 @@ public class ShellFileTransportTask {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
+                // 尝试锁定
+                if (!this.competitor.tryLock(this)) {
+                    this.updateStatus(ShellFileStatus.FAILED);
+                    return;
+                }
                 this.localClient = this.localClient.forkClient();
                 this.remoteClient = this.remoteClient.forkClient();
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);
@@ -172,6 +184,9 @@ public class ShellFileTransportTask {
                     this.error = ex;
                     this.updateStatus(this.status);
                 }
+            } finally {
+                // 释放
+                this.competitor.release(this);
             }
         });
     }
@@ -272,6 +287,7 @@ public class ShellFileTransportTask {
      */
     public void cancel() {
         this.error = null;
+        this.competitor.release(this);
         this.updateStatus(ShellFileStatus.CANCELED);
         ThreadUtil.interrupt(this.worker);
         this.finishTransport();

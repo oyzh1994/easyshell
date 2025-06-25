@@ -1,11 +1,11 @@
 package cn.oyzh.easyshell.sshj.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
-import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
@@ -354,6 +354,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
+    public Competitor deleteCompetitor() {
+        return null;
+    }
+
+    @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         SFTPClient client = this.takeSFTPClient();
         try {
@@ -458,14 +463,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return true;
     }
 
-    /**
-     * 上传竞争器
-     */
-    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
-
     @Override
-    public ShellFileCompetitor uploadCompetitor() {
-        return this.uploadCompetitor;
+    public Competitor uploadCompetitor() {
+        return null;
     }
 
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
@@ -475,11 +475,21 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return uploadTasks;
     }
 
+    @Override
+    public Competitor downloadCompetitor() {
+        return null;
+    }
+
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
     @Override
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
+    }
+
+    @Override
+    public Competitor transportCompetitor() {
+        return null;
     }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();

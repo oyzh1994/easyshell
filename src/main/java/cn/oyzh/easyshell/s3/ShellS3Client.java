@@ -3,11 +3,11 @@ package cn.oyzh.easyshell.s3;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFileClient;
-import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
@@ -369,6 +369,16 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 删除竞争器
+     */
+    private final Competitor deleteCompetitor = new Competitor();
+
+    @Override
+    public Competitor deleteCompetitor() {
+        return this.deleteCompetitor;
+    }
+
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
@@ -385,10 +395,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 上传竞争器
      */
-    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
+    private final Competitor uploadCompetitor = new Competitor();
 
     @Override
-    public ShellFileCompetitor uploadCompetitor() {
+    public Competitor uploadCompetitor() {
         return this.uploadCompetitor;
     }
 
@@ -397,9 +407,29 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         return this.uploadTasks;
     }
 
+    /**
+     * 下载竞争器
+     */
+    private final Competitor downloadCompetitor = new Competitor();
+
+    @Override
+    public Competitor downloadCompetitor() {
+        return this.downloadCompetitor;
+    }
+
     @Override
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return this.downloadTasks;
+    }
+
+    /**
+     * 传输竞争器
+     */
+    private final Competitor transportCompetitor = new Competitor();
+
+    @Override
+    public Competitor transportCompetitor() {
+        return transportCompetitor;
     }
 
     @Override

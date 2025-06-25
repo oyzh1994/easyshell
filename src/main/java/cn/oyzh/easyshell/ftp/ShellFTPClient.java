@@ -4,10 +4,10 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.ArrayUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -195,10 +195,10 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     /**
      * 上传竞争器
      */
-    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
+    private final Competitor uploadCompetitor = new Competitor();
 
     @Override
-    public ShellFileCompetitor uploadCompetitor() {
+    public Competitor uploadCompetitor() {
         return this.uploadCompetitor;
     }
 
@@ -206,8 +206,28 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return uploadTasks;
     }
 
+    /**
+     * 下载竞争器
+     */
+    private final Competitor downloadCompetitor = new Competitor();
+
+    @Override
+    public Competitor downloadCompetitor() {
+        return this.downloadCompetitor;
+    }
+
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
+    }
+
+    /**
+     * 传输竞争器
+     */
+    private final Competitor transportCompetitor = new Competitor();
+
+    @Override
+    public Competitor transportCompetitor() {
+        return transportCompetitor;
     }
 
     @Override
@@ -301,6 +321,16 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             stream = out;
         }
         return stream;
+    }
+
+    /**
+     * 删除竞争器
+     */
+    private final Competitor deleteCompetitor = new Competitor();
+
+    @Override
+    public Competitor deleteCompetitor() {
+        return this.deleteCompetitor;
     }
 
     @Override

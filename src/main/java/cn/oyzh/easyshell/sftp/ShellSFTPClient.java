@@ -2,11 +2,11 @@ package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
-import cn.oyzh.easyshell.file.ShellFileCompetitor;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
@@ -199,7 +199,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      * @return 通道
      */
     protected ShellSFTPChannel takeSFTPChannel() {
-        return this.sftpChannelPool.borrowChannel();
+        return this.sftpChannelPool.borrowObject();
     }
 
     /**
@@ -208,7 +208,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      * @param channel 通道
      */
     protected void returnSFTPChannel(ShellSFTPChannel channel) {
-        this.sftpChannelPool.returnChannel(channel);
+        this.sftpChannelPool.returnObject(channel);
     }
 
     /**
@@ -430,6 +430,16 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return ShellFileProgressMonitor.of(channel.put(remoteFile), callback);
     }
 
+    /**
+     * 删除竞争器
+     */
+    private final Competitor deleteCompetitor = new Competitor();
+
+    @Override
+    public Competitor deleteCompetitor() {
+        return this.deleteCompetitor;
+    }
+
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         String fPath = remoteFile.getFilePath();
@@ -525,10 +535,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 上传竞争器
      */
-    private final ShellFileCompetitor uploadCompetitor = new ShellFileCompetitor();
+    private final Competitor uploadCompetitor = new Competitor();
 
     @Override
-    public ShellFileCompetitor uploadCompetitor() {
+    public Competitor uploadCompetitor() {
         return this.uploadCompetitor;
     }
 
@@ -539,11 +549,31 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return uploadTasks;
     }
 
+    /**
+     * 下载竞争器
+     */
+    private final Competitor downloadCompetitor = new Competitor();
+
+    @Override
+    public Competitor downloadCompetitor() {
+        return this.downloadCompetitor;
+    }
+
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
     @Override
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
+    }
+
+    /**
+     * 传输竞争器
+     */
+    private final Competitor transportCompetitor = new Competitor();
+
+    @Override
+    public Competitor transportCompetitor() {
+        return transportCompetitor;
     }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();

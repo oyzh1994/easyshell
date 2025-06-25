@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 
 import java.util.function.Consumer;
@@ -34,8 +35,14 @@ public class ShellFileDeleteTask {
      */
     private transient ShellFileStatus status;
 
-    public ShellFileDeleteTask(ShellFile remoteFile, ShellFileClient<?> client) {
+    /**
+     * 竞争器
+     */
+    private final Competitor competitor;
+
+    public ShellFileDeleteTask(Competitor competitor, ShellFile remoteFile, ShellFileClient<?> client) {
         this.client = client;
+        this.competitor = competitor;
         this.remoteFile = remoteFile;
         this.status = ShellFileStatus.IN_PREPARATION;
     }
@@ -49,12 +56,19 @@ public class ShellFileDeleteTask {
     public void doDelete(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.worker = ThreadUtil.start(() -> {
             try {
+                // 尝试锁定
+                if (!this.competitor.tryLock(this)) {
+                    this.status = ShellFileStatus.FAILED;
+                    return;
+                }
                 this.client = this.client.forkClient();
                 this.doDelete();
             } catch (Exception ex) {
                 errorCallback.accept(ex);
             } finally {
                 finishCallback.run();
+                // 释放
+                this.competitor.release(this);
             }
         });
     }
@@ -99,6 +113,7 @@ public class ShellFileDeleteTask {
      * 取消
      */
     public void cancel() {
+        this.competitor.release(this);
         this.status = ShellFileStatus.CANCELED;
         ThreadUtil.interrupt(this.worker);
     }

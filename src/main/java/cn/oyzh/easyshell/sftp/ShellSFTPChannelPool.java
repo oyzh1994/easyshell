@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import cn.oyzh.common.util.Pool;
 
 /**
  * sftp通道管理器
@@ -9,81 +8,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2025-06-07
  */
-public class ShellSFTPChannelPool implements AutoCloseable {
-
-    /**
-     * 初始通道数量
-     */
-    private final int initSize;
+public class ShellSFTPChannelPool extends Pool<ShellSFTPChannel> implements AutoCloseable {
 
     /**
      * 客户端
      */
     private ShellSFTPClient client;
 
-    /**
-     * 通道列表
-     */
-    private List<ShellSFTPChannel> channels = new CopyOnWriteArrayList<>();
-
     public ShellSFTPChannelPool(ShellSFTPClient client) {
-        this(client, 3);
-    }
-
-    public ShellSFTPChannelPool(ShellSFTPClient client, int initSize) {
+        super(1, 5);
         this.client = client;
-        this.initSize = initSize;
+        super.setWaitingBorrow(true);
     }
 
-    /**
-     * 初始化
-     */
-    private void init() {
-        while (this.channels.size() < this.initSize) {
-            ShellSFTPChannel channel = this.client.newSFTPChannel();
-            if (channel == null) {
-                break;
-            }
-            this.channels.add(channel);
-        }
-    }
-
-    /**
-     * 借用通道
-     *
-     * @return 通道
-     */
-    public ShellSFTPChannel borrowChannel() {
-        try {
-            if (this.channels.isEmpty()) {
-                this.init();
-            }
-            return this.channels.removeFirst();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 归还通道
-     *
-     * @param channel 通道
-     */
-    public void returnChannel(ShellSFTPChannel channel) {
-        if (channel == null || channel.isClosed()) {
-            return;
-        }
-        this.channels.add(channel);
+    @Override
+    protected ShellSFTPChannel newObject() {
+        return this.client.newSFTPChannel();
     }
 
     @Override
     public void close() throws Exception {
-        for (ShellSFTPChannel channel : this.channels) {
+        for (ShellSFTPChannel channel : this.list()) {
             channel.close();
         }
-        this.channels.clear();
-        this.channels = null;
+        super.clear();
         this.client = null;
     }
 }
