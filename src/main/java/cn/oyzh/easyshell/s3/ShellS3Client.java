@@ -372,7 +372,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 删除竞争器
      */
-    private final Competitor deleteCompetitor = new Competitor();
+    private final Competitor deleteCompetitor = new Competitor(10);
 
     @Override
     public Competitor deleteCompetitor() {
@@ -395,7 +395,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 上传竞争器
      */
-    private final Competitor uploadCompetitor = new Competitor();
+    private final Competitor uploadCompetitor = new Competitor(2);
 
     @Override
     public Competitor uploadCompetitor() {
@@ -410,7 +410,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 下载竞争器
      */
-    private final Competitor downloadCompetitor = new Competitor();
+    private final Competitor downloadCompetitor = new Competitor(2);
 
     @Override
     public Competitor downloadCompetitor() {
@@ -425,7 +425,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 传输竞争器
      */
-    private final Competitor transportCompetitor = new Competitor();
+    private final Competitor transportCompetitor = new Competitor(2);
 
     @Override
     public Competitor transportCompetitor() {

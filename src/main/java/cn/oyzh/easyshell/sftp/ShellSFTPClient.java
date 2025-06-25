@@ -433,7 +433,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 删除竞争器
      */
-    private final Competitor deleteCompetitor = new Competitor();
+    private final Competitor deleteCompetitor = new Competitor(10);
 
     @Override
     public Competitor deleteCompetitor() {
@@ -535,7 +535,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 上传竞争器
      */
-    private final Competitor uploadCompetitor = new Competitor();
+    private final Competitor uploadCompetitor = new Competitor(2);
 
     @Override
     public Competitor uploadCompetitor() {
@@ -552,7 +552,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 下载竞争器
      */
-    private final Competitor downloadCompetitor = new Competitor();
+    private final Competitor downloadCompetitor = new Competitor(2);
 
     @Override
     public Competitor downloadCompetitor() {
@@ -569,7 +569,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 传输竞争器
      */
-    private final Competitor transportCompetitor = new Competitor();
+    private final Competitor transportCompetitor = new Competitor(2);
 
     @Override
     public Competitor transportCompetitor() {
