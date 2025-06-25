@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -31,6 +32,11 @@ public class ShellSSHTabController extends ParentTabController {
      * shell客户端
      */
     private ShellSSHClient client;
+
+    /**
+     * 连接储存
+     */
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     public ShellSSHClient getClient() {
         return client;
@@ -151,6 +157,8 @@ public class ShellSSHTabController extends ParentTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.client.close();
+        // 保存设置
+        this.connectStore.update(this.shellConnect());
         // 展开左侧
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();

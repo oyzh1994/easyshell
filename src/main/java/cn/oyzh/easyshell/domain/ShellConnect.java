@@ -234,22 +234,46 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean enableCompress;
 
     /**
-     * 启用zmodem
+     * ssh协议，启用zmodem
      */
     @Column
-    private Boolean  enableZmodem;
+    private Boolean enableZmodem;
 
     /**
-     * 区域，仅s3协议
+     * s3协议，区域
      */
     @Column
     private String region;
+
+    /**
+     * ssh协议，显示文件
+     */
+    @Column
+    private Boolean showFile;
+
+    /**
+     * ssh协议，显示服务监控
+     */
+    @Column
+    private Boolean serverMonitor;
+
+    /**
+     * ssh协议，跟随终端目录
+     */
+    @Column
+    private Boolean followTerminalDir;
+
+    /**
+     * ftp、sftp 是否显示隐藏文件
+     */
+    @Column
+    private Boolean showHiddenFile;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
 
-    public Boolean isEnableCompress() {
+    public boolean isEnableCompress() {
         return enableCompress != null && enableCompress;
     }
 
@@ -257,7 +281,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.enableZmodem = enableZmodem;
     }
 
-    public Boolean isEnableZmodem() {
+    public boolean isEnableZmodem() {
         return enableZmodem != null && enableZmodem;
     }
 
@@ -389,9 +413,14 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // s3
         this.region = t1.region;
         // ssh
+        this.showFile = t1.showFile;
         this.environment = t1.environment;
         this.enableZmodem = t1.enableZmodem;
+        this.serverMonitor = t1.serverMonitor;
         this.enableCompress = t1.enableCompress;
+        this.followTerminalDir = t1.followTerminalDir;
+        // sftp
+        this.showHiddenFile = t1.showHiddenFile;
         // 认证
         this.keyId = t1.keyId;
         this.password = t1.password;
@@ -804,5 +833,37 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setCertificatePwd(String certificatePwd) {
         this.certificatePwd = certificatePwd;
+    }
+
+    public boolean isShowFile() {
+        return this.showFile == null || this.showFile;
+    }
+
+    public void setShowFile(boolean showFile) {
+        this.showFile = showFile;
+    }
+
+    public boolean isServerMonitor() {
+        return BooleanUtil.isTrue(this.serverMonitor);
+    }
+
+    public void setServerMonitor(boolean serverMonitor) {
+        this.serverMonitor = serverMonitor;
+    }
+
+    public boolean isFollowTerminalDir() {
+        return BooleanUtil.isTrue(this.followTerminalDir);
+    }
+
+    public void setFollowTerminalDir(boolean followTerminalDir) {
+        this.followTerminalDir = followTerminalDir;
+    }
+
+    public boolean isShowHiddenFile() {
+        return BooleanUtil.isTrue(this.showHiddenFile);
+    }
+
+    public void setShowHiddenFile(boolean showHiddenFile) {
+        this.showHiddenFile = showHiddenFile;
     }
 }

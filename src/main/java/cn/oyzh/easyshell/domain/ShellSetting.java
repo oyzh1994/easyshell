@@ -29,11 +29,11 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean efficiencyMode;
 
-    /**
-     * 是否显示隐藏文件
-     */
-    @Column
-    private Boolean showHiddenFile;
+    // /**
+    //  * 是否显示隐藏文件
+    //  */
+    // @Column
+    // private Boolean showHiddenFile;
 
     /**
      * 连接后收起左侧
@@ -89,33 +89,33 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean termParseHyperlink;
 
-    /**
-     * ssh协议，显示文件
-     */
-    @Column
-    private Boolean sshShowFile;
-
-    /**
-     * ssh协议，显示服务监控
-     */
-    @Column
-    private Boolean sshServerMonitor;
-
-    /**
-     * ssh协议，跟随终端目录
-     */
-    @Column
-    private Boolean sshFollowTerminalDir;
+    // /**
+    //  * ssh协议，显示文件
+    //  */
+    // @Column
+    // private Boolean sshShowFile;
+    //
+    // /**
+    //  * ssh协议，显示服务监控
+    //  */
+    // @Column
+    // private Boolean sshServerMonitor;
+    //
+    // /**
+    //  * ssh协议，跟随终端目录
+    //  */
+    // @Column
+    // private Boolean sshFollowTerminalDir;
 
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
 
-    public Boolean getHiddenLeftAfterConnected() {
-        return hiddenLeftAfterConnected;
-    }
+    // public Boolean getHiddenLeftAfterConnected() {
+    //     return hiddenLeftAfterConnected;
+    // }
 
-    public void setHiddenLeftAfterConnected(Boolean hiddenLeftAfterConnected) {
+    public void setHiddenLeftAfterConnected(boolean hiddenLeftAfterConnected) {
         this.hiddenLeftAfterConnected = hiddenLeftAfterConnected;
     }
 
@@ -126,7 +126,7 @@ public class ShellSetting extends AppSetting {
             this.x11Path = setting.x11Path;
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
-            this.showHiddenFile = setting.showHiddenFile;
+            // this.showHiddenFile = setting.showHiddenFile;
             this.efficiencyMode = setting.efficiencyMode;
             this.termRefreshRate = setting.termRefreshRate;
             this.termCursorBlinks = setting.termCursorBlinks;
@@ -138,9 +138,9 @@ public class ShellSetting extends AppSetting {
         }
     }
 
-    public boolean isShowHiddenFile() {
-        return this.showHiddenFile == null || BooleanUtil.isTrue(this.showHiddenFile);
-    }
+    // public boolean isShowHiddenFile() {
+    //     return this.showHiddenFile == null || BooleanUtil.isTrue(this.showHiddenFile);
+    // }
 
     public String x11Path() {
         if (StringUtil.isNotBlank(this.x11Path)) {
@@ -173,13 +173,13 @@ public class ShellSetting extends AppSetting {
         this.x11Path = x11Path;
     }
 
-    public Boolean getShowHiddenFile() {
-        return showHiddenFile;
-    }
-
-    public void setShowHiddenFile(Boolean showHiddenFile) {
-        this.showHiddenFile = showHiddenFile;
-    }
+    // public boolean getShowHiddenFile() {
+    //     return showHiddenFile;
+    // }
+    //
+    // public void setShowHiddenFile(Boolean showHiddenFile) {
+    //     this.showHiddenFile = showHiddenFile;
+    // }
 
     public String x11WorkDir() {
         String x11Path = this.x11Path();
@@ -207,7 +207,7 @@ public class ShellSetting extends AppSetting {
         return termBeep == null || termBeep;
     }
 
-    public void setTermBeep(Boolean termBeep) {
+    public void setTermBeep(boolean termBeep) {
         this.termBeep = termBeep;
     }
 
@@ -228,10 +228,10 @@ public class ShellSetting extends AppSetting {
     }
 
     public boolean isTermCopyOnSelected() {
-        return termCopyOnSelected == null ? Boolean.FALSE : termCopyOnSelected;
+        return BooleanUtil.isTrue(this.termCopyOnSelected);
     }
 
-    public void setTermCopyOnSelected(Boolean termCopyOnSelected) {
+    public void setTermCopyOnSelected(boolean termCopyOnSelected) {
         this.termCopyOnSelected = termCopyOnSelected;
     }
 
@@ -247,11 +247,11 @@ public class ShellSetting extends AppSetting {
         return termUseAntialiasing == null ? Boolean.TRUE : termUseAntialiasing;
     }
 
-    public Boolean getTermUseAntialiasing() {
+    public boolean getTermUseAntialiasing() {
         return termUseAntialiasing;
     }
 
-    public void setTermUseAntialiasing(Boolean termUseAntialiasing) {
+    public void setTermUseAntialiasing(boolean termUseAntialiasing) {
         this.termUseAntialiasing = termUseAntialiasing;
     }
 
@@ -259,7 +259,7 @@ public class ShellSetting extends AppSetting {
         return this.efficiencyMode == null || BooleanUtil.isTrue(this.efficiencyMode);
     }
 
-    public void setEfficiencyMode(Boolean efficiencyMode) {
+    public void setEfficiencyMode(boolean efficiencyMode) {
         this.efficiencyMode = efficiencyMode;
     }
 
@@ -267,31 +267,31 @@ public class ShellSetting extends AppSetting {
         return termParseHyperlink == null ? Boolean.TRUE : termParseHyperlink;
     }
 
-    public void setTermParseHyperlink(Boolean termParseHyperlink) {
+    public void setTermParseHyperlink(boolean termParseHyperlink) {
         this.termParseHyperlink = termParseHyperlink;
     }
 
-    public boolean isSshShowFile() {
-        return this.sshShowFile == null || this.sshShowFile;
-    }
-
-    public void setSshShowFile(Boolean sshShowFile) {
-        this.sshShowFile = sshShowFile;
-    }
-
-    public boolean isSshServerMonitor() {
-        return BooleanUtil.isTrue(this.sshServerMonitor);
-    }
-
-    public void setSshServerMonitor(Boolean sshServerMonitor) {
-        this.sshServerMonitor = sshServerMonitor;
-    }
-
-    public boolean isSshFollowTerminalDir() {
-        return BooleanUtil.isTrue(this.sshFollowTerminalDir);
-    }
-
-    public void setSshFollowTerminalDir(Boolean sshFollowTerminalDir) {
-        this.sshFollowTerminalDir = sshFollowTerminalDir;
-    }
+    // public boolean isSshShowFile() {
+    //     return this.sshShowFile == null || this.sshShowFile;
+    // }
+    //
+    // public void setSshShowFile(Boolean sshShowFile) {
+    //     this.sshShowFile = sshShowFile;
+    // }
+    //
+    // public boolean isSshServerMonitor() {
+    //     return BooleanUtil.isTrue(this.sshServerMonitor);
+    // }
+    //
+    // public void setSshServerMonitor(Boolean sshServerMonitor) {
+    //     this.sshServerMonitor = sshServerMonitor;
+    // }
+    //
+    // public boolean isSshFollowTerminalDir() {
+    //     return BooleanUtil.isTrue(this.sshFollowTerminalDir);
+    // }
+    //
+    // public void setSshFollowTerminalDir(boolean sshFollowTerminalDir) {
+    //     this.sshFollowTerminalDir = sshFollowTerminalDir;
+    // }
 }

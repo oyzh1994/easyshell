@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
 import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -90,10 +91,15 @@ public class ShellSFTPTabController extends RichTabController {
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    // /**
+    //  * 设置储存
+    //  */
+    // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
     /**
-     * 设置储存
+     * 连接储存
      */
-    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * sftp客户端
@@ -129,7 +135,8 @@ public class ShellSFTPTabController extends RichTabController {
                 }
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
-                this.hiddenFile(this.setting.isShowHiddenFile());
+                this.hiddenFile(this.shellConnect().isShowHiddenFile());
+                // this.hiddenFile(this.setting.isShowHiddenFile());
                 // 任务数量监听
                 this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty()) {
@@ -152,6 +159,8 @@ public class ShellSFTPTabController extends RichTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.client.close();
+        // 保存设置
+        this.connectStore.update(this.shellConnect());
         // 展开左侧
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();
@@ -528,8 +537,9 @@ public class ShellSFTPTabController extends RichTabController {
             this.fileTable.setShowHiddenFile(true);
             this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
-        this.setting.setShowHiddenFile(hidden);
-        this.settingStore.update(this.setting);
+        this.shellConnect().setShowHiddenFile(hidden);
+        // this.setting.setShowHiddenFile(hidden);
+        // this.settingStore.update(this.setting);
     }
 
     /**

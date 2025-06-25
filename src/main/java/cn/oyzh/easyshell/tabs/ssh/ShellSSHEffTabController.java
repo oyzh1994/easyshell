@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.ssh.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -166,15 +167,15 @@ public class ShellSSHEffTabController extends SubTabController {
     @FXML
     private FXLabel termSize;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
-     * 设置储存
-     */
-    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
+    //
+    // /**
+    //  * 设置储存
+    //  */
+    // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
      * 初始化组件
@@ -325,9 +326,10 @@ public class ShellSSHEffTabController extends SubTabController {
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
         // 初始化
-        this.showFile.setSelected(this.setting.isSshShowFile());
-        this.serverMonitor.setSelected(this.setting.isSshServerMonitor());
-        this.followTerminalDir.setSelected(this.setting.isSshFollowTerminalDir());
+        ShellConnect connect = this.shellConnect();
+        this.showFile.setSelected(connect.isShowFile());
+        this.serverMonitor.setSelected(connect.isServerMonitor());
+        this.followTerminalDir.setSelected(connect.isFollowTerminalDir());
     }
 
     @Override
@@ -354,9 +356,10 @@ public class ShellSSHEffTabController extends SubTabController {
         // 跟随终端目录
         this.followTerminalDir.selectedChanged((observable, oldValue, newValue) -> {
             this.client().setResolveWorkerDir(newValue);
-            // 存储
-            this.setting.setSshFollowTerminalDir(newValue);
-            this.settingStore.update(this.setting);
+            // 设置
+            this.shellConnect().setFollowTerminalDir(newValue);
+            // this.setting.setSshFollowTerminalDir(newValue);
+            // this.settingStore.update(this.setting);
         });
         // 服务监控
         this.serverMonitor.selectedChanged((observable, oldValue, newValue) -> {
@@ -365,9 +368,10 @@ public class ShellSSHEffTabController extends SubTabController {
             } else {
                 this.closeMonitorTask();
             }
-            // 存储
-            this.setting.setSshServerMonitor(newValue);
-            this.settingStore.update(this.setting);
+            // 设置
+            this.shellConnect().setServerMonitor(newValue);
+            // this.setting.setSshServerMonitor(newValue);
+            // this.settingStore.update(this.setting);
         });
         // 文件列表
         this.showFile.selectedChanged((observable, oldValue, newValue) -> {
@@ -379,8 +383,9 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.hideFileBox();
             }
             // 存储
-            this.setting.setSshShowFile(newValue);
-            this.settingStore.update(this.setting);
+            this.shellConnect().setShowFile(newValue);
+            // this.setting.setSshShowFile(newValue);
+            // this.settingStore.update(this.setting);
         });
         // 文件过滤
         this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
@@ -425,6 +430,10 @@ public class ShellSSHEffTabController extends SubTabController {
 
     public ShellSSHClient client() {
         return this.parent().getClient();
+    }
+
+    public ShellConnect shellConnect() {
+        return this.parent().shellConnect();
     }
 
     public ShellSFTPClient sftpClient() {
@@ -566,8 +575,10 @@ public class ShellSSHEffTabController extends SubTabController {
             this.fileTable.setShowHiddenFile(true);
             this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
-        this.setting.setShowHiddenFile(hidden);
-        this.settingStore.update(this.setting);
+        // 设置
+        this.shellConnect().setShowHiddenFile(hidden);
+        // this.setting.setShowHiddenFile(hidden);
+        // this.settingStore.update(this.setting);
     }
 
     /**

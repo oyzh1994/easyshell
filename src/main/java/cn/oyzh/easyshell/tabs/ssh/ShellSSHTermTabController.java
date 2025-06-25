@@ -86,15 +86,15 @@ public class ShellSSHTermTabController extends SubTabController {
     @FXML
     private FXLabel termSize;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
-     * 设置存储
-     */
-    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
+    //
+    // /**
+    //  * 设置存储
+    //  */
+    // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
      * 初始化组件
@@ -215,7 +215,8 @@ public class ShellSSHTermTabController extends SubTabController {
         // 异步加载背景
         ThreadUtil.startVirtual(this::initBackground);
         // 初始化
-        this.serverMonitor.setSelected(this.setting.isSshServerMonitor());
+        this.serverMonitor.setSelected(this.shellConnect().isServerMonitor());
+        // this.serverMonitor.setSelected(this.setting.isSshServerMonitor());
     }
 
     @Override
@@ -229,8 +230,9 @@ public class ShellSSHTermTabController extends SubTabController {
                 this.closeMonitorTask();
             }
             // 存储
-            this.setting.setSshServerMonitor(newValue);
-            this.settingStore.update(this.setting);
+            this.shellConnect().setServerMonitor(newValue);
+            // this.setting.setSshServerMonitor(newValue);
+            // this.settingStore.update(this.setting);
         });
     }
 
@@ -247,6 +249,10 @@ public class ShellSSHTermTabController extends SubTabController {
 
     public ShellSSHClient client() {
         return this.parent().getClient();
+    }
+
+    public ShellConnect shellConnect() {
+        return this.parent().shellConnect();
     }
 
     /**

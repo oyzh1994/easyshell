@@ -739,6 +739,15 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void onFileAdded(String filePath) {
         try {
+            String location = this.getLocation();
+            String pPath = ShellFileUtil.parent(filePath);
+            // 跟当前目录相同，才出了
+            if (location.endsWith("/") && !StringUtil.equals(pPath + "/", location)) {
+                return;
+            } else if (!StringUtil.equals(this.getLocation(), pPath)) {
+                return;
+            }
+            // 获取文件信息
             E file = this.client.fileInfo(filePath);
             if (file == null) {
                 return;
