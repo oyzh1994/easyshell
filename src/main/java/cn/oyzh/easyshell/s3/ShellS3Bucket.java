@@ -184,7 +184,7 @@ public class ShellS3Bucket implements ObjectCopier<ShellS3Bucket> {
             if (bucket.creationDate != null) {
                 this.creationDate = bucket.creationDate;
             }
-            this.versioning = true;
+            this.versioning = bucket.versioning;
             this.objectLock = bucket.objectLock;
             this.retention = bucket.retention;
             this.retentionMode = bucket.retentionMode;

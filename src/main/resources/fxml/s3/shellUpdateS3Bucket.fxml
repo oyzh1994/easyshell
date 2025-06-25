@@ -53,7 +53,8 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ShellS3RetentionModeCombobox disable="true" groupId="retention" fx:id="retentionMode" initIndex="0" realHeight="30">
+    <ShellS3RetentionModeCombobox disable="true" groupId="retention" fx:id="retentionMode" initIndex="0"
+                                  realHeight="30">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -64,12 +65,13 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox groupId="retention" disable="true">
-        <NumberTextField value="180" fx:id="retentionValidity" tipText="%base.contentTip1" realHeight="30" flexWidth="100% - 245">
+        <NumberTextField value="180" fx:id="retentionValidity" tipText="%base.contentTip1" realHeight="30"
+                         flexWidth="100% - 265">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </NumberTextField>
-        <ShellS3RetentionValidityTypeCombobox fx:id="retentionValidityType" initIndex="0" realHeight="30">
+        <ShellS3RetentionValidityTypeCombobox fx:id="retentionValidityType" initIndex="0" realHeight="30" prefWidth="80">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>

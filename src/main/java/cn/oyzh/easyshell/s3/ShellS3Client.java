@@ -490,11 +490,15 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             for (Bucket bucket : buckets) {
                 ShellS3Bucket s3Bucket = new ShellS3Bucket();
                 s3Bucket.setName(bucket.name());
-                s3Bucket.setRegion(bucket.bucketRegion());
+                String region = bucket.bucketRegion();
+                if (StringUtil.isBlank(region)) {
+                    region = this.getShellConnect().getRegion();
+                }
+                s3Bucket.setRegion(region);
                 s3Bucket.setCreationDate(bucket.creationDate());
+                s3Bucket.setRetention(this.getBucketRetention(bucket.name()));
                 s3Bucket.setVersioning(this.isBucketVersioning(bucket.name()));
                 s3Bucket.setObjectLock(this.isBucketObjectLock(bucket.name()));
-                s3Bucket.setRetention(this.getBucketRetention(bucket.name()));
                 list.add(s3Bucket);
             }
             return list;

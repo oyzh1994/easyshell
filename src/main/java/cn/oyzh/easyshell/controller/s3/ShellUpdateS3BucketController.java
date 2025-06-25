@@ -103,8 +103,10 @@ public class ShellUpdateS3BucketController extends StageController {
             ShellS3Bucket bucket = new ShellS3Bucket();
             bucket.setVersioning(versioning);
             bucket.setObjectLock(objectLock);
+            bucket.setName(this.bucket.getName());
             // 保留
             bucket.setRetentionMode(retentionMode);
+            bucket.setRetention(this.bucket.isRetention());
             bucket.setRetentionValidity(retentionValidity);
             bucket.setRetentionValidityType(retentionValidityType);
             // 修改桶
@@ -138,6 +140,11 @@ public class ShellUpdateS3BucketController extends StageController {
             } else {
                 this.objectLock.enable();
                 NodeGroupUtil.disable(this.stage, "retention");
+            }
+        });
+        this.retentionValidityType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (newValue.intValue() == 1) {
+                this.retentionValidity.setValue(1);
             }
         });
     }

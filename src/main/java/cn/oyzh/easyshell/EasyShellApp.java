@@ -75,8 +75,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
 //            System.setProperty("prism.text", "t2k");
 //            System.setProperty("prism.lcdtext", "false");
             // 设置默认异常捕捉器
-            Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                JulLog.error("thread:{} caught error", t.getName(), e);
+            Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
+                ex.printStackTrace();
+                JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
             });
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());

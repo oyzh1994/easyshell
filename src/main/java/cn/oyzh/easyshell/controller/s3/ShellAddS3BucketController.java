@@ -145,6 +145,11 @@ public class ShellAddS3BucketController extends StageController {
                 NodeGroupUtil.disable(this.stage, "retention");
             }
         });
+        this.retentionValidityType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (newValue.intValue() == 1) {
+                this.retentionValidity.setValue(1);
+            }
+        });
     }
 
     @Override
