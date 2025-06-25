@@ -22,6 +22,7 @@ import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -910,7 +911,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 创建文件夹
         if (this.isSupportMkdirAction()) {
-            FXMenuItem createDir = FXMenuItem.newItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), this::createDir);
+            FXMenuItem createDir = (FXMenuItem) MenuItemManager.getMenuItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), () -> this.createDir());
             menuItems.add(createDir);
             menuItems.add(MenuItemHelper.separator());
         }

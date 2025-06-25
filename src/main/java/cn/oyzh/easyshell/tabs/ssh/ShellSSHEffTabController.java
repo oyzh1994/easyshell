@@ -327,9 +327,12 @@ public class ShellSSHEffTabController extends SubTabController {
         ThreadUtil.startVirtual(this::initBackground);
         // 初始化
         ShellConnect connect = this.shellConnect();
+        // 初始化
         this.showFile.setSelected(connect.isShowFile());
         this.serverMonitor.setSelected(connect.isServerMonitor());
         this.followTerminalDir.setSelected(connect.isFollowTerminalDir());
+        // 显示隐藏文件
+        this.hiddenFile(this.shellConnect().isShowHiddenFile());
     }
 
     @Override
@@ -557,16 +560,16 @@ public class ShellSSHEffTabController extends SubTabController {
      */
     @FXML
     private void hiddenFile() {
-        this.hiddenFile(!this.hiddenPane.isHidden());
+        this.hiddenFile(this.hiddenPane.isHidden());
     }
 
     /**
      * 隐藏文件
      *
-     * @param hidden 是否隐藏
+     * @param showHidden 是否显示隐藏文件
      */
-    private void hiddenFile(boolean hidden) {
-        if (hidden) {
+    private void hiddenFile(boolean showHidden) {
+        if (!showHidden) {
             this.hiddenPane.hidden();
             this.fileTable.setShowHiddenFile(false);
             this.hiddenPane.setTipText(I18nHelper.showHiddenFiles());
@@ -576,7 +579,7 @@ public class ShellSSHEffTabController extends SubTabController {
             this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
         // 设置
-        this.shellConnect().setShowHiddenFile(hidden);
+        this.shellConnect().setShowHiddenFile(showHidden);
         // this.setting.setShowHiddenFile(hidden);
         // this.settingStore.update(this.setting);
     }
