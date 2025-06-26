@@ -531,7 +531,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return this.sshClient.newSFTPClient();
     }
 
-    @Override
+   /* @Override
     public boolean isSupport(String action) {
         if ("cd".equals(action)) {
             return false;
@@ -540,5 +540,5 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             return false;
         }
         return ShellFileClient.super.isSupport(action);
-    }
+    }*/
 }

@@ -5,12 +5,20 @@ import cn.oyzh.common.log.JulLog;
 import com.jcraft.jsch.SftpException;
 
 /**
+ * sftp工具类
+ *
  * @author oyzh
  * @since 2025-03-06
  */
-
 public class ShellSFTPUtil {
 
+    /**
+     * 获取拥有者
+     *
+     * @param uid    用户id
+     * @param client 客户端
+     * @return 拥有者名称
+     */
     public static String getOwner(int uid, ShellSFTPClient client) {
         if (client.isWindows()) {
             return "-";
@@ -24,6 +32,13 @@ public class ShellSFTPUtil {
         return ownerName;
     }
 
+    /**
+     * 获取分租
+     *
+     * @param gid    分组id
+     * @param client 客户端
+     * @return 分组名称
+     */
     public static String getGroup(int gid, ShellSFTPClient client) {
         if (client.isWindows()) {
             return "-";

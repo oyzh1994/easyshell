@@ -24,17 +24,17 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellFileUploadTask {
+public class ShellFileUploadTask extends ShellFileTask {
 
-    /**
-     * 工作线程
-     */
-    private Thread worker;
-
-    /**
-     * 错误
-     */
-    private Exception error;
+    // /**
+    //  * 工作线程
+    //  */
+    // private Thread worker;
+    //
+    // /**
+    //  * 错误
+    //  */
+    // private Exception error;
 
     /**
      * 任务结束时的回调
@@ -107,20 +107,21 @@ public class ShellFileUploadTask {
      */
     private ShellFileClient<?> client;
 
-    /**
-     * 状态
-     */
-    private transient ShellFileStatus status;
-
-    /**
-     * 竞争器
-     */
-    private final Competitor competitor;
+    // /**
+    //  * 状态
+    //  */
+    // private transient ShellFileStatus status;
+    //
+    // /**
+    //  * 竞争器
+    //  */
+    // private final Competitor competitor;
 
     public ShellFileUploadTask(Competitor competitor, File localFile, String remotePath, ShellFileClient<?> client) {
+        super(competitor);
         this.client = client;
         this.localFile = localFile;
-        this.competitor = competitor;
+        // this.competitor = competitor;
         this.remotePath = remotePath;
         this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
@@ -163,7 +164,7 @@ public class ShellFileUploadTask {
                 this.finishUpload();
             } catch (Exception ex) {
                 // 忽略中断、取消异常
-                if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+                if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
                     this.error = ex;
                     this.updateStatus(this.status);
                 }
@@ -185,7 +186,7 @@ public class ShellFileUploadTask {
         try {
             while (!this.fileList.isEmpty()) {
                 // 取消
-                if (this.status == ShellFileStatus.CANCELED) {
+                if (this.isCanceled()) {
                     break;
                 }
                 // 获取首个文件
@@ -217,7 +218,7 @@ public class ShellFileUploadTask {
                     // 更新文件大小
                     this.updateFileSize();
                     // 判断是否继续
-                    return this.status != ShellFileStatus.CANCELED;
+                    return !this.isCanceled();
                 });
                 // 更新文件总数
                 this.updateFileCount();
@@ -230,7 +231,7 @@ public class ShellFileUploadTask {
             // 减去失败部分
             this.currentSize -= currSize.get();
             // 忽略中断、取消异常
-            if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
+            if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
                 // 更新为失败
                 this.updateStatus(ShellFileStatus.FAILED);
                 // 抛出异常
@@ -238,19 +239,18 @@ public class ShellFileUploadTask {
             }
         }
         // 更新为结束
-        if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
+        if (!this.isCanceled() && !this.isFailed()) {
             this.updateStatus(ShellFileStatus.FINISHED);
         }
     }
 
-    /**
-     * 取消
-     */
+    @Override
     public void cancel() {
-        this.error = null;
-        this.competitor.release(this);
-        this.updateStatus(ShellFileStatus.CANCELED);
-        ThreadUtil.interrupt(this.worker);
+        // this.error = null;
+        // this.competitor.release(this);
+        // this.updateStatus(ShellFileStatus.CANCELED);
+        // ThreadUtil.interrupt(this.worker);
+        super.cancel();
         this.finishUpload();
     }
 
@@ -286,7 +286,7 @@ public class ShellFileUploadTask {
         } else {
             this.fileList = new ArrayList<>();
             FileUtil.getAllFiles(this.localFile, f -> {
-                if (this.status == ShellFileStatus.CANCELED) {
+                if (this.isCanceled()) {
                     throw new InterruptedException();
                 }
                 this.fileList.add(f);
@@ -399,13 +399,10 @@ public class ShellFileUploadTask {
         return this.remotePath;
     }
 
-    /**
-     * 更新状态
-     *
-     * @param status 状态
-     */
-    private void updateStatus(ShellFileStatus status) {
-        this.status = status;
+    @Override
+    protected void updateStatus(ShellFileStatus status) {
+        // this.status = status;
+        super.updateStatus(status);
         switch (status) {
             case FAILED:
                 if (this.error != null) {
@@ -427,7 +424,7 @@ public class ShellFileUploadTask {
                 this.statusProperty.set(I18nHelper.inPreparation());
                 break;
         }
-        JulLog.debug("status: {}", this.statusProperty.get());
+        // JulLog.debug("status: {}", this.statusProperty.get());
     }
 
     /**
@@ -439,21 +436,21 @@ public class ShellFileUploadTask {
         return this.statusProperty;
     }
 
-    /**
-     * 是否失败
-     *
-     * @return 结果
-     */
-    public boolean isFailed() {
-        return this.status == ShellFileStatus.FAILED;
-    }
-
-    /**
-     * 是否取消
-     *
-     * @return 结果
-     */
-    public boolean isCanceled() {
-        return this.status == ShellFileStatus.CANCELED;
-    }
+    // /**
+    //  * 是否失败
+    //  *
+    //  * @return 结果
+    //  */
+    // public boolean isFailed() {
+    //     return this.status == ShellFileStatus.FAILED;
+    // }
+    //
+    // /**
+    //  * 是否取消
+    //  *
+    //  * @return 结果
+    //  */
+    // public boolean isCanceled() {
+    //     return this.status == ShellFileStatus.CANCELED;
+    // }
 }

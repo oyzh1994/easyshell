@@ -77,8 +77,14 @@ import java.util.function.Function;
  */
 public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
+    /**
+     * s3客户端
+     */
     private S3Client s3Client;
 
+    /**
+     * 连接
+     */
     private final ShellConnect connect;
 
     /**
@@ -292,6 +298,11 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
+    public String realpath(String filePath) throws Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void touch(String filePath) throws Exception {
         ShellS3Path s3Path = ShellS3Path.of(filePath);
         PutObjectRequest putRequest = PutObjectRequest.builder()
@@ -491,30 +502,41 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return null;
         }
         return new ShellS3File(this.getBucket(bucketName));
-
     }
 
     @Override
-    public boolean isSupport(String action) {
-        if ("cd".equals(action)) {
-            return false;
-        }
-        if ("chmod".equals(action)) {
-            return false;
-        }
-        if ("workDir".equals(action)) {
-            return false;
-        }
-        if ("putStream".equals(action)) {
-            return false;
-        }
-        if ("createDir".equals(action)) {
-            return false;
-        }
-        if ("createDirRecursive".equals(action)) {
-            return false;
-        }
-        return ShellFileClient.super.isSupport(action);
+    public boolean isCdSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isChmodSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isRealpathSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isWorkDirSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isPutStreamSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isCreateDirSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isCreateDirRecursiveSupport() {
+        return false;
     }
 
     /**

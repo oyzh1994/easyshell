@@ -7,7 +7,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPAttr {
+public class ShellSFTPAttr implements AutoCloseable{
 
     private Map<Integer, String> owner;
 
@@ -41,7 +41,8 @@ public class ShellSFTPAttr {
         this.group.put(id, group);
     }
 
-    public void clear() {
+    @Override
+    public void close() {
         if (this.owner != null) {
             this.owner.clear();
             this.owner = null;

@@ -128,6 +128,15 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     boolean exist(String filePath) throws Exception;
 
     /**
+     * 获取真实路径，对于部分文件系统适用
+     *
+     * @param filePath 文件路径
+     * @return 真实路径
+     * @throws Exception 异常
+     */
+    String realpath(String filePath) throws Exception;
+
+    /**
      * 创建文件
      *
      * @param filePath 文件路径
@@ -500,40 +509,12 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     }
 
     /**
-     * 判断是否支持某些操作
-     *
-     * @param action 操作
-     * @return 结果
-     */
-    default boolean isSupport(String action) {
-        if ("cd".equals(action)) {
-            return true;
-        }
-        if ("chmod".equals(action)) {
-            return true;
-        }
-        if ("workDir".equals(action)) {
-            return true;
-        }
-        if ("putStream".equals(action)) {
-            return true;
-        }
-        if ("createDir".equals(action)) {
-            return true;
-        }
-        if ("createDirRecursive".equals(action)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 判断是否支持cd操作
      *
      * @return 结果
      */
     default boolean isCdSupport() {
-        return this.isSupport("cd");
+        return true;
     }
 
     /**
@@ -542,7 +523,16 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 结果
      */
     default boolean isChmodSupport() {
-        return this.isSupport("chmod");
+        return true;
+    }
+
+    /**
+     * 判断是否支持realpath操作
+     *
+     * @return 结果
+     */
+    default boolean isRealpathSupport() {
+        return true;
     }
 
     /**
@@ -551,7 +541,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 结果
      */
     default boolean isWorkDirSupport() {
-        return this.isSupport("workDir");
+        return true;
     }
 
     /**
@@ -560,7 +550,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 结果
      */
     default boolean isPutStreamSupport() {
-        return this.isSupport("putStream");
+        return true;
     }
 
     /**
@@ -569,7 +559,7 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 结果
      */
     default boolean isCreateDirSupport() {
-        return this.isSupport("createDir");
+        return true;
     }
 
     /**
@@ -578,7 +568,21 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 结果
      */
     default boolean isCreateDirRecursiveSupport() {
-        return this.isSupport("createDirRecursive");
+        return true;
     }
+
+    // String ACTION_cd = "cd";
+    //
+    // String ACTION_chmod = "chmod";
+    //
+    // String ACTION_workdir = "workdir";
+    //
+    // String ACTION_realpath = "realpath";
+    //
+    // String ACTION_putStream = "putStream";
+    //
+    // String ACTION_createDir = "createDir";
+    //
+    // String ACTION_createDirRecursive = "createDirRecursive";
 
 }

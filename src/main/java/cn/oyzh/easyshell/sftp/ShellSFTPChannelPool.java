@@ -22,6 +22,17 @@ public class ShellSFTPChannelPool extends Pool<ShellSFTPChannel> implements Auto
     }
 
     @Override
+    public void returnObject(ShellSFTPChannel channel) {
+        if (channel == null) {
+            return;
+        }
+        if (this.isFull()) {
+            channel.close();
+        }
+        super.returnObject(channel);
+    }
+
+    @Override
     protected ShellSFTPChannel newObject() {
         return this.client.newSFTPChannel();
     }

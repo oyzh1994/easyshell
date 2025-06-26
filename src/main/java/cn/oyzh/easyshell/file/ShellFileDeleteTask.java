@@ -13,12 +13,12 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellFileDeleteTask {
+public class ShellFileDeleteTask extends ShellFileTask {
 
-    /**
-     * 工作线程
-     */
-    private Thread worker;
+    // /**
+    //  * 工作线程
+    //  */
+    // private Thread worker;
 
     /**
      * 远程文件
@@ -30,21 +30,22 @@ public class ShellFileDeleteTask {
      */
     private ShellFileClient client;
 
-    /**
-     * 状态
-     */
-    private transient ShellFileStatus status;
-
-    /**
-     * 竞争器
-     */
-    private final Competitor competitor;
+    // /**
+    //  * 状态
+    //  */
+    // private transient ShellFileStatus status;
+    //
+    // /**
+    //  * 竞争器
+    //  */
+    // private final Competitor competitor;
 
     public ShellFileDeleteTask(Competitor competitor, ShellFile remoteFile, ShellFileClient<?> client) {
+        super(competitor);
         this.client = client;
-        this.competitor = competitor;
+        // this.competitor = competitor;
         this.remoteFile = remoteFile;
-        this.status = ShellFileStatus.IN_PREPARATION;
+        this.updateStatus(ShellFileStatus.IN_PREPARATION);
     }
 
     /**
@@ -58,12 +59,13 @@ public class ShellFileDeleteTask {
             try {
                 // 尝试锁定
                 if (!this.competitor.tryLock(this)) {
-                    this.status = ShellFileStatus.FAILED;
+                    this.updateStatus(ShellFileStatus.FAILED);
                     return;
                 }
                 this.client = this.client.forkClient();
                 this.doDelete();
             } catch (Exception ex) {
+                this.error = ex;
                 errorCallback.accept(ex);
             } finally {
                 finishCallback.run();
@@ -80,7 +82,7 @@ public class ShellFileDeleteTask {
      */
     private void doDelete() throws Exception {
         try {
-            this.status = ShellFileStatus.EXECUTE_ING;
+            this.updateStatus(ShellFileStatus.EXECUTE_ING);
             this.remoteFile.startWaiting();
             // 执行删除
             if (this.remoteFile.isDirectory()) {
@@ -89,15 +91,15 @@ public class ShellFileDeleteTask {
                 this.client.delete(this.remoteFile);
             }
         } catch (Exception ex) {
-            if (this.status != ShellFileStatus.CANCELED && !ExceptionUtil.isInterrupt(ex)) {
-                this.status = ShellFileStatus.FAILED;
+            if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
+                this.updateStatus(ShellFileStatus.FAILED);
             }
             throw ex;
         } finally {
             this.remoteFile.stopWaiting();
         }
-        if (this.status != ShellFileStatus.CANCELED && this.status != ShellFileStatus.FAILED) {
-            this.status = ShellFileStatus.FINISHED;
+        if (!this.isCanceled() && !this.isFailed()) {
+            this.updateStatus(ShellFileStatus.FINISHED);
         }
         // 关闭子客户端
         if (this.client.isForked()) {
@@ -109,30 +111,30 @@ public class ShellFileDeleteTask {
         return this.remoteFile.getFilePath();
     }
 
-    /**
-     * 取消
-     */
-    public void cancel() {
-        this.competitor.release(this);
-        this.status = ShellFileStatus.CANCELED;
-        ThreadUtil.interrupt(this.worker);
-    }
+    // /**
+    //  * 取消
+    //  */
+    // public void cancel() {
+    //     this.competitor.release(this);
+    //     this.status = ShellFileStatus.CANCELED;
+    //     ThreadUtil.interrupt(this.worker);
+    // }
 
-    /**
-     * 是否失败
-     *
-     * @return 结果
-     */
-    public boolean isFailed() {
-        return this.status == ShellFileStatus.FAILED;
-    }
-
-    /**
-     * 是否取消
-     *
-     * @return 结果
-     */
-    public boolean isCanceled() {
-        return this.status == ShellFileStatus.CANCELED;
-    }
+    // /**
+    //  * 是否失败
+    //  *
+    //  * @return 结果
+    //  */
+    // public boolean isFailed() {
+    //     return this.status == ShellFileStatus.FAILED;
+    // }
+    //
+    // /**
+    //  * 是否取消
+    //  *
+    //  * @return 结果
+    //  */
+    // public boolean isCanceled() {
+    //     return this.status == ShellFileStatus.CANCELED;
+    // }
 }

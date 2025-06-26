@@ -45,7 +45,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * sftp通道池
      */
-    private ShellSFTPChannelPool sftpChannelPool;
+    private ShellSFTPChannelPool channelPool;
 
     /**
      * 链接管理器
@@ -80,14 +80,14 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         super(shellConnect);
         this.session = session;
         this.realpathCache = new ShellSFTPRealpathCache();
-        this.sftpChannelPool = new ShellSFTPChannelPool(this);
+        this.channelPool = new ShellSFTPChannelPool(this);
         super.addStateListener(this.stateListener);
     }
 
     public ShellSFTPClient(ShellConnect shellConnect, Session session, ShellSFTPRealpathCache realpathCache, ShellSFTPChannelPool pool) {
         super(shellConnect);
         this.session = session;
-        this.sftpChannelPool = pool;
+        this.channelPool = pool;
         this.realpathCache = realpathCache;
         super.addStateListener(this.stateListener);
     }
@@ -102,13 +102,13 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             }
             // 清除用户、分组信息
             if (this.attr != null) {
-                this.attr.clear();
+                IOUtil.close(this.attr);
                 this.attr = null;
             }
             // 通道管理
-            if (this.sftpChannelPool != null) {
-                IOUtil.close(this.sftpChannelPool);
-                this.sftpChannelPool = null;
+            if (this.channelPool != null) {
+                IOUtil.close(this.channelPool);
+                this.channelPool = null;
             }
             // 链接路径
             if (this.realpathCache != null) {
@@ -198,8 +198,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      *
      * @return 通道
      */
-    protected ShellSFTPChannel takeSFTPChannel() {
-        return this.sftpChannelPool.borrowObject();
+    protected ShellSFTPChannel takeChannel() {
+        return this.channelPool.borrowObject();
     }
 
     /**
@@ -207,29 +207,44 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      *
      * @param channel 通道
      */
-    protected void returnSFTPChannel(ShellSFTPChannel channel) {
-        this.sftpChannelPool.returnObject(channel);
+    protected void returnChannel(ShellSFTPChannel channel) {
+        this.channelPool.returnObject(channel);
     }
+
+    // /**
+    //  * 关闭通道
+    //  *
+    //  * @param channel 通道
+    //  */
+    // protected void closeChannel(ShellSFTPChannel channel) {
+    //     if (channel != null && channel.isConnected()) {
+    //         channel.close();
+    //     }
+    // }
 
     /**
-     * 关闭通道
+     * 获取用户名称
      *
-     * @param channel 通道
+     * @param uid 用户id
+     * @return 结果
      */
-    protected void closeChannel(ShellSFTPChannel channel) {
-        if (channel != null && channel.isConnected()) {
-            channel.close();
-        }
-    }
-
     public String exec_id_un(int uid) {
         return this.exec("id -un " + uid);
     }
 
+    /**
+     * 获取分组名称
+     *
+     * @param gid 分组id
+     * @return 结果
+     */
     public String exec_id_gn(int gid) {
         return this.exec("id -gn " + gid);
     }
 
+    /**
+     * 属性
+     */
     private ShellSFTPAttr attr;
 
     public ShellSFTPAttr getAttr() {
@@ -241,33 +256,33 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void delete(String file) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rm(file);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rmdir(dir);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             Vector<ChannelSftp.LsEntry> entries = channel.ls(dir);
             for (ChannelSftp.LsEntry entry : entries) {
@@ -282,24 +297,24 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 }
             }
             this.deleteDir(dir);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.mkdir(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
         return true;
     }
@@ -332,80 +347,81 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public String workDir() throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.pwd();
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void cd(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.cd(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     public SftpATTRS stat(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         if (channel == null) {
             return null;
         }
         try {
             return channel.stat(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.exist(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
+    @Override
     public String realpath(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.realpath(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public void touch(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.touch(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
@@ -465,14 +481,14 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean chmod(int permission, String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.chmod(permission, filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
         return true;
     }
@@ -487,47 +503,42 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String fName = ShellFileUtil.name(filePath);
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         // 读取链接文件
-        ShellSFTPChannel channel = this.takeSFTPChannel();
-        try {
-            this.realpathCache.realpath(file, channel);
-        } finally {
-            this.returnSFTPChannel(channel);
-        }
-        ShellSFTPUtil.realpath(file, this);
+        this.realpathCache.realpath(file, this::takeChannel);
+        // ShellSFTPUtil.realpath(file, this);
         // 拥有者、分组
-        if (this.isWindows()) {
-            file.setOwner("-");
-            file.setGroup("-");
-        } else {
-            file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this));
-            file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this));
-        }
+        // if (this.isWindows()) {
+        //     file.setOwner("-");
+        //     file.setGroup("-");
+        // } else {
+        file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this));
+        file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this));
+        // }
         return file;
     }
 
     @Override
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.lsFileNormal(filePath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
     }
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
-        ShellSFTPChannel channel = this.takeSFTPChannel();
+        ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rename(filePath, newPath);
-        } catch (Exception ex) {
-            this.closeChannel(channel);
-            throw ex;
+            // } catch (Exception ex) {
+            //     this.closeChannel(channel);
+            //     throw ex;
         } finally {
-            this.returnSFTPChannel(channel);
+            this.returnChannel(channel);
         }
         return true;
     }
@@ -622,19 +633,19 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public ShellFileClient<ShellSFTPFile> forkClient() {
-        try {
-            ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null) {
-                // ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null, this.realpathCache, this.sftpChannelPool) {
-                @Override
-                public boolean isForked() {
-                    return true;
-                }
-            };
-            sftpClient.start();
-            return sftpClient;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        // try {
+        //     ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null) {
+        //         // ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null, this.realpathCache, this.sftpChannelPool) {
+        //         @Override
+        //         public boolean isForked() {
+        //             return true;
+        //         }
+        //     };
+        //     sftpClient.start();
+        //     return sftpClient;
+        // } catch (Exception ex) {
+        //     ex.printStackTrace();
+        // }
         return this;
     }
 }

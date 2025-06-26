@@ -5,6 +5,7 @@ import com.jcraft.jsch.SftpException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * sftp链接文件管理器
@@ -29,33 +30,51 @@ public class ShellSFTPRealpathCache implements AutoCloseable {
     /**
      * 读取链接
      *
+     * @param file     文件
+     * @param supplier 通道提供者
+     */
+    public void realpath(ShellSFTPFile file, Supplier<ShellSFTPChannel> supplier) throws SftpException {
+        try (ShellSFTPChannel channel = supplier.get()) {
+            this.realpath(file, channel);
+        }
+    }
+
+    /**
+     * 读取链接
+     *
      * @param file    文件
      * @param channel 通道
      */
     public void realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
-        String filePath = file.getFilePath();
-        String linkPath = this.pathCache.get(filePath);
-        String attrKey = filePath + ":" + file.getMTime();
-        SftpATTRS attrs = this.attrsCache.get(attrKey);
-        // 缓存处理
-        if (linkPath != null) {
-            if (attrs == null) {
-                attrs = channel.stat(linkPath);
-                file.setLinkAttrs(attrs);
+        try {
+            String filePath = file.getFilePath();
+            String linkPath = this.pathCache.get(filePath);
+            String attrKey = filePath + ":" + file.getMTime();
+            SftpATTRS attrs = this.attrsCache.get(attrKey);
+            // 缓存处理
+            if (linkPath != null) {
+                if (attrs == null) {
+                    attrs = channel.stat(linkPath);
+                    file.setLinkAttrs(attrs);
+                    if (attrs != null) {
+                        this.attrsCache.put(attrKey, attrs);
+                    }
+                } else {
+                    file.setLinkAttrs(attrs);
+                }
+            } else {// 正常处理
+                linkPath = ShellSFTPUtil.realpath(file, channel);
+                attrs = file.getLinkAttrs();
+                if (linkPath != null) {
+                    this.pathCache.put(filePath, linkPath);
+                }
                 if (attrs != null) {
                     this.attrsCache.put(attrKey, attrs);
                 }
-            } else {
-                file.setLinkAttrs(attrs);
             }
-        } else {// 正常处理
-            linkPath = ShellSFTPUtil.realpath(file, channel);
-            attrs = file.getLinkAttrs();
-            if (linkPath != null) {
-                this.pathCache.put(filePath, linkPath);
-            }
-            if (attrs != null) {
-                this.attrsCache.put(attrKey, attrs);
+        } finally {
+            if (channel != null) {
+                channel.close();
             }
         }
     }

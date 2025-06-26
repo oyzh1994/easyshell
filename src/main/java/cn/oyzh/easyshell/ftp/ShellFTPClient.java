@@ -53,7 +53,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     /**
      * 连接
      */
-    private ShellConnect shellConnect;
+    private final ShellConnect shellConnect;
 
     /**
      * 是否流模式
@@ -469,6 +469,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     }
 
     @Override
+    public String realpath(String filePath) throws Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean chmod(int permissions, String filePath) throws Exception {
         // 构建 SITE CHMOD 命令
         String command = "CHMOD " + Integer.toOctalString(permissions) + " " + filePath;
@@ -507,4 +512,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return this;
     }
 
+    @Override
+    public boolean isRealpathSupport() {
+        return false;
+    }
 }
