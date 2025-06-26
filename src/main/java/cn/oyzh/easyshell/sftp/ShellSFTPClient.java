@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -541,10 +542,20 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
-            return channel.lsFileNormal(filePath);
+            return channel.lsFile(filePath);
             // } catch (Exception ex) {
             //     this.closeChannel(channel);
             //     throw ex;
+        } finally {
+            this.returnChannel(channel);
+        }
+    }
+
+    @Override
+    public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback ) throws Exception {
+        ShellSFTPChannel channel = this.takeChannel();
+        try {
+            channel.lsFile(filePath, fileCallback);
         } finally {
             this.returnChannel(channel);
         }

@@ -67,6 +67,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -213,6 +214,11 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             }
         }
         return files;
+    }
+
+    @Override
+    public void lsFileDynamic(String filePath, Consumer<ShellS3File> fileCallback) throws Exception {
+
     }
 
     @Override

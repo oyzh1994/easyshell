@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -447,6 +448,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         } finally {
             this.returnSFTPClient(client);
         }
+    }
+
+    @Override
+    public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback) throws Exception {
+
     }
 
     @Override

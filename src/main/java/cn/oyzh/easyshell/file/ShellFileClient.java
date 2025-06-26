@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -32,6 +33,15 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @throws Exception 异常
      */
     List<E> lsFile(String filePath) throws Exception;
+
+    /**
+     * 列举文件，动态加载
+     *
+     * @param filePath     文件路径
+     * @param fileCallback 文件回调
+     * @throws Exception 异常
+     */
+    void lsFileDynamic(String filePath, Consumer<E> fileCallback) throws Exception;
 
     /**
      * 递归列举文件

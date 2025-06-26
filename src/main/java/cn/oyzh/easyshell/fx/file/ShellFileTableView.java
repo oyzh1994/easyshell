@@ -207,7 +207,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         // 执行函数
         Runnable func = () -> {
             try {
-                this.loadFileInner();
+                this.loadFileInnerDynamic();
                 this.refresh();
             } catch (Exception ex) {
                 if (!ExceptionUtil.isInterrupt(ex)) {
@@ -271,11 +271,76 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 addList.add(file);
             }
         }
-
         // 删除数据
         this.removeItem(delList);
         // 新增数据
         this.addItem(addList);
+    }
+
+    /**
+     * 加载文件，内部实现
+     *
+     * @throws Exception 异常
+     */
+    protected synchronized void loadFileInnerDynamic() throws Exception {
+        String currPath = this.getLocation();
+        if (currPath == null) {
+            if (this.client.isWorkDirSupport()) {
+                this.setLocation(this.client.workDir());
+            } else {
+                this.setLocation("/");
+            }
+            currPath = this.getLocation();
+        } else if (currPath.isBlank()) {
+            currPath = "/";
+        }
+        JulLog.info("current path: {}", currPath);
+        // 重建列表
+        this.files = new ArrayList<>();
+        // 动态加载
+        this.client.lsFileDynamic(currPath, this::addFile);
+        this.sortFile();
+    }
+
+    /**
+     * 添加文件
+     *
+     * @param f1 文件
+     */
+    private void addFile(E f1) {
+        if (!this.filterFile(f1)) {
+            return;
+        }
+        // 添加到列表
+        this.files.add(f1);
+        // // 当前在显示的列表
+        // List<E> items = this.getItems();
+        // // 删除列表
+        // List<E> delList = new ArrayList<>();
+        // // 新增列表
+        // List<E> addList = new ArrayList<>();
+        // // 遍历已有集合，如果不在待显示列表，则删除，否则更新
+        // for (E file : items) {
+        //     Optional<E> optional = this.files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+        //     if (optional.isEmpty()) {
+        //         delList.add(file);
+        //     } else {
+        //         file.copy(optional.get());
+        //     }
+        // }
+        // // 遍历待显示列表，如果不在已显示列表，则新增
+        // for (E file : this.files) {
+        //     Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+        //     if (optional.isEmpty()) {
+        //         addList.add(file);
+        //     }
+        // }
+        // // 删除数据
+        // this.removeItem(delList);
+        // // 新增数据
+        // this.addItem(addList);
+        // 更新列表
+        this.setItem(this.files);
     }
 
     /**
@@ -299,24 +364,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     protected List<E> doFilter(List<E> files) {
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
-                    .filter(f -> {
-                        if (f == null) {
-                            return false;
-                        }
-                        if (f.isCurrentFile()) {
-                            return false;
-                        }
-                        if (this.currentIsRootDirectory() && f.isReturnDirectory()) {
-                            return false;
-                        }
-                        if (!this.showHiddenFile && f.isHiddenFile()) {
-                            return false;
-                        }
-                        if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(f.getFileName(), this.filterText)) {
-                            return false;
-                        }
-                        return true;
-                    })
+                    .filter(this::filterFile)
                     .sorted((o1, o2) -> {
                         int order1 = o1.getFileOrder();
                         int order2 = o2.getFileOrder();
@@ -337,6 +385,57 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                     .collect(Collectors.toList());
         }
         return new CopyOnWriteArrayList<>(files);
+    }
+
+    /**
+     * 排序文件
+     */
+    protected void sortFile() {
+        this.files = this.files.stream()
+                .sorted((o1, o2) -> {
+                    int order1 = o1.getFileOrder();
+                    int order2 = o2.getFileOrder();
+                    if (order1 < 0 && order2 == 0) {
+                        return -1;
+                    }
+                    if (order1 == 0 && order2 < 0) {
+                        return 1;
+                    }
+                    if (order1 < order2) {
+                        return -1;
+                    }
+                    if (order1 > order2) {
+                        return 1;
+                    }
+                    return o1.getFileName().compareTo(o2.getFileName());
+                })
+                .collect(Collectors.toList());
+        this.setItem(this.files);
+    }
+
+    /**
+     * 进行过滤
+     *
+     * @param file 文件
+     * @return 是否保留
+     */
+    protected boolean filterFile(E file) {
+        if (file == null) {
+            return false;
+        }
+        if (file.isCurrentFile()) {
+            return false;
+        }
+        if (this.currentIsRootDirectory() && file.isReturnDirectory()) {
+            return false;
+        }
+        if (!this.showHiddenFile && file.isHiddenFile()) {
+            return false;
+        }
+        if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(file.getFileName(), this.filterText)) {
+            return false;
+        }
+        return true;
     }
 
     /**

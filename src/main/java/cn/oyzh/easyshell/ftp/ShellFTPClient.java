@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -375,6 +376,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             }
         }
         return list;
+    }
+
+    @Override
+    public void lsFileDynamic(String filePath, Consumer<ShellFTPFile> fileCallback) throws Exception {
+
     }
 
     @Override

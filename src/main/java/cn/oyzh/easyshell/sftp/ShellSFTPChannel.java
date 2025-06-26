@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -76,6 +77,9 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         // 遍历列表
         for (ChannelSftp.LsEntry lsEntry : vector) {
             ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
+            if (!file.isNormal()) {
+                continue;
+            }
             files.add(file);
             // 处理链接文件
             if (file.isLink()) {
@@ -91,6 +95,31 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         return files;
     }
 
+    /**
+     * 列举文件
+     *
+     * @param path         文件路径
+     * @param fileCallback 文件回调
+     * @throws SftpException 异常
+     */
+    public void lsFile(String path, Consumer<ShellSFTPFile> fileCallback) throws Exception {
+        String filePath = ShellFileUtil.fixFilePath(path);
+        // 总列表
+        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
+        // 遍历列表
+        for (ChannelSftp.LsEntry lsEntry : vector) {
+            ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
+            // 处理链接文件
+            if (file.isLink()) {
+                this.realpathCache.realpath(file, this);
+            }
+            if (file.isNormal()) {
+                fileCallback.accept(file);
+            }
+        }
+    }
+
+    @Deprecated
     public List<ShellSFTPFile> lsFileNormal(String path) throws Exception {
         List<ShellSFTPFile> files = this.lsFile(path);
         return files.stream().filter(ShellSFTPFile::isNormal).collect(Collectors.toList());
