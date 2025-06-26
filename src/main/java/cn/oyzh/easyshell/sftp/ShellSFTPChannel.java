@@ -83,11 +83,11 @@ public class ShellSFTPChannel extends ShellSSHChannel {
             }
         }
         //// 过滤链接文件
-        //List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
+        // List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
         //// 处理链接文件
-        //this.realpathManager.put(linkFiles);
+        // this.realpathManager.put(linkFiles);
         //// 等待完成
-        //this.realpathManager.waitComplete();
+        // this.realpathManager.waitComplete();
         return files;
     }
 
