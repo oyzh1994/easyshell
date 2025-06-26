@@ -219,12 +219,18 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     private ShellSFTPClient sftpClient;
 
     public ShellSFTPClient sftpClient() {
-        if (this.sftpClient == null) {
-            // sftp客户端使用独立会话，不要跟shell共用会话，免得互相影响
-            this.sftpClient = new ShellSFTPClient(this.shellConnect);
-            // this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session);
+        try {
+            if (this.sftpClient == null) {
+                // sftp客户端使用独立会话，不要跟shell共用会话，免得互相影响
+                this.sftpClient = new ShellSFTPClient(this.shellConnect);
+                this.sftpClient.start();
+                // this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session);
+            }
+            return this.sftpClient;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return this.sftpClient;
+        return null;
     }
 
     @Override

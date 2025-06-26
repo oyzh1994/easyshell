@@ -85,8 +85,8 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         String text = this.data.getText();
         StageManager.showMask(() -> {
             ShellSSHExec exec = this.client().sshExec();
-            ShellSFTPClient sftpClient = this.sftpClient();
             try {
+                ShellSFTPClient sftpClient = this.sftpClient();
                 // 创建json文件
                 String jsonFile = this.filePath.getText();
                 if (!sftpClient.exist(jsonFile)) {

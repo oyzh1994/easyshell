@@ -19,13 +19,14 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.SftpProgressMonitor;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -426,13 +427,30 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
+    public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        ShellSFTPChannel channel = this.newSFTPChannel();
+        try {
+            if (callback == null) {
+                channel.put(localFile.getPath(), remoteFile);
+            } else {
+                channel.put(ShellFileProgressMonitor.of(new FileInputStream(localFile), callback), remoteFile);
+            }
+        } finally {
+            this.returnChannel(channel);
+        }
+    }
+
+    @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        try (ShellSFTPChannel channel = this.newSFTPChannel()) {
+        ShellSFTPChannel channel = this.newSFTPChannel();
+        try {
             if (callback == null) {
                 channel.put(localFile, remoteFile);
             } else {
                 channel.put(ShellFileProgressMonitor.of(localFile, callback), remoteFile);
             }
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
@@ -459,12 +477,15 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         String fPath = remoteFile.getFilePath();
-        try (ShellSFTPChannel channel = this.newSFTPChannel()) {
+        ShellSFTPChannel channel = this.newSFTPChannel();
+        try {
             if (callback == null) {
                 channel.get(fPath, localFile);
             } else {
                 channel.get(fPath, ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback));
             }
+        } finally {
+            this.returnChannel(channel);
         }
     }
 

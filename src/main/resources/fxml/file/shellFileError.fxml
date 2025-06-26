@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.file.ShellFileErrorController" prefWidth="600" realHeight="450">
+    <InfoLabel text="%base.error">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextArea fx:id="error" realHeight="30" flexHeight="100% - 100" flexWidth="100% - 50">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextArea>
+</FXVBox>

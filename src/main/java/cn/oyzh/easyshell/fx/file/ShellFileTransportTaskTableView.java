@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -47,6 +49,7 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
+        // 取消
         MenuItem cancel = MenuItemHelper.cancelTransport("12", () -> {
             for (ShellFileTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
                 sftpTransportTask.cancel();
@@ -54,11 +57,27 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
             // this.removeItem(tasks);
         });
         menuItems.add(cancel);
+
+        // 重试
         ShellFileTransportTask task = tasks.getFirst();
         MenuItem retry = MenuItemHelper.retry("12", task::retry);
         retry.setDisable(tasks.size() != 1 || !task.isFailed());
         menuItems.add(retry);
+
+        // 错误
+        MenuItem errorInfo = MenuItemHelper.errorInfo("12", () -> this.errorInfo(task));
+        errorInfo.setDisable(!task.isFailed());
+        menuItems.add(errorInfo);
         return menuItems;
+    }
+
+    /**
+     * 错误信息
+     *
+     * @param task 任务
+     */
+    protected void errorInfo(ShellFileTransportTask task) {
+        ShellViewFactory.fileError(task);
     }
 
     /**

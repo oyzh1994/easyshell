@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.controller.docker.ShellDockerPortController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerResourceController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.controller.file.ShellFileEditController;
+import cn.oyzh.easyshell.controller.file.ShellFileErrorController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
@@ -54,6 +55,7 @@ import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
@@ -932,6 +934,24 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateS3BucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
             adapter.setProp("bucket", bucket);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 文件错误信息
+     *
+     * @param task 任务
+     */
+    public static StageAdapter fileError(ShellFileTask task) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFileErrorController.class, StageManager.getFrontWindow());
+            adapter.setProp("task", task);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {

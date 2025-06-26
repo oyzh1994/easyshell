@@ -87,4 +87,16 @@ public class ShellFileTask {
     public boolean isCanceled() {
         return this.status == ShellFileStatus.CANCELED;
     }
+
+    /**
+     * 获取错误信息
+     *
+     * @return 错误信息
+     */
+    public String getErrorMsg() {
+        if (this.error == null) {
+            return "";
+        }
+        return this.error.getMessage();
+    }
 }

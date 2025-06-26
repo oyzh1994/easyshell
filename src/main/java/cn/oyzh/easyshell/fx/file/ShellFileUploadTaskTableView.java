@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
@@ -48,6 +49,7 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
         }
         // List<ShellFileUploadTask> list = new ArrayList<>(tasks);
         List<MenuItem> menuItems = new ArrayList<>();
+        // 取消
         MenuItem cancel = MenuItemHelper.cancelUpload("12", () -> {
             for (ShellFileUploadTask task : tasks) {
                 task.cancel();
@@ -55,10 +57,26 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
             // this.removeItem(list);
         });
         menuItems.add(cancel);
+
+        // 重试
         ShellFileUploadTask task = tasks.getFirst();
         MenuItem retry = MenuItemHelper.retry("12", task::retry);
         retry.setDisable(tasks.size() != 1 || !task.isFailed());
         menuItems.add(retry);
+
+        // 错误
+        MenuItem errorInfo = MenuItemHelper.errorInfo("12", () -> this.errorInfo(task));
+        errorInfo.setDisable(!task.isFailed());
+        menuItems.add(errorInfo);
         return menuItems;
+    }
+
+    /**
+     * 错误信息
+     *
+     * @param task 任务
+     */
+    protected void errorInfo(ShellFileUploadTask task) {
+        ShellViewFactory.fileError(task);
     }
 }
