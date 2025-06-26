@@ -119,12 +119,12 @@ public class ShellS3FileTabController extends SubTabController {
         this.fileTable.refreshFile();
         // 任务数量监听
         client.addTaskSizeListener(() -> {
-            if (client.isTaskEmpty()) {
+            if (client.isTaskEmpty("upload,download")) {
                 this.manage.clear();
             } else {
                 this.manage.text("(" + client.getTaskSize() + ")");
             }
-        });
+        }, "upload,download");
         // 设置收藏处理
         this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client()));
     }

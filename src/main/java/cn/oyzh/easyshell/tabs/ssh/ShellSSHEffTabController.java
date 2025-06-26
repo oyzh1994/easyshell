@@ -282,12 +282,12 @@ public class ShellSSHEffTabController extends SubTabController {
         ShellSFTPClient sftpClient = this.sftpClient();
         // 任务数量监听
         sftpClient.addTaskSizeListener(() -> {
-            if (sftpClient.isTaskEmpty()) {
+            if (sftpClient.isTaskEmpty("upload,download")) {
                 this.manage.clear();
             } else {
                 this.manage.text("(" + sftpClient.getTaskSize() + ")");
             }
-        });
+        }, "upload,download");
         // 监听终端目录
         this.client().workDirProperty().addListener((observable, oldValue, newValue) -> {
             if (this.client().isResolveWorkerDir()) {

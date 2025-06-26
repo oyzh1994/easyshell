@@ -139,12 +139,12 @@ public class ShellSFTPTabController extends RichTabController {
                 // this.hiddenFile(this.setting.isShowHiddenFile());
                 // 任务数量监听
                 this.client.addTaskSizeListener(() -> {
-                    if (this.client.isTaskEmpty()) {
+                    if (this.client.isTaskEmpty("upload,download")) {
                         this.manage.clear();
                     } else {
                         this.manage.text("(" + this.client.getTaskSize() + ")");
                     }
-                });
+                }, "upload,download");
                 // 设置收藏处理
                 this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client));
             } catch (Exception ex) {

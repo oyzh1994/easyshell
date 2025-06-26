@@ -108,16 +108,17 @@ public class ShellSSHSFTPTabController extends SubTabController {
         // 显示隐藏文件
         this.hiddenFile(this.shellConnect().isShowHiddenFile());
         // this.hiddenFile(this.setting.isShowHiddenFile());
+        ShellSFTPClient sftpClient = this.sftpClient();
         // 任务数量监听
-        this.sftpClient().addTaskSizeListener(() -> {
-            if (this.sftpClient().isTaskEmpty()) {
+        sftpClient.addTaskSizeListener(() -> {
+            if (sftpClient.isTaskEmpty("upload,download")) {
                 this.manage.clear();
             } else {
-                this.manage.text("(" + this.sftpClient().getTaskSize() + ")");
+                this.manage.text("(" + sftpClient.getTaskSize() + ")");
             }
-        });
+        }, "upload,download");
         // 设置收藏处理
-        this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.sftpClient()));
+        this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(sftpClient));
     }
 
 //    @Override

@@ -443,24 +443,36 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
     /**
      * 任务是否为空
      *
+     * @param type 类型
      * @return 结果
      */
-    default boolean isTaskEmpty() {
-        return this.uploadTasks().isEmpty() && this.downloadTasks().isEmpty();
+    default boolean isTaskEmpty(String type) {
+        if (type.contains("upload") && !this.isUploadTaskEmpty()) {
+            return false;
+        }
+        if (type.contains("download") && !this.isDownloadTaskEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * 添加任务数量监听
      *
      * @param callback 回调
+     * @param type     类型
      */
-    default void addTaskSizeListener(Runnable callback) {
-        this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-            callback.run();
-        });
-        this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
-            callback.run();
-        });
+    default void addTaskSizeListener(Runnable callback, String type) {
+        if (type.contains("upload")) {
+            this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
+                callback.run();
+            });
+        }
+        if (type.contains("download")) {
+            this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
+                callback.run();
+            });
+        }
     }
 
     /**
