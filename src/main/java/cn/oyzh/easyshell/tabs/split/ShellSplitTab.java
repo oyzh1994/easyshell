@@ -84,4 +84,9 @@ public class ShellSplitTab extends ShellTermTab {
         super.runSnippet(content);
         this.controller().runSnippet(content);
     }
+
+    @Override
+    public ShellConnect shellConnect() {
+        return null;
+    }
 }

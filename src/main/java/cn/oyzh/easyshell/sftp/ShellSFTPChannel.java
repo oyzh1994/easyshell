@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -69,29 +70,30 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public List<ShellSFTPFile> lsFile(String path) throws Exception {
-        String filePath = ShellFileUtil.fixFilePath(path);
+        // String filePath = ShellFileUtil.fixFilePath(path);
         // 文件列表
         List<ShellSFTPFile> files = new ArrayList<>();
-        // 总列表
-        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
-        // 遍历列表
-        for (ChannelSftp.LsEntry lsEntry : vector) {
-            ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
-            if (!file.isNormal()) {
-                continue;
-            }
-            files.add(file);
-            // 处理链接文件
-            if (file.isLink()) {
-                this.realpathCache.realpath(file, this);
-            }
-        }
+        // // 总列表
+        // Vector<ChannelSftp.LsEntry> vector = this.ls(path);
+        // // 遍历列表
+        // for (ChannelSftp.LsEntry lsEntry : vector) {
+        //     ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
+        //     if (!file.isNormal()) {
+        //         continue;
+        //     }
+        //     files.add(file);
+        //     // 处理链接文件
+        //     if (file.isLink()) {
+        //         this.realpathCache.realpath(file, this);
+        //     }
+        // }
         //// 过滤链接文件
         // List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
         //// 处理链接文件
         // this.realpathManager.put(linkFiles);
         //// 等待完成
         // this.realpathManager.waitComplete();
+        this.lsFile(path, files::add);
         return files;
     }
 
@@ -107,15 +109,17 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         // 总列表
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         // 遍历列表
-        for (ChannelSftp.LsEntry lsEntry : vector) {
-            ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
+        for (ChannelSftp.LsEntry entry : vector) {
+            // 非文件，跳过
+            if (".".equals(entry.getFilename()) || "..".equals(entry.getFilename())) {
+                continue;
+            }
+            ShellSFTPFile file = new ShellSFTPFile(filePath, entry);
             // 处理链接文件
             if (file.isLink()) {
                 this.realpathCache.realpath(file, this);
             }
-            if (file.isNormal()) {
-                fileCallback.accept(file);
-            }
+            fileCallback.accept(file);
         }
     }
 

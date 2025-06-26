@@ -44,11 +44,12 @@ public class ShellTelnetTabController extends RichTabController {
         return client;
     }
 
-    public ShellConnectTreeItem getTreeItem() {
-        return treeItem;
+    private ShellConnect shellConnect;
+
+    public ShellConnect shellConnect() {
+        return shellConnect;
     }
 
-    private ShellConnectTreeItem treeItem;
 
     /**
      * 设置
@@ -83,11 +84,11 @@ public class ShellTelnetTabController extends RichTabController {
     /**
      * 初始化
      *
-     * @param treeItem shell连接节点
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
-        this.treeItem = treeItem;
-        this.client = new ShellTelnetClient(treeItem.value());
+    public void init(ShellConnect connect) {
+        this.shellConnect = connect;
+        this.client = new ShellTelnetClient(connect);
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -123,9 +124,5 @@ public class ShellTelnetTabController extends RichTabController {
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();
         }
-    }
-
-    public ShellConnect shellConnect() {
-        return this.client.getShellConnect();
     }
 }

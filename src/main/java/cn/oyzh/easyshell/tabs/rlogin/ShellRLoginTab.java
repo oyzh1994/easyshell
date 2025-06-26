@@ -16,8 +16,8 @@ import javafx.scene.Cursor;
  */
 public class ShellRLoginTab extends ShellTermTab {
 
-    public ShellRLoginTab(ShellConnectTreeItem item) {
-        this.init(item);
+    public ShellRLoginTab(ShellConnect connect) {
+        this.init(connect);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class ShellRLoginTab extends ShellTermTab {
     /**
      * 初始化
      *
-     * @param treeItem shell信息
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
+    public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
-            this.controller().init(treeItem);
+            this.controller().init(connect);
             // 刷新图标
             this.flush();
         } catch (Exception ex) {
@@ -62,11 +62,7 @@ public class ShellRLoginTab extends ShellTermTab {
         return (ShellRLoginTabController) super.controller();
     }
 
-    /**
-     * shell信息
-     *
-     * @return 当前shell信息
-     */
+    @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }

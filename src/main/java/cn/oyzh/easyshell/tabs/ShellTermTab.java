@@ -6,7 +6,7 @@ package cn.oyzh.easyshell.tabs;
  * @author oyzh
  * @since 2025/05/17
  */
-public class ShellTermTab extends ShellConnectTab {
+public abstract class ShellTermTab extends ShellConnectTab {
 
     /**
      * 运行片段

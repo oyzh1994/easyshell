@@ -133,7 +133,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     @Override
     public void loadChild() {
-        ShellEventUtil.connectionOpened(this);
+        ShellEventUtil.connectionOpened(this.value);
     }
 
     /**
@@ -304,7 +304,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     public void onPrimaryDoubleClick() {
 //        if (!this.isConnected() && !this.isConnecting()) {
 //            this.connect();
-        ShellEventUtil.connectionOpened(this);
+        ShellEventUtil.connectionOpened(this.value);
 //        } else {
 //            super.onPrimaryDoubleClick();
 //        }

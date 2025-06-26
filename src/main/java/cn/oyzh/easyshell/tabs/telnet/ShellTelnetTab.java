@@ -16,8 +16,8 @@ import javafx.scene.Cursor;
  */
 public class ShellTelnetTab extends ShellConnectTab {
 
-    public ShellTelnetTab(ShellConnectTreeItem item) {
-        this.init(item);
+    public ShellTelnetTab(ShellConnect connect) {
+        this.init(connect);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class ShellTelnetTab extends ShellConnectTab {
     /**
      * 初始化
      *
-     * @param treeItem shell信息
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
+    public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
-            this.controller().init(treeItem);
+            this.controller().init(connect);
             // 刷新图标
             this.flush();
         } catch (Exception ex) {
@@ -62,11 +62,7 @@ public class ShellTelnetTab extends ShellConnectTab {
         return (ShellTelnetTabController) super.controller();
     }
 
-    /**
-     * shell信息
-     *
-     * @return 当前shell信息
-     */
+   @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }

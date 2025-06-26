@@ -178,7 +178,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void connectionOpened(ShellConnectOpenedEvent event) {
         FXTab tab;
-        ShellConnect connect = event.connect();
+        ShellConnect connect = event.data();
         if (connect.isSSHType()) {
             tab = new ShellSSHTab(event.data());
         } else if (connect.isLocalType()) {

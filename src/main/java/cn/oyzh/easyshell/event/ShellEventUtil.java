@@ -41,14 +41,15 @@ import java.util.List;
  */
 
 public class ShellEventUtil {
+
     /**
-     * 连接丢失事件
+     * 连接打开事件
      *
-     * @param item shell客户端
+     * @param connect 连接
      */
-    public static void connectionOpened(ShellConnectTreeItem item) {
+    public static void connectionOpened(ShellConnect connect) {
         ShellConnectOpenedEvent event = new ShellConnectOpenedEvent();
-        event.data(item);
+        event.data(connect);
         EventUtil.postSync(event);
     }
 

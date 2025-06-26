@@ -278,7 +278,9 @@ public class ShellSSHEffTabController extends SubTabController {
      */
     private void initFile() {
         this.fileTable.setSSHClient(this.client());
+        this.fileTable.setEnabledLoading(false);
         this.fileTable.refreshFile();
+        this.fileTable.setEnabledLoading(true);
         ShellSFTPClient sftpClient = this.sftpClient();
         // 任务数量监听
         sftpClient.addTaskSizeListener(() -> {
@@ -320,8 +322,6 @@ public class ShellSSHEffTabController extends SubTabController {
         }
         // 初始化文件
         this.initFile();
-        // 异步加载背景
-        ThreadUtil.startVirtual(this::initBackground);
         // 初始化
         ShellConnect connect = this.shellConnect();
         // 初始化
@@ -330,6 +330,8 @@ public class ShellSSHEffTabController extends SubTabController {
         this.followTerminalDir.setSelected(connect.isFollowTerminalDir());
         // 显示隐藏文件
         this.hiddenFile(this.shellConnect().isShowHiddenFile());
+        // 异步加载背景
+        ThreadUtil.startVirtual(this::initBackground);
     }
 
     @Override

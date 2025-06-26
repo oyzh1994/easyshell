@@ -42,11 +42,11 @@ public class ShellSSHTabController extends ParentTabController {
         return client;
     }
 
-    public ShellConnectTreeItem getTreeItem() {
-        return treeItem;
-    }
+    private ShellConnect shellConnect;
 
-    private ShellConnectTreeItem treeItem;
+    public ShellConnect shellConnect() {
+        return shellConnect;
+    }
 
     /**
      * 效率
@@ -104,11 +104,11 @@ public class ShellSSHTabController extends ParentTabController {
     /**
      * 设置shell客户端
      *
-     * @param treeItem shell客户端
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
-        this.treeItem = treeItem;
-        this.client = new ShellSSHClient(treeItem.value());
+    public void init(ShellConnect connect) {
+        this.shellConnect = connect;
+        this.client = new ShellSSHClient(connect);
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPT) {
@@ -163,15 +163,6 @@ public class ShellSSHTabController extends ParentTabController {
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();
         }
-    }
-
-    /**
-     * shell信息
-     *
-     * @return 当前shell信息
-     */
-    protected ShellConnect shellConnect() {
-        return this.treeItem.value();
     }
 
     @Override

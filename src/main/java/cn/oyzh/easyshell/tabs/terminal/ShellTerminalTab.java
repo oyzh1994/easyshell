@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
@@ -16,6 +17,11 @@ public class ShellTerminalTab extends ShellConnectTab {
     public ShellTerminalTab() {
         super();
         super.flush();
+    }
+
+    @Override
+    public ShellConnect shellConnect() {
+        return null;
     }
 
     @Override

@@ -49,10 +49,10 @@ public class ShellSerialTabController extends RichTabController {
         return client;
     }
 
-    private ShellConnectTreeItem treeItem;
+    private ShellConnect shellConnect;
 
-    public ShellConnectTreeItem getTreeItem() {
-        return treeItem;
+    public ShellConnect shellConnect() {
+        return shellConnect;
     }
 
     /**
@@ -81,11 +81,11 @@ public class ShellSerialTabController extends RichTabController {
     /**
      * 初始化
      *
-     * @param treeItem shell连接节点
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
-        this.treeItem = treeItem;
-        this.client = new ShellSerialClient(treeItem.value());
+    public void init(ShellConnect connect) {
+        this.shellConnect = connect;
+        this.client = new ShellSerialClient(connect);
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -123,10 +123,6 @@ public class ShellSerialTabController extends RichTabController {
         if (this.setting.isHiddenLeftAfterConnected()) {
             ShellEventUtil.layout2();
         }
-    }
-
-    public ShellConnect shellConnect() {
-        return this.client.getShellConnect();
     }
 
     /**

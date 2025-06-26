@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +54,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 开启加载动画
      */
     private boolean enabledLoading = true;
+    private AtomicBoolean loading1;
 
     public boolean isEnabledLoading() {
         return enabledLoading;
@@ -201,9 +203,19 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     protected List<E> files;
 
     /**
+     * 是否执行加载中
+     */
+    private final AtomicBoolean loading = new AtomicBoolean(false);
+
+    /**
      * 加载文件
      */
     public void loadFile() {
+        // 防止重复执行
+        if (this.loading.get()) {
+            return;
+        }
+        this.loading.set(true);
         // 执行函数
         Runnable func = () -> {
             try {
@@ -214,6 +226,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                     ex.printStackTrace();
                     MessageBox.exception(ex);
                 }
+            } finally {
+                this.loading.set(false);
             }
         };
         if (this.enabledLoading) {
@@ -299,7 +313,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         this.files = new ArrayList<>();
         // 动态加载
         this.client.lsFileDynamic(currPath, this::addFile);
-        this.sortFile();
     }
 
     /**
@@ -313,32 +326,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 添加到列表
         this.files.add(f1);
-        // // 当前在显示的列表
-        // List<E> items = this.getItems();
-        // // 删除列表
-        // List<E> delList = new ArrayList<>();
-        // // 新增列表
-        // List<E> addList = new ArrayList<>();
-        // // 遍历已有集合，如果不在待显示列表，则删除，否则更新
-        // for (E file : items) {
-        //     Optional<E> optional = this.files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-        //     if (optional.isEmpty()) {
-        //         delList.add(file);
-        //     } else {
-        //         file.copy(optional.get());
-        //     }
-        // }
-        // // 遍历待显示列表，如果不在已显示列表，则新增
-        // for (E file : this.files) {
-        //     Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-        //     if (optional.isEmpty()) {
-        //         addList.add(file);
-        //     }
-        // }
-        // // 删除数据
-        // this.removeItem(delList);
-        // // 新增数据
-        // this.addItem(addList);
+        // 进行排序
+        this.sortFile();
         // 更新列表
         this.setItem(this.files);
     }
@@ -347,6 +336,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 刷新文件
      */
     public void refreshFile() {
+        // 防止重复执行
+        if (this.loading.get()) {
+            return;
+        }
         if (this.files == null) {
             this.loadFile();
         } else {
@@ -858,8 +851,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                     .findAny()
                     .ifPresent(f -> this.files.remove(f));
             // 添加文件
-            this.files.add(file);
-            this.refreshFile();
+            this.addFile(file);
+            // this.files.add(file);
+            // this.refreshFile();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

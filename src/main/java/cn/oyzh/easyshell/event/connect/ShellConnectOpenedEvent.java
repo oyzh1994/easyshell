@@ -8,13 +8,13 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ShellConnectOpenedEvent extends Event<ShellConnectTreeItem>  {
+public class ShellConnectOpenedEvent extends Event<ShellConnect>  {
 
 //    public ShellBaseSSHClient client() {
 //        return this.data().client();
 //    }
 
-    public ShellConnect connect() {
-        return this.data().value();
-    }
+    // public ShellConnect connect() {
+    //     return this.data().value();
+    // }
 }

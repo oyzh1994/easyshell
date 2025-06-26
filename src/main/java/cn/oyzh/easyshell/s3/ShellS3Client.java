@@ -389,7 +389,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 删除竞争器
      */
-    private final Competitor deleteCompetitor = new Competitor(10);
+    private final Competitor deleteCompetitor = new Competitor(5);
 
     @Override
     public Competitor deleteCompetitor() {

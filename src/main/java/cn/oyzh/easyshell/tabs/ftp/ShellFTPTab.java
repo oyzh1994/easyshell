@@ -19,8 +19,8 @@ import javafx.scene.Cursor;
  */
 public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 
-    public ShellFTPTab(ShellConnectTreeItem item) {
-        this.init(item);
+    public ShellFTPTab(ShellConnect connect) {
+        this.init(connect);
     }
 
     @Override
@@ -42,12 +42,12 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
     /**
      * 初始化
      *
-     * @param treeItem shell信息
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
+    public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
-            this.controller().init(treeItem.value());
+            this.controller().init(connect);
             // 刷新图标
             this.flush();
         } catch (Exception ex) {
@@ -65,11 +65,7 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
         return (ShellFTPTabController) super.controller();
     }
 
-    /**
-     * shell信息
-     *
-     * @return 当前shell信息
-     */
+    @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }

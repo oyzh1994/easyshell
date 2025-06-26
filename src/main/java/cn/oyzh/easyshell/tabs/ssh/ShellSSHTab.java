@@ -18,8 +18,8 @@ import javafx.scene.Cursor;
  */
 public class ShellSSHTab extends ShellTermTab {
 
-    public ShellSSHTab(ShellConnectTreeItem item) {
-        this.init(item);
+    public ShellSSHTab(ShellConnect connect) {
+        this.init(connect);
     }
 
     @Override
@@ -46,12 +46,12 @@ public class ShellSSHTab extends ShellTermTab {
     /**
      * 初始化
      *
-     * @param treeItem shell信息
+     * @param connect shell信息
      */
-    public void init(ShellConnectTreeItem treeItem) {
+    public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
-            this.controller().init(treeItem);
+            this.controller().init(connect);
             // 刷新图标
             this.flush();
         } catch (Exception ex) {
@@ -69,11 +69,7 @@ public class ShellSSHTab extends ShellTermTab {
         return (ShellSSHTabController) super.controller();
     }
 
-    /**
-     * shell信息
-     *
-     * @return 当前shell信息
-     */
+   @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }

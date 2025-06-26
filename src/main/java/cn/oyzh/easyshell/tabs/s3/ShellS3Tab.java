@@ -19,8 +19,8 @@ import javafx.scene.Cursor;
  */
 public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 
-    public ShellS3Tab(ShellConnectTreeItem item) {
-        this.init(item);
+    public ShellS3Tab(ShellConnect connect) {
+        this.init(connect);
     }
 
     @Override
@@ -42,12 +42,12 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
     /**
      * 初始化
      *
-     * @param treeItem shell信息
+     * @param connect 连接
      */
-    public void init(ShellConnectTreeItem treeItem) {
+    public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
-            this.controller().init(treeItem.value());
+            this.controller().init(connect);
             // 刷新图标
             this.flush();
         } catch (Exception ex) {
@@ -65,11 +65,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
         return (ShellS3TabController) super.controller();
     }
 
-    /**
-     * shell信息
-     *
-     * @return 当前shell信息
-     */
+   @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }
@@ -83,13 +79,13 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
         return this.controller().client();
     }
 
-     @Override
-     public void onNodeInitialize() {
-         NodeLifeCycle.super.onNodeInitialize();
-         // 更新一下内容
-         StageAdapter adapter = StageManager.getAdapter(this.window());
-         if (adapter != null) {
-             adapter.updateContentLater();
-         }
-     }
+    @Override
+    public void onNodeInitialize() {
+        NodeLifeCycle.super.onNodeInitialize();
+        // 更新一下内容
+        StageAdapter adapter = StageManager.getAdapter(this.window());
+        if (adapter != null) {
+            adapter.updateContentLater();
+        }
+    }
 }
