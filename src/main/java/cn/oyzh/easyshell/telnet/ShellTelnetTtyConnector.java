@@ -6,7 +6,9 @@ import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -125,5 +127,15 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
         this.client.close();
         this.shellReader = null;
         this.shellWriter = null;
+    }
+
+    @Override
+    public InputStream input() {
+        return this.client.getInputStream();
+    }
+
+    @Override
+    public OutputStream output() {
+        return this.client.getOutputStream();
     }
 }
