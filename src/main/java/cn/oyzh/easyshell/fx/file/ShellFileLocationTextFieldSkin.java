@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  * @author oyzh
  * @since 2023/10/9
  */
-public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin {
+public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> {
 
     /**
      * 跳转路径事件
