@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -28,9 +27,9 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     /**
      * 链接管理器
      */
-    private ShellSFTPRealpathCache realpathCache;
+    private ShellSFTPCache realpathCache;
 
-    public ShellSFTPChannel(ChannelSftp channel, ShellSFTPRealpathCache realpathCache) {
+    public ShellSFTPChannel(ChannelSftp channel, ShellSFTPCache realpathCache) {
         super(channel);
         this.realpathCache = realpathCache;
     }

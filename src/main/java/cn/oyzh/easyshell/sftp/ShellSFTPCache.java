@@ -13,19 +13,31 @@ import java.util.function.Supplier;
  * @author oyzh
  * @since 2025-06-07
  */
-public class ShellSFTPRealpathCache implements AutoCloseable {
+public class ShellSFTPCache implements AutoCloseable {
 
     /**
      * 路径缓存
      * key: 路径 value: 链接路径
      */
-    private final Map<String, String> pathCache = new ConcurrentHashMap<>();
+    private final Map<String, String> pathCache = new ConcurrentHashMap<>(64);
 
     /**
      * 属性缓存
      * key: 路径:修改时间 value: 文件属性
      */
-    private final Map<String, SftpATTRS> attrsCache = new ConcurrentHashMap<>();
+    private final Map<String, SftpATTRS> attrsCache = new ConcurrentHashMap<>(64);
+
+    /**
+     * 拥有者缓存
+     * key: 拥有者id value: 拥有者名称
+     */
+    private final Map<Integer, String> ownerCache = new ConcurrentHashMap<>(4);
+
+    /**
+     * 分组缓存
+     * key: 分组id value: 分组名称
+     */
+    private final Map<Integer, String> groupCache = new ConcurrentHashMap<>(4);
 
     /**
      * 读取链接
@@ -83,9 +95,43 @@ public class ShellSFTPRealpathCache implements AutoCloseable {
     //     this.realpath(file, client.takeSFTPChannel());
     // }
 
+    /**
+     * 获取拥有者
+     *
+     * @param uid    拥有者id
+     * @param client 客户端
+     * @return 拥有者名称
+     */
+    public String getOwner(int uid, ShellSFTPClient client) {
+        String owner = this.ownerCache.get(uid);
+        if (owner == null) {
+            owner = client.exec_id_un(uid);
+            this.ownerCache.put(uid, owner);
+        }
+        return owner;
+    }
+
+    /**
+     * 获取分组
+     *
+     * @param gid    分组id
+     * @param client 客户端
+     * @return 分组名称
+     */
+    public String getGroup(int gid, ShellSFTPClient client) {
+        String group = this.groupCache.get(gid);
+        if (group == null) {
+            group = client.exec_id_gn(gid);
+            this.groupCache.put(gid, group);
+        }
+        return group;
+    }
+
     @Override
     public void close() throws Exception {
         this.pathCache.clear();
         this.attrsCache.clear();
+        this.ownerCache.clear();
+        this.groupCache.clear();
     }
 }

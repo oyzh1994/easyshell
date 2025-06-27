@@ -11,7 +11,7 @@
 // * @author oyzh
 // * @since 2025-06-07
 // */
-//public class ShellSFTPRealpathCache implements AutoCloseable {
+//public class ShellSFTPCache implements AutoCloseable {
 //
 //    /**
 //     * 路径缓存

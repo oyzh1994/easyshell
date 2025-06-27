@@ -45,14 +45,14 @@ import java.util.function.Function;
 public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClient<ShellSFTPFile> {
 
     /**
+     * 缓存管理器
+     */
+    private ShellSFTPCache cache;
+
+    /**
      * sftp通道池
      */
     private ShellSFTPChannelPool channelPool;
-
-    /**
-     * 链接管理器
-     */
-    private ShellSFTPRealpathCache realpathCache;
 
     /**
      * 延迟处理的文件通道
@@ -81,16 +81,16 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public ShellSFTPClient(ShellConnect shellConnect, Session session) {
         super(shellConnect);
         this.session = session;
-        this.realpathCache = new ShellSFTPRealpathCache();
+        this.cache = new ShellSFTPCache();
         this.channelPool = new ShellSFTPChannelPool(this);
         super.addStateListener(this.stateListener);
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, Session session, ShellSFTPRealpathCache realpathCache, ShellSFTPChannelPool pool) {
+    public ShellSFTPClient(ShellConnect shellConnect, Session session, ShellSFTPCache cache, ShellSFTPChannelPool pool) {
         super(shellConnect);
+        this.cache = cache;
         this.session = session;
         this.channelPool = pool;
-        this.realpathCache = realpathCache;
         super.addStateListener(this.stateListener);
     }
 
@@ -102,20 +102,20 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 this.session.disconnect();
                 this.session = null;
             }
-            // 清除用户、分组信息
-            if (this.attr != null) {
-                IOUtil.close(this.attr);
-                this.attr = null;
-            }
+            //// 清除用户、分组信息
+            //if (this.attr != null) {
+            //    IOUtil.close(this.attr);
+            //    this.attr = null;
+            //}
             // 通道管理
             if (this.channelPool != null) {
                 IOUtil.close(this.channelPool);
                 this.channelPool = null;
             }
             // 链接路径
-            if (this.realpathCache != null) {
-                IOUtil.close(this.realpathCache);
-                this.realpathCache = null;
+            if (this.cache != null) {
+                IOUtil.close(this.cache);
+                this.cache = null;
             }
             this.delayChannels.clear();
             this.state.set(ShellConnState.CLOSED);
@@ -183,7 +183,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             // 设置字符集
             channel.setFilenameEncoding(this.getCharset());
             // 创建通道
-            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.realpathCache);
+            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.cache);
             // 连接
             sftpChannel.connect(this.connectTimeout());
             // 初始化环境
@@ -244,17 +244,17 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return this.exec("id -gn " + gid);
     }
 
-    /**
-     * 属性
-     */
-    private ShellSFTPAttr attr;
-
-    public ShellSFTPAttr getAttr() {
-        if (this.attr == null) {
-            this.attr = new ShellSFTPAttr();
-        }
-        return this.attr;
-    }
+    ///**
+    // * 属性
+    // */
+    //private ShellSFTPAttr attr;
+    //
+    //public ShellSFTPAttr getAttr() {
+    //    if (this.attr == null) {
+    //        this.attr = new ShellSFTPAttr();
+    //    }
+    //    return this.attr;
+    //}
 
     @Override
     public void delete(String file) throws Exception {
@@ -525,16 +525,18 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String fName = ShellFileUtil.name(filePath);
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         // 读取链接文件
-        this.realpathCache.realpath(file, this::takeChannel);
+        this.cache.realpath(file, this::takeChannel);
         // ShellSFTPUtil.realpath(file, this);
         // 拥有者、分组
         // if (this.isWindows()) {
         //     file.setOwner("-");
         //     file.setGroup("-");
         // } else {
-        file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this));
-        file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this));
+        //file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this));
+        //file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this));
         // }
+        file.setOwner(this.cache.getOwner(file.getUid(), this));
+        file.setGroup(this.cache.getGroup(file.getGid(), this));
         return file;
     }
 

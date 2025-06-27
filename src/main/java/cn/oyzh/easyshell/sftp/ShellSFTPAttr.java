@@ -7,7 +7,8 @@ import java.util.Map;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPAttr implements AutoCloseable{
+@Deprecated
+public class ShellSFTPAttr implements AutoCloseable {
 
     private Map<Integer, String> owner;
 

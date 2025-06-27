@@ -12,45 +12,45 @@ import com.jcraft.jsch.SftpException;
  */
 public class ShellSFTPUtil {
 
-    /**
-     * 获取拥有者
-     *
-     * @param uid    用户id
-     * @param client 客户端
-     * @return 拥有者名称
-     */
-    public static String getOwner(int uid, ShellSFTPClient client) {
-        if (client.isWindows()) {
-            return "-";
-        }
-        ShellSFTPAttr attr = client.getAttr();
-        String ownerName = attr.getOwner(uid);
-        if (ownerName == null) {
-            ownerName = client.exec_id_un(uid);
-            attr.putOwner(uid, ownerName);
-        }
-        return ownerName;
-    }
-
-    /**
-     * 获取分租
-     *
-     * @param gid    分组id
-     * @param client 客户端
-     * @return 分组名称
-     */
-    public static String getGroup(int gid, ShellSFTPClient client) {
-        if (client.isWindows()) {
-            return "-";
-        }
-        ShellSFTPAttr attr = client.getAttr();
-        String groupName = attr.getGroup(gid);
-        if (groupName == null) {
-            groupName = client.exec_id_gn(gid);
-            attr.putGroup(gid, groupName);
-        }
-        return groupName;
-    }
+    ///**
+    // * 获取拥有者
+    // *
+    // * @param uid    用户id
+    // * @param client 客户端
+    // * @return 拥有者名称
+    // */
+    //public static String getOwner(int uid, ShellSFTPClient client) {
+    //    if (client.isWindows()) {
+    //        return "-";
+    //    }
+    //    ShellSFTPAttr attr = client.getAttr();
+    //    String ownerName = attr.getOwner(uid);
+    //    if (ownerName == null) {
+    //        ownerName = client.exec_id_un(uid);
+    //        attr.putOwner(uid, ownerName);
+    //    }
+    //    return ownerName;
+    //}
+    //
+    ///**
+    // * 获取分租
+    // *
+    // * @param gid    分组id
+    // * @param client 客户端
+    // * @return 分组名称
+    // */
+    //public static String getGroup(int gid, ShellSFTPClient client) {
+    //    if (client.isWindows()) {
+    //        return "-";
+    //    }
+    //    ShellSFTPAttr attr = client.getAttr();
+    //    String groupName = attr.getGroup(gid);
+    //    if (groupName == null) {
+    //        groupName = client.exec_id_gn(gid);
+    //        attr.putGroup(gid, groupName);
+    //    }
+    //    return groupName;
+    //}
 
     /**
      * 读取链接路径

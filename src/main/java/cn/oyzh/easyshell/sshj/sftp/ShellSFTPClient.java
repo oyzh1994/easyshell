@@ -54,7 +54,7 @@
 //    /**
 //     * 链接路径处理
 //     */
-//    private final ShellSFTPRealpathCache realpathCache = new ShellSFTPRealpathCache();
+//    private final ShellSFTPCache realpathCache = new ShellSFTPCache();
 //
 //    /**
 //     * 连接状态
