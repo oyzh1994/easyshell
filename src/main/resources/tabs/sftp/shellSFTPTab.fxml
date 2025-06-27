@@ -17,6 +17,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.sftp.ShellSFTPTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -84,7 +85,7 @@
             </FXHBox.margin>
         </ClearableTextField>
     </FXHBox>
-    <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
+    <ShellSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
             <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
@@ -97,4 +98,11 @@
             <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
         </columns>
     </ShellSFTPFileTableView>
+    <FXHBox prefHeight="30">
+        <FXLabel fx:id="fileInfo">
+            <FXHBox.margin>
+                <Insets left="5" top="5"/>
+            </FXHBox.margin>
+        </FXLabel>
+    </FXHBox>
 </FXVBox>

@@ -130,19 +130,23 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             this.ftpClient.setConnectTimeout(timeout);
             this.ftpClient.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
             this.ftpClient.connect(hostIp, port);
+            this.ftpClient.setKeepAlive(true);
             // 连接失败
             if (!this.isConnected()) {
                 this.state.set(ShellConnState.FAILED);
                 JulLog.warn("ftp connect fail.");
                 return;
             }
-            // 登陆失败
-            if (StringUtil.isNotBlank(this.shellConnect.getUser())
-                    && StringUtil.isNotBlank(this.shellConnect.getPassword())
-                    && !this.ftpClient.login(this.shellConnect.getUser(), this.shellConnect.getPassword())) {
-                this.state.set(ShellConnState.FAILED);
-                JulLog.warn("ftp login fail.");
-                return;
+            // 登陆
+            if (StringUtil.isNotBlank(this.shellConnect.getUser())) {
+                // 密码
+                String pwd = StringUtil.isNotBlank(this.shellConnect.getPassword()) ? this.shellConnect.getPassword() : null;
+                // 登陆失败
+                if (!this.ftpClient.login(this.shellConnect.getUser(), pwd)) {
+                    this.state.set(ShellConnState.FAILED);
+                    JulLog.warn("ftp login fail.");
+                    return;
+                }
             }
             // 启用 TLS 加密
             if (this.shellConnect.isSSLMode()) {

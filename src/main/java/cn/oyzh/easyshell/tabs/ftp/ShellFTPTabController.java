@@ -5,8 +5,10 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -16,12 +18,14 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -84,6 +88,12 @@ public class ShellFTPTabController extends RichTabController {
      */
     @FXML
     private ClearableTextField filterFile;
+
+    /**
+     * 文件信息
+     */
+    @FXML
+    private FXLabel fileInfo;
 
     /**
      * 设置
@@ -168,13 +178,6 @@ public class ShellFTPTabController extends RichTabController {
     public void onTabInit(RichTab tab) {
         try {
             super.onTabInit(tab);
-            // tab.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            //     if (t1) {
-            //         System.setProperty(ShellConst.SFTP_VISIBLE, "1");
-            //     } else {
-            //         System.clearProperty(ShellConst.SFTP_VISIBLE);
-            //     }
-            // });
             // 监听位置
             this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1 == null) {
@@ -202,6 +205,10 @@ public class ShellFTPTabController extends RichTabController {
                 } else if (KeyboardUtil.hide_keyCombination.match(event)) {
                     this.hiddenFile();
                 }
+            });
+            // 监听信息
+            this.fileTable.itemList().addListener((ListChangeListener<ShellFTPFile>) c -> {
+                this.fileInfo.setText(this.fileTable.fileInfo());
             });
             // 绑定提示快捷键
             this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);

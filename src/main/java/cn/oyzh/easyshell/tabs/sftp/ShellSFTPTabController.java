@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -17,12 +18,14 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -85,6 +88,12 @@ public class ShellSFTPTabController extends RichTabController {
      */
     @FXML
     private ClearableTextField filterFile;
+
+    /**
+     * 文件信息
+     */
+    @FXML
+    private FXLabel fileInfo;
 
     /**
      * 设置
@@ -199,6 +208,10 @@ public class ShellSFTPTabController extends RichTabController {
                     this.hiddenFile();
                 }
             });
+            // 监听信息
+            this.fileTable.itemList().addListener((ListChangeListener<ShellSFTPFile>) c -> {
+                this.fileInfo.setText(this.fileTable.fileInfo());
+            });
             // 绑定提示快捷键
             this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
             this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
@@ -293,227 +306,6 @@ public class ShellSFTPTabController extends RichTabController {
         }
     }
 
-//    /**
-//     * 取消上传
-//     */
-//    @FXML
-//    private void cancelUpload() {
-//        try {
-//            this.uploadManager.cancel();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
-//
-//    /**
-//     * 取消下载
-//     */
-//    @FXML
-//    private void cancelDownload() {
-//        try {
-//            this.downloadManager.cancel();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
-//
-//    /**
-//     * 下载失败
-//     *
-//     * @param monitor   监听器
-//     * @param exception 异常
-//     */
-//    private void downloadFailed(ShellSFTPDownloadMonitor monitor, Throwable exception) {
-//        if (exception != null) {
-//            MessageBox.exception(exception, I18nHelper.downloadFailed() + " " + monitor.getLocalFileName());
-//        }
-//    }
-//
-//    /**
-//     * 下载状态改变事件
-//     *
-//     * @param status 状态
-//     * @param task   任务
-//     */
-//    private void downloadStatusChanged(String status, ShellSFTPDownloadTask task) {
-//        StringBuilder builder = new StringBuilder();
-//        builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
-//        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
-//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-//        this.fileDownload.text(builder.toString());
-//        this.downloadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-//    }
-//
-//    /**
-//     * 下载监听变更事件
-//     *
-//     * @param monitor 监听器
-//     * @param task    任务
-//     */
-//    private void downloadMonitorChanged(ShellSFTPDownloadMonitor monitor, ShellSFTPDownloadTask task) {
-//        StringBuilder builder = new StringBuilder();
-//        builder.append(I18nHelper.task()).append(": ").append(this.downloadManager.getTaskSize());
-////        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
-//        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
-//        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
-//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-//        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getRemoteFileName());
-//        this.fileDownload.text(builder.toString());
-//        this.downloadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-//    }
-//
-//    /**
-//     * 下载任务大小变更事件
-//     */
-//    private void downloadTaskSizeChanged() {
-//        if (this.downloadManager.isEmpty()) {
-//            this.downloadBox.disappear();
-//        } else {
-//            this.downloadBox.display();
-//        }
-//        this.updateLayout();
-//    }
-//
-//    /**
-//     * 上传失败
-//     *
-//     * @param monitor   监听器
-//     * @param exception 异常
-//     */
-//    private void uploadFailed(ShellSFTPUploadMonitor monitor, Throwable exception) {
-//        if (exception != null) {
-//            MessageBox.exception(exception, I18nHelper.uploadFailed() + " " + monitor.getLocalFileName());
-//        }
-//    }
-//
-//    /**
-//     * 上传状态改变事件
-//     *
-//     * @param status 状态
-//     * @param task   任务
-//     */
-//    private void uploadStatusChanged(String status, ShellSFTPUploadTask task) {
-//        StringBuilder builder = new StringBuilder();
-//        builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
-//        builder.append(" ").append(I18nHelper.status()).append(": ").append(status);
-//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-//        this.fileUpload.text(builder.toString());
-//        this.uploadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-//    }
-//
-//    /**
-//     * 上传监听变更事件
-//     *
-//     * @param monitor 监听器
-//     * @param task    任务
-//     */
-//    private void uploadMonitorChanged(ShellSFTPUploadMonitor monitor, ShellSFTPUploadTask task) {
-//        StringBuilder builder = new StringBuilder();
-//        builder.append(I18nHelper.task()).append(": ").append(this.uploadManager.getTaskSize());
-////        builder.append(" ").append(I18nHelper.count()).append(": ").append(task.size());
-//        builder.append(" ").append(I18nHelper.speed()).append(": ").append(task.getSpeed());
-//        builder.append(" ").append(I18nHelper.size()).append(": ").append(task.getFileSize());
-//        builder.append(" ").append(I18nHelper.src()).append(": ").append(task.getSrcPath());
-//        builder.append(" ").append(I18nHelper.dest()).append(": ").append(task.getDestPath());
-//        builder.append(" ").append(I18nHelper.current()).append(": ").append(monitor.getLocalFileName());
-//        this.fileUpload.text(builder.toString());
-//        this.uploadProgress.setValue(task.getCurrentSize(), task.getTotalSize());
-//    }
-//
-//    /**
-//     * 上传任务大小变更事件
-//     */
-//    private void uploadTaskSizeChanged() {
-//        if (this.uploadManager.isEmpty()) {
-//            this.uploadBox.disappear();
-//            this.fileTable.loadFile();
-//        } else {
-//            this.uploadBox.display();
-//        }
-//        this.updateLayout();
-//    }
-//
-//    /**
-//     * 删除失败
-//     *
-//     * @param file      文件
-//     * @param exception 异常
-//     */
-//    private void deleteFailed(ShellSFTPFile file, Throwable exception) {
-//        if (exception != null) {
-//            MessageBox.exception(exception, I18nHelper.deleteFailed() + " " + file.getFileName());
-//        }
-//    }
-//
-//    /**
-//     * 删除结束事件
-//     */
-//    private void deleteEnded() {
-//        this.deleteBox.disappear();
-//        this.updateLayout();
-//    }
-//
-//    /**
-//     * 文件已删除事件
-//     *
-//     * @param fileName 文件名
-//     */
-//    private void deleteDeleted(String fileName) {
-//        if (!this.deleteBox.isVisible()) {
-//            this.deleteBox.display();
-//            this.updateLayout();
-//        }
-////        this.fileTable.fileDeleted(fileName);
-//        this.fileDelete.text(I18nHelper.deleteIng() + ": " + fileName);
-//    }
-//
-//    /**
-//     * 更新布局
-//     */
-//    private synchronized void updateLayout() {
-//        int showNum = 0;
-//        if (this.deleteBox.isVisible()) {
-//            ++showNum;
-//        }
-//        if (this.uploadBox.isVisible()) {
-//            ++showNum;
-//        }
-//        if (this.downloadBox.isVisible()) {
-//            ++showNum;
-//        }
-//        this.fileTable.setFlexHeight("100% - " + (30 + showNum * 30));
-//        this.fileTable.parentAutosize();
-//    }
-
-//    @FXML
-//    private void showUploadBox() {
-//        StageAdapter adapter = StageManager.parseStage(ShellSftpUploadController.class, null);
-//        adapter.setProp("client", this.client());
-//        adapter.display();
-//    }
-//
-//    @FXML
-//    private void showDownloadBox() {
-//        StageAdapter adapter = StageManager.parseStage(ShellSftpDownloadController.class, null);
-//        adapter.setProp("client", this.client());
-//        adapter.display();
-//    }
-
-//    /**
-//     * 文件保存事件
-//     *
-//     * @param event 事件
-//     */
-//    @EventSubscribe
-//    private void onFileSaved(ShellFileSavedEvent event) {
-//        this.fileTable.refresh();
-//    }
-
     /**
      * 隐藏文件
      */
@@ -549,19 +341,4 @@ public class ShellSFTPTabController extends RichTabController {
     private void manage() {
         ShellViewFactory.fileManage(this.client);
     }
-
-//    @FXML
-//    public void showSftpBox() {
-//        // 判断窗口是否存在
-//        List<StageAdapter> list = StageManager.listStage(ShellSFTPManageController.class);
-//        for (StageAdapter adapter : list) {
-//            if (adapter.getProp("client") == this.client()) {
-//                adapter.toFront();
-//                return;
-//            }
-//        }
-//        StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class, null);
-//        adapter.setProp("client", this.client());
-//        adapter.display();
-//    }
 }
