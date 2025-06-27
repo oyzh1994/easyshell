@@ -25,6 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveFolderSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -113,11 +114,23 @@
                     <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                 </columns>
             </ShellSSHSFTPFileTableView>
-            <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
-                <FXVBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXVBox.margin>
-            </FXToggleSwitch>
+            <FXHBox prefHeight="30">
+                <MoveFolderSVGGlyph onMousePrimaryClicked="#copyPathToTerminal">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </MoveFolderSVGGlyph>
+                <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
+                    <FXHBox.margin>
+                        <Insets left="5" top="5"/>
+                    </FXHBox.margin>
+                </FXToggleSwitch>
+                <FXLabel fx:id="fileInfo">
+                    <FXHBox.margin>
+                        <Insets left="5" top="8"/>
+                    </FXHBox.margin>
+                </FXLabel>
+            </FXHBox>
         </FXVBox>
         <FXVBox flexWidth="100% - 320" flexHeight="100%" layoutX="320" fx:id="rightBox">
             <!-- <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30"> -->
@@ -125,10 +138,11 @@
             <FXHBox flexWidth="100%" realHeight="30">
                 <FXLabel fx:id="termSize">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="5" top="8"/>
                     </FXHBox.margin>
                 </FXLabel>
-                <HistorySVGGlyph fx:id="termHistory" tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
+                <HistorySVGGlyph fx:id="termHistory" tipText="%base.terminalHistory"
+                                 onMousePrimaryClicked="#termHistory">
                     <FXHBox.margin>
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
@@ -145,7 +159,7 @@
                 </FXToggleSwitch>
                 <FXLabel fx:id="serverMonitorInfo">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="5" top="8"/>
                     </FXHBox.margin>
                 </FXLabel>
             </FXHBox>

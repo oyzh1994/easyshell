@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHShell;
 import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
@@ -38,9 +39,11 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
+import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,6 +166,12 @@ public class ShellSSHEffTabController extends SubTabController {
      */
     @FXML
     private FXLabel termSize;
+
+    /**
+     * 文件信息
+     */
+    @FXML
+    private FXLabel fileInfo;
 
     // /**
     //  * 设置
@@ -395,6 +404,12 @@ public class ShellSSHEffTabController extends SubTabController {
                 this.fileTable.setFilterText(t1);
             } catch (Exception ex) {
                 MessageBox.exception(ex);
+            }
+        });
+        // 监听信息
+        this.fileTable.itemList().addListener((ListChangeListener<ShellSFTPFile>) c -> {
+            if (this.showFile.isSelected()) {
+                this.fileInfo.setText(this.fileTable.fileInfo());
             }
         });
         // 绑定提示快捷键
@@ -684,5 +699,18 @@ public class ShellSSHEffTabController extends SubTabController {
      */
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
+    }
+
+    /**
+     * 复制路径到终端
+     */
+    @FXML
+    private void copyPathToTerminal() {
+        try {
+            this.widget.getTtyConnector().write(this.fileTable.getLocation());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 }

@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -13,12 +14,14 @@ import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
@@ -80,6 +83,12 @@ public class ShellSSHSFTPTabController extends SubTabController {
      */
     @FXML
     private ClearableTextField filterFile;
+
+    /**
+     * 文件信息
+     */
+    @FXML
+    private FXLabel fileInfo;
 
     // /**
     //  * 设置
@@ -163,6 +172,10 @@ public class ShellSSHSFTPTabController extends SubTabController {
                 } else if (KeyboardUtil.hide_keyCombination.match(event)) {
                     this.hiddenFile();
                 }
+            });
+            // 监听信息
+            this.fileTable.itemList().addListener((ListChangeListener<ShellSFTPFile>) c -> {
+                this.fileInfo.setText(this.fileTable.fileInfo());
             });
             // 绑定提示快捷键
             this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);

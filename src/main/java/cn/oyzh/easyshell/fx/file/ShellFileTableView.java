@@ -5,6 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -1115,4 +1116,26 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         return this.isSupportAction("permission");
     }
 
+    /**
+     * 获取文件总大小
+     *
+     * @return 总大小
+     */
+    public long totalSize() {
+        long size = 0;
+        for (E item : this.getItems()) {
+            size += item.getFileSize();
+        }
+        return size;
+    }
+
+    /**
+     * 获取文件信息
+     *
+     * @return 文件信息
+     */
+    public String fileInfo() {
+        long size = this.totalSize();
+        return this.getItemSize() + I18nHelper.items() + ", " + NumberUtil.formatSize(size, 2);
+    }
 }
