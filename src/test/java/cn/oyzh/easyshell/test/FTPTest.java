@@ -19,4 +19,16 @@ public class FTPTest {
             System.out.println(file.getGroup());
         }
     }
+
+    @Test
+    public void test1() throws IOException {
+        FTPClient ftp = new FTPClient();
+        ftp.connect("192.168.22.140",21);
+        ftp.login("root","123456");
+        FTPFile[] files= ftp.listDirectories();
+        for (FTPFile file : files) {
+            System.out.println(file.getName());
+            System.out.println(file.getGroup());
+        }
+    }
 }

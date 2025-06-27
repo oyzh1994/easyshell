@@ -8,10 +8,10 @@ import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
@@ -33,8 +33,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -366,9 +364,24 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return stream;
     }
 
+    // @Override
+    // public List<ShellFTPFile> lsFile(String filePath) throws Exception {
+    //     List<ShellFTPFile> list = new ArrayList<>();
+    //     FTPFile[] files = this.ftpClient.listFiles(filePath);
+    //     if (files != null) {
+    //         for (FTPFile file : files) {
+    //             FTPFile linkFile = null;
+    //             if (file.isSymbolicLink()) {
+    //                 linkFile = this.getFile("/" + file.getLink());
+    //             }
+    //             list.add(new ShellFTPFile(filePath, file, linkFile));
+    //         }
+    //     }
+    //     return list;
+    // }
+
     @Override
-    public List<ShellFTPFile> lsFile(String filePath) throws Exception {
-        List<ShellFTPFile> list = new ArrayList<>();
+    public void lsFileDynamic(String filePath, Consumer<ShellFTPFile> fileCallback) throws Exception {
         FTPFile[] files = this.ftpClient.listFiles(filePath);
         if (files != null) {
             for (FTPFile file : files) {
@@ -376,15 +389,10 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 if (file.isSymbolicLink()) {
                     linkFile = this.getFile("/" + file.getLink());
                 }
-                list.add(new ShellFTPFile(filePath, file, linkFile));
+                ShellFTPFile ftpFile = new ShellFTPFile(filePath, file, linkFile);
+                fileCallback.accept(ftpFile);
             }
         }
-        return list;
-    }
-
-    @Override
-    public void lsFileDynamic(String filePath, Consumer<ShellFTPFile> fileCallback) throws Exception {
-
     }
 
     @Override

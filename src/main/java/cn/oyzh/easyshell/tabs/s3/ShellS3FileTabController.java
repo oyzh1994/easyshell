@@ -7,17 +7,20 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView;
 import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
@@ -93,6 +96,12 @@ public class ShellS3FileTabController extends SubTabController {
     private ClearableTextField filterFile;
 
     /**
+     * 文件信息
+     */
+    @FXML
+    private FXLabel fileInfo;
+
+    /**
      * 设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -159,6 +168,10 @@ public class ShellS3FileTabController extends SubTabController {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
                 }
+            });
+            // 监听信息
+            this.fileTable.itemList().addListener((ListChangeListener<ShellS3File>) c -> {
+                this.fileInfo.setText(this.fileTable.fileInfo());
             });
             // 绑定提示快捷键
             this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);

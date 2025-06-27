@@ -97,7 +97,7 @@
             <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
         </columns>
     </ShellFTPFileTableView>
-    <FXHBox prefHeight="30">
+    <FXHBox prefHeight="30" flexWidth="100%">
         <FXLabel fx:id="fileInfo">
             <FXHBox.margin>
                 <Insets left="5" top="5"/>

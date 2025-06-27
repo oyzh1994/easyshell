@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -32,7 +33,11 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @return 文件列表
      * @throws Exception 异常
      */
-    List<E> lsFile(String filePath) throws Exception;
+   default List<E> lsFile(String filePath) throws Exception{
+        List<E> files = new ArrayList<>();
+        this.lsFileDynamic(filePath, files::add);
+        return files;
+    }
 
     /**
      * 列举文件，动态加载
@@ -42,6 +47,29 @@ public interface ShellFileClient<E extends ShellFile> extends BaseClient {
      * @throws Exception 异常
      */
     void lsFileDynamic(String filePath, Consumer<E> fileCallback) throws Exception;
+
+    /**
+     * 列举文件，批量加载
+     *
+     * @param filePath     文件路径
+     * @param fileCallback 文件回调
+     * @param batchSize    批量大小
+     * @throws Exception 异常
+     */
+    default void lsFileBatch(String filePath, Consumer<List<E>> fileCallback, int batchSize) throws Exception {
+        List<E> files = new ArrayList<>();
+        this.lsFileDynamic(filePath, e -> {
+            files.add(e);
+            if (files.size() >= batchSize) {
+                fileCallback.accept(files);
+                files.clear();
+            }
+        });
+        if (!files.isEmpty()) {
+            fileCallback.accept(files);
+            files.clear();
+        }
+    }
 
     /**
      * 递归列举文件

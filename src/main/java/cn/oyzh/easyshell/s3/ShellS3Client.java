@@ -180,9 +180,44 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         }
     }
 
+    // @Override
+    // public List<ShellS3File> lsFile(String filePath) throws Exception {
+    //     List<ShellS3File> files = new ArrayList<>();
+    //     if (StringUtil.equalsAny(filePath, "/", "")) {
+    //         ListBucketsRequest request = ListBucketsRequest.builder()
+    //                 .build();
+    //         ListBucketsResponse response = this.s3Client.listBuckets(request);
+    //         List<Bucket> list = response.buckets();
+    //         for (Bucket bucket : list) {
+    //             ShellS3File file = new ShellS3File(bucket);
+    //             files.add(file);
+    //         }
+    //     } else {
+    //         ShellS3Path s3Path = ShellS3Path.of(filePath);
+    //         String fPrefix = s3Path.prefix();
+    //         String bucketName = s3Path.bucketName();
+    //         ListObjectsRequest request = ListObjectsRequest.builder()
+    //                 .bucket(bucketName)
+    //                 .prefix(fPrefix)
+    //                 .delimiter("/")
+    //                 .build();
+    //         ListObjectsResponse response = this.s3Client.listObjects(request);
+    //         List<S3Object> list = response.contents();
+    //         for (S3Object s3Object : list) {
+    //             ShellS3File file = new ShellS3File(s3Object, bucketName);
+    //             files.add(file);
+    //         }
+    //         List<CommonPrefix> list2 = response.commonPrefixes();
+    //         for (CommonPrefix prefix : list2) {
+    //             ShellS3File file = new ShellS3File(prefix, bucketName);
+    //             files.add(file);
+    //         }
+    //     }
+    //     return files;
+    // }
+
     @Override
-    public List<ShellS3File> lsFile(String filePath) throws Exception {
-        List<ShellS3File> files = new ArrayList<>();
+    public void lsFileDynamic(String filePath, Consumer<ShellS3File> fileCallback) throws Exception {
         if (StringUtil.equalsAny(filePath, "/", "")) {
             ListBucketsRequest request = ListBucketsRequest.builder()
                     .build();
@@ -190,7 +225,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             List<Bucket> list = response.buckets();
             for (Bucket bucket : list) {
                 ShellS3File file = new ShellS3File(bucket);
-                files.add(file);
+                fileCallback.accept(file);
             }
         } else {
             ShellS3Path s3Path = ShellS3Path.of(filePath);
@@ -205,20 +240,14 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             List<S3Object> list = response.contents();
             for (S3Object s3Object : list) {
                 ShellS3File file = new ShellS3File(s3Object, bucketName);
-                files.add(file);
+                fileCallback.accept(file);
             }
             List<CommonPrefix> list2 = response.commonPrefixes();
             for (CommonPrefix prefix : list2) {
                 ShellS3File file = new ShellS3File(prefix, bucketName);
-                files.add(file);
+                fileCallback.accept(file);
             }
         }
-        return files;
-    }
-
-    @Override
-    public void lsFileDynamic(String filePath, Consumer<ShellS3File> fileCallback) throws Exception {
-
     }
 
     @Override

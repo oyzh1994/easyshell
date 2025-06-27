@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
 <?import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FileUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3FileTabController"
        text="%base.file">
@@ -79,7 +79,7 @@
                 </FXHBox.margin>
             </ClearableTextField>
         </FXHBox>
-        <ShellS3FileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 30">
+        <ShellS3FileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                 <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 345" valueName="fileName"
@@ -88,5 +88,12 @@
                 <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
             </columns>
         </ShellS3FileTableView>
+        <FXHBox prefHeight="30" flexWidth="100%">
+            <FXLabel fx:id="fileInfo">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </FXLabel>
+        </FXHBox>
     </FXVBox>
 </FXTab>

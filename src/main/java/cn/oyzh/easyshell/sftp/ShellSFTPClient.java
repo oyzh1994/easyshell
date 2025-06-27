@@ -538,18 +538,18 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return file;
     }
 
-    @Override
-    public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeChannel();
-        try {
-            return channel.lsFile(filePath);
-            // } catch (Exception ex) {
-            //     this.closeChannel(channel);
-            //     throw ex;
-        } finally {
-            this.returnChannel(channel);
-        }
-    }
+    // @Override
+    // public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
+    //     ShellSFTPChannel channel = this.takeChannel();
+    //     try {
+    //         return channel.lsFile(filePath);
+    //         // } catch (Exception ex) {
+    //         //     this.closeChannel(channel);
+    //         //     throw ex;
+    //     } finally {
+    //         this.returnChannel(channel);
+    //     }
+    // }
 
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback ) throws Exception {

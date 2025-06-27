@@ -55,7 +55,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 开启加载动画
      */
     private boolean enabledLoading = true;
-    private AtomicBoolean loading1;
 
     public boolean isEnabledLoading() {
         return enabledLoading;
@@ -220,7 +219,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         // 执行函数
         Runnable func = () -> {
             try {
-                this.loadFileInnerDynamic();
+                this.loadFileInnerBatch();
                 this.refresh();
             } catch (Exception ex) {
                 if (!ExceptionUtil.isInterrupt(ex)) {
@@ -293,7 +292,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
-     * 加载文件，内部实现
+     * 动态加载文件，内部实现
      *
      * @throws Exception 异常
      */
@@ -317,16 +316,61 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
+     * 批量加载文件，内部实现
+     *
+     * @throws Exception 异常
+     */
+    protected synchronized void loadFileInnerBatch() throws Exception {
+        String currPath = this.getLocation();
+        if (currPath == null) {
+            if (this.client.isWorkDirSupport()) {
+                this.setLocation(this.client.workDir());
+            } else {
+                this.setLocation("/");
+            }
+            currPath = this.getLocation();
+        } else if (currPath.isBlank()) {
+            currPath = "/";
+        }
+        JulLog.info("current path: {}", currPath);
+        // 重建列表
+        this.files = new ArrayList<>();
+        // 批量加载
+        this.client.lsFileBatch(currPath, this::addFile, 10);
+    }
+
+    /**
      * 添加文件
      *
      * @param f1 文件
      */
     private void addFile(E f1) {
-        if (!this.filterFile(f1)) {
+        // if (!this.filterFile(f1)) {
+        //     return;
+        // }
+        // // 添加到列表
+        // this.files.add(f1);
+        // // 进行排序
+        // this.sortFile();
+        // // 更新列表
+        // this.setItem(this.files);
+        this.addFile(List.of(f1));
+    }
+
+    /**
+     * 添加文件
+     *
+     * @param list 文件列表
+     */
+    private void addFile(List<E> list) {
+        // 过滤
+        list = list.parallelStream().filter(this::filterFile).toList();
+        // 为空
+        if (list.isEmpty()) {
             return;
         }
         // 添加到列表
-        this.files.add(f1);
+        this.files.addAll(list);
         // 进行排序
         this.sortFile();
         // 更新列表

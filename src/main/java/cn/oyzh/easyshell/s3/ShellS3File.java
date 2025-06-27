@@ -122,7 +122,10 @@ public class ShellS3File implements ShellFile {
         if (this.fileSize != null) {
             return this.fileSize;
         }
-        return this.s3Object.size();
+        if (this.s3Object != null) {
+            return this.s3Object.size();
+        }
+        return 0;
     }
 
     @Override
