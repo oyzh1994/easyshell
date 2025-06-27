@@ -126,9 +126,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             this.ftpClient.setConnectTimeout(timeout);
-            this.ftpClient.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
+            // this.ftpClient.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
             this.ftpClient.connect(hostIp, port);
-            this.ftpClient.setKeepAlive(true);
             // 连接失败
             if (!this.isConnected()) {
                 this.state.set(ShellConnState.FAILED);
@@ -158,6 +157,10 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             } else {
                 this.ftpClient.enterLocalActiveMode();
             }
+            // 保持连接
+            this.ftpClient.setKeepAlive(true);
+            // 设置so超时
+            this.ftpClient.setSoTimeout(timeout);
             this.lsFile("/");
             this.state.set(ShellConnState.CONNECTED);
             long endTime = System.currentTimeMillis();

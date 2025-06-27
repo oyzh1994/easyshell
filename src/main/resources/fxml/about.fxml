@@ -198,6 +198,26 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
+                <InfoLabel text="Zmodem">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/2efPer/Zmodem-in-Java">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="Encryption">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/org.apache.sshd/sshd-common">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
             </FXVBox>
         </FXTab>
     </FXTabPane>
