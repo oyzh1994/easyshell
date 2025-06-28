@@ -120,7 +120,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         KeyCombination keyCombination1 = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.ADD, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.selectAll(), List.of(keyCombination, keyCombination1));
+        return new FXTerminalActionPresentation(I18nHelper.incrFont(), List.of(keyCombination, keyCombination1));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         KeyCombination keyCombination1 = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.MINUS, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.selectAll(), List.of(keyCombination, keyCombination1));
+        return new FXTerminalActionPresentation(I18nHelper.decrFont(), List.of(keyCombination, keyCombination1));
     }
 
     @Override
