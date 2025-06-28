@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import com.jediterm.core.TerminalCoordinates;
@@ -284,9 +285,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     protected void initFont() {
         myNormalFont = createFont();
-        myBoldFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
-        myItalicFont = Font.font(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
-        myBoldItalicFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
+        //myBoldFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
+        //myItalicFont = Font.font(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
+        //myBoldItalicFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
+        myBoldFont = FontUtil.newFont(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
+        myItalicFont = FontUtil.newFont(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
+        myBoldItalicFont = FontUtil.newFont(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
 
         establishFontMetrics();
     }
@@ -733,8 +737,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected Font createFont() {
-        if (this.mySettingsProvider instanceof FXDefaultSettingsProvider fxDefaultSettingsProvider) {
-            return fxDefaultSettingsProvider.getFXTerminalFont();
+        if (this.mySettingsProvider instanceof FXDefaultSettingsProvider settingsProvider) {
+            return settingsProvider.getFXTerminalFont();
         }
         return Font.getDefault();
     }

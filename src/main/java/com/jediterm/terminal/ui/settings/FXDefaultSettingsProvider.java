@@ -1,5 +1,6 @@
 package com.jediterm.terminal.ui.settings;
 
+import cn.oyzh.fx.plus.font.FontUtil;
 import javafx.scene.text.Font;
 
 public class FXDefaultSettingsProvider extends DefaultSettingsProvider {
@@ -19,6 +20,7 @@ public class FXDefaultSettingsProvider extends DefaultSettingsProvider {
 //            fontName = "Monospaced";
 //        }
 //        return Font.font(fontName, getTerminalFontSize());
-        return Font.font("Monospaced", getTerminalFontSize());
+//        return Font.font("Monospaced", getTerminalFontSize());
+        return FontUtil.newFontBySize("Monospaced", getTerminalFontSize());
     }
 }
