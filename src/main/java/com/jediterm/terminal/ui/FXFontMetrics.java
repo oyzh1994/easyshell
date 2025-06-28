@@ -15,7 +15,9 @@ public class FXFontMetrics {
         var height = text.getLayoutBounds().getHeight();
         var descent = text.getLayoutBounds().getHeight() - text.getBaselineOffset();
         var metrics = new FXFontMetrics(width, height, descent);
-        JulLog.trace("Created metrics: {} for {}", metrics, font);
+        if (JulLog.isTraceEnabled()) {
+            JulLog.trace("Created metrics: {} for {}", metrics, font);
+        }
         return metrics;
     }
 
