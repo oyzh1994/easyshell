@@ -25,6 +25,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.Bucket;
@@ -126,10 +127,14 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         String secretKey = this.connect.getPassword();
         // 创建凭证提供者
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
+        // http客户端
+        UrlConnectionHttpClient httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
+                .build();
         // 构建 S3 客户端，指定 endpoint 和凭证
         this.s3Client = S3Client.builder()
                 .endpointOverride(URI.create(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .httpClient(httpClient)
                 .region(this.region())
                 .build();
     }

@@ -21,6 +21,6 @@ public class FXDefaultSettingsProvider extends DefaultSettingsProvider {
 //        }
 //        return Font.font(fontName, getTerminalFontSize());
 //        return Font.font("Monospaced", getTerminalFontSize());
-        return FontUtil.newFontBySize("Monospaced", getTerminalFontSize());
+        return FontUtil.newFontBySize("Monospaced", this.getTerminalFontSize());
     }
 }

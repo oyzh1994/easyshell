@@ -19,6 +19,7 @@
     </description>
 
     <properties>
+        <s3.version>2.31.72</s3.version>
         <jna.version>5.17.0</jna.version>
         <pty4j.version>0.13.8</pty4j.version>
         <jediterm.version>3.54</jediterm.version>
@@ -191,6 +192,12 @@
             <artifactId>pty4j</artifactId>
             <version>${pty4j.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--        <dependency>-->
         <!--            <groupId>org.jetbrains.kotlin</groupId>-->
@@ -216,7 +223,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>4.1.121.Final</version>
+            <version>4.1.122.Final</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
@@ -230,11 +237,15 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
-            <version>2.31.68</version>
+            <version>${s3.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>software.amazon.awssdk</groupId>
                     <artifactId>crt-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>apache-client</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>software.amazon.awssdk</groupId>
@@ -248,7 +259,17 @@
                     <groupId>software.amazon.awssdk</groupId>
                     <artifactId>annotations</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>url-connection-client</artifactId>
+            <version>${s3.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
@@ -264,6 +285,12 @@
             <groupId>org.apache.sshd</groupId>
             <artifactId>sshd-common</artifactId>
             <version>${sshd-common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- <dependency> -->
@@ -359,11 +386,11 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- 默认日志占位，避免错误 -->
+        <!-- 默认日志占位，排除其他类库的日志依赖 -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
-            <version>2.0.17</version>
+            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 
@@ -393,6 +420,10 @@
                         <exclude>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-jarmode-layertools</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>com.hierynomus</groupId>
+                            <artifactId>sshj</artifactId>
                         </exclude>
                     </excludes>
                 </configuration>

@@ -101,6 +101,7 @@ import java.net.URI;
 import java.text.AttributedCharacterIterator;
 import java.text.BreakIterator;
 import java.text.CharacterIterator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -1954,17 +1955,18 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     scrollDown();
                     return true;
                 }));
-//        if (mySettingsProvider instanceof FXTermSettingsProvider provider) {
-//            list = new ArrayList<>(list);
-//            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getIncrTermSizePresentation(), input -> {
-//                this.incrTermSize();
-//                return true;
-//            }));
-//            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getDecrTermSizePresentation(), input -> {
-//                this.decrTermSize();
-//                return true;
-//            }));
-//        }
+        // 扩展功能
+        if (mySettingsProvider instanceof FXTermSettingsProvider provider) {
+            list = new ArrayList<>(list);
+            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getIncrTermSizePresentation(), input -> {
+                this.incrTermSize();
+                return true;
+            }));
+            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getDecrTermSizePresentation(), input -> {
+                this.decrTermSize();
+                return true;
+            }));
+        }
         return list;
     }
 
@@ -1974,31 +1976,25 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         updateSelection(mySelection);
     }
 
+    /**
+     * 增加终端字体
+     */
     public void incrTermSize() {
-        TermSize termSize =  this.myTermSize;
-        if (this.myTerminalStarter != null && termSize != null) {
-            int cols = (int) (termSize.getColumns() * 1.1);
-            int rows = (int) (termSize.getRows() * 1.1);
-            TermSize newSize = new TermSize(cols, rows);
-            newSize = JediTerminal.ensureTermMinimumSize(newSize);
-            if (!newSize.equals(termSize)) {
-                this.myTermSize = newSize;
-                this.onResize(newSize, RequestOrigin.User);
-            }
+        float size = this.mySettingsProvider.getTerminalFontSize();
+        if (size < 30 && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
+            provider.setTerminalFontSize(size + 1);
+            this.reinitFontAndResize();
         }
     }
 
+    /**
+     * 减少终端字体
+     */
     public void decrTermSize() {
-        TermSize termSize =  this.myTermSize;
-        if (this.myTerminalStarter != null && termSize != null) {
-            int cols = (int) (termSize.getColumns() * 0.9);
-            int rows = (int) (termSize.getRows() * 0.9);
-            TermSize newSize = new TermSize(cols, rows);
-            newSize = JediTerminal.ensureTermMinimumSize(newSize);
-            if (!newSize.equals(termSize)) {
-                this.myTermSize = newSize;
-                this.onResize(newSize, RequestOrigin.User);
-            }
+        float size = this.mySettingsProvider.getTerminalFontSize();
+        if (size >= 10 && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
+            provider.setTerminalFontSize(size - 1);
+            this.reinitFontAndResize();
         }
     }
 

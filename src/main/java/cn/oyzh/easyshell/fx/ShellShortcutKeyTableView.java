@@ -53,6 +53,18 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         } else {
             data.add(KeyValueProperty.of("Ctrl + Shift + A (^ + ⇧ + A)", ShellI18nHelper.termTip15()));
         }
+        if (OSUtil.isMacOS()) {
+            data.add(KeyValueProperty.of("Meta + + (⌘ + +)", I18nHelper.incrFont()));
+        } else {
+            data.add(KeyValueProperty.of("Ctrl + + (^ + +)", I18nHelper.incrFont()));
+        }
+        if (OSUtil.isMacOS()) {
+            data.add(KeyValueProperty.of("Meta + - (⌘ + -)", I18nHelper.decrFont()));
+        } else {
+            data.add(KeyValueProperty.of("Ctrl + - (^ + -)", I18nHelper.decrFont()));
+        }
+        data.add(KeyValueProperty.of("HOME", I18nHelper.headOfLine()));
+        data.add(KeyValueProperty.of("END", I18nHelper.endOfLine()));
         data.add(KeyValueProperty.of("Shift + PageUp (⇧ + ⇞)", ShellI18nHelper.termTip5()));
         data.add(KeyValueProperty.of("Shift + PageDown (⇧ + ⇟)", ShellI18nHelper.termTip6()));
         if (OSUtil.isMacOS()) {
@@ -65,8 +77,6 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         } else {
             data.add(KeyValueProperty.of("Ctrl + Down (^ + ↓)", ShellI18nHelper.termTip8()));
         }
-        data.add(KeyValueProperty.of("HOME", I18nHelper.headOfLine()));
-        data.add(KeyValueProperty.of("END", I18nHelper.endOfLine()));
         this.setItem(data);
     }
 }

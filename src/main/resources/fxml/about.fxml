@@ -198,6 +198,16 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
+                <InfoLabel text="%base.terminal" tipText="Terminal for javafx">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/techsenger/jeditermfx">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
                 <InfoLabel text="Zmodem">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

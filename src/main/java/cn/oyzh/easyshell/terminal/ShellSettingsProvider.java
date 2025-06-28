@@ -4,11 +4,14 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.plus.font.FontConfig;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.emulator.ColorPalette;
+import com.jediterm.terminal.ui.FXTermSettingsProvider;
 import com.jediterm.terminal.ui.FXTerminalActionPresentation;
+import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -17,18 +20,25 @@ import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.List;
 
 
 /**
  * @author oyzh
  * @since 2025-03-08
  */
-public class ShellSettingsProvider extends FXDefaultSettingsProvider {
+public class ShellSettingsProvider extends FXDefaultSettingsProvider implements FXTermSettingsProvider {
+
 
     /**
      * 程序设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
+     * 终端字体大小
+     */
+    private transient float terminalFontSize = this.setting.getTerminalFontSize();
 
     @Override
     public @NotNull FXTerminalActionPresentation getOpenUrlActionPresentation() {
@@ -102,21 +112,32 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider {
         return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
     }
 
-//    @Override
-//    public @NotNull TerminalActionPresentation getIncrTermSizePresentation() {
-//        KeyCombination keyCombination = OSUtil.isMacOS()
-//                ? new KeyCodeCombination(KeyCode.MINUS, KeyCombination.META_DOWN)
-//                : new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN);
-//        return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
-//    }
-//
-//    @Override
-//    public @NotNull TerminalActionPresentation getDecrTermSizePresentation() {
-//        KeyCombination keyCombination = OSUtil.isMacOS()
-//                ? new KeyCodeCombination(KeyCode.PLUS, KeyCombination.META_DOWN)
-//                : new KeyCodeCombination(KeyCode.PLUS, KeyCombination.CONTROL_DOWN);
-//        return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
-//    }
+    @Override
+    public @NotNull TerminalActionPresentation getIncrTermSizePresentation() {
+        KeyCombination keyCombination = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.PLUS, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.PLUS, KeyCombination.CONTROL_DOWN);
+        KeyCombination keyCombination1 = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.ADD, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN);
+        return new FXTerminalActionPresentation(I18nHelper.selectAll(), List.of(keyCombination, keyCombination1));
+    }
+
+    @Override
+    public @NotNull TerminalActionPresentation getDecrTermSizePresentation() {
+        KeyCombination keyCombination = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN);
+        KeyCombination keyCombination1 = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.MINUS, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN);
+        return new FXTerminalActionPresentation(I18nHelper.selectAll(), List.of(keyCombination, keyCombination1));
+    }
+
+    @Override
+    public java.awt.Font getTerminalFont() {
+        return super.getTerminalFont();
+    }
 
     @Override
     public ColorPalette getTerminalColorPalette() {
@@ -125,14 +146,23 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider {
 
     @Override
     public Font getFXTerminalFont() {
-        Font font = FontManager.toFont(this.setting.terminalFontConfig());
-        JulLog.debug("Terminal font: {}", font);
+        FontConfig config = this.setting.terminalFontConfig();
+        config.setSize((int) this.terminalFontSize);
+        Font font = FontManager.toFont(config);
+        if (JulLog.isDebugEnabled()) {
+            JulLog.debug("Terminal font: {}", font);
+        }
         return font;
     }
 
     @Override
     public float getTerminalFontSize() {
-        return this.setting.getFontSize();
+        return this.terminalFontSize;
+    }
+
+    @Override
+    public void setTerminalFontSize(float terminalFontSize) {
+        this.terminalFontSize = terminalFontSize;
     }
 
     @Override
