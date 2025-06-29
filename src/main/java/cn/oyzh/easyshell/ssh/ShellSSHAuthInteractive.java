@@ -66,6 +66,8 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     @Override
     public void showMessage(String message) {
-        JulLog.info(message);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info(message);
+        }
     }
 }

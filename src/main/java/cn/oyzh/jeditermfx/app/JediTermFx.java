@@ -52,7 +52,9 @@ public final class JediTermFx extends AbstractTerminalApplication {
                 }
             }
             var workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
-            JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
+            }
             var process = new PtyProcessBuilder()
                     .setDirectory(workingDirectory)
                     .setInitialColumns(120)

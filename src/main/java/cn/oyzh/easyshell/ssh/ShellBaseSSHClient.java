@@ -192,7 +192,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             this.environment.add("/usr/local/sbin");
             this.environment.add("/usr/local/games");
         }
-        JulLog.info("remote charset: {}", this.getRemoteCharset());
+        String remoteCharset = this.getRemoteCharset();
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("remote charset: {}", remoteCharset);
+        }
     }
 
     /**
@@ -418,7 +421,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 SSHHolder.getAgentJsch().setIdentityRepository(repository);
             }
             for (Identity identity : repository.getIdentities()) {
-                JulLog.info("Identity: {}", identity.getName());
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("Identity: {}", identity.getName());
+                }
             }
             // 创建会话
             this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);

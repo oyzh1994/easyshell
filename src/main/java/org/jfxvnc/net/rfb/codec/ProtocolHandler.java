@@ -178,7 +178,9 @@ public class ProtocolHandler extends MessageToMessageDecoder<Object> {
       }
     }).toArray(Encoding[]::new);
 
-    JulLog.info("encodings: {}", Arrays.toString(enc));
+    if (JulLog.isInfoEnabled()) {
+      JulLog.info("encodings: {}", Arrays.toString(enc));
+    }
     return new PreferedEncoding(enc);
   }
 

@@ -44,7 +44,7 @@ public class ShellConnectExport {
      * @param shellConnects 连接列表
      * @return ShellConnectExport
      */
-    public static ShellConnectExport fromConnects( List<ShellConnect> shellConnects) {
+    public static ShellConnectExport fromConnects(List<ShellConnect> shellConnects) {
         ShellConnectExport export = new ShellConnectExport();
         Project project = Project.load();
         export.version = project.getVersion();
@@ -91,8 +91,10 @@ public class ShellConnectExport {
      * @param json json字符串
      * @return ShellConnectExport
      */
-    public static ShellConnectExport fromJSON( String json) {
-        JulLog.info("json: {}", json);
+    public static ShellConnectExport fromJSON(String json) {
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("json: {}", json);
+        }
         JSONObject object = JSONUtil.parseObject(json);
         ShellConnectExport export = new ShellConnectExport();
         export.connects = new ArrayList<>(12);

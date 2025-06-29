@@ -136,14 +136,18 @@ public class ShellSSHProcessTabController extends SubTabController {
      */
     private void renderPane() {
         try {
-            JulLog.info("render process started.");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("render process started.");
+            }
             if (this.client != null) {
                 // 获取数据
                 List<ShellProcessInfo> processInfos = this.processExec.ps();
                 this.getProcessTable().updateData(processInfos);
                 this.getProcessTable().sort();
             }
-            JulLog.info("render process finished.");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("render process finished.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("renderPane error", ex);

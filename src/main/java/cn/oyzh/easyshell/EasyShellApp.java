@@ -82,7 +82,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
-            JulLog.info("项目启动中...");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("项目启动中...");
+            }
             // 储存初始化
             ShellStoreUtil.init();
             if (OSUtil.isWindows()) {
@@ -108,7 +110,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // fx程序实例
             FXConst.INSTANCE = this;
             // 日志开始
-            JulLog.info("{} init start.", SysConst.projectName());
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("{} init start.", SysConst.projectName());
+            }
             // 禁用fx的css日志
             FXUtil.disableCSSLogger();
             // 配置对象

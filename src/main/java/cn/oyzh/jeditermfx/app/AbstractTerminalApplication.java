@@ -130,7 +130,9 @@ public abstract class AbstractTerminalApplication extends Application {
         });
         myDumpDimension.setOnAction(e -> {
             Terminal terminal = myWidget.getTerminal();
-            JulLog.info(terminal.getTerminalWidth() + "x" + terminal.getTerminalHeight());
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info(terminal.getTerminalWidth() + "x" + terminal.getTerminalHeight());
+            }
         });
         myDumpSelection.setOnAction(e -> {
             FXJediTermWidget widget = myWidget;
@@ -138,17 +140,23 @@ public abstract class AbstractTerminalApplication extends Application {
             TerminalSelection selection = terminalPanel.getSelection();
             if (selection != null) {
                 Pair<Point, Point> points = selection.pointsForRun(widget.getTerminal().getTerminalWidth());
-                JulLog.info(selection + " : '" + SelectionUtil.getSelectionText(points.getFirst(), points.getSecond(),
-                                terminalPanel.getTerminalTextBuffer()) + "'");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info(selection + " : '" + SelectionUtil.getSelectionText(points.getFirst(), points.getSecond(),
+                            terminalPanel.getTerminalTextBuffer()) + "'");
+                }
 //                JulLog.info(selection + " : '" + SelectionUtil.getSelectedText(points.getFirst(), points.getSecond(),
 //                        terminalPanel.getTerminalTextBuffer()) + "'");
             } else {
-                JulLog.info("No selection");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("No selection");
+                }
             }
         });
         myDumpCursorPosition.setOnAction(e -> {
-            JulLog.info(myWidget.getTerminal().getCursorX() +
-                    "x" + myWidget.getTerminal().getCursorY());
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info(myWidget.getTerminal().getCursorX() +
+                        "x" + myWidget.getTerminal().getCursorY());
+            }
         });
         myCursor0x0.setOnAction(e -> {
             myWidget.getTerminal().cursorPosition(1, 1);
@@ -195,7 +203,9 @@ public abstract class AbstractTerminalApplication extends Application {
         myBufferStage.setOnCloseRequest(e -> {
             myBufferStage = null;
             debugView.stop();
-            JulLog.info("Buffer stage closed");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("Buffer stage closed");
+            }
         });
         myBufferStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {

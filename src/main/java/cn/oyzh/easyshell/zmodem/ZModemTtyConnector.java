@@ -142,7 +142,9 @@ public class ZModemTtyConnector implements TtyConnector {
             this.zmodem = null;
             this.terminal = null;
             this.connector = null;
-            JulLog.info("close zmodem tty");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("close zmodem tty");
+            }
         }
     }
 

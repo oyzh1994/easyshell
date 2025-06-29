@@ -159,7 +159,9 @@ public class ShellDockerExec implements AutoCloseable {
             builder.append(" --cpu-quota ").append(resource.getCpuQuota());
         }
         builder.append(" ").append(id);
-        JulLog.info("docker update:{}", builder.toString());
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker update:{}", builder.toString());
+        }
         return this.client.exec(builder.toString());
     }
 

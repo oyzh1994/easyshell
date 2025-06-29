@@ -54,7 +54,9 @@ public class ShellSerialDataListener implements SerialPortDataListener {
             serialPort.readBytes(bytes, bytes.length);
             ThreadUtil.sleep(1);
             String str = new String(bytes, this.charset);
-            JulLog.info("串口返回数据:{}", str);
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("串口返回数据:{}", str);
+            }
             char[] chars = str.toCharArray();
             for (char aChar : chars) {
                 this.characters.add(aChar);

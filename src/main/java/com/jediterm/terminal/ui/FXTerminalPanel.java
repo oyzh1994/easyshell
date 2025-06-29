@@ -794,7 +794,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
             myTerminalStarter.sendString(text, true);
         } catch (RuntimeException e) {
-            JulLog.info("", e);
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("", e);
+            }
         }
     }
 

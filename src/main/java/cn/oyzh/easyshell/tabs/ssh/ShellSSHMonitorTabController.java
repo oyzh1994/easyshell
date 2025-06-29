@@ -235,7 +235,9 @@ public class ShellSSHMonitorTabController extends SubTabController {
      */
     private void renderPane() {
         try {
-            JulLog.info("render monitor started.");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("render monitor started.");
+            }
             // 任务已取消
             if (this.serverExec.getClient() == null) {
                 ExecutorUtil.cancel(this.refreshTask);
@@ -246,7 +248,9 @@ public class ShellSSHMonitorTabController extends SubTabController {
                 ShellServerMonitor monitor = this.serverExec.monitor();
                 this.init(monitor);
             }
-            JulLog.info("render monitor finished.");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("render monitor finished.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("renderPane error", ex);

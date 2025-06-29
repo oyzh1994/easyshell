@@ -397,10 +397,14 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.getStage(MainController.class);
             if (adapter != null) {
-                JulLog.info("front main.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("front main.");
+                }
                 adapter.toFront();
             } else {
-                JulLog.info("show main.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("show main.");
+                }
                 StageManager.showStage(MainController.class);
             }
         } catch (Exception ex) {
@@ -416,10 +420,14 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.getStage(SettingController.class);
             if (adapter != null) {
-                JulLog.info("front setting.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("front setting.");
+                }
                 adapter.toFront();
             } else {
-                JulLog.info("show setting.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("show setting.");
+                }
                 StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
             }
         } catch (Exception ex) {

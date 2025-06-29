@@ -258,7 +258,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         } else if (currPath.isBlank()) {
             currPath = "/";
         }
-        JulLog.info("current path: {}", currPath);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("current path: {}", currPath);
+        }
         // 更新当前列表
         this.files = this.client.lsFile(currPath);
         // 过滤出来待显示的列表
@@ -308,7 +310,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         } else if (currPath.isBlank()) {
             currPath = "/";
         }
-        JulLog.info("current path: {}", currPath);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("current path: {}", currPath);
+        }
         // 重建列表
         this.files = new ArrayList<>();
         // 动态加载
@@ -332,7 +336,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         } else if (currPath.isBlank()) {
             currPath = "/";
         }
-        JulLog.info("current path: {}", currPath);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("current path: {}", currPath);
+        }
         // 重建列表
         this.files = new ArrayList<>();
         // 批量加载

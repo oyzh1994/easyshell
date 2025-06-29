@@ -71,19 +71,27 @@ public class MainController extends ParentStageController {
         JulLog.warn("main view closing.");
         // 直接退出应用
         if (this.setting.isExitDirectly()) {
-            JulLog.info("exit directly.");
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("exit directly.");
+            }
             StageManager.exit();
         } else if (this.setting.isExitAsk()) { // 总是询问
             if (MessageBox.confirm(I18nHelper.quit() + " " + this.project.getName())) {
-                JulLog.info("exit by confirm.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("exit by confirm.");
+                }
                 StageManager.exit();
             } else {
-                JulLog.info("cancel by confirm.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("cancel by confirm.");
+                }
                 event.consume();
             }
         } else if (this.setting.isExitTray()) {// 系统托盘
             if (TrayManager.exist()) {
-                JulLog.info("show tray.");
+                if (JulLog.isInfoEnabled()) {
+                    JulLog.info("show tray.");
+                }
                 TrayManager.show();
             } else {
                 JulLog.error("tray not support!");

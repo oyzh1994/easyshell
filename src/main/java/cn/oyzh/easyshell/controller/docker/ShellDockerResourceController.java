@@ -108,7 +108,9 @@ public class ShellDockerResourceController extends StageController {
             resource.setNanoCpus((long) (nanoCpus));
             resource.setCpuPeriod((long) cpuPeriod * 1000);
             String output = this.exec.docker_update(resource, this.containerId);
-            JulLog.info("docker update result: {}", output);
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("docker update result: {}", output);
+            }
             if (StringUtil.isBlank(output)) {
                 MessageBox.warn(I18nHelper.operationFail());
             } else if (StringUtil.notEquals(output.replace("\n", ""), this.containerId)) {

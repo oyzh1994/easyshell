@@ -424,7 +424,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.state.set(ShellConnState.FAILED);
             }
             long endTime = System.currentTimeMillis();
-            JulLog.info("shellSSHClient connected used:{}ms.", (endTime - starTime));
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("shellSSHClient connected used:{}ms.", (endTime - starTime));
+            }
         } catch (Throwable ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);

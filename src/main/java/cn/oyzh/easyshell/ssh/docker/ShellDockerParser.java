@@ -20,7 +20,9 @@ public class ShellDockerParser {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
-        JulLog.info(output);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info(output);
+        }
         List<ShellDockerContainer> containers = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
@@ -51,7 +53,9 @@ public class ShellDockerParser {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
-        JulLog.info(output);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info(output);
+        }
         List<ShellDockerImage> images = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
@@ -79,7 +83,9 @@ public class ShellDockerParser {
             return null;
         }
         output = output.replaceAll("\n", "");
-        JulLog.info("docker resource:{}", output);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker resource:{}", output);
+        }
         ShellDockerResource dockerResource = new ShellDockerResource();
         String[] cols = output.replace("\n", "").split("\t");
         if (cols.length > 0) {
@@ -107,7 +113,9 @@ public class ShellDockerParser {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
-        JulLog.info(output);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info(output);
+        }
         List<ShellDockerPort> ports = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
@@ -128,7 +136,9 @@ public class ShellDockerParser {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
         }
-        JulLog.info(output);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info(output);
+        }
         List<ShellDockerImageHistory> histories = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) {
