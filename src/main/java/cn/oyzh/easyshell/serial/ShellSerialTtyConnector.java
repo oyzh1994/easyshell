@@ -59,7 +59,9 @@ public class ShellSerialTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         byte[] bytes = str.getBytes(this.myCharset);
         this.client.write(bytes);
     }
@@ -68,7 +70,9 @@ public class ShellSerialTtyConnector extends ShellDefaultTtyConnector {
     public void write(byte[] bytes) throws IOException {
         super.write(bytes);
         String str = new String(bytes, this.myCharset);
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         this.client.write(bytes);
     }
 

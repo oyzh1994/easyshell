@@ -106,7 +106,9 @@ public class ShellSSHProcessTabController extends SubTabController {
         }
         try {
             this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
-            JulLog.debug("RefreshTask started.");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("RefreshTask started.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("initRefreshTask error", ex);
@@ -120,7 +122,9 @@ public class ShellSSHProcessTabController extends SubTabController {
         try {
             ExecutorUtil.cancel(this.refreshTask);
             this.refreshTask = null;
-            JulLog.debug("RefreshTask closed.");
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("RefreshTask closed.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("closeRefreshTask error", ex);

@@ -641,8 +641,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
         updateSelection(selection);
-        JulLog.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
-                item.getEnd().x, item.getEnd().y);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
+                    item.getEnd().x, item.getEnd().y);
+        }
         if (mySelection.get().getStart().y < getTerminalTextBuffer().getHeight() / 2) {
             var value = FXScrollBarUtils.getValueFor(item.getStart().y, historyLineCount + screenLineCount,
                     scrollBar.getMin(), scrollBar.getMax());
@@ -865,8 +867,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             // emoji, which are slightly higher than the font metrics reported character height :(
             double oldCharHeight = fontMetricsHeight + (int) (lineSpacing * 2) + 2;
             double oldDescent = fontMetrics.getDescent() + (int) lineSpacing;
-            JulLog.debug("charHeight=" + oldCharHeight + "->" + myCharSize.getHeight() +
-                    ", descent=" + oldDescent + "->" + myDescent);
+            if(JulLog.isDebugEnabled()) {
+                JulLog.debug("charHeight=" + oldCharHeight + "->" + myCharSize.getHeight() +
+                        ", descent=" + oldDescent + "->" + myDescent);
+            }
         }
 //TODO
 //    var myMonospaced = isMonospaced(fo);

@@ -67,7 +67,9 @@ public class ShellFileTask {
      */
     protected void updateStatus(ShellFileStatus status) {
         this.status = status;
-        JulLog.debug("status: {}", status);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("status: {}", status);
+        }
     }
 
     /**

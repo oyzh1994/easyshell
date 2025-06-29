@@ -150,7 +150,9 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
                     setCursor(remoteCursor);
                     break;
                 case DESKTOP_SIZE:
-                    JulLog.debug("resize image: {}", rect);
+                    if(JulLog.isDebugEnabled()) {
+                        JulLog.debug("resize image: {}", rect);
+                    }
                     vncImage = new WritableImage(rect.getWidth(), rect.getHeight());
                     setImage(vncImage);
                     break;

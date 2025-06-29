@@ -32,7 +32,9 @@ public class VncAuthEncoder extends MessageToByteEncoder<VncAuthSecurityMessage>
   @Override
   protected void encode(ChannelHandlerContext ctx, VncAuthSecurityMessage msg, ByteBuf out) throws Exception {
     byte[] enc = encryptPassword(msg);
-    JulLog.debug("VNC Auth encrypted: {}", enc);
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("VNC Auth encrypted: {}", enc);
+    }
     out.writeBytes(enc);
   }
 

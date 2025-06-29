@@ -87,10 +87,13 @@ public class ProtocolHandshakeHandler extends ChannelInboundHandlerAdapter {
   }
 
   private void handleServerVersion(final ChannelHandlerContext ctx, ProtocolVersion version) {
-
-    JulLog.debug("server version: {}", version);
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("server version: {}", version);
+    }
     if (version.isGreaterThan(config.versionProperty().get())) {
-      JulLog.debug("set client version: {}", config.versionProperty().get());
+      if(JulLog.isDebugEnabled()) {
+        JulLog.debug("set client version: {}", config.versionProperty().get());
+      }
       version = config.versionProperty().get();
     }
 
@@ -123,7 +126,9 @@ public class ProtocolHandshakeHandler extends ChannelInboundHandlerAdapter {
     }
 
     if (userSecType == SecurityType.NONE) {
-      JulLog.debug("none security type available");
+      if(JulLog.isDebugEnabled()){
+        JulLog.debug("none security type available");
+      }
       ctx.writeAndFlush(Unpooled.buffer(1).writeByte(userSecType.getType()));
       ctx.pipeline().fireUserEventTriggered(ProtocolState.SECURITY_COMPLETE);
       return;
@@ -161,7 +166,9 @@ public class ProtocolHandshakeHandler extends ChannelInboundHandlerAdapter {
 
   private void handleSecurityResult(final ChannelHandlerContext ctx, final SecurityResultEvent msg) {
     if (msg.isPassed()) {
-      JulLog.debug("security passed: {}", msg);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("security passed: {}", msg);
+        }
       boolean sharedFlag = config.sharedProperty().get();
       ctx.writeAndFlush(new SharedEvent(sharedFlag)).addListener((future) -> {
         if (!future.isSuccess()) {

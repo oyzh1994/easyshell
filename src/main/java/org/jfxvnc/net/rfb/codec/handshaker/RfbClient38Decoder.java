@@ -60,14 +60,18 @@ class RfbClient38Decoder extends ReplayingDecoder<RfbClient38Decoder.State> impl
             JulLog.error("un supported security types: {}", sec);
           }
         }
-        JulLog.debug("supported security types: {}", Arrays.toString(serverSecTypes));
+        if(JulLog.isDebugEnabled()) {
+          JulLog.debug("supported security types: {}", Arrays.toString(serverSecTypes));
+        }
         checkpoint(State.SEC_RESULT);
         out.add(new SecurityTypesEvent(true, serverSecTypes));
         break;
       case SEC_RESULT:
 
         int secResult = in.readInt();
-        JulLog.debug("server login {}", secResult == 0 ? "succeed" : "failed");
+        if(JulLog.isDebugEnabled()) {
+          JulLog.debug("server login {}", secResult == 0 ? "succeed" : "failed");
+        }
         if (secResult == 1) {
           int length = in.readInt();
           if (length == 0) {

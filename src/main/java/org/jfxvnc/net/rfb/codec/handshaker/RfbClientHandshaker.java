@@ -75,9 +75,9 @@ public abstract class RfbClientHandshaker {
     ChannelPipeline p = channel.pipeline();
     p.remove("rfb-handshake-decoder");
     p.remove("rfb-handshake-encoder");
-
-    JulLog.debug("server {} - client {}", version, response);
-
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("server {} - client {}", version, response);
+    }
   }
 
 }

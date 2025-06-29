@@ -76,7 +76,9 @@ public class ProtocolHandler extends MessageToMessageDecoder<Object> {
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    JulLog.debug("connection closed");
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("connection closed");
+    }
     if (state.get() == ProtocolState.SECURITY_STARTED) {
       ProtocolException e = new ProtocolException("connection closed without error message");
       render.exceptionCaught(e);
@@ -104,7 +106,9 @@ public class ProtocolHandler extends MessageToMessageDecoder<Object> {
     }
 
     serverInit = (ServerInitEvent) msg;
-    JulLog.debug("handshake completed with {}", serverInit);
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("handshake completed with {}", serverInit);
+    }
 
     FrameDecoderHandler frameHandler = new FrameDecoderHandler(serverInit.getPixelFormat());
     if (!frameHandler.isPixelFormatSupported()) {
@@ -131,8 +135,9 @@ public class ProtocolHandler extends MessageToMessageDecoder<Object> {
     render.eventReceived(getConnectInfoEvent(ctx, prefEncodings));
 
     render.registerInputEventListener(event -> ctx.writeAndFlush(event, ctx.voidPromise()));
-
-    JulLog.debug("request full framebuffer update");
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("request full framebuffer update");
+    }
     sendFramebufferUpdateRequest(ctx, false, 0, 0, serverInit.getFrameBufferWidth(), serverInit.getFrameBufferHeight());
 
     JulLog.trace("channel pipeline: {}", cp.toMap().keySet());

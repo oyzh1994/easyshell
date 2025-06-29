@@ -327,7 +327,9 @@ public class ShellFileUploadTask extends ShellFileTask {
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
-        JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
+        }
     }
 
     /**
@@ -360,7 +362,9 @@ public class ShellFileUploadTask extends ShellFileTask {
      */
     private void updateProgress() {
         this.progressProperty.setValue(NumberUtil.scale(this.currentSize * 1D / this.totalSize * 100D, 2) + "%");
-        JulLog.debug("progress: {}", this.progressProperty.getValue());
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("progress: {}", this.progressProperty.getValue());
+        }
     }
 
     /**

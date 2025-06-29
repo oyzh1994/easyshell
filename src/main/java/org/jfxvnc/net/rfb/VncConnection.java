@@ -88,8 +88,9 @@ public class VncConnection {
     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
 
     b.handler(new ProtocolInitializer(render, config));
-
-    JulLog.debug("try to connect to {}:{}", host, port);
+    if(JulLog.isDebugEnabled()) {
+      JulLog.debug("try to connect to {}:{}", host, port);
+    }
     b.connect(host, port).addListener((ChannelFuture in) -> {
       connecting.set(false);
       connected.set(in.isSuccess());
@@ -119,7 +120,9 @@ public class VncConnection {
     int port = config.listeningPortProperty().get() > 0 ? config.listeningPortProperty().get() : DEF_LISTENING_PORT;
 
     b.bind(port).addListener(l -> {
-      JulLog.debug("wait for incoming connection request on port: {}..", port);
+      if(JulLog.isDebugEnabled()) {
+        JulLog.debug("wait for incoming connection request on port: {}..", port);
+      }
       connected.set(l.isSuccess());
     }).addListener((ChannelFuture in) -> {
       if (!in.isSuccess()) {

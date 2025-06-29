@@ -131,7 +131,9 @@ public class VncRenderService implements RenderProtocol {
 
     @Override
     public void eventReceived(ServerDecoderEvent event) {
-        JulLog.debug("event received: {}", event);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("event received: {}", event);
+        }
 
         if (eventConsumer != null) {
             eventConsumer.accept(event, null);

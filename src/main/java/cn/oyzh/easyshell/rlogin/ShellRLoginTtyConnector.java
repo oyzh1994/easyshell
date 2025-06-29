@@ -79,7 +79,9 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         if (this.shellWriter != null) {
             this.shellWriter.write(str);
             this.shellWriter.flush();
@@ -89,7 +91,9 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
     @Override
     public void write(byte[] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         if (this.shellWriter != null) {
             this.shellWriter.write(str);
             this.shellWriter.flush();

@@ -655,7 +655,9 @@ public class ShellSSHEffTabController extends SubTabController {
                 sb.append(I18nHelper.diskWrite()).append(":").append(diskWrite).append("MB/s");
                 this.serverMonitorInfo.text(sb.toString());
             }, 3_000, 0);
-            JulLog.debug("MonitorTask started.");
+            if(JulLog.isDebugEnabled()) {
+                JulLog.debug("MonitorTask started.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("init MonitorTask error", ex);
@@ -671,7 +673,9 @@ public class ShellSSHEffTabController extends SubTabController {
             this.serverMonitorTask = null;
             this.serverMonitorInfo.clear();
             this.serverMonitorInfo.disappear();
-            JulLog.debug("MonitorTask closed.");
+            if(JulLog.isDebugEnabled()) {
+                JulLog.debug("MonitorTask closed.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("close monitorTask error", ex);

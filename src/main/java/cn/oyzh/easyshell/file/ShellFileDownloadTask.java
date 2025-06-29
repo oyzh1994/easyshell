@@ -336,7 +336,9 @@ public class ShellFileDownloadTask extends ShellFileTask{
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
-        JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
+        }
     }
 
     /**

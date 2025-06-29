@@ -52,7 +52,9 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
     }
 
     protected int doRead(char[] buf, int offset, int len) throws IOException {
-        JulLog.debug("shell read: {}", new String(buf));
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell read: {}", new String(buf));
+        }
         return len;
     }
 
@@ -77,14 +79,18 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         super.write(str);
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         super.write(bytes);
     }
 

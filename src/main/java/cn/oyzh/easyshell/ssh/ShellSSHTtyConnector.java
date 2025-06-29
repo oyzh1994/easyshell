@@ -66,7 +66,9 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        JulLog.debug("shell write : {}", str);
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
+        }
         this.shellWriter.write(str);
         this.shellWriter.flush();
     }

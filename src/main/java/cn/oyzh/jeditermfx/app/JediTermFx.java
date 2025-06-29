@@ -154,14 +154,18 @@ public final class JediTermFx extends AbstractTerminalApplication {
         @Override
         public void write(@NotNull String string) throws IOException {
             Intrinsics.checkNotNullParameter(string, "string");
-            JulLog.debug("Writing in OutputStream : " + string);
+            if(JulLog.isDebugEnabled()) {
+                JulLog.debug("Writing in OutputStream : " + string);
+            }
             super.write(string);
         }
 
         @Override
         public void write(@NotNull byte[] bytes) throws IOException {
             Intrinsics.checkNotNullParameter(bytes, "bytes");
-            JulLog.debug("Writing in OutputStream : " + Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
+            if(JulLog.isDebugEnabled()) {
+                JulLog.debug("Writing in OutputStream : " + Arrays.toString(bytes) + " " + new String(bytes, Charsets.UTF_8));
+            }
             super.write(bytes);
         }
 

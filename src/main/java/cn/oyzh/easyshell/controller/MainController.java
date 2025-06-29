@@ -129,16 +129,22 @@ public class MainController extends ParentStageController {
             if (this.setting.isRememberPageSize()) {
                 if (this.setting.isPageMaximized()) {
                     this.stage.setMaximized(true);
-                    JulLog.debug("view maximized");
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("view maximized");
+                    }
                 } else if (this.setting.getPageWidth() != null && this.setting.getPageHeight() != null) {
                     this.stage.setSize(this.setting.getPageWidth(), this.setting.getPageHeight());
-                    JulLog.debug("view width:{} height:{}", this.setting.getPageWidth(), this.setting.getPageHeight());
+                    if (JulLog.isDebugEnabled()) {
+                        JulLog.debug("view width:{} height:{}", this.setting.getPageWidth(), this.setting.getPageHeight());
+                    }
                 }
             }
             // 设置上次保存的页面位置
             if (this.setting.isRememberPageLocation() && !this.setting.isPageMaximized() && this.setting.getPageScreenX() != null && this.setting.getPageScreenY() != null) {
                 this.stage.setLocation(this.setting.getPageScreenX(), this.setting.getPageScreenY());
-                JulLog.debug("view x:{} y:{}", this.setting.getPageScreenX(), this.setting.getPageScreenY());
+                if (JulLog.isDebugEnabled()) {
+                    JulLog.debug("view x:{} y:{}", this.setting.getPageScreenX(), this.setting.getPageScreenY());
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
