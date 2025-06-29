@@ -641,7 +641,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
         updateSelection(selection);
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("Find selection start: {} / {}, end: {} / {}", item.getStart().x, item.getStart().y,
                     item.getEnd().x, item.getEnd().y);
         }
@@ -869,7 +869,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             // emoji, which are slightly higher than the font metrics reported character height :(
             double oldCharHeight = fontMetricsHeight + (int) (lineSpacing * 2) + 2;
             double oldDescent = fontMetrics.getDescent() + (int) lineSpacing;
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("charHeight=" + oldCharHeight + "->" + myCharSize.getHeight() +
                         ", descent=" + oldDescent + "->" + myDescent);
             }
@@ -2106,6 +2106,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private static final byte ASCII_CTRL_C = 0x03;
 
+    private static final byte ASCII_CTRL_V = 0x16;
+
+    private static final byte ASCII_SHIFT_V = 0x76;
+
     private boolean processTerminalKeyPressed(KeyEvent e) {
         if (hasUncommittedChars()) {
             return false;
@@ -2118,28 +2122,100 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             // numLock does not change the code sent by keypad VK_DELETE
             // although it send the char '.'
             if (keycode == KeyCode.DELETE && keychar == '.') {
-                myTerminalStarter.sendBytes(new byte[]{'.'}, true);
+                this.myTerminalStarter.sendBytes(new byte[]{'.'}, true);
                 return true;
             }
             // CTRL + Space is not handled in KeyEvent; handle it manually
             if (keychar == ' ' && e.isControlDown()) {
-                myTerminalStarter.sendBytes(new byte[]{ASCII_NUL}, true);
+                this.myTerminalStarter.sendBytes(new byte[]{ASCII_NUL}, true);
                 return true;
             }
 
+            // TODO: 补充
             // ESCAPE is not handled in KeyEvent; handle it manually
             if (keycode == KeyCode.ESCAPE) {
-                myTerminalStarter.sendBytes(new byte[]{ASCII_ESC}, false);
+                this.myTerminalStarter.sendBytes(new byte[]{ASCII_ESC}, true);
                 return true;
             }
 
+            // TODO: 补充
             // CTRL + C is not handled in KeyEvent; handle it manually
-            if (keychar == 'c' && e.isControlDown()) {
-                myTerminalStarter.sendBytes(new byte[]{ASCII_CTRL_C}, true);
+            if (keycode == KeyCode.C && e.isControlDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{ASCII_CTRL_C}, true);
                 return true;
             }
 
-            final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(e.getCode().getCode(), getModifiersEx(e));
+            // TODO: 补充
+            // CTRL + V is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.V && e.isControlDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{ASCII_CTRL_V}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // Shift + V is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.V && e.isShiftDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{ASCII_SHIFT_V}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // Shift + UP is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.UP && e.isShiftDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x41}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // Shift + DOWN is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.DOWN && e.isShiftDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x42}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // Shift + LEFT is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.LEFT && e.isShiftDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x44}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // Shift + RIGHT is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.RIGHT && e.isShiftDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x43}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // UP is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.UP) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x41}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // DOWN is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.DOWN) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x42}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // LEFT is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.LEFT) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x44}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // RIGHT is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.RIGHT) {
+                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x43}, true);
+                return true;
+            }
+
+            final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
             if (code != null) {
                 myTerminalStarter.sendBytes(code, true);
                 if (mySettingsProvider.scrollToBottomOnTyping() && isCodeThatScrolls(keycode)) {
@@ -2175,7 +2251,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return e.isAltDown() && !e.isControlDown() && !e.isShiftDown();
     }
 
-    private boolean processCharacter(@NotNull KeyEvent e, @NotNull char keyChar) {
+    private boolean processCharacter(@NotNull KeyEvent e, char keyChar) {
         if (isAltPressedOnly(e) && mySettingsProvider.altSendsEscape()) {
             return false;
         }
