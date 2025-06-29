@@ -261,6 +261,7 @@ public class ShellAddSerialConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
+        this.osType.select("Serial");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

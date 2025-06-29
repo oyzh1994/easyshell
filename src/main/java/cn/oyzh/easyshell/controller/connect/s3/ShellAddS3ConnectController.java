@@ -245,6 +245,7 @@ public class ShellAddS3ConnectController extends StageController {
         if (OSUtil.isLinux()) {
             NodeGroupUtil.disappear(this.getStage(), "x11");
         }
+        this.osType.select("S3");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

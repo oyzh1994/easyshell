@@ -317,6 +317,7 @@ public class ShellAddSFTPConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
+        this.osType.select("SFTP");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

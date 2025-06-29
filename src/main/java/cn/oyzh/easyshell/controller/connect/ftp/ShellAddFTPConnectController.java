@@ -244,6 +244,7 @@ public class ShellAddFTPConnectController extends StageController {
         if (OSUtil.isLinux()) {
             NodeGroupUtil.disappear(this.getStage(), "x11");
         }
+        this.osType.select("FTP");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
