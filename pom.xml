@@ -219,7 +219,7 @@
         <!--            <version>1.2.0</version>-->
         <!--        </dependency>-->
 
-        <!-- vnc协议依赖开始 -->
+        <!-- vnc协议开始 -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
@@ -230,9 +230,9 @@
             <artifactId>javassist</artifactId>
             <version>3.30.2-GA</version>
         </dependency>
-        <!-- vnc协议依赖结束 -->
+        <!-- vnc协议结束 -->
 
-        <!-- s3协议 -->
+        <!-- s3协议开始 -->
         <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -265,12 +265,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>url-connection-client</artifactId>
             <version>${s3.version}</version>
         </dependency>
+        <!-- s3协议结束 -->
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
         <dependency>
@@ -280,6 +280,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- ssh协议开始 -->
         <!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-common -->
         <dependency>
             <groupId>org.apache.sshd</groupId>
@@ -292,22 +293,22 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.apache.sshd</groupId>
             <artifactId>sshd-core</artifactId>
             <version>${sshd-common.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-osgi</artifactId>
-            <version>${sshd-common.version}</version>
-        </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>org.apache.sshd</groupId> -->
+        <!--     <artifactId>sshd-osgi</artifactId> -->
+        <!--     <version>${sshd-common.version}</version> -->
+        <!-- </dependency> -->
         <dependency>
             <groupId>org.apache.sshd</groupId>
             <artifactId>sshd-sftp</artifactId>
             <version>${sshd-common.version}</version>
         </dependency>
+        <!-- ssh协议结束 -->
 
         <!-- <dependency> -->
         <!--     <groupId>org.eclipse.jgit</groupId> -->

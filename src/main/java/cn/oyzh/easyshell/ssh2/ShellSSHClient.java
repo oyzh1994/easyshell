@@ -436,12 +436,14 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public ChannelShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
-                ClientSession session = this.newSession(this.connectTimeout());
+                // 获取会话
+                ClientSession session = this.takeSession();
+                // 创建shell
                 ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
-                channel.setUsePty(true);
-                channel.setPtyType(this.shellConnect.getTermType());
                 channel.setIn(null);
                 channel.setOut(null);
+                channel.setUsePty(true);
+                channel.setPtyType(this.shellConnect.getTermType());
                 channel.open().verify(this.connectTimeout());
                 this.shell = channel;
             } catch (Exception ex) {
