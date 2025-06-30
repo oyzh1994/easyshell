@@ -11,6 +11,9 @@ import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHKeyUtil;
+import cn.oyzh.ssh.util.SSHUtil;
+import com.jcraft.jsch.AgentIdentityRepository;
+import com.jcraft.jsch.Identity;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.future.ConnectFuture;
@@ -23,6 +26,7 @@ import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * shell客户端
@@ -364,11 +368,15 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * 初始化客户端
      */
-    protected void initClient(int timeout) throws IOException {
+    protected void initClient(int timeout) throws Exception {
+        // 创建客户端
         this.sshClient = SshClient.setUpDefaultClient();
+        // 启动客户端
         this.sshClient.start();
         // 测试环境使用，生产环境需替换
         this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+        //  获取会话
+        this.session = this.takeSession();
     }
 
     /**
@@ -391,6 +399,55 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             session.addPasswordIdentity(this.shellConnect.getPassword());
+        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
+            // UnixAgentFactory agentFactory = new UnixAgentFactory();
+            // UnixAgentFactory1 agentFactory = new UnixAgentFactory1();
+
+
+            // // 设置agent工厂
+            // this.sshClient.setAgentFactory(agentFactory);
+            // // this.sshClient.setAgentFactory(new JGitSshAgentFactory(ConnectorFactory.getDefault(),null));
+            // this.sshClient.getProperties().put(SshAgent.SSH_AUTHSOCKET_ENV_NAME, System.getenv("SSH_AUTH_SOCK"));
+            // SshAgent sshAgent = agentFactory.createClient(session, this.sshClient);
+
+            // // ===== 创建基于 Agent 的 KeyPairProvider =====
+            // KeyPairProvider agentKeyProvider = new KeyPairProvider() {
+            //     @Override
+            //     public List<KeyPair> loadKeys(SessionContext session) {
+            //         try {
+            //             List<KeyPair> pairs = new ArrayList<>();
+            //             for (Map.Entry<PublicKey, String> identity : sshAgent.getIdentities()) {
+            //                 pairs.add(new KeyPair(identity.getKey(),null));
+            //             }
+            //             return pairs;
+            //         } catch (IOException e) {
+            //             throw new RuntimeException("Failed to get identities from agent", e);
+            //         }
+            //     }
+            //
+            //     @Override
+            //     public Iterable<String> getKeyTypes(SessionContext session) {
+            //         return Collections.singletonList(KeyUtils.RSA_ALGORITHM);
+            //     }
+            // };
+            // session.setKeyIdentityProvider(agentKeyProvider);
+
+
+            // UnixSSHAgent1 agent = new UnixSSHAgent1();
+
+            AgentIdentityRepository repository = SSHUtil.initAgentIdentityRepository();
+            List<KeyPair> keyPairs = new ArrayList<>();
+            Vector<Identity> identities= repository.getIdentities();
+            for (Identity identity : identities) {
+                Iterable<KeyPair> iterable = SSHKeyUtil.loadKeysForBytes(identity.getPublicKeyBlob(), null);
+                for (KeyPair keyPair : iterable) {
+                    keyPairs.add(keyPair);
+                }
+            }
+            //  设置证书认证
+            for (KeyPair keyPair : keyPairs) {
+                session.addPublicKeyIdentity(keyPair);
+            }
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
@@ -399,7 +456,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                 throw new IOException("certificate file not exist");
             }
             // 加载证书
-            Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(this.shellConnect.getCertificate(), this.shellConnect.getCertificatePwd());
+            Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
             //  设置证书认证
             for (KeyPair keyPair : keyPairs) {
                 session.addPublicKeyIdentity(keyPair);

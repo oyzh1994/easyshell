@@ -308,19 +308,37 @@
             <artifactId>sshd-sftp</artifactId>
             <version>${sshd-common.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>11.0.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/tomcat/tomcat-apr -->
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>tomcat-apr</artifactId>
+            <version>5.5.23</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-contrib -->
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-contrib</artifactId>
+            <version>2.15.0</version>
+        </dependency>
         <!-- ssh协议结束 -->
 
-        <!-- <dependency> -->
-        <!--     <groupId>org.eclipse.jgit</groupId> -->
-        <!--     <artifactId>org.eclipse.jgit</artifactId> -->
-        <!--     <version>7.2.0.202503040940-r</version> -->
-        <!-- </dependency> -->
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>7.2.0.202503040940-r</version>
+        </dependency>
 
-        <!-- <dependency> -->
-        <!--     <groupId>org.eclipse.jgit</groupId> -->
-        <!--     <artifactId>org.eclipse.jgit.ssh.apache.agent</artifactId> -->
-        <!--     <version>7.2.0.202503040940-r</version> -->
-        <!-- </dependency> -->
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.ssh.apache.agent</artifactId>
+            <version>7.2.0.202503040940-r</version>
+        </dependency>
 
         <!-- &lt;!&ndash; https://mvnrepository.com/artifact/com.spotify/ssh-agent-proxy &ndash;&gt; -->
         <!-- <dependency> -->

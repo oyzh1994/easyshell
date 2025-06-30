@@ -35,7 +35,6 @@ import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -296,7 +295,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    protected void initClient(int timeout) throws IOException {
+    protected void initClient(int timeout) throws Exception {
         // 执行初始化
         super.initClient(timeout);
         // 初始化x11
