@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.sftp2;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import com.jcraft.jsch.SftpException;
 import org.apache.sshd.sftp.client.SftpClient;
 
 import java.io.ByteArrayInputStream;
@@ -56,7 +55,7 @@ public class ShellSFTPChannel implements AutoCloseable {
      *
      * @param path 文件路径
      * @return 文件列表
-     * @throws SftpException 异常
+     * @throws Exception 异常
      */
     public List<ShellSFTPFile> lsFile(String path) throws Exception {
         // 文件列表
@@ -70,7 +69,7 @@ public class ShellSFTPChannel implements AutoCloseable {
      *
      * @param path         文件路径
      * @param fileCallback 文件回调
-     * @throws SftpException 异常
+     * @throws Exception 异常
      */
     public void lsFile(String path, Consumer<ShellSFTPFile> fileCallback) throws Exception {
         String filePath = ShellFileUtil.fixFilePath(path);
@@ -101,7 +100,7 @@ public class ShellSFTPChannel implements AutoCloseable {
         this.channel.rmdir(path);
     }
 
-    public String pwd() throws SftpException {
+    public String pwd() throws Exception {
         return null;
     }
 

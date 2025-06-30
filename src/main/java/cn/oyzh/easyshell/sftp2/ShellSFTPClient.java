@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp2;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.Competitor;
@@ -15,8 +16,6 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh2.ShellBaseSSHClient;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -307,9 +306,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 if (!this.exist(currentPath.toString())) {
                     this.createDir(currentPath.toString());
                 }
-            } catch (SftpException ex) {
+            } catch (Exception ex) {
                 // 创建缺失目录
-                if (ex.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                if (ExceptionUtil.hasMessage(ex, "No such file")) {
                     this.createDir(currentPath.toString());
                 } else {
                     throw ex;
