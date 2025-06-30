@@ -441,7 +441,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 ChannelShell channel = this.session.createShellChannel(null, this.initEnvironments());
                 channel.setUsePty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
-                channel.open();
+                channel.open().verify(this.connectTimeout());
                 channel.setIn(null);
                 channel.setOut(null);
                 this.shell = channel;

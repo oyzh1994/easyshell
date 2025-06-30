@@ -14,16 +14,17 @@ import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellBaseSSHClient;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.sftp.client.SftpClient;
+import org.apache.sshd.sftp.client.SftpClientFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +33,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -78,7 +78,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this(shellConnect, null);
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, Session session) {
+    public ShellSFTPClient(ShellConnect shellConnect, ClientSession session) {
         super(shellConnect);
         this.session = session;
         this.cache = new ShellSFTPCache();
@@ -86,27 +86,14 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         super.addStateListener(this.stateListener);
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, Session session, ShellSFTPCache cache, ShellSFTPChannelPool pool) {
-        super(shellConnect);
-        this.cache = cache;
-        this.session = session;
-        this.channelPool = pool;
-        super.addStateListener(this.stateListener);
-    }
-
     @Override
     public void close() {
         try {
             // 销毁会话
-            if (this.session != null && this.session.isConnected()) {
-                this.session.disconnect();
+            if (this.session != null && this.session.isOpen()) {
+                IOUtil.close(this.session);
                 this.session = null;
             }
-            //// 清除用户、分组信息
-            //if (this.attr != null) {
-            //    IOUtil.close(this.attr);
-            //    this.attr = null;
-            //}
             // 通道管理
             if (this.channelPool != null) {
                 IOUtil.close(this.channelPool);
@@ -132,16 +119,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         }
         try {
             // 初始化客户端
-            this.initClient();
+            this.initClient(timeout);
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 执行连接
             if (this.session != null) {
                 this.state.set(ShellConnState.CONNECTING);
-                // 连接超时
-                this.session.setTimeout(timeout);
-                // 连接
-                this.session.connect(timeout);
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
@@ -165,7 +148,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean isConnected() {
-        return this.session != null && this.session.isConnected();
+        return this.session != null && this.session.isOpen();
     }
 
     /**
@@ -175,21 +158,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      */
     protected ShellSFTPChannel newSFTPChannel() {
         try {
-            // 如果会话关了，则重新初始化客户端
-            if (this.isClosed()) {
-                this.session.connect(this.connectTimeout());
-            }
-            ChannelSftp channel = (ChannelSftp) this.session.openChannel("sftp");
-            channel.setInputStream(null);
-            channel.setOutputStream(null);
+            SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(this.session);
             // 设置字符集
-            channel.setFilenameEncoding(this.getCharset());
+            sftpClient.setNameDecodingCharset(this.getCharset());
             // 创建通道
-            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(channel, this.cache);
-            // 连接
-            sftpChannel.connect(this.connectTimeout());
-            // 初始化环境
-            super.initEnvironments(channel);
+            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(sftpClient, this.cache);
             return sftpChannel;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -246,18 +219,17 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return this.exec("id -gn " + gid);
     }
 
-    ///**
+    /// **
     // * 属性
     // */
-    //private ShellSFTPAttr attr;
+    // private ShellSFTPAttr attr;
     //
-    //public ShellSFTPAttr getAttr() {
+    // public ShellSFTPAttr getAttr() {
     //    if (this.attr == null) {
     //        this.attr = new ShellSFTPAttr();
     //    }
     //    return this.attr;
     //}
-
     @Override
     public void delete(String file) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
@@ -288,12 +260,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void deleteDirRecursive(String dir) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
-            Vector<ChannelSftp.LsEntry> entries = channel.ls(dir);
-            for (ChannelSftp.LsEntry entry : entries) {
+            Iterable<SftpClient.DirEntry> entries = channel.ls(dir);
+            for (SftpClient.DirEntry entry : entries) {
                 String filename = entry.getFilename();
                 if (ShellFileUtil.isNormal(filename)) {
                     String fullPath = dir + "/" + filename;
-                    if (entry.getAttrs().isDir()) {
+                    if (entry.getAttributes().isDirectory()) {
                         this.deleteDirRecursive(fullPath);
                     } else {
                         this.delete(fullPath);
@@ -301,9 +273,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 }
             }
             this.deleteDir(dir);
-            // } catch (Exception ex) {
-            //     this.closeChannel(channel);
-            //     throw ex;
         } finally {
             this.returnChannel(channel);
         }
@@ -364,27 +333,16 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void cd(String filePath) throws Exception {
-        ShellSFTPChannel channel = this.takeChannel();
-        try {
-            channel.cd(filePath);
-            // } catch (Exception ex) {
-            //     this.closeChannel(channel);
-            //     throw ex;
-        } finally {
-            this.returnChannel(channel);
-        }
+        throw new UnsupportedOperationException();
     }
 
-    public SftpATTRS stat(String filePath) throws Exception {
+    public SftpClient.Attributes stat(String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         if (channel == null) {
             return null;
         }
         try {
             return channel.stat(filePath);
-            // } catch (Exception ex) {
-            //     this.closeChannel(channel);
-            //     throw ex;
         } finally {
             this.returnChannel(channel);
         }
@@ -462,9 +420,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel channel = this.newSFTPChannel();
         this.delayChannels.add(channel);
         if (callback == null) {
-            return channel.put(remoteFile);
+            return channel.write(remoteFile);
         }
-        return ShellFileProgressMonitor.of(channel.put(remoteFile), callback);
+        return ShellFileProgressMonitor.of(channel.write(remoteFile), callback);
     }
 
     /**
@@ -519,7 +477,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public ShellSFTPFile fileInfo(String filePath) throws Exception {
-        SftpATTRS attrs = this.stat(filePath);
+        SftpClient.Attributes attrs = this.stat(filePath);
         if (attrs == null) {
             return null;
         }
@@ -528,35 +486,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         // 读取链接文件
         this.cache.realpath(file, this::takeChannel);
-        // ShellSFTPUtil.realpath(file, this);
-        // 拥有者、分组
-        // if (this.isWindows()) {
-        //     file.setOwner("-");
-        //     file.setGroup("-");
-        // } else {
-        //file.setOwner(ShellSFTPUtil.getOwner(file.getUid(), this));
-        //file.setGroup(ShellSFTPUtil.getGroup(file.getGid(), this));
-        // }
-        file.setOwner(this.cache.getOwner(file.getUid(), this));
-        file.setGroup(this.cache.getGroup(file.getGid(), this));
         return file;
     }
 
-    // @Override
-    // public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-    //     ShellSFTPChannel channel = this.takeChannel();
-    //     try {
-    //         return channel.lsFile(filePath);
-    //         // } catch (Exception ex) {
-    //         //     this.closeChannel(channel);
-    //         //     throw ex;
-    //     } finally {
-    //         this.returnChannel(channel);
-    //     }
-    // }
-
     @Override
-    public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback ) throws Exception {
+    public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.lsFile(filePath, fileCallback);
@@ -570,9 +504,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rename(filePath, newPath);
-            // } catch (Exception ex) {
-            //     this.closeChannel(channel);
-            //     throw ex;
         } finally {
             this.returnChannel(channel);
         }

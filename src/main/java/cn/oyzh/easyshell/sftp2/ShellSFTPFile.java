@@ -4,11 +4,11 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpATTRS;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.apache.sshd.sftp.client.SftpClient;
 
+import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
 /**
@@ -20,12 +20,12 @@ public class ShellSFTPFile implements ShellFile {
     /**
      * 文件对象
      */
-    private ChannelSftp.LsEntry entry;
+    private SftpClient.DirEntry entry;
 
     /**
      * 文件属性
      */
-    private SftpATTRS attrs;
+    private SftpClient.Attributes attrs;
 
     /**
      * 拥有者
@@ -55,33 +55,33 @@ public class ShellSFTPFile implements ShellFile {
     /**
      * 链接属性
      */
-    private SftpATTRS linkAttrs;
+    private SftpClient.Attributes linkAttrs;
 
     /**
      * 文件图标
      */
     private SVGGlyph icon;
 
-    public ChannelSftp.LsEntry getEntry() {
+    public SftpClient.DirEntry getEntry() {
         return entry;
     }
 
-    public void setEntry(ChannelSftp.LsEntry entry) {
+    public void setEntry(SftpClient.DirEntry entry) {
         this.entry = entry;
     }
 
-    public SftpATTRS getAttrs() {
+    public SftpClient.Attributes getAttrs() {
         if (this.attrs == null) {
-            return this.entry.getAttrs();
+            return this.entry.getAttributes();
         }
         return this.attrs;
     }
 
-    public SftpATTRS getLinkAttrs() {
+    public SftpClient.Attributes getLinkAttrs() {
         return linkAttrs;
     }
 
-    public void setLinkAttrs(SftpATTRS linkAttrs) {
+    public void setLinkAttrs(SftpClient.Attributes linkAttrs) {
         this.linkAttrs = linkAttrs;
         if (this.icon != null) {
             this.refreshIcon();
@@ -89,6 +89,9 @@ public class ShellSFTPFile implements ShellFile {
     }
 
     public String getOwner() {
+        if(this.owner == null) {
+            return this.getAttrs().getOwner();
+        }
         return owner;
     }
 
@@ -97,6 +100,9 @@ public class ShellSFTPFile implements ShellFile {
     }
 
     public String getGroup() {
+        if(this.group == null) {
+            return this.getAttrs().getGroup();
+        }
         return group;
     }
 
@@ -107,7 +113,7 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public void setFileSize(long fileSize) {
-        this.getAttrs().setSIZE(fileSize);
+        this.getAttrs().setSize(fileSize);
     }
 
     public void setGroup(String group) {
@@ -130,10 +136,10 @@ public class ShellSFTPFile implements ShellFile {
         this.icon = icon;
     }
 
-    public ShellSFTPFile(String parentPath, ChannelSftp.LsEntry entry) {
+    public ShellSFTPFile(String parentPath, SftpClient.DirEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
-        String[] arr = entry.getLongname().split("\\s+");
+        String[] arr = entry.getLongFilename().split("\\s+");
         if (arr.length > 2) {
             this.owner = arr[2];
         }
@@ -143,7 +149,7 @@ public class ShellSFTPFile implements ShellFile {
         this.updatePermissions();
     }
 
-    public ShellSFTPFile(String parentPath, String fileName, SftpATTRS attrs) {
+    public ShellSFTPFile(String parentPath, String fileName, SftpClient.Attributes attrs) {
         this.parentPath = parentPath;
         this.fileName = fileName;
         this.attrs = attrs;
@@ -192,7 +198,8 @@ public class ShellSFTPFile implements ShellFile {
     }
 
     protected void updatePermissions() {
-        this.permissionsProperty().set(this.getAttrs().getPermissionsString());
+        String permissions = ShellSFTPUtil.permissionsToString(this.getAttrs());
+        this.permissionsProperty().set(permissions);
     }
 
     @Override
@@ -206,7 +213,7 @@ public class ShellSFTPFile implements ShellFile {
     @Override
     public void setPermissions(String permissions) {
         int permissionInt = ShellFileUtil.toPermissionInt(permissions);
-        this.getAttrs().setPERMISSIONS(permissionInt);
+        this.getAttrs().setPermissions(permissionInt);
         this.updatePermissions();
     }
 
@@ -214,8 +221,8 @@ public class ShellSFTPFile implements ShellFile {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
-        int aTime = this.getAttrs().getATime();
-        return DateHelper.formatDateTime(new Date(aTime * 1000L));
+        FileTime aTime = this.getAttrs().getCreateTime();
+        return DateHelper.formatDateTime(aTime.toInstant());
     }
 
     @Override
@@ -223,8 +230,8 @@ public class ShellSFTPFile implements ShellFile {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
-        int mtime = this.getAttrs().getMTime();
-        return DateHelper.formatDateTime(new Date(mtime * 1000L));
+        FileTime mtime = this.getAttrs().getModifyTime();
+        return DateHelper.formatDateTime(mtime.toInstant());
     }
 
     /**
@@ -232,40 +239,39 @@ public class ShellSFTPFile implements ShellFile {
      *
      * @return 结果
      */
-    public int getMTime() {
-        return this.getAttrs().getMTime();
+    public long getMTime() {
+        return this.getAttrs().getModifyTime().toMillis();
     }
 
     @Override
     public void setModifyTime(String modifyTime) {
         Date date = DateHelper.parseDateTime(modifyTime);
-        int atime = this.getAttrs().getATime();
-        int mtime = Math.toIntExact(date.getTime() / 1000);
-        this.getAttrs().setACMODTIME(atime, mtime);
+        FileTime mtime = FileTime.fromMillis(date.getTime());
+        this.getAttrs().setModifyTime(mtime);
     }
 
     public int getUid() {
-        return this.getAttrs().getUId();
+        return this.getAttrs().getUserId();
     }
 
     public int getGid() {
-        return this.getAttrs().getGId();
+        return this.getAttrs().getGroupId();
     }
 
     @Override
     public boolean isFile() {
         if (this.isLink()) {
             if (this.linkAttrs != null) {
-                return this.linkAttrs.isReg();
+                return this.linkAttrs.isRegularFile();
             }
             return false;
         }
-        return this.getAttrs().isReg();
+        return this.getAttrs().isRegularFile();
     }
 
     @Override
     public boolean isLink() {
-        return this.getAttrs().isLink();
+        return this.getAttrs().isSymbolicLink();
     }
 
     @Override
@@ -295,28 +301,10 @@ public class ShellSFTPFile implements ShellFile {
     public boolean isDirectory() {
         if (this.isLink()) {
             if (this.linkAttrs != null) {
-                return this.linkAttrs.isDir();
+                return this.linkAttrs.isDirectory();
             }
             return false;
         }
-        return this.getAttrs().isDir();
+        return this.getAttrs().isDirectory();
     }
-
-//    /**
-//     * 设置链接文件
-//     *
-//     * @param linkPath 链接文件
-//     */
-//    public void setLinkPath(String linkPath) {
-//        this.linkPath = linkPath;
-//    }
-//
-//    /**
-//     * 获取链接路径
-//     *
-//     * @return 链接路径
-//     */
-//    public String getLinkPath() {
-//        return linkPath;
-//    }
 }

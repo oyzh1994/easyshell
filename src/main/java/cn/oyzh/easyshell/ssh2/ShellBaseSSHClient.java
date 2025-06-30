@@ -332,6 +332,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     protected ChannelExec newExecChannel(String command) {
         try {
             ChannelExec channel = this.session.createExecChannel(command, null, this.initEnvironments());
+            channel.open().verify(this.connectTimeout());
             channel.setIn(null);
             channel.setOut(null);
             channel.setErr(null);
@@ -363,7 +364,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.sshClient.start();
         ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), host, port);
         this.session = future.verify(timeout).getClientSession();
-
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             this.session.addPasswordIdentity(this.shellConnect.getPassword());

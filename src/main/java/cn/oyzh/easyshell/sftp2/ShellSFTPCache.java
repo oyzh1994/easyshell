@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.sftp2;
 
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.sftp.client.SftpClient;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +24,7 @@ public class ShellSFTPCache implements AutoCloseable {
      * 属性缓存
      * key: 路径:修改时间 value: 文件属性
      */
-    private final Map<String, SftpATTRS> attrsCache = new ConcurrentHashMap<>(64);
+    private final Map<String, SftpClient.Attributes> attrsCache = new ConcurrentHashMap<>(64);
 
     /**
      * 拥有者缓存
@@ -45,7 +44,7 @@ public class ShellSFTPCache implements AutoCloseable {
      * @param file     文件
      * @param supplier 通道提供者
      */
-    public void realpath(ShellSFTPFile file, Supplier<ShellSFTPChannel> supplier) throws SftpException {
+    public void realpath(ShellSFTPFile file, Supplier<ShellSFTPChannel> supplier) throws Exception {
         try (ShellSFTPChannel channel = supplier.get()) {
             this.realpath(file, channel);
         }
@@ -57,11 +56,11 @@ public class ShellSFTPCache implements AutoCloseable {
      * @param file    文件
      * @param channel 通道
      */
-    public void realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
+    public void realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws Exception {
         String filePath = file.getFilePath();
         String linkPath = this.pathCache.get(filePath);
         String attrKey = filePath + ":" + file.getMTime();
-        SftpATTRS attrs = this.attrsCache.get(attrKey);
+        SftpClient.Attributes attrs = this.attrsCache.get(attrKey);
         // 缓存处理
         if (linkPath != null) {
             if (attrs == null) {

@@ -2,7 +2,8 @@ package cn.oyzh.easyshell.sftp2;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
-import com.jcraft.jsch.SftpException;
+import org.apache.sshd.sftp.client.SftpClient;
+
 
 /**
  * sftp工具类
@@ -12,53 +13,13 @@ import com.jcraft.jsch.SftpException;
  */
 public class ShellSFTPUtil {
 
-    ///**
-    // * 获取拥有者
-    // *
-    // * @param uid    用户id
-    // * @param client 客户端
-    // * @return 拥有者名称
-    // */
-    //public static String getOwner(int uid, ShellSFTPClient client) {
-    //    if (client.isWindows()) {
-    //        return "-";
-    //    }
-    //    ShellSFTPAttr attr = client.getAttr();
-    //    String ownerName = attr.getOwner(uid);
-    //    if (ownerName == null) {
-    //        ownerName = client.exec_id_un(uid);
-    //        attr.putOwner(uid, ownerName);
-    //    }
-    //    return ownerName;
-    //}
-    //
-    ///**
-    // * 获取分租
-    // *
-    // * @param gid    分组id
-    // * @param client 客户端
-    // * @return 分组名称
-    // */
-    //public static String getGroup(int gid, ShellSFTPClient client) {
-    //    if (client.isWindows()) {
-    //        return "-";
-    //    }
-    //    ShellSFTPAttr attr = client.getAttr();
-    //    String groupName = attr.getGroup(gid);
-    //    if (groupName == null) {
-    //        groupName = client.exec_id_gn(gid);
-    //        attr.putGroup(gid, groupName);
-    //    }
-    //    return groupName;
-    //}
-
     /**
      * 读取链接路径
      *
      * @param file   文件
      * @param client 客户端
      * @return 链接路径
-     * @throws SftpException 异常
+     * @throws Exception 异常
      */
     public static String realpath(ShellSFTPFile file, ShellSFTPClient client) throws Exception {
         // 读取链接文件
@@ -66,11 +27,10 @@ public class ShellSFTPUtil {
             try {
                 String linkPath = client.realpath(file.getFilePath());
                 if (linkPath != null) {
-//                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(client.stat(linkPath));
                 }
                 return linkPath;
-            } catch (SftpException e) {
+            } catch (Exception e) {
                 if (ExceptionUtil.hasMessage(e, "No such file")) {
                     JulLog.warn("realpath:{} fail", file.getFilePath());
                 } else {
@@ -87,19 +47,18 @@ public class ShellSFTPUtil {
      * @param file    文件
      * @param channel sftp通道
      * @return 链接路径
-     * @throws SftpException 异常
+     * @throws Exception 异常
      */
-    public static String realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws SftpException {
+    public static String realpath(ShellSFTPFile file, ShellSFTPChannel channel) throws Exception {
         // 读取链接文件
         if (file != null && file.isLink() && file.isNormal()) {
             try {
                 String linkPath = channel.realpath(file.getFilePath());
                 if (linkPath != null) {
-//                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(channel.stat(linkPath));
                 }
                 return linkPath;
-            } catch (SftpException ex) {
+            } catch (Exception ex) {
                 if (ExceptionUtil.hasMessage(ex, "No such file")) {
                     JulLog.warn("realpath:{} fail", file.getFilePath());
                 } else {
@@ -108,5 +67,68 @@ public class ShellSFTPUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 将 SSH 文件权限转换为 10 位字符串表示
+     * @param attrs 文件属性
+     * @return 类似 "drwxr-xr-x" 的权限字符串
+     */
+    public static String permissionsToString(SftpClient.Attributes attrs) {
+        StringBuilder sb = new StringBuilder(10);
+
+        // 第一位：文件类型
+        int permissions = attrs.getPermissions();
+        sb.append(getTypeChar(permissions));
+
+        // 权限位：用户、组、其他
+        appendPermissions(sb, permissions, 0x1C0); // 用户权限 (700)
+        appendPermissions(sb, permissions, 0x38);  // 组权限 (070)
+        appendPermissions(sb, permissions, 0x7);   // 其他权限 (007)
+
+        // 处理特殊权限
+        appendSpecialPermissions(sb, permissions);
+
+        return sb.toString();
+    }
+
+    private static char getTypeChar(int permissions) {
+        int typeBits = (permissions >>> 12) & 0xF;
+        switch (typeBits) {
+            case 0x4: return 'd'; // 目录
+            case 0xA: return 'l'; // 符号链接
+            case 0xC: return 's'; // 套接字
+            case 0x2: return 'c'; // 字符设备
+            case 0x6: return 'b'; // 块设备
+            case 0x1: return 'p'; // 命名管道
+            default: return '-';  // 普通文件
+        }
+    }
+
+    private static void appendPermissions(StringBuilder sb, int permissions, int mask) {
+        // 读权限
+        sb.append((permissions & (mask >> 2)) != 0 ? 'r' : '-');
+        // 写权限
+        sb.append((permissions & (mask >> 1)) != 0 ? 'w' : '-');
+        // 执行权限
+        sb.append((permissions & mask) != 0 ? 'x' : '-');
+    }
+
+    private static void appendSpecialPermissions(StringBuilder sb, int permissions) {
+        // SUID (4000)
+        if ((permissions & 04000) != 0) {
+            char c = sb.charAt(3);
+            sb.setCharAt(3, c == 'x' ? 's' : 'S');
+        }
+        // SGID (2000)
+        if ((permissions & 02000) != 0) {
+            char c = sb.charAt(6);
+            sb.setCharAt(6, c == 'x' ? 's' : 'S');
+        }
+        // Sticky (1000)
+        if ((permissions & 01000) != 0) {
+            char c = sb.charAt(9);
+            sb.setCharAt(9, c == 'x' ? 't' : 'T');
+        }
     }
 }
