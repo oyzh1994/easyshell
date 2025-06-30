@@ -1,30 +1,19 @@
 package cn.oyzh.easyshell.ssh2;
 
-import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.ssh.util.SSHHolder;
-import cn.oyzh.ssh.util.SSHUtil;
-import com.jcraft.jsch.AgentIdentityRepository;
-import com.jcraft.jsch.AgentProxyException;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.Identity;
-import com.jcraft.jsch.IdentityRepository;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.channel.ChannelExec;
+import org.apache.sshd.client.future.ConnectFuture;
+import org.apache.sshd.client.session.ClientSession;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +32,14 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     protected String osType;
 
     /**
+     * ssh客户端
+     */
+    protected SshClient sshClient;
+
+    /**
      * 会话
      */
-    protected Session session;
+    protected ClientSession session;
 
     /**
      * 用户目录
@@ -81,7 +75,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         return shellConnect;
     }
 
-    public Session getSession() {
+    public ClientSession getSession() {
         return session;
     }
 
@@ -110,17 +104,15 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      */
     public String exec(String command) {
         // 获取通道
-        ChannelExec channel = this.newExecChannel();
+        ChannelExec channel = this.newExecChannel(command);
         try {
             // 操作
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
-            channel.setCommand(command);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            channel.setErrStream(stream);
-            channel.setInputStream(null);
-            channel.setOutputStream(stream);
-            channel.connect(this.connectTimeout());
-            while (channel.isConnected()) {
+            channel.setIn(null);
+            channel.setErr(stream);
+            channel.setOut(stream);
+            while (!channel.isClosed()) {
                 Thread.sleep(1);
             }
             String result;
@@ -141,7 +133,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             ex.printStackTrace();
         } finally {
             if (channel != null) {
-                channel.disconnect();
+                IOUtil.close(channel);
             }
         }
         return null;
@@ -294,20 +286,20 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * 初始化回话
      */
-    protected void initSession() throws JSchException {
+    protected void initSession()   {
         if (this.session != null) {
-            // 设置守护线程
-            this.session.setDaemonThread(true);
-            // 连续3次失败后断开连接
-            this.session.setServerAliveCountMax(3);
-            // 每60秒发送一次TCP keep-alive包
-            this.session.setServerAliveInterval(60_000);
-            // 可选：设置TCP层面的keep-alive
-            this.session.setConfig("TCPKeepAlive", "yes");
-            // 去掉首次连接确认
-            this.session.setConfig("StrictHostKeyChecking", "no");
-            // 设置线程工厂
-            this.session.setThreadFactory(ThreadUtil::newThreadVirtual);
+            // // 设置守护线程
+            // this.session.setDaemonThread(true);
+            // // 连续3次失败后断开连接
+            // this.session.setServerAliveCountMax(3);
+            // // 每60秒发送一次TCP keep-alive包
+            // this.session.setServerAliveInterval(60_000);
+            // // 可选：设置TCP层面的keep-alive
+            // this.session.setConfig("TCPKeepAlive", "yes");
+            // // 去掉首次连接确认
+            // this.session.setConfig("StrictHostKeyChecking", "no");
+            // // 设置线程工厂
+            // this.session.setThreadFactory(ThreadUtil::newThreadVirtual);
         }
     }
 
@@ -316,19 +308,19 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      */
     protected void useCompression() {
         if (this.session != null) {
-            // 启用压缩
-            if (this.shellConnect.isEnableCompress()) {
-                this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-                this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-                // 设置压缩级别（可选，范围 1-9，默认 6）
-                this.session.setConfig("Compression", "yes");
-                this.session.setConfig("CompressionLevel", "9");
-                this.session.setConfig("compression.level", "9");
-            } else {
-                this.session.setConfig("Compression", "no");
-                this.session.setConfig("compression.s2c", "none");
-                this.session.setConfig("compression.c2s", "none");
-            }
+            // // 启用压缩
+            // if (this.shellConnect.isEnableCompress()) {
+            //     this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+            //     this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+            //     // 设置压缩级别（可选，范围 1-9，默认 6）
+            //     this.session.setConfig("Compression", "yes");
+            //     this.session.setConfig("CompressionLevel", "9");
+            //     this.session.setConfig("compression.level", "9");
+            // } else {
+            //     this.session.setConfig("Compression", "no");
+            //     this.session.setConfig("compression.s2c", "none");
+            //     this.session.setConfig("compression.c2s", "none");
+            // }
         }
     }
 
@@ -337,39 +329,12 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      *
      * @return exec通道
      */
-    protected ChannelExec newExecChannel() {
+    protected ChannelExec newExecChannel(String command) {
         try {
-            // 如果会话关了，则先启动会话
-            if (this.isClosed()) {
-                this.session.connect(this.connectTimeout());
-            }
-            ChannelExec channel = (ChannelExec) this.session.openChannel("exec");
-            channel.setInputStream(null);
-            channel.setOutputStream(null);
-            //// 获取连接
-            // ShellConnect shellConnect = this.getShellConnect();
-            //// 用户环境
-            // Map<String, String> userEnvs = this.shellConnect.environments();
-            // if (CollectionUtil.isNotEmpty(userEnvs)) {
-            //    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-            //        channel.setEnv(entry.getKey(), entry.getValue());
-            //    }
-            //}
-            //// 初始化环境变量
-            // if (this.osType != null) {
-            //    channel.setEnv("PATH", this.getExportPath());
-            //}
-            //// 初始化字符集
-            // channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-            //// 客户端转发
-            // if (shellConnect.isJumpForward()) {
-            //    channel.setAgentForwarding(true);
-            //}
-            //// x11转发
-            // if (shellConnect.isX11forwarding()) {
-            //    channel.setXForwarding(true);
-            //}
-            this.initEnvironments(channel);
+            ChannelExec channel = this.session.createExecChannel(command, null, this.initEnvironments());
+            channel.setIn(null);
+            channel.setOut(null);
+            channel.setErr(null);
             return channel;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -389,57 +354,22 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * 初始化客户端
      */
-    protected void initClient() throws JSchException, AgentProxyException {
+    protected void initClient(int timeout) throws IOException {
         // 连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
+        this.sshClient = SshClient.setUpDefaultClient();
+        this.sshClient.start();
+        ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), host, port);
+        this.session = future.verify(timeout).getClientSession();
+
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
-            // 创建会话
-            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
+            this.session.addPasswordIdentity(this.shellConnect.getPassword());
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
-            String priKeyFile = this.shellConnect.getCertificate();
-            // 检查私钥是否存在
-            if (!FileUtil.exist(priKeyFile)) {
-                MessageBox.warn("certificate file not exist");
-                return;
-            }
-            // 添加认证，并指定密码
-            // SSHHolder.getJsch().addIdentity(priKeyFile);
-            SSHHolder.getJsch().addIdentity(priKeyFile, this.shellConnect.getCertificatePwd());
-            // 创建会话
-            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-            IdentityRepository repository = SSHHolder.getAgentJsch().getIdentityRepository();
-            if (!(repository instanceof AgentIdentityRepository)) {
-                repository = SSHUtil.initAgentIdentityRepository();
-                if (CollectionUtil.isEmpty(repository.getIdentities())) {
-                    throw new AgentProxyException("identities is empty");
-                }
-                SSHHolder.getAgentJsch().setIdentityRepository(repository);
-            }
-            for (Identity identity : repository.getIdentities()) {
-                if (JulLog.isInfoEnabled()) {
-                    JulLog.info("Identity: {}", identity.getName());
-                }
-            }
-            // 创建会话
-            this.session = SSHHolder.getAgentJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
-            ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
-            // 检查私钥是否存在
-            if (key == null) {
-                MessageBox.warn("key not found");
-                return;
-            }
-            String keyName = "key_" + key.getId();
-            // 添加认证，并指定密码
-            // SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(),null);
-            SSHHolder.getJsch().addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), key.getPasswordBytes());
-            // 创建会话
-            this.session = SSHHolder.getJsch().getSession(this.shellConnect.getUser(), hostIp, port);
         }
         // 初始化会话
         this.initSession();
@@ -449,88 +379,16 @@ public abstract class ShellBaseSSHClient implements BaseClient {
 
     /**
      * 初始化环境
-     *
-     * @param channel 通道
      */
-    public void initEnvironments(ChannelExec channel) {
+    public Map<String, String> initEnvironments() {
         // 用户环境
         Map<String, String> userEnvs = this.shellConnect.environments();
-        if (CollectionUtil.isNotEmpty(userEnvs)) {
-            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                channel.setEnv(entry.getKey(), entry.getValue());
-            }
-        }
         // 初始化环境变量
         if (this.osType != null) {
-            channel.setEnv("PATH", this.getExportPath());
+            userEnvs.put("PATH", this.getExportPath());
         }
         // 初始化字符集
-        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-        // 客户端转发
-        if (this.shellConnect.isJumpForward()) {
-            channel.setAgentForwarding(true);
-        }
-        // x11转发
-        if (this.shellConnect.isX11forwarding()) {
-            channel.setXForwarding(true);
-        }
-    }
-
-    /**
-     * 初始化环境
-     *
-     * @param channel 通道
-     */
-    public void initEnvironments(ChannelShell channel) {
-        // 用户环境
-        Map<String, String> userEnvs = this.shellConnect.environments();
-        if (CollectionUtil.isNotEmpty(userEnvs)) {
-            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                channel.setEnv(entry.getKey(), entry.getValue());
-            }
-        }
-        // 初始化环境变量
-        if (this.osType != null) {
-            channel.setEnv("PATH", this.getExportPath());
-        }
-        // 初始化字符集
-        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-        // 客户端转发
-        if (this.shellConnect.isJumpForward()) {
-            channel.setAgentForwarding(true);
-        }
-        // x11转发
-        if (this.shellConnect.isX11forwarding()) {
-            channel.setXForwarding(true);
-        }
-    }
-
-    /**
-     * 初始化环境
-     *
-     * @param channel 通道
-     */
-    public void initEnvironments(ChannelSftp channel) {
-        // 用户环境
-        Map<String, String> userEnvs = this.shellConnect.environments();
-        if (CollectionUtil.isNotEmpty(userEnvs)) {
-            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                channel.setEnv(entry.getKey(), entry.getValue());
-            }
-        }
-        // 初始化环境变量
-        if (this.osType != null) {
-            channel.setEnv("PATH", this.getExportPath());
-        }
-        // 初始化字符集
-        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-        // 客户端转发
-        if (this.shellConnect.isJumpForward()) {
-            channel.setAgentForwarding(true);
-        }
-        // x11转发
-        if (this.shellConnect.isX11forwarding()) {
-            channel.setXForwarding(true);
-        }
+        userEnvs.put("LANG", "en_US." + this.getCharset().displayName());
+        return userEnvs;
     }
 }

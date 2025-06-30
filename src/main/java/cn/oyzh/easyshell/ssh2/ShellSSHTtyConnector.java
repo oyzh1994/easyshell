@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
+import org.apache.sshd.client.channel.ChannelShell;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,9 +42,9 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     public void init(ShellSSHClient client) throws IOException {
         this.client = client;
-        ShellSSHShell shell = client.getShell();
-        this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
-        this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
+        ChannelShell shell = client.getShell();
+        this.shellReader = new InputStreamReader(shell.getInvertedOut(), this.myCharset);
+        this.shellWriter = new OutputStreamWriter(shell.getInvertedIn(), this.myCharset);
     }
 
     public ShellSSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
@@ -66,7 +67,7 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
         this.shellWriter.write(str);
@@ -105,21 +106,11 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     @Override
     public InputStream input() {
-        try {
-            return this.client.getShell().getInputStream();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        return this.client.getShell().getInvertedOut();
     }
 
     @Override
     public OutputStream output() {
-        try {
-            return this.client.getShell().getOutputStream();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        return this.client.getShell().getInvertedIn();
     }
 }

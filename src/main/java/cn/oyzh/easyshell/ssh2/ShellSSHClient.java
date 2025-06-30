@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.ssh2;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
@@ -26,17 +27,15 @@ import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
-import com.jcraft.jsch.AgentProxyException;
-import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.channel.ChannelShell;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -185,7 +184,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public void updateState() {
         ShellConnState state = this.getState();
         if (state == ShellConnState.CONNECTED) {
-            if (this.session == null || !this.session.isConnected()) {
+            if (this.session == null || this.session.isClosed()) {
                 this.state.set(ShellConnState.INTERRUPT);
             }
         }
@@ -255,10 +254,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 JulLog.warn("proxy is enable but proxy config is null");
                 throw new SSHException("proxy is enable but proxy config is null");
             }
-            // 初始化代理
-            Proxy proxy = ShellSSHUtil.newProxy(proxyConfig);
-            // 设置代理
-            this.session.setProxy(proxy);
         }
     }
 
@@ -276,11 +271,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         tunnelingConfigs = tunnelingConfigs == null ? Collections.emptyList() : tunnelingConfigs.stream().filter(ShellTunnelingConfig::isEnabled).collect(Collectors.toList());
         // 开启隧道转发
         if (CollectionUtil.isNotEmpty(tunnelingConfigs)) {
-            if (this.tunnelForwarder == null) {
-                this.tunnelForwarder = new SSHTunnelingForwarder();
-            }
-            // 执行转发
-            this.tunnelForwarder.forward(tunnelingConfigs, this.session);
         }
     }
 
@@ -297,14 +287,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());
             }
             if (x11Config != null) {
-                // x11配置
-                this.session.setConfig("ForwardX11", "yes");
-                this.session.setConfig("ForwardX11Trusted", "yes");
-                this.session.setX11Host(x11Config.getHost());
-                this.session.setX11Port(x11Config.getPort());
-                if (StringUtil.isNotBlank(x11Config.getCookie())) {
-                    this.session.setX11Cookie(x11Config.getCookie());
-                }
                 // 本地转发，启动x11服务
                 if (x11Config.isLocal()) {
                     ShellX11Manager.startXServer();
@@ -316,9 +298,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    protected void initClient() throws JSchException, AgentProxyException {
+    protected void initClient(int timeout) throws IOException {
         // 执行初始化
-        super.initClient();
+        super.initClient(timeout);
         // 初始化x11
         this.initX11();
         // 初始化代理
@@ -352,7 +334,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             }
             // 销毁回话
             if (this.session != null) {
-                this.session.disconnect();
+                this.session.close();
                 this.session = null;
                 this.state.set(ShellConnState.CLOSED);
             }
@@ -379,18 +361,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 初始化连接池
             this.state.set(ShellConnState.CONNECTING);
             // 初始化客户端
-            this.initClient();
+            this.initClient(timeout);
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 执行连接
-            if (this.session != null) {
-                // 连接超时
-                this.session.setTimeout(timeout);
-                // 连接
-                this.session.connect(timeout);
-            }
-            // 判断连接结果
-            if (this.session != null && this.session.isConnected()) {
+            if (this.session != null && this.session.isOpen()) {
                 this.state.set(ShellConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
@@ -430,15 +405,15 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     @Override
     public boolean isConnected() {
-        return this.session != null && this.session.isConnected() && this.state.get().isConnected();
+        return this.session != null && this.session.isOpen() && this.state.get().isConnected();
     }
 
     /**
      * shell通道
      */
-    private ShellSSHShell shell;
+    private ChannelShell shell;
 
-    public ShellSSHShell getShell() {
+    public ChannelShell getShell() {
         return shell;
     }
 
@@ -447,9 +422,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @return 新shell
      */
-    public ShellSSHShell reopenShell() {
-        if (this.shell != null && this.shell.isConnected()) {
-            this.shell.close();
+    public ChannelShell reopenShell() {
+        if (this.shell != null && this.shell.isOpen()) {
+            IOUtil.closeQuietly(this.shell);
         }
         this.shell = null;
         return this.openShell();
@@ -460,101 +435,22 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @return ShellSSHShell
      */
-    public ShellSSHShell openShell() {
+    public ChannelShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
-                // 如果会话关了，则先启动会话
-                if (this.isClosed()) {
-                    this.session.connect(this.shellConnect.getConnectTimeOut());
-                }
-                ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
-                channel.setInputStream(null);
-                channel.setOutputStream(null);
-                //// 用户环境
-                // Map<String, String> userEnvs = this.shellConnect.environments();
-                // if (CollectionUtil.isNotEmpty(userEnvs)) {
-                //    for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                //        channel.setEnv(entry.getKey(), entry.getValue());
-                //    }
-                //}
-                //// 初始化环境变量
-                // if (this.osType != null) {
-                //    channel.setEnv("PATH", this.getExportPath());
-                //}
-                //// 初始化字符集
-                // channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-                super.initEnvironments(channel);
-                //// 客户端转发
-                // if (this.shellConnect.isJumpForward()) {
-                //    channel.setAgentForwarding(true);
-                //}
-                //// x11转发
-                // if (this.shellConnect.isX11forwarding()) {
-                //    channel.setXForwarding(true);
-                //}
-                // byte[] modes = new byte[]{
-                //        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // ISPEED=38400
-                //        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, // OSPEED=38400
-                //        (byte)0x1F, (byte)0x00, (byte)0x00, (byte)0x50, (byte)0x00, // 行数80
-                //        (byte)0x20, (byte)0x00, (byte)0x00, (byte)0x19, (byte)0x00, // 列数25
-                //        (byte)0x00 // TTY_OP_END
-                //};
-                // channel.setTerminalMode(modes);
-                // 设置终端类型
-                channel.setPty(true);
+                ChannelShell channel = this.session.createShellChannel(null, this.initEnvironments());
+                channel.setUsePty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
-                this.shell = new ShellSSHShell(channel);
+                channel.open();
+                channel.setIn(null);
+                channel.setOut(null);
+                this.shell = channel;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         return this.shell;
     }
-
-//    /**
-//     * 通过shell通道执行命令
-//     *
-//     * @param command 命令
-//     * @return 结果
-//     */
-//    public String execShell(String command) throws Exception {
-//        ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
-//        // 客户端转发
-//        if (this.shellConnect.isJumpForward()) {
-//            channel.setAgentForwarding(true);
-//        }
-//        // x11转发
-//        if (this.shellConnect.isX11forwarding()) {
-//            channel.setXForwarding(true);
-//        }
-//        // 设置终端类型
-//        channel.setPty(true);
-//        channel.connect(this.connectTimeout());
-//        if (channel.isConnected()) {
-//            channel.setPtyType(this.shellConnect.getTermType());
-//            InputStream in = channel.getInputStream();
-//            OutputStream out = channel.getOutputStream();
-//            out.write(command.getBytes());
-//            out.flush();
-//            StringBuilder result = new StringBuilder();
-//            byte[] buffer = new byte[1024];
-//            boolean first = true;
-//            while (first || in.available() > 0) {
-//                if (first) {
-//                    ThreadUtil.sleep(50);
-//                    first = false;
-//                }
-//                int len = in.read(buffer);
-//                result.append(new String(buffer, 0, len, this.getCharset()));
-//                ThreadUtil.sleep(10);
-//            }
-//            IOUtil.close(in);
-//            IOUtil.close(out);
-//            channel.disconnect();
-//            return result.toString();
-//        }
-//        return null;
-//    }
 
     private ShellDockerExec dockerExec;
 
@@ -680,6 +576,24 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public boolean isBashType() {
         String shellName = this.getShellName();
         return StringUtil.endWithIgnoreCase(shellName, "bash");
+    }
+
+    /**
+     * 设置pty大小
+     *
+     * @param columns 列
+     * @param rows    行
+     * @param sizeW   宽
+     * @param sizeH   高
+     */
+    public synchronized void setPtySize(int columns, int rows, int sizeW, int sizeH) {
+        try {
+            if (this.shell != null && this.shell.isOpen()) {
+                this.shell.sendWindowChange(columns, rows, sizeW, sizeH);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
 
