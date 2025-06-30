@@ -34,8 +34,7 @@ public class ShellSFTPChannel implements AutoCloseable {
 
     public Iterable<SftpClient.DirEntry> ls(String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
-        SftpClient.Handle handle = this.channel.open(path);
-        return this.channel.listDir(handle);
+        return this.channel.readEntries(path);
     }
 
     /**
@@ -101,7 +100,7 @@ public class ShellSFTPChannel implements AutoCloseable {
     }
 
     public String pwd() throws Exception {
-        return null;
+        return this.channel.canonicalPath(".");
     }
 
     public void mkdir(String path) throws IOException {

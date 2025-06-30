@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh2.process.ShellProcessExec;
@@ -32,8 +32,8 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelShell;
+import org.apache.sshd.client.session.ClientSession;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -57,8 +57,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 最后一次输出
      */
     private String lastOutput;
-
-    private SshClient sshClient;
 
     /**
      * 解析工作目录
@@ -184,7 +182,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public void updateState() {
         ShellConnState state = this.getState();
         if (state == ShellConnState.CONNECTED) {
-            if (this.session == null || this.session.isClosed()) {
+            if (this.sshClient == null || !this.sshClient.isOpen()) {
                 this.state.set(ShellConnState.INTERRUPT);
             }
         }
@@ -199,9 +197,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         try {
             if (this.sftpClient == null) {
                 // sftp客户端使用独立会话，不要跟shell共用会话，免得互相影响
-                this.sftpClient = new ShellSFTPClient(this.shellConnect);
-                this.sftpClient.start();
-                // this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session);
+                this.sftpClient = new ShellSFTPClient(this.shellConnect, this.sshClient);
+                // this.sftpClient = new ShellSFTPClient(this.shellConnect);
+                // this.sftpClient.start();
             }
             return this.sftpClient;
         } catch (Exception ex) {
@@ -365,7 +363,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             // 执行连接
-            if (this.session != null && this.session.isOpen()) {
+            if (this.sshClient != null && this.sshClient.isOpen()) {
                 this.state.set(ShellConnState.CONNECTED);
                 // 初始化隧道
                 this.initTunneling();
@@ -405,7 +403,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     @Override
     public boolean isConnected() {
-        return this.session != null && this.session.isOpen() && this.state.get().isConnected();
+        return this.sshClient != null && this.sshClient.isStarted() && this.state.get().isConnected();
     }
 
     /**
@@ -438,12 +436,13 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public ChannelShell openShell() {
         if (this.shell == null || this.shell.isClosed()) {
             try {
-                ChannelShell channel = this.session.createShellChannel(null, this.initEnvironments());
+                ClientSession session = this.newSession(this.connectTimeout());
+                ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
                 channel.setUsePty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
-                channel.open().verify(this.connectTimeout());
                 channel.setIn(null);
                 channel.setOut(null);
+                channel.open().verify(this.connectTimeout());
                 this.shell = channel;
             } catch (Exception ex) {
                 ex.printStackTrace();

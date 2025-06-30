@@ -221,7 +221,7 @@ public class ShellSFTPFile implements ShellFile {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
         }
-        FileTime aTime = this.getAttrs().getCreateTime();
+        FileTime aTime = this.getAttrs().getAccessTime();
         return DateHelper.formatDateTime(aTime.toInstant());
     }
 

@@ -21,6 +21,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.SftpClientFactory;
@@ -77,9 +78,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this(shellConnect, null);
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, ClientSession session) {
+    public ShellSFTPClient(ShellConnect shellConnect, SshClient sshClient) {
         super(shellConnect);
-        this.session = session;
+        this.sshClient = sshClient;
         this.cache = new ShellSFTPCache();
         this.channelPool = new ShellSFTPChannelPool(this);
         super.addStateListener(this.stateListener);
@@ -117,13 +118,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             return;
         }
         try {
-            // 初始化客户端
-            this.initClient(timeout);
             // 开始连接时间
             long starTime = System.currentTimeMillis();
-            // 执行连接
-            if (this.session != null) {
+            // 初始化客户端
+            if (this.sshClient == null) {
                 this.state.set(ShellConnState.CONNECTING);
+                this.initClient(timeout);
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
@@ -147,7 +147,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean isConnected() {
-        return this.session != null && this.session.isOpen();
+        return this.sshClient != null && this.sshClient.isOpen();
     }
 
     /**
@@ -157,12 +157,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      */
     protected ShellSFTPChannel newSFTPChannel() {
         try {
-            SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(this.session);
+            ClientSession session = this.newSession(this.connectTimeout());
+            SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
             // 设置字符集
             sftpClient.setNameDecodingCharset(this.getCharset());
             // 创建通道
-            ShellSFTPChannel sftpChannel = new ShellSFTPChannel(sftpClient, this.cache);
-            return sftpChannel;
+            return new ShellSFTPChannel(sftpClient, this.cache);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -322,9 +322,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.pwd();
-            // } catch (Exception ex) {
-            //     this.closeChannel(channel);
-            //     throw ex;
         } finally {
             this.returnChannel(channel);
         }

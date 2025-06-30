@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.util.ShellUtil;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.future.ConnectFuture;
+import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
 import org.apache.sshd.client.session.ClientSession;
 
 import java.io.ByteArrayOutputStream;
@@ -286,7 +287,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * 初始化回话
      */
-    protected void initSession()   {
+    protected void initSession() {
         if (this.session != null) {
             // // 设置守护线程
             // this.session.setDaemonThread(true);
@@ -331,11 +332,12 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      */
     protected ChannelExec newExecChannel(String command) {
         try {
-            ChannelExec channel = this.session.createExecChannel(command, null, this.initEnvironments());
-            channel.open().verify(this.connectTimeout());
+            ClientSession session = this.newSession(this.connectTimeout());
+            ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
             channel.setIn(null);
             channel.setOut(null);
             channel.setErr(null);
+            channel.open().verify(this.connectTimeout());
             return channel;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -356,25 +358,55 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * 初始化客户端
      */
     protected void initClient(int timeout) throws IOException {
+        this.sshClient = SshClient.setUpDefaultClient();
+        this.sshClient.start();
+        // 测试环境使用，生产环境需替换
+        this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+        // ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
+        // this.session = future.verify(timeout).getClientSession();
+        // // 密码
+        // if (this.shellConnect.isPasswordAuth()) {
+        //     this.session.addPasswordIdentity(this.shellConnect.getPassword());
+        // } else if (this.shellConnect.isCertificateAuth()) {// 证书
+        // } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
+        // } else if (this.shellConnect.isManagerAuth()) {// 密钥
+        // }
+        // // 认证
+        // this.session.auth().verify(timeout);
+        // // 初始化会话
+        // this.initSession();
+        // // 启用压缩
+        // this.useCompression();
+    }
+
+    /**
+     * 初始化客户端
+     */
+    protected ClientSession newSession(int timeout) throws IOException {
+        if (this.session != null && this.session.isOpen()) {
+            return this.session;
+        }
         // 连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
-        this.sshClient = SshClient.setUpDefaultClient();
-        this.sshClient.start();
-        ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), host, port);
-        this.session = future.verify(timeout).getClientSession();
+        ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
+        ClientSession session = future.verify(timeout).getClientSession();
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
-            this.session.addPasswordIdentity(this.shellConnect.getPassword());
+            session.addPasswordIdentity(this.shellConnect.getPassword());
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
         }
+        // 认证
+        session.auth().verify(timeout);
         // 初始化会话
         this.initSession();
         // 启用压缩
         this.useCompression();
+        this.session = session;
+        return session;
     }
 
     /**
