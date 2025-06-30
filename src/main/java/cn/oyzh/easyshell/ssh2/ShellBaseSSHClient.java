@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -14,14 +13,10 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHKeyUtil;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
-import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
 import org.apache.sshd.client.session.ClientSession;
 import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
-import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
-import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
-import org.eclipse.jgit.transport.sshd.agent.ConnectorFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -375,7 +370,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.sshClient = SshClient.setUpDefaultClient();
         // ssh agent相关处理
         if (this.shellConnect.isSSHAgentAuth()) {
-            this.sshClient.setAgentFactory(new JGitSshAgentFactory(ConnectorFactory.getDefault(), null));
+            this.sshClient.setAgentFactory(new JGitSshAgentFactory(ShellSSHAgentConnectorFactory.INSTANCE, null));
         }
         // 启动客户端
         this.sshClient.start();
@@ -396,18 +391,17 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
-
-        HostConfigEntry entry = new HostConfigEntry();
-        entry.setHost(hostIp);
-        entry.setPort(port);
-        // ssh agent认证
-        if (this.shellConnect.isSSHAgentAuth()) {
-            if (OSUtil.isWindows()) {
-                entry.setProperty(HostConfigEntry.IDENTITY_AGENT, PageantConnector.DESCRIPTOR.getIdentityAgent());
-            } else {
-                entry.setProperty(HostConfigEntry.IDENTITY_AGENT, UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
-            }
-        }
+        // HostConfigEntry entry = new HostConfigEntry();
+        // entry.setHost(hostIp);
+        // entry.setPort(port);
+        // // ssh agent认证
+        // if (this.shellConnect.isSSHAgentAuth()) {
+        //     if (OSUtil.isWindows()) {
+        //         entry.setProperty(HostConfigEntry.IDENTITY_AGENT, PageantConnector.DESCRIPTOR.getIdentityAgent());
+        //     } else {
+        //         entry.setProperty(HostConfigEntry.IDENTITY_AGENT, UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
+        //     }
+        // }
         // 连接
         ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 超时时间
@@ -454,8 +448,9 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             // UnixSSHAgent1 agent = new UnixSSHAgent1();
 
             // AgentIdentityRepository repository = SSHUtil.initAgentIdentityRepository();
+            // Vector<Identity> identities = repository.getIdentities();
+            // System.out.println("--------" + identities.size());
             // List<KeyPair> keyPairs = new ArrayList<>();
-            // Vector<Identity> identities= repository.getIdentities();
             // for (Identity identity : identities) {
             //     Iterable<KeyPair> iterable = SSHKeyUtil.loadKeysForBytes(identity.getPublicKeyBlob(), null);
             //     if(iterable!=null){

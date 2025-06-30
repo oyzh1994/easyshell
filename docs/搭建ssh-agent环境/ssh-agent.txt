@@ -6,3 +6,5 @@ echo $SSH_AGENT_PID
 chmod 0600 私钥
 # 添加私钥
 ssh-add 私钥
+# 列举私钥
+ssh-add -l
