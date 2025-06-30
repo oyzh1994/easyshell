@@ -1,13 +1,10 @@
-package cn.oyzh.easyshell.test;
+package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
-import com.jcraft.jsch.ChannelShell;
 import com.pty4j.PtyProcess;
-import net.schmizz.sshj.connection.channel.direct.Session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,42 +18,35 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
+public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
 
     /**
      * ssh客户端
      */
     private ShellSSHClient client;
 
+    /**
+     * 读取器
+     */
     private InputStreamReader shellReader;
 
+    /**
+     * 写入器
+     */
     private OutputStreamWriter shellWriter;
 
-    private Session.Shell shell;
+    public ShellSSHClient getClient() {
+        return client;
+    }
 
-    public void init(Session.Shell shell) throws IOException {
-        this.shell = shell;
+    public void init(ShellSSHClient client) throws IOException {
+        this.client = client;
+        ShellSSHShell shell = client.getShell();
         this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
-    private ChannelShell shell1;
-
-    public void init(ChannelShell shell) throws IOException {
-        this.shell1 = shell;
-        this.shellReader = new InputStreamReader(shell.getInputStream(), this.myCharset);
-        this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
-    }
-
-    private org.apache.sshd.client.channel.ChannelShell shell2;
-
-    public void init(org.apache.sshd.client.channel.ChannelShell shell) throws IOException {
-        this.shell2 = shell;
-        this.shellReader = new InputStreamReader(shell.getInvertedOut(), this.myCharset);
-        this.shellWriter = new OutputStreamWriter(shell.getInvertedIn(), this.myCharset);
-    }
-
-    public ShellTestTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    public ShellSSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
         super(process, charset, commandLines);
     }
 
@@ -74,30 +64,11 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
         return len;
     }
 
-    private Runnable reset;
-
-    public Runnable getReset() {
-        return reset;
-    }
-
-    public void setReset(Runnable reset) {
-        this.reset = reset;
-    }
-
     @Override
     public void write(String str) throws IOException {
-        if (str.equals("reset--1")) {
-            // reset.run();
-
-            try {
-                // shell1.resetPty("xterm");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return;
+        if(JulLog.isDebugEnabled()) {
+            JulLog.debug("shell write : {}", str);
         }
-        JulLog.warn("shell write : {}", str);
-        // super.write(str);
         this.shellWriter.write(str);
         this.shellWriter.flush();
     }
@@ -135,13 +106,7 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
     @Override
     public InputStream input() {
         try {
-            if (this.shell1 != null) {
-                return this.shell1.getInputStream();
-            }
-            if (this.shell2 != null) {
-                return this.shell2.getInvertedOut();
-            }
-            return this.shell.getInputStream();
+            return this.client.getShell().getInputStream();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -151,17 +116,10 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
     @Override
     public OutputStream output() {
         try {
-            if (this.shell1 != null) {
-                return this.shell1.getOutputStream();
-            }
-            if (this.shell2 != null) {
-                return this.shell2.getInvertedIn();
-            }
-            return this.shell.getOutputStream();
+            return this.client.getShell().getOutputStream();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         return null;
     }
-
 }

@@ -2152,68 +2152,68 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 return true;
             }
 
-            // TODO: 补充
-            // Shift + V is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.V && e.isShiftDown()) {
-                this.myTerminalStarter.sendBytes(new byte[]{ASCII_SHIFT_V}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // Shift + UP is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.UP && e.isShiftDown()) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x41}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // Shift + DOWN is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.DOWN && e.isShiftDown()) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x42}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // Shift + LEFT is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.LEFT && e.isShiftDown()) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x44}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // Shift + RIGHT is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.RIGHT && e.isShiftDown()) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x43}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // UP is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.UP) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x41}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // DOWN is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.DOWN) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x42}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // LEFT is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.LEFT) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x44}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // RIGHT is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.RIGHT) {
-                this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x43}, true);
-                return true;
-            }
+            // // TODO: 补充
+            // // Shift + V is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.V && e.isShiftDown()) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{ASCII_SHIFT_V}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // Shift + UP is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.UP && e.isShiftDown()) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x41}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // Shift + DOWN is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.DOWN && e.isShiftDown()) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x42}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // Shift + LEFT is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.LEFT && e.isShiftDown()) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x44}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // Shift + RIGHT is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.RIGHT && e.isShiftDown()) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x43}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // UP is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.UP) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x41}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // DOWN is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.DOWN) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x42}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // LEFT is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.LEFT) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x44}, true);
+            //     return true;
+            // }
+            //
+            // // TODO: 补充
+            // // RIGHT is not handled in KeyEvent; handle it manually
+            // if (keycode == KeyCode.RIGHT) {
+            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x43}, true);
+            //     return true;
+            // }
 
             final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
             if (code != null) {

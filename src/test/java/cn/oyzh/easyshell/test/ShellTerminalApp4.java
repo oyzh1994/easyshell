@@ -8,26 +8,27 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.ConnectionException;
-import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.channel.ChannelShell;
+import org.apache.sshd.client.future.ConnectFuture;
+import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
+import org.apache.sshd.client.session.ClientSession;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
-public class ShellTerminalApp3 extends Application {
+public class ShellTerminalApp4 extends Application {
 
    private ShellTestTermWidget widget = new ShellTestTermWidget();
    private TextField inputField, hostField, userField;
    private TextField passField;
 
-   private Session session;
-
-   private Session.Shell channel;
+private ClientSession session;
+   private ChannelShell channel;
 
    // private InputStream in;
    //
@@ -41,33 +42,23 @@ public class ShellTerminalApp3 extends Application {
        // System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
 
        try {
-           SSHClient ssh = new SSHClient();
-           // 禁用主机密钥验证（不推荐在生产环境使用）
-           ssh.addHostKeyVerifier(new PromiscuousVerifier());
+           SshClient ssh = SshClient.setUpDefaultClient();
+           ssh.start();
 
-           ssh.connect(host, 22);
-           ssh.authPassword(user, pass);
+           ssh.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE); // 测试环境使用，生产环境需替换
 
-           // Connector connector1 = ConnectorFactory.getDefault().createConnector();
-           // AgentProxy agentProxy = new AgentProxy(connector1);
-           // Identity[] identities = agentProxy.getIdentities();
-           // List<AuthMethod> authMethods = new ArrayList<>();
-           // for (Identity identity : identities) {
-           //     System.out.println(identity);
-           //     authMethods.add(new AuthAgent(agentProxy, identity));
-           // }
-           // ssh.auth(user, new AuthAgent(agentProxy, identities[0]));
+           ConnectFuture future= ssh.connect(user,host, 22);
 
-           session = ssh.startSession();
+           this.session= future.verify(3000L).getSession();
+           this.session.addPasswordIdentity(pass);
+           this.session.auth().verify();
 
-           session.allocateDefaultPTY();
+           channel = session.createShellChannel();
+           channel.setPtyType("xterm");
 
+           channel.open();
 
-           channel = session.startShell();
-
-
-           // in = channel.getInputStream();
-           out = channel.getOutputStream();
+           out = channel.getInvertedIn();
 
            ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
            connector.init(channel);
@@ -102,7 +93,7 @@ public class ShellTerminalApp3 extends Application {
        widget.getTtyConnector().write(text);
    }
 
-   public void disconnect() throws TransportException, ConnectionException {
+   public void disconnect() throws IOException {
        if (channel != null) channel.close();
        if (session != null) session.close();
    }
@@ -131,6 +122,8 @@ public class ShellTerminalApp3 extends Application {
            } catch (TransportException e) {
                throw new RuntimeException(e);
            } catch (ConnectionException e) {
+               throw new RuntimeException(e);
+           } catch (IOException e) {
                throw new RuntimeException(e);
            }
        });
@@ -167,10 +160,10 @@ public class ShellTerminalApp3 extends Application {
 
    }
 
-   public static class SSHTerminalApp3Test {
+   public static class SSHTerminalAp4Test {
 
        public static void main(String[] args) throws URISyntaxException {
-           ShellTerminalApp3.main(args);
+           ShellTerminalApp4.main(args);
        }
 
    }

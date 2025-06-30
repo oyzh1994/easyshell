@@ -277,7 +277,7 @@
             <groupId>com.hierynomus</groupId>
             <artifactId>sshj</artifactId>
             <version>${sshj.version}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-common -->
@@ -291,6 +291,22 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-core</artifactId>
+            <version>${sshd-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-osgi</artifactId>
+            <version>${sshd-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-sftp</artifactId>
+            <version>${sshd-common.version}</version>
         </dependency>
 
         <!-- <dependency> -->
