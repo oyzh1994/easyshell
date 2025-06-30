@@ -7,17 +7,13 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHShell;
-import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
-import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
-import cn.oyzh.easyshell.ssh.server.ShellServerExec;
-import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
-import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
+import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -31,6 +27,7 @@ import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import org.apache.sshd.client.channel.ChannelShell;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -113,7 +110,7 @@ public class ShellSSHTermTabController extends SubTabController {
         }
         // 已关闭
         ShellSSHClient client = this.client();
-        ShellSSHShell shell = client.getShell();
+        ChannelShell shell = client.getShell();
         // 已关闭
         if (shell == null) {
             this.closeTab();
@@ -167,9 +164,9 @@ public class ShellSSHTermTabController extends SubTabController {
         AtomicReference<Exception> ref = new AtomicReference<>();
         ThreadUtil.start(() -> {
             try {
-                ShellSSHShell shell = client.reopenShell();
+                ChannelShell shell = client.reopenShell();
                 this.initWidget();
-                shell.connect(client.connectTimeout());
+                // shell.connect(client.connectTimeout());
             } catch (Exception ex) {
                 ref.set(ex);
             } finally {

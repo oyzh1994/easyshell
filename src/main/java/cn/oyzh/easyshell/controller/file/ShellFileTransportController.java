@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView;
 import cn.oyzh.easyshell.internal.BaseClient;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;

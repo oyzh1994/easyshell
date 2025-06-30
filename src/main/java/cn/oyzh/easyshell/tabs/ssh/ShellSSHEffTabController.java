@@ -11,14 +11,13 @@ import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHShell;
-import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
-import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
-import cn.oyzh.easyshell.ssh.server.ShellServerExec;
-import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
+import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -43,7 +42,7 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import org.apache.sshd.client.channel.ChannelShell;
 
 import java.io.File;
 import java.io.IOException;
@@ -200,7 +199,7 @@ public class ShellSSHEffTabController extends SubTabController {
         }
         // 已关闭
         ShellSSHClient client = this.client();
-        ShellSSHShell shell = client.getShell();
+        ChannelShell shell = client.getShell();
         // 已关闭
         if (shell == null) {
             this.closeTab();
@@ -254,9 +253,9 @@ public class ShellSSHEffTabController extends SubTabController {
         AtomicReference<Exception> ref = new AtomicReference<>();
         ThreadUtil.start(() -> {
             try {
-                ShellSSHShell shell = client.reopenShell();
+                ChannelShell shell = client.reopenShell();
                 this.initWidget();
-                shell.connect(client.connectTimeout());
+                // shell.connect(client.connectTimeout());
             } catch (Exception ex) {
                 ref.set(ex);
             } finally {
@@ -437,7 +436,9 @@ public class ShellSSHEffTabController extends SubTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.widget.close();
+        if (this.widget != null) {
+            this.widget.close();
+        }
     }
 
     @Override
@@ -655,7 +656,7 @@ public class ShellSSHEffTabController extends SubTabController {
                 sb.append(I18nHelper.diskWrite()).append(":").append(diskWrite).append("MB/s");
                 this.serverMonitorInfo.text(sb.toString());
             }, 3_000, 0);
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("MonitorTask started.");
             }
         } catch (Exception ex) {
@@ -673,7 +674,7 @@ public class ShellSSHEffTabController extends SubTabController {
             this.serverMonitorTask = null;
             this.serverMonitorInfo.clear();
             this.serverMonitorInfo.disappear();
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("MonitorTask closed.");
             }
         } catch (Exception ex) {

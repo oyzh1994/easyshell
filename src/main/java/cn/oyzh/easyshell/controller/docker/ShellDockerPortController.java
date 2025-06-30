@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.ssh.docker.ShellDockerPort;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerPort;
 import cn.oyzh.easyshell.fx.docker.ShellDockerPortTableView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;

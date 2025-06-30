@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
-import cn.oyzh.easyshell.ssh.docker.ShellDockerResource;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;

@@ -13,10 +13,9 @@ import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
 import cn.oyzh.easyshell.serial.ShellSerialTtyConnector;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHShell;
-import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
-import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
+import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
 import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
@@ -25,10 +24,10 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import org.apache.sshd.client.channel.ChannelShell;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -115,13 +114,13 @@ public class ShellSplitTermController extends SubTabController {
      */
     private void init() throws Exception {
         if (this.client instanceof ShellSSHClient sshClient) {
-            ShellSSHShell shell = sshClient.openShell();
+            ChannelShell shell = sshClient.openShell();
             this.initWidget();
-            shell.connect(this.client.connectTimeout());
-            if (!shell.isConnected()) {
-                MessageBox.warn(I18nHelper.connectFail());
-                return;
-            }
+            // shell.connect(this.client.connectTimeout());
+            // if (!shell.isConnected()) {
+            //     MessageBox.warn(I18nHelper.connectFail());
+            //     return;
+            // }
         } else {
             this.initWidget();
         }

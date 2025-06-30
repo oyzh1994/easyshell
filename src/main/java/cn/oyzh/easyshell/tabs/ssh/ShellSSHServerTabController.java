@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.server.ShellServerExec;
-import cn.oyzh.easyshell.ssh.server.ShellServerInfo;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh2.server.ShellServerInfo;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerCpuTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerDiskTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerGpuTabController;

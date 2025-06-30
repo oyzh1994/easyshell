@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;

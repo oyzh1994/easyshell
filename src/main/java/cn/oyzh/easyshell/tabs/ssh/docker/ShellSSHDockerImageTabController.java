@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.ssh.docker;
 
-import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.fx.docker.ShellDockerImageTableView;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;

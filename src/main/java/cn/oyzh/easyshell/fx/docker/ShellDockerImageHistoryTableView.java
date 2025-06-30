@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.docker;
 
-import cn.oyzh.easyshell.ssh.docker.ShellDockerImageHistory;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 

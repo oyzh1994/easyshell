@@ -7,7 +7,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.easyshell.ssh.ShellSSHTermWidget?>
+<?import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>

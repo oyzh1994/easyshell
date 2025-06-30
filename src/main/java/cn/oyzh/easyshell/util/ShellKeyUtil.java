@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 
 import java.util.ArrayList;
 import java.util.List;

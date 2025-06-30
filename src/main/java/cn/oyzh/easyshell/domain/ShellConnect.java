@@ -777,10 +777,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * @return 结果
      */
     public Map<String, String> environments() {
-        if (StringUtil.isBlank(this.environment)) {
-            return Collections.emptyMap();
-        }
         Map<String, String> map = new HashMap<>();
+        if (StringUtil.isBlank(this.environment)) {
+            return map;
+        }
         this.environment.lines().forEach(line -> {
             String[] arr = line.split("=");
             if (arr.length != 2) {

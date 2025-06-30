@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
-import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;

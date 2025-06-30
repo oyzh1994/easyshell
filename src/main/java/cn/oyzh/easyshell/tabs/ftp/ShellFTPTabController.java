@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView;
-import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.key;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellKeyUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
