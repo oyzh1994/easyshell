@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -11,14 +12,16 @@ import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHKeyUtil;
-import cn.oyzh.ssh.util.SSHUtil;
-import com.jcraft.jsch.AgentIdentityRepository;
-import com.jcraft.jsch.Identity;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
+import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
 import org.apache.sshd.client.session.ClientSession;
+import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
+import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
+import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
+import org.eclipse.jgit.transport.sshd.agent.ConnectorFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,7 +29,6 @@ import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * shell客户端
@@ -371,6 +373,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     protected void initClient(int timeout) throws Exception {
         // 创建客户端
         this.sshClient = SshClient.setUpDefaultClient();
+        // ssh agent相关处理
+        if (this.shellConnect.isSSHAgentAuth()) {
+            this.sshClient.setAgentFactory(new JGitSshAgentFactory(ConnectorFactory.getDefault(), null));
+        }
         // 启动客户端
         this.sshClient.start();
         // 测试环境使用，生产环境需替换
@@ -390,6 +396,18 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
+
+        HostConfigEntry entry = new HostConfigEntry();
+        entry.setHost(hostIp);
+        entry.setPort(port);
+        // ssh agent认证
+        if (this.shellConnect.isSSHAgentAuth()) {
+            if (OSUtil.isWindows()) {
+                entry.setProperty(HostConfigEntry.IDENTITY_AGENT, PageantConnector.DESCRIPTOR.getIdentityAgent());
+            } else {
+                entry.setProperty(HostConfigEntry.IDENTITY_AGENT, UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
+            }
+        }
         // 连接
         ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 超时时间
@@ -400,7 +418,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         if (this.shellConnect.isPasswordAuth()) {
             session.addPasswordIdentity(this.shellConnect.getPassword());
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-            // UnixAgentFactory agentFactory = new UnixAgentFactory();
+            // LocalAgentFactory agentFactory = new LocalAgentFactory();
             // UnixAgentFactory1 agentFactory = new UnixAgentFactory1();
 
 
@@ -435,19 +453,25 @@ public abstract class ShellBaseSSHClient implements BaseClient {
 
             // UnixSSHAgent1 agent = new UnixSSHAgent1();
 
-            AgentIdentityRepository repository = SSHUtil.initAgentIdentityRepository();
-            List<KeyPair> keyPairs = new ArrayList<>();
-            Vector<Identity> identities= repository.getIdentities();
-            for (Identity identity : identities) {
-                Iterable<KeyPair> iterable = SSHKeyUtil.loadKeysForBytes(identity.getPublicKeyBlob(), null);
-                for (KeyPair keyPair : iterable) {
-                    keyPairs.add(keyPair);
-                }
-            }
-            //  设置证书认证
-            for (KeyPair keyPair : keyPairs) {
-                session.addPublicKeyIdentity(keyPair);
-            }
+            // AgentIdentityRepository repository = SSHUtil.initAgentIdentityRepository();
+            // List<KeyPair> keyPairs = new ArrayList<>();
+            // Vector<Identity> identities= repository.getIdentities();
+            // for (Identity identity : identities) {
+            //     Iterable<KeyPair> iterable = SSHKeyUtil.loadKeysForBytes(identity.getPublicKeyBlob(), null);
+            //     if(iterable!=null){
+            //
+            //     for (KeyPair keyPair : iterable) {
+            //         keyPairs.add(keyPair);
+            //     }
+            //     }
+            // }
+            // //  设置证书认证
+            // for (KeyPair keyPair : keyPairs) {
+            //     session.addPublicKeyIdentity(keyPair);
+            // }
+
+            // entry.setProperty(IDENTITY_AGENT, PageantConnector.DESCRIPTOR.identityAgent)
+
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
