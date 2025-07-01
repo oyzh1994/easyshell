@@ -289,17 +289,15 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());
             }
             if (x11Config != null) {
-                // 开启转发
-                channel.setXForwarding(true);
                 // 设置地址和端口
                 CoreModuleProperties.X11_BIND_HOST.set(session, x11Config.getHost());
                 CoreModuleProperties.X11_BASE_PORT.set(session, x11Config.getPort());
+                // 开启转发
+                channel.setXForwarding(true);
                 // 设置cookie
                 String cookie = x11Config.getCookie();
                 if (StringUtil.isNotBlank(cookie)) {
-                    byte[] bytes = hexStringToByteArray(cookie);
-                    session.getProperties().put(ChannelX11.X11_COOKIE.getName(), bytes);
-                    session.getProperties().put(ChannelX11.X11_COOKIE_HEX.getName(), bytes);
+                    channel.setXCookie(cookie);
                 }
                 // 本地转发，启动x11服务
                 if (x11Config.isLocal()) {

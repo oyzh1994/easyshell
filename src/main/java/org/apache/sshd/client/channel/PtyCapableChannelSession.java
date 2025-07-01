@@ -89,6 +89,7 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
 
     private boolean agentForwarding;
     private boolean xForwarding;
+    private String xCookie;
     private boolean usePty;
     private final PtyChannelConfiguration config;
 
@@ -141,6 +142,14 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
 
     public void setXForwarding(boolean xForwarding) {
         this.xForwarding = xForwarding;
+    }
+
+    public String getXCookie() {
+        return xCookie;
+    }
+
+    public void setXCookie(String xCookie) {
+        this.xCookie = xCookie;
     }
 
     public boolean isUsePty() {
@@ -265,7 +274,12 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
             buffer.putBoolean(false); // want-reply
             buffer.putBoolean(false);
             buffer.putString("MIT-MAGIC-COOKIE-1");
-            buffer.putBytes(getXCookie());
+            // 设置xCookie
+            if (this.getXCookie() != null) {
+                buffer.putString(this.getXCookie());
+            } else {
+                buffer.putBytes(getXCookieHex());
+            }
             buffer.putInt(0);
             writePacket(buffer);
         }
@@ -303,7 +317,7 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
         sendEnvVariables(session);
     }
 
-    protected byte[] getXCookie() {
+    protected byte[] getXCookieHex() {
         final Session session = getSession();
         Object xCookie = ChannelX11.X11_COOKIE.getOrNull(session);
         Object xCookieHex = ChannelX11.X11_COOKIE_HEX.getOrNull(session);
