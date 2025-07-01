@@ -75,11 +75,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
 
     public ShellSFTPClient(ShellConnect shellConnect) {
-        this(shellConnect, null);
+        this(shellConnect, null, null);
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, SshClient sshClient) {
+    public ShellSFTPClient(ShellConnect shellConnect, SshClient sshClient, ClientSession session) {
         super(shellConnect);
+        this.session = session;
         this.sshClient = sshClient;
         this.cache = new ShellSFTPCache();
         this.channelPool = new ShellSFTPChannelPool(this);

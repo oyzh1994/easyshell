@@ -9,11 +9,11 @@ vim /etc/pam.d/sshd
 # 添加pam认证
 auth required pam_google_authenticator.so nullok
 # 4. 修改ssh配置
-sudo vim /etc/ssh/sshd_config
+vim /etc/ssh/sshd_config
 # 开启配置
 ChallengeResponseAuthentication yes
 # 新增配置
 KbdInteractiveAuthentication yes
 # 5. 重启ssh服务
-systemctl restart sshd
+systemctl restart ssh
 

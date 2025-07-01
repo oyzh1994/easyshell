@@ -18,6 +18,8 @@
  */
 package org.apache.sshd.client.channel;
 
+import cn.oyzh.common.exception.InvalidParamException;
+import cn.oyzh.common.util.StringUtil;
 import org.apache.sshd.common.SshConstants;
 import org.apache.sshd.common.channel.PtyChannelConfiguration;
 import org.apache.sshd.common.channel.PtyChannelConfigurationHolder;
@@ -82,7 +84,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class PtyCapableChannelSession extends ChannelSession implements PtyChannelConfigurationMutator {
 
-    private static final byte[] X_COOKIE_TABLE = new byte[] {
+    private static final byte[] X_COOKIE_TABLE = new byte[]{
             0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x61,
             0x62, 0x63, 0x64, 0x65, 0x66
     };
@@ -145,6 +147,7 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
 
     /**
      * 从固定表中获取对应值
+     *
      * @param foo 参数
      * @return 对应值
      */
@@ -159,9 +162,16 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
 
     /**
      * 设置x cookie
+     *
      * @param xCookie x cookie
      */
     public void setXCookie(String xCookie) {
+        if (StringUtil.isBlank(xCookie)) {
+            return;
+        }
+        if (xCookie.length() != 32) {
+            throw new InvalidParamException("xCookie");
+        }
         byte[] cookie_hex = xCookie.getBytes();
         byte[] cookie = new byte[16];
         for (int i = 0; i < 16; ++i) {

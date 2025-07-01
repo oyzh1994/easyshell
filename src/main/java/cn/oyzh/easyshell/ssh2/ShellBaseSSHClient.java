@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -12,11 +13,13 @@ import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.util.SSHKeyUtil;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.auth.password.UserAuthPasswordFactory;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.client.x11.X11ChannelFactory;
+import org.apache.sshd.core.CoreModuleProperties;
 import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -396,17 +399,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         String host = this.initHost();
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
-        // HostConfigEntry entry = new HostConfigEntry();
-        // entry.setHost(hostIp);
-        // entry.setPort(port);
-        // // ssh agent认证
-        // if (this.shellConnect.isSSHAgentAuth()) {
-        //     if (OSUtil.isWindows()) {
-        //         entry.setProperty(HostConfigEntry.IDENTITY_AGENT, PageantConnector.DESCRIPTOR.getIdentityAgent());
-        //     } else {
-        //         entry.setProperty(HostConfigEntry.IDENTITY_AGENT, UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
-        //     }
-        // }
         // 连接
         ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 超时时间
@@ -415,63 +407,19 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         ClientSession session = future.verify(timeout).getClientSession();
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
-            session.addPasswordIdentity(this.shellConnect.getPassword());
+            // 设置地址和端口
+            session.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
+            // 优先的认证方式
+            String methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY,
+                    UserAuthPasswordFactory.PASSWORD,
+                    UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, methods);
         } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-            // LocalAgentFactory agentFactory = new LocalAgentFactory();
-            // UnixAgentFactory1 agentFactory = new UnixAgentFactory1();
-
-
-            // // 设置agent工厂
-            // this.sshClient.setAgentFactory(agentFactory);
-            // // this.sshClient.setAgentFactory(new JGitSshAgentFactory(ConnectorFactory.getDefault(),null));
-            // this.sshClient.getProperties().put(SshAgent.SSH_AUTHSOCKET_ENV_NAME, System.getenv("SSH_AUTH_SOCK"));
-            // SshAgent sshAgent = agentFactory.createClient(session, this.sshClient);
-
-            // // ===== 创建基于 Agent 的 KeyPairProvider =====
-            // KeyPairProvider agentKeyProvider = new KeyPairProvider() {
-            //     @Override
-            //     public List<KeyPair> loadKeys(SessionContext session) {
-            //         try {
-            //             List<KeyPair> pairs = new ArrayList<>();
-            //             for (Map.Entry<PublicKey, String> identity : sshAgent.getIdentities()) {
-            //                 pairs.add(new KeyPair(identity.getKey(),null));
-            //             }
-            //             return pairs;
-            //         } catch (IOException e) {
-            //             throw new RuntimeException("Failed to get identities from agent", e);
-            //         }
-            //     }
-            //
-            //     @Override
-            //     public Iterable<String> getKeyTypes(SessionContext session) {
-            //         return Collections.singletonList(KeyUtils.RSA_ALGORITHM);
-            //     }
-            // };
-            // session.setKeyIdentityProvider(agentKeyProvider);
-
-
-            // UnixSSHAgent1 agent = new UnixSSHAgent1();
-
-            // AgentIdentityRepository repository = SSHUtil.initAgentIdentityRepository();
-            // Vector<Identity> identities = repository.getIdentities();
-            // System.out.println("--------" + identities.size());
-            // List<KeyPair> keyPairs = new ArrayList<>();
-            // for (Identity identity : identities) {
-            //     Iterable<KeyPair> iterable = SSHKeyUtil.loadKeysForBytes(identity.getPublicKeyBlob(), null);
-            //     if(iterable!=null){
-            //
-            //     for (KeyPair keyPair : iterable) {
-            //         keyPairs.add(keyPair);
-            //     }
-            //     }
-            // }
-            // //  设置证书认证
-            // for (KeyPair keyPair : keyPairs) {
-            //     session.addPublicKeyIdentity(keyPair);
-            // }
-
-            // entry.setProperty(IDENTITY_AGENT, PageantConnector.DESCRIPTOR.identityAgent)
-
+            // 优先的认证方式
+            String methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY,
+                    UserAuthPasswordFactory.PASSWORD,
+                    UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, methods);
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
@@ -485,6 +433,8 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             for (KeyPair keyPair : keyPairs) {
                 session.addPublicKeyIdentity(keyPair);
             }
+            // 优先的认证方式
+            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, UserAuthPasswordFactory.PUBLIC_KEY);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
@@ -498,6 +448,8 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             for (KeyPair keyPair : keyPairs) {
                 session.addPublicKeyIdentity(keyPair);
             }
+            // 优先的认证方式
+            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, UserAuthPasswordFactory.PUBLIC_KEY);
         }
         // 认证
         session.auth().verify(timeout);
@@ -507,6 +459,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.useCompression();
         // 设置会话
         this.session = session;
+        // 返回会话
         return session;
     }
 

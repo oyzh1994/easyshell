@@ -198,7 +198,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         try {
             if (this.sftpClient == null) {
                 // sftp客户端使用独立会话，不要跟shell共用会话，免得互相影响
-                this.sftpClient = new ShellSFTPClient(this.shellConnect, this.sshClient);
+                this.sftpClient = new ShellSFTPClient(this.shellConnect, this.sshClient, this.session);
                 // this.sftpClient = new ShellSFTPClient(this.shellConnect);
                 // this.sftpClient.start();
             }
@@ -314,7 +314,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
             data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i+1), 16));
+                    + Character.digit(s.charAt(i + 1), 16));
         }
         return data;
     }
@@ -443,7 +443,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @return 新shell
      */
-    public ChannelShell reopenShell() {
+    public ChannelShell reopenShell() throws Exception {
         if (this.shell != null && this.shell.isOpen()) {
             IOUtil.closeQuietly(this.shell);
         }
@@ -456,24 +456,20 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @return ShellSSHShell
      */
-    public ChannelShell openShell() {
+    public ChannelShell openShell() throws Exception {
         if (this.shell == null || this.shell.isClosed()) {
-            try {
-                // 获取会话
-                ClientSession session = this.takeSession();
-                // 创建shell
-                ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
-                // 初始化x11
-                this.initX11(session, channel);
-                channel.setIn(null);
-                channel.setOut(null);
-                channel.setUsePty(true);
-                channel.setPtyType(this.shellConnect.getTermType());
-                channel.open().verify(this.connectTimeout());
-                this.shell = channel;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            // 获取会话
+            ClientSession session = this.takeSession();
+            // 创建shell
+            ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
+            // 初始化x11
+            this.initX11(session, channel);
+            channel.setIn(null);
+            channel.setOut(null);
+            channel.setUsePty(true);
+            channel.setPtyType(this.shellConnect.getTermType());
+            channel.open().verify(this.connectTimeout());
+            this.shell = channel;
         }
         return this.shell;
     }

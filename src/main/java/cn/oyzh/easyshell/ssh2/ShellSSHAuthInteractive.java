@@ -1,21 +1,23 @@
 package cn.oyzh.easyshell.ssh2;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.SSHException;
-import com.jcraft.jsch.UIKeyboardInteractive;
-import com.jcraft.jsch.UserInfo;
+import org.apache.sshd.client.auth.keyboard.UserInteraction;
+import org.apache.sshd.client.session.ClientSession;
+
 
 /**
- * ssh认证用户信息
+ * ssh交互认证
+ * 支持密码、验证码、密码&验证码
+ * TODO: 特别注意，针对ssh和sftp，请直接把ssh的session共用于sftp，否则可能一直要求验证
  *
  * @author oyzh
- * @since 2025/05/22
+ * @since 2025/07/01
  */
-public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo {
+public class ShellSSHAuthInteractive implements UserInteraction {
 
     private final String password;
 
@@ -24,7 +26,7 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
     }
 
     @Override
-    public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
+    public String[] interactive(ClientSession session, String name, String instruction, String lang, String[] prompt, boolean[] echo) {
         String content = ArrayUtil.first(prompt);
         if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
             return new String[]{this.password};
@@ -40,34 +42,12 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
     }
 
     @Override
-    public String getPassphrase() {
+    public String resolveAuthPasswordAttempt(ClientSession session) throws Exception {
         return this.password;
     }
 
     @Override
-    public String getPassword() {
+    public String getUpdatedPassword(ClientSession session, String prompt, String lang) {
         return this.password;
-    }
-
-    @Override
-    public boolean promptPassword(String message) {
-        return true;
-    }
-
-    @Override
-    public boolean promptPassphrase(String message) {
-        return true;
-    }
-
-    @Override
-    public boolean promptYesNo(String message) {
-        return true;
-    }
-
-    @Override
-    public void showMessage(String message) {
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info(message);
-        }
     }
 }
