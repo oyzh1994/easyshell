@@ -27,6 +27,7 @@ import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
+import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,7 +35,11 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.channel.ChannelX11;
+import org.apache.sshd.client.future.ConnectFuture;
+import org.apache.sshd.client.session.ClientProxyConnector;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.forward.SocksProxy;
+import org.apache.sshd.common.future.SshFutureListener;
 import org.apache.sshd.core.CoreModuleProperties;
 
 import java.util.Collections;
@@ -238,25 +243,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     /**
-     * 初始化代理
-     */
-    private void initProxy() {
-        // 开启了代理
-        if (this.shellConnect.isEnableProxy()) {
-            // 初始化ssh转发器
-            ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
-            // 从数据库获取
-            if (proxyConfig == null) {
-                proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
-            }
-            if (proxyConfig == null) {
-                JulLog.warn("proxy is enable but proxy config is null");
-                throw new SSHException("proxy is enable but proxy config is null");
-            }
-        }
-    }
-
-    /**
      * 初始化隧道
      */
     private void initTunneling() {
@@ -317,15 +303,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                     + Character.digit(s.charAt(i + 1), 16));
         }
         return data;
-    }
-
-
-    @Override
-    protected void initClient(int timeout) throws Exception {
-        // 执行初始化
-        super.initClient(timeout);
-        // 初始化代理
-        this.initProxy();
     }
 
     @Override

@@ -19,3 +19,5 @@ http_access allow authenticated
 http_port 8889
 # 4. 重启服务
 systemctl restart squid
+# 5. 查看服务
+systemctl status squid

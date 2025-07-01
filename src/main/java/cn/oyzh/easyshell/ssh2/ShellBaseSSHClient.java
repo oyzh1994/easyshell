@@ -7,23 +7,45 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.internal.BaseClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.util.SSHKeyUtil;
+import org.apache.sshd.client.ClientBuilder;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory;
 import org.apache.sshd.client.channel.ChannelExec;
+import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.future.ConnectFuture;
+import org.apache.sshd.client.kex.DHGClient;
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
+import org.apache.sshd.client.session.ClientProxyConnector;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.client.x11.X11ChannelFactory;
+import org.apache.sshd.common.NamedFactory;
+import org.apache.sshd.common.channel.ChannelFactory;
+import org.apache.sshd.common.compression.BuiltinCompressions;
+import org.apache.sshd.common.compression.Compression;
+import org.apache.sshd.common.global.KeepAliveHandler;
+import org.apache.sshd.common.kex.BuiltinDHFactories;
+import org.apache.sshd.common.kex.KeyExchangeFactory;
+import org.apache.sshd.common.signature.BuiltinSignatures;
+import org.apache.sshd.common.signature.Signature;
 import org.apache.sshd.core.CoreModuleProperties;
+import org.eclipse.jgit.internal.transport.sshd.JGitSshClient;
 import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
+import org.eclipse.jgit.internal.transport.sshd.proxy.HttpClientConnector;
+import org.eclipse.jgit.internal.transport.sshd.proxy.Socks5ClientConnector;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.sshd.KeyPasswordProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +98,11 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * shell密钥存储
      */
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+
+    /**
+     * 代理配置存储
+     */
+    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     public ShellBaseSSHClient(ShellConnect connect) {
         this.shellConnect = connect;
@@ -367,23 +394,124 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     }
 
     /**
+     * 初始化代理
+     *
+     * @return 客户端代理连接器
+     */
+    private ClientProxyConnector initProxy() {
+        // 初始化ssh转发器
+        ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+        // 从数据库获取
+        if (proxyConfig == null) {
+            proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
+        }
+        if (proxyConfig == null) {
+            JulLog.warn("proxy is enable but proxy config is null");
+            throw new SSHException("proxy is enable but proxy config is null");
+        }
+        String host = this.initHost();
+        String hostIp = host.split(":")[0];
+        int port = Integer.parseInt(host.split(":")[1]);
+        int proxyPort = proxyConfig.getPort();
+        String proxyUser = proxyConfig.getUser();
+        String proxyHost = proxyConfig.getHost();
+        char[] proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
+        ClientProxyConnector connector = null;
+        if (proxyConfig.isHttpProxy()) {
+            connector = new HttpClientConnector(
+                    new InetSocketAddress(proxyHost, proxyPort),
+                    new InetSocketAddress(hostIp, port),
+                    proxyUser,
+                    proxyPassword
+            );
+        } else if (proxyConfig.isSocks4Proxy() || proxyConfig.isSocks5Proxy()) {
+            connector = new Socks5ClientConnector(
+                    new InetSocketAddress(proxyHost, proxyPort),
+                    new InetSocketAddress(hostIp, port),
+                    proxyUser,
+                    proxyPassword
+            );
+        }
+        return connector;
+    }
+
+    /**
      * 初始化客户端
      */
     protected void initClient(int timeout) throws Exception {
+        ClientBuilder builder = new ClientBuilder();
+        // 保持连接
+        builder.globalRequestHandlers(List.of(KeepAliveHandler.INSTANCE));
+        // 客户端
+        builder.factory(ShellSSHJGitClient::new);
+
+        // key交换
+        List<KeyExchangeFactory> keyExchangeFactories = ClientBuilder.setUpDefaultKeyExchanges(true);
+        keyExchangeFactories.add(DHGClient.newFactory(BuiltinDHFactories.dhg1));
+        keyExchangeFactories.add(DHGClient.newFactory(BuiltinDHFactories.dhg14));
+        keyExchangeFactories.add(DHGClient.newFactory(BuiltinDHFactories.dhgex));
+        builder.keyExchangeFactories(keyExchangeFactories);
+
+        // 压缩
+        List<NamedFactory<Compression>> compressionFactories = ClientBuilder.setUpDefaultCompressionFactories(true);
+        compressionFactories.add(BuiltinCompressions.none);
+        compressionFactories.add(BuiltinCompressions.zlib);
+        compressionFactories.add(BuiltinCompressions.delayedZlib);
+        builder.compressionFactories(compressionFactories);
+
+        // 签名
+        List<NamedFactory<Signature>> signatureFactories = ClientBuilder.setUpDefaultSignatureFactories(true);
+        for (BuiltinSignatures signature : BuiltinSignatures.values()) {
+            if (!signatureFactories.contains(signature)) {
+                signatureFactories.add(signature);
+            }
+        }
+        builder.signatureFactories(signatureFactories);
+
+        // 通道
+        List<ChannelFactory> channelFactories = new ArrayList<>(ClientBuilder.DEFAULT_CHANNEL_FACTORIES);
+        // x11处理
+        if (this.shellConnect.isX11forwarding()) {
+            channelFactories.add(X11ChannelFactory.INSTANCE);
+        }
+        builder.channelFactories(channelFactories);
+
         // 创建客户端
-        this.sshClient = SshClient.setUpDefaultClient();
+        this.sshClient = builder.build();
+        // this.sshClient = new JGitSshClient();
         // ssh agent处理
         if (this.shellConnect.isSSHAgentAuth()) {
             this.sshClient.setAgentFactory(new JGitSshAgentFactory(ShellSSHAgentConnectorFactory.INSTANCE, null));
         }
-        // x11处理
-        if (this.shellConnect.isX11forwarding()) {
-            this.sshClient.setChannelFactories(List.of(X11ChannelFactory.INSTANCE));
+        // // x11处理
+        // if (this.shellConnect.isX11forwarding()) {
+        //     this.sshClient.setChannelFactories(List.of(X11ChannelFactory.INSTANCE));
+        // }
+        // 代理处理
+        if (this.shellConnect.isEnableProxy()) {
+            this.sshClient.setClientProxyConnector(this.initProxy());
+
+            ShellProxyConfig config = this.shellConnect.getProxyConfig();
+            Host host = new Host();
+            host.proxyType = "HTTP";
+            host.proxyPort = config.getPort();
+            host.proxyHost = config.getHost();
+            host.proxyUser = config.getUser();
+            host.proxyPassword = config.getPassword();
+
+            HostManager.putHost(this.shellConnect.getId(), host);
         }
         // 启动客户端
         this.sshClient.start();
         // 测试环境使用，生产环境需替换
         this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+        // 设置密码工厂
+        if (this.sshClient instanceof ShellSSHJGitClient gitClient) {
+            if (this.shellConnect.isEnableProxy()) {
+                gitClient.setProxyConfig(this.shellConnect.getProxyConfig());
+            }
+            gitClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
+        }
         //  获取会话
         this.session = this.takeSession();
     }
@@ -395,12 +523,22 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         if (this.session != null && this.session.isOpen()) {
             return this.session;
         }
+
         // 连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
+
         int port = Integer.parseInt(host.split(":")[1]);
+        HostConfigEntry entry = new HostConfigEntry();
+        entry.setPort(port);
+        ;
+        entry.setUsername(this.shellConnect.getUser());
+        entry.setHostName(hostIp);
+        entry.setProperty("Host", this.shellConnect.getId());
+
         // 连接
-        ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
+        ConnectFuture future = this.sshClient.connect(entry);
+        // ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 超时时间
         int timeout = this.connectTimeout();
         // 创建会话
