@@ -143,6 +143,11 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
         this.xForwarding = xForwarding;
     }
 
+    /**
+     * 从固定表中获取对应值
+     * @param foo 参数
+     * @return 对应值
+     */
     private static int revtable(byte foo) {
         for (int i = 0; i < X_COOKIE_TABLE.length; ++i) {
             if (X_COOKIE_TABLE[i] == foo) {
@@ -152,12 +157,17 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
         return 0;
     }
 
+    /**
+     * 设置x cookie
+     * @param xCookie x cookie
+     */
     public void setXCookie(String xCookie) {
         byte[] cookie_hex = xCookie.getBytes();
         byte[] cookie = new byte[16];
         for (int i = 0; i < 16; ++i) {
             cookie[i] = (byte) (revtable(cookie_hex[i * 2]) << 4 & 240 | revtable(cookie_hex[i * 2 + 1]) & 15);
         }
+        // 设置对应cookie
         this.getSession().getProperties().put(ChannelX11.X11_COOKIE.getName(), cookie);
         this.getSession().getProperties().put(ChannelX11.X11_COOKIE_HEX.getName(), cookie_hex);
     }

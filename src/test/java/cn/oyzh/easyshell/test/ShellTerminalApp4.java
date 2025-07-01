@@ -160,7 +160,7 @@ private ClientSession session;
        widget.setPrefWidth(800);
 
        userField.setText("root");
-       passField.setText("Oyzh.1994");
+       passField.setText("");
        hostField.setText("120.24.176.61");
        Scene scene = new Scene(root);
        primaryStage.setScene(scene);
