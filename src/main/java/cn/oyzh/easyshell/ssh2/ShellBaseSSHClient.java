@@ -439,27 +439,28 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * 初始化客户端
      */
     protected void initClient(int timeout) throws Exception {
+        // 客户端构建器
         ClientBuilder builder = new ClientBuilder();
         // 保持连接
         builder.globalRequestHandlers(List.of(KeepAliveHandler.INSTANCE));
         // 客户端
         builder.factory(ShellSSHJGitClient::new);
 
-        // key交换
+        // key交换工厂
         List<KeyExchangeFactory> keyExchangeFactories = ClientBuilder.setUpDefaultKeyExchanges(true);
         keyExchangeFactories.add(DHGClient.newFactory(BuiltinDHFactories.dhg1));
         keyExchangeFactories.add(DHGClient.newFactory(BuiltinDHFactories.dhg14));
         keyExchangeFactories.add(DHGClient.newFactory(BuiltinDHFactories.dhgex));
         builder.keyExchangeFactories(keyExchangeFactories);
 
-        // 压缩
+        // 压缩工厂
         List<NamedFactory<Compression>> compressionFactories = ClientBuilder.setUpDefaultCompressionFactories(true);
         compressionFactories.add(BuiltinCompressions.none);
         compressionFactories.add(BuiltinCompressions.zlib);
         compressionFactories.add(BuiltinCompressions.delayedZlib);
         builder.compressionFactories(compressionFactories);
 
-        // 签名
+        // 签名工厂
         List<NamedFactory<Signature>> signatureFactories = ClientBuilder.setUpDefaultSignatureFactories(true);
         for (BuiltinSignatures signature : BuiltinSignatures.values()) {
             if (!signatureFactories.contains(signature)) {
@@ -468,7 +469,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         }
         builder.signatureFactories(signatureFactories);
 
-        // 通道
+        // 通道工厂
         List<ChannelFactory> channelFactories = new ArrayList<>(ClientBuilder.DEFAULT_CHANNEL_FACTORIES);
         // x11处理
         if (this.shellConnect.isX11forwarding()) {
@@ -478,28 +479,18 @@ public abstract class ShellBaseSSHClient implements BaseClient {
 
         // 创建客户端
         this.sshClient = builder.build();
-        // this.sshClient = new JGitSshClient();
         // ssh agent处理
         if (this.shellConnect.isSSHAgentAuth()) {
             this.sshClient.setAgentFactory(new JGitSshAgentFactory(ShellSSHAgentConnectorFactory.INSTANCE, null));
         }
-        // // x11处理
-        // if (this.shellConnect.isX11forwarding()) {
-        //     this.sshClient.setChannelFactories(List.of(X11ChannelFactory.INSTANCE));
-        // }
         // 代理处理
         if (this.shellConnect.isEnableProxy()) {
             this.sshClient.setClientProxyConnector(this.initProxy());
-
-            ShellProxyConfig config = this.shellConnect.getProxyConfig();
-            Host host = new Host();
-            host.proxyType = "HTTP";
-            host.proxyPort = config.getPort();
-            host.proxyHost = config.getHost();
-            host.proxyUser = config.getUser();
-            host.proxyPassword = config.getPassword();
-
-            HostManager.putHost(this.shellConnect.getId(), host);
+            // 设置代理参数
+            if (this.sshClient instanceof ShellSSHJGitClient gitClient) {
+                gitClient.setProxyHost(this.shellConnect.getProxyConfig().getHost());
+                gitClient.setProxyPort(this.shellConnect.getProxyConfig().getPort());
+            }
         }
         // 启动客户端
         this.sshClient.start();
@@ -507,9 +498,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
         // 设置密码工厂
         if (this.sshClient instanceof ShellSSHJGitClient gitClient) {
-            if (this.shellConnect.isEnableProxy()) {
-                gitClient.setProxyConfig(this.shellConnect.getProxyConfig());
-            }
             gitClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         }
         //  获取会话
@@ -520,23 +508,23 @@ public abstract class ShellBaseSSHClient implements BaseClient {
      * 获取会话
      */
     protected synchronized ClientSession takeSession() throws Exception {
+        // 返回已有会话
         if (this.session != null && this.session.isOpen()) {
             return this.session;
         }
 
-        // 连接信息
+        // 会话连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
-
         int port = Integer.parseInt(host.split(":")[1]);
+
+        // 会话连接参数
         HostConfigEntry entry = new HostConfigEntry();
         entry.setPort(port);
-        ;
-        entry.setUsername(this.shellConnect.getUser());
         entry.setHostName(hostIp);
-        entry.setProperty("Host", this.shellConnect.getId());
+        entry.setUsername(this.shellConnect.getUser());
 
-        // 连接
+        // 创建会话连接
         ConnectFuture future = this.sshClient.connect(entry);
         // ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 超时时间
