@@ -15,11 +15,14 @@ import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.client.x11.X11ChannelFactory;
+import org.apache.sshd.core.CoreModuleProperties;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 public class ShellTerminalApp4 extends Application {
 
@@ -43,6 +46,7 @@ private ClientSession session;
 
        try {
            SshClient ssh = SshClient.setUpDefaultClient();
+           ssh.setChannelFactories(List.of(X11ChannelFactory.INSTANCE));
            ssh.start();
 
            ssh.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE); // 测试环境使用，生产环境需替换
@@ -50,11 +54,16 @@ private ClientSession session;
            ConnectFuture future= ssh.connect(user,host, 22);
 
            this.session= future.verify(3000L).getSession();
+           // 设置地址和端口
+           CoreModuleProperties.X11_BIND_HOST.set(session, "localhost");
+           CoreModuleProperties.X11_BASE_PORT.set(session, 6000);
            this.session.addPasswordIdentity(pass);
            this.session.auth().verify();
 
            channel = session.createShellChannel();
            channel.setPtyType("xterm");
+           channel.setXCookie("1".repeat(32));
+           channel.setXForwarding(true);
 
            channel.open();
 
@@ -151,7 +160,7 @@ private ClientSession session;
        widget.setPrefWidth(800);
 
        userField.setText("root");
-       passField.setText("");
+       passField.setText("Oyzh.1994");
        hostField.setText("120.24.176.61");
        Scene scene = new Scene(root);
        primaryStage.setScene(scene);

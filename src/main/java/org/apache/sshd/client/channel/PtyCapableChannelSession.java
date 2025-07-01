@@ -89,7 +89,6 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
 
     private boolean agentForwarding;
     private boolean xForwarding;
-    private String xCookie;
     private boolean usePty;
     private final PtyChannelConfiguration config;
 
@@ -144,12 +143,23 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
         this.xForwarding = xForwarding;
     }
 
-    public String getXCookie() {
-        return xCookie;
+    private static int revtable(byte foo) {
+        for (int i = 0; i < X_COOKIE_TABLE.length; ++i) {
+            if (X_COOKIE_TABLE[i] == foo) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void setXCookie(String xCookie) {
-        this.xCookie = xCookie;
+        byte[] cookie_hex = xCookie.getBytes();
+        byte[] cookie = new byte[16];
+        for (int i = 0; i < 16; ++i) {
+            cookie[i] = (byte) (revtable(cookie_hex[i * 2]) << 4 & 240 | revtable(cookie_hex[i * 2 + 1]) & 15);
+        }
+        this.getSession().getProperties().put(ChannelX11.X11_COOKIE.getName(), cookie);
+        this.getSession().getProperties().put(ChannelX11.X11_COOKIE_HEX.getName(), cookie_hex);
     }
 
     public boolean isUsePty() {
@@ -274,12 +284,7 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
             buffer.putBoolean(false); // want-reply
             buffer.putBoolean(false);
             buffer.putString("MIT-MAGIC-COOKIE-1");
-            // 设置xCookie
-            if (this.getXCookie() != null) {
-                buffer.putString(this.getXCookie());
-            } else {
-                buffer.putBytes(getXCookieHex());
-            }
+            buffer.putBytes(getXCookie());
             buffer.putInt(0);
             writePacket(buffer);
         }
@@ -317,7 +322,7 @@ public class PtyCapableChannelSession extends ChannelSession implements PtyChann
         sendEnvVariables(session);
     }
 
-    protected byte[] getXCookieHex() {
+    protected byte[] getXCookie() {
         final Session session = getSession();
         Object xCookie = ChannelX11.X11_COOKIE.getOrNull(session);
         Object xCookieHex = ChannelX11.X11_COOKIE_HEX.getOrNull(session);
