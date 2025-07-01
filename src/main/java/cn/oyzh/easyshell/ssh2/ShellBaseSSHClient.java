@@ -16,6 +16,7 @@ import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.client.x11.X11ChannelFactory;
 import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -368,9 +369,13 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     protected void initClient(int timeout) throws Exception {
         // 创建客户端
         this.sshClient = SshClient.setUpDefaultClient();
-        // ssh agent相关处理
+        // ssh agent处理
         if (this.shellConnect.isSSHAgentAuth()) {
             this.sshClient.setAgentFactory(new JGitSshAgentFactory(ShellSSHAgentConnectorFactory.INSTANCE, null));
+        }
+        // x11处理
+        if (this.shellConnect.isX11forwarding()) {
+            this.sshClient.setChannelFactories(List.of(X11ChannelFactory.INSTANCE));
         }
         // 启动客户端
         this.sshClient.start();

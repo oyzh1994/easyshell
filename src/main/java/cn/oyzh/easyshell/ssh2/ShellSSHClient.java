@@ -33,7 +33,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.channel.ChannelShell;
+import org.apache.sshd.client.channel.ChannelX11;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.core.CoreModuleProperties;
 
 import java.util.Collections;
 import java.util.List;
@@ -273,9 +275,12 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     /**
      * 初始化x11配置
+     *
+     * @param session 会话
+     * @param channel 通道
      */
-    private void initX11() {
-        // 启用X11转发
+    private void initX11(ClientSession session, ChannelShell channel) {
+        // 启用x11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
             ShellX11Config x11Config = this.shellConnect.getX11Config();
@@ -284,6 +289,18 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 x11Config = this.x11ConfigStore.getByIid(this.shellConnect.getId());
             }
             if (x11Config != null) {
+                // 开启转发
+                channel.setXForwarding(true);
+                // 设置地址和端口
+                CoreModuleProperties.X11_BIND_HOST.set(session, x11Config.getHost());
+                CoreModuleProperties.X11_BASE_PORT.set(session, x11Config.getPort());
+                // 设置cookie
+                String cookie = x11Config.getCookie();
+                if (StringUtil.isNotBlank(cookie)) {
+                    byte[] bytes = hexStringToByteArray(cookie);
+                    session.getProperties().put(ChannelX11.X11_COOKIE.getName(), bytes);
+                    session.getProperties().put(ChannelX11.X11_COOKIE_HEX.getName(), bytes);
+                }
                 // 本地转发，启动x11服务
                 if (x11Config.isLocal()) {
                     ShellX11Manager.startXServer();
@@ -294,12 +311,21 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
+
+
     @Override
     protected void initClient(int timeout) throws Exception {
         // 执行初始化
         super.initClient(timeout);
-        // 初始化x11
-        this.initX11();
         // 初始化代理
         this.initProxy();
     }
@@ -439,6 +465,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 ClientSession session = this.takeSession();
                 // 创建shell
                 ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
+                // 初始化x11
+                this.initX11(session, channel);
                 channel.setIn(null);
                 channel.setOut(null);
                 channel.setUsePty(true);
