@@ -103,7 +103,7 @@ public class ZModemTtyConnector implements TtyConnector {
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        // 取消zmodem
+        // 取消ZModem
         if (this.zmodem != null && bytes.length > 0 && bytes[0] == 0x03) {
             this.zmodem.cancel();
             return;
@@ -296,15 +296,24 @@ public class ZModemTtyConnector implements TtyConnector {
 
             // 当前传输是否完成
             boolean completed = false;
+            // 是否全部结束了
+            boolean allFinished;
             // 处理进度
             if (skip) {// 跳过
                 sb.append(I18nHelper.skip()).append(ControlCharacters.CR);
+                allFinished = event.getIndex() == total;
             } else {// 进度
                 completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
                 double rate = (event.getBytesTransferred() * 1.0 / event.getTotalBytesTransferred()) * 100.0;
                 sb.append(NumberUtil.scale(rate, 2)).append('%').append(ControlCharacters.CR);
+                allFinished = completed && event.getIndex() == total;
             }
-            
+
+            // 全部结束了，则跳过
+            if (allFinished) {
+                return;
+            }
+
             // 刷新屏幕
             long now = System.currentTimeMillis();
             // 达到刷新阈值或当前文件传输完成或跳过，则执行刷新

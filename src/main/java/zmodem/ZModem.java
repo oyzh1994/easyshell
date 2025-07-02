@@ -48,8 +48,8 @@ public class ZModem {
 
     public void cancel() throws IOException {
         this.isCancelled.compareAndSet(false, true);
-        this.netOs.write("\r".getBytes());
-        this.netOs.flush();
+        // this.netOs.write("\r".getBytes());
+        // this.netOs.flush();
         // this.connector.resetTtyConnector();
     }
 }
