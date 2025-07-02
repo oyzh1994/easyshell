@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.test.term;
 
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
+import cn.oyzh.ssh.util.SSHUtil;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -33,7 +34,7 @@ public class TermTest {
 
     @Test
     public void test2() {
-        String sockFile = ShellSSHUtil.getSSHAgentSockFile();
+        String sockFile = SSHUtil.getSSHAgentSockFile();
         System.out.println(sockFile);
     }
 
@@ -51,7 +52,7 @@ public class TermTest {
 
     @Test
     public void test5() throws Exception {
-        String sockFile = ShellSSHUtil.getSSHAgentSockFile();
+        String sockFile = SSHUtil.getSSHAgentSockFile();
         System.out.println(sockFile);
     }
 

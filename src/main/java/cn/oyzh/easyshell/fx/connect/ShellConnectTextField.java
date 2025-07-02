@@ -101,6 +101,16 @@ public class ShellConnectTextField extends FXTextField {
         return this.skin().getSelectedItem();
     }
 
+    /**
+     * 移除内容
+     *
+     * @param connect 连接
+     */
+    public void removeItem(ShellConnect connect) {
+        this.connects.removeIf(c -> StringUtil.equals(c.getId(), connect.getId()));
+        this.skin().setItemList(this.connects);
+    }
+
     public void selectedItemChanged(ChangeListener<ShellConnect> listener) {
         this.skin().selectItemChanged(listener);
     }

@@ -38,6 +38,7 @@ import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
+import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
@@ -956,10 +957,27 @@ public class ShellViewFactory {
      *
      * @param task 任务
      */
-    public static StageAdapter fileError(ShellFileTask task) {
+    public static void fileError(ShellFileTask task) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileErrorController.class, StageManager.getFrontWindow());
             adapter.setProp("task", task);
+            adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 添加跳板机业务
+     *
+     * @param connect 连接
+     * @return StageAdapter
+     */
+    public static StageAdapter addHost(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
+            adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {

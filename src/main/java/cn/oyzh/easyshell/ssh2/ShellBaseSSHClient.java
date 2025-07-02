@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
+import cn.oyzh.ssh.util.SSHAgentConnectorFactory;
 import cn.oyzh.ssh.util.SSHKeyUtil;
 import org.apache.sshd.client.ClientBuilder;
 import org.apache.sshd.client.SshClient;
@@ -33,6 +34,7 @@ import org.apache.sshd.common.compression.Compression;
 import org.apache.sshd.common.global.KeepAliveHandler;
 import org.apache.sshd.common.kex.BuiltinDHFactories;
 import org.apache.sshd.common.kex.KeyExchangeFactory;
+import org.apache.sshd.common.session.SessionHeartbeatController;
 import org.apache.sshd.common.signature.BuiltinSignatures;
 import org.apache.sshd.common.signature.Signature;
 import org.apache.sshd.core.CoreModuleProperties;
@@ -47,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +70,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     /**
      * ssh客户端
      */
-    protected SshClient sshClient;
+    protected ShellSSHJGitClient sshClient;
 
     /**
      * 会话
@@ -478,28 +481,36 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         builder.channelFactories(channelFactories);
 
         // 创建客户端
-        this.sshClient = builder.build();
+        this.sshClient = (ShellSSHJGitClient) builder.build();
         // ssh agent处理
         if (this.shellConnect.isSSHAgentAuth()) {
-            this.sshClient.setAgentFactory(new JGitSshAgentFactory(ShellSSHAgentConnectorFactory.INSTANCE, null));
+            this.sshClient.setAgentFactory(new JGitSshAgentFactory(SSHAgentConnectorFactory.INSTANCE, null));
         }
         // 代理处理
         if (this.shellConnect.isEnableProxy()) {
             this.sshClient.setClientProxyConnector(this.initProxy());
             // 设置代理参数
-            if (this.sshClient instanceof ShellSSHJGitClient gitClient) {
-                gitClient.setProxyHost(this.shellConnect.getProxyConfig().getHost());
-                gitClient.setProxyPort(this.shellConnect.getProxyConfig().getPort());
-            }
+            this.sshClient.setProxyHost(this.shellConnect.getProxyConfig().getHost());
+            this.sshClient.setProxyPort(this.shellConnect.getProxyConfig().getPort());
         }
         // 启动客户端
         this.sshClient.start();
         // 测试环境使用，生产环境需替换
         this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
         // 设置密码工厂
-        if (this.sshClient instanceof ShellSSHJGitClient gitClient) {
-            gitClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
+        this.sshClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
+        // 优先的认证方式
+        String methods = UserAuthPasswordFactory.PASSWORD;
+        // 密码
+        if (this.shellConnect.isPasswordAuth()) {
+            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
+            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+        } else if (this.shellConnect.isCertificateAuth() || this.shellConnect.isManagerAuth()) {// 证书、密钥
+            methods = UserAuthPasswordFactory.PUBLIC_KEY;
         }
+        // 设置优先认证方式
+        CoreModuleProperties.PREFERRED_AUTHS.set(this.sshClient, methods);
         //  获取会话
         this.session = this.takeSession(timeout);
     }
@@ -531,21 +542,12 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         // ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 创建会话
         ClientSession session = future.verify(timeout).getClientSession();
+        // 心跳
+        session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(60));
         // 密码
         if (this.shellConnect.isPasswordAuth()) {
             // 设置地址和端口
             session.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
-            // 优先的认证方式
-            String methods = ArrayUtil.join(new String[]{
-                    UserAuthPasswordFactory.PASSWORD,
-                    UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
-            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, methods);
-        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-            // 优先的认证方式
-            String methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY,
-                    UserAuthPasswordFactory.PASSWORD,
-                    UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
-            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, methods);
         } else if (this.shellConnect.isCertificateAuth()) {// 证书
             String priKeyFile = this.shellConnect.getCertificate();
             // 检查私钥是否存在
@@ -559,8 +561,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             for (KeyPair keyPair : keyPairs) {
                 session.addPublicKeyIdentity(keyPair);
             }
-            // 优先的认证方式
-            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, UserAuthPasswordFactory.PUBLIC_KEY);
         } else if (this.shellConnect.isManagerAuth()) {// 密钥
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             // 检查私钥是否存在
@@ -574,8 +574,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             for (KeyPair keyPair : keyPairs) {
                 session.addPublicKeyIdentity(keyPair);
             }
-            // 优先的认证方式
-            CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, UserAuthPasswordFactory.PUBLIC_KEY);
         }
         // 认证
         session.auth().verify(timeout);

@@ -187,6 +187,7 @@ public class ShellAddJumpController extends StageController {
             // 按需设置为路径或者id
             if (this.sshAuthMethod.isManagerAuth()) {
                 config.setCertificatePath(key.getId());
+                config.setCertificatePwd(key.getPassword());
             } else {
                 config.setCertificatePath(certificate);
             }

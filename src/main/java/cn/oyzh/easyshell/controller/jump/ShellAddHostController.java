@@ -18,7 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * ssh连接新增业务
+ * ssh跳板机新增业务
  *
  * @author oyzh
  * @since 2025/04/15
@@ -90,10 +90,12 @@ public class ShellAddHostController extends StageController {
             if (connect.isManagerAuth()) {
                 ShellKey key = this.keyStore.selectOne(connect.getKeyId());
                 config.setAuthMethod("key");
+                config.setCertificatePwd(key.getPassword());
                 config.setCertificatePubKey(key.getPublicKey());
                 config.setCertificatePriKey(key.getPrivateKey());
             } else if (connect.isCertificateAuth()) {
                 config.setAuthMethod("certificate");
+                config.setCertificatePwd(connect.getCertificatePwd());
             } else if (connect.isPasswordAuth()) {
                 config.setAuthMethod("password");
             }
@@ -109,6 +111,11 @@ public class ShellAddHostController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
+        // 移除当前连接
+        ShellConnect connect = this.getProp("connect");
+        if (connect != null) {
+            this.host.removeItem(connect);
+        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

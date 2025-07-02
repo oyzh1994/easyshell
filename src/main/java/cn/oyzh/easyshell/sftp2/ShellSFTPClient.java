@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh2.ShellBaseSSHClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHJGitClient;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -78,7 +79,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this(shellConnect, null, null);
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, SshClient sshClient, ClientSession session) {
+    public ShellSFTPClient(ShellConnect shellConnect, ShellSSHJGitClient sshClient, ClientSession session) {
         super(shellConnect);
         this.session = session;
         this.sshClient = sshClient;

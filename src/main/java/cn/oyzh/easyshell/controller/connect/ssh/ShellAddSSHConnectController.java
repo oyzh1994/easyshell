@@ -4,7 +4,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
 import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -655,7 +654,7 @@ public class ShellAddSSHConnectController extends StageController {
     // * 选择证书
     // */
     //@FXML
-    //private void chooseCertificate() {
+    // private void chooseCertificate() {
     //    File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
     //    if (file != null) {
     //        this.certificate.setText(file.getPath());
@@ -678,8 +677,12 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private void addHost() {
-        StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
-        adapter.showAndWait();
+        // StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
+        // adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.addHost(null);
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.addItem(jumpConfig);
