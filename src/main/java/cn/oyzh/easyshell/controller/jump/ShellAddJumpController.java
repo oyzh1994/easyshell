@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.fx.ShellAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -27,6 +28,8 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
+import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
 
 import java.io.File;
 
@@ -100,7 +103,13 @@ public class ShellAddJumpController extends StageController {
      * ssh证书
      */
     @FXML
-    private ReadOnlyTextField sshCertificate;
+    private ChooseFileTextField sshCertificate;
+
+    /**
+     * ssh证书密码
+     */
+    @FXML
+    private PasswordTextField sshCertificatePwd;
 
     /**
      * 是否启用
@@ -139,6 +148,7 @@ public class ShellAddJumpController extends StageController {
             shellConnect.setPassword(this.sshPassword.getPassword());
             shellConnect.setAuthMethod(this.sshAuthMethod.getAuthType());
             shellConnect.setCertificate(this.sshCertificate.getTextTrim());
+            shellConnect.setCertificatePwd(this.sshCertificatePwd.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -176,6 +186,7 @@ public class ShellAddJumpController extends StageController {
             String host = this.sshHost.getTextTrim();
             int timeout = this.sshTimeout.getIntValue();
             String authType = this.sshAuthMethod.getAuthType();
+            String certificatePwd = this.sshCertificatePwd.getPassword();
             ShellJumpConfig config = new ShellJumpConfig();
             config.setName(name);
             config.setPort(port);
@@ -188,11 +199,12 @@ public class ShellAddJumpController extends StageController {
             if (this.sshAuthMethod.isManagerAuth()) {
                 config.setCertificatePath(key.getId());
                 config.setCertificatePwd(key.getPassword());
+                config.setCertificatePubKey(key.getPublicKey());
+                config.setCertificatePriKey(key.getPrivateKey());
             } else {
                 config.setCertificatePath(certificate);
+                config.setCertificatePwd(certificatePwd);
             }
-            config.setCertificatePubKey(key.getPublicKey());
-            config.setCertificatePriKey(key.getPrivateKey());
             config.setEnabled(this.enable.isSelected());
             // 设置数据
             this.setProp("jumpConfig", config);
@@ -243,24 +255,24 @@ public class ShellAddJumpController extends StageController {
         return I18nHelper.addJumpHost();
     }
 
-    /**
-     * 选择ssh证书
-     */
-    @FXML
-    private void chooseSSHCertificate() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-        if (file != null) {
-            this.sshCertificate.setText(file.getPath());
-        }
-    }
+    // /**
+    //  * 选择ssh证书
+    //  */
+    // @FXML
+    // private void chooseSSHCertificate() {
+    //     File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+    //     if (file != null) {
+    //         this.sshCertificate.setText(file.getPath());
+    //     }
+    // }
 
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
         if (OSUtil.isWindows()) {
-            this.sshAgent.setText("Pageant");
+            this.sshAgent.setText(PageantConnector.DESCRIPTOR.getIdentityAgent());
         } else {
-            this.sshAgent.setText("SSH Agent");
+            this.sshAgent.setText(UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
         }
     }
 }

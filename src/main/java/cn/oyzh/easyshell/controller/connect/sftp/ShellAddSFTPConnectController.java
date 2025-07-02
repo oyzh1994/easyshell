@@ -31,6 +31,8 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
+import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
 
 /**
  * sftp连接新增业务
@@ -331,9 +333,9 @@ public class ShellAddSFTPConnectController extends StageController {
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
         if (OSUtil.isWindows()) {
-            this.sshAgent.setText("Pageant");
+            this.sshAgent.setText(PageantConnector.DESCRIPTOR.getIdentityAgent());
         } else {
-            this.sshAgent.setText("SSH Agent");
+            this.sshAgent.setText(UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
         }
     }
 

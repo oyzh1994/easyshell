@@ -18,6 +18,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellAddJumpController" realWidth="750"
         realHeight="530">
@@ -98,7 +99,7 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </PasswordTextField>
-        <ShellKeyComboBox tipText="%base.privateKeyTip" fx:id="sshKey" visible="false" managedBindVisible="true" require="true" realHeight="30" groupId="sshKey"
+        <ShellKeyComboBox prefHeight="30" tipText="%base.privateKeyTip" fx:id="sshKey" visible="false" managedBindVisible="true" require="true" realHeight="30" groupId="sshKey"
                           flexWidth="100% - 340">
             <HBox.margin>
                 <Insets left="10" top="5"/>
@@ -110,18 +111,19 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </ReadOnlyTextField>
-        <ReadOnlyTextField prefHeight="30" visible="false" managedBindVisible="true" groupId="certificate"
-                           fx:id="sshCertificate" flexWidth="100% - 340">
+        <ChooseFileTextField prefHeight="30" visible="false" managedBindVisible="true" groupId="certificate"
+                             fx:id="sshCertificate" flexWidth="100% - 445">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
-        </ReadOnlyTextField>
-        <ChooseSVGGlyph visible="false" managedBindVisible="true" groupId="certificate"
-                        onMousePrimaryClicked="#chooseSSHCertificate">
+        </ChooseFileTextField>
+        <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true" visible="false" managedBindVisible="true"
+                           groupId="certificate"
+                           fx:id="sshCertificatePwd" prefWidth="100">
             <HBox.margin>
-                <Insets left="5" top="12"/>
+                <Insets left="5" top="5"/>
             </HBox.margin>
-        </ChooseSVGGlyph>
+        </PasswordTextField>
     </FXHBox>
     <InfoLabel text="%base.status">
         <VBox.margin>
