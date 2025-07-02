@@ -131,13 +131,14 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
             if (OSUtil.isMacOS()) {
                 this.envs.put("LC_CTYPE", Charsets.UTF_8.name());
                 this.envs.put("LANG", "en_US.utf-8");
-                this.envs.put("TERM", "xterm-256color");
+                // this.envs.put("TERM", "xterm-256color");
             } else if (OSUtil.isLinux()) {
                 this.envs.put("LANG", "en_US.utf-8");
-                this.envs.put("TERM", "xterm-256color");
+                // this.envs.put("TERM", "xterm-256color");
             } else if (OSUtil.isWindows()) {
-                this.envs.put("TERM", "xterm-256color");
+                // this.envs.put("TERM", "xterm-256color");
             }
+            this.envs.put("TERM", "xterm");
         }
         return this.envs;
     }
