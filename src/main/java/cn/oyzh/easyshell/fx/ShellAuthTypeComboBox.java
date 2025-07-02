@@ -7,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025-04-03
  */
-public class ShellAuthTypeCombobox extends SSHAuthTypeCombobox {
+public class ShellAuthTypeComboBox extends SSHAuthTypeCombobox {
 
     {
         this.addItem(I18nHelper.key1Manager());

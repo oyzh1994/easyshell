@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3RetentionModeCombobox?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3RetentionValidityTypeCombobox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3RetentionModeComboBox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3RetentionValidityTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -54,12 +54,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ShellS3RetentionModeCombobox disable="true" groupId="retention" fx:id="retentionMode" initIndex="0"
+    <ShellS3RetentionModeComboBox disable="true" groupId="retention" fx:id="retentionMode" initIndex="0"
                                   realHeight="30">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ShellS3RetentionModeCombobox>
+    </ShellS3RetentionModeComboBox>
     <InfoLabel text="%base.retentionValidity">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -72,12 +72,12 @@
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </NumberTextField>
-        <ShellS3RetentionValidityTypeCombobox fx:id="retentionValidityType" initIndex="0" realHeight="30"
+        <ShellS3RetentionValidityTypeComboBox fx:id="retentionValidityType" initIndex="0" realHeight="30"
                                               prefWidth="80">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </ShellS3RetentionValidityTypeCombobox>
+        </ShellS3RetentionValidityTypeComboBox>
     </FXHBox>
     <InfoLabel text="%base.region">
         <VBox.margin>

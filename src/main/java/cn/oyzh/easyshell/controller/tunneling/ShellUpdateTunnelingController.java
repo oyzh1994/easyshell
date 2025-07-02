@@ -1,14 +1,13 @@
 package cn.oyzh.easyshell.controller.tunneling;
 
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
-import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeCombobox;
+import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -61,7 +60,7 @@ public class ShellUpdateTunnelingController extends StageController {
      * 隧道类型
      */
     @FXML
-    private ShellTunnelingTypeCombobox tunnelingType;
+    private ShellTunnelingTypeComboBox tunnelingType;
 
     /**
      * 隧道设置

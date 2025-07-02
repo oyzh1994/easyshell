@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeCombobox?>
+<?import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -30,12 +30,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ShellTunnelingTypeCombobox fx:id="tunnelingType" initIndex="0" require="true" realHeight="30"
+    <ShellTunnelingTypeComboBox fx:id="tunnelingType" initIndex="0" require="true" realHeight="30"
                                 flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ShellTunnelingTypeCombobox>
+    </ShellTunnelingTypeComboBox>
     <InfoLabel text="%base.localHost">
         <VBox.margin>
             <Insets left="30" top="10"/>

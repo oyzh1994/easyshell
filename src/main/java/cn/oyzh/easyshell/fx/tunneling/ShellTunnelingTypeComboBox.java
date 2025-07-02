@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.fx.tunneling;
 
-import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -8,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025-04-16
  */
-public class ShellTunnelingTypeCombobox extends FXComboBox<String> {
+public class ShellTunnelingTypeComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.local());

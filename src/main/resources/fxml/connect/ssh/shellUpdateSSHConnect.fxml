@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
+<?import cn.oyzh.easyshell.fx.ShellAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView?>
@@ -74,11 +74,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ShellAuthTypeCombobox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
+                    <ShellAuthTypeComboBox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
                         <FXHBox.margin>
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
-                    </ShellAuthTypeCombobox>
+                    </ShellAuthTypeComboBox>
                     <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
                                        realHeight="30"
                                        flexWidth="100% - 340">

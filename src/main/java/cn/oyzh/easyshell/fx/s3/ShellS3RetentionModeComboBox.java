@@ -8,11 +8,11 @@ import software.amazon.awssdk.regions.Region;
  * @author oyzh
  * @since 2025-06-16
  */
-public class ShellS3RetentionValidityTypeCombobox extends FXComboBox<Region> {
+public class ShellS3RetentionModeComboBox extends FXComboBox<Region> {
 
     {
-        this.addItem(I18nHelper.days());
-        this.addItem(I18nHelper.years());
+        this.addItem(I18nHelper.compliance());
+        this.addItem(I18nHelper.governance());
     }
 
 }

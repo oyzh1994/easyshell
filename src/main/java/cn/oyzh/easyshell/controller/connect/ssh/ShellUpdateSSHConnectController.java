@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
+import cn.oyzh.easyshell.fx.ShellAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
@@ -204,7 +204,7 @@ public class ShellUpdateSSHConnectController extends StageController {
      * 认证方式
      */
     @FXML
-    private ShellAuthTypeCombobox authMethod;
+    private ShellAuthTypeComboBox authMethod;
 
     /**
      * 系统类型
