@@ -319,11 +319,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 IOUtil.close(this.tunnelForwarder);
                 this.tunnelForwarder = null;
             }
-            // 销毁回话
-            if (this.session != null) {
-                this.session.close();
-                this.session = null;
-            }
+            // // 销毁回话
+            // if (this.session != null) {
+            //     this.session.close();
+            //     this.session = null;
+            // }
             // 销毁跳板转发器
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
@@ -334,6 +334,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.sftpClient.close();
                 this.sftpClient = null;
             }
+            super.close();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
