@@ -7,7 +7,6 @@ import org.apache.commons.net.io.CopyStreamAdapter;
 import org.apache.commons.net.io.CopyStreamListener;
 import zmodem.FileCopyStreamEvent;
 import zmodem.util.FileAdapter;
-import zmodem.xfer.util.ASCII;
 import zmodem.xfer.util.InvalidChecksumException;
 import zmodem.xfer.zm.packet.Cancel;
 import zmodem.xfer.zm.packet.DataPacket;
@@ -157,7 +156,8 @@ public class ZModemSend {
                     end = true;
                 } else if (isCancelled.get()) {
                     os.write(new Cancel());
-                    continue;
+                    fireBytesTransferred(true);
+                    break;
                 }
 
                 if (packet instanceof Header header) {
@@ -191,9 +191,6 @@ public class ZModemSend {
                         default:
                             end = true;
                             os.write(new Cancel());
-                            netOs.write(ASCII.CR.value());
-                            netOs.write(ASCII.LF.value());
-                            netOs.write(ASCII.XON.value());
                             break;
                     }
 

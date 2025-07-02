@@ -67,7 +67,7 @@ public class ShellSplitTermController extends SubTabController {
      *
      * @throws IOException 异常
      */
-    private void initWidget() throws IOException {
+    private void initWidget() throws Exception {
         Charset charset = this.client.getCharset();
         TtyConnector ttyConnector = null;
         if (this.client instanceof ShellSSHClient sshClient) {

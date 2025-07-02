@@ -2,12 +2,12 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -17,33 +17,23 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh2.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
-import cn.oyzh.easyshell.store.ShellKeyStore;
-import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
-import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder2;
-import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.channel.ChannelShell;
-import org.apache.sshd.client.channel.ChannelX11;
-import org.apache.sshd.client.future.ConnectFuture;
-import org.apache.sshd.client.session.ClientProxyConnector;
 import org.apache.sshd.client.session.ClientSession;
-import org.apache.sshd.common.forward.SocksProxy;
-import org.apache.sshd.common.future.SshFutureListener;
 import org.apache.sshd.core.CoreModuleProperties;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -410,6 +400,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @return 新shell
      */
+    @Deprecated
     public ChannelShell reopenShell() throws Exception {
         if (this.shell != null && this.shell.isOpen()) {
             IOUtil.closeQuietly(this.shell);
@@ -441,6 +432,23 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             this.shell = channel;
         }
         return this.shell;
+    }
+
+    /**
+     * 等待shell就绪
+     *
+     * @param maxWait 最大等待时间
+     * @throws IOException 异常
+     */
+    public void waitShellReady(int maxWait) throws IOException {
+        int wait = 0;
+        while (this.shell.getInvertedOut() == null) {
+            ThreadUtil.sleep(5);
+            wait += 5;
+            if (wait > maxWait) {
+                throw new IOException("wait shell read timeout by maxWait:" + maxWait);
+            }
+        }
     }
 
     private ShellDockerExec dockerExec;

@@ -133,8 +133,8 @@
             </FXHBox>
         </FXVBox>
         <FXVBox flexWidth="100% - 320" flexHeight="100%" layoutX="320" fx:id="rightBox">
-            <!-- <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30"> -->
-            <!-- </ShellSSHTermWidget> -->
+            <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
+            </ShellSSHTermWidget>
             <FXHBox flexWidth="100%" realHeight="30">
                 <FXLabel fx:id="termSize">
                     <FXHBox.margin>
