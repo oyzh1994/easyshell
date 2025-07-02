@@ -17,7 +17,6 @@ import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.util.SSHAgentConnectorFactory;
 import cn.oyzh.ssh.util.SSHKeyUtil;
 import org.apache.sshd.client.ClientBuilder;
-import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
@@ -38,7 +37,6 @@ import org.apache.sshd.common.session.SessionHeartbeatController;
 import org.apache.sshd.common.signature.BuiltinSignatures;
 import org.apache.sshd.common.signature.Signature;
 import org.apache.sshd.core.CoreModuleProperties;
-import org.eclipse.jgit.internal.transport.sshd.JGitSshClient;
 import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
 import org.eclipse.jgit.internal.transport.sshd.proxy.HttpClientConnector;
 import org.eclipse.jgit.internal.transport.sshd.proxy.Socks5ClientConnector;
@@ -324,46 +322,46 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         return this.userHome;
     }
 
-    /**
-     * 初始化回话
-     */
-    protected void initSession() {
-        if (this.session != null) {
-            // // 设置守护线程
-            // this.session.setDaemonThread(true);
-            // // 连续3次失败后断开连接
-            // this.session.setServerAliveCountMax(3);
-            // // 每60秒发送一次TCP keep-alive包
-            // this.session.setServerAliveInterval(60_000);
-            // // 可选：设置TCP层面的keep-alive
-            // this.session.setConfig("TCPKeepAlive", "yes");
-            // // 去掉首次连接确认
-            // this.session.setConfig("StrictHostKeyChecking", "no");
-            // // 设置线程工厂
-            // this.session.setThreadFactory(ThreadUtil::newThreadVirtual);
-        }
-    }
+    // /**
+    //  * 初始化回话
+    //  */
+    // protected void initSession() {
+    //     if (this.session != null) {
+    //         // // 设置守护线程
+    //         // this.session.setDaemonThread(true);
+    //         // // 连续3次失败后断开连接
+    //         // this.session.setServerAliveCountMax(3);
+    //         // // 每60秒发送一次TCP keep-alive包
+    //         // this.session.setServerAliveInterval(60_000);
+    //         // // 可选：设置TCP层面的keep-alive
+    //         // this.session.setConfig("TCPKeepAlive", "yes");
+    //         // // 去掉首次连接确认
+    //         // this.session.setConfig("StrictHostKeyChecking", "no");
+    //         // // 设置线程工厂
+    //         // this.session.setThreadFactory(ThreadUtil::newThreadVirtual);
+    //     }
+    // }
 
-    /**
-     * 启用压缩
-     */
-    protected void useCompression() {
-        if (this.session != null) {
-            // // 启用压缩
-            // if (this.shellConnect.isEnableCompress()) {
-            //     this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-            //     this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-            //     // 设置压缩级别（可选，范围 1-9，默认 6）
-            //     this.session.setConfig("Compression", "yes");
-            //     this.session.setConfig("CompressionLevel", "9");
-            //     this.session.setConfig("compression.level", "9");
-            // } else {
-            //     this.session.setConfig("Compression", "no");
-            //     this.session.setConfig("compression.s2c", "none");
-            //     this.session.setConfig("compression.c2s", "none");
-            // }
-        }
-    }
+    // /**
+    //  * 启用压缩
+    //  */
+    // protected void useCompression() {
+    //     if (this.session != null) {
+    //         // // 启用压缩
+    //         // if (this.shellConnect.isEnableCompress()) {
+    //         //     this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+    //         //     this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+    //         //     // 设置压缩级别（可选，范围 1-9，默认 6）
+    //         //     this.session.setConfig("Compression", "yes");
+    //         //     this.session.setConfig("CompressionLevel", "9");
+    //         //     this.session.setConfig("compression.level", "9");
+    //         // } else {
+    //         //     this.session.setConfig("Compression", "no");
+    //         //     this.session.setConfig("compression.s2c", "none");
+    //         //     this.session.setConfig("compression.c2s", "none");
+    //         // }
+    //     }
+    // }
 
     /**
      * 创建exec通道
@@ -457,11 +455,13 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         builder.keyExchangeFactories(keyExchangeFactories);
 
         // 压缩工厂
-        List<NamedFactory<Compression>> compressionFactories = ClientBuilder.setUpDefaultCompressionFactories(true);
-        compressionFactories.add(BuiltinCompressions.none);
-        compressionFactories.add(BuiltinCompressions.zlib);
-        compressionFactories.add(BuiltinCompressions.delayedZlib);
-        builder.compressionFactories(compressionFactories);
+        if (this.shellConnect.isEnableCompress()) {
+            List<NamedFactory<Compression>> compressionFactories = ClientBuilder.setUpDefaultCompressionFactories(true);
+            compressionFactories.add(BuiltinCompressions.none);
+            compressionFactories.add(BuiltinCompressions.zlib);
+            compressionFactories.add(BuiltinCompressions.delayedZlib);
+            builder.compressionFactories(compressionFactories);
+        }
 
         // 签名工厂
         List<NamedFactory<Signature>> signatureFactories = ClientBuilder.setUpDefaultSignatureFactories(true);
@@ -577,10 +577,10 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         }
         // 认证
         session.auth().verify(timeout);
-        // 初始化会话
-        this.initSession();
-        // 启用压缩
-        this.useCompression();
+        // // 初始化会话
+        // this.initSession();
+        // // 启用压缩
+        // this.useCompression();
         // 设置会话
         this.session = session;
         // 返回会话

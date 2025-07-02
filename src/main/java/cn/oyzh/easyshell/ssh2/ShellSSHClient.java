@@ -184,7 +184,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public ShellSFTPClient sftpClient() {
         try {
             if (this.sftpClient == null) {
-                // sftp客户端使用独立会话，不要跟shell共用会话，免得互相影响
+                // sftp客户端跟ssh共享回话，免得需要输入二次验证码
                 this.sftpClient = new ShellSFTPClient(this.shellConnect, this.sshClient, this.session);
                 // this.sftpClient = new ShellSFTPClient(this.shellConnect);
                 // this.sftpClient.start();
