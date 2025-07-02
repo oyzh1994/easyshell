@@ -370,7 +370,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
     protected ChannelExec newExecChannel(String command) {
         try {
             // 获取会话
-            ClientSession session = this.takeSession();
+            ClientSession session = this.takeSession(this.connectTimeout());
             // 创建shell
             ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
             channel.setIn(null);
@@ -501,13 +501,15 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             gitClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         }
         //  获取会话
-        this.session = this.takeSession();
+        this.session = this.takeSession(timeout);
     }
 
     /**
      * 获取会话
+     *
+     * @param timeout 超时时间
      */
-    protected synchronized ClientSession takeSession() throws Exception {
+    protected synchronized ClientSession takeSession(int timeout) throws Exception {
         // 返回已有会话
         if (this.session != null && this.session.isOpen()) {
             return this.session;
@@ -527,8 +529,6 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         // 创建会话连接
         ConnectFuture future = this.sshClient.connect(entry);
         // ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
-        // 超时时间
-        int timeout = this.connectTimeout();
         // 创建会话
         ClientSession session = future.verify(timeout).getClientSession();
         // 密码

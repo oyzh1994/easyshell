@@ -27,6 +27,7 @@ import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
+import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder2;
 import com.jcraft.jsch.Proxy;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -140,12 +141,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     /**
      * ssh隧道转发器
      */
-    private SSHTunnelingForwarder tunnelForwarder;
-
-    /**
-     * shell密钥存储
-     */
-    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+    private SSHTunnelingForwarder2 tunnelForwarder;
 
     /**
      * x11配置存储
@@ -156,11 +152,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 隧道转发存储
      */
     private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
-
-    /**
-     * 代理配置存储
-     */
-    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
 
     /**
      * 连接状态
@@ -245,7 +236,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     /**
      * 初始化隧道
      */
-    private void initTunneling() {
+    private void initTunneling(ClientSession session) {
         // 加载隧道转发配置
         List<ShellTunnelingConfig> tunnelingConfigs = this.shellConnect.getTunnelingConfigs();
         // 从数据库获取
@@ -256,6 +247,12 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         tunnelingConfigs = tunnelingConfigs == null ? Collections.emptyList() : tunnelingConfigs.stream().filter(ShellTunnelingConfig::isEnabled).collect(Collectors.toList());
         // 开启隧道转发
         if (CollectionUtil.isNotEmpty(tunnelingConfigs)) {
+            // 初始化转发器
+            if (this.tunnelForwarder == null) {
+                this.tunnelForwarder = new SSHTunnelingForwarder2();
+            }
+            // 执行转发
+            this.tunnelForwarder.forward(tunnelingConfigs, this.session);
         }
     }
 
@@ -295,16 +292,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
     @Override
     public void close() {
         try {
@@ -328,7 +315,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             }
             // 销毁隧道转发器
             if (this.tunnelForwarder != null) {
-                this.tunnelForwarder.destroy();
+                IOUtil.close(this.tunnelForwarder);
+                this.tunnelForwarder = null;
             }
             // 销毁回话
             if (this.session != null) {
@@ -365,8 +353,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 执行连接
             if (this.sshClient != null && this.sshClient.isOpen()) {
                 this.state.set(ShellConnState.CONNECTED);
-                // 初始化隧道
-                this.initTunneling();
                 // 添加到状态监听器队列
                 ShellSSHClientChecker.push(this);
             } else if (this.state.get() == ShellConnState.FAILED) {
@@ -436,11 +422,13 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public ChannelShell openShell() throws Exception {
         if (this.shell == null || this.shell.isClosed()) {
             // 获取会话
-            ClientSession session = this.takeSession();
+            ClientSession session = this.takeSession(this.connectTimeout());
             // 创建shell
             ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
-            // 初始化x11
+            // 初始化x11转发
             this.initX11(session, channel);
+            // 初始化隧道转发
+            this.initTunneling(session);
             channel.setIn(null);
             channel.setOut(null);
             channel.setUsePty(true);

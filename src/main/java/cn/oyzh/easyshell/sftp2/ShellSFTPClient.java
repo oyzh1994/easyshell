@@ -159,7 +159,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     protected ShellSFTPChannel newSFTPChannel() {
         try {
             // 获取会话
-            ClientSession session = this.takeSession();
+            ClientSession session = this.takeSession(this.connectTimeout());
             // 创建客户端
             SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
             // 设置字符集
