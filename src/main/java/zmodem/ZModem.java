@@ -32,20 +32,24 @@ public class ZModem {
         ZModemReceive sender = new ZModemReceive(dstDir, netIs, netOs);
         sender.addCopyStreamListener(listener);
         sender.receive(this.isCancelled::get);
+        this.netOs.write("\r".getBytes());
         this.netOs.flush();
-        this.connector.resetTtyConnector();
+        // this.connector.resetTtyConnector();
     }
 
     public void send(Supplier<List<FileAdapter>> filesSupplier, CopyStreamListener listener) throws Exception {
         ZModemSend sender = new ZModemSend(filesSupplier, netIs, netOs);
         sender.addCopyStreamListener(listener);
         sender.send(this.isCancelled::get);
+        this.netOs.write("\r".getBytes());
         this.netOs.flush();
-        this.connector.resetTtyConnector();
+        // this.connector.resetTtyConnector();
     }
 
-    public void cancel() {
+    public void cancel() throws IOException {
         this.isCancelled.compareAndSet(false, true);
-        this.connector.resetTtyConnector();
+        this.netOs.write("\r".getBytes());
+        this.netOs.flush();
+        // this.connector.resetTtyConnector();
     }
 }

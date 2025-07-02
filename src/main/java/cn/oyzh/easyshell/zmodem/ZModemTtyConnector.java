@@ -366,7 +366,7 @@ public class ZModemTtyConnector implements TtyConnector {
             // TODO("Not yet implemented")
         }
 
-        public void cancel() {
+        public void cancel() throws IOException {
             zmodem.cancel();
         }
     }
