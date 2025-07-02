@@ -133,6 +133,7 @@ public class ShellSSHTermTabController extends SubTabController {
         Charset charset = client.getCharset();
         TtyConnector ttyConnector;
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
@@ -286,7 +287,7 @@ public class ShellSSHTermTabController extends SubTabController {
                 sb.append(I18nHelper.diskWrite()).append(":").append(diskWrite).append("MB/s");
                 this.serverMonitorInfo.text(sb.toString());
             }, 3_000, 0);
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("MonitorTask started.");
             }
         } catch (Exception ex) {
@@ -304,7 +305,7 @@ public class ShellSSHTermTabController extends SubTabController {
             this.serverMonitorTask = null;
             this.serverMonitorInfo.clear();
             this.serverMonitorInfo.disappear();
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("MonitorTask closed.");
             }
         } catch (Exception ex) {

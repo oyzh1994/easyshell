@@ -1,7 +1,6 @@
 package zmodem;
 
 
-import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import org.apache.commons.net.io.CopyStreamListener;
 import zmodem.util.FileAdapter;
 import zmodem.xfer.zm.util.ZModemReceive;
@@ -19,13 +18,11 @@ public class ZModem {
 
     private final InputStream netIs;
     private final OutputStream netOs;
-    private final ShellDefaultTtyConnector connector;
     private final AtomicBoolean isCancelled = new AtomicBoolean(false);
 
-    public ZModem(InputStream netin, OutputStream netout, ShellDefaultTtyConnector connector) {
+    public ZModem(InputStream netin, OutputStream netout) {
         netIs = netin;
         netOs = netout;
-        this.connector = connector;
     }
 
     public void receive(Supplier<FileAdapter> dstDir, CopyStreamListener listener) throws IOException {

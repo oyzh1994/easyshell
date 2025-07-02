@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
+public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
 // public class ShellDefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
 //    protected int maxLogSize = 200;

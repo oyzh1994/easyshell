@@ -229,6 +229,7 @@ public class ShellSSHEffTabController extends SubTabController {
         Charset charset = client.getCharset();
         TtyConnector ttyConnector;
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
