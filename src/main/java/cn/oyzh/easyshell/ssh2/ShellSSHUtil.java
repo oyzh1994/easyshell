@@ -1,18 +1,8 @@
 package cn.oyzh.easyshell.ssh2;
 
-import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.ssh.util.SSHUtil;
-import com.jcraft.jsch.Proxy;
-import com.jcraft.jsch.ProxyHTTP;
-import com.jcraft.jsch.ProxySOCKS4;
-import com.jcraft.jsch.ProxySOCKS5;
-
-import java.io.File;
 
 
 /**
@@ -117,35 +107,35 @@ public class ShellSSHUtil {
 //        return output;
 //    }
 
-    /**
-     * 初始化代理
-     *
-     * @param proxyConfig 代理配置
-     * @return 代理对象
-     */
-    public static Proxy newProxy(ShellProxyConfig proxyConfig) {
-        Proxy proxy = null;
-        if (proxyConfig.isHttpProxy()) {
-            ProxyHTTP http = new ProxyHTTP(proxyConfig.getHost(), proxyConfig.getPort());
-            if (proxyConfig.isPasswordAuth()) {
-                http.setUserPasswd(proxyConfig.getUser(), proxyConfig.getPassword());
-            }
-            proxy = http;
-        } else if (proxyConfig.isSocks4Proxy()) {
-            ProxySOCKS4 socks4 = new ProxySOCKS4(proxyConfig.getHost(), proxyConfig.getPort());
-            if (proxyConfig.isPasswordAuth()) {
-                socks4.setUserPasswd(proxyConfig.getUser(), proxyConfig.getPassword());
-            }
-            proxy = socks4;
-        } else if (proxyConfig.isSocks5Proxy()) {
-            ProxySOCKS5 socks5 = new ProxySOCKS5(proxyConfig.getHost(), proxyConfig.getPort());
-            if (proxyConfig.isPasswordAuth()) {
-                socks5.setUserPasswd(proxyConfig.getUser(), proxyConfig.getPassword());
-            }
-            proxy = socks5;
-        }
-        return proxy;
-    }
+    // /**
+    //  * 初始化代理
+    //  *
+    //  * @param proxyConfig 代理配置
+    //  * @return 代理对象
+    //  */
+    // public static Proxy newProxy(ShellProxyConfig proxyConfig) {
+    //     Proxy proxy = null;
+    //     if (proxyConfig.isHttpProxy()) {
+    //         ProxyHTTP http = new ProxyHTTP(proxyConfig.getHost(), proxyConfig.getPort());
+    //         if (proxyConfig.isPasswordAuth()) {
+    //             http.setUserPasswd(proxyConfig.getUser(), proxyConfig.getPassword());
+    //         }
+    //         proxy = http;
+    //     } else if (proxyConfig.isSocks4Proxy()) {
+    //         ProxySOCKS4 socks4 = new ProxySOCKS4(proxyConfig.getHost(), proxyConfig.getPort());
+    //         if (proxyConfig.isPasswordAuth()) {
+    //             socks4.setUserPasswd(proxyConfig.getUser(), proxyConfig.getPassword());
+    //         }
+    //         proxy = socks4;
+    //     } else if (proxyConfig.isSocks5Proxy()) {
+    //         ProxySOCKS5 socks5 = new ProxySOCKS5(proxyConfig.getHost(), proxyConfig.getPort());
+    //         if (proxyConfig.isPasswordAuth()) {
+    //             socks5.setUserPasswd(proxyConfig.getUser(), proxyConfig.getPassword());
+    //         }
+    //         proxy = socks5;
+    //     }
+    //     return proxy;
+    // }
 
     // /**
     //  * 获取ssh agent的sock文件
