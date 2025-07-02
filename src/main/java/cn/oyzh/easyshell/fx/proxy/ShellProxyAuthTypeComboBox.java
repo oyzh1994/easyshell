@@ -7,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025-04-18
  */
-public class ShellProxyAuthTypeCombobox extends FXComboBox<String> {
+public class ShellProxyAuthTypeComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.none());

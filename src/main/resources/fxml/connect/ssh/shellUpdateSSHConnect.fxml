@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
-<?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox?>
-<?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox?>
+<?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
@@ -246,14 +246,14 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellProxyProtocolCombobox initIndex="0" disable="true" fx:id="proxyProtocol" tipText="%base.hostTip"
+                <ShellProxyProtocolComboBox initIndex="0" disable="true" fx:id="proxyProtocol" tipText="%base.hostTip"
                                             require="true"
                                             realHeight="30"
                                             flexWidth="100% - 180" groupId="proxy">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ShellProxyProtocolCombobox>
+                </ShellProxyProtocolComboBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -277,13 +277,13 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellProxyAuthTypeCombobox initIndex="0" disable="true" groupId="proxy" fx:id="proxyAuthType"
+                <ShellProxyAuthTypeComboBox initIndex="0" disable="true" groupId="proxy" fx:id="proxyAuthType"
                                             realHeight="30"
                                             flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ShellProxyAuthTypeCombobox>
+                </ShellProxyAuthTypeComboBox>
                 <InfoLabel text="%base.authInfo">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

@@ -18,8 +18,8 @@ import cn.oyzh.easyshell.fx.ShellAuthTypeCombobox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
-import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeCombobox;
-import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolCombobox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -277,13 +277,13 @@ public class ShellAddSSHConnectController extends StageController {
      * 代理协议
      */
     @FXML
-    private ShellProxyProtocolCombobox proxyProtocol;
+    private ShellProxyProtocolComboBox proxyProtocol;
 
     /**
      * 代理认证方式
      */
     @FXML
-    private ShellProxyAuthTypeCombobox proxyAuthType;
+    private ShellProxyAuthTypeComboBox proxyAuthType;
 
     /**
      * 跳板机配置

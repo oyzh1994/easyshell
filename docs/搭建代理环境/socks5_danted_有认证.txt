@@ -6,9 +6,13 @@ apt install danted -y
 apt install dante-server -y
 # 2. 创建认证用户，注意是系统用户，后面认证要用到
 useradd -r test
-passwd test 123456
+passwd test
+然后根据提示输入密码
+123456
 # 3. 配置文件
 vim /etc/danted.conf
+#查看网卡
+ip addr或者ifconfig
 # 内部网络接口和监听端口(填写实际网卡名称)
 internal: eth0 port = 1080
 # 外部网络接口(填写实际网卡名称)
@@ -33,3 +37,5 @@ socks pass {
 }
 # 4. 重启服务
 systemctl restart danted
+# 5. 查看服务
+systemctl status danted

@@ -8,3 +8,5 @@ vim /etc/squid/squid.conf
 http_port 8889
 # 3. 重启服务
 systemctl restart squid
+# 4. 查看服务
+systemctl status squid

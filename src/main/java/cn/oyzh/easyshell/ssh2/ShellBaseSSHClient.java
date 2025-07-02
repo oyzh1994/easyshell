@@ -413,8 +413,8 @@ public abstract class ShellBaseSSHClient implements BaseClient {
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
         int proxyPort = proxyConfig.getPort();
-        String proxyUser = proxyConfig.getUser();
         String proxyHost = proxyConfig.getHost();
+        String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
         char[] proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
         ClientProxyConnector connector = null;
         if (proxyConfig.isHttpProxy()) {
@@ -424,7 +424,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
                     proxyUser,
                     proxyPassword
             );
-        } else if (proxyConfig.isSocks4Proxy() || proxyConfig.isSocks5Proxy()) {
+        } else if (proxyConfig.isSocksProxy()) {
             connector = new Socks5ClientConnector(
                     new InetSocketAddress(proxyHost, proxyPort),
                     new InetSocketAddress(hostIp, port),

@@ -194,8 +194,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private final List<TerminalSelectionChangesListener> selectionChangesListeners = new CopyOnWriteArrayList<>();
 
-    private String myWindowTitle;
-    // private String myWindowTitle = "Terminal";
+    // private String myWindowTitle;
+    private String myWindowTitle = "Terminal";
 
     private TerminalActionProvider myNextActionProvider;
 

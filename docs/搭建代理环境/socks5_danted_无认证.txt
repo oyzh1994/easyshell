@@ -29,3 +29,5 @@ socks pass {
 }
 # 3. 重启服务
 systemctl restart danted
+# 4. 查看服务
+systemctl status danted
