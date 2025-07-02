@@ -91,11 +91,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public void close() {
         try {
-            // 销毁会话
-            if (this.session != null && this.session.isOpen()) {
-                IOUtil.close(this.session);
-                this.session = null;
-            }
+            // // 销毁会话
+            // if (this.session != null && this.session.isOpen()) {
+            //     IOUtil.close(this.session);
+            //     this.session = null;
+            // }
             // 通道管理
             if (this.channelPool != null) {
                 IOUtil.close(this.channelPool);
@@ -106,6 +106,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 IOUtil.close(this.cache);
                 this.cache = null;
             }
+            super.close();
             this.delayChannels.clear();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
