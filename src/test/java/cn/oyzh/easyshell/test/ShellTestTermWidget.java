@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.test;
 
-import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import com.pty4j.PtyProcess;
 

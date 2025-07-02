@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.jediterm.core.util.TermSize;
 import com.pty4j.PtyProcess;
@@ -140,12 +139,15 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
     /**
      * 重置tty连接器回调
      */
+    @Deprecated
     private Runnable resetTtyConnectorCallback;
 
+    @Deprecated
     public Runnable getResetTtyConnectorCallback() {
         return resetTtyConnectorCallback;
     }
 
+    @Deprecated
     public void setResetTtyConnectorCallback(Runnable resetTtyConnectorCallback) {
         this.resetTtyConnectorCallback = resetTtyConnectorCallback;
     }
@@ -153,6 +155,7 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector {
     /**
      * 重置tty连接器
      */
+    @Deprecated
     public void resetTtyConnector() {
         if (this.resetTtyConnectorCallback != null) {
             // 只允许执行一次，执行完成就销毁

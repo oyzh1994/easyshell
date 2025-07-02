@@ -40,9 +40,10 @@ public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
         return client;
     }
 
-    public void init(ShellSSHClient client) throws IOException {
+    public void init(ShellSSHClient client) throws Exception {
         this.client = client;
-        ChannelShell shell = client.getShell();
+        ChannelShell shell = client.openShell();
+        this.client.waitShellReady(1000);
         this.shellReader = new InputStreamReader(shell.getInvertedOut(), this.myCharset);
         this.shellWriter = new OutputStreamWriter(shell.getInvertedIn(), this.myCharset);
     }
