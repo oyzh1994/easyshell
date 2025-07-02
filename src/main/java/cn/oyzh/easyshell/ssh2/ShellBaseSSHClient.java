@@ -536,7 +536,7 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             // 设置地址和端口
             session.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
             // 优先的认证方式
-            String methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY,
+            String methods = ArrayUtil.join(new String[]{
                     UserAuthPasswordFactory.PASSWORD,
                     UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
             CoreModuleProperties.PREFERRED_AUTHS.set(sshClient, methods);

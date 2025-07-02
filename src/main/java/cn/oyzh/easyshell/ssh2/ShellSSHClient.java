@@ -26,6 +26,7 @@ import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
+import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder2;
 import com.jcraft.jsch.Proxy;
@@ -136,7 +137,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     /**
      * ssh跳板转发器
      */
-    private SSHJumpForwarder jumpForwarder;
+    private SSHJumpForwarder2 jumpForwarder;
 
     /**
      * ssh隧道转发器
@@ -212,7 +213,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder();
+                this.jumpForwarder = new SSHJumpForwarder2();
             }
             // 初始化跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
@@ -224,7 +225,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             host = "127.0.0.1:" + localPort;
         } else {// 直连
             if (this.jumpForwarder != null) {
-                this.jumpForwarder.destroy();
+                IOUtil.close(this.jumpForwarder);
                 this.jumpForwarder = null;
             }
             // 连接信息
@@ -252,7 +253,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.tunnelForwarder = new SSHTunnelingForwarder2();
             }
             // 执行转发
-            this.tunnelForwarder.forward(tunnelingConfigs, this.session);
+            this.tunnelForwarder.forward(tunnelingConfigs, session);
         }
     }
 
@@ -322,16 +323,18 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             if (this.session != null) {
                 this.session.close();
                 this.session = null;
-                this.state.set(ShellConnState.CLOSED);
             }
             // 销毁跳板转发器
             if (this.jumpForwarder != null) {
-                this.jumpForwarder.destroy();
+                IOUtil.close(this.jumpForwarder);
+                this.jumpForwarder = null;
             }
             // 销毁sftp客户端
             if (this.sftpClient != null) {
                 this.sftpClient.close();
+                this.sftpClient = null;
             }
+            this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
