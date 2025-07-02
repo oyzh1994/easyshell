@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.ssh2;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,6 +29,7 @@ public class ShellSSHAuthInteractive implements UserInteraction {
     @Override
     public String[] interactive(ClientSession session, String name, String instruction, String lang, String[] prompt, boolean[] echo) {
         String content = ArrayUtil.first(prompt);
+        JulLog.info("interactive prompt:", content);
         if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
             return new String[]{this.password};
         }
@@ -43,6 +45,7 @@ public class ShellSSHAuthInteractive implements UserInteraction {
 
     @Override
     public String resolveAuthPasswordAttempt(ClientSession session) throws Exception {
+        JulLog.info("resolveAuthPasswordAttempt");
         return this.password;
     }
 
