@@ -33,7 +33,7 @@ public class ShellSSHAuthInteractive implements UserInteraction {
         if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
             return new String[]{this.password};
         }
-        if (StringUtil.containsAnyIgnoreCase(content, "Verification code", "验证码")) {
+        if (StringUtil.containsAnyIgnoreCase(content, "", "Verification code", "验证码")) {
             String verificationCode = MessageBox.prompt(I18nHelper.pleaseInputVerificationCode());
             if (StringUtil.isEmpty(verificationCode)) {
                 throw new SSHException("invalid verification code");

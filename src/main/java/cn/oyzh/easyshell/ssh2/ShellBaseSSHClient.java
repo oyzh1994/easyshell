@@ -39,7 +39,9 @@ import org.apache.sshd.common.compression.Compression;
 import org.apache.sshd.common.global.KeepAliveHandler;
 import org.apache.sshd.common.kex.BuiltinDHFactories;
 import org.apache.sshd.common.kex.KeyExchangeFactory;
+import org.apache.sshd.common.session.Session;
 import org.apache.sshd.common.session.SessionHeartbeatController;
+import org.apache.sshd.common.session.SessionListener;
 import org.apache.sshd.common.signature.BuiltinSignatures;
 import org.apache.sshd.common.signature.Signature;
 import org.apache.sshd.core.CoreModuleProperties;
@@ -155,10 +157,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             channel.setIn(null);
-            channel.setErr(stream);
             channel.setOut(stream);
-            while (!channel.isClosed()) {
-                Thread.sleep(1);
+            channel.setRedirectErrorStream(true);
+            while (channel.isOpen()) {
+                Thread.sleep(5);
             }
             String result;
             // 如果远程是windows，则要检查下字符集是否要指定
@@ -328,47 +330,6 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return this.userHome;
     }
 
-    // /**
-    //  * 初始化回话
-    //  */
-    // protected void initSession() {
-    //     if (this.session != null) {
-    //         // // 设置守护线程
-    //         // this.session.setDaemonThread(true);
-    //         // // 连续3次失败后断开连接
-    //         // this.session.setServerAliveCountMax(3);
-    //         // // 每60秒发送一次TCP keep-alive包
-    //         // this.session.setServerAliveInterval(60_000);
-    //         // // 可选：设置TCP层面的keep-alive
-    //         // this.session.setConfig("TCPKeepAlive", "yes");
-    //         // // 去掉首次连接确认
-    //         // this.session.setConfig("StrictHostKeyChecking", "no");
-    //         // // 设置线程工厂
-    //         // this.session.setThreadFactory(ThreadUtil::newThreadVirtual);
-    //     }
-    // }
-
-    // /**
-    //  * 启用压缩
-    //  */
-    // protected void useCompression() {
-    //     if (this.session != null) {
-    //         // // 启用压缩
-    //         // if (this.shellConnect.isEnableCompress()) {
-    //         //     this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-    //         //     this.session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-    //         //     // 设置压缩级别（可选，范围 1-9，默认 6）
-    //         //     this.session.setConfig("Compression", "yes");
-    //         //     this.session.setConfig("CompressionLevel", "9");
-    //         //     this.session.setConfig("compression.level", "9");
-    //         // } else {
-    //         //     this.session.setConfig("Compression", "no");
-    //         //     this.session.setConfig("compression.s2c", "none");
-    //         //     this.session.setConfig("compression.c2s", "none");
-    //         // }
-    //     }
-    // }
-
     /**
      * 创建exec通道
      *
@@ -380,6 +341,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             ClientSession session = this.takeSession(this.connectTimeout());
             // 创建shell
             ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
+            // 设置流
             channel.setIn(null);
             channel.setOut(null);
             channel.setErr(null);
@@ -587,49 +549,26 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
         // 创建会话连接
         ConnectFuture future = this.sshClient.connect(entry);
-        // ConnectFuture future = this.sshClient.connect(this.shellConnect.getUser(), hostIp, port);
         // 创建会话
         ClientSession session = future.verify(timeout).getClientSession();
-        // if (this.shellConnect.isPasswordAuth()) {
-        //     // 设置地址和端口
-        //     // session.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
-        // } else if (this.shellConnect.isCertificateAuth()) {// 证书
-        //     String priKeyFile = this.shellConnect.getCertificate();
-        //     // 检查私钥是否存在
-        //     if (!FileUtil.exist(priKeyFile)) {
-        //         MessageBox.warn("certificate file not exist");
-        //         throw new IOException("certificate file not exist");
-        //     }
-        //     // 加载证书
-        //     Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
-        //     //  设置证书认证
-        //     for (KeyPair keyPair : keyPairs) {
-        //         session.addPublicKeyIdentity(keyPair);
-        //     }
-        // } else if (this.shellConnect.isManagerAuth()) {// 密钥
-        //     ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
-        //     // 检查私钥是否存在
-        //     if (key == null) {
-        //         MessageBox.warn("key not found");
-        //         throw new IOException("key not found");
-        //     }
-        //     // 加载证书
-        //     Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(key.getPrivateKey(), key.getPassword());
-        //     //  设置证书认证
-        //     for (KeyPair keyPair : keyPairs) {
-        //         session.addPublicKeyIdentity(keyPair);
-        //     }
-        // }
+        // 添加会话监听器
+        session.addSessionListener(new SessionListener() {
+            @Override
+            public void sessionDisconnect(Session session, int reason, String msg, String language, boolean initiator) {
+                checkState();
+            }
+
+            @Override
+            public void sessionClosed(Session session) {
+                checkState();
+            }
+        });
         // 认证
         session.auth().verify(timeout);
-        // // 初始化会话
-        // this.initSession();
-        // // 启用压缩
-        // this.useCompression();
         // 设置会话
         this.session = session;
         // 返回会话
-        return session;
+        return this.session;
     }
 
     /**
@@ -637,14 +576,14 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public Map<String, String> initEnvironments() {
         // 用户环境
-        Map<String, String> userEnvs = this.shellConnect.environments();
+        Map<String, String> environments = this.shellConnect.environments();
         // 初始化环境变量
         if (this.osType != null) {
-            userEnvs.put("PATH", this.getExportPath());
+            environments.put("PATH", this.getExportPath());
         }
         // 初始化字符集
-        userEnvs.put("LANG", "en_US." + this.getCharset().displayName());
-        return userEnvs;
+        environments.put("LANG", "en_US." + this.getCharset().displayName());
+        return environments;
     }
 
     @Override

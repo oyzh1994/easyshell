@@ -151,8 +151,15 @@ public class ShellSFTPChannel implements AutoCloseable {
      * @throws IOException 异常
      */
     public SftpClient.Attributes stat(String path) throws IOException {
-        path = ShellFileUtil.fixFilePath(path);
-        return this.channel.stat(path);
+        try {
+            path = ShellFileUtil.fixFilePath(path);
+            return this.channel.stat(path);
+        } catch (IOException ex) {
+            if (ExceptionUtil.hasMessage(ex, "No such file")) {
+                return null;
+            }
+            throw ex;
+        }
     }
 
     /**

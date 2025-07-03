@@ -76,10 +76,11 @@ public class ShellRLoginClient implements ShellBaseClient {
                 this.state.set(ShellConnState.FAILED);
                 return;
             }
-            String user = this.shellConnect.getUser();
-            String termType = this.shellConnect.getTermType();
-            this.client.rlogin(user, user, termType);
             if (this.client.isConnected()) {
+                // 执行认证
+                String user = this.shellConnect.getUser();
+                String termType = this.shellConnect.getTermType();
+                this.client.rlogin(user, user, termType);
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
                 ShellClientChecker.push(this);

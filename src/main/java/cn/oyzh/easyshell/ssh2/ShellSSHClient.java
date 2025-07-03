@@ -29,6 +29,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.channel.PtyChannelConfiguration;
 import org.apache.sshd.core.CoreModuleProperties;
 
 import java.io.IOException;
@@ -406,16 +407,18 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         if (this.shell == null || this.shell.isClosed()) {
             // 获取会话
             ClientSession session = this.takeSession(this.connectTimeout());
+            // pty配置
+            PtyChannelConfiguration configuration = new PtyChannelConfiguration();
+            configuration.setPtyType(this.shellConnect.getTermType());
             // 创建shell
-            ChannelShell channel = session.createShellChannel(null, this.initEnvironments());
+            ChannelShell channel = session.createShellChannel(configuration, this.initEnvironments());
             // 初始化x11转发
             this.initX11(session, channel);
             // 初始化隧道转发
             this.initTunneling(session);
+            // 设置流
             channel.setIn(null);
             channel.setOut(null);
-            channel.setUsePty(true);
-            channel.setPtyType(this.shellConnect.getTermType());
             channel.open().verify(this.connectTimeout());
             this.shell = channel;
         }
