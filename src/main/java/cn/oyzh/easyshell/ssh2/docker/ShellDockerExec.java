@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.ssh2.docker;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 
 /**
@@ -161,6 +163,75 @@ public class ShellDockerExec implements AutoCloseable {
         builder.append(" ").append(id);
         if (JulLog.isInfoEnabled()) {
             JulLog.info("docker update:{}", builder.toString());
+        }
+        return this.client.exec(builder.toString());
+    }
+
+    /**
+     * 执行docker run命令
+     *
+     * @param run 参数
+     * @return 结果
+     */
+    public String docker_run(ShellDockerRun run) {
+        StringBuilder builder = new StringBuilder("docker run ");
+        if (StringUtil.isNotEmpty(run.getContainerName())) {
+            builder.append("--name ").append(run.getContainerName()).append(" ");
+        }
+        if (run.isI()) {
+            builder.append("-i ");
+        }
+        if (run.isT()) {
+            builder.append("-t ");
+        }
+        if (run.isD()) {
+            builder.append("-d ");
+        }
+        if (run.isRm()) {
+            builder.append("--rm ");
+        }
+        if (run.isPrivileged()) {
+            builder.append("--privileged ");
+        }
+        if (!run.isIgnoreRestart()) {
+            builder.append("--restart=").append(run.getRestart()).append(" ");
+        }
+
+        // 端口
+        if (CollectionUtil.isNotEmpty(run.getPorts())) {
+            for (ShellDockerRun.DockerPort port : run.getPorts()) {
+                builder.append("-p ").append(port.getOuterPort()).append(":").append(port.getInnerPort());
+                if (!port.isTcp()) {
+                    builder.append("/udp");
+                }
+                builder.append(" ");
+            }
+        }
+
+        // 卷
+        if (CollectionUtil.isNotEmpty(run.getVolumes())) {
+            for (ShellDockerRun.DockerVolume volume : run.getVolumes()) {
+                builder.append("-v ").append(volume.getOuterVolume()).append(":").append(volume.getInnerVolume()).append(" ");
+            }
+        }
+
+        // 环境
+        if (CollectionUtil.isNotEmpty(run.getEnvs())) {
+            for (ShellDockerRun.DockerEnv env : run.getEnvs()) {
+                builder.append("-e ").append(env.getName()).append("=").append(env.getValue()).append(" ");
+            }
+        }
+
+        // 标签
+        if (CollectionUtil.isNotEmpty(run.getLabels())) {
+            for (ShellDockerRun.DockerLabel label : run.getLabels()) {
+                builder.append("--label ").append(label.getName()).append("=").append(label.getValue()).append(" ");
+            }
+        }
+        builder.append(run.getImageId());
+
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker run:{}", builder.toString());
         }
         return this.client.exec(builder.toString());
     }

@@ -39,9 +39,7 @@ import org.apache.sshd.common.compression.Compression;
 import org.apache.sshd.common.global.KeepAliveHandler;
 import org.apache.sshd.common.kex.BuiltinDHFactories;
 import org.apache.sshd.common.kex.KeyExchangeFactory;
-import org.apache.sshd.common.session.Session;
 import org.apache.sshd.common.session.SessionHeartbeatController;
-import org.apache.sshd.common.session.SessionListener;
 import org.apache.sshd.common.signature.BuiltinSignatures;
 import org.apache.sshd.common.signature.Signature;
 import org.apache.sshd.core.CoreModuleProperties;
@@ -551,18 +549,18 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         ConnectFuture future = this.sshClient.connect(entry);
         // 创建会话
         ClientSession session = future.verify(timeout).getClientSession();
-        // 添加会话监听器
-        session.addSessionListener(new SessionListener() {
-            @Override
-            public void sessionDisconnect(Session session, int reason, String msg, String language, boolean initiator) {
-                checkState();
-            }
-
-            @Override
-            public void sessionClosed(Session session) {
-                checkState();
-            }
-        });
+        // // 添加会话监听器
+        // session.addSessionListener(new SessionListener() {
+        //     @Override
+        //     public void sessionDisconnect(Session session, int reason, String msg, String language, boolean initiator) {
+        //         checkState();
+        //     }
+        //
+        //     @Override
+        //     public void sessionClosed(Session session) {
+        //         checkState();
+        //     }
+        // });
         // 认证
         session.auth().verify(timeout);
         // 设置会话

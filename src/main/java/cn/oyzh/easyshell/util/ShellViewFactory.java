@@ -31,6 +31,7 @@ import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerLogsController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerPortController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerResourceController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerRunController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.controller.file.ShellFileEditController;
 import cn.oyzh.easyshell.controller.file.ShellFileErrorController;
@@ -61,6 +62,7 @@ import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerPort;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
@@ -985,6 +987,24 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
         return null;
+    }
+
+    /**
+     * 运行镜像业务
+     *
+     * @param exec  执行器
+     * @param image 镜像
+     */
+    public static void runImage(ShellDockerExec exec, ShellDockerImage image) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerRunController.class);
+            adapter.setProp("exec", exec);
+            adapter.setProp("image", image);
+            adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
 }

@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
+import cn.oyzh.easyshell.event.docker.ShellContainerRunEvent;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
@@ -25,6 +26,7 @@ import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -413,6 +415,17 @@ public class ShellEventUtil {
         ShellRunSnippetEvent event = new ShellRunSnippetEvent();
         event.data(content);
         event.setRunAll(runAll);
+        EventUtil.postAsync(event);
+    }
+
+    /**
+     * 容器运行事件
+     *
+     * @param exec 执行器
+     */
+    public static void containerRun(ShellDockerExec exec) {
+        ShellContainerRunEvent event = new ShellContainerRunEvent();
+        event.data(exec);
         EventUtil.postAsync(event);
     }
 

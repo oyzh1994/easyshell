@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerRunEnvTableView?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerRunPortTableView?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerRunVolumeTableView?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.button.ExecuteButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerRunLabelTableView?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerRunController" prefWidth="650" realHeight="550">
+    <FXTabPane flexWidth="100%" flexHeight="100% - 70">
+        <FXTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.containerName">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField tipText="%base.nameTip" fx:id="name" realHeight="30" flexWidth="100% - 140">
+                    <FXVBox.margin>
+                        <Insets left="30" top="5"/>
+                    </FXVBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="--restart">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <fx:define>
+                        <FXToggleGroup fx:id="restart"/>
+                    </fx:define>
+                    <FXRadioButton toggleGroup="$restart" text="no" userData="no">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </FXRadioButton>
+                    <FXRadioButton toggleGroup="$restart" text="always" userData="always">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXRadioButton>
+                    <FXRadioButton toggleGroup="$restart" text="on-failure" userData="on-failure">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXRadioButton>
+                    <FXRadioButton toggleGroup="$restart" text="unless-stopped" userData="unless-stopped">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXRadioButton>
+                </FXHBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox text="-i" fx:id="i">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox text="-t" fx:id="t">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox text="-d" fx:id="d" selected="true">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox text="--privileged" fx:id="privileged">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox text="--rm" fx:id="rm">
+                        <FXHBox.margin>
+                            <Insets left="15" top="5"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.ports">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addPort">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AddSVGGlyph>
+                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deletePort">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </DeleteSVGGlyph>
+                </FXHBox>
+                <ShellDockerRunPortTableView fx:id="portTable" flexHeight="100% - 40" flexWidth="100% - 70">
+                    <columns>
+                        <FXTableColumn flexWidth="35%" text="%base.outerPort" valueName="outerPortControl"
+                                       sortable="false"/>
+                        <FXTableColumn flexWidth="35%" text="%base.innerPort" valueName="innerPortControl"
+                                       sortable="false"/>
+                        <FXTableColumn flexWidth="30% - 12" text="%base.type" valueName="typeControl" sortable="false"/>
+                    </columns>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDockerRunPortTableView>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.volumes">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addVolume">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AddSVGGlyph>
+                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteVolume">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </DeleteSVGGlyph>
+                </FXHBox>
+                <ShellDockerRunVolumeTableView fx:id="volumeTable" flexHeight="100% - 40" flexWidth="100% - 70">
+                    <columns>
+                        <FXTableColumn flexWidth="50%" text="%base.hostPath" valueName="outerVolumeControl"
+                                       sortable="false"/>
+                        <FXTableColumn flexWidth="50% - 12" text="%base.containerPath" valueName="innerVolumeControl"
+                                       sortable="false"/>
+                    </columns>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDockerRunVolumeTableView>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.env">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addEnv">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AddSVGGlyph>
+                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteEnv">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </DeleteSVGGlyph>
+                </FXHBox>
+                <ShellDockerRunEnvTableView fx:id="envTable" flexHeight="100% - 40" flexWidth="100% - 70">
+                    <columns>
+                        <FXTableColumn flexWidth="30%" text="%base.name" valueName="nameControl" sortable="false"/>
+                        <FXTableColumn flexWidth="70% - 12" text="%base.value" valueName="valueControl"
+                                       sortable="false"/>
+                    </columns>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDockerRunEnvTableView>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.labels">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addLabel">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AddSVGGlyph>
+                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteLabel">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </DeleteSVGGlyph>
+                </FXHBox>
+                <ShellDockerRunLabelTableView fx:id="labelTable" flexHeight="100% - 40" flexWidth="100% - 70">
+                    <columns>
+                        <FXTableColumn flexWidth="30%" text="%base.name" valueName="nameControl" sortable="false"/>
+                        <FXTableColumn flexWidth="70% - 12" text="%base.value" valueName="valueControl"
+                                       sortable="false"/>
+                    </columns>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDockerRunLabelTableView>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%">
+        <ExecuteButton onAction="#run">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </ExecuteButton>
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>

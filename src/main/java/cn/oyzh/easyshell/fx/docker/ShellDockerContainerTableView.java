@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.fx.docker;
 
+import cn.oyzh.common.thread.DownLatch;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerContainer;
@@ -22,6 +24,7 @@ import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -434,18 +437,26 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
             try {
-                String output = this.exec.docker_logs(container.getContainerId());
+                DownLatch latch = DownLatch.of();
+                AtomicReference<String> ref = new AtomicReference<>();
+                ThreadUtil.startWithError(() -> {
+                    String output = this.exec.docker_logs(container.getContainerId());
+                    ref.set(output);
+                }, latch::countDown);
+                // 最多等待30秒
+                if (!latch.await(30_000)) {
+                    MessageBox.warn(I18nHelper.executeTimout());
+                    return;
+                }
+                String output = ref.get();
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
+                } else if (StringUtil.length(output) > 512 * 1024) {
+                    MessageBox.warn(I18nHelper.dataTooLarge());
                 } else {
-//                    FXUtil.runLater(() -> {
-//                        StageAdapter adapter = StageManager.parseStage(ShellDockerLogsController.class);
-//                        adapter.setProp("logs", output);
-//                        adapter.display();
-//                    });
                     ShellViewFactory.dockerLogs(output);
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }

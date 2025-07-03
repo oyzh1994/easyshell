@@ -46,11 +46,11 @@
             <columns>
                 <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
                 <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
-                <FXTableColumn flexWidth="100% - 805" valueName="command" text="%base.cmd"/>
-                <FXTableColumn prefWidth="200" valueName="created" text="%base.createTime"/>
+                <FXTableColumn flexWidth="100% - 855" valueName="command" text="%base.cmd"/>
+                <FXTableColumn prefWidth="210" valueName="created" text="%base.createTime"/>
                 <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
-                <FXTableColumn prefWidth="160" valueName="ports" text="%base.port"/>
-                <FXTableColumn prefWidth="100" valueName="names" text="%base.name"/>
+                <FXTableColumn prefWidth="180" valueName="ports" text="%base.port"/>
+                <FXTableColumn prefWidth="120" valueName="names" text="%base.name"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
