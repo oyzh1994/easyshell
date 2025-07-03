@@ -155,6 +155,18 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
     }
 
     /**
+     * 保存镜像
+     *
+     * @param image 镜像
+     */
+    public void saveImage(ShellDockerImage image) {
+        if (image == null) {
+            return;
+        }
+        ShellViewFactory.saveImage(this.exec, image);
+    }
+
+    /**
      * 镜像审查
      *
      * @param image 镜像
@@ -169,12 +181,6 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-//                    FXUtil.runLater(() -> {
-//                        StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class);
-//                        adapter.setProp("inspect", output);
-//                        adapter.setProp("image", true);
-//                        adapter.display();
-//                    });
                     ShellViewFactory.dockerInspect(output, true);
                 }
             } catch (Exception ex) {
@@ -212,6 +218,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         List<FXMenuItem> menuItems = new ArrayList<>();
         FXMenuItem runImage = MenuItemHelper.runImage("12", () -> this.runImage(image));
         FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", () -> this.imageInspect(image));
+        FXMenuItem saveImage = MenuItemHelper.saveImage("12", () -> this.saveImage(image));
         imageInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(image, false));
@@ -219,6 +226,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(image, true));
         menuItems.add(runImage);
         menuItems.add(imageInfo);
+        menuItems.add(saveImage);
         menuItems.add(imageHistory);
         menuItems.add(deleteImage);
         menuItems.add(forceDeleteImage);

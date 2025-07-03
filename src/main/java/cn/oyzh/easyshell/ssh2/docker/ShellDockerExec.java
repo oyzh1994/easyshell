@@ -17,6 +17,10 @@ public class ShellDockerExec implements AutoCloseable {
         this.client = client;
     }
 
+    public ShellSSHClient getClient() {
+        return client;
+    }
+
     protected String getContainerFormat() {
         if (this.client.isWindows()) {
             return "\"{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}\"";
@@ -235,6 +239,25 @@ public class ShellDockerExec implements AutoCloseable {
         }
         return this.client.exec(builder.toString());
     }
+
+    /**
+     * 执行docker save命令
+     *
+     * @param filePath 文件路径
+     * @param imageId  镜像id
+     * @return 结果
+     */
+    public String docker_save(String filePath, String imageId) {
+        StringBuilder builder = new StringBuilder("docker save -o ")
+                .append(filePath)
+                .append(" ")
+                .append(imageId);
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker save:{}", builder.toString());
+        }
+        return this.client.exec(builder.toString());
+    }
+
 
     public String docker_info() {
         return this.client.exec("docker info");

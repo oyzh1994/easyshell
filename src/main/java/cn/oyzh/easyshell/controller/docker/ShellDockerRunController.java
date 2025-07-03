@@ -28,10 +28,10 @@ import javafx.stage.WindowEvent;
 import java.util.List;
 
 /**
- * docker容器资源业务
+ * docker容器运行业务
  *
  * @author oyzh
- * @since 2025/03/13
+ * @since 2025/07/03
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
@@ -126,7 +126,7 @@ public class ShellDockerRunController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.containerResource();
+        return I18nHelper.runContainer();
     }
 
     @FXML

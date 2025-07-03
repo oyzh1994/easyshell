@@ -32,6 +32,7 @@ import cn.oyzh.easyshell.controller.docker.ShellDockerLogsController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerPortController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerResourceController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerRunController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerSaveController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerVersionController;
 import cn.oyzh.easyshell.controller.file.ShellFileEditController;
 import cn.oyzh.easyshell.controller.file.ShellFileErrorController;
@@ -1006,5 +1007,24 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    /**
+     * 保存镜像业务
+     *
+     * @param exec  执行器
+     * @param image 镜像
+     */
+    public static void saveImage(ShellDockerExec exec, ShellDockerImage image) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class);
+            adapter.setProp("exec", exec);
+            adapter.setProp("image", image);
+            adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 
 }

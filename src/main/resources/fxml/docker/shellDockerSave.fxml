@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.button.ExecuteButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXProgressBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerSaveController" prefWidth="650" realHeight="240">
+    <InfoLabel text="%base.fileName">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField tipText="%base.nameTip" fx:id="name" realHeight="30" flexWidth="100% - 140">
+        <FXVBox.margin>
+            <Insets left="30" top="5"/>
+        </FXVBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.currentProgress">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXProgressBar fx:id="process" progress="0" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXProgressBar>
+    <FXHBox flexWidth="100%">
+        <ExecuteButton onAction="#run" groupId="run">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </ExecuteButton>
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>
