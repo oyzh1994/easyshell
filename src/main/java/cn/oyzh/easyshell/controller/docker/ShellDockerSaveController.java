@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerSave;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -138,7 +139,10 @@ public class ShellDockerSaveController extends StageController {
             // 执行导出
             this.execThread = ThreadUtil.start(() -> {
                 try {
-                    this.exec.docker_save(filePath, this.image.getImageId());
+                    ShellDockerSave save = new ShellDockerSave();
+                    save.setFilePath(filePath);
+                    save.setImageId(this.image.getImageId());
+                    this.exec.docker_save(save);
                 } finally {
                     status.set(false);
                 }

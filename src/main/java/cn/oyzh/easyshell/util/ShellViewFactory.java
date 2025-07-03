@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectControll
 import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellUpdateVNCConnectController;
+import cn.oyzh.easyshell.controller.docker.ShellDockerCommitController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInspectController;
@@ -62,12 +63,13 @@ import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerContainer;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerPort;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -1019,6 +1021,24 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class);
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
+            adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 保存容器业务
+     *
+     * @param exec      执行器
+     * @param container 容器
+     */
+    public static void commitContainer(ShellDockerExec exec, ShellDockerContainer container) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class);
+            adapter.setProp("exec", exec);
+            adapter.setProp("container", container);
             adapter.show();
         } catch (Exception ex) {
             ex.printStackTrace();

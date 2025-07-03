@@ -243,21 +243,47 @@ public class ShellDockerExec implements AutoCloseable {
     /**
      * 执行docker save命令
      *
-     * @param filePath 文件路径
-     * @param imageId  镜像id
+     * @param save 参数
      * @return 结果
      */
-    public String docker_save(String filePath, String imageId) {
-        StringBuilder builder = new StringBuilder("docker save -o ")
-                .append(filePath)
+    public String docker_save(ShellDockerSave save) {
+        StringBuilder builder = new StringBuilder("docker save ");
+        if (save.isQuiet()) {
+            builder.append("-q ");
+        }
+        builder.append(" -o")
+                .append(save.getFilePath())
                 .append(" ")
-                .append(imageId);
+                .append(save.getImageId());
         if (JulLog.isInfoEnabled()) {
             JulLog.info("docker save:{}", builder.toString());
         }
         return this.client.exec(builder.toString());
     }
 
+    /**
+     * 执行docker commit命令
+     *
+     * @param commit 参数
+     * @return 结果
+     */
+    public String docker_commit(ShellDockerCommit commit) {
+        StringBuilder builder = new StringBuilder("docker commit ");
+        if (StringUtil.isNotBlank(commit.getComment())) {
+            builder.append("-m ").append(commit.getComment()).append(" ");
+        }
+        builder.append(commit.getContainerId());
+        if (StringUtil.isNotBlank(commit.getRepository())) {
+            builder.append(" ").append(commit.getRepository());
+            if (StringUtil.isNotBlank(commit.getTag())) {
+                builder.append(":").append(commit.getTag());
+            }
+        }
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker commit:{}", builder.toString());
+        }
+        return this.client.exec(builder.toString());
+    }
 
     public String docker_info() {
         return this.client.exec("docker info");

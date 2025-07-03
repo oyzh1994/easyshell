@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.tabs.ssh.docker;
 
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
+import cn.oyzh.easyshell.event.docker.ShellContainerCommitEvent;
 import cn.oyzh.easyshell.fx.docker.ShellDockerImageTableView;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -124,5 +126,17 @@ public class ShellSSHDockerImageTabController extends SubTabController {
     @FXML
     private void deleteImageForce() {
         this.imageTable.deleteImage(this.imageTable.getSelectedItem(), true);
+    }
+
+    /**
+     * 容器保存事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onContainerCommit(ShellContainerCommitEvent event) {
+        if (event.data() == this.client().dockerExec()) {
+            this.refreshImage();
+        }
     }
 }

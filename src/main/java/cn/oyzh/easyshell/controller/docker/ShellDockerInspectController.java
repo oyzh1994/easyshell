@@ -8,7 +8,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -69,11 +68,6 @@ public class ShellDockerInspectController extends StageController {
         }
     }
 
-//    @Override
-//    public String getViewTitle() {
-//        return I18nHelper.info();
-//    }
-
     /**
      * 搜索索引
      */
@@ -89,11 +83,12 @@ public class ShellDockerInspectController extends StageController {
             if (StringUtil.isBlank(filterText)) {
                 return;
             }
+            filterText = filterText.toLowerCase();
             String text = this.data.getText();
             if (this.searchIndex >= text.length()) {
                 this.searchIndex = 0;
             }
-            int index = text.indexOf(filterText, this.searchIndex);
+            int index = text.toLowerCase().indexOf(filterText, this.searchIndex);
             if (index == -1) {
                 this.searchIndex = 0;
                 return;

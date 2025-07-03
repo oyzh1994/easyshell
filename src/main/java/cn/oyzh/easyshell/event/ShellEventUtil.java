@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
+import cn.oyzh.easyshell.event.docker.ShellContainerCommitEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerRunEvent;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
@@ -425,6 +426,17 @@ public class ShellEventUtil {
      */
     public static void containerRun(ShellDockerExec exec) {
         ShellContainerRunEvent event = new ShellContainerRunEvent();
+        event.data(exec);
+        EventUtil.postAsync(event);
+    }
+
+    /**
+     * 容器保存事件
+     *
+     * @param exec 执行器
+     */
+    public static void containerCommit(ShellDockerExec exec) {
+        ShellContainerCommitEvent event = new ShellContainerCommitEvent();
         event.data(exec);
         EventUtil.postAsync(event);
     }

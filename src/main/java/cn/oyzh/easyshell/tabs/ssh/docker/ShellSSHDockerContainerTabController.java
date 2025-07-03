@@ -144,7 +144,7 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
      */
     @EventSubscribe
     private void onContainerRun(ShellContainerRunEvent event) {
-        if (event.data() == this.containerTable.getExec()) {
+        if (event.data() == this.client().dockerExec()) {
             this.refreshContainer();
         }
     }

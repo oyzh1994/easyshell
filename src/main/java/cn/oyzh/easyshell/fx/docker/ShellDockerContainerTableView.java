@@ -227,7 +227,21 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         menuItems.add(renameContainer);
         menuItems.add(deleteContainer);
         menuItems.add(forceDeleteContainer);
+        FXMenuItem saveContainer = MenuItemHelper.saveContainer("12", () -> this.saveContainer(container));
+        menuItems.add(saveContainer);
         return menuItems;
+    }
+
+    /**
+     * 保存容器
+     *
+     * @param container 容器
+     */
+    public void saveContainer(ShellDockerContainer container) {
+        if (container == null) {
+            return;
+        }
+        ShellViewFactory.commitContainer(this.exec, container);
     }
 
     /**
@@ -256,7 +270,6 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             }
         });
     }
-
 
     /**
      * 停止容器
