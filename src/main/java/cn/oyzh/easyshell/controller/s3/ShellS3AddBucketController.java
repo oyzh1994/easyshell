@@ -28,9 +28,9 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "s3/shellAddS3Bucket.fxml"
+        value = FXConst.FXML_PATH + "s3/shellS3AddBucket.fxml"
 )
-public class ShellAddS3BucketController extends StageController {
+public class ShellS3AddBucketController extends StageController {
 
     /**
      * 桶名称

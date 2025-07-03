@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController" realWidth="750"
         realHeight="480">
     <InfoLabel text="%base.name">
         <VBox.margin>

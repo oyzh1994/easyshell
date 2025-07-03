@@ -46,8 +46,9 @@ import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
-import cn.oyzh.easyshell.controller.s3.ShellAddS3BucketController;
-import cn.oyzh.easyshell.controller.s3.ShellUpdateS3BucketController;
+import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
+import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
+import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;
 import cn.oyzh.easyshell.controller.snippet.ShellSnippetController;
 import cn.oyzh.easyshell.controller.split.ShellSplitGuidController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
@@ -63,6 +64,7 @@ import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerContainer;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
@@ -927,7 +929,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter addS3Bucket(ShellS3Client client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddS3BucketController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellS3AddBucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
             adapter.showAndWait();
             return adapter;
@@ -945,7 +947,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter updateS3Bucket(ShellS3Client client, ShellS3Bucket bucket) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3BucketController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellS3UpdateBucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
             adapter.setProp("bucket", bucket);
             adapter.showAndWait();
@@ -1046,5 +1048,22 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 分享文件业务
+     *
+     * @param client 客户端
+     * @param file   文件
+     */
+    public static void shareFile(ShellS3Client client, ShellS3File file) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellS3ShareFileController.class);
+            adapter.setProp("s3File", file);
+            adapter.setProp("client", client);
+            adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
 }

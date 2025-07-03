@@ -59,12 +59,16 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.VersioningConfiguration;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -828,11 +832,15 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 .bucket(bucketName)
                 .objectLockConfiguration(lockConfig)
                 .build();
-
         this.s3Client.putObjectLockConfiguration(request);
     }
 
-    // 获取Bucket的默认保留规则
+    /**
+     * 获取Bucket的默认保留规则
+     *
+     * @param bucketName 桶
+     * @return 默认保留规则
+     */
     public DefaultRetention getBucketRetention(String bucketName) {
         try {
             GetObjectLockConfigurationRequest request = GetObjectLockConfigurationRequest.builder()
@@ -853,6 +861,48 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 return null;
             }
             throw e;
+        }
+    }
+
+    /**
+     * 签名提供者
+     */
+    private StaticCredentialsProvider credentialsProvider;
+
+    /**
+     * 创建一个带签名的访问地址
+     *
+     * @param bucketName 桶
+     * @param key        键
+     * @param duration        时长
+     * @return 值
+     */
+    public String generatePresignedUrl(String bucketName, String key,Duration duration) {
+        // 创建凭证提供者
+        if (this.credentialsProvider == null) {
+            this.credentialsProvider = StaticCredentialsProvider.create(AwsBasicCredentials.create(this.connect.getUser(), this.connect.getPassword()));
+        }
+        // 签名器
+        S3Presigner signer = S3Presigner.builder().region(this.region())
+                .credentialsProvider(this.credentialsProvider)
+                .endpointOverride(URI.create("http://" + this.connect.getHost()))
+                .build();
+        try (signer) {
+            // 1. 构建请求
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+
+            // 2. 设置签名有效期（例如 10 分钟）
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(duration)
+                    .getObjectRequest(getObjectRequest)
+                    .build();
+
+            // 3. 生成签名 URL
+            PresignedGetObjectRequest presignedRequest = signer.presignGetObject(presignRequest);
+            return presignedRequest.url().toString();
         }
     }
 

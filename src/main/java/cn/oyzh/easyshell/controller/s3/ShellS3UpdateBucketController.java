@@ -25,9 +25,9 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "s3/shellUpdateS3Bucket.fxml"
+        value = FXConst.FXML_PATH + "s3/shellS3UpdateBucket.fxml"
 )
-public class ShellUpdateS3BucketController extends StageController {
+public class ShellS3UpdateBucketController extends StageController {
 
     /**
      * 密钥名称

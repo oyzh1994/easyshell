@@ -59,11 +59,19 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
         }
         // 获取选中的文件
         List<ShellS3File> files = this.getFilterSelectedItems();
-        // 下载文件
         if (!files.isEmpty()) {
+            // 下载文件
             if (this.isSupportDownloadAction()) {
                 FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
                 menuItems.add(downloadFile);
+            }
+            // 分享文件
+            if (files.size() == 1) {
+                ShellS3File file = files.getFirst();
+                if (file.isFile()) {
+                    FXMenuItem shareFile = MenuItemHelper.shareFile("12", () -> this.shareFile(file));
+                    menuItems.add(shareFile);
+                }
             }
         }
         if (menuItems.isEmpty()) {

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -82,16 +83,19 @@ public class ShellDockerLogsController extends StageController {
                 return;
             }
             String text = this.data.getText();
-            if (this.searchIndex >= text.length()) {
-                this.searchIndex = 0;
-            }
-            int index = text.indexOf(filterText, this.searchIndex);
-            if (index == -1) {
-                this.searchIndex = 0;
-                return;
-            }
-            this.searchIndex = index + filterText.length();
+            int index = TextUtil.findIndex(text, filterText, this.searchIndex, false, false);
             this.data.selectRangeAndGoto(index, index + filterText.length());
+            this.searchIndex = index + filterText.length();
+            //if (this.searchIndex >= text.length()) {
+            //    this.searchIndex = 0;
+            //}
+            //int index = text.toLowerCase().indexOf(filterText, this.searchIndex);
+            //if (index == -1) {
+            //    this.searchIndex = 0;
+            //    return;
+            //}
+            //this.searchIndex = index + filterText.length();
+            //this.data.selectRangeAndGoto(index, index + filterText.length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

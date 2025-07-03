@@ -12,6 +12,8 @@ import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
+import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -996,6 +998,18 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.client.doUpload(file, this.getLocation());
         }
         MessageBox.okToast(I18nHelper.addedToUploadList());
+    }
+
+    /**
+     * 分享文件
+     *
+     * @param file 文件
+     */
+    public void shareFile(ShellS3File file) {
+        if (file == null || !file.isFile()) {
+            return;
+        }
+        ShellViewFactory.shareFile((ShellS3Client) this.client, file);
     }
 
     /**

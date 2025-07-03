@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -83,18 +84,21 @@ public class ShellDockerInspectController extends StageController {
             if (StringUtil.isBlank(filterText)) {
                 return;
             }
-            filterText = filterText.toLowerCase();
+            //filterText = filterText.toLowerCase();
             String text = this.data.getText();
-            if (this.searchIndex >= text.length()) {
-                this.searchIndex = 0;
-            }
-            int index = text.toLowerCase().indexOf(filterText, this.searchIndex);
-            if (index == -1) {
-                this.searchIndex = 0;
-                return;
-            }
-            this.searchIndex = index + filterText.length();
+            int index = TextUtil.findIndex(text, filterText, this.searchIndex, false, false);
             this.data.selectRangeAndGoto(index, index + filterText.length());
+            this.searchIndex = index + filterText.length();
+            //if (this.searchIndex >= text.length()) {
+            //    this.searchIndex = 0;
+            //}
+            //int index = text.toLowerCase().indexOf(filterText, this.searchIndex);
+            //if (index == -1) {
+            //    this.searchIndex = 0;
+            //    return;
+            //}
+            //this.searchIndex = index + filterText.length();
+            //this.data.selectRangeAndGoto(index, index + filterText.length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

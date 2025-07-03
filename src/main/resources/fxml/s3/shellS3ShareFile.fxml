@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3EffectiveTimeCombobox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.GenerateKeyButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController" realWidth="750"
+        realHeight="360">
+    <InfoLabel text="%base.file">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextField fx:id="file" require="true" realHeight="30"
+                       flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextField>
+    <InfoLabel text="%base.openAsUrl">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <ReadOnlyTextField fx:id="shareUrl" require="true" realHeight="30"
+                           flexWidth="100% - 180">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </ReadOnlyTextField>
+        <CopySVGGlyph onMousePrimaryClicked="#copyUrl">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+    </FXHBox>
+    <InfoLabel text="%base.effectiveTime">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <NumberTextField fx:id="duration" require="true" realHeight="30"
+                         flexWidth="100% - 285" value="7">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </NumberTextField>
+        <ShellS3EffectiveTimeCombobox prefHeight="30" fx:id="durationType" prefWidth="100">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </ShellS3EffectiveTimeCombobox>
+    </FXHBox>
+    <FXHBox flexWidth="100%">
+        <GenerateKeyButton onAction="#generate" text="%base.generate">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </GenerateKeyButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>
