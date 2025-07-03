@@ -8,7 +8,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -16,6 +17,9 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.util.SSHAgentConnectorFactory;
 import cn.oyzh.ssh.util.SSHKeyUtil;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.ClientBuilder;
 import org.apache.sshd.client.auth.keyboard.UserAuthKeyboardInteractiveFactory;
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory;
@@ -60,7 +64,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2025/04/25
  */
-public abstract class ShellBaseSSHClient implements BaseClient {
+public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     /**
      * 系统类型
@@ -565,6 +569,11 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             return this.session;
         }
 
+        // 由于二次验证会要求更多时间，优化下此处的验证时间
+        if (this.shellConnect.isPasswordAuth() && timeout < 15000) {
+            timeout = 15000;
+        }
+
         // 会话连接信息
         String host = this.initHost();
         String hostIp = host.split(":")[0];
@@ -651,4 +660,28 @@ public abstract class ShellBaseSSHClient implements BaseClient {
             this.sshClient = null;
         }
     }
+
+    @Override
+    public boolean isConnected() {
+        if (this.session != null) {
+            return this.session.isOpen();
+        }
+        return this.sshClient != null && this.sshClient.isStarted();
+    }
+
+    /**
+     * 连接状态
+     */
+    protected final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+
+    @Override
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
+    }
+
+    /**
+     * 当前状态监听器
+     */
+    protected final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
+
 }

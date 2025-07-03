@@ -2,10 +2,11 @@ package cn.oyzh.easyshell.telnet;
 
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.WindowSizeOptionHandler;
@@ -18,7 +19,7 @@ import java.io.OutputStream;
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellTelnetClient implements BaseClient {
+public class ShellTelnetClient implements ShellBaseClient {
 
     /**
      * 客户端
@@ -33,16 +34,16 @@ public class ShellTelnetClient implements BaseClient {
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
 
     /**
      * 当前状态监听器
      */
-    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> BaseClient.super.onStateChanged(state3);
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
 
     @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
     public ShellTelnetClient(ShellConnect shellConnect) {
@@ -55,7 +56,7 @@ public class ShellTelnetClient implements BaseClient {
      */
     private void initClient() {
         this.client = new TelnetClient();
-        this.client.setCharset(BaseClient.super.getCharset());
+        this.client.setCharset(ShellBaseClient.super.getCharset());
     }
 
     @Override
@@ -67,6 +68,8 @@ public class ShellTelnetClient implements BaseClient {
             this.client.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort());
             if (this.client.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
+                // 添加到状态监听器队列
+                ShellClientChecker.push(this);
             } else {
                 this.state.set(ShellConnState.FAILED);
             }

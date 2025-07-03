@@ -15,9 +15,10 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,8 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -62,7 +61,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
 
     /**
      * 当前状态监听器
@@ -70,8 +69,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
 
     @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
     public ShellFTPClient(ShellConnect shellConnect) {
@@ -164,6 +163,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             this.lsFile("/");
             this.state.set(ShellConnState.CONNECTED);
             long endTime = System.currentTimeMillis();
+            // 添加到状态监听器队列
+            ShellClientChecker.push(this);
             JulLog.info("shellFTPClient connected used:{}ms.", (endTime - starTime));
         } catch (Throwable ex) {
             ex.printStackTrace();
@@ -527,7 +528,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             };
             ftpClient.start();
             return ftpClient;
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
         return this;

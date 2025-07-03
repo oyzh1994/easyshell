@@ -15,8 +15,8 @@ import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -92,7 +92,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
 
     /**
      * 当前状态监听器
@@ -163,12 +163,12 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean isConnected() {
-        return this.s3Client != null && this.state.get().isConnected();
+        return this.s3Client != null;
     }
 
     @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
     @Override

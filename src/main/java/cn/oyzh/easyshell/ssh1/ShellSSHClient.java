@@ -360,7 +360,7 @@
 //    public void close() {
 //        try {
 //            // 从监听器队列移除
-//            ShellSSHClientChecker.remove(this);
+//            ShellClientChecker.remove(this);
 //            if (this.shell != null) {
 //                this.shell.close();
 //                this.shell = null;
@@ -425,7 +425,7 @@
 //                // 初始化隧道
 //                this.initTunneling();
 //                // 添加到状态监听器队列
-//                ShellSSHClientChecker.push(this);
+//                ShellClientChecker.push(this);
 //            } else if (this.state.get() == ShellConnState.FAILED) {
 //                this.state.set(null);
 //            } else {

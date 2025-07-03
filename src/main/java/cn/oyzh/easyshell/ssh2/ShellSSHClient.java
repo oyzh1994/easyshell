@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
@@ -24,11 +25,8 @@ import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder2;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.core.CoreModuleProperties;
@@ -144,37 +142,22 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
-    /**
-     * 连接状态
-     */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
-
-    @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
-    }
-
-    /**
-     * 当前状态监听器
-     */
-    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
-
     public ShellSSHClient(ShellConnect shellConnect) {
         super(shellConnect);
         this.addStateListener(this.stateListener);
     }
-
-    /**
-     * 更新状态
-     */
-    public void updateState() {
-        ShellConnState state = this.getState();
-        if (state == ShellConnState.CONNECTED) {
-            if (this.sshClient == null || !this.sshClient.isOpen()) {
-                this.state.set(ShellConnState.INTERRUPT);
-            }
-        }
-    }
+    //
+    // /**
+    //  * 更新状态
+    //  */
+    // public void updateState() {
+    //     ShellConnState state = this.getState();
+    //     if (state == ShellConnState.CONNECTED) {
+    //         if (this.session != null && !this.session.isOpen()) {
+    //             this.state.set(ShellConnState.INTERRUPT);
+    //         }
+    //     }
+    // }
 
     /**
      * sftp客户端
@@ -196,8 +179,17 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return null;
     }
 
+    /**
+     * 连接地址
+     */
+    private String connectHost;
+
     @Override
     protected String initHost() {
+        // 如果地址已经有了，则直接返回
+        if (this.connectHost != null) {
+            return this.connectHost;
+        }
         // 连接地址
         String host;
         // 初始化跳板转发
@@ -221,7 +213,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 连接信息
             host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
         }
-        return host;
+        this.connectHost = host;
+        return this.connectHost;
     }
 
     /**
@@ -287,7 +280,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public void close() {
         try {
             // 从监听器队列移除
-            ShellSSHClientChecker.remove(this);
+            ShellClientChecker.remove(this);
             if (this.shell != null) {
                 this.shell.close();
                 this.shell = null;
@@ -348,7 +341,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             if (this.sshClient != null && this.sshClient.isOpen()) {
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
-                ShellSSHClientChecker.push(this);
+                ShellClientChecker.push(this);
             } else if (this.state.get() == ShellConnState.FAILED) {
                 this.state.set(null);
             } else {
@@ -379,11 +372,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             return this.state.get() == ShellConnState.CONNECTING;
         }
         return false;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return this.sshClient != null && this.sshClient.isStarted() && this.state.get().isConnected();
     }
 
     /**

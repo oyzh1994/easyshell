@@ -156,7 +156,7 @@ public class ShellSFTPTabController extends RichTabController {
                 }, "upload,download");
                 // 设置收藏处理
                 this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client));
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
                 this.closeTab();

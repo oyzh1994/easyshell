@@ -88,7 +88,7 @@ public class ShellVNCTabController extends RichTabController {
                 }
                 // 初始化缩放
                 this.initScale();
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
                 this.closeTab();

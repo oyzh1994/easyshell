@@ -13,7 +13,7 @@
 // * @author oyzh
 // * @since 2025-03-27
 // */
-//public class ShellSSHClientChecker {
+//public class ShellClientChecker {
 //
 //    /**
 //     * 监测任务

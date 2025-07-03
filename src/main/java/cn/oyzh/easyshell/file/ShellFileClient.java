@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.function.ExceptionConsumer;
 import cn.oyzh.common.util.Competitor;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -24,7 +24,7 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025-04-27
  */
-public interface ShellFileClient<E extends ShellFile> extends BaseClient {
+public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
 
     /**
      * 列举文件

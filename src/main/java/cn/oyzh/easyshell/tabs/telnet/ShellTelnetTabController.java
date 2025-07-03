@@ -111,7 +111,7 @@ public class ShellTelnetTabController extends RichTabController {
                 this.initWidget();
                 // 异步加载背景
                 ThreadUtil.startVirtual(this::initBackground);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
                 this.closeTab();

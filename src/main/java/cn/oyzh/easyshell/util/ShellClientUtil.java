@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.util;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.s3.ShellS3Client;
@@ -19,8 +19,8 @@ import cn.oyzh.easyshell.vnc.ShellVNCClient;
  */
 public class ShellClientUtil {
 
-    public static <T extends BaseClient> T newClient(ShellConnect connect) {
-        BaseClient client = null;
+    public static <T extends ShellBaseClient> T newClient(ShellConnect connect) {
+        ShellBaseClient client = null;
         if (connect.isSSHType()) {
             client = new ShellSSHClient(connect);
         } else if (connect.isSFTPType()) {

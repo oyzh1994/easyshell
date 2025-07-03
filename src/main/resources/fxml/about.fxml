@@ -105,7 +105,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/mwiede/jsch">
+                <FXHyperlink text="https://github.com/apache/mina-sshd">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -218,12 +218,36 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="Encryption">
+                <InfoLabel text="X11">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/org.apache.sshd/sshd-common">
+                <FXHyperlink text="https://github.com/apache/mina-sshd/issues/712">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.dependency" appendText="4">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="SSH Agent">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache.agent">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="Proxy">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.split;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
@@ -43,7 +43,7 @@ public class ShellSplitTermController extends SubTabController {
     /**
      * 客户端
      */
-    private BaseClient client;
+    private ShellBaseClient client;
 
     /**
      * 终端组件
@@ -189,7 +189,7 @@ public class ShellSplitTermController extends SubTabController {
             } else {
                 this.destroy();
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             MessageBox.exception(ex);
             this.destroy();
         }

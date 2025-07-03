@@ -8,6 +8,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -151,6 +152,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     @Override
     public void stop() {
+        // 停止客户端检测
+        ShellClientChecker.stop();
         // 关闭x11服务
         ShellX11Manager.stopXServer();
         EventListener.super.unregister();

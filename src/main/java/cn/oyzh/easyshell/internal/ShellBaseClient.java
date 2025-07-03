@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.internal;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 
 import java.nio.charset.Charset;
@@ -14,12 +14,12 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025-04-25
  */
-public interface BaseClient extends AutoCloseable {
+public interface ShellBaseClient extends AutoCloseable {
 
     /**
      * 连接
      */
-    default void start() throws Exception {
+    default void start() throws Throwable {
         this.start(this.connectTimeout());
     }
 
@@ -28,7 +28,7 @@ public interface BaseClient extends AutoCloseable {
      *
      * @param timeout 超时时间
      */
-    void start(int timeout) throws Exception;
+    void start(int timeout) throws Throwable;
 
     /**
      * 获取连接
@@ -89,7 +89,7 @@ public interface BaseClient extends AutoCloseable {
      *
      * @return 连接状态属性
      */
-    ReadOnlyObjectProperty<ShellConnState> stateProperty();
+    ObjectProperty<ShellConnState> stateProperty();
 
     /**
      * 添加连接状态监听器
@@ -135,4 +135,13 @@ public interface BaseClient extends AutoCloseable {
         }
     }
 
+    /**
+     * 检查状态
+     */
+    default void checkState() {
+        ShellConnState state = this.getState();
+        if (state == ShellConnState.CONNECTED && !this.isConnected()) {
+            this.stateProperty().set(ShellConnState.INTERRUPT);
+        }
+    }
 }

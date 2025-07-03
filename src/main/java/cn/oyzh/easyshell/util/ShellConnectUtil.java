@@ -155,7 +155,7 @@ public class ShellConnectUtil {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
             }

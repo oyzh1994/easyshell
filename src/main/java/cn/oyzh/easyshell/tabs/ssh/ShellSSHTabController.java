@@ -145,7 +145,7 @@ public class ShellSSHTabController extends ParentTabController {
                 this.dockerTabController.setClient(this.client);
                 this.monitorTabController.setClient(this.client);
                 this.processTabController.setClient(this.client);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
                 this.closeTab();

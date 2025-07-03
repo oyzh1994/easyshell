@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.ssh2;
+package cn.oyzh.easyshell.internal;
 
 import cn.oyzh.common.thread.TaskManager;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025-03-27
  */
-public class ShellSSHClientChecker {
+public class ShellClientChecker {
 
     /**
      * 监测任务
@@ -23,23 +23,24 @@ public class ShellSSHClientChecker {
     /**
      * 客户端列表
      */
-    private static final List<ShellSSHClient> CLIENTS = new CopyOnWriteArrayList<>();
+    private static final List<ShellBaseClient> CLIENTS = new CopyOnWriteArrayList<>();
 
     /**
      * 添加客户端
      *
      * @param client 客户端
      */
-    public static void push(ShellSSHClient client) {
+    public static void push(ShellBaseClient client) {
         CLIENTS.add(client);
         doCheck();
     }
 
     /**
      * 移除客户端
+     *
      * @param client 客户端
      */
-    public static void remove(ShellSSHClient client) {
+    public static void remove(ShellBaseClient client) {
         CLIENTS.remove(client);
     }
 
@@ -50,9 +51,9 @@ public class ShellSSHClientChecker {
         if (taskFuture == null) {
             // 创建任务
             taskFuture = TaskManager.startInterval("client:check", () -> {
-                List<ShellSSHClient> closedList = null;
-                for (ShellSSHClient client : CLIENTS) {
-                    client.updateState();
+                List<ShellBaseClient> closedList = null;
+                for (ShellBaseClient client : CLIENTS) {
+                    client.checkState();
                     // 如果客户端已关闭，则从队列里面移除
                     if (client.isClosed()) {
                         if (closedList == null) {
@@ -65,6 +66,18 @@ public class ShellSSHClientChecker {
                     CLIENTS.removeAll(closedList);
                 }
             }, 1500, 1500);
+        }
+    }
+
+    /**
+     * 停止
+     */
+    public static void stop() {
+        try {
+            CLIENTS.clear();
+            TaskManager.cancel(taskFuture);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

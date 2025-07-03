@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.local;
 
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author oyzh
  * @since 2025-06-11
  */
-public class ShellLocalClient implements BaseClient {
+public class ShellLocalClient implements ShellBaseClient {
 
     /**
      * 连接
@@ -24,16 +24,16 @@ public class ShellLocalClient implements BaseClient {
     /**
      * 连接状态
      */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
 
     /**
      * 当前状态监听器
      */
-    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> BaseClient.super.onStateChanged(state3);
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
 
     @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
     public ShellLocalClient(ShellConnect shellConnect) {
@@ -48,7 +48,7 @@ public class ShellLocalClient implements BaseClient {
         }
         try {
             this.state.set(ShellConnState.CONNECTING);
-                this.state.set(ShellConnState.CONNECTED);
+            this.state.set(ShellConnState.CONNECTED);
         } catch (Throwable ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);

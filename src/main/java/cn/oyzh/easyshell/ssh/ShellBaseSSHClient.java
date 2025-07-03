@@ -8,7 +8,7 @@
 // import cn.oyzh.common.util.StringUtil;
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.ShellKey;
-// import cn.oyzh.easyshell.internal.BaseClient;
+// import cn.oyzh.easyshell.internal.ShellBaseClient;
 // import cn.oyzh.easyshell.store.ShellKeyStore;
 // import cn.oyzh.easyshell.util.ShellUtil;
 // import cn.oyzh.fx.plus.information.MessageBox;
@@ -35,7 +35,7 @@
 //  * @author oyzh
 //  * @since 2025/04/25
 //  */
-// public abstract class ShellBaseSSHClient implements BaseClient {
+// public abstract class ShellBaseSSHClient implements ShellBaseClient {
 //
 //     /**
 //      * 系统类型

@@ -154,7 +154,7 @@ public class ShellFTPTabController extends RichTabController {
                         this.manage.text("(" + this.client.getTaskSize() + ")");
                     }
                 }, "upload,download");
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
                 this.closeTab();

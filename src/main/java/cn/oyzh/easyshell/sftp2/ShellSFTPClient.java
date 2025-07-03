@@ -14,15 +14,12 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh2.ShellBaseSSHClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHJGitClient;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.SftpClientFactory;
@@ -59,21 +56,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      * 延迟处理的文件通道
      */
     private final List<ShellSFTPChannel> delayChannels = new ArrayList<>();
-
-    /**
-     * 连接状态
-     */
-    private final ReadOnlyObjectWrapper<ShellConnState> state = new ReadOnlyObjectWrapper<>();
-
-    @Override
-    public ReadOnlyObjectProperty<ShellConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
-    }
-
-    /**
-     * 当前状态监听器
-     */
-    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> super.onStateChanged(state3);
 
     public ShellSFTPClient(ShellConnect shellConnect) {
         this(shellConnect, null, null);
@@ -130,6 +112,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
+                // 添加到状态监听器队列
+                ShellClientChecker.push(this);
             } else {
                 this.state.set(ShellConnState.FAILED);
             }
@@ -146,11 +130,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             // 执行一次gc，快速回收内存
             SystemUtil.gc();
         }
-    }
-
-    @Override
-    public boolean isConnected() {
-        return this.sshClient != null && this.sshClient.isOpen();
     }
 
     /**

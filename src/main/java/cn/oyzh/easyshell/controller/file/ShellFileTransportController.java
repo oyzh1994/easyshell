@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView;
 import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView;
-import cn.oyzh.easyshell.internal.BaseClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -344,7 +344,7 @@ public class ShellFileTransportController extends StageController {
                     try {
                         // 检查来源
                         if (this.sourceClient == null || this.sourceClient.isClosed()) {
-                            BaseClient client = ShellClientUtil.newClient(sourceInfo);
+                            ShellBaseClient client = ShellClientUtil.newClient(sourceInfo);
                             if (client instanceof ShellSSHClient sshClient) {
                                 this.sourceClient = sshClient.sftpClient();
                             } else {
@@ -361,7 +361,7 @@ public class ShellFileTransportController extends StageController {
                         }
                         // 检查目标
                         if (this.targetClient == null || this.targetClient.isClosed()) {
-                            BaseClient client = ShellClientUtil.newClient(targetInfo);
+                            ShellBaseClient client = ShellClientUtil.newClient(targetInfo);
                             if (client instanceof ShellSSHClient sshClient) {
                                 this.targetClient = sshClient.sftpClient();
                             } else {
@@ -381,7 +381,7 @@ public class ShellFileTransportController extends StageController {
                         this.step2.display();
                         // 初始化表格
                         this.initFileTable();
-                    } catch (Exception ex) {
+                    } catch (Throwable ex) {
                         ex.printStackTrace();
                         MessageBox.exception(ex);
                     }
