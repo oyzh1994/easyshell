@@ -412,15 +412,18 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             configuration.setPtyType(this.shellConnect.getTermType());
             // 创建shell
             ChannelShell channel = session.createShellChannel(configuration, this.initEnvironments());
-            // 初始化x11转发
-            this.initX11(session, channel);
-            // 初始化隧道转发
-            this.initTunneling(session);
-            // 设置流
-            channel.setIn(null);
-            channel.setOut(null);
-            channel.open().verify(this.connectTimeout());
-            this.shell = channel;
+            // 检查通道
+            if (channel != null) {
+                // 初始化x11转发
+                this.initX11(session, channel);
+                // 初始化隧道转发
+                this.initTunneling(session);
+                // 设置流
+                channel.setIn(null);
+                channel.setOut(null);
+                channel.open().verify(this.connectTimeout());
+                this.shell = channel;
+            }
         }
         return this.shell;
     }

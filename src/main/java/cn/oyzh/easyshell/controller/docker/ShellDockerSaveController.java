@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.FXProgressBar;
@@ -17,6 +18,8 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * docker镜像保存业务
@@ -35,6 +38,12 @@ public class ShellDockerSaveController extends StageController {
      */
     @FXML
     private ClearableTextField name;
+
+    /**
+     * 镜像名称
+     */
+    @FXML
+    private ReadOnlyTextField imageName;
 
     /**
      * 进度
@@ -58,11 +67,10 @@ public class ShellDockerSaveController extends StageController {
         this.exec = this.getProp("exec");
         this.image = this.getProp("image");
         String fPath = this.exec.getClient().getUserHome();
-        if (fPath.startsWith("/")) {
-            fPath = fPath + this.image.getRepository() + "_" + this.image.getTag() + ".tar";
-        } else {
-            fPath = fPath + this.image.getRepository() + "_" + this.image.getTag() + ".tar";
-        }
+        String imgName = this.image.getRepository() + "_" + this.image.getTag();
+        imgName = imgName.replace("/", "_");
+        fPath = fPath + imgName + ".tar";
+        this.imageName.setText(this.image.getImageName());
         this.name.setText(fPath);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
@@ -101,14 +109,12 @@ public class ShellDockerSaveController extends StageController {
             ShellSFTPClient client = this.exec.getClient().sftpClient();
             // 文件大小
             double fSize = NumberUtil.parseSize(this.image.getSize());
-            // 执行导出
-            this.execThread = ThreadUtil.start(() -> {
-                this.exec.docker_save(filePath, this.image.getImageId());
-            });
+            // 导出执行状态
+            AtomicBoolean status = new AtomicBoolean(true);
             // 更新进度
-            this.processThread=ThreadUtil.start(() -> {
+            this.processThread = ThreadUtil.start(() -> {
                 try {
-                    while (this.execThread.isAlive()) {
+                    while (status.get()) {
                         ThreadUtil.sleep(500);
                         try {
                             ShellSFTPFile file = client.fileInfo(filePath);
@@ -127,6 +133,14 @@ public class ShellDockerSaveController extends StageController {
                     }
                 } finally {
                     NodeGroupUtil.enable(this.stage, "run");
+                }
+            });
+            // 执行导出
+            this.execThread = ThreadUtil.start(() -> {
+                try {
+                    this.exec.docker_save(filePath, this.image.getImageId());
+                } finally {
+                    status.set(false);
                 }
             });
         } catch (Exception ex) {

@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerRun;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -44,6 +45,12 @@ public class ShellDockerRunController extends StageController {
      */
     @FXML
     private ClearableTextField name;
+
+    /**
+     * 镜像名称
+     */
+    @FXML
+    private ReadOnlyTextField imageName;
 
     /**
      * 重启策略
@@ -120,6 +127,7 @@ public class ShellDockerRunController extends StageController {
         super.onWindowShown(event);
         this.exec = this.getProp("exec");
         this.image = this.getProp("image");
+        this.imageName.setText(this.image.getImageName());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

@@ -148,38 +148,40 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public String exec(String command) {
-        // 获取通道
-        ChannelExec channel = this.newExecChannel(command);
+        // 通道
+        ChannelExec channel = null;
         try {
+            // 获取通道
+            channel = this.newExecChannel(command);
             // 操作
             ShellSSHClientActionUtil.forAction(this.connectName(), command);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            channel.setIn(null);
-            channel.setOut(stream);
-            channel.setRedirectErrorStream(true);
-            while (channel.isOpen()) {
-                Thread.sleep(5);
+            if (channel != null) {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                channel.setIn(null);
+                channel.setOut(stream);
+                channel.setErr(stream);
+                while (channel.isOpen()) {
+                    Thread.sleep(5);
+                }
+                String result;
+                // 如果远程是windows，则要检查下字符集是否要指定
+                if (StringUtil.isNotBlank(this.remoteCharset)) {
+                    result = stream.toString(this.remoteCharset);
+                } else {
+                    result = stream.toString();
+                }
+                IOUtil.close(stream);
+                if (StringUtil.endsWith(result, "\r\n")) {
+                    result = result.substring(0, result.length() - 2);
+                } else if (StringUtil.endWithAny(result, "\n", "\r")) {
+                    result = result.substring(0, result.length() - 1);
+                }
+                return result;
             }
-            String result;
-            // 如果远程是windows，则要检查下字符集是否要指定
-            if (StringUtil.isNotBlank(this.remoteCharset)) {
-                result = stream.toString(this.remoteCharset);
-            } else {
-                result = stream.toString();
-            }
-            IOUtil.close(stream);
-            if (StringUtil.endsWith(result, "\r\n")) {
-                result = result.substring(0, result.length() - 2);
-            } else if (StringUtil.endWithAny(result, "\n", "\r")) {
-                result = result.substring(0, result.length() - 1);
-            }
-            return result;
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            if (channel != null) {
-                IOUtil.close(channel);
-            }
+            IOUtil.close(channel);
         }
         return null;
     }
@@ -333,22 +335,16 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return exec通道
      */
-    protected ChannelExec newExecChannel(String command) {
-        try {
-            // 获取会话
-            ClientSession session = this.takeSession(this.connectTimeout());
-            // 创建shell
-            ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
-            // 设置流
-            channel.setIn(null);
-            channel.setOut(null);
-            channel.setErr(null);
+    protected ChannelExec newExecChannel(String command) throws Exception {
+        // 获取会话
+        ClientSession session = this.takeSession(this.connectTimeout());
+        // 创建shell
+        ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
+        // 执行验证
+        if (channel != null) {
             channel.open().verify(this.connectTimeout());
-            return channel;
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-        return null;
+        return channel;
     }
 
     /**

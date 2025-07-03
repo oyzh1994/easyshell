@@ -48,14 +48,14 @@
             <Insets left="10" top="15"/>
         </VBox.margin>
     </LayoutSVGPane>
-    <QuitSVGGlyph tipText="%base.quit" onMousePrimaryClicked="#quit" size="12">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </QuitSVGGlyph>
     <SettingSVGGlyph tipText="%base.setting" onMousePrimaryClicked="#setting" size="14">
         <VBox.margin>
             <Insets left="10" top="15"/>
         </VBox.margin>
     </SettingSVGGlyph>
+    <QuitSVGGlyph tipText="%base.quit" onMousePrimaryClicked="#quit" size="12">
+        <VBox.margin>
+            <Insets left="10" top="15"/>
+        </VBox.margin>
+    </QuitSVGGlyph>
 </FXVBox>

@@ -20,11 +20,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.docker.ShellDockerRunLabelTableView?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerRunController" prefWidth="650" realHeight="550">
     <FXTabPane flexWidth="100%" flexHeight="100% - 70">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.image">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField  fx:id="imageName" realHeight="30" flexWidth="100% - 140">
+                    <FXVBox.margin>
+                        <Insets left="30" top="5"/>
+                    </FXVBox.margin>
+                </ReadOnlyTextField>
                 <InfoLabel text="%base.containerName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

@@ -72,4 +72,8 @@ public class ShellDockerImage {
     public void setSize(String size) {
         this.size = size;
     }
+
+    public String getImageName() {
+        return this.repository + ":" + this.tag;
+    }
 }

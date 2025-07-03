@@ -3,6 +3,7 @@
 <?import cn.oyzh.fx.gui.button.ExecuteButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXProgressBar?>
@@ -10,7 +11,17 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerSaveController" prefWidth="650" realHeight="240">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerSaveController" prefWidth="650" realHeight="320">
+    <InfoLabel text="%base.image">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextField fx:id="imageName" realHeight="30" flexWidth="100% - 140">
+        <FXVBox.margin>
+            <Insets left="30" top="5"/>
+        </FXVBox.margin>
+    </ReadOnlyTextField>
     <InfoLabel text="%base.fileName">
         <VBox.margin>
             <Insets left="30" top="10"/>
