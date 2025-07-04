@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
-import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -48,12 +47,12 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
+        List<ShellFileDownloadTask> list = new ArrayList<>(tasks);
         // 取消
         MenuItem cancel = MenuItemHelper.cancelDownload("12", () -> {
-            for (ShellFileDownloadTask task : tasks) {
+            for (ShellFileDownloadTask task : list) {
                 task.cancel();
             }
-            // this.removeItem(tasks);
         });
         menuItems.add(cancel);
 

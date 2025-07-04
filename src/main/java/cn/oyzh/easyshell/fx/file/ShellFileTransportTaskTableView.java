@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
-import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -49,12 +48,12 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
+        List<ShellFileTransportTask> list = new ArrayList<>(tasks);
         // 取消
         MenuItem cancel = MenuItemHelper.cancelTransport("12", () -> {
-            for (ShellFileTransportTask sftpTransportTask : new ArrayList<>(tasks)) {
+            for (ShellFileTransportTask sftpTransportTask : list) {
                 sftpTransportTask.cancel();
             }
-            // this.removeItem(tasks);
         });
         menuItems.add(cancel);
 
