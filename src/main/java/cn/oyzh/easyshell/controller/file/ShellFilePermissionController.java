@@ -259,7 +259,7 @@ public class ShellFilePermissionController extends StageController {
      */
     private void flushPerms() {
         String perms = this.getPerms();
-        String permission = ShellFileUtil.toPermissionStr(perms);
+        String permission = ShellFileUtil.rwxToOctal(perms);
         this.perms.setText(perms);
         this.preview.setText(permission.substring(1));
     }

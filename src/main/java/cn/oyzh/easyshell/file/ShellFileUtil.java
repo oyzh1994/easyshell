@@ -175,7 +175,7 @@ public class ShellFileUtil {
      * @return 数字表示的权限
      */
     public static int toPermissionInt(String permission) {
-        String str = toPermissionStr(permission);
+        String str = rwxToOctal(permission);
         return Integer.parseInt(str, 8);
     }
 
@@ -185,7 +185,13 @@ public class ShellFileUtil {
      * @param permission 权限字符串
      * @return 数字表示的权限
      */
-    public static String toPermissionStr(String permission) {
+    public static String rwxToOctal(String permission) {
+        // 如果是10位，则移除首位
+        if (permission.length() == 10) {
+            permission = permission.substring(1);
+        } else if (permission.length() == 11) { // 如果是11位，则移除首位和末尾
+            permission = permission.substring(1, permission.length() - 1);
+        }
         int[] permissions = new int[3];
         for (int i = 0; i < 3; i++) {
             int start = i * 3;
@@ -202,6 +208,36 @@ public class ShellFileUtil {
             permissions[i] = octal;
         }
         return "0" + permissions[0] + permissions[1] + permissions[2];
+    }
+
+    /**
+     * 将八进制权限数字（如 777）转换为 rwx 形式的9位字符串
+     *
+     * @param octalPermissions 八进制权限数字的字符串形式（如 "777"）
+     * @return rwx 形式的权限字符串（如 "rwxrwxrwx"）
+     */
+    public static String octalToRwx(String octalPermissions) {
+        if (octalPermissions == null || octalPermissions.length() != 3) {
+            throw new IllegalArgumentException("八进制权限必须是3位数字: " + octalPermissions);
+        }
+
+        StringBuilder result = new StringBuilder(9);
+        char[] octalChars = octalPermissions.toCharArray();
+
+        // 解析每个八进制数字
+        for (char c : octalChars) {
+            int digit = Character.getNumericValue(c);
+            if (digit < 0 || digit > 7) {
+                throw new IllegalArgumentException("八进制数字必须在0-7之间: " + c);
+            }
+
+            // 转换为 rwx 表示
+            result.append((digit & 4) != 0 ? 'r' : '-');
+            result.append((digit & 2) != 0 ? 'w' : '-');
+            result.append((digit & 1) != 0 ? 'x' : '-');
+        }
+
+        return result.toString();
     }
 
     /**

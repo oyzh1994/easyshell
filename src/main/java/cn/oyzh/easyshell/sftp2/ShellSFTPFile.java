@@ -89,7 +89,7 @@ public class ShellSFTPFile implements ShellFile {
     }
 
     public String getOwner() {
-        if(this.owner == null) {
+        if (this.owner == null) {
             return this.getAttrs().getOwner();
         }
         return owner;
@@ -100,7 +100,7 @@ public class ShellSFTPFile implements ShellFile {
     }
 
     public String getGroup() {
-        if(this.group == null) {
+        if (this.group == null) {
             return this.getAttrs().getGroup();
         }
         return group;
@@ -198,7 +198,7 @@ public class ShellSFTPFile implements ShellFile {
     }
 
     protected void updatePermissions() {
-        String permissions = ShellSFTPUtil.permissionsToString(this.getAttrs());
+        String permissions = ShellSFTPUtil.formatPermissions(this.getAttrs());
         this.permissionsProperty().set(permissions);
     }
 
@@ -212,9 +212,8 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public void setPermissions(String permissions) {
-        int permissionInt = ShellFileUtil.toPermissionInt(permissions);
-        this.getAttrs().setPermissions(permissionInt);
-        this.updatePermissions();
+        permissions = ShellSFTPUtil.getFileType(this.getAttrs()) + permissions;
+        this.permissionsProperty().set(permissions);
     }
 
     public String getAddTime() {

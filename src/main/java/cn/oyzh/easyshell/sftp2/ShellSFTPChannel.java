@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp2;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import org.apache.sshd.sftp.client.SftpClient;
 
@@ -20,16 +21,19 @@ import java.util.function.Consumer;
  */
 public class ShellSFTPChannel implements AutoCloseable {
 
+    /**
+     * 通道
+     */
     private SftpClient channel;
 
     /**
-     * 链接管理器
+     * 缓存
      */
-    private ShellSFTPCache realpathCache;
+    private ShellSFTPCache cache;
 
-    public ShellSFTPChannel(SftpClient sftpClient, ShellSFTPCache realpathCache) {
+    public ShellSFTPChannel(SftpClient sftpClient, ShellSFTPCache cache) {
         this.channel = sftpClient;
-        this.realpathCache = realpathCache;
+        this.cache = cache;
     }
 
     public Iterable<SftpClient.DirEntry> ls(String path) throws IOException {
@@ -83,7 +87,7 @@ public class ShellSFTPChannel implements AutoCloseable {
             ShellSFTPFile file = new ShellSFTPFile(filePath, entry);
             // 处理链接文件
             if (file.isLink()) {
-                this.realpathCache.realpath(file, this);
+                this.cache.realpath(file, this);
             }
             fileCallback.accept(file);
         }
@@ -99,8 +103,22 @@ public class ShellSFTPChannel implements AutoCloseable {
         this.channel.rmdir(path);
     }
 
+    /**
+     * 当前工作目录
+     */
+    private String pwd;
+
+    /**
+     * 获取工作目录
+     *
+     * @return 工作目录
+     * @throws Exception 异常
+     */
     public String pwd() throws Exception {
-        return this.channel.canonicalPath(".");
+        if (StringUtil.isEmpty(this.pwd)) {
+            this.pwd = this.channel.canonicalPath(".");
+        }
+        return this.pwd;
     }
 
     public void mkdir(String path) throws IOException {
@@ -246,10 +264,14 @@ public class ShellSFTPChannel implements AutoCloseable {
      */
     public void chmod(int permission, String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
-        // 获取现有属性
-        SftpClient.Attributes attrs = this.channel.stat(path);
-        // 修改权限位
-        attrs.setPermissions(permission);
+        // 转为rwx格式
+        String str = ShellFileUtil.octalToRwx(permission + "");
+        // 转为权限
+        int perms = ShellSFTPUtil.parsePermissions1(str);
+        // 权限信息
+        SftpClient.Attributes attrs = new SftpClient.Attributes();
+        // 设置权限
+        attrs.setPermissions(perms);
         // 使用 setStat 方法提交修改
         this.channel.setStat(path, attrs);
     }
@@ -257,7 +279,8 @@ public class ShellSFTPChannel implements AutoCloseable {
     @Override
     public void close() {
         IOUtil.close(this.channel);
-        this.realpathCache = null;
+        this.cache = null;
+        this.channel = null;
     }
 
     public boolean isClosed() {

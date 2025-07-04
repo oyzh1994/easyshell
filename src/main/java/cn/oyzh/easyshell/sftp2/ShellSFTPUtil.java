@@ -70,65 +70,93 @@ public class ShellSFTPUtil {
     }
 
     /**
-     * 将 SSH 文件权限转换为 10 位字符串表示
-     * @param attrs 文件属性
-     * @return 类似 "drwxr-xr-x" 的权限字符串
+     * 将文件属性转换为 10 位权限字符串（含文件类型）
      */
-    public static String permissionsToString(SftpClient.Attributes attrs) {
+    public static String formatPermissions(SftpClient.Attributes attrs) {
         StringBuilder sb = new StringBuilder(10);
 
         // 第一位：文件类型
+        sb.append(getFileType(attrs));
+
         int permissions = attrs.getPermissions();
-        sb.append(getTypeChar(permissions));
 
-        // 权限位：用户、组、其他
-        appendPermissions(sb, permissions, 0x1C0); // 用户权限 (700)
-        appendPermissions(sb, permissions, 0x38);  // 组权限 (070)
-        appendPermissions(sb, permissions, 0x7);   // 其他权限 (007)
+        // 所有者权限（含特殊位）
+        sb.append((permissions & 0400) != 0 ? 'r' : '-');
+        sb.append((permissions & 0200) != 0 ? 'w' : '-');
+        if ((permissions & 0100) != 0) {
+            sb.append((permissions & 04000) != 0 ? 's' : 'x'); // SUID
+        } else {
+            sb.append((permissions & 04000) != 0 ? 'S' : '-');
+        }
 
-        // 处理特殊权限
-        appendSpecialPermissions(sb, permissions);
+        // 组权限（含特殊位）
+        sb.append((permissions & 0040) != 0 ? 'r' : '-');
+        sb.append((permissions & 0020) != 0 ? 'w' : '-');
+        if ((permissions & 0010) != 0) {
+            sb.append((permissions & 02000) != 0 ? 's' : 'x'); // SGID
+        } else {
+            sb.append((permissions & 02000) != 0 ? 'S' : '-');
+        }
+
+        // 其他用户权限（含特殊位）
+        sb.append((permissions & 0004) != 0 ? 'r' : '-');
+        sb.append((permissions & 0002) != 0 ? 'w' : '-');
+        if ((permissions & 0001) != 0) {
+            sb.append((permissions & 01000) != 0 ? 't' : 'x'); // Sticky
+        } else {
+            sb.append((permissions & 01000) != 0 ? 'T' : '-');
+        }
 
         return sb.toString();
     }
 
-    private static char getTypeChar(int permissions) {
-        int typeBits = (permissions >>> 12) & 0xF;
-        switch (typeBits) {
-            case 0x4: return 'd'; // 目录
-            case 0xA: return 'l'; // 符号链接
-            case 0xC: return 's'; // 套接字
-            case 0x2: return 'c'; // 字符设备
-            case 0x6: return 'b'; // 块设备
-            case 0x1: return 'p'; // 命名管道
-            default: return '-';  // 普通文件
-        }
+    /**
+     * 将9位权限字符串解析为整数权限位
+     *
+     * @param permissionString 9位权限字符串，如 "rwxr-xr-x"
+     */
+    public static int parsePermissions1(String permissionString) {
+
+        int permissions = 0;
+
+        // 解析所有者权限
+        permissions |= (permissionString.charAt(0) == 'r') ? 0400 : 0;
+        permissions |= (permissionString.charAt(1) == 'w') ? 0200 : 0;
+        permissions |= (permissionString.charAt(2) == 'x') ? 0100 : 0;
+        permissions |= (permissionString.charAt(2) == 's' || permissionString.charAt(2) == 'S') ? 04000 : 0;
+
+        // 解析组权限
+        permissions |= (permissionString.charAt(3) == 'r') ? 0040 : 0;
+        permissions |= (permissionString.charAt(4) == 'w') ? 0020 : 0;
+        permissions |= (permissionString.charAt(5) == 'x') ? 0010 : 0;
+        permissions |= (permissionString.charAt(5) == 's' || permissionString.charAt(5) == 'S') ? 02000 : 0;
+
+        // 解析其他用户权限
+        permissions |= (permissionString.charAt(6) == 'r') ? 0004 : 0;
+        permissions |= (permissionString.charAt(7) == 'w') ? 0002 : 0;
+        permissions |= (permissionString.charAt(8) == 'x') ? 0001 : 0;
+        permissions |= (permissionString.charAt(8) == 't' || permissionString.charAt(8) == 'T') ? 01000 : 0;
+
+        return permissions;
     }
 
-    private static void appendPermissions(StringBuilder sb, int permissions, int mask) {
-        // 读权限
-        sb.append((permissions & (mask >> 2)) != 0 ? 'r' : '-');
-        // 写权限
-        sb.append((permissions & (mask >> 1)) != 0 ? 'w' : '-');
-        // 执行权限
-        sb.append((permissions & mask) != 0 ? 'x' : '-');
-    }
-
-    private static void appendSpecialPermissions(StringBuilder sb, int permissions) {
-        // SUID (4000)
-        if ((permissions & 04000) != 0) {
-            char c = sb.charAt(3);
-            sb.setCharAt(3, c == 'x' ? 's' : 'S');
+    /**
+     * 获取文件类型
+     *
+     * @param attrs 属性
+     * @return 文件类型
+     */
+    public static String getFileType(SftpClient.Attributes attrs) {
+        // 第一位：文件类型
+        if (attrs.isDirectory()) {
+            return "d";
         }
-        // SGID (2000)
-        if ((permissions & 02000) != 0) {
-            char c = sb.charAt(6);
-            sb.setCharAt(6, c == 'x' ? 's' : 'S');
+        if (attrs.isSymbolicLink()) {
+            return "l";
         }
-        // Sticky (1000)
-        if ((permissions & 01000) != 0) {
-            char c = sb.charAt(9);
-            sb.setCharAt(9, c == 'x' ? 't' : 'T');
+        if (attrs.isRegularFile()) {
+            return "-";
         }
+        return "?";
     }
 }
