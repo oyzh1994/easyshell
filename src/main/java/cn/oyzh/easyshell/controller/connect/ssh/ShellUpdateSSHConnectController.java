@@ -22,6 +22,7 @@ import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
+import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -319,6 +320,11 @@ public class ShellUpdateSSHConnectController extends StageController {
      * ssh跳板储存对象
      */
     private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
+
+    /**
+     * ssh隧道转发储存对象
+     */
+    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -792,7 +798,7 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        ShellJumpConfig config =  this.jumpTableView.removeSelectedItem();
+        ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
         this.jumpConfigStore.delete(config);
         this.jumpTableView.updateOrder();
     }
@@ -850,6 +856,7 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void deleteTunneling() {
-        this.tunnelingTableView.removeSelectedItem();
+        ShellTunnelingConfig config = this.tunnelingTableView.removeSelectedItem();
+        this.tunnelingConfigStore.delete(config);
     }
 }

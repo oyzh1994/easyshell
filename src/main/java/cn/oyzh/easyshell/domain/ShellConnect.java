@@ -621,8 +621,14 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return jumpConfigs;
     }
 
+    /**
+     * 获取启用的跳板机配置
+     *
+     * @return 启用的跳板机配置
+     */
+    @JSONField(serialize = false, deserialize = false)
     public List<ShellJumpConfig> getEnableJumpConfigs() {
-        if(CollectionUtil.isEmpty(jumpConfigs)){
+        if (CollectionUtil.isEmpty(jumpConfigs)) {
             return Collections.emptyList();
         }
         return jumpConfigs.parallelStream().filter(ShellJumpConfig::isEnabled).toList();
@@ -639,15 +645,34 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @JSONField(serialize = false, deserialize = false)
     public boolean isEnableJump() {
-        // 初始化跳板配置
-        List<ShellJumpConfig> jumpConfigs = this.getJumpConfigs();
-        // 过滤配置
-        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ShellJumpConfig::isEnabled).toList();
-        return CollectionUtil.isNotEmpty(jumpConfigs);
+        return CollectionUtil.isNotEmpty(this.getEnableJumpConfigs());
     }
 
     public List<ShellTunnelingConfig> getTunnelingConfigs() {
         return tunnelingConfigs;
+    }
+
+    /**
+     * 获取启用的隧道转发配置
+     *
+     * @return 启用的隧道转发配置
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public List<ShellTunnelingConfig> getEnableTunnelingConfigs() {
+        if (CollectionUtil.isEmpty(tunnelingConfigs)) {
+            return Collections.emptyList();
+        }
+        return tunnelingConfigs.parallelStream().filter(ShellTunnelingConfig::isEnabled).toList();
+    }
+
+    /**
+     * 是否开启隧道转发
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isEnableTunneling() {
+        return CollectionUtil.isNotEmpty(this.getEnableTunnelingConfigs());
     }
 
     public void setTunnelingConfigs(List<ShellTunnelingConfig> tunnelingConfigs) {
