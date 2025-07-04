@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.s3;
 import cn.oyzh.easyshell.fx.s3.ShellS3EffectiveTimeCombobox;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
+import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -39,7 +40,7 @@ public class ShellS3ShareFileController extends StageController {
      * 分享地址
      */
     @FXML
-    private ReadOnlyTextField shareUrl;
+    private ReadOnlyTextArea shareUrl;
 
     /**
      * 持续时间

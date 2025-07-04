@@ -10,7 +10,7 @@
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerInfoController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
-        <CopySVGGlyph onMousePrimaryClicked="#copyInfo">
+        <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyInfo">
             <FXHBox.margin>
                 <Insets left="10" top="7"/>
             </FXHBox.margin>

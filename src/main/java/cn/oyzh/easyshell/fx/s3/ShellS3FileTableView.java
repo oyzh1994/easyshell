@@ -52,10 +52,10 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
         if (this.isSupportUploadAction()) {
             // 上传文件
             FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+            menuItems.add(uploadFile);
             // 上传文件夹
             FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
             menuItems.add(uploadFolder);
-            menuItems.add(uploadFile);
         }
         // 获取选中的文件
         List<ShellS3File> files = this.getFilterSelectedItems();

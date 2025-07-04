@@ -116,28 +116,30 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public Region region() {
         String region = this.connect.getRegion();
-        if (StringUtil.isBlank(region)) {
-            return Region.US_EAST_1;
-        }
-        return Region.of(region);
+        return ShellS3Util.ofRegion(region);
     }
 
+    /**
+     * 签名提供者
+     */
+    private StaticCredentialsProvider credentialsProvider;
+
+    /**
+     * 初始化客户端
+     */
     private void initClient() {
         String endpoint = this.connect.getHost();
-        if (!StringUtil.startWithAnyIgnoreCase(endpoint, "http://", "https://")) {
-            endpoint = "http://" + endpoint;
-        }
         String accessKey = this.connect.getUser();
         String secretKey = this.connect.getPassword();
         // 创建凭证提供者
-        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
+        this.credentialsProvider = StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey));
         // http客户端
         UrlConnectionHttpClient httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
                 .build();
         // 构建 S3 客户端，指定 endpoint 和凭证
         this.s3Client = S3Client.builder()
                 .endpointOverride(URI.create(endpoint))
-                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .credentialsProvider(credentialsProvider)
                 .httpClient(httpClient)
                 .region(this.region())
                 .build();
@@ -865,27 +867,18 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     /**
-     * 签名提供者
-     */
-    private StaticCredentialsProvider credentialsProvider;
-
-    /**
      * 创建一个带签名的访问地址
      *
      * @param bucketName 桶
      * @param key        键
-     * @param duration        时长
+     * @param duration   时长
      * @return 值
      */
-    public String generatePresignedUrl(String bucketName, String key,Duration duration) {
-        // 创建凭证提供者
-        if (this.credentialsProvider == null) {
-            this.credentialsProvider = StaticCredentialsProvider.create(AwsBasicCredentials.create(this.connect.getUser(), this.connect.getPassword()));
-        }
+    public String generatePresignedUrl(String bucketName, String key, Duration duration) {
         // 签名器
         S3Presigner signer = S3Presigner.builder().region(this.region())
                 .credentialsProvider(this.credentialsProvider)
-                .endpointOverride(URI.create("http://" + this.connect.getHost()))
+                .endpointOverride(URI.create(this.connect.getHost()))
                 .build();
         try (signer) {
             // 1. 构建请求

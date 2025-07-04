@@ -142,12 +142,12 @@
             <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100% - 240">
                 <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
-                        <HomeSVGGlyph onMousePrimaryClicked="#intoSourceHome">
+                        <HomeSVGGlyph tipText="%base.home" onMousePrimaryClicked="#intoSourceHome">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </HomeSVGGlyph>
-                        <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnSourceDir">
+                        <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnSourceDir">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
@@ -157,12 +157,12 @@
                                 <Insets left="5" top="4"/>
                             </FXHBox.margin>
                         </ShellFileLocationTextField>
-                        <RefreshSVGGlyph onMousePrimaryClicked="#refreshSourceFile">
+                        <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refreshSourceFile">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
-                        <HiddenSVGPane fx:id="hiddenSourcePane" size="16,14" onMousePrimaryClicked="#hiddenSourceFile">
+                        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenSourcePane" size="16,14" onMousePrimaryClicked="#hiddenSourceFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>
@@ -208,7 +208,7 @@
                                 <Insets left="5" top="4"/>
                             </FXHBox.margin>
                         </ShellFileLocationTextField>
-                        <RefreshSVGGlyph onMousePrimaryClicked="#refreshTargetFile">
+                        <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refreshTargetFile">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>

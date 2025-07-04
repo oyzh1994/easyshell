@@ -20,17 +20,17 @@
                     <Insets left="5" top="3"/>
                 </FXHBox.margin>
             </ClearableTextField>
-            <RefreshSVGGlyph fx:id="refreshImage" onMousePrimaryClicked="#refreshImage">
+            <RefreshSVGGlyph tipText="%base.refresh" fx:id="refreshImage" onMousePrimaryClicked="#refreshImage">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </RefreshSVGGlyph>
-            <DeleteSVGGlyph fx:id="deleteImage" onMousePrimaryClicked="#deleteImage">
+            <DeleteSVGGlyph tipText="%base.delete" fx:id="deleteImage" onMousePrimaryClicked="#deleteImage">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <DeleteForceSVGGlyph onMousePrimaryClicked="#deleteImageForce">
+            <DeleteForceSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#deleteImageForce">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

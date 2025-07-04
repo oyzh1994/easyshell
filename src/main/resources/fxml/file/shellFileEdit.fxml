@@ -19,7 +19,7 @@
                 <Insets left="10" top="4"/>
             </FXHBox.margin>
         </ClearableTextField>
-        <NextSVGGlyph onMousePrimaryClicked="#searchNext">
+        <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
@@ -34,7 +34,7 @@
                 <Insets left="10" top="4"/>
             </FXHBox.margin>
         </FontSizeComboBox>
-        <SaveSVGGlyph onMousePrimaryClicked="#save">
+        <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
             <FXHBox.margin>
                 <Insets left="10" top="7"/>
             </FXHBox.margin>

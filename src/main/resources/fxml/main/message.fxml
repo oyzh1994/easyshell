@@ -14,7 +14,7 @@
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox realHeight="30">
-            <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearMsg">
+            <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">
                 <HBox.margin>
                     <Insets left="10" top="9"/>
                 </HBox.margin>

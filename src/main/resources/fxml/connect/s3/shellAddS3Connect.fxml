@@ -59,24 +59,17 @@
                        <Insets left="30" top="5"/>
                    </VBox.margin>
                </PasswordTextField>
-               <InfoLabel text="%base.host">
+               <InfoLabel text="%base.url">
                    <VBox.margin>
                        <Insets left="30" top="10"/>
                    </VBox.margin>
                </InfoLabel>
-               <FXHBox>
-                   <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
-                                       flexWidth="60%" maxLen="1024">
-                       <HBox.margin>
-                           <Insets left="30" top="5"/>
-                       </HBox.margin>
-                   </ClearableTextField>
-                   <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="9000">
-                       <HBox.margin>
-                           <Insets left="10" top="5"/>
-                       </HBox.margin>
-                   </PortTextField>
-               </FXHBox>
+               <ClearableTextField fx:id="host" tipText="%base.hostTip1" require="true" realHeight="30"
+                                   flexWidth="100% - 180" maxLen="1024">
+                   <VBox.margin>
+                       <Insets left="30" top="5"/>
+                   </VBox.margin>
+               </ClearableTextField>
                <InfoLabel text="%base.region">
                    <VBox.margin>
                        <Insets left="30" top="10"/>

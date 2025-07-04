@@ -9,7 +9,7 @@
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerVersionController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
-        <CopySVGGlyph onMousePrimaryClicked="#copyVersion">
+        <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyVersion">
             <FXHBox.margin>
                 <Insets left="10" top="7"/>
             </FXHBox.margin>

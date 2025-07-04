@@ -69,12 +69,12 @@
             </FXHBox.margin>
         </FXTextArea>
         <FXVBox>
-            <PasteSVGGlyph onMousePrimaryClicked="#pastePubKey">
+            <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pastePubKey">
                 <VBox.margin>
                     <Insets left="10" top="10"/>
                 </VBox.margin>
             </PasteSVGGlyph>
-            <ChooseSVGGlyph onMousePrimaryClicked="#choosePubKey">
+            <ChooseSVGGlyph tipText="%base.choose" onMousePrimaryClicked="#choosePubKey">
                 <VBox.margin>
                     <Insets left="10" top="10"/>
                 </VBox.margin>
@@ -93,12 +93,12 @@
             </FXHBox.margin>
         </FXTextArea>
         <FXVBox>
-            <PasteSVGGlyph onMousePrimaryClicked="#pastePriKey">
+            <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pastePriKey">
                 <VBox.margin>
                     <Insets left="10" top="10"/>
                 </VBox.margin>
             </PasteSVGGlyph>
-            <ChooseSVGGlyph onMousePrimaryClicked="#choosePriKey">
+            <ChooseSVGGlyph tipText="%base.choose" onMousePrimaryClicked="#choosePriKey">
                 <VBox.margin>
                     <Insets left="10" top="10"/>
                 </VBox.margin>
@@ -106,12 +106,12 @@
         </FXVBox>
     </FXHBox>
     <FXHBox flexWidth="100%">
-        <ImportButton onAction="#importKey" iconSizePercent="0.8">
+        <ImportButton tipText="%base.import" onAction="#importKey" iconSizePercent="0.8">
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>
         </ImportButton>
-        <CancelButton>
+        <CancelButton tipText="%base.cancel">
             <HBox.margin>
                 <Insets left="15" top="20"/>
             </HBox.margin>

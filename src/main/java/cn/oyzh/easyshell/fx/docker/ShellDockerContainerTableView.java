@@ -407,11 +407,6 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
-//                    FXUtil.runLater(() -> {
-//                        StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class);
-//                        adapter.setProp("inspect", output);
-//                        adapter.display();
-//                    });
                     ShellViewFactory.dockerInspect(output, false);
                 }
             } catch (Exception ex) {
@@ -430,13 +425,6 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                     MessageBox.warn(I18nHelper.operationFail());
                 } else {
                     ShellDockerResource resource = ShellDockerParser.resource(output);
-//                    FXUtil.runLater(() -> {
-//                        StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class);
-//                        adapter.setProp("exec", this.exec);
-//                        adapter.setProp("resource", resource);
-//                        adapter.setProp("id", container.getContainerId());
-//                        adapter.display();
-//                    });
                     ShellViewFactory.dockerResource(exec, resource, container.getContainerId());
                 }
             } catch (Exception ex) {

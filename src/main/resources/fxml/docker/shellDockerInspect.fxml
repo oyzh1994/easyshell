@@ -17,12 +17,12 @@
                 <Insets left="10" top="4"/>
             </FXHBox.margin>
         </ClearableTextField>
-        <NextSVGGlyph onMousePrimaryClicked="#searchNext">
+        <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </NextSVGGlyph>
-        <CopySVGGlyph onMousePrimaryClicked="#copyInspect">
+        <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyInspect">
             <FXHBox.margin>
                 <Insets left="10" top="7"/>
             </FXHBox.margin>

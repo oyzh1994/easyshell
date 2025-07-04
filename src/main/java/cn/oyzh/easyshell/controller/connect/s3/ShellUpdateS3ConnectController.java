@@ -11,7 +11,6 @@ import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
-import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -71,16 +70,10 @@ public class ShellUpdateS3ConnectController extends StageController {
     private FXTextArea remark;
 
     /**
-     * 连接ip
+     * 连接地址
      */
     @FXML
-    private ClearableTextField hostIp;
-
-    /**
-     * 连接端口
-     */
-    @FXML
-    private PortTextField hostPort;
+    private ClearableTextField host;
 
     /**
      * 字符集
@@ -118,17 +111,12 @@ public class ShellUpdateS3ConnectController extends StageController {
      */
     private String getHost() {
         String hostText;
-        String hostIp = this.hostIp.getTextTrim();
         this.tabPane.select(0);
-        if (!this.hostPort.validate()) {
+        if (!this.host.validate()) {
             this.tabPane.select(0);
             return null;
         }
-        if (!this.hostIp.validate()) {
-            this.tabPane.select(0);
-            return null;
-        }
-        hostText = hostIp + ":" + this.hostPort.getValue();
+        hostText = this.host.getTextTrim();
         return hostText;
     }
 
@@ -206,37 +194,12 @@ public class ShellUpdateS3ConnectController extends StageController {
     }
 
     @Override
-    protected void bindListeners() {
-        // 连接ip处理
-        this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
-            if (this.hostIp.isIgnoreChanged()) {
-                this.hostIp.setIgnoreChanged(false);
-                return;
-            }
-            // 内容包含“:”，则直接切割字符为ip端口
-            if (t1 != null && t1.contains(":")) {
-                try {
-                    this.hostIp.setIgnoreChanged(true);
-                    String[] split = t1.split(":");
-                    if (split.length == 2) {
-                        this.hostIp.setText(t1.split(":")[0]);
-                        this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-    }
-
-    @Override
     public void onWindowShown(WindowEvent event) {
         this.shellConnect = this.getProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
-        this.hostIp.setText(this.shellConnect.hostIp());
+        this.host.setText(this.shellConnect.getHost());
         this.remark.setText(this.shellConnect.getRemark());
         this.osType.select(this.shellConnect.getOsType());
-        this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
         this.region.selectRegion(this.shellConnect.getRegion());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());

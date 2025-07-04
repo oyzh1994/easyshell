@@ -28,12 +28,12 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">
-            <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
+            <HomeSVGGlyph tipText="%base.home" onMousePrimaryClicked="#intoHome">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </HomeSVGGlyph>
-            <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
+            <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
@@ -43,12 +43,7 @@
                     <Insets left="5" top="4"/>
                 </FXHBox.margin>
             </ShellFileLocationTextField>
-            <!--            <CopySVGGlyph onMousePrimaryClicked="#copyFilePath" fx:id="copyFilePath">-->
-            <!--                <FXHBox.margin>-->
-            <!--                    <Insets left="5" top="10"/>-->
-            <!--                </FXHBox.margin>-->
-            <!--            </CopySVGGlyph>-->
-            <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
+            <RefreshSVGGlyph tipText="%base.refresh" fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
@@ -75,12 +70,12 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </FolderAddSVGGlyph>
-            <DeleteSVGGlyph fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
+            <DeleteSVGGlyph tipText="%base.delete" fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <HiddenSVGPane fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
+            <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
                 <HBox.margin>
                     <Insets left="5" top="8"/>
                 </HBox.margin>

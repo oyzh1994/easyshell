@@ -13,7 +13,6 @@ import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
-import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -69,16 +68,10 @@ public class ShellAddS3ConnectController extends StageController {
     private FXTextArea remark;
 
     /**
-     * 连接ip
+     * 连接地址
      */
     @FXML
-    private ClearableTextField hostIp;
-
-    /**
-     * 连接端口
-     */
-    @FXML
-    private PortTextField hostPort;
+    private ClearableTextField host;
 
     /**
      * 字符集
@@ -120,19 +113,12 @@ public class ShellAddS3ConnectController extends StageController {
      * @return 连接地址
      */
     private String getHost() {
-        String hostText;
-        String hostIp = this.hostIp.getTextTrim();
         this.tabPane.select(0);
-        if (!this.hostPort.validate()) {
+        if (!this.host.validate()) {
             this.tabPane.select(0);
             return null;
         }
-        if (!this.hostIp.validate()) {
-            this.tabPane.select(0);
-            return null;
-        }
-        hostText = hostIp + ":" + this.hostPort.getValue();
-        return hostText;
+        return this.host.getTextTrim();
     }
 
     /**
@@ -210,31 +196,6 @@ public class ShellAddS3ConnectController extends StageController {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
-    }
-
-    @Override
-    protected void bindListeners() {
-        super.bindListeners();
-        // 连接ip处理
-        this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
-            if (this.hostIp.isIgnoreChanged()) {
-                this.hostIp.setIgnoreChanged(false);
-                return;
-            }
-            // 内容包含“:”，则直接切割字符为ip端口
-            if (t1 != null && t1.contains(":")) {
-                try {
-                    String[] split = t1.split(":");
-                    if (split.length == 2) {
-                        this.hostIp.setIgnoreChanged(true);
-                        this.hostIp.setText(t1.split(":")[0]);
-                        this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
     }
 
     @Override
