@@ -57,9 +57,9 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
         menuItems.add(cancel);
 
         // 重试
-        ShellFileDownloadTask task = tasks.getFirst();
+        ShellFileDownloadTask task = list.getFirst();
         MenuItem retry = MenuItemHelper.retry("12", task::retry);
-        retry.setDisable(tasks.size() != 1 || !task.isFailed());
+        retry.setDisable(list.size() != 1 || !task.isFailed());
         menuItems.add(retry);
 
         // 错误

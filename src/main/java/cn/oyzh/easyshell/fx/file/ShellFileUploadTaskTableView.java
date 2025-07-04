@@ -58,9 +58,9 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
         menuItems.add(cancel);
 
         // 重试
-        ShellFileUploadTask task = tasks.getFirst();
+        ShellFileUploadTask task = list.getFirst();
         MenuItem retry = MenuItemHelper.retry("12", task::retry);
-        retry.setDisable(tasks.size() != 1 || !task.isFailed());
+        retry.setDisable(list.size() != 1 || !task.isFailed());
         menuItems.add(retry);
 
         // 错误
