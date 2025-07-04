@@ -199,7 +199,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.jumpForwarder = new SSHJumpForwarder2();
             }
             // 初始化跳板配置
-            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
             // 转换为目标连接
             SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
             // 执行连接

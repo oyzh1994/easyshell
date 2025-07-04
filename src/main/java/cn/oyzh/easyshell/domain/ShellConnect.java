@@ -621,6 +621,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return jumpConfigs;
     }
 
+    public List<ShellJumpConfig> getEnableJumpConfigs() {
+        if(CollectionUtil.isEmpty(jumpConfigs)){
+            return Collections.emptyList();
+        }
+        return jumpConfigs.parallelStream().filter(ShellJumpConfig::isEnabled).toList();
+    }
+
     public void setJumpConfigs(List<ShellJumpConfig> jumpConfigs) {
         this.jumpConfigs = jumpConfigs;
     }

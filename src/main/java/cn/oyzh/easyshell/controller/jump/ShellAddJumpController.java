@@ -15,8 +15,6 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -30,8 +28,6 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
 import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
-
-import java.io.File;
 
 /**
  * ssh跳板新增业务
