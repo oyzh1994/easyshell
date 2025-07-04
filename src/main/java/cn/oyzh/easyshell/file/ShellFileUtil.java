@@ -32,11 +32,24 @@ public class ShellFileUtil {
         return !StringUtil.equalsAny(fileName, ".", "..");
     }
 
+    /**
+     * 获取父路径
+     *
+     * @param path 路径
+     * @return 父路径
+     */
     public static String parent(String path) {
         if (StringUtil.isEmpty(path)) {
             return path;
         }
-        return path.substring(0, path.lastIndexOf("/"));
+        if (!path.contains("/")) {
+            return null;
+        }
+        int index = path.lastIndexOf("/");
+        if (index == 0) {
+            return "/";
+        }
+        return path.substring(0, index);
     }
 
     public static String name(String path) {
@@ -131,39 +144,39 @@ public class ShellFileUtil {
         );
     }
 
-   /**
-    * 将Unix风格的权限字符串（如"drwx------"）转换为数字表示（如700）
-    *
-    * @param permissions 权限字符串
-    * @return 数字表示的权限
-    */
-   public static int toPermissionInt(String permissions) {
-       // 无效权限字符串
-       if (permissions == null || permissions.length() < 9) {
-           return 0;
-       }
+    /**
+     * 将Unix风格的权限字符串（如"drwx------"）转换为数字表示（如700）
+     *
+     * @param permissions 权限字符串
+     * @return 数字表示的权限
+     */
+    public static int toPermissionInt(String permissions) {
+        // 无效权限字符串
+        if (permissions == null || permissions.length() < 9) {
+            return 0;
+        }
 
-       // 忽略第一个字符（文件类型）
-       if (permissions.length() == 10) {
-           permissions = permissions.substring(1);
-       }
+        // 忽略第一个字符（文件类型）
+        if (permissions.length() == 10) {
+            permissions = permissions.substring(1);
+        }
 
-       // 计算三组权限值
-       int owner = calculatePermissionGroup(permissions.substring(0, 3));
-       int group = calculatePermissionGroup(permissions.substring(3, 6));
-       int others = calculatePermissionGroup(permissions.substring(6, 9));
+        // 计算三组权限值
+        int owner = calculatePermissionGroup(permissions.substring(0, 3));
+        int group = calculatePermissionGroup(permissions.substring(3, 6));
+        int others = calculatePermissionGroup(permissions.substring(6, 9));
 
-       // 组合为三位数整数
-       return owner * 100 + group * 10 + others;
-   }
+        // 组合为三位数整数
+        return owner * 100 + group * 10 + others;
+    }
 
-   private static int calculatePermissionGroup(String group) {
-       int value = 0;
-       if (group.charAt(0) == 'r') value += 4;
-       if (group.charAt(1) == 'w') value += 2;
-       if (group.charAt(2) == 'x') value += 1;
-       return value;
-   }
+    private static int calculatePermissionGroup(String group) {
+        int value = 0;
+        if (group.charAt(0) == 'r') value += 4;
+        if (group.charAt(1) == 'w') value += 2;
+        if (group.charAt(2) == 'x') value += 1;
+        return value;
+    }
 
     // /**
     //  * 将Unix风格的权限字符串（如"drwx------"）转换为数字表示（如700）

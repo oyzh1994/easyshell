@@ -20,65 +20,6 @@ import java.util.List;
  */
 public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, ShellFTPFile> implements FXEventListener {
 
-//    @Override
-//    public void initNode() {
-//        super.initNode();
-//        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//    }
-//
-//    @Override
-//    protected void initEvenListener() {
-//        super.initEvenListener();
-//        // 右键菜单事件
-//        this.setOnContextMenuRequested(e -> {
-//            List<? extends MenuItem> items = this.getMenuItems();
-//            if (CollectionUtil.isNotEmpty(items)) {
-//                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
-//            } else {
-//                this.clearContextMenu();
-//            }
-//        });
-//        this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
-//        // 初始化鼠标多选辅助类
-//        TableViewMouseSelectHelper.install(this);
-//        // 快捷键
-//        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-//            // 删除
-//            if (KeyboardUtil.delete_keyCombination.match(event)) {
-//                this.deleteFile(this.getSelectedItems());
-//                event.consume();
-//            } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名
-//                this.renameFile(this.getSelectedItems());
-//                event.consume();
-//            } else if (KeyboardUtil.refresh_keyCombination.match(event)) {// 刷新
-//                this.loadFile();
-//                event.consume();
-//            }
-//        });
-//    }
-//
-//    private boolean showHiddenFile = false;
-//
-//    public void setShowHiddenFile(boolean showHiddenFile) {
-//        this.showHiddenFile = showHiddenFile;
-//        this.refreshFile();
-//    }
-//
-//    private String filterText;
-//
-//    public void setFilterText(String filterText) {
-//        if (!StringUtil.equals(this.filterText, filterText)) {
-//            this.filterText = filterText;
-//            this.refreshFile();
-//        }
-//    }
-
-//    protected ShellFTPClient client;
-//
-//    public ShellFTPClient getClient() {
-//        return client;
-//    }
-
     @Override
     public void setClient(ShellFTPClient client) {
         super.setClient(client);
