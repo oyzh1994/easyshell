@@ -88,6 +88,7 @@ public class ShellSFTPFile implements ShellFile {
         }
     }
 
+    @Override
     public String getOwner() {
         if (this.owner == null) {
             return this.getAttrs().getOwner();
@@ -95,10 +96,11 @@ public class ShellSFTPFile implements ShellFile {
         return owner;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
+    // public void setOwner(String owner) {
+    //     this.owner = owner;
+    // }
 
+    @Override
     public String getGroup() {
         if (this.group == null) {
             return this.getAttrs().getGroup();
@@ -116,14 +118,16 @@ public class ShellSFTPFile implements ShellFile {
         this.getAttrs().setSize(fileSize);
     }
 
-    public void setGroup(String group) {
-        this.group = group;
-    }
+    // public void setGroup(String group) {
+    //     this.group = group;
+    // }
 
+    @Override
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    @Override
     public String getParentPath() {
         return parentPath;
     }
@@ -289,7 +293,6 @@ public class ShellSFTPFile implements ShellFile {
                 this.group = file.group;
             }
             this.fileName = file.fileName;
-//            this.linkPath = file.linkPath;
             this.linkAttrs = file.linkAttrs;
             this.parentPath = file.parentPath;
             this.updatePermissions();
