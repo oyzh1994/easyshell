@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import javafx.beans.property.ObjectProperty;
@@ -256,11 +257,15 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public void delete(String file) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "rm " + file);
         this.ftpClient.deleteFile(file);
     }
 
     @Override
     public void deleteDir(String dir) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "rmdir " + dir);
         if (this.ftpClient.removeDirectory(dir)) {
             return;
         }
@@ -296,11 +301,15 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
         return this.ftpClient.rename(filePath, newPath);
     }
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws IOException {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
         InputStream in;
@@ -318,6 +327,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
         OutputStream out = this.ftpClient.storeFileStream(remoteFile);
@@ -342,6 +353,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public void get(ShellFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws IOException {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
         OutputStream out;
@@ -356,6 +369,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public InputStream getStream(ShellFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         this.ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
         this.streamMode = true;
         InputStream in = this.ftpClient.retrieveFileStream(remoteFile.getFilePath());
@@ -386,6 +401,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellFTPFile> fileCallback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
         FTPFile[] files = this.ftpClient.listFiles(filePath);
         if (files != null) {
             for (FTPFile file : files) {
@@ -401,6 +418,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public boolean createDir(String filePath) throws IOException {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "mkdir " + filePath);
         return this.ftpClient.makeDirectory(filePath);
     }
 
@@ -427,11 +446,15 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public String workDir() throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "pwd");
         return this.ftpClient.printWorkingDirectory();
     }
 
     @Override
     public void cd(String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "cd " + filePath);
         this.ftpClient.changeWorkingDirectory(filePath);
     }
 
@@ -457,6 +480,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     public void touch(String filePath) throws Exception {
         // 文件不存在，创建文件
         if (!this.exist(filePath)) {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "touch " + filePath);
             try (InputStream inputStream = new ByteArrayInputStream(new byte[0])) {
                 this.ftpClient.storeFile(filePath, inputStream);
             }
@@ -466,6 +491,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     @Override
     public boolean exist(String filePath) throws Exception {
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
             // 获取文件大小
             long size = this.ftpClient.size(filePath);
             if (size != 550 && size >= 0) {
@@ -497,6 +524,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public boolean chmod(int permissions, String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath);
         // 构建 SITE CHMOD 命令
         String command = "CHMOD " + permissions + " " + filePath;
         // 发送命令到 FTP 服务器
@@ -505,6 +534,8 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public ShellFTPFile fileInfo(String filePath) throws IOException {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
         FTPFile file = this.getFile(filePath);
         if (file != null) {
             String pPath = ShellFileUtil.parent(filePath);

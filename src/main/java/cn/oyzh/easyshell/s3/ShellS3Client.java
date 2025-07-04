@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -228,7 +229,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     // }
 
     @Override
-    public void lsFileDynamic(String filePath, Consumer<ShellS3File> fileCallback) throws Exception {
+    public void lsFileDynamic(String filePath, Consumer<ShellS3File> fileCallback) {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
         if (StringUtil.equalsAny(filePath, "/", "")) {
             ListBucketsRequest request = ListBucketsRequest.builder()
                     .build();
@@ -263,6 +266,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public void delete(String file) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "rm " + file);
         ShellS3Path s3Path = ShellS3Path.of(file);
         String filePath = s3Path.filePath();
         String bucketName = s3Path.bucketName();
@@ -273,7 +278,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
-    public void deleteDir(String dir) throws Exception {
+    public void deleteDir(String dir) {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "rmdir " + dir);
         ShellS3Path s3Path = ShellS3Path.of(dir);
         String prefix = s3Path.prefix();
         String bucketName = s3Path.bucketName();
@@ -285,12 +292,14 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
-    public void deleteDirRecursive(String dir) throws Exception {
+    public void deleteDirRecursive(String dir) {
         this.deleteDir(dir);
     }
 
     @Override
     public boolean rename(String filePath, String newPath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
         ShellS3Path oldS3Path1 = ShellS3Path.of(filePath);
         ShellS3Path newS3Path2 = ShellS3Path.of(newPath);
 
@@ -313,6 +322,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean exist(String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
         ShellS3Path s3Path = ShellS3Path.of(filePath);
         String bucketName = s3Path.bucketName();
         if (bucketName == null) {
@@ -350,6 +361,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public void touch(String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "touch " + filePath);
         ShellS3Path s3Path = ShellS3Path.of(filePath);
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(s3Path.bucketName())
@@ -380,6 +393,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public void get(ShellS3File remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(remoteFile.getBucketName())
                 .key(remoteFile.getFileKey())
@@ -393,7 +408,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
-    public InputStream getStream(ShellS3File remoteFile, Function<Long, Boolean> callback) throws Exception {
+    public InputStream getStream(ShellS3File remoteFile, Function<Long, Boolean> callback) {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(remoteFile.getBucketName())
                 .key(remoteFile.getFilePath())
@@ -407,6 +424,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         ShellS3Path s3Path = ShellS3Path.of(remoteFile);
         InputStream in;
         if (callback != null) {
@@ -506,6 +525,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public ShellS3File fileInfo(String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
         ShellS3Path s3Path = ShellS3Path.of(filePath);
         String bucketName = s3Path.bucketName();
         if (bucketName == null) {
@@ -875,6 +896,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * @return 值
      */
     public String generatePresignedUrl(String bucketName, String key, Duration duration) {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "generatePresignedUrl " + key);
         // 签名器
         S3Presigner signer = S3Presigner.builder().region(this.region())
                 .credentialsProvider(this.credentialsProvider)

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -154,7 +155,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             // 获取通道
             channel = this.newExecChannel(command);
             // 操作
-            ShellSSHClientActionUtil.forAction(this.connectName(), command);
+            ShellClientActionUtil.forAction(this.connectName(), command);
             if (channel != null) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 channel.setIn(null);

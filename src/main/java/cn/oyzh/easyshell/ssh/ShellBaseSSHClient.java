@@ -113,7 +113,7 @@
 //         ChannelExec channel = this.newExecChannel();
 //         try {
 //             // 操作
-//             ShellSSHClientActionUtil.forAction(this.connectName(), command);
+//             ShellClientActionUtil.forAction(this.connectName(), command);
 //             channel.setCommand(command);
 //             ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //             channel.setErrStream(stream);

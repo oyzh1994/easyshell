@@ -6,7 +6,7 @@
 // * @author oyzh
 // * @since 2025-04-21
 // */
-//public class ShellSSHClientActionUtil {
+//public class ShellClientActionUtil {
 //
 //    public static void forAction(String connectName, String action) {
 //        ShellEventUtil.clientAction(connectName, action);

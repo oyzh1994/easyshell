@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh2.ShellBaseSSHClient;
@@ -190,6 +191,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void delete(String file) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "rm " + file);
             channel.rm(file);
         } finally {
             this.returnChannel(channel);
@@ -200,6 +203,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void deleteDir(String dir) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "rmdir " + dir);
             channel.rmdir(dir);
         } finally {
             this.returnChannel(channel);
@@ -233,6 +238,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public boolean createDir(String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "mkdir " + filePath);
             channel.mkdir(filePath);
         } finally {
             this.returnChannel(channel);
@@ -270,6 +277,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public String workDir() throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "pwd");
             return channel.pwd();
         } finally {
             this.returnChannel(channel);
@@ -287,6 +296,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             return null;
         }
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "stat " + filePath);
             return channel.stat(filePath);
         } finally {
             this.returnChannel(channel);
@@ -295,6 +306,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean exist(String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.exist(filePath);
@@ -307,6 +320,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public String realpath(String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "realpath " + filePath);
             return channel.realpath(filePath);
         } finally {
             this.returnChannel(channel);
@@ -317,6 +332,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void touch(String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "touch " + filePath);
             channel.touch(filePath);
         } finally {
             this.returnChannel(channel);
@@ -327,6 +344,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         ShellSFTPChannel channel = this.newSFTPChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
             if (callback == null) {
                 channel.put(localFile.getPath(), remoteFile);
             } else {
@@ -341,6 +360,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         ShellSFTPChannel channel = this.newSFTPChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
             if (callback == null) {
                 channel.put(localFile, remoteFile);
             } else {
@@ -353,6 +374,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         ShellSFTPChannel channel = this.newSFTPChannel();
         this.delayChannels.add(channel);
         if (callback == null) {
@@ -376,6 +399,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String fPath = remoteFile.getFilePath();
         ShellSFTPChannel channel = this.newSFTPChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile);
             if (callback == null) {
                 channel.get(fPath, localFile);
             } else {
@@ -388,6 +413,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         ShellSFTPChannel channel = this.newSFTPChannel();
         this.delayChannels.add(channel);
         String fPath = remoteFile.getFilePath();
@@ -401,6 +428,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public boolean chmod(int permission, String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath);
             channel.chmod(permission, filePath);
         } finally {
             this.returnChannel(channel);
@@ -410,6 +439,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public ShellSFTPFile fileInfo(String filePath) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
         SftpClient.Attributes attrs = this.stat(filePath);
         if (attrs == null) {
             return null;
@@ -427,6 +458,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
             channel.lsFile(filePath, fileCallback);
         } finally {
             this.returnChannel(channel);
@@ -437,6 +470,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     public boolean rename(String filePath, String newPath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
             channel.rename(filePath, newPath);
         } finally {
             this.returnChannel(channel);

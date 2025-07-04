@@ -8,7 +8,7 @@
 //import cn.oyzh.easyshell.domain.ShellConnect;
 //import cn.oyzh.easyshell.domain.ShellKey;
 //import cn.oyzh.easyshell.internal.ShellBaseClient;
-//import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
+//import cn.oyzh.easyshell.ssh.ShellClientActionUtil;
 //import cn.oyzh.easyshell.store.ShellKeyStore;
 //import cn.oyzh.easyshell.util.ShellUtil;
 //import cn.oyzh.fx.plus.information.MessageBox;
@@ -149,7 +149,7 @@
 //            // 获取通道
 //            channel = session.exec(command);
 //            // 操作
-//            ShellSSHClientActionUtil.forAction(this.connectName(), command);
+//            ShellClientActionUtil.forAction(this.connectName(), command);
 //            InputStream in = channel.getInputStream();
 //            byte[] bytes = in.readAllBytes();
 //            String result;
