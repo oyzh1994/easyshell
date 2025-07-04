@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -304,15 +305,20 @@ public class ShellUpdateSSHConnectController extends StageController {
     private FXCheckBox enableCompress;
 
     /**
-     * 启用zmodem
+     * 启用ZModem
      */
     @FXML
-    private FXCheckBox enableZmodem;
+    private FXCheckBox enableZModem;
 
     /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+
+    /**
+     * ssh跳板储存对象
+     */
+    private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -471,7 +477,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
-            boolean enableZmodem = this.enableZmodem.isSelected();
+            boolean enableZModem = this.enableZModem.isSelected();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
             boolean enableBackground = this.enableBackground.isSelected();
@@ -485,7 +491,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             this.shellConnect.setEnvironment(this.env.getTextTrim());
             // 启用zmodem
-            this.shellConnect.setEnableZmodem(enableZmodem);
+            this.shellConnect.setEnableZModem(enableZModem);
             // 启用压缩
             this.shellConnect.setEnableCompress(enableCompress);
             // 认证信息
@@ -621,8 +627,8 @@ public class ShellUpdateSSHConnectController extends StageController {
             // 选中密钥
             this.key.selectById(this.shellConnect.getKeyId());
         }
-        // 启用Zmodem
-        this.enableZmodem.setSelected(this.shellConnect.isEnableZmodem());
+        // 启用ZModem
+        this.enableZModem.setSelected(this.shellConnect.isEnableZModem());
         // 启用压缩
         this.enableCompress.setSelected(this.shellConnect.isEnableCompress());
         // 背景配置
@@ -786,7 +792,8 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        this.jumpTableView.removeSelectedItem();
+        ShellJumpConfig config =  this.jumpTableView.removeSelectedItem();
+        this.jumpConfigStore.delete(config);
         this.jumpTableView.updateOrder();
     }
 

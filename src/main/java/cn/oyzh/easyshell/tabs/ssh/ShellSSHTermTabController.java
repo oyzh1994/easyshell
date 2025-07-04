@@ -139,7 +139,7 @@ public class ShellSSHTermTabController extends SubTabController {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
-        if (connect.isEnableZmodem()) {
+        if (connect.isEnableZModem()) {
             // connector.setResetTtyConnectorCallback(this::openShell);
             ttyConnector = this.widget.createZModemTtyConnector(connector);
         } else {

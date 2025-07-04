@@ -234,10 +234,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean enableCompress;
 
     /**
-     * ssh协议，启用zmodem
+     * ssh协议，启用ZModem
      */
     @Column
-    private Boolean enableZmodem;
+    private Boolean enableZModem;
 
     /**
      * s3协议，区域
@@ -277,12 +277,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return enableCompress != null && enableCompress;
     }
 
-    public void setEnableZmodem(boolean enableZmodem) {
-        this.enableZmodem = enableZmodem;
+    public void setEnableZModem(boolean enableZModem) {
+        this.enableZModem = enableZModem;
     }
 
-    public boolean isEnableZmodem() {
-        return enableZmodem != null && enableZmodem;
+    public boolean isEnableZModem() {
+        return BooleanUtil.isTrue(enableZModem);
     }
 
     public void setEnableProxy(boolean enableProxy) {
@@ -415,7 +415,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // ssh
         this.showFile = t1.showFile;
         this.environment = t1.environment;
-        this.enableZmodem = t1.enableZmodem;
+        this.enableZModem = t1.enableZModem;
         this.serverMonitor = t1.serverMonitor;
         this.enableCompress = t1.enableCompress;
         this.followTerminalDir = t1.followTerminalDir;
