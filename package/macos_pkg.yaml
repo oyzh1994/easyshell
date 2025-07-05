@@ -101,6 +101,11 @@ jre:
 jar:
   # 移除空jar
   removeEmpty: true
+  # 跳过的jar
+  skipsJar:
+    - bcprov.*
+    - bcpkix.*
+    - bcutil.*
   # 排除的文件
   excludes:
     - AL2.0
