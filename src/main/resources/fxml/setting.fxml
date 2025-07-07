@@ -32,7 +32,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
 <SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="480">
+                 fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
         <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
         </SettingLeftTreeView>
@@ -252,17 +252,15 @@
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="shortcut_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
-                <FXScrollPane flexWidth="100%" flexHeight="100%">
-                    <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100%">
-                        <columns>
-                            <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
-                            <FXTableColumn flexWidth="50% - 34" valueName="value" text="%base.desc"/>
-                        </columns>
-                        <VBox.margin>
-                            <Insets left="30"/>
-                        </VBox.margin>
-                    </ShellShortcutKeyTableView>
-                </FXScrollPane>
+                <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100%">
+                    <columns>
+                        <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
+                        <FXTableColumn flexWidth="50% - 42" valueName="value" text="%base.desc"/>
+                    </columns>
+                </ShellShortcutKeyTableView>
+                <VBox.margin>
+                    <Insets left="30"/>
+                </VBox.margin>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="font_general_box" flexWidth="100%"
                     flexHeight="100%" groupId="setting_item">

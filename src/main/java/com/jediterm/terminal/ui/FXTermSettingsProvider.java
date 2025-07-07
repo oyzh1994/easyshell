@@ -25,6 +25,13 @@ public interface FXTermSettingsProvider {
     @NotNull TerminalActionPresentation getDecrTermSizePresentation();
 
     /**
+     * 获取恢复终端字体大小操作
+     *
+     * @return 操作
+     */
+    @NotNull TerminalActionPresentation getResetTermSizePresentation();
+
+    /**
      * 设置终端字体大小
      *
      * @param terminalFontSize 终端字体大小

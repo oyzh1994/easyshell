@@ -2,9 +2,10 @@ package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -23,10 +24,32 @@ public abstract class ShellConnectTab extends RichTab {
         super();
         // 绑定快捷键
         this.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.W && (event.isControlDown() || event.isMetaDown())) {
-                this.closeTab();
+            if (event.isControlDown() || event.isMetaDown()) {
+                if (event.getCode() == KeyCode.W) {
+                    this.closeTab();
+                } else if (event.getCode().isDigitKey()) {
+                    this.switchTab(event.getCode());
+                }
             }
         });
+    }
+
+    /**
+     * 切换tab
+     *
+     * @param code 按键
+     */
+    private void switchTab(KeyCode code) {
+        FXTabPane tabPane = (FXTabPane) this.getTabPane();
+        if (tabPane == null) {
+            return;
+        }
+        int digit = KeyboardUtil.getDigit(code);
+        if (digit <= 0) {
+            return;
+        }
+        // 选中tab
+        tabPane.select(digit - 1);
     }
 
     /**

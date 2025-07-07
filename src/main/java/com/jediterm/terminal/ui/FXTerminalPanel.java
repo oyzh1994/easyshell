@@ -1972,6 +1972,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 this.decrTermSize();
                 return true;
             }));
+            list.add(new FXTerminalAction((FXTerminalActionPresentation) provider.getResetTermSizePresentation(), input -> {
+                this.resetTermSize();
+                return true;
+            }));
         }
         return list;
     }
@@ -1983,10 +1987,27 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     /**
+     * 终端字体
+     */
+    private Float termSize;
+
+    /**
+     * 获取终端字体
+     *
+     * @return 终端字体
+     */
+    public Float getTermSize() {
+        if (this.termSize == null) {
+            this.termSize = this.mySettingsProvider.getTerminalFontSize();
+        }
+        return this.mySettingsProvider.getTerminalFontSize();
+    }
+
+    /**
      * 增加终端字体
      */
     public void incrTermSize() {
-        float size = this.mySettingsProvider.getTerminalFontSize();
+        float size = this.getTermSize();
         if (size < 30 && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
             provider.setTerminalFontSize(size + 1);
             this.reinitFontAndResize();
@@ -1997,9 +2018,19 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      * 减少终端字体
      */
     public void decrTermSize() {
-        float size = this.mySettingsProvider.getTerminalFontSize();
+        float size = this.getTermSize();
         if (size >= 10 && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
             provider.setTerminalFontSize(size - 1);
+            this.reinitFontAndResize();
+        }
+    }
+
+    /**
+     * 恢复终端字体
+     */
+    public void resetTermSize() {
+        if (this.termSize != null && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
+            provider.setTerminalFontSize(this.termSize);
             this.reinitFontAndResize();
         }
     }

@@ -118,8 +118,8 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
                 ? new KeyCodeCombination(KeyCode.PLUS, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.PLUS, KeyCombination.CONTROL_DOWN);
         KeyCombination keyCombination1 = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.ADD, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN);
+                ? new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.CONTROL_DOWN);
         return new FXTerminalActionPresentation(I18nHelper.incrFont(), List.of(keyCombination, keyCombination1));
     }
 
@@ -132,6 +132,17 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
                 ? new KeyCodeCombination(KeyCode.MINUS, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN);
         return new FXTerminalActionPresentation(I18nHelper.decrFont(), List.of(keyCombination, keyCombination1));
+    }
+
+    @Override
+    public @NotNull TerminalActionPresentation getResetTermSizePresentation() {
+        KeyCombination keyCombination = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN);
+        KeyCombination keyCombination1 = OSUtil.isMacOS()
+                ? new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN);
+        return new FXTerminalActionPresentation(I18nHelper.resetFont(), List.of(keyCombination, keyCombination1));
     }
 
     @Override
