@@ -4,9 +4,11 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -41,6 +43,16 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    /**
+     * shell设
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
+     * shell设置储存
+     */
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
     public ShellRootTreeItem(ShellConnectTreeView treeView) {
         super(treeView);
         this.setValue(new ShellRootTreeItemValue());
@@ -53,16 +65,27 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         List<MenuItem> items = new ArrayList<>(4);
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
         FXMenuItem exportConnect = MenuItemHelper.exportConnect("12", this::exportConnect);
+        exportConnect.setDisable(this.isChildEmpty());
         FXMenuItem importConnect = MenuItemHelper.importConnect("12", this::importConnect);
         FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
-
-        exportConnect.setDisable(this.isChildEmpty());
+        FXMenuItem moreInfo = MenuItemHelper.moreInfo("12", this::moreInfo);
+        moreInfo.setDisable(this.isChildEmpty());
 
         items.add(addConnect);
         items.add(exportConnect);
         items.add(importConnect);
         items.add(addGroup);
+        items.add(moreInfo);
         return items;
+    }
+
+    /**
+     * 显示更多信息
+     */
+    private void moreInfo(){
+        this.setting.setConnectShowMoreInfo(!this.setting.isConnectShowMoreInfo());
+        this.settingStore.update(this.setting);
+        this.refresh();
     }
 
     /**

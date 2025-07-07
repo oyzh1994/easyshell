@@ -13,8 +13,9 @@ import javafx.scene.paint.Color;
  */
 public class ShellGroupTreeItemValue extends RichTreeItemValue {
 
-    public ShellGroupTreeItemValue( ShellGroupTreeItem item) {
+    public ShellGroupTreeItemValue(ShellGroupTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override
@@ -41,5 +42,18 @@ public class ShellGroupTreeItemValue extends RichTreeItemValue {
             return super.graphicColor();
         }
         return Color.DEEPSKYBLUE;
+    }
+
+    @Override
+    public String extra() {
+        if (this.item().isChildEmpty()) {
+            return super.extra();
+        }
+        return "(" + this.item().getChildrenSize() + ")";
+    }
+
+    @Override
+    public Color extraColor() {
+        return Color.DARKGREY;
     }
 }

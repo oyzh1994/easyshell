@@ -107,6 +107,12 @@ public class ShellSetting extends AppSetting {
     // @Column
     // private Boolean sshFollowTerminalDir;
 
+    /**
+     * 连接，显示更多信息
+     */
+    @Column
+    private Boolean connectShowMoreInfo;
+
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
@@ -294,4 +300,12 @@ public class ShellSetting extends AppSetting {
     // public void setSshFollowTerminalDir(boolean sshFollowTerminalDir) {
     //     this.sshFollowTerminalDir = sshFollowTerminalDir;
     // }
+
+    public boolean isConnectShowMoreInfo() {
+        return BooleanUtil.isTrue(this.connectShowMoreInfo);
+    }
+
+    public void setConnectShowMoreInfo(boolean connectShowMoreInfo) {
+        this.connectShowMoreInfo = connectShowMoreInfo;
+    }
 }
