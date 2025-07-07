@@ -26,22 +26,25 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * zmodem处理器
+ * ZModem处理器
  *
  * @author oyzh
- * @since 20025/06/24
+ * @since 2025/06/24
  */
-public class ZModemProcessor implements CopyStreamListener {
+public class ShellZModemProcessor implements CopyStreamListener {
     // 如果为 true 表示是接收（sz）文件
     private final boolean sz;
     private final ZModem zmodem;
-    private long lastRefreshTime = 0L;
+    private long lastRefreshTime;
     private final Terminal terminal;
 
-    public ZModemProcessor(boolean sz, InputStream input, OutputStream output, Terminal terminal) {
-        this.sz = sz;
+    public ShellZModemProcessor(char[] frame, InputStream input, OutputStream output, Terminal terminal) {
+        // sz: * * 0x18 B 0 0
+        // rz: * * 0x18 B 0 1
+        this.sz = frame[5] == 48;
         this.terminal = terminal;
-        this.zmodem = new ZModem(input, output);
+        ShellZModemInputStream in = new ShellZModemInputStream(input, new String(frame).getBytes());
+        this.zmodem = new ZModem(in, output);
     }
 
     /**
@@ -106,7 +109,7 @@ public class ZModemProcessor implements CopyStreamListener {
         // 文件索引变化，则换行
         if (this.curIndex != event.getIndex()) {
             this.curIndex = event.getIndex();
-            terminal.nextLine();
+            this.terminal.nextLine();
         }
         // 是否跳过
         boolean skip = event.isSkip();
@@ -115,32 +118,31 @@ public class ZModemProcessor implements CopyStreamListener {
         StringBuilder sb = new StringBuilder();
 
         // 文件索引
-        sb.append(ControlCharacters.TAB);
+        sb.append("\t");
         sb.append(event.getIndex());
         sb.append("/");
         sb.append(total);
 
         // 文件名
-        sb.append(ControlCharacters.TAB);
+        sb.append("\t");
         sb.append(event.getFilename());
 
         // 文件大小
-        sb.append(ControlCharacters.TAB);
-        sb.append(String.format("%d/%d", event.getBytesTransferred(), event.getTotalBytesTransferred()));
-        sb.append(ControlCharacters.TAB);
-
+        sb.append("\t");
+        sb.append(event.getBytesTransferred()).append("/").append(event.getTotalBytesTransferred());
         // 当前传输是否完成
         boolean completed = false;
         // 是否全部结束了
         boolean allFinished;
         // 处理进度
+        sb.append("\t");
         if (skip) {// 跳过
-            sb.append(I18nHelper.skip()).append(ControlCharacters.CR);
+            sb.append(I18nHelper.skip()).append("\r");
             allFinished = event.getIndex() == total;
         } else {// 进度
             completed = event.getBytesTransferred() >= event.getTotalBytesTransferred();
             double rate = (event.getBytesTransferred() * 1.0 / event.getTotalBytesTransferred()) * 100.0;
-            sb.append(NumberUtil.scale(rate, 2)).append('%').append(ControlCharacters.CR);
+            sb.append(NumberUtil.scale(rate, 2)).append('%').append("\r");
             allFinished = completed && event.getIndex() == total;
         }
 
@@ -154,9 +156,9 @@ public class ZModemProcessor implements CopyStreamListener {
         // 达到刷新阈值或当前文件传输完成或跳过，则执行刷新
         if (now - this.lastRefreshTime > 200 || completed || skip) {
             this.lastRefreshTime = now;
-            terminal.saveCursor();
-            terminal.writeCharacters(sb.toString());
-            terminal.restoreCursor();
+            this.terminal.saveCursor();
+            this.terminal.writeCharacters(sb.toString());
+            this.terminal.restoreCursor();
         }
     }
 
@@ -198,7 +200,7 @@ public class ZModemProcessor implements CopyStreamListener {
     public void bytesTransferred(CopyStreamEvent event) {
         if (event instanceof FileCopyStreamEvent) {
             try {
-                refreshProgress((FileCopyStreamEvent) event);
+                this.refreshProgress((FileCopyStreamEvent) event);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -207,10 +209,9 @@ public class ZModemProcessor implements CopyStreamListener {
 
     @Override
     public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
-        // TODO("Not yet implemented")
     }
 
     public void cancel() throws IOException {
-        zmodem.cancel();
+        this.zmodem.cancel();
     }
 }

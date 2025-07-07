@@ -20,33 +20,28 @@ public class ZModem {
     private final OutputStream netOs;
     private final AtomicBoolean isCancelled = new AtomicBoolean(false);
 
-    public ZModem(InputStream netin, OutputStream netout) {
-        netIs = netin;
-        netOs = netout;
+    public ZModem(InputStream in, OutputStream out) {
+        this.netIs = in;
+        this.netOs = out;
     }
 
     public void receive(Supplier<FileAdapter> dstDir, CopyStreamListener listener) throws IOException {
-        ZModemReceive sender = new ZModemReceive(dstDir, netIs, netOs);
+        ZModemReceive sender = new ZModemReceive(dstDir, this.netIs, this.netOs);
         sender.addCopyStreamListener(listener);
         sender.receive(this.isCancelled::get);
         this.netOs.write("\r".getBytes());
         this.netOs.flush();
-        // this.connector.resetTtyConnector();
     }
 
     public void send(Supplier<List<FileAdapter>> filesSupplier, CopyStreamListener listener) throws Exception {
-        ZModemSend sender = new ZModemSend(filesSupplier, netIs, netOs);
+        ZModemSend sender = new ZModemSend(filesSupplier, this.netIs, this.netOs);
         sender.addCopyStreamListener(listener);
         sender.send(this.isCancelled::get);
         this.netOs.write("\r".getBytes());
         this.netOs.flush();
-        // this.connector.resetTtyConnector();
     }
 
     public void cancel() throws IOException {
         this.isCancelled.compareAndSet(false, true);
-        // this.netOs.write("\r".getBytes());
-        // this.netOs.flush();
-        // this.connector.resetTtyConnector();
     }
 }

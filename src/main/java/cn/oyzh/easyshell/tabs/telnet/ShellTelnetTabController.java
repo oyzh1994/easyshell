@@ -8,9 +8,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
 import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
-import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -65,8 +63,6 @@ public class ShellTelnetTabController extends RichTabController {
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
-        // ZModemTtyConnector zModemTtyConnector= this.widget.createZModemTtyConnector(connector);
-        // this.widget.openSession(zModemTtyConnector);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小

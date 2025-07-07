@@ -17,10 +17,10 @@ import java.util.Arrays;
  * @author oyzh
  * @since 2025/06/24
  */
-public class ZModemTtyConnector implements TtyConnector {
+public class ShellZModemTtyConnector implements TtyConnector {
 
     /**
-     * zmodem协议前缀
+     * ZModem协议前缀
      */
     public static final char[] ZMODEM_PREFIX = new char[]{
             (char) ZModemCharacter.ZPAD.value(),
@@ -34,20 +34,20 @@ public class ZModemTtyConnector implements TtyConnector {
     private Terminal terminal;
 
     /**
-     * zmodem处理器
-     */
-    private volatile ZModemProcessor zmodem;
-
-    /**
      * tty连接器
      */
     private ShellDefaultTtyConnector connector;
+
+    /**
+     * ZModem处理器
+     */
+    private volatile ShellZModemProcessor processor;
 
     public ShellDefaultTtyConnector getConnector() {
         return connector;
     }
 
-    public ZModemTtyConnector(Terminal terminal, ShellDefaultTtyConnector connector) {
+    public ShellZModemTtyConnector(Terminal terminal, ShellDefaultTtyConnector connector) {
         this.terminal = terminal;
         this.connector = connector;
     }
@@ -55,13 +55,13 @@ public class ZModemTtyConnector implements TtyConnector {
     @Override
     public int read(char[] buffer, int offset, int length) throws IOException {
         // 处理ZModem
-        if (this.zmodem != null) {
-            this.zmodem.process();
-            this.zmodem = null;
+        if (this.processor != null) {
+            this.processor.process();
+            this.processor = null;
         }
 
         int i = this.connector.read(buffer, offset, length);
-        if (i < 1) {
+        if (i <= 3) {
             return i;
         }
 
@@ -70,13 +70,11 @@ public class ZModemTtyConnector implements TtyConnector {
         if (e == -1) {
             return i;
         }
-        char[] zmodemFrame = Arrays.copyOfRange(buffer, e, i);
-        // 创建zmode处理器
-        this.zmodem = new ZModemProcessor(
-                // sz: * * 0x18 B 0 0
-                // rz: * * 0x18 B 0 1
-                zmodemFrame.length > 5 && zmodemFrame[5] == 48,
-                new ZModemInputStream(this.connector.input(), new String(zmodemFrame).getBytes()),
+        char[] frame = Arrays.copyOfRange(buffer, e, i);
+        // 创建ZModem处理器
+        this.processor = new ShellZModemProcessor(
+                frame,
+                this.connector.input(),
                 this.connector.output(),
                 this.terminal
         );
@@ -86,8 +84,8 @@ public class ZModemTtyConnector implements TtyConnector {
     @Override
     public void write(byte[] bytes) throws IOException {
         // 取消ZModem
-        if (this.zmodem != null && bytes.length > 0 && bytes[0] == 0x03) {
-            this.zmodem.cancel();
+        if (this.processor != null && bytes.length > 0 && bytes[0] == 0x03) {
+            this.processor.cancel();
             return;
         }
         this.connector.write(bytes);
@@ -121,9 +119,9 @@ public class ZModemTtyConnector implements TtyConnector {
     @Override
     public void close() {
         if (this.connector != null) {
-            this.zmodem = null;
             this.terminal = null;
             this.connector = null;
+            this.processor = null;
             if (JulLog.isInfoEnabled()) {
                 JulLog.info("close ZModem tty");
             }
@@ -137,12 +135,21 @@ public class ZModemTtyConnector implements TtyConnector {
      * @return 结果
      */
     private static int indexOfZModem(char[] a) {
-        if (a.length < ZMODEM_PREFIX.length) {
-            return -1;
-        }
-        for (int i = 0; i <= a.length - ZMODEM_PREFIX.length; i++) {
-            char[] range = Arrays.copyOfRange(a, i, i + ZMODEM_PREFIX.length);
-            if (Arrays.equals(range, ZMODEM_PREFIX)) {
+        if (a.length >= ZMODEM_PREFIX.length) {
+            for (int i = 0; i <= a.length - ZMODEM_PREFIX.length; i++) {
+                if (a[i] != ZMODEM_PREFIX[0]) {
+                    continue;
+                }
+                if (a[i + 1] != ZMODEM_PREFIX[1]) {
+                    continue;
+                }
+                if (a[i + 2] != ZMODEM_PREFIX[2]) {
+                    continue;
+                }
+                // char[] range = Arrays.copyOfRange(a, i, i + ZMODEM_PREFIX.length);
+                // if (Arrays.equals(range, ZMODEM_PREFIX)) {
+                //     return i;
+                // }
                 return i;
             }
         }

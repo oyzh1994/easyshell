@@ -8,10 +8,7 @@ import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
-import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -66,8 +63,6 @@ public class ShellRLoginTabController extends RichTabController {
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellRLoginTtyConnector connector = this.widget.createTtyConnector(charset);
-        // ZModemTtyConnector zModemTtyConnector= this.widget.createZModemTtyConnector(connector);
-        // this.widget.openSession(zModemTtyConnector);
         this.widget.openSession(connector);
         this.widget.onTermination(exitCode -> this.widget.close());
         connector.init(this.client);

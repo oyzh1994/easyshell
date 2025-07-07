@@ -20,6 +20,7 @@ public class ShellTermTypeComboBox extends FXComboBox<String> {
         this.addItem("vt102");
         this.addItem("vt220");
         this.addItem("vt320");
+        this.addItem("vt340");
         this.addItem("ansi");
         this.addItem("dump");
     }

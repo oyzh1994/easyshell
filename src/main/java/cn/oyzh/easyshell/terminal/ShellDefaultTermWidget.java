@@ -6,7 +6,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.zmodem.ZModemTtyConnector;
+import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
 import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
@@ -183,27 +183,9 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         }
     }
 
-    // /**
-    //  * 重新打开会话
-    //  *
-    //  * @param ttyConnector tty连接器
-    //  */
-    // public void reopenSession(TtyConnector ttyConnector) {
-    //     super.stopSession();
-    //     // 关闭旧的
-    //     TtyConnector connector = this.getTtyConnector();
-    //     if (connector != null) {
-    //         connector.close();
-    //     }
-    //     this.openSession(ttyConnector);
-    // }
-
     public void openSession(TtyConnector ttyConnector) {
         if (this.canOpenSession()) {
             FXJediTermWidget session = this.createTerminalSession(ttyConnector);
-//            if (ttyConnector instanceof ShellDefaultTtyConnector loggingConnector) {
-//                loggingConnector.setWidget(session);
-//            }
             session.start();
         }
     }
@@ -216,19 +198,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
 
     @Override
     public ShellDefaultTtyConnector getTtyConnector() {
-        if (super.getTtyConnector() instanceof ZModemTtyConnector connector) {
+        if (super.getTtyConnector() instanceof ShellZModemTtyConnector connector) {
             return connector.getConnector();
         }
         return (ShellDefaultTtyConnector) super.getTtyConnector();
     }
-
-//    public double getWidth() {
-//        return NodeUtil.getWidth(this.getComponent());
-//    }
-//
-//    public double getHeight() {
-//        return NodeUtil.getHeight(this.getComponent());
-//    }
 
     public TermSize getTermSize() {
         return this.getTtyConnector().getTermSize();
@@ -237,10 +211,6 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     @Override
     public void close() {
         try {
-            // TtyConnector connector = this.getTtyConnector();
-            // if (connector != null) {
-            //     connector.close();
-            // }
             super.close();
             SystemUtil.gcLater();
         } catch (Exception ex) {
@@ -252,9 +222,9 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
      * 创建zmodem协议的tty连接器
      *
      * @param connector tty连接器
-     * @return ZModemTtyConnector
+     * @return ShellZModemTtyConnector
      */
-    public ZModemTtyConnector createZModemTtyConnector(ShellDefaultTtyConnector connector) {
-        return new ZModemTtyConnector(this.getTerminal(), connector);
+    public ShellZModemTtyConnector createZModemTtyConnector(ShellDefaultTtyConnector connector) {
+        return new ShellZModemTtyConnector(this.getTerminal(), connector);
     }
 }
