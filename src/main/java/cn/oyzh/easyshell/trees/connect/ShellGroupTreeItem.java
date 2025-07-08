@@ -27,7 +27,7 @@ import java.util.Objects;
  * shell分组节点
  *
  * @author oyzh
- * @since 2023/05/12
+ * @since 2025/05/12
  */
 public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> implements ShellConnectManager {
 

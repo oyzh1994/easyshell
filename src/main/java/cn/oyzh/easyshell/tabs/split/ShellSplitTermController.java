@@ -27,7 +27,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import com.jediterm.terminal.TtyConnector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import org.apache.sshd.client.channel.ChannelShell;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -74,7 +73,11 @@ public class ShellSplitTermController extends SubTabController {
             ShellSSHTermWidget widget = new ShellSSHTermWidget();
             ShellSSHTtyConnector connector = widget.createTtyConnector(charset);
             connector.init(sshClient);
-            ttyConnector = connector;
+            if (sshClient.getShellConnect().isEnableZModem()) {
+                ttyConnector = widget.createZModemTtyConnector(connector);
+            } else {
+                ttyConnector = connector;
+            }
             this.widget = widget;
         } else if (this.client instanceof ShellRLoginClient rLoginClient) {
             ShellRLoginTermWidget widget = new ShellRLoginTermWidget();
@@ -113,17 +116,17 @@ public class ShellSplitTermController extends SubTabController {
      * @throws Exception 异常
      */
     private void init() throws Exception {
-        if (this.client instanceof ShellSSHClient sshClient) {
-            ChannelShell shell = sshClient.openShell();
-            this.initWidget();
-            // shell.connect(this.client.connectTimeout());
-            // if (!shell.isConnected()) {
-            //     MessageBox.warn(I18nHelper.connectFail());
-            //     return;
-            // }
-        } else {
-            this.initWidget();
-        }
+        // if (this.client instanceof ShellSSHClient sshClient) {
+        // ChannelShell shell = sshClient.openShell();
+        // this.initWidget();
+        // shell.connect(this.client.connectTimeout());
+        // if (!shell.isConnected()) {
+        //     MessageBox.warn(I18nHelper.connectFail());
+        //     return;
+        // }
+        // } else {
+        this.initWidget();
+        // }
         this.termBox.addChild(this.widget);
     }
 
