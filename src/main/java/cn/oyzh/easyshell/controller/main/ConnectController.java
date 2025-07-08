@@ -69,8 +69,8 @@ public class ConnectController extends SubStageController {
     @Override
     public void onWindowHidden(WindowEvent event) {
         super.onWindowHidden(event);
-        // 关闭连接
-        this.tree.closeConnects();
+        // // 关闭连接
+        // this.tree.closeConnects();
         // 取消F5按键监听
         KeyListener.unListenReleased(this.tree, KeyCode.F5);
     }

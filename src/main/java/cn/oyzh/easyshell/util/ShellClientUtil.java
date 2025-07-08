@@ -14,11 +14,20 @@ import cn.oyzh.easyshell.vnc.ShellVNCClient;
 
 
 /**
+ * 客户端工具类
+ *
  * @author oyzh
  * @since 2025-04-25
  */
 public class ShellClientUtil {
 
+    /**
+     * 创建新客户端
+     *
+     * @param connect 连接
+     * @param <T>     范型
+     * @return 客户端
+     */
     public static <T extends ShellBaseClient> T newClient(ShellConnect connect) {
         ShellBaseClient client = null;
         if (connect.isSSHType()) {

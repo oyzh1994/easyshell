@@ -28,9 +28,8 @@ import javafx.scene.layout.BackgroundSize;
  * shell连接工具类
  *
  * @author oyzh
- * @since 2023/07/01
+ * @since 2025/04/01
  */
-
 public class ShellConnectUtil {
 
     /**
@@ -53,7 +52,6 @@ public class ShellConnectUtil {
             ex.printStackTrace();
         }
     }
-
 
     /**
      * 测试连接

@@ -8,7 +8,7 @@ import java.util.List;
  * 连接管理
  *
  * @author oyzh
- * @since 2023/5/12
+ * @since 2025/03/12
  */
 public interface ShellConnectManager {
 

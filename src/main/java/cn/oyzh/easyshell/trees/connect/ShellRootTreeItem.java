@@ -317,11 +317,11 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
 
     @Override
     public void loadChild() {
-        // 关闭连接
-        List<ShellConnectTreeItem> connectedItems = this.getConnectedItems();
-        for (ShellConnectTreeItem item : connectedItems) {
-            item.closeConnect();
-        }
+        // // 关闭连接
+        // List<ShellConnectTreeItem> connectedItems = this.getConnectedItems();
+        // for (ShellConnectTreeItem item : connectedItems) {
+        //     item.closeConnect();
+        // }
         // 初始化分组
         List<ShellGroup> groups = this.groupStore.load();
         if (CollectionUtil.isNotEmpty(groups)) {

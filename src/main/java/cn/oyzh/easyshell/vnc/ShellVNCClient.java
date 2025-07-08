@@ -44,7 +44,7 @@ public class ShellVNCClient implements ShellBaseClient {
     /**
      * 连接
      */
-    private ShellConnect shellConnect;
+    private final ShellConnect shellConnect;
 
     /**
      * 连接状态
@@ -75,7 +75,7 @@ public class ShellVNCClient implements ShellBaseClient {
         // 设置渲染组件
         this.connection.setRenderProtocol(Objects.requireNonNullElse(this.renderProtocol, NO_OP));
         // 错误处理
-        this.connection.addFaultListener(ex -> MessageBox.exception(ex));
+        this.connection.addFaultListener(MessageBox::exception);
         // 配置
         ProtocolConfiguration config = this.connection.getConfiguration();
         // 基础属性

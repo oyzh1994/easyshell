@@ -21,7 +21,7 @@ import java.util.Objects;
  * shell连接节点
  *
  * @author oyzh
- * @since 2023/1/29
+ * @since 2025/03/29
  */
 public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue> {
 
@@ -136,34 +136,34 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         ShellEventUtil.connectionOpened(this.value);
     }
 
-    /**
-     * 关闭连接
-     */
-    public void closeConnect() {
-//        if (this.isConnected()) {
-//            this.closeConnect(true);
-//        }
-    }
-
-    /**
-     * 关闭连接
-     *
-     * @param waiting 是否开启等待动画
-     */
-    public void closeConnect(boolean waiting) {
-//        Runnable func = () -> this.client.close();
-//        if (waiting) {
-//            Task task = TaskBuilder.newBuilder()
-//                    .onStart(func::run)
-//                    .onFinish(this::refresh)
-//                    .onSuccess(SystemUtil::gcLater)
-//                    .onError(MessageBox::exception)
-//                    .build();
-//            this.startWaiting(task);
-//        } else {
-//            func.run();
-//        }
-    }
+//     /**
+//      * 关闭连接
+//      */
+//     public void closeConnect() {
+// //        if (this.isConnected()) {
+// //            this.closeConnect(true);
+// //        }
+//     }
+//
+//     /**
+//      * 关闭连接
+//      *
+//      * @param waiting 是否开启等待动画
+//      */
+//     public void closeConnect(boolean waiting) {
+// //        Runnable func = () -> this.client.close();
+// //        if (waiting) {
+// //            Task task = TaskBuilder.newBuilder()
+// //                    .onStart(func::run)
+// //                    .onFinish(this::refresh)
+// //                    .onSuccess(SystemUtil::gcLater)
+// //                    .onError(MessageBox::exception)
+// //                    .build();
+// //            this.startWaiting(task);
+// //        } else {
+// //            func.run();
+// //        }
+//     }
 
     /**
      * 编辑连接
@@ -222,7 +222,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     @Override
     public void delete() {
         if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]")) {
-            this.closeConnect(false);
+            // this.closeConnect(false);
             if (this.connectManager().delConnectItem(this)) {
                 ShellEventUtil.connectDeleted(this.value);
             } else {

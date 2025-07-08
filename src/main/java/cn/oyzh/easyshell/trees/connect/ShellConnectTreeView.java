@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.trees.connect;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
@@ -9,11 +8,8 @@ import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
-import cn.oyzh.fx.plus.keyboard.KeyListener;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.input.KeyCode;
 import javafx.util.Callback;
 
 /**
@@ -41,13 +37,13 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
     @Override
     protected void initEvenListener() {
         super.initEvenListener();
-        // 暂停按键处理
-        KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
-            TreeItem<?> item = this.getSelectedItem();
-            if (item instanceof ShellConnectTreeItem treeItem) {
-                treeItem.closeConnect();
-            }
-        });
+        // // 暂停按键处理
+        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
+        //     TreeItem<?> item = this.getSelectedItem();
+        //     if (item instanceof ShellConnectTreeItem treeItem) {
+        //         treeItem.closeConnect();
+        //     }
+        // });
     }
 
     @Override
@@ -55,14 +51,14 @@ public class ShellConnectTreeView extends RichTreeView implements FXEventListene
         return (ShellRootTreeItem) super.root();
     }
 
-    /**
-     * 关闭连接
-     */
-    public void closeConnects() {
-        for (ShellConnectTreeItem treeItem : this.root().getConnectedItems()) {
-            ThreadUtil.startVirtual(() -> treeItem.closeConnect(false));
-        }
-    }
+    // /**
+    //  * 关闭连接
+    //  */
+    // public void closeConnects() {
+    //     for (ShellConnectTreeItem treeItem : this.root().getConnectedItems()) {
+    //         ThreadUtil.startVirtual(() -> treeItem.closeConnect(false));
+    //     }
+    // }
 
 //    @Override
 //    public void expand() {

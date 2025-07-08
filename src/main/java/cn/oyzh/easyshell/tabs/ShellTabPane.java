@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
@@ -306,6 +307,25 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 }
             }
         }
+    }
+
+    /**
+     * 连接删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void connectDeleted(ShellConnectDeletedEvent event) {
+        ShellConnect connect = event.data();
+        List<Tab> closeTabs = new ArrayList<>();
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellConnectTab connectTab) {
+                if (connectTab.shellConnect() == connect) {
+                    closeTabs.add(tab);
+                }
+            }
+        }
+        this.removeTab(closeTabs);
     }
 
 }

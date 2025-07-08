@@ -621,7 +621,6 @@ public class ShellViewFactory {
         }
     }
 
-
     /**
      * 文件编辑
      *
