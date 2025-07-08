@@ -91,6 +91,7 @@ public class ShellSSHDockerTabController extends ParentTabController {
             ShellDockerExec exec = this.getClient().dockerExec();
             this.containerController.init(exec);
             String output = exec.docker_ps();
+            // 未找到
             if (ShellUtil.isCommandNotFound(output)) {
                 MessageBox.info(ShellI18nHelper.connectTip5());
                 return;

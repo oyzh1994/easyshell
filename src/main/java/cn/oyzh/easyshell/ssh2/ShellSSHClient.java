@@ -441,29 +441,29 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public ShellDockerExec dockerExec() {
         if (this.dockerExec == null) {
             this.dockerExec = new ShellDockerExec(this);
-            try {
-                if (this.isWindows()) {
-                    String output = this.exec("where docker.exe");
-                    if (StringUtil.isBlank(output)) {
-                        JulLog.warn("docker is not available");
-                    } else if (!ShellUtil.isWindowsCommandNotFound(output, "docker")) {
-                        String env = output.substring(0, output.lastIndexOf("\\"));
-                        this.environment.add(env);
-                    }
-                } else {
-                    String output = this.exec("which docker");
-                    if (StringUtil.isBlank(output)) {
-                        JulLog.warn("docker is not available");
-                    } else if (!ShellUtil.isCommandNotFound(output)) {
-                        String env = output.substring(0, output.lastIndexOf("/"));
-                        this.environment.add(env);
-                    } else if (this.isMacos() && this.sftpClient().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
-                        this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            // try {
+            //     if (this.isWindows()) {
+            //         String output = this.exec("where docker.exe");
+            //         if (StringUtil.isBlank(output)) {
+            //             JulLog.warn("docker is not available");
+            //         } else if (!ShellUtil.isWindowsCommandNotFound(output, "docker")) {
+            //             String env = output.substring(0, output.lastIndexOf("\\"));
+            //             this.environment.add(env);
+            //         }
+            //     } else {
+            //         String output = this.exec("which docker");
+            //         if (StringUtil.isBlank(output)) {
+            //             JulLog.warn("docker is not available");
+            //         } else if (!ShellUtil.isCommandNotFound(output)) {
+            //             String env = output.substring(0, output.lastIndexOf("/"));
+            //             this.environment.add(env);
+            //         } else if (this.isMacos() && this.sftpClient().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+            //             this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
+            //         }
+            //     }
+            // } catch (Exception ex) {
+            //     ex.printStackTrace();
+            // }
         }
         return this.dockerExec;
     }

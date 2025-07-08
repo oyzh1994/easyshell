@@ -339,6 +339,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     protected ChannelExec newExecChannel(String command) throws Exception {
         // 获取会话
         ClientSession session = this.takeSession(this.connectTimeout());
+        // 针对macos，修正命令
+        if (this.osType != null && this.isMacos()) {
+            command = "export PATH=/Applications/Docker.app/Contents/Resources/bin/:$PATH; " + command;
+        }
         // 创建shell
         ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
         // 执行验证
