@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
@@ -317,8 +318,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 重建列表
         this.files = new ArrayList<>();
+        // 设置标志位
+        ThreadLocalUtil.setVal("loadStage", true);
         // 动态加载
         this.client.lsFileDynamic(currPath, this::addFile);
+        // 移除标志位
+        ThreadLocalUtil.removeVal("loadStage");
     }
 
     /**
@@ -343,8 +348,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 重建列表
         this.files = new ArrayList<>();
+        // 设置标志位
+        ThreadLocalUtil.setVal("loadStage", true);
         // 批量加载
         this.client.lsFileBatch(currPath, this::addFile, 10);
+        // 移除标志位
+        ThreadLocalUtil.removeVal("loadStage");
     }
 
     /**
@@ -475,7 +484,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (this.currentIsRootDirectory() && file.isReturnDirectory()) {
             return false;
         }
-        if (!this.showHiddenFile && file.isHiddenFile()) {
+        // 除了加载阶段，隐藏文件要被过滤掉
+        if (!ThreadLocalUtil.hasVal("loadStage") && !this.showHiddenFile && file.isHiddenFile()) {
             return false;
         }
         if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(file.getFileName(), this.filterText)) {

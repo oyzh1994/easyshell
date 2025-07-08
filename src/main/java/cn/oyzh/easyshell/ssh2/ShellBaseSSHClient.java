@@ -200,15 +200,15 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         StringBuilder builder = new StringBuilder();
         if (this.isWindows()) {
             for (String string : this.environment) {
-                builder.append(string).append(";");
+                builder.append(";").append(string);
             }
-            builder.deleteCharAt(builder.length() - 1);
         } else {
             for (String string : this.environment) {
                 builder.append(":").append(string);
             }
+            builder.append(":$PATH");
         }
-        return builder.toString();
+        return builder.substring(1);
     }
 
     /**
@@ -231,6 +231,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             this.environment.add("/usr/local/bin");
             this.environment.add("/usr/local/sbin");
             this.environment.add("/usr/local/games");
+        }
+        if (this.isMacos()) {
+            this.environment.add("/Applications/Docker.app/Contents/Resources/bin/");
         }
         String remoteCharset = this.getRemoteCharset();
         if (JulLog.isInfoEnabled()) {
@@ -341,7 +344,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         ClientSession session = this.takeSession(this.connectTimeout());
         // 针对macos，修正命令
         if (this.osType != null && this.isMacos()) {
-            command = "export PATH=/Applications/Docker.app/Contents/Resources/bin/:$PATH; " + command;
+            command = "export PATH=" + this.getExportPath() + "; " + command;
         }
         // 创建shell
         ChannelExec channel = session.createExecChannel(command, null, this.initEnvironments());
