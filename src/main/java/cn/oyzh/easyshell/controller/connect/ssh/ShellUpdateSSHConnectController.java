@@ -33,8 +33,6 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
@@ -57,8 +55,6 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
 import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
-
-import java.io.File;
 
 /**
  * ssh连接修改业务
@@ -231,7 +227,7 @@ public class ShellUpdateSSHConnectController extends StageController {
      * 背景图片
      */
     @FXML
-    private ClearableTextField backgroundImage;
+    private ChooseFileTextField backgroundImage;
 
     /**
      * 开启代理
@@ -731,16 +727,16 @@ public class ShellUpdateSSHConnectController extends StageController {
     //    }
     //}
 
-    /**
-     * 选择背景图片
-     */
-    @FXML
-    private void chooseBackgroundImage() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
-        if (file != null) {
-            this.backgroundImage.setText(file.getPath());
-        }
-    }
+    // /**
+    //  * 选择背景图片
+    //  */
+    // @FXML
+    // private void chooseBackgroundImage() {
+    //     File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
+    //     if (file != null) {
+    //         this.backgroundImage.setText(file.getPath());
+    //     }
+    // }
 
     /**
      * 添加主机

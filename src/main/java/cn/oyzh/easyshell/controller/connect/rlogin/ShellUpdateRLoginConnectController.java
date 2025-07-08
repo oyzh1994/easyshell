@@ -7,13 +7,12 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -26,8 +25,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
 
 /**
  * rlogin连接修改业务
@@ -122,7 +119,7 @@ public class ShellUpdateRLoginConnectController extends StageController {
      * 背景图片
      */
     @FXML
-    private ClearableTextField backgroundImage;
+    private ChooseFileTextField backgroundImage;
 
     /**
      * ssh连接储存对象
@@ -283,14 +280,14 @@ public class ShellUpdateRLoginConnectController extends StageController {
         return I18nHelper.connectUpdateTitle();
     }
 
-    /**
-     * 选择背景图片
-     */
-    @FXML
-    private void chooseBackgroundImage() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
-        if (file != null) {
-            this.backgroundImage.setText(file.getPath());
-        }
-    }
+    // /**
+    //  * 选择背景图片
+    //  */
+    // @FXML
+    // private void chooseBackgroundImage() {
+    //     File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
+    //     if (file != null) {
+    //         this.backgroundImage.setText(file.getPath());
+    //     }
+    // }
 }

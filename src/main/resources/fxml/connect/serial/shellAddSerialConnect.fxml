@@ -24,6 +24,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.serial.ShellSerialBaudRateTextFiled?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController" realWidth="750"
         realHeight="630">
@@ -46,8 +47,9 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellSerialPortNameTextFiled fx:id="portName" tipText="%base.contentTip1" maxLen="30" require="true" realHeight="30"
-                                    flexWidth="100% - 180">
+                <ShellSerialPortNameTextFiled fx:id="portName" tipText="%base.contentTip1" maxLen="30" require="true"
+                                              realHeight="30"
+                                              flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -57,7 +59,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellSerialBaudRateTextFiled fx:id="baudRate" tipText="%base.contentTip1" require="true" realHeight="30"
+                <ShellSerialBaudRateTextFiled fx:id="baudRate" tipText="%base.contentTip1" require="true"
+                                              realHeight="30"
                                               flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -68,7 +71,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellSerialNumDataBitsComboBox fx:id="numDataBits" tipText="%base.contentTip1" require="true" realHeight="30"
+                <ShellSerialNumDataBitsComboBox fx:id="numDataBits" tipText="%base.contentTip1" require="true"
+                                                realHeight="30"
                                                 flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -102,7 +106,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <ShellSerialFlowControlComboBox fx:id="flowControl" require="true" realHeight="30"
-                                                 flexWidth="100% - 180">
+                                                flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -179,19 +183,20 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHBox groupId="background" disable="true">
-                    <ClearableTextField require="true" realHeight="30" flexWidth="100% - 180" fx:id="backgroundImage"
-                                        tipText="%base.fileTip1">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ClearableTextField>
-                    <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage">
-                        <HBox.margin>
-                            <Insets left="5" top="9"/>
-                        </HBox.margin>
-                    </ChooseSVGGlyph>
-                </FXHBox>
+                <!-- <FXHBox groupId="background" disable="true"> -->
+                <ChooseFileTextField groupId="background" editable="true" require="true" realHeight="30"
+                                     flexWidth="100% - 180" fx:id="backgroundImage"
+                                     tipText="%base.fileTip1" disable="true">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <!--     <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage"> -->
+                <!--         <HBox.margin> -->
+                <!--             <Insets left="5" top="9"/> -->
+                <!--         </HBox.margin> -->
+                <!--     </ChooseSVGGlyph> -->
+                <!-- </FXHBox> -->
             </FXVBox>
         </FXTab>
     </FXTabPane>

@@ -16,6 +16,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController" realWidth="750"
         realHeight="530">
@@ -93,19 +94,20 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHBox groupId="background" disable="true">
-                    <ClearableTextField require="true" realHeight="30" flexWidth="100% - 180" fx:id="backgroundImage"
-                                        tipText="%base.fileTip1">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ClearableTextField>
-                    <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage">
-                        <HBox.margin>
-                            <Insets left="5" top="9"/>
-                        </HBox.margin>
-                    </ChooseSVGGlyph>
-                </FXHBox>
+                <!-- <FXHBox groupId="background" disable="true"> -->
+                <ChooseFileTextField groupId="background" editable="true" require="true" realHeight="30"
+                                     flexWidth="100% - 180" fx:id="backgroundImage"
+                                     tipText="%base.fileTip1" disable="true">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <!-- <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="9"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </ChooseSVGGlyph> -->
+                <!-- </FXHBox> -->
             </FXVBox>
         </FXTab>
     </FXTabPane>
