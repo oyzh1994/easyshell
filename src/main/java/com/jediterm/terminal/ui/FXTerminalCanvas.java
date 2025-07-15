@@ -1,7 +1,6 @@
 package com.jediterm.terminal.ui;
 
 import cn.oyzh.fx.plus.controls.pane.FXPane;
-import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -16,8 +15,8 @@ public class FXTerminalCanvas extends FXPane {
 
     public FXTerminalCanvas() {
         Canvas canvas = new Canvas();
-        canvas.setCache(true);
-        canvas.setCacheHint(CacheHint.QUALITY);
+        // canvas.setCache(true);
+        // canvas.setCacheHint(CacheHint.QUALITY);
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
         this.addChild(canvas);
