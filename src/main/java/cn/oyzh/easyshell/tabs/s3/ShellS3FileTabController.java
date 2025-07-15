@@ -161,6 +161,9 @@ public class ShellS3FileTabController extends SubTabController {
             });
             // 路径跳转
             this.location.setOnJumpLocation(path -> {
+                if (!path.endsWith("/")) {
+                    path += "/";
+                }
                 this.fileTable.cd(path);
             });
             // 快捷键

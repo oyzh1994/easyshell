@@ -332,6 +332,20 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         boolean notBucket = StringUtil.checkCountOccurrences(filePath, '/', 2);
         // 对象
         if (notBucket) {
+            if (filePath.endsWith("/")) {// 目录
+                // ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
+                //         .bucket(bucketName)
+                //         .prefix(fPath)
+                //         .maxKeys(1) // 高效：仅需1个结果
+                //         .build();
+                // ListObjectsV2Response response = s3Client.listObjectsV2(listRequest);
+                // if (response != null && !response.contents().isEmpty()) {
+                //     return true;
+                // }
+                // 目录直接返回true
+                return true;
+            }
+            // 检查文件是否存在
             try {
                 HeadObjectRequest request = HeadObjectRequest.builder()
                         .bucket(bucketName)
@@ -340,6 +354,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 this.s3Client.headObject(request);
                 return true;
             } catch (NoSuchKeyException ignored) {
+
             }
         } else { // 桶
             try {
