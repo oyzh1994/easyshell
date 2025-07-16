@@ -122,6 +122,7 @@ public class ShellMainController extends ParentStageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 大小调整增强
         NodeWidthResizer resizer = new NodeWidthResizer(this.tabPaneLeft, Cursor.DEFAULT, this::resizeLeft);
         resizer.widthLimit(240f, 650f);

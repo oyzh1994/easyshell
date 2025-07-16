@@ -116,6 +116,7 @@ public class ShellUpdateTunnelingController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 隧道类型
         this.tunnelingType.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.tunnelingType.isDynamicAuth()) {

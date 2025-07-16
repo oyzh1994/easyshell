@@ -4,7 +4,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.fx.s3.ShellS3RegionCombobox;
+import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField;
+import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
+import cn.oyzh.easyshell.s3.ShellS3Util;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -45,6 +47,18 @@ public class ShellUpdateS3ConnectController extends StageController {
      */
     @FXML
     private PasswordTextField password;
+
+    /**
+     * appid
+     */
+    @FXML
+    private ClearableTextField appId;
+
+    /**
+     * 类型
+     */
+    @FXML
+    private ShellS3TypeCombobox type;
 
     /**
      * tab组件
@@ -97,7 +111,7 @@ public class ShellUpdateS3ConnectController extends StageController {
      * 区域
      */
     @FXML
-    private ShellS3RegionCombobox region;
+    private ShellS3RegionTextField region;
 
     /**
      * ssh连接储存对象
@@ -140,6 +154,9 @@ public class ShellUpdateS3ConnectController extends StageController {
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
+            // s3独有
+            this.shellConnect.setS3Type(this.type.getType());
+            this.shellConnect.setS3AppId(this.appId.getTextTrim());
         }
     }
 
@@ -162,8 +179,10 @@ public class ShellUpdateS3ConnectController extends StageController {
             this.name.setText(host.replace(":", "_"));
         }
         try {
+            String type = this.type.getType();
             String name = this.name.getTextTrim();
-            String region = this.region.getRegion();
+            String region = this.region.getText();
+            String appId = this.appId.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -179,6 +198,9 @@ public class ShellUpdateS3ConnectController extends StageController {
             // 认证信息
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
+            // s3独有
+            this.shellConnect.setS3Type(type);
+            this.shellConnect.setS3AppId(appId);
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -194,6 +216,25 @@ public class ShellUpdateS3ConnectController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 连接ip处理
+        this.host.addTextChangeListener((observableValue, s, t1) -> {
+            // 处理区域
+            if (t1 != null && t1.contains(":")) {
+                try {
+                    String region = ShellS3Util.parseRegion(t1);
+                    if (region != null) {
+                        this.region.setText(region);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         this.shellConnect = this.getProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
@@ -201,11 +242,14 @@ public class ShellUpdateS3ConnectController extends StageController {
         this.remark.setText(this.shellConnect.getRemark());
         this.osType.select(this.shellConnect.getOsType());
         this.charset.setValue(this.shellConnect.getCharset());
-        this.region.selectRegion(this.shellConnect.getRegion());
+        this.region.select(this.shellConnect.getRegion());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
+        // s3独有
+        this.type.select(this.shellConnect.getS3Type());
+        this.appId.setText(this.shellConnect.getS3AppId());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
         super.onWindowShown(event);

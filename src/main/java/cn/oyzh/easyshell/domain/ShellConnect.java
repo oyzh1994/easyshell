@@ -269,6 +269,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private Boolean showHiddenFile;
 
+    /**
+     * s3协议，类型
+     */
+    @Column
+    private String s3Type;
+
+    /**
+     * s3协议，appId
+     */
+    @Column
+    private String s3AppId;
+
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
@@ -898,5 +910,41 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setShowHiddenFile(boolean showHiddenFile) {
         this.showHiddenFile = showHiddenFile;
+    }
+
+    public String getS3Type() {
+        return s3Type;
+    }
+
+    public void setS3Type(String s3Type) {
+        this.s3Type = s3Type;
+    }
+
+    public String getS3AppId() {
+        return s3AppId;
+    }
+
+    public void setS3AppId(String s3AppId) {
+        this.s3AppId = s3AppId;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isAlibabaS3Type(){
+        return "alibaba".equalsIgnoreCase(this.s3Type);
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isTencentS3Type(){
+        return "tencent".equalsIgnoreCase(this.s3Type);
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isMinioS3Type(){
+        return "minio".equalsIgnoreCase(this.s3Type);
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isStandardS3Type(){
+        return "s3".equalsIgnoreCase(this.s3Type);
     }
 }

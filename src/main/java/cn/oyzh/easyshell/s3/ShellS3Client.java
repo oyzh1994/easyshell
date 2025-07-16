@@ -29,6 +29,7 @@ import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
@@ -64,7 +65,9 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -137,10 +140,20 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         // http客户端
         UrlConnectionHttpClient httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
                 .build();
+        S3Configuration s3Configuration;
+        if (this.connect.isAlibabaS3Type()) {
+            s3Configuration = S3Configuration.builder()
+                    .pathStyleAccessEnabled(false)
+                    .chunkedEncodingEnabled(false)
+                    .build();
+        } else {
+            s3Configuration = S3Configuration.builder().build();
+        }
         // 构建 S3 客户端，指定 endpoint 和凭证
         this.s3Client = S3Client.builder()
                 .endpointOverride(URI.create(endpoint))
-                .credentialsProvider(credentialsProvider)
+                .credentialsProvider(this.credentialsProvider)
+                .serviceConfiguration(s3Configuration)
                 .httpClient(httpClient)
                 .region(this.region())
                 .build();
@@ -415,7 +428,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 .key(remoteFile.getFileKey())
                 .build();
         if (callback != null) {
-            ShellFileProgressMonitor.ShellFileOutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
+            OutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
             this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
         } else {
             this.s3Client.getObject(request, Path.of(localFile));
@@ -423,7 +436,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
-    public InputStream getStream(ShellS3File remoteFile, Function<Long, Boolean> callback) {
+    public InputStream getStream(ShellS3File remoteFile, Function<Long, Boolean> callback) throws IOException {
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         GetObjectRequest request = GetObjectRequest.builder()
@@ -444,15 +457,20 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         ShellS3Path s3Path = ShellS3Path.of(remoteFile);
         InputStream in;
         if (callback != null) {
-            in = ShellFileProgressMonitor.of(localFile, callback);
+            if (localFile instanceof FileInputStream fIn) {
+                in = ShellFileProgressMonitor.of3(fIn, callback);
+            } else {
+                in = ShellFileProgressMonitor.of(localFile, callback);
+            }
         } else {
             in = localFile;
         }
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(s3Path.bucketName())
                 .key(s3Path.filePath())
+                .contentLength((long) in.available())
                 .build();
-        this.s3Client.putObject(request, RequestBody.fromInputStream(in, localFile.available()));
+        this.s3Client.putObject(request, RequestBody.fromInputStream(in, in.available()));
     }
 
     @Override
@@ -678,8 +696,15 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public void createBucket(ShellS3Bucket bucket) {
         String bucketName = bucket.getName();
+        String cBucketName;
+        if (this.connect.isTencentS3Type()) {
+            cBucketName = bucketName + "-" + this.connect.getS3AppId();
+        } else {
+            cBucketName = bucketName;
+        }
         CreateBucketRequest request = CreateBucketRequest.builder()
-                .bucket(bucketName)
+                .bucket(cBucketName)
+                .createBucketConfiguration(CreateBucketConfiguration.builder().build())
                 .objectLockEnabledForBucket(bucket.isObjectLock())
                 .createBucketConfiguration(
                         CreateBucketConfiguration.builder()
@@ -936,5 +961,4 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return presignedRequest.url().toString();
         }
     }
-
 }

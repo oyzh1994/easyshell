@@ -380,4 +380,24 @@ public class ShellS3Util {
         }
         return Region.of(region);
     }
+
+    /**
+     * 解析区域
+     *
+     * @param host 地址
+     * @return 区域
+     */
+    public static String parseRegion(String host) {
+        // 阿里云
+        if (host.contains("aliyuncs")) {
+            String region = host.split("\\.")[0];
+            region = region.split("://")[1];
+            return region;
+        }
+        // 腾讯云
+        if (host.contains("myqcloud")) {
+            return host.split("\\.")[1];
+        }
+        return null;
+    }
 }

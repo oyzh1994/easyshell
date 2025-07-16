@@ -217,6 +217,7 @@ public class ShellUpdateJumpController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // ssh认证方式
         this.sshAuthMethod.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.sshAuthMethod.isPasswordAuth()) {

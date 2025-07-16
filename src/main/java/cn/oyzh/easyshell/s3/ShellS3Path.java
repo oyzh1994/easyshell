@@ -35,7 +35,7 @@ public class ShellS3Path {
     public String filePath() {
         int index = this.path.indexOf("/", 1);
         if (index != -1) {
-            return this.path.substring(index);
+            return this.path.substring(index + 1);
         }
         return "/";
     }

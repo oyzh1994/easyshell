@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3RegionCombobox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
@@ -9,9 +9,9 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
-<?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
@@ -19,9 +19,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.s3.ShellUpdateS3ConnectController" realWidth="750"
-        realHeight="480">
+        realHeight="550">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -36,29 +37,37 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.userName">
+                <InfoLabel text="%base.type">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024">
+                <ShellS3TypeCombobox fx:id="type" tipText="%base.type" realHeight="30"
+                                     flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ClearableTextField>
-                <InfoLabel text="%base.password">
+                </ShellS3TypeCombobox>
+                <InfoLabel text="%base.authInfo">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip"
-                                   realHeight="30"
-                                   flexWidth="100% - 180">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </PasswordTextField>
+                <FXHBox flexWidth="100%">
+                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip1" require="true" realHeight="30"
+                                        flexWidth="50% - 90" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip1"
+                                       realHeight="30"
+                                       flexWidth="50% - 95">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </PasswordTextField>
+                </FXHBox>
                 <InfoLabel text="%base.url">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -75,13 +84,24 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellS3RegionCombobox fx:id="region" groupId="region"
-                                       realHeight="30"
-                                       flexWidth="100% - 180">
+                <ShellS3RegionTextField fx:id="region" groupId="region"
+                                        realHeight="30"
+                                        flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ShellS3RegionCombobox>
+                </ShellS3RegionTextField>
+                <InfoLabel text="AppId">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+               <ClearableTextField fx:id="appId" tipText="%base.optional" realHeight="30"
+                                   flexWidth="100% - 180">
+                   <VBox.margin>
+                       <Insets left="30" top="5"/>
+                   </VBox.margin>
+               </ClearableTextField>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.extra">

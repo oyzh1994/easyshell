@@ -195,6 +195,7 @@ public class ShellUpdateVNCConnectController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 连接ip处理
         this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
             // 内容包含“:”，则直接切割字符为ip端口
