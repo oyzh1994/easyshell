@@ -41,7 +41,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellS3TypeCombobox fx:id="type" tipText="%base.type" realHeight="30"
+                <ShellS3TypeCombobox initIndex="3" fx:id="type" tipText="%base.type" realHeight="30"
                                      flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>

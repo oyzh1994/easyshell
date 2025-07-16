@@ -24,9 +24,9 @@ public class ShellFileProgressMonitor {
         return new ShellFileInputStream(in, callback);
     }
 
-    public static InputStream of3(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
-        return new ShellFileInputStream3(in, callback);
-    }
+    // public static InputStream of3(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
+    //     return new ShellFileInputStream3(in, callback);
+    // }
 
     public static OutputStream of(OutputStream out, Function<Long, Boolean> callback) {
         return new ShellFileOutputStream(out, callback);
@@ -192,22 +192,22 @@ public class ShellFileProgressMonitor {
         }
     }
 
-    /**
-     * shell文件输入流3
-     */
-    public static class ShellFileInputStream3 extends ShellFileInputStream2 {
-
-        public ShellFileInputStream3(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
-            super(in, callback);
-        }
-
-        @Override
-        protected void applyCallback(int len) throws InterruptedIOException {
-            if (!this.callback.apply((long) len / 2)) {
-                throw new InterruptedIOException();
-            }
-        }
-    }
+    // /**
+    //  * shell文件输入流3
+    //  */
+    // public static class ShellFileInputStream3 extends ShellFileInputStream2 {
+    //
+    //     public ShellFileInputStream3(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
+    //         super(in, callback);
+    //     }
+    //
+    //     @Override
+    //     protected void applyCallback(int len) throws InterruptedIOException {
+    //         if (!this.callback.apply((long) len / 2)) {
+    //             throw new InterruptedIOException();
+    //         }
+    //     }
+    // }
 
     /**
      * shell文件输出流

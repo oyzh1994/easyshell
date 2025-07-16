@@ -67,7 +67,6 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -472,18 +471,18 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         ShellS3Path s3Path = ShellS3Path.of(remoteFile);
         InputStream in;
         if (callback != null) {
-            if (localFile instanceof FileInputStream fIn) {
-                in = ShellFileProgressMonitor.of3(fIn, callback);
-            } else {
+            // if (localFile instanceof FileInputStream fIn) {
+            //     in = ShellFileProgressMonitor.of3(fIn, callback);
+            // } else {
                 in = ShellFileProgressMonitor.of(localFile, callback);
-            }
+            // }
         } else {
             in = localFile;
         }
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(s3Path.bucketName())
                 .key(s3Path.filePath())
-                .contentLength((long) in.available())
+                // .contentLength((long) in.available())
                 .build();
         this.s3Client.putObject(request, RequestBody.fromInputStream(in, in.available()));
     }
