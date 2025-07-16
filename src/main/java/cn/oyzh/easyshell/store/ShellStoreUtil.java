@@ -12,7 +12,6 @@ import cn.oyzh.store.jdbc.JdbcManager;
  * @author oyzh
  * @since 2025-02-14
  */
-
 public class ShellStoreUtil {
 
     /**
@@ -29,5 +28,12 @@ public class ShellStoreUtil {
                 MessageBox.warn(I18nHelper.programTip1());
             }
         }
+    }
+
+    /**
+     * 销毁
+     */
+    public static void destroy() {
+        JdbcManager.destroy();
     }
 }
