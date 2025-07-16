@@ -1,0 +1,13 @@
+# 1. 安装依赖
+apt install tigervnc-standalone-server
+# 2. 设置vnc密码
+vncpasswd根据提示去输入密码
+# 3. 启动服务
+以普通用户登陆ssh，然后执行以下命令
+vncserver -localhost no
+# 4. 查看端口
+vncserver -list
+# 5. 杀死服务
+# 根据vncserver -list列举的display去设置
+vncserver -kill :1
+
