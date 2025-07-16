@@ -369,7 +369,8 @@ public class ShellSSHEffTabController extends SubTabController {
         });
         // 跟随终端目录
         this.followTerminalDir.selectedChanged((observable, oldValue, newValue) -> {
-            this.client().setResolveWorkerDir(newValue);
+            // 解析路径
+           this.client().setResolveWorkerDir(newValue);
             // 设置
             this.shellConnect().setFollowTerminalDir(newValue);
             // this.setting.setSshFollowTerminalDir(newValue);
