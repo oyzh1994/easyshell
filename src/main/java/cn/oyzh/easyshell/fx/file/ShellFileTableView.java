@@ -317,12 +317,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 重建列表
         this.files = new ArrayList<>();
-        // // 设置标志位
-        // ThreadLocalUtil.setVal("loadStage", true);
         // 动态加载
         this.client.lsFileDynamic(currPath, this::addFile);
-        // // 移除标志位
-        // ThreadLocalUtil.removeVal("loadStage");
     }
 
     /**
@@ -347,12 +343,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 重建列表
         this.files = new ArrayList<>();
-        // // 设置标志位
-        // ThreadLocalUtil.setVal("loadStage", true);
         // 批量加载
         this.client.lsFileBatch(currPath, this::addFile, 10);
-        // // 移除标志位
-        // ThreadLocalUtil.removeVal("loadStage");
     }
 
     /**
@@ -807,6 +799,18 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
+     * 查看文件
+     *
+     * @param file 文件
+     */
+    public void viewFile(E file) {
+        String type = ShellFileUtil.fileViewable(file);
+        if (type != null) {
+            ShellViewFactory.fileView(file, this.client, type, this.window());
+        }
+    }
+
+    /**
      * 编辑文件
      *
      * @param file 文件
@@ -1088,6 +1092,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
                 editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
                 menuItems.add(editFile);
+            }
+            // 查看文件
+            if (ShellFileUtil.fileViewable(file)!=null) {
+                FXMenuItem viewFile = MenuItemHelper.view1File("12", () -> this.viewFile(file));
+                menuItems.add(viewFile);
             }
             // 收藏文件
             if (file.isDirectory()) {

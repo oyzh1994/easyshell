@@ -145,6 +145,53 @@ public class ShellFileUtil {
     }
 
     /**
+     * 文件是否可查看
+     *
+     * @param file 文件
+     * @return 结果
+     * null 不可查看
+     * txt 文本类型
+     * img 图片类型
+     * video 视频类型
+     * audio 音频类型
+     */
+    public static String fileViewable(ShellFile file) {
+        if (!file.isFile()) {
+            return null;
+        }
+        // 检查类型
+        String extName = FileNameUtil.extName(file.getFileName());
+        String type = null;
+        if (StringUtil.equalsAnyIgnoreCase(extName,
+                "txt", "text", "log", "yaml", "java",
+                "xml", "json", "htm", "html", "xhtml",
+                "php", "css", "c", "cpp", "rs",
+                "js", "csv", "sql", "md", "ini",
+                "cfg", "sh", "bat", "py", "asp",
+                "aspx", "env", "tsv", "conf",
+                "plist"
+        )) {
+            // 限制大小10mb
+            if (file.getFileSize() < 10 * 1024 * 1024) {
+                type = "txt";
+            }
+        } else if (StringUtil.equalsAnyIgnoreCase(extName,
+                "png", "jpg", "jpeg", "gif", "ico"
+        )) {
+            type = "img";
+        } else if (StringUtil.equalsAnyIgnoreCase(extName,
+                "mp4", "flv"
+        )) {
+            type = "video";
+        } else if (StringUtil.equalsAnyIgnoreCase(extName,
+                "mp3", "wav"
+        )) {
+            type = "audio";
+        }
+        return type;
+    }
+
+    /**
      * 将Unix风格的权限字符串（如"drwx------"）转换为数字表示（如700）
      *
      * @param permissions 权限字符串

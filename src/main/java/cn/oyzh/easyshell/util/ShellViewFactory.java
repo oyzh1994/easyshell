@@ -41,6 +41,7 @@ import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
+import cn.oyzh.easyshell.controller.file.ShellFileViewController;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
 import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
@@ -639,6 +640,28 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    /**
+     * 文件查看
+     *
+     * @param file   文件
+     * @param client 文件客户端
+     * @param type 类型
+     * @param owner  父窗口
+     */
+    public static void fileView(ShellFile file, ShellFileClient<?> client,String type, Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class, owner);
+            adapter.setProp("file", file);
+            adapter.setProp("type", type);
+            adapter.setProp("client", client);
+            adapter.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 
     /**
      * 文件权限
