@@ -24,6 +24,8 @@ import javafx.collections.ObservableList;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.SdkSystemSetting;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
@@ -140,7 +142,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         // http客户端
         UrlConnectionHttpClient httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
                 .build();
+
+        // s3配置
         S3Configuration s3Configuration;
+        // 阿里云
         if (this.connect.isAlibabaS3Type()) {
             s3Configuration = S3Configuration.builder()
                     .pathStyleAccessEnabled(false)
@@ -149,11 +154,21 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         } else {
             s3Configuration = S3Configuration.builder().build();
         }
+
+        // 客户端配置
+        ClientOverrideConfiguration overrideConfiguration;
+        System.setProperty(SdkSystemSetting.AWS_REQUEST_CHECKSUM_CALCULATION.property(), "WHEN_REQUIRED");
+        ShellS3MD5Interceptor md5Interceptor = new ShellS3MD5Interceptor();
+        overrideConfiguration = ClientOverrideConfiguration.builder()
+                .addExecutionInterceptor(md5Interceptor)
+                .build();
+
         // 构建 S3 客户端，指定 endpoint 和凭证
         this.s3Client = S3Client.builder()
                 .endpointOverride(URI.create(endpoint))
                 .credentialsProvider(this.credentialsProvider)
                 .serviceConfiguration(s3Configuration)
+                .overrideConfiguration(overrideConfiguration)
                 .httpClient(httpClient)
                 .region(this.region())
                 .build();
@@ -696,14 +711,11 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public void createBucket(ShellS3Bucket bucket) {
         String bucketName = bucket.getName();
-        String cBucketName;
         if (this.connect.isTencentS3Type()) {
-            cBucketName = bucketName + "-" + this.connect.getS3AppId();
-        } else {
-            cBucketName = bucketName;
+            bucketName = bucketName + "-" + this.connect.getS3AppId();
         }
         CreateBucketRequest request = CreateBucketRequest.builder()
-                .bucket(cBucketName)
+                .bucket(bucketName)
                 .createBucketConfiguration(CreateBucketConfiguration.builder().build())
                 .objectLockEnabledForBucket(bucket.isObjectLock())
                 .createBucketConfiguration(
