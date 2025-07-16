@@ -67,8 +67,10 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
     public void loadBucket() {
         try {
             if (this.client != null) {
-                List<ShellS3Bucket> buckets = this.client.listBuckets();
-                this.setItem(buckets);
+                StageManager.showMask(() -> {
+                    List<ShellS3Bucket> buckets = this.client.listBuckets();
+                    this.setItem(buckets);
+                });
             }
         } catch (Exception ex) {
             ex.printStackTrace();
