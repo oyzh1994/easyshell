@@ -1,12 +1,13 @@
 package cn.oyzh.easyshell.controller.connect.s3;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.fx.s3.ShellS3RegionCombobox;
+import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField;
+import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
+import cn.oyzh.easyshell.s3.ShellS3Util;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -18,7 +19,6 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -48,6 +48,18 @@ public class ShellAddS3ConnectController extends StageController {
      */
     @FXML
     private PasswordTextField password;
+
+    /**
+     * appid
+     */
+    @FXML
+    private ClearableTextField appId;
+
+    /**
+     * 类型
+     */
+    @FXML
+    private ShellS3TypeCombobox type;
 
     /**
      * tab组件
@@ -95,7 +107,7 @@ public class ShellAddS3ConnectController extends StageController {
      * 区域
      */
     @FXML
-    private ShellS3RegionCombobox region;
+    private ShellS3RegionTextField region;
 
     /**
      * 分组
@@ -140,11 +152,14 @@ public class ShellAddS3ConnectController extends StageController {
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
+            // s3独有
+            shellConnect.setS3Type(this.type.getType());
+            shellConnect.setS3AppId(this.appId.getTextTrim());
         }
     }
 
     /**
-     * 添加ssh信息
+     * 添加信息
      */
     @FXML
     private void add() {
@@ -163,16 +178,18 @@ public class ShellAddS3ConnectController extends StageController {
         }
         try {
             ShellConnect shellConnect = new ShellConnect();
+            String type = this.type.getType();
             String name = this.name.getTextTrim();
-            String region = this.region.getRegion();
+            String region = this.region.getText();
+            String appId = this.appId.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
             shellConnect.setName(name);
-            shellConnect.setRegion(region);
             shellConnect.setOsType(osType);
+            shellConnect.setRegion(region);
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
@@ -180,6 +197,9 @@ public class ShellAddS3ConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
+            // s3独有
+            shellConnect.setS3Type(type);
+            shellConnect.setS3AppId(appId);
             // 分组及类型
             shellConnect.setType("s3");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -199,13 +219,28 @@ public class ShellAddS3ConnectController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 连接ip处理
+        this.host.addTextChangeListener((observableValue, s, t1) -> {
+            // 处理区域
+            if (t1 != null && t1.contains(":")) {
+                try {
+                    String region = ShellS3Util.parseRegion(t1);
+                    if (region != null) {
+                        this.region.setText(region);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
         this.osType.select("S3");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

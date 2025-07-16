@@ -124,14 +124,12 @@ public class ShellUpdateS3ConnectController extends StageController {
      * @return 连接地址
      */
     private String getHost() {
-        String hostText;
         this.tabPane.select(0);
         if (!this.host.validate()) {
             this.tabPane.select(0);
             return null;
         }
-        hostText = this.host.getTextTrim();
-        return hostText;
+        return this.host.getTextTrim();
     }
 
     /**
@@ -155,13 +153,13 @@ public class ShellUpdateS3ConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
             // s3独有
-            this.shellConnect.setS3Type(this.type.getType());
-            this.shellConnect.setS3AppId(this.appId.getTextTrim());
+            shellConnect.setS3Type(this.type.getType());
+            shellConnect.setS3AppId(this.appId.getTextTrim());
         }
     }
 
     /**
-     * 修改ssh信息
+     * 修改信息
      */
     @FXML
     private void update() {
@@ -236,6 +234,7 @@ public class ShellUpdateS3ConnectController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
         this.shellConnect = this.getProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
         this.host.setText(this.shellConnect.getHost());
@@ -252,7 +251,6 @@ public class ShellUpdateS3ConnectController extends StageController {
         this.appId.setText(this.shellConnect.getS3AppId());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
-        super.onWindowShown(event);
     }
 
     @Override

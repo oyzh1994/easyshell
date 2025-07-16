@@ -166,7 +166,7 @@ public class ShellAddFTPConnectController extends StageController {
     }
 
     /**
-     * 添加ssh信息
+     * 添加信息
      */
     @FXML
     private void add() {
@@ -241,10 +241,6 @@ public class ShellAddFTPConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
         this.osType.select("FTP");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

@@ -395,7 +395,7 @@ public class ShellAddSSHConnectController extends StageController {
     }
 
     /**
-     * 添加ssh信息
+     * 添加信息
      */
     @FXML
     private void add() {

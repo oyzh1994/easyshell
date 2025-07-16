@@ -200,7 +200,7 @@ public class ShellUpdateSFTPConnectController extends StageController {
     }
 
     /**
-     * 修改ssh信息
+     * 修改信息
      */
     @FXML
     private void update() {
