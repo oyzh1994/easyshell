@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.controller.file;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.util.UUIDUtil;
-import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -17,6 +15,7 @@ import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
 import cn.oyzh.fx.gui.media.MediaControlBox;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
@@ -169,19 +168,24 @@ public class ShellFileViewController extends StageController {
         // 目标路径
         this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
-        this.txt.setFontSize(this.setting.getEditorFontSize());
-        this.txt.setFontFamily(this.setting.getEditorFontFamily());
-        this.txt.setFontWeight2(this.setting.getEditorFontWeight());
+        if ("txt".equals(this.type)) {
+            this.txt.setFontSize(this.setting.getEditorFontSize());
+            this.txt.setFontFamily(this.setting.getEditorFontFamily());
+            this.txt.setFontWeight2(this.setting.getEditorFontWeight());
+        } else if ("audio".equals(this.type)) { // 对music图标进行布局
+            this.layoutMusic();
+        }
         // 初始化
         this.init();
-        // 对music图标进行布局
-        this.layoutMusic();
     }
 
     /**
      * 对music图标进行布局
      */
     private void layoutMusic() {
+        if (!"audio".equals(this.type)) {
+            return;
+        }
         double width = this.root.realWidth();
         double height = this.root.realHeight();
         double size = height - 70;
@@ -189,9 +193,36 @@ public class ShellFileViewController extends StageController {
         VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
     }
 
+    /**
+     * 对root重新布局
+     *
+     * @param type 类型
+     */
+    private void layoutRoot(int type) {
+        FXUtil.runPulse(() -> {
+            double w = -1;
+            if (type == 1) {
+                w = this.img.getRealWidth();
+            } else if (type == 2) {
+                w = this.video.getRealWidth();
+            }
+            this.stage.setWidth(Math.max(300, w + 35));
+        }, 20);
+    }
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        this.img.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 != null && t1) {
+                this.layoutRoot(1);
+            }
+        });
+        this.video.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 != null && t1) {
+                this.layoutRoot(2);
+            }
+        });
         this.root.widthProperty().addListener((observableValue, number, t1) -> {
             this.layoutMusic();
         });

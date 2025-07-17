@@ -14,12 +14,12 @@
             <Insets left="10" top="10"/>
         </FXVBox.margin>
     </ShellDataTextAreaPane>
-    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100% - 20" flexWidth="100% - 20">
+    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100% - 20">
         <FXVBox.margin>
             <Insets left="10" top="10"/>
         </FXVBox.margin>
     </FXImageView>
-    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100% - 70" flexWidth="100% - 20">
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100% - 70">
         <FXVBox.margin>
             <Insets left="10" top="10"/>
         </FXVBox.margin>
@@ -31,7 +31,8 @@
             <Insets left="10" top="10"/>
         </FXVBox.margin>
     </MusicSVGGlyph>
-    <MediaControlBox flexWidth="100% - 20" fx:id="mediaControl" managedBindVisible="true" visible="false" prefHeight="60">
+    <MediaControlBox flexWidth="100% - 20" fx:id="mediaControl" managedBindVisible="true" visible="false"
+                     prefHeight="60">
         <FXVBox.margin>
             <Insets left="10"/>
         </FXVBox.margin>
