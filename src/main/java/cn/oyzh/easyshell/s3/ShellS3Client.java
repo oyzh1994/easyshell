@@ -45,6 +45,7 @@ import software.amazon.awssdk.services.s3.model.GetBucketVersioningResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
@@ -67,11 +68,13 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -447,9 +450,11 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         if (callback != null) {
             OutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
             this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
+            IOUtil.close(output);
         } else {
-            FileOutputStream fos = new FileOutputStream(localFile);
-            this.s3Client.getObject(request, ResponseTransformer.toOutputStream(fos));
+            FileOutputStream output = new FileOutputStream(localFile);
+            this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
+            IOUtil.close(output);
             // localFile = ResourceUtil.getLocalFileUrl(localFile);
             // this.s3Client.getObject(request, Path.of(localFile));
         }
@@ -463,7 +468,13 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 .bucket(remoteFile.getBucketName())
                 .key(remoteFile.getFileKey())
                 .build();
-        ResponseInputStream<?> stream = this.s3Client.getObject(request);
+
+        String file = ShellFileUtil.getTempFile(remoteFile);
+        GetObjectResponse response = this.s3Client.getObject(request, Path.of(file));
+        if (response == null) {
+            return null;
+        }
+        FileInputStream stream = new FileInputStream(file);
         if (callback == null) {
             return stream;
         }
@@ -491,6 +502,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 // .contentLength((long) in.available())
                 .build();
         this.s3Client.putObject(request, RequestBody.fromInputStream(in, in.available()));
+        IOUtil.close(in);
     }
 
     @Override

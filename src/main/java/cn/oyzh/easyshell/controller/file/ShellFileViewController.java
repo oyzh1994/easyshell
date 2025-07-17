@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
@@ -166,7 +167,7 @@ public class ShellFileViewController extends StageController {
         this.client = this.getProp("client");
         this.appendTitle("-" + this.file.getFileName());
         // 目标路径
-        this.destPath = ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + this.file.getExtName();
+        this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
         this.txt.setFontSize(this.setting.getEditorFontSize());
         this.txt.setFontFamily(this.setting.getEditorFontFamily());
@@ -203,6 +204,13 @@ public class ShellFileViewController extends StageController {
     public void onWindowHiding(WindowEvent event) {
         super.onWindowHiding(event);
         FileUtil.del(this.destPath);
+        // 销毁播放器
+        if (this.video.getMediaPlayer() != null) {
+            this.video.getMediaPlayer().dispose();
+        }
+        if (this.audio.getMediaPlayer() != null) {
+            this.audio.getMediaPlayer().dispose();
+        }
     }
 
     @Override

@@ -4,11 +4,10 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.UUIDUtil;
-import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -128,12 +127,12 @@ public class ShellFileEditController extends StageController {
                     this.format.select(RichDataType.XML);
                 } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
                     this.format.select(RichDataType.YAML);
-                // } else if (FileNameUtil.isJavaType(extName) ) {
-                //     this.format.select(RichDataType.JAVA);
-                // } else if (FileNameUtil.isPythonType(extName) ) {
-                //     this.format.select(RichDataType.PYTHON);
-                // } else if (FileNameUtil.isJsType(extName) ) {
-                //     this.format.select(RichDataType.JAVASCRIPT);
+                    // } else if (FileNameUtil.isJavaType(extName) ) {
+                    //     this.format.select(RichDataType.JAVA);
+                    // } else if (FileNameUtil.isPythonType(extName) ) {
+                    //     this.format.select(RichDataType.PYTHON);
+                    // } else if (FileNameUtil.isJsType(extName) ) {
+                    //     this.format.select(RichDataType.JAVASCRIPT);
                 } else {
                     this.format.select(RichDataType.RAW);
                 }
@@ -166,7 +165,7 @@ public class ShellFileEditController extends StageController {
         this.client = this.getProp("client");
         this.appendTitle("-" + this.file.getFileName());
         // 目标路径
-        this.destPath = ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + this.file.getExtName();
+        this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
         this.data.setFontSize(this.setting.getEditorFontSize());
         this.data.setFontFamily(this.setting.getEditorFontFamily());
@@ -196,12 +195,12 @@ public class ShellFileEditController extends StageController {
                 this.data.showYamlData(this.getData());
             } else if (this.format.isStringFormat()) {
                 this.data.showStringData(this.getData());
-            // } else if (this.format.isJavaFormat()) {
-            //     this.data.showJavaData(this.getData());
-            // } else if (this.format.isPythonFormat()) {
-            //     this.data.showPythonData(this.getData());
-            // } else if (this.format.isJavaScriptFormat()) {
-            //     this.data.showJavaScriptData(this.getData());
+                // } else if (this.format.isJavaFormat()) {
+                //     this.data.showJavaData(this.getData());
+                // } else if (this.format.isPythonFormat()) {
+                //     this.data.showPythonData(this.getData());
+                // } else if (this.format.isJavaScriptFormat()) {
+                //     this.data.showJavaScriptData(this.getData());
             } else {
                 this.data.showRawData(this.getData());
             }

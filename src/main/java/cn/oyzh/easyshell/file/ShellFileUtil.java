@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.file;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.UUIDUtil;
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellFileCollect;
 import cn.oyzh.easyshell.store.ShellFileCollectStore;
 
@@ -387,5 +389,16 @@ public class ShellFileUtil {
     public static void unCollectFile(ShellFileClient<?> fileClient, ShellFile file) {
         String iid = fileClient.getShellConnect().getId();
         FILE_COLLECT_STORE.delete(iid, file.getFilePath());
+    }
+
+    /**
+     * 获取临时文件
+     *
+     * @param file 文件
+     * @return 临时文件目录
+     */
+    public static String getTempFile(ShellFile file) {
+        // 目标路径
+        return ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + file.getExtName();
     }
 }
