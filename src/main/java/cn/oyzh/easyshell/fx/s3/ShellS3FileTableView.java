@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-06-15
  */
 public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, ShellS3File> implements FXEventListener {
 
@@ -96,17 +96,51 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
         return StringUtil.equals(location, "/");
     }
 
+    // @Override
+    // public boolean isSupportAction(String action) {
+    //     if (this.isRootLocation()) {
+    //         return false;
+    //     }
+    //     if ("mkdir".equals(action)) {
+    //         return false;
+    //     }
+    //     if ("permission".equals(action)) {
+    //         return false;
+    //     }
+    //     return super.isSupportAction(action);
+    // }
+
     @Override
-    public boolean isSupportAction(String action) {
-        if (this.isRootLocation()) {
-            return false;
-        }
-        if ("mkdir".equals(action)) {
-            return false;
-        }
-        if ("permission".equals(action)) {
-            return false;
-        }
-        return super.isSupportAction(action);
+    public boolean isSupportTouchAction() {
+        return !this.isRootLocation();
+    }
+
+    @Override
+    public boolean isSupportMkdirAction() {
+        return false;
+    }
+
+    public boolean isSupportFileInfoAction() {
+        return !this.isRootLocation();
+    }
+
+    public boolean isSupportDownloadAction() {
+        return !this.isRootLocation();
+    }
+
+    public boolean isSupportUploadAction() {
+        return !this.isRootLocation();
+    }
+
+    public boolean isSupportRenameAction() {
+        return !this.isRootLocation();
+    }
+
+    public boolean isSupportDeleteAction() {
+        return !this.isRootLocation();
+    }
+
+    public boolean isSupportPermissionAction() {
+        return false;
     }
 }

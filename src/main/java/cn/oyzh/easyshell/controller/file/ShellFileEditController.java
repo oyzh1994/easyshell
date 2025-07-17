@@ -166,7 +166,7 @@ public class ShellFileEditController extends StageController {
         this.client = this.getProp("client");
         this.appendTitle("-" + this.file.getFileName());
         // 目标路径
-        this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple();
+        this.destPath = ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + this.file.getExtName();
         // 初始化字体设置
         this.data.setFontSize(this.setting.getEditorFontSize());
         this.data.setFontFamily(this.setting.getEditorFontFamily());

@@ -114,7 +114,7 @@ public class ShellFileViewController extends StageController {
             this.img.display();
         } else if ("video".equalsIgnoreCase(this.type)) {
             this.video.setUrl(this.destPath);
-            this.video.setOnError(e  -> {
+            this.video.setOnError(e -> {
                 MessageBox.error(I18nHelper.loadVideoFail());
             });
             this.video.play();
@@ -132,7 +132,7 @@ public class ShellFileViewController extends StageController {
         this.client = this.getProp("client");
         this.appendTitle("-" + this.file.getFileName());
         // 目标路径
-        this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "." + this.file.getExtName();
+        this.destPath = ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + this.file.getExtName();
         // 初始化字体设置
         this.txt.setFontSize(this.setting.getEditorFontSize());
         this.txt.setFontFamily(this.setting.getEditorFontFamily());

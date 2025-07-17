@@ -323,23 +323,27 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
-    public boolean rename(String filePath, String newPath) throws Exception {
+    public boolean rename(ShellS3File file, String newName) throws Exception {
+        String pPath = "/" + file.getBucketName() + "/" + file.getParentPath();
+        pPath = pPath.replace("//", "/");
+        String filePath = file.getFilePath();
+        String newPath = ShellFileUtil.concat(pPath, newName);
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
-        ShellS3Path oldS3Path1 = ShellS3Path.of(filePath);
-        ShellS3Path newS3Path2 = ShellS3Path.of(newPath);
+        ShellS3Path oldS3Path = ShellS3Path.of(filePath);
+        ShellS3Path newS3Path = ShellS3Path.of(newPath);
 
         CopyObjectRequest copyRequest = CopyObjectRequest.builder()
-                .sourceBucket(oldS3Path1.bucketName())
-                .sourceKey(oldS3Path1.filePath())
-                .destinationBucket(newS3Path2.bucketName())
-                .destinationKey(newS3Path2.filePath())
+                .sourceBucket(oldS3Path.bucketName())
+                .sourceKey(oldS3Path.filePath())
+                .destinationBucket(newS3Path.bucketName())
+                .destinationKey(newS3Path.filePath())
                 .build();
         this.s3Client.copyObject(copyRequest);
 
         DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-                .bucket(oldS3Path1.bucketName())
-                .key(oldS3Path1.filePath())
+                .bucket(oldS3Path.bucketName())
+                .key(oldS3Path.filePath())
                 .build();
         this.s3Client.deleteObject(deleteRequest);
 
@@ -457,7 +461,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(remoteFile.getBucketName())
-                .key(remoteFile.getFilePath())
+                .key(remoteFile.getFileKey())
                 .build();
         ResponseInputStream<?> stream = this.s3Client.getObject(request);
         if (callback == null) {
@@ -960,7 +964,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             // 1. 构建请求
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(key)
+                    .key(ShellS3Util.parseFileKey(key))
                     .build();
 
             // 2. 设置签名有效期（例如 10 分钟）

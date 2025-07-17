@@ -300,7 +300,9 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     }
 
     @Override
-    public boolean rename(String filePath, String newPath) throws Exception {
+    public boolean rename(ShellFTPFile file, String newName) throws Exception {
+        String filePath = file.getFilePath();
+        String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
         return this.ftpClient.rename(filePath, newPath);

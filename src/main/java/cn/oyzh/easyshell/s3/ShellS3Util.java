@@ -400,4 +400,17 @@ public class ShellS3Util {
         }
         return null;
     }
+
+    /**
+     * 解析文件key
+     *
+     * @param fKey 文件key
+     * @return 处理后的文件key
+     */
+    public static String parseFileKey(String fKey) {
+        if (StringUtil.startWith(fKey, "/")) {
+            fKey = fKey.substring(1);
+        }
+        return fKey;
+    }
 }

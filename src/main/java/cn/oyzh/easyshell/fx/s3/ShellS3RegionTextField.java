@@ -24,7 +24,7 @@ public class ShellS3RegionTextField extends FXTextField {
     {
         // 覆盖默认菜单
         this.setContextMenu(FXContextMenu.EMPTY);
-        this.setTipText(I18nHelper.pleaseSelectConnect());
+        this.setTipText(I18nHelper.pleaseSelectRegion());
     }
 
     /**

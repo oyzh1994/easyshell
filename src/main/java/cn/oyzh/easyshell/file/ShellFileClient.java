@@ -33,7 +33,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @return 文件列表
      * @throws Exception 异常
      */
-   default List<E> lsFile(String filePath) throws Exception{
+    default List<E> lsFile(String filePath) throws Exception {
         List<E> files = new ArrayList<>();
         this.lsFileDynamic(filePath, files::add);
         return files;
@@ -149,12 +149,12 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
     /**
      * 重命名文件
      *
-     * @param filePath 文件路径
-     * @param newPath  新路径
+     * @param file    文件
+     * @param newName 新名称
      * @return 结果
      * @throws Exception 异常
      */
-    boolean rename(String filePath, String newPath) throws Exception;
+    boolean rename(E file, String newName) throws Exception;
 
     /**
      * 文件是否存在
