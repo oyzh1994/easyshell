@@ -72,7 +72,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -445,7 +444,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             OutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
             this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
         } else {
-            this.s3Client.getObject(request, Path.of(localFile));
+            FileOutputStream fos = new FileOutputStream(localFile);
+            this.s3Client.getObject(request, ResponseTransformer.toOutputStream(fos));
+            // localFile = ResourceUtil.getLocalFileUrl(localFile);
+            // this.s3Client.getObject(request, Path.of(localFile));
         }
     }
 
@@ -474,7 +476,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             // if (localFile instanceof FileInputStream fIn) {
             //     in = ShellFileProgressMonitor.of3(fIn, callback);
             // } else {
-                in = ShellFileProgressMonitor.of(localFile, callback);
+            in = ShellFileProgressMonitor.of(localFile, callback);
             // }
         } else {
             in = localFile;

@@ -583,7 +583,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 if (file.isDirectory()) {
                     this.intoDir(file);
                 } else if (file.isFile()) {
-                    this.editFile(file);
+                    this.viewFile(file);
                 }
             }
         } catch (Exception ex) {

@@ -11,8 +11,8 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
+import cn.oyzh.fx.plus.controls.media.FXMediaView;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
@@ -57,6 +57,12 @@ public class ShellFileViewController extends StageController {
      */
     @FXML
     private FXImageView img;
+
+    /**
+     * video
+     */
+    @FXML
+    private FXMediaView video;
 
     /**
      * 类型
@@ -104,8 +110,15 @@ public class ShellFileViewController extends StageController {
             }
             this.txt.display();
         } else if ("img".equalsIgnoreCase(this.type)) {
-            this.img.setImage(FXUtil.getImage(this.destPath));
+            this.img.setUrl(this.destPath);
             this.img.display();
+        } else if ("video".equalsIgnoreCase(this.type)) {
+            this.video.setUrl(this.destPath);
+            this.video.setOnError(e  -> {
+                MessageBox.error(I18nHelper.loadVideoFail());
+            });
+            this.video.play();
+            this.video.display();
         }
     }
 
@@ -119,7 +132,7 @@ public class ShellFileViewController extends StageController {
         this.client = this.getProp("client");
         this.appendTitle("-" + this.file.getFileName());
         // 目标路径
-        this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "_" + this.file.getFileName();
+        this.destPath = ShellConst.getCachePath() + "/" + UUIDUtil.uuidSimple() + "." + this.file.getExtName();
         // 初始化字体设置
         this.txt.setFontSize(this.setting.getEditorFontSize());
         this.txt.setFontFamily(this.setting.getEditorFontFamily());

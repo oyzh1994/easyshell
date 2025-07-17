@@ -634,4 +634,12 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         return this.isDirectory() && "/".equals(this.getFilePath());
     }
 
+    /**
+     * 获取扩展名
+     *
+     * @return 扩展名
+     */
+    default String getExtName() {
+        return FileNameUtil.extName(this.getFileName());
+    }
 }

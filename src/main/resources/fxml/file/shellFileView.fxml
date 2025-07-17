@@ -2,10 +2,13 @@
 <?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.image.FXImageView?>
+<?import cn.oyzh.fx.plus.controls.media.FXMediaView?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
     <ShellDataTextAreaPane editable="false" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100%" flexWidth="100%">
     </ShellDataTextAreaPane>
     <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100%" flexWidth="100%">
     </FXImageView>
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100%" flexWidth="100%">
+    </FXMediaView>
 </FXVBox>
