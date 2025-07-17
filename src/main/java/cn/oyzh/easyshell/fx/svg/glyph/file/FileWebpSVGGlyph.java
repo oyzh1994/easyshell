@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class FileWebpSVGGlyph extends SVGGlyph {
 
     public FileWebpSVGGlyph() {
-        super("/font/file/file-sql.svg");
+        super("/font/file/file-webp.svg");
     }
 
     public FileWebpSVGGlyph(String size) {

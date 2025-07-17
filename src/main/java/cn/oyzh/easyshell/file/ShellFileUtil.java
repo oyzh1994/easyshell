@@ -176,15 +176,15 @@ public class ShellFileUtil {
                 type = "txt";
             }
         } else if (StringUtil.equalsAnyIgnoreCase(extName,
-                "png", "jpg", "jpeg", "gif", "ico"
+                "png", "jpg", "jpeg", "gif", "ico", "bmp", "wbmp", "tiff", "webp"
         )) {
             type = "img";
         } else if (StringUtil.equalsAnyIgnoreCase(extName,
-                "mp4", "flv"
+                "mp4", "flv", "webm", "mkv", "mov", "wmv", "avi", "3gp", "m4v"
         )) {
             type = "video";
         } else if (StringUtil.equalsAnyIgnoreCase(extName,
-                "mp3", "wav"
+                "mp3", "wav", "aac", "aiff", "flac", "pcm", "m4a", "ogg", "wma"
         )) {
             type = "audio";
         }

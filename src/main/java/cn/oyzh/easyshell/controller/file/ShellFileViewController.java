@@ -8,16 +8,21 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
+import cn.oyzh.fx.gui.media.MediaControlBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 
 /**
@@ -30,6 +35,12 @@ import javafx.stage.WindowEvent;
         value = FXConst.FXML_PATH + "file/shellFileView.fxml"
 )
 public class ShellFileViewController extends StageController {
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXVBox root;
 
     /**
      * 远程文件
@@ -47,22 +58,40 @@ public class ShellFileViewController extends StageController {
     private ShellFileClient client;
 
     /**
-     * txt
+     * 文本
      */
     @FXML
     private RichDataTextAreaPane txt;
 
     /**
-     * img
+     * 图片
      */
     @FXML
     private FXImageView img;
 
     /**
-     * video
+     * 视频
      */
     @FXML
     private FXMediaView video;
+
+    /**
+     * 音频
+     */
+    @FXML
+    private FXMediaView audio;
+
+    /**
+     * 音乐图标
+     */
+    @FXML
+    private MusicSVGGlyph music;
+
+    /**
+     * 媒体控制
+     */
+    @FXML
+    private MediaControlBox mediaControl;
 
     /**
      * 类型
@@ -114,11 +143,16 @@ public class ShellFileViewController extends StageController {
             this.img.display();
         } else if ("video".equalsIgnoreCase(this.type)) {
             this.video.setUrl(this.destPath);
-            this.video.setOnError(e -> {
-                MessageBox.error(I18nHelper.loadVideoFail());
-            });
+            this.mediaControl.setup(this.video.getMediaPlayer());
             this.video.play();
             this.video.display();
+            this.mediaControl.display();
+        } else if ("audio".equalsIgnoreCase(this.type)) {
+            this.audio.setUrl(this.destPath);
+            this.mediaControl.setup(this.audio.getMediaPlayer());
+            this.audio.play();
+            this.music.display();
+            this.mediaControl.display();
         }
     }
 
@@ -139,6 +173,30 @@ public class ShellFileViewController extends StageController {
         this.txt.setFontWeight2(this.setting.getEditorFontWeight());
         // 初始化
         this.init();
+        // 对music图标进行布局
+        this.layoutMusic();
+    }
+
+    /**
+     * 对music图标进行布局
+     */
+    private void layoutMusic() {
+        double width = this.root.realWidth();
+        double height = this.root.realHeight();
+        double size = height - 70;
+        this.music.setSize(size);
+        VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.root.widthProperty().addListener((observableValue, number, t1) -> {
+            this.layoutMusic();
+        });
+        this.root.heightProperty().addListener((observableValue, number, t1) -> {
+            this.layoutMusic();
+        });
     }
 
     @Override

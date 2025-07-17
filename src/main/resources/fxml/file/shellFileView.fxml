@@ -3,12 +3,37 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.image.FXImageView?>
 <?import cn.oyzh.fx.plus.controls.media.FXMediaView?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<?import cn.oyzh.fx.gui.media.MediaControlBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<FXVBox fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
-    <ShellDataTextAreaPane editable="false" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100%" flexWidth="100%">
+    <ShellDataTextAreaPane editable="false" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100% - 20"
+                           flexWidth="100% - 20">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
     </ShellDataTextAreaPane>
-    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100%" flexWidth="100%">
+    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100% - 20" flexWidth="100% - 20">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
     </FXImageView>
-    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100%" flexWidth="100%">
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100% - 70" flexWidth="100% - 20">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
     </FXMediaView>
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="audio">
+    </FXMediaView>
+    <MusicSVGGlyph managedBindVisible="true" visible="false" sizeStr="200,200" fx:id="music">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
+    </MusicSVGGlyph>
+    <MediaControlBox flexWidth="100% - 20" fx:id="mediaControl" managedBindVisible="true" visible="false" prefHeight="60">
+        <FXVBox.margin>
+            <Insets left="10"/>
+        </FXVBox.margin>
+    </MediaControlBox>
 </FXVBox>
