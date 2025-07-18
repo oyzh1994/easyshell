@@ -65,8 +65,8 @@ public class VncRenderService implements RenderProtocol {
     private final double maxZoomLevel = 5.0;
 
     private final DoubleProperty zoomLevel = new SimpleDoubleProperty(1);
-    private final BooleanProperty fullSceen = new SimpleBooleanProperty(false);
     private final BooleanProperty restart = new SimpleBooleanProperty(false);
+    private final BooleanProperty fullScreen = new SimpleBooleanProperty(false);
 
     public VncRenderService() {
         this(new VncConnection());
@@ -186,6 +186,10 @@ public class VncRenderService implements RenderProtocol {
         return protocolState;
     }
 
+    public ProtocolState getProtocolState() {
+        return protocolState.get();
+    }
+
     public ReadOnlyObjectProperty<InputEventListener> inputEventListenerProperty() {
         return inputEventListener.getReadOnlyProperty();
     }
@@ -229,8 +233,8 @@ public class VncRenderService implements RenderProtocol {
         return zoomLevel;
     }
 
-    public BooleanProperty fullSceenProperty() {
-        return fullSceen;
+    public BooleanProperty fullScreenProperty() {
+        return fullScreen;
     }
 
     public BooleanProperty restartProperty() {

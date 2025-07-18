@@ -37,7 +37,7 @@ public class KeyButtonEventHandler implements KeyButtonMap {
         keyEventHandler = (e) -> {
             if (enabled.get()) {
                 sendKeyEvents(e);
-                e.consume();
+                // e.consume();
             }
         };
     }
@@ -119,8 +119,11 @@ public class KeyButtonEventHandler implements KeyButtonMap {
                 lastCodePointRelease = false;
                 fire(new KeyButtonEvent(false, lastCodePoint));
             } else {
-                int codePoint = event.getText().codePointAt(0);
-                fire(new KeyButtonEvent(false, codePoint));
+                String text = event.getText();
+                if (text != null && !text.isEmpty()) {
+                    int codePoint = text.codePointAt(0);
+                    fire(new KeyButtonEvent(false, codePoint));
+                }
             }
             return;
         }
