@@ -10,13 +10,9 @@ import cn.oyzh.easyshell.vnc.ShellVNCRenderService;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import org.jfxvnc.net.rfb.codec.ProtocolState;
 import org.jfxvnc.ui.control.VncImageView;
 import org.jfxvnc.ui.service.VncRenderService;
 

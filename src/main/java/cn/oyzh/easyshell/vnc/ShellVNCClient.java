@@ -11,14 +11,12 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import org.jfxvnc.net.rfb.VncConnection;
 import org.jfxvnc.net.rfb.codec.ProtocolState;
 import org.jfxvnc.net.rfb.render.ProtocolConfiguration;
 import org.jfxvnc.net.rfb.render.RenderProtocol;
 import org.jfxvnc.ui.service.VncRenderService;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
