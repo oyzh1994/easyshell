@@ -134,7 +134,7 @@ public class ShellFileEditController extends StageController {
                     // } else if (FileNameUtil.isJsType(extName) ) {
                     //     this.format.select(RichDataType.JAVASCRIPT);
                 } else {
-                    this.format.select(RichDataType.RAW);
+                    this.format.select(RichDataType.STRING);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -170,6 +170,8 @@ public class ShellFileEditController extends StageController {
         this.data.setFontSize(this.setting.getEditorFontSize());
         this.data.setFontFamily(this.setting.getEditorFontFamily());
         this.data.setFontWeight2(this.setting.getEditorFontWeight());
+        // 字体大小
+        this.fontSize.selectSize(this.setting.getEditorFontSize());
         // 初始化
         this.init();
     }
@@ -205,8 +207,6 @@ public class ShellFileEditController extends StageController {
                 this.data.showRawData(this.getData());
             }
         });
-        // 字体大小
-        this.fontSize.selectSize(this.setting.getEditorFontSize());
         this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
             if (t1 != null) {
                 this.data.setFontSize(t1);

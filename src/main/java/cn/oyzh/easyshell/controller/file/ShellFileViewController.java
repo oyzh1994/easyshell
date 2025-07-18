@@ -17,11 +17,14 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
 import cn.oyzh.fx.gui.media.MediaControlBox;
+import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.rich.RichDataType;
+import cn.oyzh.fx.rich.RichDataTypeComboBox;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -76,6 +79,18 @@ public class ShellFileViewController extends StageController {
     private FXHBox filterBox;
 
     /**
+     * 格式
+     */
+    @FXML
+    private RichDataTypeComboBox format;
+
+    /**
+     * 字体大小
+     */
+    @FXML
+    private FontSizeComboBox fontSize;
+
+    /**
      * 过滤
      */
     @FXML
@@ -122,6 +137,11 @@ public class ShellFileViewController extends StageController {
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
+     * 设置存储
+     */
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
+    /**
      * 初始化文件
      */
     private void init() {
@@ -141,31 +161,38 @@ public class ShellFileViewController extends StageController {
      * 初始化视图
      */
     private void initView() {
-        if ("txt".equalsIgnoreCase(this.type)) {
-            byte[] content = FileUtil.readBytes(this.destPath);
+        if (this.isTxtType()) {
+            // 初始化字体配置
+            this.txt.setFontSize(this.setting.getEditorFontSize());
+            this.txt.setFontFamily(this.setting.getEditorFontFamily());
+            this.txt.setFontWeight2(this.setting.getEditorFontWeight());
+            // 字体大小
+            this.fontSize.selectSize(this.setting.getEditorFontSize());
             String extName = FileNameUtil.extName(this.file.getFilePath());
             if (FileNameUtil.isJsonType(extName)) {
-                this.txt.showJsonData(content);
+                this.format.select(RichDataType.JSON);
             } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-                this.txt.showHtmlData(content);
+                this.format.select(RichDataType.HTML);
             } else if (FileNameUtil.isXmlType(extName)) {
-                this.txt.showXmlData(content);
+                this.format.select(RichDataType.XML);
             } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
-                this.txt.showYamlData(content);
+                this.format.select(RichDataType.YAML);
             } else {
-                this.txt.showStringData(content == null ? "" : content);
+                this.format.select(RichDataType.STRING);
             }
             this.txt.display();
-        } else if ("img".equalsIgnoreCase(this.type)) {
+        } else if (this.isImageType()) {
             this.img.setUrl(this.destPath);
             this.img.display();
-        } else if ("video".equalsIgnoreCase(this.type)) {
+        } else if (this.isVideoType()) {
             this.video.setUrl(this.destPath);
             this.mediaControl.setup(this.video.getMediaPlayer());
             this.video.play();
             this.video.display();
             this.mediaControl.display();
-        } else if ("audio".equalsIgnoreCase(this.type)) {
+        } else if (this.isAudioType()) {
+            // 图标布局
+            this.layoutMusic();
             this.audio.setUrl(this.destPath);
             this.mediaControl.setup(this.audio.getMediaPlayer());
             this.audio.play();
@@ -176,23 +203,15 @@ public class ShellFileViewController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
+        this.type = this.getProp("type");
         super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
-        this.type = this.getProp("type");
         this.client = this.getProp("client");
         this.appendTitle("-" + this.file.getFileName());
         // 目标路径
         this.destPath = ShellFileUtil.getTempFile(this.file);
-        // 初始化字体设置
-        if ("txt".equals(this.type)) {
-            this.txt.setFontSize(this.setting.getEditorFontSize());
-            this.txt.setFontFamily(this.setting.getEditorFontFamily());
-            this.txt.setFontWeight2(this.setting.getEditorFontWeight());
-        } else if ("audio".equals(this.type)) { // 对music图标进行布局
-            this.layoutMusic();
-        }
         // 初始化
         this.init();
     }
@@ -228,30 +247,86 @@ public class ShellFileViewController extends StageController {
         }, 20);
     }
 
+    /**
+     * 获取数据
+     *
+     * @return 数据
+     */
+    private String getData() {
+        byte[] content = FileUtil.readBytes(this.destPath);
+        return content == null ? "" : new String(content);
+    }
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.img.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 != null && t1) {
-                this.layoutRoot(1);
-            }
-        });
-        this.video.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 != null && t1) {
-                this.layoutRoot(2);
-            }
-        });
-        this.root.widthProperty().addListener((observableValue, number, t1) -> {
-            this.layoutMusic();
-        });
-        this.root.heightProperty().addListener((observableValue, number, t1) -> {
-            this.layoutMusic();
-        });
-        // 内容高亮
-        this.filter.addTextChangeListener((observableValue, s, t1) -> {
-            this.txt.setHighlightText(t1);
-        });
+        if (this.isAudioType()) {
+            this.root.widthProperty().addListener((observableValue, number, t1) -> {
+                this.layoutMusic();
+            });
+            this.root.heightProperty().addListener((observableValue, number, t1) -> {
+                this.layoutMusic();
+            });
+        } else if (this.isImageType()) {
+            this.img.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1 != null && t1) {
+                    this.layoutRoot(1);
+                }
+            });
+        } else if (this.isVideoType()) {
+            this.video.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1 != null && t1) {
+                    this.layoutRoot(2);
+                }
+            });
+        } else if (this.isTxtType()) {
+            // 内容高亮
+            this.filter.addTextChangeListener((observableValue, s, t1) -> {
+                this.txt.setHighlightText(t1);
+            });
+            // 内容格式
+            this.format.selectedItemChanged((observableValue, number, t1) -> {
+                if (this.format.isJsonFormat()) {
+                    this.txt.showJsonData(this.getData());
+                } else if (this.format.isXmlFormat()) {
+                    this.txt.showXmlData(this.getData());
+                } else if (this.format.isHtmlFormat()) {
+                    this.txt.showHtmlData(this.getData());
+                } else if (this.format.isYamlFormat()) {
+                    this.txt.showYamlData(this.getData());
+                } else if (this.format.isStringFormat()) {
+                    this.txt.showStringData(this.getData());
+                } else {
+                    this.txt.showRawData(this.getData());
+                }
+            });
+            this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
+                if (t1 != null) {
+                    this.txt.setFontSize(t1);
+                    // 记录字体大小
+                    this.setting.setEditorFontSize(t1.byteValue());
+                    this.settingStore.update(this.setting);
+                }
+            });
+        }
     }
+
+    private boolean isAudioType() {
+        return "audio".equalsIgnoreCase(this.type);
+    }
+
+    private boolean isVideoType() {
+        return "video".equalsIgnoreCase(this.type);
+    }
+
+    private boolean isImageType() {
+        return "img".equalsIgnoreCase(this.type);
+    }
+
+    private boolean isTxtType() {
+        return "txt".equalsIgnoreCase(this.type);
+    }
+
 
     @Override
     public void onWindowHiding(WindowEvent event) {
