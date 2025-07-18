@@ -2,26 +2,32 @@ package cn.oyzh.easyshell.controller.file;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
 import cn.oyzh.fx.gui.media.MediaControlBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 
@@ -62,6 +68,18 @@ public class ShellFileViewController extends StageController {
      */
     @FXML
     private RichDataTextAreaPane txt;
+
+    /**
+     * 过滤组件
+     */
+    @FXML
+    private FXHBox filterBox;
+
+    /**
+     * 过滤
+     */
+    @FXML
+    private ClearableTextField filter;
 
     /**
      * 图片
@@ -229,6 +247,10 @@ public class ShellFileViewController extends StageController {
         this.root.heightProperty().addListener((observableValue, number, t1) -> {
             this.layoutMusic();
         });
+        // 内容高亮
+        this.filter.addTextChangeListener((observableValue, s, t1) -> {
+            this.txt.setHighlightText(t1);
+        });
     }
 
     @Override
@@ -237,15 +259,66 @@ public class ShellFileViewController extends StageController {
         FileUtil.del(this.destPath);
         // 销毁播放器
         if (this.video.getMediaPlayer() != null) {
-            this.video.getMediaPlayer().dispose();
+            this.video.stop();
+            this.video.dispose();
         }
         if (this.audio.getMediaPlayer() != null) {
-            this.audio.getMediaPlayer().dispose();
+            this.audio.stop();
+            this.audio.dispose();
         }
     }
 
     @Override
     public String getViewTitle() {
         return I18nHelper.view1File();
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.filterBox.visibleProperty().bind(this.txt.visibleProperty());
+    }
+
+    /**
+     * 搜索索引
+     */
+    private int searchIndex;
+
+    /**
+     * 搜索下一个
+     */
+    @FXML
+    private void searchNext() {
+        try {
+            String filterText = this.filter.getText();
+            if (StringUtil.isBlank(filterText)) {
+                return;
+            }
+            String text = this.txt.getText();
+            if (this.searchIndex >= text.length()) {
+                this.searchIndex = 0;
+            }
+            int index = text.indexOf(filterText, this.searchIndex);
+            if (index == -1) {
+                this.searchIndex = 0;
+                return;
+            }
+            this.searchIndex = index + filterText.length();
+            this.txt.selectRangeAndGoto(index, index + filterText.length());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 过滤内容输入事件
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void onFilterKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            this.searchNext();
+        }
     }
 }
