@@ -21,9 +21,9 @@
     <properties>
         <s3.version>2.31.78</s3.version>
         <jna.version>5.17.0</jna.version>
-        <pty4j.version>0.13.8</pty4j.version>
+        <pty4j.version>0.13.10-1</pty4j.version>
         <jediterm.version>3.54</jediterm.version>
-        <jSerialComm.version>2.11.0</jSerialComm.version>
+        <jSerialComm.version>2.11.2</jSerialComm.version>
         <annotations.version>26.0.2</annotations.version>
         <commons-net.version>3.11.1</commons-net.version>
         <purejavacomm.version>0.0.11.1</purejavacomm.version>
