@@ -223,7 +223,7 @@ public class ShellS3File implements ShellFile {
     }
 
     public String getFileKey() {
-        return ShellFile.super.getFilePath();
+        return ShellS3Util.parseFileKey(ShellFile.super.getFilePath());
     }
 
     public String getBucketName() {

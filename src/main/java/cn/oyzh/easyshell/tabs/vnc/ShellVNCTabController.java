@@ -6,10 +6,10 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
+import cn.oyzh.easyshell.vnc.ShellVNCRenderService;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
@@ -78,7 +78,7 @@ public class ShellVNCTabController extends RichTabController {
                     this.client.start();
                 }
                 if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail());
+                    // MessageBox.warn(I18nHelper.connectFail());
                     this.closeTab();
                     return;
                 }
@@ -100,13 +100,18 @@ public class ShellVNCTabController extends RichTabController {
      * 初始化渲染组件
      */
     private void initRenderService() {
-        this.renderService = new VncRenderService();
+        this.renderService = new ShellVNCRenderService();
         this.renderService.setEventConsumer(this.vncView);
         this.renderService.serverCutTextProperty().addListener((l, old, text) -> this.vncView.addClipboardText(text));
         this.renderService.getConfiguration().clientCursorProperty().addListener((l, a, b) -> this.vncView.setUseClientCursor(b));
         this.renderService.inputEventListenerProperty().addListener(l -> this.vncView.registerInputEventListener(this.renderService.inputEventListenerProperty().get()));
         this.renderService.zoomLevelProperty().addListener((observable, oldValue, newValue) -> this.vncView.setZoomLevel(newValue.doubleValue()));
+        // 缩放监听
         this.vncView.setOnZoom(e -> this.renderService.setZoomLevel(e.getTotalZoomFactor()));
+        // 按键监听
+        this.getTab().selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.vncView.setDisable(!newValue);
+        });
     }
 
     @Override

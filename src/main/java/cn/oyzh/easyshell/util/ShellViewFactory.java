@@ -662,7 +662,6 @@ public class ShellViewFactory {
         }
     }
 
-
     /**
      * 文件权限
      *

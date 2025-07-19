@@ -45,6 +45,7 @@ import software.amazon.awssdk.services.s3.model.GetBucketVersioningResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
@@ -67,6 +68,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -324,23 +326,27 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     @Override
-    public boolean rename(String filePath, String newPath) throws Exception {
+    public boolean rename(ShellS3File file, String newName) throws Exception {
+        String pPath = "/" + file.getBucketName() + "/" + file.getParentPath();
+        pPath = pPath.replace("//", "/");
+        String filePath = file.getFilePath();
+        String newPath = ShellFileUtil.concat(pPath, newName);
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
-        ShellS3Path oldS3Path1 = ShellS3Path.of(filePath);
-        ShellS3Path newS3Path2 = ShellS3Path.of(newPath);
+        ShellS3Path oldS3Path = ShellS3Path.of(filePath);
+        ShellS3Path newS3Path = ShellS3Path.of(newPath);
 
         CopyObjectRequest copyRequest = CopyObjectRequest.builder()
-                .sourceBucket(oldS3Path1.bucketName())
-                .sourceKey(oldS3Path1.filePath())
-                .destinationBucket(newS3Path2.bucketName())
-                .destinationKey(newS3Path2.filePath())
+                .sourceBucket(oldS3Path.bucketName())
+                .sourceKey(oldS3Path.filePath())
+                .destinationBucket(newS3Path.bucketName())
+                .destinationKey(newS3Path.filePath())
                 .build();
         this.s3Client.copyObject(copyRequest);
 
         DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-                .bucket(oldS3Path1.bucketName())
-                .key(oldS3Path1.filePath())
+                .bucket(oldS3Path.bucketName())
+                .key(oldS3Path.filePath())
                 .build();
         this.s3Client.deleteObject(deleteRequest);
 
@@ -444,8 +450,13 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         if (callback != null) {
             OutputStream output = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
             this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
+            IOUtil.close(output);
         } else {
-            this.s3Client.getObject(request, Path.of(localFile));
+            FileOutputStream output = new FileOutputStream(localFile);
+            this.s3Client.getObject(request, ResponseTransformer.toOutputStream(output));
+            IOUtil.close(output);
+            // localFile = ResourceUtil.getLocalFileUrl(localFile);
+            // this.s3Client.getObject(request, Path.of(localFile));
         }
     }
 
@@ -455,9 +466,15 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(remoteFile.getBucketName())
-                .key(remoteFile.getFilePath())
+                .key(remoteFile.getFileKey())
                 .build();
-        ResponseInputStream<?> stream = this.s3Client.getObject(request);
+
+        String file = ShellFileUtil.getTempFile(remoteFile);
+        GetObjectResponse response = this.s3Client.getObject(request, Path.of(file));
+        if (response == null) {
+            return null;
+        }
+        FileInputStream stream = new FileInputStream(file);
         if (callback == null) {
             return stream;
         }
@@ -474,7 +491,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             // if (localFile instanceof FileInputStream fIn) {
             //     in = ShellFileProgressMonitor.of3(fIn, callback);
             // } else {
-                in = ShellFileProgressMonitor.of(localFile, callback);
+            in = ShellFileProgressMonitor.of(localFile, callback);
             // }
         } else {
             in = localFile;
@@ -485,6 +502,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 // .contentLength((long) in.available())
                 .build();
         this.s3Client.putObject(request, RequestBody.fromInputStream(in, in.available()));
+        IOUtil.close(in);
     }
 
     @Override
@@ -958,7 +976,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             // 1. 构建请求
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(key)
+                    .key(ShellS3Util.parseFileKey(key))
                     .build();
 
             // 2. 设置签名有效期（例如 10 分钟）

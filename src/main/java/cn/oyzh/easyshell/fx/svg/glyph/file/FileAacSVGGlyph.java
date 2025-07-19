@@ -6,13 +6,13 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2025-03-05
  */
-public class FileLuaSVGGlyph extends SVGGlyph {
+public class FileAacSVGGlyph extends SVGGlyph {
 
-    public FileLuaSVGGlyph() {
-        super("/font/file/file-lua.svg");
+    public FileAacSVGGlyph() {
+        super("/font/file/file-aac.svg");
     }
 
-    public FileLuaSVGGlyph(String size) {
+    public FileAacSVGGlyph(String size) {
         this();
         this.setSizeStr(size);
     }

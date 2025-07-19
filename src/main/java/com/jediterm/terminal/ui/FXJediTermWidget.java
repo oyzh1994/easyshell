@@ -300,7 +300,11 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     @Override
     public void close() {
-        stopRunningSession();
+        try {
+            stopRunningSession();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         if (myTerminalStarter != null) {
             try {
                 myTerminalStarter.close();
@@ -308,8 +312,16 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
                 ex.printStackTrace();
             }
         }
-        myTerminalPanel.dispose();
-        getExecutorServiceManager().shutdownWhenAllExecuted();
+        try {
+            myTerminalPanel.dispose();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        try {
+            getExecutorServiceManager().shutdownWhenAllExecuted();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         // 额外代码，清除监听器
         this.myListeners.clear();
     }

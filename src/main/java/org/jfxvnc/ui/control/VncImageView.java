@@ -43,7 +43,7 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
 
     private final PixelFormat<ByteBuffer> DEFAULT_PIXELFORMAT = PixelFormat.getByteRgbInstance();
 
-    private AtomicReference<PixelFormat<ByteBuffer>> pixelFormat = new AtomicReference<>(DEFAULT_PIXELFORMAT);
+    private final AtomicReference<PixelFormat<ByteBuffer>> pixelFormat = new AtomicReference<>(DEFAULT_PIXELFORMAT);
 
     private SimpleDoubleProperty zoomLevel;
 
@@ -109,7 +109,7 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
             switch (rect.getEncoding()) {
                 case HEXTILE:
                     HextileImageRect hextileRect = (HextileImageRect) rect;
-                    //PixelWriter writer = vncImage.getPixelWriter();
+                    // PixelWriter writer = vncImage.getPixelWriter();
                     for (RawImageRect rawRect : hextileRect.getRects()) {
                         vncImage.getPixelWriter().setPixels(rawRect.getX(), rawRect.getY(), rawRect.getWidth(), rawRect.getHeight(), pixelFormat.get(),
                                 rawRect.getPixels().nioBuffer(), rawRect.getScanlineStride());
@@ -150,7 +150,7 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
                     setCursor(remoteCursor);
                     break;
                 case DESKTOP_SIZE:
-                    if(JulLog.isDebugEnabled()) {
+                    if (JulLog.isDebugEnabled()) {
                         JulLog.debug("resize image: {}", rect);
                     }
                     vncImage = new WritableImage(rect.getWidth(), rect.getHeight());
@@ -174,7 +174,7 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
             pointerHandler = new PointerEventHandler();
             pointerHandler.register(this);
             pointerHandler.setZoomLevel(this.getZoomLevel());
-            //pointerHandler.registerZoomLevel(zoomLevelProperty());
+            // pointerHandler.registerZoomLevel(zoomLevelProperty());
             pointerHandler.enabledProperty().bind(disabledProperty().not());
         }
         pointerHandler.setInputEventListener(listener);
@@ -252,5 +252,23 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
     public double getZoomLevel() {
         return zoomLevel.get();
     }
+
+    // /**
+    //  * 启用按键处理器
+    //  */
+    // public void enabledKeyHandler() {
+    //     if (this.keyHandler != null) {
+    //         this.keyHandler.enabledProperty().set(true);
+    //     }
+    // }
+    //
+    // /**
+    //  * 禁用按键处理器
+    //  */
+    // public void disableKeyHandler() {
+    //     if (this.keyHandler != null) {
+    //         this.keyHandler.enabledProperty().set(false);
+    //     }
+    // }
 }
 

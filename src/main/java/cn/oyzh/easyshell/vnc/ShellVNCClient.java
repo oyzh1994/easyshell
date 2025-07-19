@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.vnc;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -10,11 +12,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import org.jfxvnc.net.rfb.VncConnection;
+import org.jfxvnc.net.rfb.codec.ProtocolState;
 import org.jfxvnc.net.rfb.render.ProtocolConfiguration;
 import org.jfxvnc.net.rfb.render.RenderProtocol;
 import org.jfxvnc.ui.service.VncRenderService;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -72,8 +74,12 @@ public class ShellVNCClient implements ShellBaseClient {
     protected void initClient() {
         // 创建连接
         this.connection = new VncConnection();
+        // 渲染组件，不能为null
+        if (this.renderProtocol == null) {
+            this.setRenderProtocol(NO_OP);
+        }
         // 设置渲染组件
-        this.connection.setRenderProtocol(Objects.requireNonNullElse(this.renderProtocol, NO_OP));
+        this.connection.setRenderProtocol(this.renderProtocol);
         // 错误处理
         this.connection.addFaultListener(MessageBox::exception);
         // 配置
@@ -129,6 +135,7 @@ public class ShellVNCClient implements ShellBaseClient {
                 this.connection.disconnect();
                 this.connection = null;
             }
+            this.renderProtocol = null;
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
 //            this.shellConnect = null;
@@ -144,7 +151,28 @@ public class ShellVNCClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        return this.connection != null && this.connection.isConnected();
+        if (this.connection == null || !this.connection.isConnected()) {
+            return false;
+        }
+        if (this.renderProtocol instanceof VncRenderService service) {
+            ProtocolState state = service.getProtocolState();
+            // 认证中则等待一段时间
+            long start = System.currentTimeMillis();
+            while (state == ProtocolState.SECURITY_STARTED || state == ProtocolState.HANDSHAKE_STARTED) {
+                // 超时
+                long now = System.currentTimeMillis();
+                if (now - start > this.connectTimeout()) {
+                    break;
+                }
+                // 等待一段时间
+                ThreadUtil.sleep(100);
+                // 获取新状态
+                state = service.getProtocolState();
+            }
+            JulLog.info("ProtocolState:{}", state);
+            return state != ProtocolState.CLOSED && state != ProtocolState.SECURITY_FAILED;
+        }
+        return false;
     }
 
     public void setRenderProtocol(RenderProtocol renderProtocol) {

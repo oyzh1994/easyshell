@@ -230,6 +230,12 @@
             <artifactId>javassist</artifactId>
             <version>3.30.2-GA</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-net -->
+        <dependency>
+            <groupId>org.jfxvnc</groupId>
+            <artifactId>jfxvnc-net</artifactId>
+            <version>1.2.0</version>
+        </dependency>
         <!-- vnc协议结束 -->
 
         <!-- s3协议开始 -->
@@ -271,6 +277,12 @@
             <version>${s3.version}</version>
         </dependency>
         <!-- s3协议结束 -->
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
         <dependency>

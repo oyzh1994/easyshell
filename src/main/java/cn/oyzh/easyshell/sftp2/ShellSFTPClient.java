@@ -467,7 +467,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    public boolean rename(String filePath, String newPath) throws Exception {
+    public boolean rename(ShellSFTPFile file, String newName) throws Exception {
+        String filePath = file.getFilePath();
+        String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             // 操作

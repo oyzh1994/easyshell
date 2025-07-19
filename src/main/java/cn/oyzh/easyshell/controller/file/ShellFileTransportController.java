@@ -175,14 +175,22 @@ public class ShellFileTransportController extends StageController {
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
+            boolean exists = false;
             // 检查文件是否存在
             for (ShellFile file : files) {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
-                if (this.targetFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
-                    return;
+                if (this.sourceFile.existFile(file.getFileName())) {
+                    exists = true;
+                    break;
                 }
+                // if (this.targetFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
+                //     return;
+                // }
+            }
+            if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19())) {
+                return;
             }
             String remotePath = this.targetFile.getLocation();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
@@ -200,14 +208,22 @@ public class ShellFileTransportController extends StageController {
             if (CollectionUtil.isEmpty(files)) {
                 return;
             }
+            boolean exists = false;
             // 检查文件是否存在
             for (ShellFile file : files) {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
-                if (this.sourceFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
-                    return;
+                if (this.sourceFile.existFile(file.getFileName())) {
+                    exists = true;
+                    break;
                 }
+                // if (this.sourceFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
+                //     return;
+                // }
+            }
+            if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19())) {
+                return;
             }
             String remotePath = this.sourceFile.getLocation();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
@@ -334,7 +350,7 @@ public class ShellFileTransportController extends StageController {
                 return;
             }
             //// 检查连接是否一样
-            //if (sourceInfo.compare(targetInfo)) {
+            // if (sourceInfo.compare(targetInfo)) {
             //    ValidatorUtil.validFail(this.sourceInfo);
             //    return;
             //}

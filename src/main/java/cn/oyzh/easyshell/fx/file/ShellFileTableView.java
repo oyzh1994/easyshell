@@ -583,7 +583,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 if (file.isDirectory()) {
                     this.intoDir(file);
                 } else if (file.isFile()) {
-                    this.editFile(file);
+                    this.viewFile(file);
                 }
             }
         } catch (Exception ex) {
@@ -767,9 +767,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
             }
-            String filePath = ShellFileUtil.concat(file.getParentPath(), name);
-            String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
-            if (this.client.rename(filePath, newPath)) {
+            // String filePath = ShellFileUtil.concat(file.getParentPath(), name);
+            // String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
+            if (this.client.rename(file, newName)) {
                 file.setFileName(newName);
                 this.refreshFile();
             } else {
@@ -1083,6 +1083,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (this.isSupportMkdirAction()) {
             FXMenuItem createDir = (FXMenuItem) MenuItemManager.getMenuItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), () -> this.createDir());
             menuItems.add(createDir);
+        }
+        // 分割菜单
+        if (!menuItems.isEmpty()) {
             menuItems.add(MenuItemHelper.separator());
         }
         if (files.size() == 1) {
@@ -1094,7 +1097,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 menuItems.add(editFile);
             }
             // 查看文件
-            if (ShellFileUtil.fileViewable(file)!=null) {
+            if (ShellFileUtil.fileViewable(file) != null) {
                 FXMenuItem viewFile = MenuItemHelper.view1File("12", () -> this.viewFile(file));
                 menuItems.add(viewFile);
             }
@@ -1155,46 +1158,54 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         return list.stream().filter(f -> !this.checkInvalid(f)).collect(Collectors.toList());
     }
 
-    /**
-     * 是否支持操作
-     *
-     * @param action 操作
-     * @return 结果
-     */
-    public boolean isSupportAction(String action) {
+    // /**
+    //  * 是否支持操作
+    //  *
+    //  * @param action 操作
+    //  * @return 结果
+    //  */
+    // public boolean isSupportAction(String action) {
+    //     return true;
+    // }
+
+    public boolean isSupportTouchAction() {
+        // return this.isSupportAction("touch");
         return true;
     }
 
-    public boolean isSupportTouchAction() {
-        return this.isSupportAction("touch");
-    }
-
     public boolean isSupportMkdirAction() {
-        return this.isSupportAction("mkdir");
+        // return this.isSupportAction("mkdir");
+        return true;
     }
 
     public boolean isSupportFileInfoAction() {
-        return this.isSupportAction("fileInfo");
+        // return this.isSupportAction("fileInfo");
+        return true;
     }
 
     public boolean isSupportDownloadAction() {
-        return this.isSupportAction("download");
+        // return this.isSupportAction("download");
+        return true;
     }
 
     public boolean isSupportUploadAction() {
-        return this.isSupportAction("upload");
+        // return this.isSupportAction("upload");
+        return true;
     }
 
     public boolean isSupportRenameAction() {
-        return this.isSupportAction("rename");
+        // return this.isSupportAction("rename");
+        return true;
     }
 
     public boolean isSupportDeleteAction() {
-        return this.isSupportAction("delete");
+        // return this.isSupportAction("delete");
+        return true;
     }
 
     public boolean isSupportPermissionAction() {
-        return this.isSupportAction("permission");
+        // return this.isSupportAction("permission");
+        return true;
     }
 
     /**
