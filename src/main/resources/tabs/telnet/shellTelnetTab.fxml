@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.serial.ShellSerialTermWidget?>
 <?import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget?>
-<ShellTelnetTermWidget fx:id="widget" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-                       fx:controller="cn.oyzh.easyshell.tabs.telnet.ShellTelnetTabController">
-</ShellTelnetTermWidget>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<FXVBox styleClass="root" flexHeight="100%" flexWidth="100%"
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.telnet.ShellTelnetTabController">
+    <ShellTelnetTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
+    </ShellTelnetTermWidget>
+    <FXHBox flexWidth="100%" realHeight="30">
+        <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet">
+            <FXHBox.margin>
+                <Insets left="5" top="7"/>
+            </FXHBox.margin>
+        </SnippetSVGGlyph>
+    </FXHBox>
+</FXVBox>

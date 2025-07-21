@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.snippet.ShellSnippetTextAreaPane;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
+import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeItem;
 import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -14,7 +15,9 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -66,6 +69,9 @@ public class ShellSnippetController extends StageController {
      */
     private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
+    /**
+     * 当前片段
+     */
     private ShellSnippet snippet;
 
     @Override
@@ -130,8 +136,8 @@ public class ShellSnippetController extends StageController {
         }
         this.snippet.setName(name);
         this.snippet.setContent(this.content.getText());
-        this.snippetStore.replace(this.snippet);
-        if (this.snippet.getId() == null) {
+        boolean isNew = this.snippet.getId() == null;
+        if (this.snippetStore.replace(this.snippet) && isNew) {
             this.snippetTreeView.addSnippet(this.snippet);
         }
     }
@@ -139,20 +145,49 @@ public class ShellSnippetController extends StageController {
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
-        this.snippetTreeView.setAddCallback(() -> {
-            this.snippet = null;
-            this.content.clear();
-        });
-        this.snippetTreeView.setEditCallback(shellSnippet -> {
-            this.snippet = shellSnippet;
-            this.content.setText(shellSnippet.getContent());
-        });
-        this.snippetTreeView.setDeleteCallback(shellSnippet -> {
-            if (this.snippet == shellSnippet) {
-                this.snippet = null;
-                this.content.clear();
+        // 片段选择事件
+        this.snippetTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
+            if (t1 instanceof ShellSnippetTreeItem item) {
+                this.doEdit(item.value());
+            } else {
+                this.doEdit(null);
             }
         });
+        // 片段编辑回调
+        this.snippetTreeView.setEditCallback(this::doEdit);
+        // 片段删除回调
+        this.snippetTreeView.setDeleteCallback(this::doDelete);
+        // 片段新增回调
+        this.snippetTreeView.setAddCallback(() -> this.doEdit(null));
+    }
+
+    /**
+     * 编辑片段
+     *
+     * @param snippet 片段
+     */
+    private void doEdit(ShellSnippet snippet) {
+        this.snippet = snippet;
+        if (snippet == null) {
+            this.content.clear();
+            this.stage.restoreTitle();
+        } else {
+            this.content.setText(snippet.getContent());
+            this.stage.appendTitle("-" + snippet.getName());
+        }
+    }
+
+    /**
+     * 删除片段
+     *
+     * @param snippet 片段
+     */
+    private void doDelete(ShellSnippet snippet) {
+        if (snippet == this.snippet) {
+            this.snippet = null;
+            this.content.clear();
+            this.stage.restoreTitle();
+        }
     }
 
     /**

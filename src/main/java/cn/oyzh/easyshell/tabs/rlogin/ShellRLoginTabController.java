@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -16,6 +17,8 @@ import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -26,7 +29,7 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025/04/24
  */
-public class ShellRLoginTabController extends RichTabController {
+public class ShellRLoginTabController extends RichTabController  implements ShellSnippetAdapter{
 
     /**
      * 终端组件
@@ -124,10 +127,16 @@ public class ShellRLoginTabController extends RichTabController {
     }
 
     /**
-     * 运行片段
+     * 片段列表
      *
-     * @param content 内容
+     * @param event 事件
      */
+    @FXML
+    private void snippet(MouseEvent event) {
+        ShellSnippetAdapter.super.snippetList((Node) event.getSource());
+    }
+
+    @Override
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }

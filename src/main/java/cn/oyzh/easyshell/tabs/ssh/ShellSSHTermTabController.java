@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
+import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -24,6 +25,8 @@ import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -35,7 +38,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025/03/11
  */
-public class ShellSSHTermTabController extends SubTabController {
+public class ShellSSHTermTabController extends SubTabController implements ShellSnippetAdapter {
 
     // /**
     //  * 终端容器
@@ -65,12 +68,6 @@ public class ShellSSHTermTabController extends SubTabController {
      */
     @FXML
     private FXToggleSwitch serverMonitor;
-
-    /**
-     * 终端历史
-     */
-    @FXML
-    private SVGGlyph termHistory;
 
     /**
      * 终端大小
@@ -316,10 +313,12 @@ public class ShellSSHTermTabController extends SubTabController {
 
     /**
      * 终端历史
+     *
+     * @param event 事件
      */
     @FXML
-    private void termHistory() {
-        ShellViewFactory.termHistory(this.termHistory, this.client(), h -> {
+    private void termHistory(MouseEvent event) {
+        ShellViewFactory.termHistory((Node) event.getSource(), this.client(), h -> {
             try {
                 this.widget.getTtyConnector().writeLine(h);
             } catch (Exception ex) {
@@ -329,10 +328,16 @@ public class ShellSSHTermTabController extends SubTabController {
     }
 
     /**
-     * 运行片段
+     * 片段列表
      *
-     * @param content 内容
+     * @param event 事件
      */
+    @FXML
+    private void snippet(MouseEvent event) {
+        ShellSnippetAdapter.super.snippetList((Node) event.getSource());
+    }
+
+    @Override
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }

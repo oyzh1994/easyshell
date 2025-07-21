@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget?>
-<ShellRLoginTermWidget fx:id="widget" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-                       fx:controller="cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTabController">
-</ShellRLoginTermWidget>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<FXVBox styleClass="root" flexHeight="100%" flexWidth="100%"
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTabController">
+    <ShellRLoginTermWidget fx:id="widget" flexHeight="100% - 30" flexWidth="100%">
+    </ShellRLoginTermWidget>
+    <FXHBox flexWidth="100%" realHeight="30">
+        <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet">
+            <FXHBox.margin>
+                <Insets left="5" top="7"/>
+            </FXHBox.margin>
+        </SnippetSVGGlyph>
+    </FXHBox>
+</FXVBox>

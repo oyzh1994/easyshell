@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.serial.ShellSerialTermWidget?>
-<ShellSerialTermWidget fx:id="widget" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-                       fx:controller="cn.oyzh.easyshell.tabs.serial.ShellSerialTabController">
-</ShellSerialTermWidget>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
+<?import javafx.geometry.Insets?>
+<FXVBox styleClass="root" flexHeight="100%" flexWidth="100%"
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.serial.ShellSerialTabController">
+    <ShellSerialTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
+    </ShellSerialTermWidget>
+    <FXHBox flexWidth="100%" realHeight="30">
+        <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet">
+            <FXHBox.margin>
+                <Insets left="5" top="7"/>
+            </FXHBox.margin>
+        </SnippetSVGGlyph>
+    </FXHBox>
+</FXVBox>

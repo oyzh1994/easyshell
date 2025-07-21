@@ -26,6 +26,7 @@
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveFolderSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -141,12 +142,16 @@
                         <Insets left="5" top="8"/>
                     </FXHBox.margin>
                 </FXLabel>
-                <HistorySVGGlyph fx:id="termHistory" tipText="%base.terminalHistory"
-                                 onMousePrimaryClicked="#termHistory">
+                <HistorySVGGlyph tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
                     <FXHBox.margin>
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
                 </HistorySVGGlyph>
+                <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </SnippetSVGGlyph>
                 <FXToggleSwitch fx:id="showFile" text="%base.file" selected="true">
                     <FXHBox.margin>
                         <Insets left="5" top="5"/>

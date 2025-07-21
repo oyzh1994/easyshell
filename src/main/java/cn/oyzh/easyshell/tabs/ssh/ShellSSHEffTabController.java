@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
+import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -39,7 +40,9 @@ import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +56,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025/05/23
  */
-public class ShellSSHEffTabController extends SubTabController {
+public class ShellSSHEffTabController extends SubTabController implements ShellSnippetAdapter {
 
     /**
      * 左侧组件
@@ -149,12 +152,6 @@ public class ShellSSHEffTabController extends SubTabController {
      */
     @FXML
     private FXToggleSwitch showFile;
-
-    /**
-     * 终端历史
-     */
-    @FXML
-    private SVGGlyph termHistory;
 
     /**
      * 终端大小
@@ -370,7 +367,7 @@ public class ShellSSHEffTabController extends SubTabController {
         // 跟随终端目录
         this.followTerminalDir.selectedChanged((observable, oldValue, newValue) -> {
             // 解析路径
-           this.client().setResolveWorkerDir(newValue);
+            this.client().setResolveWorkerDir(newValue);
             // 设置
             this.shellConnect().setFollowTerminalDir(newValue);
             // this.setting.setSshFollowTerminalDir(newValue);
@@ -690,10 +687,12 @@ public class ShellSSHEffTabController extends SubTabController {
 
     /**
      * 终端历史
+     *
+     * @param event 事件
      */
     @FXML
-    private void termHistory() {
-        ShellViewFactory.termHistory(this.termHistory, this.client(), h -> {
+    private void termHistory(MouseEvent event) {
+        ShellViewFactory.termHistory((Node) event.getSource(), this.client(), h -> {
             try {
                 this.widget.getTtyConnector().writeLine(h);
             } catch (Exception ex) {
@@ -703,10 +702,16 @@ public class ShellSSHEffTabController extends SubTabController {
     }
 
     /**
-     * 运行片段
+     * 片段列表
      *
-     * @param content 内容
+     * @param event 事件
      */
+    @FXML
+    private void snippet(MouseEvent event) {
+        ShellSnippetAdapter.super.snippetList((Node) event.getSource());
+    }
+
+    @Override
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }

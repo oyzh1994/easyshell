@@ -79,7 +79,6 @@ public class ShellSnippetTreeView extends RichTreeView {
         }
     }
 
-
     /**
      * 新增片段
      *
@@ -110,5 +109,4 @@ public class ShellSnippetTreeView extends RichTreeView {
             this.deleteCallback.accept(snippet);
         }
     }
-
 }

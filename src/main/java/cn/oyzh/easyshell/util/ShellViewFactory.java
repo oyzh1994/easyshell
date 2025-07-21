@@ -58,10 +58,12 @@ import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
+import cn.oyzh.easyshell.popups.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
@@ -917,6 +919,23 @@ public class ShellViewFactory {
         try {
             PopupAdapter adapter = PopupManager.parsePopup(ShellTermHistoryPopupController.class);
             adapter.setProp("client", client);
+            adapter.setSubmitHandler(callback);
+            adapter.showPopup(parent);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 片段列表
+     *
+     * @param parent   历史
+     * @param callback 回调函数
+     */
+    public static void snippetList(Node parent, Consumer<ShellSnippet> callback) {
+        try {
+            PopupAdapter adapter = PopupManager.parsePopup(ShellSnippetPopupController.class);
             adapter.setSubmitHandler(callback);
             adapter.showPopup(parent);
         } catch (Exception ex) {
