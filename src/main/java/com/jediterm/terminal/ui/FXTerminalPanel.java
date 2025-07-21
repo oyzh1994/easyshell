@@ -117,7 +117,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private final FXTerminalCanvas canvas = new FXTerminalCanvas();
 
-    //we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
+    // we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
     private ScrollBar scrollBar;
 
     private boolean scrollBarThumbVisible = true;
@@ -286,9 +286,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     protected void initFont() {
         myNormalFont = createFont();
-        //myBoldFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
-        //myItalicFont = Font.font(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
-        //myBoldItalicFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
+        // myBoldFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
+        // myItalicFont = Font.font(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
+        // myBoldItalicFont = Font.font(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
         myBoldFont = FontUtil.newFont(myNormalFont.getFamily(), FontWeight.BOLD, myNormalFont.getSize());
         myItalicFont = FontUtil.newFont(myNormalFont.getFamily(), FontPosture.ITALIC, myNormalFont.getSize());
         myBoldItalicFont = FontUtil.newFont(myNormalFont.getFamily(), FontWeight.BOLD, FontPosture.ITALIC, myNormalFont.getSize());
@@ -678,7 +678,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 }
             } else if (e.getSource() instanceof Timeline timeline) { // terminalPanel was garbage collected
 //                Timeline timeline = (Timeline) e.getSource();
-                //TODO???
+                // TODO???
 //                timeline.removeActionListener(this);
                 timeline.stop();
             }
@@ -874,7 +874,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                         ", descent=" + oldDescent + "->" + myDescent);
             }
         }
-//TODO
+// TODO
 //    var myMonospaced = isMonospaced(fo);
 //    if (!myMonospaced) {
 //      JulLog.info("WARNING: Font " + myNormalFont.getName() + " is non-monospaced");
@@ -888,7 +888,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return mySettingsProvider.getLineSpacing();
     }
 
-//TODO
+// TODO
 //  private static boolean isMonospaced(FontMetrics fontMetrics) {
 //    boolean isMonospaced = true;
 //    int charWidth = -1;
@@ -917,7 +917,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     protected void setupAntialiasing(GraphicsContext gfx) {
         if (this.mySettingsProvider.useAntialiasing()) {
-            //Important! FontSmoothingType.LCD is very slow
+            // Important! FontSmoothingType.LCD is very slow
             gfx.setFontSmoothingType(FontSmoothingType.GRAY);
             gfx.setImageSmoothing(true);
         } else {
@@ -1267,7 +1267,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 listener.mouseWheelMoved(p.x, p.y, new FXMouseWheelEvent(e));
             }
             if (myTerminalTextBuffer.isUsingAlternateBuffer() && mySettingsProvider.sendArrowKeysInAlternativeMode()) {
-                //Send Arrow keys instead
+                // Send Arrow keys instead
                 final byte[] arrowKeys;
                 if (e.getDeltaY() > 0) {
                     arrowKeys = myTerminalStarter.getTerminal().getCodeForKey(KeyCode.UP.getCode(), 0);
@@ -1597,7 +1597,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 xCoord += emptySpace / 2;
             }
             xCoord = Math.round(xCoord);
-            //JulLog.debug("Drawing {} at {}:{}", str, xCoord, baseLine);
+            // JulLog.debug("Drawing {} at {}:{}", str, xCoord, baseLine);
             String str = new String(text, startOffset, effectiveEndOffset - startOffset);
             gfx.fillText(str, xCoord, baseLine1);
             gfx.restore();
@@ -1658,7 +1658,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             int charCode = text[start];
             // From CMap#getFormatCharGlyph
             if (charCode >= 0x200c) {
-                //noinspection RedundantIfStatement
+                // noinspection RedundantIfStatement
                 if ((charCode <= 0x200f) ||
                         (charCode >= 0x2028 && charCode <= 0x202e) ||
                         (charCode >= 0x206a && charCode <= 0x206f)) {
@@ -2041,11 +2041,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (selectionText != null) {
             try {
                 URI uri = new URI(selectionText);
-                //noinspection ResultOfMethodCallIgnored
+                // noinspection ResultOfMethodCallIgnored
                 uri.toURL();
                 return true;
             } catch (Exception e) {
-                //pass
+                // pass
             }
         }
         return false;
@@ -2078,7 +2078,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     FXConst.getHostServices().showDocument(selectionText.trim());
                 }
             } catch (Exception e) {
-                //ok then
+                // ok then
             }
         }
         return false;
@@ -2473,7 +2473,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             Bounds screenBounds = canvas.localToScreen(canvas.getBoundsInLocal());
             double screenX = screenBounds.getMinX();
             double screenY = screenBounds.getMinY();
-            //if user enables screen scaling in his operating system we must correct x and y
+            // if user enables screen scaling in his operating system we must correct x and y
             Screen screen = resolveScreen();
             Point2D point = new Point2D((x + screenX) * screen.getOutputScaleX(), (y + screenY) * screen.getOutputScaleY());
             return point;
@@ -2579,7 +2579,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.scrollBar.setVisibleAmount(extent);
         this.scrollBar.setMin(min);
         this.scrollBar.setMax(max);
-        //value is updated in the end, because we have listener on value.
+        // value is updated in the end, because we have listener on value.
         this.scrollBar.setValue(value);
     }
 
