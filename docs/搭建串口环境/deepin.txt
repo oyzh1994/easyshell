@@ -6,4 +6,6 @@ socat -d -d pty,raw,echo=0 pty,raw,echo=0
 socat exec:'bash -li',pty,stderr,setsid,sigint,sane /dev/pts/2
 # 4. 设置输入通道权限(看具体通道，一般是上面生成通道的第一个)
 sudo chmod 666 /dev/pts/1
+# 5. 新增或者设置串口连接(看具体通道，一般是上面生成通道的第第一个)
+端口填写pts/1
 

@@ -100,6 +100,8 @@ public class ShellSerialTabController extends RichTabController implements Shell
                     this.closeTab();
                     return;
                 }
+                // 默认发送一次换行符，因为串口可能未默认返回内容
+                this.client.write("\r");
                 // 收起左侧
                 if (this.setting.isHiddenLeftAfterConnected()) {
                     ShellEventUtil.layout1();

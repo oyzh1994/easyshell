@@ -50,16 +50,17 @@ public class ShellSerialDataListener implements SerialPortDataListener {
         }
         // 同样使用循环读取法读取所有数据
         while (serialPort.bytesAvailable() != 0) {
+            // 执行一下休眠，不然串口可能崩溃
+            ThreadUtil.sleep(5);
             byte[] bytes = new byte[serialPort.bytesAvailable()];
             serialPort.readBytes(bytes, bytes.length);
-            ThreadUtil.sleep(1);
             String str = new String(bytes, this.charset);
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("串口返回数据:{}", str);
-            }
             char[] chars = str.toCharArray();
             for (char aChar : chars) {
                 this.characters.add(aChar);
+            }
+            if (JulLog.isDebugEnabled()) {
+                JulLog.debug("串口返回数据:{}", str);
             }
         }
     }

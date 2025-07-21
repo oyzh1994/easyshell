@@ -77,7 +77,7 @@ public class ShellSerialClient implements ShellBaseClient {
             this.state.set(ShellConnState.CONNECTING);
             this.serialPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, timeout, timeout);
             // 打开串口
-            if (!this.serialPort.openPort()) {
+            if (!this.serialPort.openPort(timeout)) {
                 JulLog.warn("无法打开串口:{}, 错误码:{} 位置:{} ",
                         this.getPortName(),
                         this.getLastErrorCode(),
@@ -109,6 +109,7 @@ public class ShellSerialClient implements ShellBaseClient {
             this.serialPort.writeBytes(data, data.length);
         }
     }
+
 
     /**
      * 写入数据
