@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.vnc.ShellVNCRenderService;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
@@ -78,7 +79,7 @@ public class ShellVNCTabController extends RichTabController {
                     this.client.start();
                 }
                 if (!this.client.isConnected()) {
-                    // MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail());
                     this.closeTab();
                     return;
                 }

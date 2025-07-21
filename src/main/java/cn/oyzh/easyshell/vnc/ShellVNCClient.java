@@ -31,7 +31,7 @@ public class ShellVNCClient implements ShellBaseClient {
     /**
      * 空渲染组件
      */
-    public static final VncRenderService NO_OP = new VncRenderService();
+    public static final VncRenderService NO_OP = new ShellVNCRenderService();
 
     /**
      * vnc连接
@@ -154,25 +154,33 @@ public class ShellVNCClient implements ShellBaseClient {
         if (this.connection == null || !this.connection.isConnected()) {
             return false;
         }
-        if (this.renderProtocol instanceof VncRenderService service) {
-            ProtocolState state = service.getProtocolState();
-            // 认证中则等待一段时间
-            long start = System.currentTimeMillis();
-            while (state == ProtocolState.SECURITY_STARTED || state == ProtocolState.HANDSHAKE_STARTED) {
-                // 超时
-                long now = System.currentTimeMillis();
-                if (now - start > this.connectTimeout()) {
-                    break;
-                }
-                // 等待一段时间
-                ThreadUtil.sleep(100);
-                // 获取新状态
-                state = service.getProtocolState();
-            }
-            JulLog.info("ProtocolState:{}", state);
-            return state != ProtocolState.CLOSED && state != ProtocolState.SECURITY_FAILED;
+        ProtocolState state = this.getProtocolState();
+        if (state == null) {
+            return false;
         }
-        return false;
+        // 部分状态等待一段时间
+        long start = System.currentTimeMillis();
+        while (state == ProtocolState.CLOSED || state == ProtocolState.SECURITY_STARTED || state == ProtocolState.HANDSHAKE_STARTED) {
+            JulLog.info("ProtocolState:{}", state);
+            // 超时
+            long now = System.currentTimeMillis();
+            if (now - start > 1500) {
+                return false;
+            }
+            // 等待一段时间
+            ThreadUtil.sleep(100);
+            // 获取新状态
+            state = this.getProtocolState();
+        }
+        JulLog.info("ProtocolState:{}", state);
+        return state != ProtocolState.SECURITY_FAILED;
+    }
+
+    public ProtocolState getProtocolState() {
+        if (this.renderProtocol instanceof VncRenderService service) {
+            return service.getProtocolState();
+        }
+        return null;
     }
 
     public void setRenderProtocol(RenderProtocol renderProtocol) {
