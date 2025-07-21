@@ -43,11 +43,11 @@ jpackage:
 # 压缩参数
 compress:
   # 压缩包类型
-  type: zip
+  #type: zip
 # jdeps参数
 jdeps:
   # 程序多版本指定
-  multi-release: 24
+  multi-release: 25
   # 显示摘要
   summary: true
   # 跳过的模块
@@ -166,3 +166,8 @@ jar:
     - .*com/sun/jna/darwin.*
     - .*com/sun/jna/win32-x86/.*
     - .*com/sun/jna/win32-aarch64/.*
+    # ms针对性裁剪
+    - ucrtbase.dll
+    - api-ms-.*.dll
+    - msvcp140.*.dll
+    - vcruntime140.*.dll

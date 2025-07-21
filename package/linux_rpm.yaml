@@ -43,7 +43,7 @@ jpackage:
 # jdeps参数
 jdeps:
   # 程序多版本指定
-  multi-release: 24
+  multi-release: 25
   # 显示摘要
   summary: true
   # 跳过的模块
