@@ -14,7 +14,9 @@ import cn.oyzh.easyshell.fx.svg.glyph.os.RaspberrypiSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.RedhatSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.UbuntuSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.WindowsSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.other.AlibabaCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph;
@@ -27,6 +29,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
+import org.apache.commons.net.telnet.TelnetOptionHandler;
 
 /**
  * shell 系统、协议、应用类型选择框
@@ -58,6 +61,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Serial");
         this.addItem("RLogin");
         this.addItem("Minio");
+        this.addItem("Alibaba Cloud");
+        this.addItem("Tencent Cloud");
         // 设置单元格工厂
         this.setCellFactory(new Callback<>() {
             @Override
@@ -106,6 +111,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "Serial" -> new SerialPortSVGGlyph();
             case "RLogin" -> new RLoginSVGGlyph();
             case "Minio" -> new MinioSVGGlyph();
+            case "Alibaba Cloud" -> new AlibabaCloudSVGGlyph();
+            case "Tencent Cloud" -> new TencentCloudSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

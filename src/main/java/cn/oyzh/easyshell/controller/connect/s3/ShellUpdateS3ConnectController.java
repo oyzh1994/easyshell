@@ -25,7 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * ftps连接修改业务
+ * s3连接修改业务
  *
  * @author oyzh
  * @since 2025/05/23

@@ -27,7 +27,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * rlogin连接修改业务
+ * RLogin连接修改业务
  *
  * @author oyzh
  * @since 2025/05/27

@@ -29,7 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * rlogin连接新增业务
+ * RLogin连接新增业务
  *
  * @author oyzh
  * @since 2025/05/27
