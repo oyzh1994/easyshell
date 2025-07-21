@@ -136,6 +136,7 @@ public class ShellFileEditController extends StageController {
                 } else {
                     this.format.select(RichDataType.STRING);
                 }
+                this.data.scrollToTop();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

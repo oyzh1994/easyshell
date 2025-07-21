@@ -180,6 +180,7 @@ public class ShellFileViewController extends StageController {
             } else {
                 this.format.select(RichDataType.STRING);
             }
+            this.txt.scrollToTop();
             this.txt.display();
         } else if (this.isImageType()) {
             this.img.setUrl(this.destPath);
