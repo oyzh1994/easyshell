@@ -107,11 +107,11 @@ jre:
 jar:
   # 移除空jar
   removeEmpty: true
-  # 跳过的jar
-  skipsJar:
-    - bcprov.*
-    - bcpkix.*
-    - bcutil.*
+#   # 跳过的jar
+#   skipsJar:
+#     - bcprov.*
+#     - bcpkix.*
+#     - bcutil.*
   # 排除的文件
   excludes:
     - AL2.0
@@ -152,6 +152,10 @@ jar:
     - native-image.properties
     - spring-boot-jarmode-layertools-.*.jar
     - io.netty.version.properties
+    # bouncycastle针对性裁剪
+    - BC2048KE.SF
+    - BC2048KE.DSA
+    - .*lowmc.*.bin.properties
     # pty4j针对性裁剪
     - .*com/pty4j/native/freebsd.*
     - .*com/pty4j/native/linux.*

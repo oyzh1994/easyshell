@@ -31,6 +31,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nManager;
 import javafx.stage.Stage;
+import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
 import java.awt.event.MouseEvent;
 
@@ -75,6 +76,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 抗锯齿优化
 //            System.setProperty("prism.text", "t2k");
 //            System.setProperty("prism.lcdtext", "false");
+            // 关闭BouncyCastle的自签名检查
+            System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 ex.printStackTrace();
