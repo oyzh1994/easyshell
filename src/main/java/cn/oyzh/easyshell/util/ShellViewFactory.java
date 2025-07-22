@@ -19,6 +19,8 @@ import cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectControll
 import cn.oyzh.easyshell.controller.connect.serial.ShellUpdateSerialConnectController;
 import cn.oyzh.easyshell.controller.connect.sftp.ShellAddSFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.sftp.ShellUpdateSFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.smb.ShellAddSMBConnectController;
+import cn.oyzh.easyshell.controller.connect.smb.ShellUpdateSMBConnectController;
 import cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ssh.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectController;
@@ -244,13 +246,29 @@ public class ShellViewFactory {
     }
 
     /**
-     * 新增rlogin连接
+     * 新增RLogin连接
      *
      * @param group 分组
      */
-    public static void addRloginConnect(ShellGroup group) {
+    public static void addRLoginConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddRLoginConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 新增smb连接
+     *
+     * @param group 分组
+     */
+    public static void addSMBConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddSMBConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -388,13 +406,29 @@ public class ShellViewFactory {
     }
 
     /**
-     * 修改rlogin连接
+     * 修改RLogin连接
      *
      * @param connect 连接
      */
-    public static void updateRloginConnect(ShellConnect connect) {
+    public static void updateRLoginConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateRLoginConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改smb连接
+     *
+     * @param connect 连接
+     */
+    public static void updateSMBConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSMBConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

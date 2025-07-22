@@ -281,6 +281,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String s3AppId;
 
+    /**
+     * smb协议，共享名称
+     */
+    @Column
+    private String smbShareName;
+
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
@@ -462,6 +468,8 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.region = t1.region;
         this.s3Type = t1.s3Type;
         this.s3AppId = t1.s3AppId;
+        // smb
+        this.smbShareName = t1.smbShareName;
     }
 
     /**
@@ -748,6 +756,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "s3".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isSMBType() {
+        return "smb".equalsIgnoreCase(this.type);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }
@@ -955,5 +968,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @JSONField(serialize = false, deserialize = false)
     public boolean isStandardS3Type() {
         return "s3".equalsIgnoreCase(this.s3Type);
+    }
+
+    public String getSmbShareName() {
+        return smbShareName;
+    }
+
+    public void setSmbShareName(String smbShareName) {
+        this.smbShareName = smbShareName;
     }
 }

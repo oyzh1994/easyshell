@@ -22,6 +22,7 @@
         <!-- <s3.version>2.29.52</s3.version> -->
         <s3.version>2.31.78</s3.version>
         <jna.version>5.17.0</jna.version>
+        <smbj.version>0.14.0</smbj.version>
         <pty4j.version>0.13.10-1</pty4j.version>
         <jediterm.version>3.54</jediterm.version>
         <jSerialComm.version>2.11.2</jSerialComm.version>
@@ -146,11 +147,20 @@
         <!--     <version>2.19.0</version> -->
         <!-- </dependency> -->
 
+        <!-- 串口通信 -->
         <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->
         <dependency>
             <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
             <version>${jSerialComm.version}</version>
+        </dependency>
+
+        <!-- smb客户端 -->
+        <!-- https://mvnrepository.com/artifact/com.hierynomus/smbj -->
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>smbj</artifactId>
+            <version>${smbj.version}</version>
         </dependency>
 
         <!-- json类库 -->

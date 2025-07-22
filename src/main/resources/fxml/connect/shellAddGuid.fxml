@@ -112,6 +112,14 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="SMB" userData="smb">
+            <graphic>
+                <FTPSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
     </FXHBox>
     <InfoLabel text="S3">
         <VBox.margin>

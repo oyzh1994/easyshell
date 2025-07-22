@@ -22,6 +22,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SFTPSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph;
@@ -55,6 +56,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Windows");
         this.addItem("SFTP");
         this.addItem("FTP");
+        this.addItem("SMB");
         this.addItem("VNC");
         this.addItem("S3");
         this.addItem("Telnet");
@@ -106,6 +108,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "Fedora" -> new FedoraSVGGlyph();
             case "SFTP" -> new SFTPSVGGlyph();
             case "FTP" -> new FTPSVGGlyph();
+            case "SMB" -> new SMBSVGGlyph();
             case "VNC" -> new VNCSVGGlyph();
             case "S3" -> new S3SVGGlyph();
             case "Telnet" -> new TelnetSVGGlyph();

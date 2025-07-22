@@ -154,6 +154,7 @@ public class ShellUpdateS3ConnectController extends StageController {
             ShellConnectUtil.testConnect(this.stage, shellConnect);
             // s3独有
             shellConnect.setS3Type(this.type.getType());
+            shellConnect.setRegion(this.region.getText());
             shellConnect.setS3AppId(this.appId.getTextTrim());
         }
     }
@@ -188,7 +189,6 @@ public class ShellUpdateS3ConnectController extends StageController {
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
-            this.shellConnect.setRegion(region);
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
@@ -198,6 +198,7 @@ public class ShellUpdateS3ConnectController extends StageController {
             this.shellConnect.setPassword(password.trim());
             // s3独有
             this.shellConnect.setS3Type(type);
+            this.shellConnect.setRegion(region);
             this.shellConnect.setS3AppId(appId);
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
