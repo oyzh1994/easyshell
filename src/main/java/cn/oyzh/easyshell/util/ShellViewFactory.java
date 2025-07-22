@@ -211,12 +211,14 @@ public class ShellViewFactory {
     /**
      * 新增s3连接
      *
-     * @param group 分组
+     * @param group  分组
+     * @param s3Type s3类型
      */
-    public static void addS3Connect(ShellGroup group) {
+    public static void addS3Connect(ShellGroup group, String s3Type) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddS3ConnectController.class);
             adapter.setProp("group", group);
+            adapter.setProp("s3Type", s3Type);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -648,10 +650,10 @@ public class ShellViewFactory {
      *
      * @param file   文件
      * @param client 文件客户端
-     * @param type 类型
+     * @param type   类型
      * @param owner  父窗口
      */
-    public static void fileView(ShellFile file, ShellFileClient<?> client,String type, Window owner) {
+    public static void fileView(ShellFile file, ShellFileClient<?> client, String type, Window owner) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class, owner);
             adapter.setProp("file", file);

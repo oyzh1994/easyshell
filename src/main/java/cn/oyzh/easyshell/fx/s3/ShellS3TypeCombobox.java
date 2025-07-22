@@ -17,6 +17,7 @@ public class ShellS3TypeCombobox extends FXComboBox<Region> {
         this.addItem("Minio");
         this.addItem(I18nHelper.aliyun() + " oss");
         this.addItem(I18nHelper.tencent() + " cos");
+        this.addItem(I18nHelper.huawei() + " obs");
         this.addItem(I18nHelper.standard() + " s3");
     }
 
@@ -25,19 +26,22 @@ public class ShellS3TypeCombobox extends FXComboBox<Region> {
             case 0 -> "Minio";
             case 1 -> "Alibaba";
             case 2 -> "Tencent";
+            case 3 -> "Huawei";
             default -> "S3";
         };
     }
 
     public void select(String type) {
         if (StringUtil.isBlank(type) || StringUtil.equalsIgnoreCase(type, "S3")) {
-            this.select(3);
+            this.select(4);
         } else if (StringUtil.equalsIgnoreCase(type, "Minio")) {
             this.select(0);
         } else if (StringUtil.equalsIgnoreCase(type, "Alibaba")) {
             this.select(1);
         } else if (StringUtil.equalsIgnoreCase(type, "Tencent")) {
             this.select(2);
+        } else if (StringUtil.equalsIgnoreCase(type, "Huawei")) {
+            this.select(3);
         }
     }
 }

@@ -458,6 +458,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.serialNumDataBits = t1.serialNumDataBits;
         this.serialNumStopBits = t1.serialNumStopBits;
         this.serialFlowControl = t1.serialFlowControl;
+        // s3
+        this.s3Type = t1.s3Type;
+        this.s3AppId = t1.s3AppId;
     }
 
     /**
@@ -931,6 +934,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @JSONField(serialize = false, deserialize = false)
     public boolean isAlibabaS3Type(){
         return "alibaba".equalsIgnoreCase(this.s3Type);
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isHuaweiS3Type(){
+        return "huawei".equalsIgnoreCase(this.s3Type);
     }
 
     @JSONField(serialize = false, deserialize = false)

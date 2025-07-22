@@ -41,23 +41,32 @@ public class ShellAddGuidController extends StageController {
     @FXML
     private void toAdd() {
         try {
-            if ("ssh".equalsIgnoreCase(this.type.selectedUserData())) {
+            String userData = this.type.selectedUserData();
+            if ("ssh".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSSHConnect(group);
-            } else if ("local".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("local".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addLocalConnect(group);
-            } else if ("telnet".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("telnet".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addTelnetConnect(group);
-            } else if ("sftp".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("sftp".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSFTPConnect(group);
-            } else if ("ftp".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("ftp".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addFTPConnect(group);
-            } else if ("s3".equalsIgnoreCase(this.type.selectedUserData())) {
-                ShellViewFactory.addS3Connect(group);
-            } else if ("serial".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("s3".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addS3Connect(group, null);
+            } else if ("s3_cos".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addS3Connect(group, "cos");
+            } else if ("s3_obs".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addS3Connect(group, "obs");
+            } else if ("s3_oss".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addS3Connect(group, "oss");
+            } else if ("s3_minio".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addS3Connect(group, "minio");
+            } else if ("serial".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSerialConnect(group);
-            } else if ("vnc".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("vnc".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addVNCConnect(group);
-            } else if ("rlogin".equalsIgnoreCase(this.type.selectedUserData())) {
+            } else if ("rlogin".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRloginConnect(group);
             }
             this.closeWindow();

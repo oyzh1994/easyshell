@@ -398,6 +398,10 @@ public class ShellS3Util {
         if (host.contains("myqcloud")) {
             return host.split("\\.")[1];
         }
+        // 华为云
+        if (host.contains("myhuaweicloud")) {
+            return host.split("\\.")[1];
+        }
         return null;
     }
 

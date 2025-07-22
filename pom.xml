@@ -19,6 +19,7 @@
     </description>
 
     <properties>
+        <!-- <s3.version>2.29.52</s3.version> -->
         <s3.version>2.31.78</s3.version>
         <jna.version>5.17.0</jna.version>
         <pty4j.version>0.13.10-1</pty4j.version>

@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.os.RedhatSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.UbuntuSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.WindowsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.AlibabaCloudSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
@@ -29,7 +30,6 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import org.apache.commons.net.telnet.TelnetOptionHandler;
 
 /**
  * shell 系统、协议、应用类型选择框
@@ -63,6 +63,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Minio");
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
+        this.addItem("Huawei Cloud");
         // 设置单元格工厂
         this.setCellFactory(new Callback<>() {
             @Override
@@ -113,6 +114,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "Minio" -> new MinioSVGGlyph();
             case "Alibaba Cloud" -> new AlibabaCloudSVGGlyph();
             case "Tencent Cloud" -> new TencentCloudSVGGlyph();
+            case "Huawei Cloud" -> new HuaweiCloudSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

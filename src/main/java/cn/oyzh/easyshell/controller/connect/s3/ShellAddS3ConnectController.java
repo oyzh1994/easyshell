@@ -19,10 +19,9 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -244,9 +243,42 @@ public class ShellAddS3ConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        this.osType.select("S3");
+        String s3Type = this.getProp("s3Type");
+        this.initS3Type(s3Type);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    /**
+     * 初始化s3类型
+     *
+     * @param s3Type s3类型
+     */
+    private void initS3Type(String s3Type) {
+        if (StringUtil.isBlank(s3Type) || StringUtil.equalsIgnoreCase(s3Type, "s3")) {
+            this.type.select("S3");
+            this.osType.select("S3");
+        } else if (StringUtil.equalsIgnoreCase(s3Type, "Minio")) {
+            this.type.select("Minio");
+            this.osType.select("Minio");
+            this.region.select(Region.US_EAST_1);
+        } else if (StringUtil.equalsIgnoreCase(s3Type, "Cos")) {
+            this.type.select("Tencent");
+            this.osType.select("Tencent Cloud");
+            this.host.setText("http://cos.ap-guangzhou.myqcloud.com");
+            this.region.setText("ap-guangzhou");
+            NodeGroupUtil.display(this.stage, "appId");
+        } else if (StringUtil.equalsIgnoreCase(s3Type, "Obs")) {
+            this.type.select("Huawei");
+            this.osType.select("Huawei Cloud");
+            this.host.setText("https://obs.cn-north-4.myhuaweicloud.com");
+            this.region.setText("cn-north-4");
+        } else if (StringUtil.equalsIgnoreCase(s3Type, "Oss")) {
+            this.type.select("Alibaba");
+            this.osType.select("Alibaba Cloud");
+            this.host.setText("https://oss-cn-hangzhou.aliyuncs.com");
+            this.region.setText("oss-cn-hangzhou");
+        }
     }
 
     @Override

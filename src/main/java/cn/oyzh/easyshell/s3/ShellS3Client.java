@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.s3;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -23,7 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.SdkSystemSetting;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -47,6 +45,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectLockConfigurationRespon
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
+import software.amazon.awssdk.services.s3.model.HeadBucketResponse;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
@@ -262,11 +261,14 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
         if (StringUtil.equalsAny(filePath, "/", "")) {
-            ListBucketsRequest request = ListBucketsRequest.builder()
-                    .build();
+            ListBucketsRequest request = ListBucketsRequest.builder().build();
             ListBucketsResponse response = this.s3Client.listBuckets(request);
             List<Bucket> list = response.buckets();
             for (Bucket bucket : list) {
+                // 判断桶是否在当前区域
+                if (!this.isBucketInCurrentRegion(bucket.name())) {
+                    continue;
+                }
                 ShellS3File file = new ShellS3File(bucket);
                 fileCallback.accept(file);
             }
@@ -683,8 +685,13 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             List<ShellS3Bucket> list = new ArrayList<>();
             List<Bucket> buckets = response.buckets();
             for (Bucket bucket : buckets) {
+                String bucketName = bucket.name();
+                // 判断桶是否在当前区域
+                if (!this.isBucketInCurrentRegion(bucketName)) {
+                    continue;
+                }
                 ShellS3Bucket s3Bucket = new ShellS3Bucket();
-                s3Bucket.setName(bucket.name());
+                s3Bucket.setName(bucketName);
                 String region = bucket.bucketRegion();
                 if (StringUtil.isBlank(region)) {
                     region = this.getShellConnect().getRegion();
@@ -699,6 +706,31 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return list;
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 判断桶是否在当前区域内
+     *
+     * @param bucketName 桶名称
+     * @return 结果
+     */
+    private boolean isBucketInCurrentRegion(String bucketName) {
+        if (this.getShellConnect().isHuaweiS3Type()) {
+            try {
+                HeadBucketRequest request = HeadBucketRequest.builder().bucket(bucketName).build();
+                HeadBucketResponse response = this.s3Client.headBucket(request);
+                String region = response.bucketRegion();
+                return ShellS3Util.ofRegion(region) == this.region();
+            } catch (NoSuchBucketException ignored) {
+
+            } catch (S3Exception ex) {
+                if (ex.statusCode() != 403) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -851,11 +883,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                             .build());
             // 检查对象锁定是否启用
             return response.objectLockConfiguration().objectLockEnabled() == ObjectLockEnabled.ENABLED;
-        } catch (NoSuchBucketException | NoSuchKeyException e) {
-            return false;
+        } catch (NoSuchBucketException ignore) {
         } catch (S3Exception ex) {
-            if (ExceptionUtil.hasMessage(ex, "does not exist")) {
-                return false;
+            if (ex.statusCode() != 403) {
+                ex.printStackTrace();
             }
         }
         return false;
@@ -947,13 +978,13 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             }
 
             return config.rule().defaultRetention();
-        } catch (S3Exception e) {
-            if (e.statusCode() == 404) {
-                System.out.println("Bucket未启用对象锁定或不存在: " + bucketName);
-                return null;
+        } catch (NoSuchBucketException ignore) {
+        } catch (S3Exception ex) {
+            if (ex.statusCode() == 403) {
+                ex.printStackTrace();
             }
-            throw e;
         }
+        return null;
     }
 
     /**
