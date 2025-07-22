@@ -248,6 +248,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @throws Exception 异常
      */
+    @Deprecated
     protected synchronized void loadFileInner() throws Exception {
         String currPath = this.getLocation();
         if (currPath == null) {
@@ -300,6 +301,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      *
      * @throws Exception 异常
      */
+    @Deprecated
     protected synchronized void loadFileInnerDynamic() throws Exception {
         String currPath = this.getLocation();
         if (currPath == null) {

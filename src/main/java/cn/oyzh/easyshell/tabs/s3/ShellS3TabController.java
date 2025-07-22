@@ -73,7 +73,7 @@ public class ShellS3TabController extends ParentTabController {
                     ShellEventUtil.layout1();
                 }
                 this.fileTabController.init();
-                this.bucketTabController.init();
+                // this.bucketTabController.init();
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

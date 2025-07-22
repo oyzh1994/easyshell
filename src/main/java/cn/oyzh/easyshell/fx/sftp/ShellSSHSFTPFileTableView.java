@@ -156,7 +156,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 for (ShellSFTPFile file : files) {
                     this.sshClient.serverExec().uncompress(file.getFilePath());
                 }
-                super.loadFileInner();
+                super.loadFileInnerBatch();
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }

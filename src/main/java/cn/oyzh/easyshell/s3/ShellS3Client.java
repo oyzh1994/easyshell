@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -78,6 +79,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -709,28 +712,36 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
     }
 
     /**
+     * 对象是否在某区域的缓存
+     */
+    private final Map<String, Boolean> bucketInRegionCache = new ConcurrentHashMap<>();
+
+    /**
      * 判断桶是否在当前区域内
      *
      * @param bucketName 桶名称
      * @return 结果
      */
     private boolean isBucketInCurrentRegion(String bucketName) {
-        if (this.getShellConnect().isHuaweiS3Type()) {
-            try {
-                HeadBucketRequest request = HeadBucketRequest.builder().bucket(bucketName).build();
-                HeadBucketResponse response = this.s3Client.headBucket(request);
-                String region = response.bucketRegion();
-                return ShellS3Util.ofRegion(region) == this.region();
-            } catch (NoSuchBucketException ignored) {
-
-            } catch (S3Exception ex) {
-                if (ex.statusCode() != 403) {
-                    ex.printStackTrace();
-                }
+        try {
+            // 从缓存判断
+            if (this.bucketInRegionCache.containsKey(bucketName)) {
+                return this.bucketInRegionCache.get(bucketName);
             }
-            return false;
+            HeadBucketRequest request = HeadBucketRequest.builder().bucket(bucketName).build();
+            HeadBucketResponse response = this.s3Client.headBucket(request);
+            String region = response.bucketRegion();
+            boolean exists = ShellS3Util.ofRegion(region) == this.region();
+            // 添加到缓存
+            this.bucketInRegionCache.put(bucketName, exists);
+            return exists;
+        } catch (NoSuchBucketException ignored) {
+        } catch (S3Exception ex) {
+            if (ex.statusCode() != 403) {
+                ex.printStackTrace();
+            }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -885,7 +896,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return response.objectLockConfiguration().objectLockEnabled() == ObjectLockEnabled.ENABLED;
         } catch (NoSuchBucketException ignore) {
         } catch (S3Exception ex) {
-            if (ex.statusCode() != 403) {
+            if (ex.statusCode() != 403 && !ExceptionUtil.hasMessage(ex, "because object lock is not enabled")) {
                 ex.printStackTrace();
             }
         }

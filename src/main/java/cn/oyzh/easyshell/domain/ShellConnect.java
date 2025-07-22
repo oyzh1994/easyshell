@@ -240,12 +240,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean enableZModem;
 
     /**
-     * s3协议，区域
-     */
-    @Column
-    private String region;
-
-    /**
      * ssh协议，显示文件
      */
     @Column
@@ -268,6 +262,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @Column
     private Boolean showHiddenFile;
+
+    /**
+     * s3协议，区域
+     */
+    @Column
+    private String region;
 
     /**
      * s3协议，类型
@@ -459,6 +459,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.serialNumStopBits = t1.serialNumStopBits;
         this.serialFlowControl = t1.serialFlowControl;
         // s3
+        this.region = t1.region;
         this.s3Type = t1.s3Type;
         this.s3AppId = t1.s3AppId;
     }
@@ -932,27 +933,27 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public boolean isAlibabaS3Type(){
+    public boolean isAlibabaS3Type() {
         return "alibaba".equalsIgnoreCase(this.s3Type);
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public boolean isHuaweiS3Type(){
+    public boolean isHuaweiS3Type() {
         return "huawei".equalsIgnoreCase(this.s3Type);
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public boolean isTencentS3Type(){
+    public boolean isTencentS3Type() {
         return "tencent".equalsIgnoreCase(this.s3Type);
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public boolean isMinioS3Type(){
+    public boolean isMinioS3Type() {
         return "minio".equalsIgnoreCase(this.s3Type);
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public boolean isStandardS3Type(){
+    public boolean isStandardS3Type() {
         return "s3".equalsIgnoreCase(this.s3Type);
     }
 }
