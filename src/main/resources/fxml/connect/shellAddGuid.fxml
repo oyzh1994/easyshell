@@ -10,6 +10,19 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SFTPSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.SSHSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.other.AlibabaCloudSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
         realHeight="480">
@@ -27,7 +40,7 @@
             </FXText>
         </FXHBox>
     </FXHBox>
-    <InfoLabel text="%base.type">
+    <InfoLabel text="%base.terminal">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -35,51 +48,133 @@
     <fx:define>
         <FXToggleGroup fx:id="type"/>
     </fx:define>
-    <FXRadioButton toggleGroup="$type" text="SSH" selected="true" userData="ssh">
+    <FXHBox>
+        <FXRadioButton toggleGroup="$type" text="SSH" selected="true" userData="ssh">
+            <graphic>
+                <SSHSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Telnet" userData="telnet">
+            <graphic>
+                <TelnetSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="%base.serialPort" userData="serial">
+            <graphic>
+                <SerialPortSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Rlogin" userData="rlogin">
+            <graphic>
+                <RLoginSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="%base.localTerminal" userData="local">
+            <graphic>
+                <TerminalSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+    </FXHBox>
+    <InfoLabel text="%base.file">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="SFTP" userData="sftp">
+    </InfoLabel>
+    <FXHBox>
+        <FXRadioButton toggleGroup="$type" text="SFTP" userData="sftp">
+            <graphic>
+                <SFTPSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="FTP" userData="ftp">
+            <graphic>
+                <FTPSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+    </FXHBox>
+    <InfoLabel text="S3">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="Telnet" userData="telnet">
+    </InfoLabel>
+    <FXHBox>
+        <FXRadioButton toggleGroup="$type" text="S3" userData="s3">
+            <graphic>
+                <S3SVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Minio" userData="s3_minio">
+            <graphic>
+                <MinioSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="OSS" userData="s3_oss">
+            <graphic>
+                <AlibabaCloudSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="COS" userData="s3_cos">
+            <graphic>
+                <TencentCloudSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="OBS" userData="s3_obs">
+            <graphic>
+                <HuaweiCloudSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+    </FXHBox>
+    <InfoLabel text="%base.other">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="FTP" userData="ftp">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="%base.serialPort" userData="serial">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="%shell.connect.tip16" userData="s3">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="Rlogin" userData="rlogin">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </FXRadioButton>
-    <FXRadioButton toggleGroup="$type" text="%base.localTerminal" userData="local">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </FXRadioButton>
+    </InfoLabel>
+    <FXHBox>
+        <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
+            <graphic>
+                <VNCSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+    </FXHBox>
     <FXHBox>
         <NextStepButton onAction="#toAdd" realHeight="30">
             <HBox.margin>
