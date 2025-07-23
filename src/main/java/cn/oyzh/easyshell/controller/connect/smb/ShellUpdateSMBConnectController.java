@@ -4,13 +4,13 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
+import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -30,7 +30,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/s3/shellUpdateSMBConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/smb/shellUpdateSMBConnect.fxml"
 )
 public class ShellUpdateSMBConnectController extends StageController {
 
@@ -45,12 +45,6 @@ public class ShellUpdateSMBConnectController extends StageController {
      */
     @FXML
     private PasswordTextField password;
-
-    /**
-     * 类型
-     */
-    @FXML
-    private ShellS3TypeCombobox type;
 
     /**
      * tab组件
@@ -76,10 +70,16 @@ public class ShellUpdateSMBConnectController extends StageController {
     private FXTextArea remark;
 
     /**
-     * 连接地址
+     * 连接ip
      */
     @FXML
-    private ClearableTextField host;
+    private ClearableTextField hostIp;
+
+    /**
+     * 连接端口
+     */
+    @FXML
+    private PortTextField hostPort;
 
     /**
      * 字符集
@@ -116,12 +116,19 @@ public class ShellUpdateSMBConnectController extends StageController {
      * @return 连接地址
      */
     private String getHost() {
+        String hostText;
+        String hostIp = this.hostIp.getTextTrim();
         this.tabPane.select(0);
-        if (!this.host.validate()) {
+        if (!this.hostPort.validate()) {
             this.tabPane.select(0);
             return null;
         }
-        return this.host.getTextTrim();
+        if (!this.hostIp.validate()) {
+            this.tabPane.select(0);
+            return null;
+        }
+        hostText = hostIp + ":" + this.hostPort.getValue();
+        return hostText;
     }
 
     /**
@@ -163,6 +170,10 @@ public class ShellUpdateSMBConnectController extends StageController {
             return;
         }
         String password = this.password.getPassword();
+        String shareName = this.shareName.getTextTrim();
+        if (!this.shareName.validate()) {
+            return;
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -170,7 +181,6 @@ public class ShellUpdateSMBConnectController extends StageController {
         try {
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
-            String shareName = this.shareName.getText();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
@@ -210,9 +220,10 @@ public class ShellUpdateSMBConnectController extends StageController {
         super.onWindowShown(event);
         this.shellConnect = this.getProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
-        this.host.setText(this.shellConnect.getHost());
-        this.remark.setText(this.shellConnect.getRemark());
+        this.hostIp.setText(this.shellConnect.hostIp());
         this.osType.select(this.shellConnect.getOsType());
+        this.remark.setText(this.shellConnect.getRemark());
+        this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理

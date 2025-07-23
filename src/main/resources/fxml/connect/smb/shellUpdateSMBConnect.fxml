@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField?>
+<?import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
@@ -9,6 +9,7 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
@@ -18,10 +19,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.smb.ShellUpdateSMBConnectController" realWidth="750"
-        realHeight="550">
+        realHeight="480">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -36,48 +36,47 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.type">
+                <InfoLabel text="%base.userName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellS3TypeCombobox initIndex="4" fx:id="type" tipText="%base.type" realHeight="30"
-                                     flexWidth="100% - 180">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellS3TypeCombobox>
-                <InfoLabel text="%base.authInfo">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox flexWidth="100%">
-                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                        flexWidth="50% - 90" maxLen="1024">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ClearableTextField>
-                    <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip"
-                                       realHeight="30"
-                                       flexWidth="50% - 95">
-                        <HBox.margin>
-                            <Insets left="5" top="5"/>
-                        </HBox.margin>
-                    </PasswordTextField>
-                </FXHBox>
-                <InfoLabel text="%base.url">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField fx:id="host" tipText="%base.hostTip1" require="true" realHeight="30"
+                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
                                     flexWidth="100% - 180" maxLen="1024">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
+                <InfoLabel text="%base.password">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip"
+                                   realHeight="30"
+                                   flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PasswordTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="60%" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="445">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
                 <InfoLabel text="%base.shareName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

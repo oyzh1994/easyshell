@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
 import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
+import cn.oyzh.easyshell.tabs.smb.ShellSMBTab;
 import cn.oyzh.easyshell.tabs.split.ShellSplitTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
@@ -188,6 +189,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellTelnetTab(event.data());
         } else if (connect.isSFTPType()) {
             tab = new ShellSFTPTab(event.data());
+        } else if (connect.isSMBType()) {
+            tab = new ShellSMBTab(event.data());
         } else if (connect.isFTPType()) {
             tab = new ShellFTPTab(event.data());
         } else if (connect.isS3Type()) {

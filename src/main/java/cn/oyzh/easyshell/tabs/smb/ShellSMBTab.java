@@ -1,27 +1,27 @@
-package cn.oyzh.easyshell.tabs.sftp;
+package cn.oyzh.easyshell.tabs.smb;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
+import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * sftp tab
+ * smb tab
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2025/7/23
  */
-public class ShellSFTPTab extends ShellConnectTab {
+public class ShellSMBTab extends ShellConnectTab {
 
-    public ShellSFTPTab(ShellConnect connect) {
+    public ShellSMBTab(ShellConnect connect) {
         this.init(connect);
     }
 
     @Override
     protected String url() {
-        return "/tabs/sftp/shellSFTPTab.fxml";
+        return "/tabs/smb/shellSMBTab.fxml";
     }
 
     @Override
@@ -57,8 +57,8 @@ public class ShellSFTPTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellSFTPTabController controller() {
-        return (ShellSFTPTabController) super.controller();
+    public ShellSMBTabController controller() {
+        return (ShellSMBTabController) super.controller();
     }
 
    @Override
@@ -71,7 +71,7 @@ public class ShellSFTPTab extends ShellConnectTab {
      *
      * @return shell客户端
      */
-    public ShellSFTPClient client() {
+    public ShellSMBClient client() {
         return this.controller().client();
     }
 }

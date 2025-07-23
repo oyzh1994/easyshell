@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
+import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
@@ -144,6 +145,16 @@ public class ShellConnectUtil {
                     }
                 } else if (shellConnect.isSerialType()) {
                     ShellSerialClient client = new ShellSerialClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+                } else if (shellConnect.isSMBType()) {
+                    ShellSMBClient client = new ShellSMBClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

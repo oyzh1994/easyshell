@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
+import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
@@ -48,6 +49,8 @@ public class ShellClientUtil {
             client = new ShellLocalClient(connect);
         } else if (connect.isS3Type()) {
             client = new ShellS3Client(connect);
+        } else if (connect.isSMBType()) {
+            client = new ShellSMBClient(connect);
         }
         return (T) client;
     }

@@ -23,6 +23,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
         realHeight="480">
@@ -114,7 +115,7 @@
         </FXRadioButton>
         <FXRadioButton toggleGroup="$type" text="SMB" userData="smb">
             <graphic>
-                <FTPSVGGlyph/>
+                <SMBSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

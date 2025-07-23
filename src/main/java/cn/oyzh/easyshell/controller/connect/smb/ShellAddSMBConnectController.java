@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
+import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -30,7 +31,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/s3/shellAddSMBConnect.fxml"
+        value = FXConst.FXML_PATH + "connect/smb/shellAddSMBConnect.fxml"
 )
 public class ShellAddSMBConnectController extends StageController {
 
@@ -65,10 +66,16 @@ public class ShellAddSMBConnectController extends StageController {
     private FXTextArea remark;
 
     /**
-     * 连接地址
+     * 连接ip
      */
     @FXML
-    private ClearableTextField host;
+    private ClearableTextField hostIp;
+
+    /**
+     * 连接端口
+     */
+    @FXML
+    private PortTextField hostPort;
 
     /**
      * 字符集
@@ -110,12 +117,19 @@ public class ShellAddSMBConnectController extends StageController {
      * @return 连接地址
      */
     private String getHost() {
+        String hostText;
+        String hostIp = this.hostIp.getTextTrim();
         this.tabPane.select(0);
-        if (!this.host.validate()) {
+        if (!this.hostPort.validate()) {
             this.tabPane.select(0);
             return null;
         }
-        return this.host.getTextTrim();
+        if (!this.hostIp.validate()) {
+            this.tabPane.select(0);
+            return null;
+        }
+        hostText = hostIp + ":" + this.hostPort.getValue();
+        return hostText;
     }
 
     /**
@@ -156,6 +170,10 @@ public class ShellAddSMBConnectController extends StageController {
             return;
         }
         String password = this.password.getPassword();
+        String shareName = this.shareName.getTextTrim();
+        if (!this.shareName.validate()) {
+            return;
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -166,7 +184,6 @@ public class ShellAddSMBConnectController extends StageController {
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
-            String shareName = this.shareName.getTextTrim();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
             shellConnect.setName(name);
@@ -207,6 +224,7 @@ public class ShellAddSMBConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
+        this.osType.select("SMB");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
