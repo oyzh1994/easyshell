@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.sftp2;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.Competitor;
@@ -247,31 +246,31 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return true;
     }
 
-    @Override
-    public void createDirRecursive(String filePath) throws Exception {
-        filePath = ShellFileUtil.fixFilePath(filePath);
-        String[] dirs = filePath.split("/");
-        StringBuilder currentPath = new StringBuilder();
-        for (String dir : dirs) {
-            if (dir.isEmpty()) {
-                continue;
-            }
-            currentPath.append("/").append(dir);
-            try {
-                // 创建缺失目录
-                if (!this.exist(currentPath.toString())) {
-                    this.createDir(currentPath.toString());
-                }
-            } catch (Exception ex) {
-                // 创建缺失目录
-                if (ExceptionUtil.hasMessage(ex, "No such file")) {
-                    this.createDir(currentPath.toString());
-                } else {
-                    throw ex;
-                }
-            }
-        }
-    }
+    // @Override
+    // public void createDirRecursive(String filePath) throws Exception {
+    //     filePath = ShellFileUtil.fixFilePath(filePath);
+    //     String[] dirs = filePath.split("/");
+    //     StringBuilder currentPath = new StringBuilder();
+    //     for (String dir : dirs) {
+    //         if (dir.isEmpty()) {
+    //             continue;
+    //         }
+    //         currentPath.append("/").append(dir);
+    //         try {
+    //             // 创建缺失目录
+    //             if (!this.exist(currentPath.toString())) {
+    //                 this.createDir(currentPath.toString());
+    //             }
+    //         } catch (Exception ex) {
+    //             // 创建缺失目录
+    //             if (ExceptionUtil.hasMessage(ex, "No such file")) {
+    //                 this.createDir(currentPath.toString());
+    //             } else {
+    //                 throw ex;
+    //             }
+    //         }
+    //     }
+    // }
 
     @Override
     public String workDir() throws Exception {

@@ -205,12 +205,12 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public void deleteDir(String dir) {
-        this.smbShare.rmdir(dir, true);
+        this.smbShare.rmdir(dir, false);
     }
 
     @Override
     public void deleteDirRecursive(String dir) {
-        this.deleteDir(dir);
+        this.smbShare.rmdir(dir, true);
     }
 
     @Override
@@ -222,7 +222,25 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        return this.smbShare.fileExists(filePath) || this.smbShare.folderExists(filePath);
+        // try {
+        //     ShellSMBFile file = this.fileInfo(filePath);
+        //     if (file != null) {
+        //         return file.isFile() ? this.smbShare.fileExists(filePath) : this.smbShare.folderExists(filePath);
+        //     }
+        // } catch (Exception ignore) {
+        // }
+        boolean exist = false;
+        try {
+            exist = this.smbShare.fileExists(filePath);
+        } catch (Exception ignore) {
+        }
+        if (!exist) {
+            try {
+                exist = this.smbShare.folderExists(filePath);
+            } catch (Exception ignore) {
+            }
+        }
+        return exist;
     }
 
     @Override
@@ -251,10 +269,26 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         return true;
     }
 
-    @Override
-    public void createDirRecursive(String filePath) throws Exception {
-        this.smbShare.mkdir(filePath);
-    }
+    // @Override
+    // public void createDirRecursive(String filePath) throws Exception {
+    //     String[] dirs = filePath.split("/");
+    //     StringBuilder currentPath = new StringBuilder();
+    //     for (String dir : dirs) {
+    //         if (dir.isEmpty()) {
+    //             continue;
+    //         }
+    //         currentPath.append("/").append(dir);
+    //         try {
+    //             // 创建缺失目录
+    //             if (!this.exist(currentPath.toString())) {
+    //                 this.createDir(currentPath.toString());
+    //             }
+    //         } catch (Exception ex) {
+    //             // 创建缺失目录
+    //             this.createDir(currentPath.toString());
+    //         }
+    //     }
+    // }
 
     @Override
     public String workDir() throws Exception {
@@ -316,7 +350,6 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         File smbFile = this.writeFile(remoteFile);
         this.delayFiles.add(smbFile);
         return smbFile.getOutputStream();
-
     }
 
     /**

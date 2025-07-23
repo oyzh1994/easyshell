@@ -197,7 +197,30 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param filePath 文件路径
      * @throws Exception 异常
      */
-    void createDirRecursive(String filePath) throws Exception;
+    default void createDirRecursive(String filePath) throws Exception {
+        filePath = ShellFileUtil.fixFilePath(filePath);
+        String[] dirs = filePath.split("/");
+        StringBuilder currentPath = new StringBuilder();
+        for (String dir : dirs) {
+            if (dir.isEmpty()) {
+                continue;
+            }
+            currentPath.append("/").append(dir);
+            try {
+                // 创建缺失目录
+                if (!this.exist(currentPath.toString())) {
+                    this.createDir(currentPath.toString());
+                }
+            } catch (Exception ex) {
+                // 创建缺失目录
+                if (ExceptionUtil.hasMessage(ex, "No such file")) {
+                    this.createDir(currentPath.toString());
+                } else {
+                    throw ex;
+                }
+            }
+        }
+    }
 
     /**
      * 获取当前位置
@@ -307,15 +330,14 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
         ShellFileDeleteTask deleteTask = new ShellFileDeleteTask(this.deleteCompetitor(), file, this);
         this.deleteTasks().add(deleteTask);
         deleteTask.doDelete(() -> {
-                    synchronized (this.deleteTasks()) {
-                        this.deleteTasks().remove(deleteTask);
-                    }
-                },
-                ex -> {
-                    if (!ExceptionUtil.isInterrupt(ex)) {
-                        MessageBox.exception(ex);
-                    }
-                });
+            synchronized (this.deleteTasks()) {
+                this.deleteTasks().remove(deleteTask);
+            }
+        }, ex -> {
+            if (!ExceptionUtil.isInterrupt(ex)) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     /**
@@ -345,6 +367,9 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             synchronized (this.uploadTasks()) {
                 this.uploadTasks().remove(uploadTask);
             }
+        }, ex -> {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         });
     }
 
@@ -385,6 +410,9 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             synchronized (this.downloadTasks()) {
                 this.downloadTasks().remove(downloadTask);
             }
+        }, ex -> {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         });
     }
 
@@ -416,6 +444,9 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             synchronized (this.transportTasks()) {
                 this.transportTasks().remove(transportTask);
             }
+        }, ex -> {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         });
     }
 

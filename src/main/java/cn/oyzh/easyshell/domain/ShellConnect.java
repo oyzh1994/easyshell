@@ -878,7 +878,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * @return 结果
      */
     public boolean isFileType() {
-        return this.isSSHType() || this.isSFTPType() || this.isFTPType() || this.isS3Type();
+        return this.isSSHType() || this.isSFTPType() || this.isFTPType() || this.isS3Type() || this.isSMBType();
     }
 
     public String getRegion() {

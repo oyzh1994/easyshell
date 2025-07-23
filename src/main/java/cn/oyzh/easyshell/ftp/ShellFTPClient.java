@@ -425,26 +425,26 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return this.ftpClient.makeDirectory(filePath);
     }
 
-    @Override
-    public void createDirRecursive(String filePath) throws Exception {
-        String[] dirs = filePath.split("/");
-        StringBuilder currentPath = new StringBuilder();
-        for (String dir : dirs) {
-            if (dir.isEmpty()) {
-                continue;
-            }
-            currentPath.append("/").append(dir);
-            try {
-                // 创建缺失目录
-                if (!this.exist(currentPath.toString())) {
-                    this.createDir(currentPath.toString());
-                }
-            } catch (Exception ex) {
-                // 创建缺失目录
-                this.createDir(currentPath.toString());
-            }
-        }
-    }
+    // @Override
+    // public void createDirRecursive(String filePath) throws Exception {
+    //     String[] dirs = filePath.split("/");
+    //     StringBuilder currentPath = new StringBuilder();
+    //     for (String dir : dirs) {
+    //         if (dir.isEmpty()) {
+    //             continue;
+    //         }
+    //         currentPath.append("/").append(dir);
+    //         try {
+    //             // 创建缺失目录
+    //             if (!this.exist(currentPath.toString())) {
+    //                 this.createDir(currentPath.toString());
+    //             }
+    //         } catch (Exception ex) {
+    //             // 创建缺失目录
+    //             this.createDir(currentPath.toString());
+    //         }
+    //     }
+    // }
 
     @Override
     public String workDir() throws Exception {

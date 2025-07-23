@@ -17,6 +17,7 @@ import javafx.beans.property.StringProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -25,7 +26,7 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2025-04-28
  */
-public class ShellFileDownloadTask extends ShellFileTask{
+public class ShellFileDownloadTask extends ShellFileTask {
 
     // /**
     //  * 工作线程
@@ -145,8 +146,9 @@ public class ShellFileDownloadTask extends ShellFileTask{
      * 执行下载
      *
      * @param finishCallback 结束回调
+     * @param errorCallback  错误回调
      */
-    public void doDownload(Runnable finishCallback) {
+    public void doDownload(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
@@ -168,8 +170,7 @@ public class ShellFileDownloadTask extends ShellFileTask{
                 if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
                     this.error = ex;
                     this.updateStatus(this.status);
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    errorCallback.accept(ex);
                 }
             } finally {
                 // 释放
@@ -336,7 +337,7 @@ public class ShellFileDownloadTask extends ShellFileTask{
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
         }
     }

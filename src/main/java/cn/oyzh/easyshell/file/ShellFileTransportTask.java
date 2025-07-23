@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -160,8 +161,9 @@ public class ShellFileTransportTask extends ShellFileTask {
      * 执行传输
      *
      * @param finishCallback 结束回调
+     * @param errorCallback  错误回调
      */
-    public void doTransport(Runnable finishCallback) {
+    public void doTransport(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             try {
@@ -184,6 +186,7 @@ public class ShellFileTransportTask extends ShellFileTask {
                 if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
                     this.error = ex;
                     this.updateStatus(this.status);
+                    errorCallback.accept(ex);
                 }
             } finally {
                 // 释放
@@ -368,7 +371,7 @@ public class ShellFileTransportTask extends ShellFileTask {
         String total = NumberUtil.formatSize(this.totalSize, 2);
         String current = NumberUtil.formatSize(this.currentSize, 2);
         this.fileSizeProperty.set(current + "/" + total);
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("fileSize: {}", this.fileSizeProperty.getValue());
         }
     }
@@ -403,7 +406,7 @@ public class ShellFileTransportTask extends ShellFileTask {
      */
     private void updateProgress() {
         this.progressProperty.setValue(NumberUtil.scale(this.currentSize * 1D / this.totalSize * 100D, 2) + "%");
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("progress: {}", this.progressProperty.getValue());
         }
     }
