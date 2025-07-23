@@ -85,7 +85,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 this.cache = null;
             }
             super.close();
-            this.delayChannels.clear();
+            this.closeDelayResources();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {

@@ -66,32 +66,16 @@ public class ShellSMBFile implements ShellFile {
     private long attrs() {
         long attrs;
         if (this.allInformation != null) {
-            attrs = this.allInformation.getBasicInformation().getFileAttributes() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
+            attrs = this.allInformation.getBasicInformation().getFileAttributes();
         } else {
-            attrs = this.information.getFileAttributes() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
+            attrs = this.information.getFileAttributes();
         }
         return attrs;
     }
 
-    /**
-     * 文件大小
-     *
-     * @return 文件大小
-     */
-    private long easize() {
-        long easize;
-        if (this.allInformation != null) {
-            easize = this.allInformation.getEaInformation().getEaSize();
-        } else {
-            easize = this.information.getEaSize();
-        }
-        return easize;
-    }
-
     @Override
     public boolean isFile() {
-        long val = this.attrs() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
-        return val != 0;
+        return !this.isDirectory() && !this.isLink();
     }
 
     @Override
@@ -100,7 +84,13 @@ public class ShellSMBFile implements ShellFile {
         if (val == 0) {
             return false;
         }
-        return (this.easize() & 0xA0000000L) == 0xA0000000L;
+        long easize;
+        if (this.allInformation != null) {
+            easize = this.allInformation.getEaInformation().getEaSize();
+        } else {
+            easize = this.information.getEaSize();
+        }
+        return (easize & 0xA0000000L) == 0xA0000000L;
     }
 
     @Override
@@ -118,7 +108,10 @@ public class ShellSMBFile implements ShellFile {
         if (this.fileSize != null) {
             return this.fileSize;
         }
-        return this.easize();
+        if (this.allInformation != null) {
+            return this.allInformation.getStandardInformation().getAllocationSize();
+        }
+        return this.information.getAllocationSize();
     }
 
     @Override

@@ -479,7 +479,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 除了加载阶段，隐藏文件要被过滤掉
         if (!this.showHiddenFile && file.isHiddenFile()) {
-            // if (!ThreadLocalUtil.hasVal("loadStage") && !this.showHiddenFile && file.isHiddenFile()) {
             return false;
         }
         if (StringUtil.isNotEmpty(this.filterText) && !StringUtil.containsIgnoreCase(file.getFileName(), this.filterText)) {
@@ -1132,8 +1131,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             if (this.isSupportPermissionAction()) {
                 FXMenuItem filePermission = MenuItemHelper.filePermission("12", () -> this.filePermission(file));
                 menuItems.add(filePermission);
-                menuItems.add(MenuItemHelper.separator());
             }
+            menuItems.add(MenuItemHelper.separator());
         }
         // 刷新文件
         FXMenuItem refreshFile = MenuItemHelper.refreshFile("12", this::loadFile);

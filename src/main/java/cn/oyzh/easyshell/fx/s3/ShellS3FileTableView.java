@@ -120,26 +120,32 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
         return false;
     }
 
+    @Override
     public boolean isSupportFileInfoAction() {
         return !this.isRootLocation();
     }
 
+    @Override
     public boolean isSupportDownloadAction() {
         return !this.isRootLocation();
     }
 
+    @Override
     public boolean isSupportUploadAction() {
         return !this.isRootLocation();
     }
 
+    @Override
     public boolean isSupportRenameAction() {
         return !this.isRootLocation();
     }
 
+    @Override
     public boolean isSupportDeleteAction() {
         return !this.isRootLocation();
     }
 
+    @Override
     public boolean isSupportPermissionAction() {
         return false;
     }

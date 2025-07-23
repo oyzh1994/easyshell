@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-07-23
  */
 public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, ShellSMBFile> implements FXEventListener {
 
@@ -63,5 +63,10 @@ public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, Sh
             menuItems.add(downloadFile);
         }
         return menuItems;
+    }
+
+    @Override
+    public boolean isSupportPermissionAction() {
+        return false;
     }
 }

@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +75,11 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      * 连接
      */
     private final ShellConnect connect;
+
+    /**
+     * 延迟处理的文件
+     */
+    private final List<File> delayFiles = new ArrayList<>();
 
     /**
      * 连接状态
@@ -172,6 +178,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 IOUtil.close(this.smbClient);
                 this.smbClient = null;
             }
+            this.closeDelayResources();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
@@ -208,7 +215,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean rename(ShellSMBFile file, String newName) throws Exception {
-        File smbFile = this.writeFile(file.getFilePath());
+        File smbFile = this.openFile(file.getFilePath());
         smbFile.rename(newName, true);
         return true;
     }
@@ -279,6 +286,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         File smbFile = this.readFile(remoteFile.getFilePath());
+        this.delayFiles.add(smbFile);
         InputStream stream = smbFile.getInputStream();
         if (callback == null) {
             return stream;
@@ -298,6 +306,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         IOUtil.saveToStream(localFile, out);
         IOUtil.close(localFile);
         IOUtil.close(out);
+        IOUtil.close(smbFile);
     }
 
     @Override
@@ -305,7 +314,9 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         File smbFile = this.writeFile(remoteFile);
+        this.delayFiles.add(smbFile);
         return smbFile.getOutputStream();
+
     }
 
     /**
@@ -378,7 +389,12 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public void closeDelayResources() {
-
+        for (File file : this.delayFiles) {
+            if (file != null) {
+                IOUtil.close(file);
+            }
+        }
+        this.delayFiles.clear();
     }
 
     @Override
@@ -414,10 +430,33 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         return false;
     }
 
+    /**
+     * 读取文件
+     *
+     * @param filePath 文件路径
+     * @return 文件
+     */
     private File readFile(String filePath) {
         return this.smbShare.openFile(
                 filePath,
                 EnumSet.of(AccessMask.GENERIC_READ),
+                EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OPEN_IF,  // 如果文件存在则覆盖
+                null
+        );
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param filePath 文件路径
+     * @return 文件
+     */
+    private File writeFile(String filePath) {
+        return this.smbShare.openFile(
+                filePath,
+                EnumSet.of(AccessMask.GENERIC_WRITE),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
                 SMB2CreateDisposition.FILE_OVERWRITE_IF,  // 如果文件存在则覆盖
@@ -425,10 +464,16 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         );
     }
 
-    private File writeFile(String filePath) {
+    /**
+     * 打开文件
+     *
+     * @param filePath 文件路径
+     * @return 文件
+     */
+    private File openFile(String filePath) {
         return this.smbShare.openFile(
                 filePath,
-                EnumSet.of(AccessMask.GENERIC_WRITE),
+                EnumSet.of(AccessMask.GENERIC_ALL),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
                 SMB2CreateDisposition.FILE_OVERWRITE_IF,  // 如果文件存在则覆盖
