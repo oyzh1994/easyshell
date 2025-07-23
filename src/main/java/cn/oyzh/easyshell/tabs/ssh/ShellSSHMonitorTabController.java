@@ -119,10 +119,8 @@ public class ShellSSHMonitorTabController extends SubTabController {
             this.cpuChart.addChartData(data);
         }
         double cpuUsage = monitor.getCpuUsage();
-        if (cpuUsage != -1) {
-            String time = this.dateFormat.format(System.currentTimeMillis());
-            ChartHelper.addOrUpdateData(data, time, cpuUsage, 10);
-        }
+        String time = this.dateFormat.format(System.currentTimeMillis());
+        ChartHelper.addOrUpdateData(data, time, Math.max(0, cpuUsage), 10);
     }
 
     /**
@@ -138,10 +136,8 @@ public class ShellSSHMonitorTabController extends SubTabController {
             this.memoryChart.addChartData(data);
         }
         double memoryUsage = monitor.getMemoryUsage();
-        if (memoryUsage != -1) {
-            String time = this.dateFormat.format(System.currentTimeMillis());
-            ChartHelper.addOrUpdateData(data, time, memoryUsage, 10);
-        }
+        String time = this.dateFormat.format(System.currentTimeMillis());
+        ChartHelper.addOrUpdateData(data, time, Math.max(0, memoryUsage), 10);
     }
 
     /**
@@ -205,7 +201,7 @@ public class ShellSSHMonitorTabController extends SubTabController {
         }
         try {
             this.refreshTask = TaskManager.startInterval("ssh:monitor:task", this::renderPane, 3_000, 0);
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("RefreshTask started.");
             }
         } catch (Exception ex) {
@@ -221,7 +217,7 @@ public class ShellSSHMonitorTabController extends SubTabController {
         try {
             ExecutorUtil.cancel(this.refreshTask);
             this.refreshTask = null;
-            if(JulLog.isDebugEnabled()) {
+            if (JulLog.isDebugEnabled()) {
                 JulLog.debug("RefreshTask closed.");
             }
         } catch (Exception ex) {

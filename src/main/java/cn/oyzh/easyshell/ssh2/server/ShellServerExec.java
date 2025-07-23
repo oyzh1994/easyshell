@@ -104,7 +104,7 @@ public class ShellServerExec implements AutoCloseable {
             return this.lastMonitor;
         }
         ShellServerMonitor monitor = new ShellServerMonitor();
-        DownLatch latch = new DownLatch(4);
+        DownLatch latch = DownLatch.of(4);
 
         ThreadUtil.startVirtual(() -> {
             try {
@@ -175,7 +175,7 @@ public class ShellServerExec implements AutoCloseable {
                 return 100 - Double.parseDouble(cpuUsage);
             }
             if (this.client.isWindows()) {
-                String cpuUsage = this.client.exec("wmic cpu get loadpercentage");
+                String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 500);
                 cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
                 if (StringUtil.isBlank(cpuUsage)) {
                     return -1;
@@ -214,6 +214,11 @@ public class ShellServerExec implements AutoCloseable {
         return -1;
     }
 
+    /**
+     * 获取内存使用率
+     *
+     * @return 内存使用率
+     */
     public double memoryUsage() {
         try {
             if (this.client.isMacos()) {
@@ -227,7 +232,7 @@ public class ShellServerExec implements AutoCloseable {
                 return Double.parseDouble(output);
             }
             if (this.client.isWindows()) {
-                String output = this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value");
+                String output = this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value", 500);
                 if (StringUtil.isBlank(output)) {
                     return -1;
                 }
@@ -319,10 +324,18 @@ public class ShellServerExec implements AutoCloseable {
         return "N/A";
     }
 
+    /**
+     * 获取系统架构
+     *
+     * @return 系统架构
+     */
     public String arch() {
         try {
             if (this.client.isWindows()) {
-                String output = this.client.exec("wmic os get osarchitecture");
+                String output = this.client.exec("wmic os get osarchitecture", 500);
+                if (StringUtil.isBlank(output)) {
+                    return "N/A";
+                }
                 String arch = ArrayUtil.indexOf(output.split("\n"), 1);
                 return arch == null ? "N/A" : arch.trim();
             }
@@ -333,6 +346,11 @@ public class ShellServerExec implements AutoCloseable {
         return "N/A";
     }
 
+    /**
+     * 获取内存大小
+     *
+     * @return 内存大小
+     */
     public long totalMemory() {
         try {
             if (this.client.isMacos()) {
@@ -340,7 +358,10 @@ public class ShellServerExec implements AutoCloseable {
                 return Long.parseLong(totalMemory) / 1024 / 1024;
             }
             if (this.client.isWindows()) {
-                String totalMemory = this.client.exec("wmic memorychip get capacity");
+                String totalMemory = this.client.exec("wmic memorychip get capacity", 500);
+                if (StringUtil.isBlank(totalMemory)) {
+                    return -1;
+                }
                 totalMemory = ArrayUtil.indexOf(totalMemory.split("\n"), 1);
                 if (totalMemory == null) {
                     return -1;
@@ -366,6 +387,11 @@ public class ShellServerExec implements AutoCloseable {
         return -1;
     }
 
+    /**
+     * 获取磁盘读写信息
+     *
+     * @return 磁盘读写信息
+     */
     public double[] disk() {
         try {
             if (this.client.isMacos()) {
@@ -466,6 +492,11 @@ public class ShellServerExec implements AutoCloseable {
         return new double[]{-1L, -1L};
     }
 
+    /**
+     * 获取网络使用情况
+     *
+     * @return 网络使用情况
+     */
     public double[] network() {
         try {
             if (this.client.isMacos()) {
@@ -542,10 +573,15 @@ public class ShellServerExec implements AutoCloseable {
         return new double[]{-1L, -1L};
     }
 
+    /**
+     * 获取主机启动时间
+     *
+     * @return 启动时间
+     */
     public String uptime() {
         try {
             if (this.client.isWindows()) {
-                String output = this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime");
+                String output = this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime", 500);
                 if (StringUtil.isNotBlank(output)) {
                     output = ArrayUtil.indexOf(output.split("\n"), 1);
                     if (StringUtil.isNotBlank(output)) {

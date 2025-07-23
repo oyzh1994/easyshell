@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.ssh2.exec;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.sftp2.ShellSFTPChannel;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
@@ -21,12 +20,17 @@ public class ShellSSHExec implements AutoCloseable {
         this.client = client;
     }
 
+    /**
+     * 获取cpu信息
+     *
+     * @return cpu信息
+     */
     public String cpu_info() {
         if (this.client.isMacos()) {
             return this.client.exec("sysctl machdep.cpu");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic cpu");
+            String output = this.client.exec("wmic cpu", 500);
             String[] lines = output.split("\n");
             String[] cols1 = lines[0].split("\\s+");
             String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
@@ -42,9 +46,14 @@ public class ShellSSHExec implements AutoCloseable {
         return this.client.exec("lscpu");
     }
 
+    /**
+     * 获取磁盘信息
+     *
+     * @return 磁盘信息
+     */
     public List<ShellSSHDiskInfo> disk_info() {
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
+            String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName", 500);
             return ShellSSHExecParser.diskForWindows(output);
         } else {
             String output = this.client.exec("df -h");
@@ -66,12 +75,17 @@ public class ShellSSHExec implements AutoCloseable {
         return output;
     }
 
+    /**
+     * 获取内存信息
+     *
+     * @return 内存信息
+     */
     public String memory_info() {
         if (this.client.isMacos()) {
             return this.client.exec("system_profiler SPMemoryDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic memorychip");
+            String output = this.client.exec("wmic memorychip", 500);
             String[] lines = output.split("\n");
             String[] cols1 = lines[0].split("\\s+");
             String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
@@ -91,16 +105,21 @@ public class ShellSSHExec implements AutoCloseable {
         return output;
     }
 
+    /**
+     * 获取gpu信息
+     *
+     * @return gpu信息
+     */
     public String gpu_info() {
         if (this.client.isMacos()) {
             return this.client.exec("system_profiler SPDisplaysDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("nvidia-smi");
+            String output = this.client.exec("nvidia-smi", 500);
             if (!ShellUtil.isCommandNotFound(output)) {
                 return output;
             }
-            output = this.client.exec("wmic path win32_VideoController");
+            output = this.client.exec("wmic path win32_VideoController", 500);
             String[] lines = output.split("\n");
             String[] cols1 = lines[0].split("\\s+");
             String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
@@ -229,18 +248,16 @@ public class ShellSSHExec implements AutoCloseable {
         this.client = null;
     }
 
-    /**
-     * 修改权限，这个方法不能兼容windows，请用以下方法
-     *
-     * @param permission 权限
-     * @param filePath   文件路径
-     * @return 结果
-     * @see ShellSFTPChannel#chmod(int, String)
-     */
-    @Deprecated
-    public String chmod(String permission, String filePath) {
-        return this.client.exec("chmod " + permission + " " + filePath);
-    }
-
-
+    // /**
+    //  * 修改权限，这个方法不能兼容windows，请用以下方法
+    //  *
+    //  * @param permission 权限
+    //  * @param filePath   文件路径
+    //  * @return 结果
+    //  * @see ShellSFTPChannel#chmod(int, String)
+    //  */
+    // @Deprecated
+    // public String chmod(String permission, String filePath) {
+    //     return this.client.exec("chmod " + permission + " " + filePath);
+    // }
 }

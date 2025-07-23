@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.DownLatch;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -58,6 +60,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * shell客户端
@@ -140,6 +143,28 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             }
         }
         return this.osType;
+    }
+
+    /**
+     * 执行命令
+     *
+     * @param command 命令
+     * @param timeout 超时时间
+     * @return 结果
+     */
+    public String exec(String command, int timeout) {
+        DownLatch latch = DownLatch.of();
+        AtomicReference<String> result = new AtomicReference<>();
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String res = this.exec(command);
+                result.set(res);
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await(timeout);
+        return result.get();
     }
 
     /**

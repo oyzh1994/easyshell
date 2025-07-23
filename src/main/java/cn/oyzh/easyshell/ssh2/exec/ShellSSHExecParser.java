@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh2.exec;
 
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.common.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,6 +60,9 @@ public class ShellSSHExecParser {
     }
 
     public static List<ShellSSHDiskInfo> diskForWindows(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyList();
+        }
         try {
             String[] lines = output.split("\n");
             List<ShellSSHDiskInfo> list = new ArrayList<>();
