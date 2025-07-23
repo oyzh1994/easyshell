@@ -24,6 +24,7 @@ import com.hierynomus.smbj.SmbConfig;
 import com.hierynomus.smbj.auth.AuthenticationContext;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
+import com.hierynomus.smbj.share.Directory;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import javafx.beans.property.ObjectProperty;
@@ -215,8 +216,13 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean rename(ShellSMBFile file, String newName) throws Exception {
-        File smbFile = this.openFile(file.getFilePath());
-        smbFile.rename(newName, true);
+        if (file.isDirectory()) {
+            Directory directory = this.openDir(file.getFilePath());
+            directory.rename(newName, true);
+        } else {
+            File smbFile = this.openFile(file.getFilePath());
+            smbFile.rename(newName, true);
+        }
         return true;
     }
 
@@ -475,7 +481,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 EnumSet.of(AccessMask.GENERIC_READ),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
-                SMB2CreateDisposition.FILE_OPEN_IF,  // 如果文件存在则覆盖
+                SMB2CreateDisposition.FILE_OPEN_IF,
                 null
         );
     }
@@ -492,7 +498,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 EnumSet.of(AccessMask.GENERIC_WRITE),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
-                SMB2CreateDisposition.FILE_OVERWRITE_IF,  // 如果文件存在则覆盖
+                SMB2CreateDisposition.FILE_OVERWRITE_IF,
                 null
         );
     }
@@ -509,7 +515,24 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 EnumSet.of(AccessMask.GENERIC_ALL),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
-                SMB2CreateDisposition.FILE_OVERWRITE_IF,  // 如果文件存在则覆盖
+                SMB2CreateDisposition.FILE_OVERWRITE_IF,
+                null
+        );
+    }
+
+    /**
+     * 打开目录
+     *
+     * @param filePath 文件路径
+     * @return 目录
+     */
+    private Directory openDir(String filePath) {
+        return this.smbShare.openDirectory(
+                filePath,
+                EnumSet.of(AccessMask.GENERIC_ALL),
+                EnumSet.of(FileAttributes.FILE_ATTRIBUTE_DIRECTORY),
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OPEN,
                 null
         );
     }

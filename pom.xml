@@ -258,10 +258,6 @@
             <exclusions>
                 <exclusion>
                     <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>arns</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>software.amazon.awssdk</groupId>
                     <artifactId>crt-core</artifactId>
                 </exclusion>
                 <exclusion>

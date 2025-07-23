@@ -1122,10 +1122,14 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             FXMenuItem copyFilePath = MenuItemHelper.copyFilePath("12", () -> this.copyFilePath(file));
             menuItems.add(copyFilePath);
             // 重命名文件
-            if (this.isSupportRenameAction()) {
+            if (this.isSupportRenameAction() && file.isFile()) {
                 FXMenuItem renameFile = MenuItemHelper.renameFile("12", () -> this.renameFile(files));
                 renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
                 menuItems.add(renameFile);
+            } else if (this.isSupportRenameDirAction() && file.isDirectory()) { // 重命名目录
+                FXMenuItem renameDir = MenuItemHelper.renameDir("12", () -> this.renameFile(files));
+                renameDir.setAccelerator(KeyboardUtil.rename_keyCombination);
+                menuItems.add(renameDir);
             }
             // 文件权限
             if (this.isSupportPermissionAction()) {
@@ -1202,6 +1206,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
 
     public boolean isSupportRenameAction() {
         // return this.isSupportAction("rename");
+        return true;
+    }
+
+    public boolean isSupportRenameDirAction() {
         return true;
     }
 

@@ -141,6 +141,11 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
     }
 
     @Override
+    public boolean isSupportRenameDirAction() {
+        return false;
+    }
+
+    @Override
     public boolean isSupportDeleteAction() {
         return !this.isRootLocation();
     }
