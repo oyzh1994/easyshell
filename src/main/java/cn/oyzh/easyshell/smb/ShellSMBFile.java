@@ -2,10 +2,11 @@ package cn.oyzh.easyshell.smb;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import com.hierynomus.msfscc.FileAttributes;
+import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 
-import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -27,34 +28,79 @@ public class ShellSMBFile implements ShellFile {
     private String parentPath;
 
     /**
-     * 文件对象
+     * 文件属性
      */
-    private final FileIdBothDirectoryInformation information;
+    private FileAllInformation allInformation;
+
+    /**
+     * 文件属性
+     */
+    private FileIdBothDirectoryInformation information;
 
     /**
      * 最后修改时间
      */
-    private Instant lastModified;
+    private Date lastModified;
 
     /**
      * 文件大小
      */
     private Long fileSize;
 
-    public ShellSMBFile(FileIdBothDirectoryInformation information) {
+    public ShellSMBFile(String parentPath, FileIdBothDirectoryInformation information) {
         this.information = information;
-        this.fileName = this.information.getFileName();
+        this.parentPath = parentPath;
+    }
+
+    public ShellSMBFile(String filePath, FileAllInformation information) {
+        this.allInformation = information;
+        this.fileName = ShellFileUtil.name(filePath);
+        this.parentPath = ShellFileUtil.parent(filePath);
+    }
+
+    /**
+     * 文件属性
+     *
+     * @return 属性
+     */
+    private long attrs() {
+        long attrs;
+        if (this.allInformation != null) {
+            attrs = this.allInformation.getBasicInformation().getFileAttributes() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
+        } else {
+            attrs = this.information.getFileAttributes() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
+        }
+        return attrs;
+    }
+
+    /**
+     * 文件大小
+     *
+     * @return 文件大小
+     */
+    private long easize() {
+        long easize;
+        if (this.allInformation != null) {
+            easize = this.allInformation.getEaInformation().getEaSize();
+        } else {
+            easize = this.information.getEaSize();
+        }
+        return easize;
     }
 
     @Override
     public boolean isFile() {
-        long val = this.information.getFileAttributes() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
+        long val = this.attrs() & FileAttributes.FILE_ATTRIBUTE_SPARSE_FILE.getValue();
         return val != 0;
     }
 
     @Override
     public boolean isLink() {
-        return false;
+        long val = this.attrs() & FileAttributes.FILE_ATTRIBUTE_REPARSE_POINT.getValue();
+        if (val == 0) {
+            return false;
+        }
+        return (this.easize() & 0xA0000000L) == 0xA0000000L;
     }
 
     @Override
@@ -69,7 +115,10 @@ public class ShellSMBFile implements ShellFile {
 
     @Override
     public long getFileSize() {
-        return this.information.getEaSize();
+        if (this.fileSize != null) {
+            return this.fileSize;
+        }
+        return this.easize();
     }
 
     @Override
@@ -79,6 +128,12 @@ public class ShellSMBFile implements ShellFile {
 
     @Override
     public String getFileName() {
+        if (this.fileName != null) {
+            return this.fileName;
+        }
+        if (this.allInformation != null) {
+            return this.allInformation.getNameInformation();
+        }
         return this.information.getFileName();
     }
 
@@ -89,7 +144,7 @@ public class ShellSMBFile implements ShellFile {
 
     @Override
     public boolean isDirectory() {
-        long val = this.information.getFileAttributes() & FileAttributes.FILE_ATTRIBUTE_DIRECTORY.getValue();
+        long val = this.attrs() & FileAttributes.FILE_ATTRIBUTE_DIRECTORY.getValue();
         return val != 0;
     }
 
@@ -110,46 +165,48 @@ public class ShellSMBFile implements ShellFile {
 
     @Override
     public String getModifyTime() {
-        Instant instant = null;
+        Date date;
         if (this.lastModified != null) {
-            instant = this.lastModified;
-        } else if (this.information != null) {
-            instant = this.information.getChangeTime().toInstant();
+            date = this.lastModified;
+        } else if (this.allInformation != null) {
+            date = this.allInformation.getBasicInformation().getChangeTime().toDate();
+        } else {
+            date = this.information.getChangeTime().toDate();
         }
-        if (instant != null) {
-            Date date = new Date(instant.toEpochMilli());
-            return DateHelper.formatDateTime(date);
-        }
-        return "-";
+        return DateHelper.formatDateTime(date);
     }
 
     @Override
     public void setModifyTime(String modifyTime) {
+        this.lastModified = DateHelper.parseDateTime(modifyTime);
     }
 
+    /**
+     * 获取添加时间
+     *
+     * @return 添加时间
+     */
     public String getAddTime() {
-        Instant instant = this.information.getCreationTime().toInstant();
-        Date date = new Date(instant.toEpochMilli());
+        Date date;
+        if (this.allInformation != null) {
+            date = this.allInformation.getBasicInformation().getCreationTime().toDate();
+        } else {
+            date = this.information.getCreationTime().toDate();
+        }
         return DateHelper.formatDateTime(date);
     }
 
     @Override
     public void copy(ShellFile t1) {
         if (t1 instanceof ShellSMBFile file) {
-            if (file.lastModified != null) {
-                this.lastModified = file.lastModified;
-            }
             if (file.fileSize != null) {
                 this.fileSize = file.fileSize;
+            }
+            if (file.lastModified != null) {
+                this.lastModified = file.lastModified;
             }
             this.fileName = file.fileName;
             this.parentPath = file.parentPath;
         }
     }
-
-    @Override
-    public String getFilePath() {
-        return this.information.getFileName();
-    }
-
 }

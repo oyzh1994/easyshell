@@ -183,6 +183,10 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public void setModifyTime(String modifyTime) {
+        Date date = DateHelper.parseDateTime(modifyTime);
+        if (date != null) {
+            this.lastModified = date.toInstant();
+        }
     }
 
     @Override

@@ -10,10 +10,12 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
+import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
@@ -181,7 +183,10 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
     public void lsFileDynamic(String filePath, Consumer<ShellSMBFile> fileCallback) {
         List<FileIdBothDirectoryInformation> list = this.smbShare.list(filePath);
         for (FileIdBothDirectoryInformation information : list) {
-            ShellSMBFile file = new ShellSMBFile(information);
+            if (!ShellFileUtil.isNormal(information.getFileName())) {
+                continue;
+            }
+            ShellSMBFile file = new ShellSMBFile(filePath, information);
             fileCallback.accept(file);
         }
     }
@@ -203,8 +208,9 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean rename(ShellSMBFile file, String newName) throws Exception {
-
-        return false;
+        File smbFile = this.writeFile(file.getFilePath());
+        smbFile.rename(newName, true);
+        return true;
     }
 
     @Override
@@ -384,8 +390,8 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
     public ShellSMBFile fileInfo(String filePath) throws Exception {
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
-
-        return null;
+        FileAllInformation allInformation = this.smbShare.getFileInformation(filePath);
+        return new ShellSMBFile(filePath, allInformation);
     }
 
     @Override
