@@ -219,9 +219,11 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         if (file.isDirectory()) {
             Directory directory = this.openDir(file.getFilePath());
             directory.rename(newName, true);
+            IOUtil.close(directory);
         } else {
             File smbFile = this.openFile(file.getFilePath());
-            smbFile.rename(newName, true);
+            smbFile.rename(newName, false);
+            IOUtil.close(smbFile);
         }
         return true;
     }
@@ -515,7 +517,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 EnumSet.of(AccessMask.GENERIC_ALL),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
-                SMB2CreateDisposition.FILE_OVERWRITE_IF,
+                SMB2CreateDisposition.FILE_OPEN_IF,
                 null
         );
     }
@@ -532,7 +534,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 EnumSet.of(AccessMask.GENERIC_ALL),
                 EnumSet.of(FileAttributes.FILE_ATTRIBUTE_DIRECTORY),
                 SMB2ShareAccess.ALL,
-                SMB2CreateDisposition.FILE_OPEN,
+                SMB2CreateDisposition.FILE_OPEN_IF,
                 null
         );
     }

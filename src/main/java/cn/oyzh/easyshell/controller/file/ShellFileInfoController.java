@@ -5,8 +5,6 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -64,7 +62,8 @@ public class ShellFileInfoController extends StageController {
         this.name.setText(file.getFileName());
         this.permissions.setText(file.getPermissions());
         if (file.isDirectory()) {
-            NodeGroupUtil.disappear(this.getStage(), "size");
+            // NodeGroupUtil.disappear(this.getStage(), "size");
+            this.size.setText("-");
         } else {
             this.size.setText(NumberUtil.formatSize(file.getFileSize(), 2));
         }
