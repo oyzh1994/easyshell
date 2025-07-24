@@ -241,10 +241,12 @@ public class ShellFileViewController extends StageController {
             double w = -1;
             if (type == 1) {
                 w = this.img.getRealWidth();
+                w += 20;
             } else if (type == 2) {
                 w = this.video.getRealWidth();
+                w += 20;
             }
-            this.stage.setWidth(Math.max(300, w + 35));
+            this.stage.setWidth(Math.max(300, w));
         }, 20);
     }
 

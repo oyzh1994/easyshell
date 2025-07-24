@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.smb.ShellSMBUserTextField;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -39,7 +40,7 @@ public class ShellAddSMBConnectController extends StageController {
      * 用户名
      */
     @FXML
-    private ClearableTextField userName;
+    private ShellSMBUserTextField userName;
 
     /**
      * 密码

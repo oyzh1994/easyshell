@@ -78,9 +78,9 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
 
     @Override
     protected void onPopupShowing(WindowEvent event) {
-        super.onPopupShowing(event);
         if (this.itemListSupplier != null) {
             this.setItemList(this.itemListSupplier.get());
         }
+        super.onPopupShowing(event);
     }
 }
