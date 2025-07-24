@@ -323,7 +323,7 @@ public class ShellFileTransportController extends StageController {
         // 来源连接不为null，则禁用来源选项
         ShellConnect sourceInfo = this.stage.getProp("sourceConnect");
         if (sourceInfo != null) {
-            this.sourceInfo.select(sourceInfo);
+            this.sourceInfo.selectItem(sourceInfo);
             this.sourceInfo.disable();
         }
         this.stage.hideOnEscape();

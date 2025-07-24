@@ -6,14 +6,14 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellSerialBaudRateTextFiled extends SelectTextFiled {
+public class ShellSerialBaudRateTextFiled extends SelectTextFiled<String> {
 
     {
-        super.addData("9600");
-        super.addData("19200");
-        super.addData("38400");
-        super.addData("57600");
-        super.addData("115200");
+        super.addItem("9600");
+        super.addItem("19200");
+        super.addItem("38400");
+        super.addItem("57600");
+        super.addItem("115200");
         this.setText("9600");
     }
 

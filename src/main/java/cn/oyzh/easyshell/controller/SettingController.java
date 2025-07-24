@@ -331,13 +331,13 @@ public class SettingController extends StageController {
         this.accentColor.setColor(StringUtil.emptyToDefault(this.setting.getAccentColor(), this.theme.getAccentColorHex()));
         // 字体相关处理
         this.fontSize.selectSize(this.setting.getFontSize());
-        this.fontFamily.select(this.setting.getFontFamily());
+        this.fontFamily.selectItem(this.setting.getFontFamily());
         this.fontWeight.selectWeight(this.setting.getFontWeight());
         this.editorFontSize.selectSize(this.setting.getEditorFontSize());
-        this.editorFontFamily.select(this.setting.getEditorFontFamily());
+        this.editorFontFamily.selectItem(this.setting.getEditorFontFamily());
         this.editorFontWeight.selectWeight(this.setting.getEditorFontWeight());
         this.terminalFontSize.selectSize(this.setting.getTerminalFontSize());
-        this.terminalFontFamily.select(this.setting.getTerminalFontFamily());
+        this.terminalFontFamily.selectItem(this.setting.getTerminalFontFamily());
         this.terminalFontWeight.selectWeight(this.setting.getTerminalFontWeight());
         // 区域相关处理
         this.locale.select(this.setting.getLocale());
@@ -374,13 +374,13 @@ public class SettingController extends StageController {
             String locale = this.locale.name();
             Byte fontSize = this.fontSize.byteValue();
             short fontWeight = this.fontWeight.getWeight();
-            String fontFamily = this.fontFamily.getValue();
+            String fontFamily = this.fontFamily.getText();
             Byte editorFontSize = this.editorFontSize.byteValue();
             short editorFontWeight = this.editorFontWeight.getWeight();
-            String editorFontFamily = this.editorFontFamily.getValue();
+            String editorFontFamily = this.editorFontFamily.getText();
             Byte terminalFontSize = this.terminalFontSize.byteValue();
             short terminalFontWeight = this.terminalFontWeight.getWeight();
-            String terminalFontFamily = this.terminalFontFamily.getValue();
+            String terminalFontFamily = this.terminalFontFamily.getText();
 
             // 提示文字
             String tips = this.checkConfigForRestart(locale);
@@ -556,7 +556,7 @@ public class SettingController extends StageController {
      */
     @FXML
     private void resetFontFamily() {
-        this.fontFamily.select(AppSetting.defaultFontFamily());
+        this.fontFamily.selectItem(AppSetting.defaultFontFamily());
     }
 
     /**
@@ -577,7 +577,7 @@ public class SettingController extends StageController {
 
     @FXML
     private void resetEditorFontFamily() {
-        this.editorFontFamily.select(AppSetting.defaultEditorFontFamily());
+        this.editorFontFamily.selectItem(AppSetting.defaultEditorFontFamily());
     }
 
     @FXML
@@ -592,7 +592,7 @@ public class SettingController extends StageController {
 
     @FXML
     private void resetTerminalFontFamily() {
-        this.terminalFontFamily.select(AppSetting.defaultTerminalFontFamily());
+        this.terminalFontFamily.selectItem(AppSetting.defaultTerminalFontFamily());
     }
 
     @FXML

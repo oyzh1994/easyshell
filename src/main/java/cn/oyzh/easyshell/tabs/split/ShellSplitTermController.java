@@ -173,7 +173,7 @@ public class ShellSplitTermController extends SubTabController {
         try {
             // 外部选择的连接
             if (this.connect.getSelectedItem() != connect) {
-                this.connect.select(connect);
+                this.connect.selectItem(connect);
             }
             if (connect.isSSHType()) {
                 this.client = new ShellSSHClient(connect);
