@@ -125,6 +125,9 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 MenuItem menuItem5 = MenuItemHelper.menuItem("lz", () -> this.compress(files, "lz"));
                 MenuItem menuItem6 = MenuItemHelper.menuItem("lzo", () -> this.compress(files, "lzo"));
                 MenuItem menuItem7 = MenuItemHelper.menuItem("zst", () -> this.compress(files, "zst"));
+                MenuItem menuItem8 = MenuItemHelper.menuItem("zip", () -> this.compress(files, "zip"));
+                MenuItem menuItem9 = MenuItemHelper.menuItem("rar", () -> this.compress(files, "rar"));
+                MenuItem menuItem10 = MenuItemHelper.menuItem("7z", () -> this.compress(files, "7z"));
                 menu.getItems().add(menuItem1);
                 menu.getItems().add(menuItem2);
                 menu.getItems().add(menuItem3);
@@ -132,6 +135,9 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 menu.getItems().add(menuItem5);
                 menu.getItems().add(menuItem6);
                 menu.getItems().add(menuItem7);
+                menu.getItems().add(menuItem8);
+                menu.getItems().add(menuItem9);
+                menu.getItems().add(menuItem10);
                 menuItems.add(menu);
             }
         }
