@@ -46,7 +46,7 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
     public ShellFileLocationTextFieldSkin(TextField textField) {
         super(textField);
         // 设置选中事件
-        super.selectIndexChanged((observable, oldValue, newValue) -> {
+        super.selectItemChanged(newValue -> {
             this.onJumpLocation(this.getText());
         });
         // 按键监听

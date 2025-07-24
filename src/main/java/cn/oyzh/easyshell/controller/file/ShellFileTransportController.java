@@ -253,7 +253,7 @@ public class ShellFileTransportController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.sourceInfo.selectedItemChanged((observable, oldValue, newValue) -> {
+        this.sourceInfo.selectedItemChanged(newValue -> {
             if (newValue != null) {
                 // 初始化名称
                 this.sourceHost.setText(newValue.getHost());
@@ -271,7 +271,7 @@ public class ShellFileTransportController extends StageController {
                 }
             }
         });
-        this.targetInfo.selectedItemChanged((observable, oldValue, newValue) -> {
+        this.targetInfo.selectedItemChanged(newValue -> {
             if (newValue != null) {
                 // 初始化名称
                 this.targetHost.setText(newValue.getHost());
