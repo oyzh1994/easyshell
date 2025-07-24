@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh2.server;
 
 import cn.oyzh.common.date.DateHelper;
+import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
@@ -679,6 +680,60 @@ public class ShellServerExec implements AutoCloseable {
     }
 
     /**
+     * 压缩
+     *
+     * @param file 文件
+     * @param type 类型
+     * @return 结果
+     */
+    public String compress(String file, String type) {
+        try {
+            if (this.client.isLinux()) {
+                String fName = ShellFileUtil.name(file);
+                if (StringUtil.equalsAnyIgnoreCase(type, "tgz", "tar.gz", "tar")) {
+                    String compressName = fName + "." + type;
+                    return this.client.exec("tar -zcvf " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "xz")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar -Jcvf " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "bz2")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar -jcvf " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "lz")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar --lzma " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "lzo")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar --lzop " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "zst")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar --zstd " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "zip")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar --zstd " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
+                    String compressName = fName + ".tar." + type;
+                    return this.client.exec("tar --zstd " + compressName + " " + file);
+                }
+                if (StringUtil.equalsAnyIgnoreCase(type, "7z", "rar", "zip")) {
+                    String compressName = fName + "." + type;
+                    return this.client.exec("7z a " + compressName + " " + file);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 解压
      *
      * @param file 文件
@@ -687,6 +742,12 @@ public class ShellServerExec implements AutoCloseable {
     public String uncompress(String file) {
         try {
             if (this.client.isLinux()) {
+                String extName = FileNameUtil.extName(file);
+                if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
+                    String uncompressName = ShellFileUtil.name(file);
+                    uncompressName = uncompressName.substring(0, uncompressName.lastIndexOf("."));
+                    return this.client.exec("7z x " + file + " -o" + uncompressName);
+                }
                 return this.client.exec("tar -axvf " + file);
             }
         } catch (Exception ex) {

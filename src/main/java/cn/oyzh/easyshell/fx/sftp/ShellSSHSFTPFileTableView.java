@@ -5,16 +5,18 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.CompressSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
@@ -86,8 +88,9 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         }
         // 解压文件
         if (this.client.isLinux() && CollectionUtil.isNotEmpty(files)) {
+            boolean isAllNormal = true;
             boolean isAllCompress = true;
-            // 判断是否都是压缩包
+            // 判断是否都是压缩包、文件夹
             for (ShellSFTPFile file : files) {
                 String extName = FileNameUtil.extName(file.getFileName());
                 boolean isCompress = FileNameUtil.isGzType(extName)
@@ -95,15 +98,41 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                         || FileNameUtil.isLzType(extName)
                         || FileNameUtil.isZstType(extName)
                         || FileNameUtil.isLzoType(extName)
-                        || FileNameUtil.isLzmaType(extName);
+                        || FileNameUtil.isLzmaType(extName)
+                        || FileNameUtil.isZipType(extName)
+                        || FileNameUtil.is7zType(extName)
+                        || FileNameUtil.isRarType(extName);
                 if (!isCompress) {
                     isAllCompress = false;
+                }
+                if (!file.isNormal()) {
+                    isAllNormal = false;
+                }
+                if (!isAllCompress && !isAllNormal) {
                     break;
                 }
             }
+            // 解压
             if (isAllCompress) {
                 FXMenuItem unCompress = MenuItemHelper.unCompress("12", () -> this.uncompress(files));
                 menuItems.add(unCompress);
+            } else if (isAllNormal) {// 压缩文件或者文件夹
+                Menu menu = MenuItemHelper.menu(I18nHelper.compress(), new CompressSVGGlyph("12"));
+                MenuItem menuItem1 = MenuItemHelper.menuItem("tar.gz", () -> this.compress(files, "tar.gz"));
+                MenuItem menuItem2 = MenuItemHelper.menuItem("tar", () -> this.compress(files, "tar"));
+                MenuItem menuItem3 = MenuItemHelper.menuItem("bz2", () -> this.compress(files, "bz2"));
+                MenuItem menuItem4 = MenuItemHelper.menuItem("xz", () -> this.compress(files, "xz"));
+                MenuItem menuItem5 = MenuItemHelper.menuItem("lz", () -> this.compress(files, "lz"));
+                MenuItem menuItem6 = MenuItemHelper.menuItem("lzo", () -> this.compress(files, "lzo"));
+                MenuItem menuItem7 = MenuItemHelper.menuItem("zst", () -> this.compress(files, "zst"));
+                menu.getItems().add(menuItem1);
+                menu.getItems().add(menuItem2);
+                menu.getItems().add(menuItem3);
+                menu.getItems().add(menuItem4);
+                menu.getItems().add(menuItem5);
+                menu.getItems().add(menuItem6);
+                menu.getItems().add(menuItem7);
+                menuItems.add(menu);
             }
         }
         if (!menuItems.isEmpty()) {
@@ -145,6 +174,26 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
     }
 
     /**
+     * 压缩文件
+     *
+     * @param type  压缩类型
+     * @param files 文件列表
+     */
+    protected void compress(List<ShellSFTPFile> files, String type) {
+        StageManager.showMask(() -> {
+            try {
+                // 执行解压
+                for (ShellSFTPFile file : files) {
+                    this.sshClient.serverExec().compress(file.getFilePath(), type);
+                }
+                super.loadFileInnerBatch();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
      * 解压文件
      *
      * @param files 文件列表
@@ -162,7 +211,6 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             }
         });
     }
-
 
     /**
      * 剪切文件
