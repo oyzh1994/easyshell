@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -36,7 +35,7 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      */
     private final ShellGroup value;
 
-    public ShellGroup value(){
+    public ShellGroup value() {
         return value;
     }
 
@@ -50,7 +49,7 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public ShellGroupTreeItem( ShellGroup group,  RichTreeView treeView) {
+    public ShellGroupTreeItem(ShellGroup group, RichTreeView treeView) {
         super(treeView);
         this.value = group;
         this.setValue(new ShellGroupTreeItemValue(this));
@@ -73,12 +72,18 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     }
 
     @Override
+    public ShellConnectTreeView getTreeView() {
+        return (ShellConnectTreeView) super.getTreeView();
+    }
+
+    @Override
     public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = new ArrayList<>(4);
-        FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
+        List<MenuItem> items = this.getTreeView().getMenuItems();
+        // FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
+        items.add(MenuItemHelper.separator());
         FXMenuItem renameGroup = MenuItemHelper.renameGroup("12", this::rename);
         FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
-        items.add(addConnect);
+        // items.add(addConnect);
         items.add(renameGroup);
         items.add(delGroup);
         return items;
@@ -139,13 +144,13 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
         this.remove();
     }
 
-    /**
-     * 添加连接
-     */
-    private void addConnect() {
-//        ShellEventUtil.showAddConnect(this.value);
-        ShellViewFactory.addGuid(this.value);
-    }
+//     /**
+//      * 添加连接
+//      */
+//     private void addConnect() {
+// //        ShellEventUtil.showAddConnect(this.value);
+//         ShellViewFactory.addGuid(this.value);
+//     }
 
     @Override
     public ShellRootTreeItem parent() {
@@ -154,30 +159,30 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     }
 
     @Override
-    public void addConnect( ShellConnect shellConnect) {
+    public void addConnect(ShellConnect shellConnect) {
         this.addConnectItem(new ShellConnectTreeItem(shellConnect, this.getTreeView()));
     }
 
     @Override
-    public void addConnectItem( ShellConnectTreeItem item) {
+    public void addConnectItem(ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
             if (!Objects.equals(item.value().getGroupId(), this.value.getGid())) {
                 item.value().setGroupId(this.value.getGid());
-               this.connectStore.replace(item.value());
+                this.connectStore.replace(item.value());
             }
             super.addChild(item);
         }
     }
 
     @Override
-    public void addConnectItems( List<ShellConnectTreeItem> items) {
+    public void addConnectItems(List<ShellConnectTreeItem> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             this.addChild((List) items);
         }
     }
 
     @Override
-    public boolean delConnectItem( ShellConnectTreeItem item) {
+    public boolean delConnectItem(ShellConnectTreeItem item) {
         // 删除连接
         if (this.connectStore.delete(item.value())) {
             this.removeChild(item);

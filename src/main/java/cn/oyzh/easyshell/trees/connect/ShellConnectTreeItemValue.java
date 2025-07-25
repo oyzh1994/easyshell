@@ -41,17 +41,23 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
     public String extra() {
         ShellConnect connect = this.item().value();
         String type = connect.getType();
-        StringBuilder sb = new StringBuilder("(");
+        StringBuilder sb = new StringBuilder();
         if (this.setting.isConnectShowMoreInfo()) {
             if (StringUtil.isNotBlank(connect.getUser())) {
                 sb.append(connect.getUser()).append("@");
             }
-            sb.append(connect.getHost()).append("/").append(type.toUpperCase());
-        } else {
-            sb.append(type.toUpperCase());
+            sb.append(connect.getHost());
         }
-        sb.append(")");
-        return sb.toString();
+        if (this.setting.isConnectShowType()) {
+            sb.append("@").append(type.toUpperCase());
+        }
+        if (sb.toString().startsWith("@")) {
+            return "(" + sb.substring(1) + ")";
+        }
+        if (!sb.isEmpty()) {
+            return "(" + sb + ")";
+        }
+        return null;
     }
 
     @Override

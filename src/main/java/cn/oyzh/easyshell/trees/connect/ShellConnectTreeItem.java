@@ -13,7 +13,6 @@ import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,8 +45,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     @Override
+    public ShellConnectTreeView getTreeView() {
+        return (ShellConnectTreeView) super.getTreeView();
+    }
+
+    @Override
     public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = new ArrayList<>(12);
+        List<MenuItem> items = this.getTreeView().getMenuItems();
+        items.add(MenuItemHelper.separator());
         FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
         items.add(editConnect);
         FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);

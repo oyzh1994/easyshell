@@ -4,22 +4,13 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
-import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
-import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.drag.DragNodeItem;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,15 +34,15 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    /**
-     * shell设
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
-     * shell设置储存
-     */
-    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+    // /**
+    //  * shell设
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
+    //
+    // /**
+    //  * shell设置储存
+    //  */
+    // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     public ShellRootTreeItem(ShellConnectTreeView treeView) {
         super(treeView);
@@ -61,103 +52,109 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     }
 
     @Override
-    public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = new ArrayList<>(4);
-        FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
-        FXMenuItem exportConnect = MenuItemHelper.exportConnect("12", this::exportConnect);
-        exportConnect.setDisable(this.isChildEmpty());
-        FXMenuItem importConnect = MenuItemHelper.importConnect("12", this::importConnect);
-        FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
-        FXMenuItem moreInfo = MenuItemHelper.moreInfo("12", this::moreInfo);
-        moreInfo.setDisable(this.isChildEmpty());
-
-        items.add(addConnect);
-        items.add(exportConnect);
-        items.add(importConnect);
-        items.add(addGroup);
-        items.add(moreInfo);
-        return items;
+    public ShellConnectTreeView getTreeView() {
+        return (ShellConnectTreeView) super.getTreeView();
     }
 
-    /**
-     * 显示更多信息
-     */
-    private void moreInfo(){
-        this.setting.setConnectShowMoreInfo(!this.setting.isConnectShowMoreInfo());
-        this.settingStore.update(this.setting);
-        this.refresh();
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        // List<MenuItem> items = new ArrayList<>(4);
+        // FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
+        // FXMenuItem exportConnect = MenuItemHelper.exportConnect("12", this::exportConnect);
+        // exportConnect.setDisable(this.isChildEmpty());
+        // FXMenuItem importConnect = MenuItemHelper.importConnect("12", this::importConnect);
+        // FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
+        // FXMenuItem moreInfo = MenuItemHelper.moreInfo("12", this::moreInfo);
+        // moreInfo.setDisable(this.isChildEmpty());
+        //
+        // items.add(addConnect);
+        // items.add(exportConnect);
+        // items.add(importConnect);
+        // items.add(addGroup);
+        // items.add(moreInfo);
+        // return items;
+        return this.getTreeView().getMenuItems();
     }
 
-    /**
-     * 导出连接
-     */
-    private void exportConnect() {
-//        ShellEventUtil.showExportConnect();
-        ShellViewFactory.exportConnect();
-    }
+//     /**
+//      * 显示更多信息
+//      */
+//     private void moreInfo() {
+//         this.setting.setConnectShowMoreInfo(!this.setting.isConnectShowMoreInfo());
+//         this.settingStore.update(this.setting);
+//         this.refresh();
+//     }
+//
+//     /**
+//      * 导出连接
+//      */
+//     private void exportConnect() {
+// //        ShellEventUtil.showExportConnect();
+//         ShellViewFactory.exportConnect();
+//     }
+//
+//     /**
+//      * 拖拽文件
+//      *
+//      * @param files 文件
+//      */
+//     public void dragFile(List<File> files) {
+//         if (CollectionUtil.isEmpty(files)) {
+//             return;
+//         }
+//         if (files.size() != 1) {
+//             MessageBox.warn(I18nHelper.onlySupportSingleFile());
+//             return;
+//         }
+//         File file = CollectionUtil.getFirst(files);
+// //        ShellEventUtil.showImportConnect(file);
+//         ShellViewFactory.importConnect(file);
+//     }
 
-    /**
-     * 拖拽文件
-     *
-     * @param files 文件
-     */
-    public void dragFile(List<File> files) {
-        if (CollectionUtil.isEmpty(files)) {
-            return;
-        }
-        if (files.size() != 1) {
-            MessageBox.warn(I18nHelper.onlySupportSingleFile());
-            return;
-        }
-        File file = CollectionUtil.getFirst(files);
-//        ShellEventUtil.showImportConnect(file);
-        ShellViewFactory.importConnect(file);
-    }
+//     /**
+//      * 导入连接
+//      */
+//     private void importConnect() {
+// //        ShellEventUtil.showImportConnect(null);
+//         ShellViewFactory.importConnect(null);
+//     }
+//
+//     /**
+//      * 添加连接
+//      */
+//     private void addConnect() {
+// //        ShellEventUtil.showAddConnect();
+//         ShellViewFactory.addGuid(null);
+//     }
 
-    /**
-     * 导入连接
-     */
-    private void importConnect() {
-//        ShellEventUtil.showImportConnect(null);
-        ShellViewFactory.importConnect(null);
-    }
-
-    /**
-     * 添加连接
-     */
-    private void addConnect() {
-//        ShellEventUtil.showAddConnect();
-        ShellViewFactory.addGuid(null);
-    }
-
-    /**
-     * 添加分组
-     */
-    public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.contentTip1());
-        // 名称为null，则忽略
-        if (groupName == null) {
-            return;
-        }
-        // 不能为空
-        if (StringUtil.isBlank(groupName)) {
-            MessageBox.warn(I18nHelper.nameCanNotEmpty());
-            return;
-        }
-        // 检查是否存在
-        if (this.groupStore.exist(groupName)) {
-            MessageBox.warn(I18nHelper.contentAlreadyExists());
-            return;
-        }
-        ShellGroup group = new ShellGroup();
-        group.setName(groupName);
-        if (this.groupStore.replace(group)) {
-            this.addChild(new ShellGroupTreeItem(group, this.getTreeView()));
-            ShellEventUtil.groupAdded(groupName);
-        } else {
-            MessageBox.warn(I18nHelper.operationFail());
-        }
-    }
+    // /**
+    //  * 添加分组
+    //  */
+    // public void addGroup() {
+    //     String groupName = MessageBox.prompt(I18nHelper.contentTip1());
+    //     // 名称为null，则忽略
+    //     if (groupName == null) {
+    //         return;
+    //     }
+    //     // 不能为空
+    //     if (StringUtil.isBlank(groupName)) {
+    //         MessageBox.warn(I18nHelper.nameCanNotEmpty());
+    //         return;
+    //     }
+    //     // 检查是否存在
+    //     if (this.groupStore.exist(groupName)) {
+    //         MessageBox.warn(I18nHelper.contentAlreadyExists());
+    //         return;
+    //     }
+    //     ShellGroup group = new ShellGroup();
+    //     group.setName(groupName);
+    //     if (this.groupStore.replace(group)) {
+    //         this.addChild(new ShellGroupTreeItem(group, this.getTreeView()));
+    //         ShellEventUtil.groupAdded(groupName);
+    //     } else {
+    //         MessageBox.warn(I18nHelper.operationFail());
+    //     }
+    // }
 
     /**
      * 获取分组树节点组件

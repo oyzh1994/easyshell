@@ -108,6 +108,12 @@ public class ShellSetting extends AppSetting {
     // private Boolean sshFollowTerminalDir;
 
     /**
+     * 连接，显示类型
+     */
+    @Column
+    private Boolean connectShowType;
+
+    /**
      * 连接，显示更多信息
      */
     @Column
@@ -300,6 +306,14 @@ public class ShellSetting extends AppSetting {
     // public void setSshFollowTerminalDir(boolean sshFollowTerminalDir) {
     //     this.sshFollowTerminalDir = sshFollowTerminalDir;
     // }
+
+    public boolean isConnectShowType() {
+        return this.connectShowType == null || this.connectShowType;
+    }
+
+    public void setConnectShowType(Boolean connectShowType) {
+        this.connectShowType = connectShowType;
+    }
 
     public boolean isConnectShowMoreInfo() {
         return BooleanUtil.isTrue(this.connectShowMoreInfo);
