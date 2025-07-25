@@ -184,18 +184,19 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
     @Override
     public List<MenuItem> getMenuItems() {
+        TreeItem<?> item = this.getSelectedItem();
         List<MenuItem> items = new ArrayList<>(4);
         // 添加
         Menu add = MenuItemHelper.menu(I18nHelper.add(), new AddSVGGlyph("12"));
-        MenuItem addConnect = MenuItemHelper.menuItem(I18nHelper.connection(),  this::addConnect);
-        MenuItem addGroup = MenuItemHelper.menuItem(I18nHelper.group(),  this::addGroup);
+        MenuItem addConnect = MenuItemHelper.menuItem(I18nHelper.connection(), this::addConnect);
+        MenuItem addGroup = MenuItemHelper.menuItem(I18nHelper.group(), this::addGroup);
         add.getItems().add(addConnect);
         add.getItems().add(addGroup);
 
         // 连接
         Menu connection = MenuItemHelper.menu(I18nHelper.connection(), new ConnectionSVGGlyph("12"));
-        MenuItem exportConnect = MenuItemHelper.menuItem(I18nHelper.export(),  this::exportConnect);
-        MenuItem importConnect = MenuItemHelper.menuItem(I18nHelper._import(),  this::importConnect);
+        MenuItem exportConnect = MenuItemHelper.menuItem(I18nHelper.export(), this::exportConnect);
+        MenuItem importConnect = MenuItemHelper.menuItem(I18nHelper._import(), this::importConnect);
         connection.getItems().add(exportConnect);
         connection.getItems().add(importConnect);
 
@@ -209,6 +210,14 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         items.add(add);
         items.add(connection);
         items.add(view);
+
+        if (item instanceof ShellConnectTreeItem) {
+            add.setDisable(true);
+            connection.setDisable(true);
+        } else if (item instanceof ShellGroupTreeItem) {
+            addGroup.setDisable(true);
+            connection.setDisable(true);
+        }
         return items;
     }
 

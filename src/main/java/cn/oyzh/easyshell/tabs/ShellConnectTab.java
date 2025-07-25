@@ -64,16 +64,16 @@ public abstract class ShellConnectTab extends RichTab {
         List<MenuItem> menuItems = super.getMenuItems();
         ShellConnect connect = this.shellConnect();
         if (connect != null) {
-            MenuItem cloneSession = MenuItemHelper.cloneSession(this::cloneSession);
-            menuItems.add(cloneSession);
+            MenuItem copySession = MenuItemHelper.copyThisSession(this::copySession);
+            menuItems.add(copySession);
         }
         return menuItems;
     }
 
     /**
-     * 克隆会话
+     * 复制会话
      */
-    private void cloneSession() {
+    private void copySession() {
         ShellEventUtil.connectionOpened(this.shellConnect());
     }
 }
