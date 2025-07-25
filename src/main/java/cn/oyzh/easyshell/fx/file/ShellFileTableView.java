@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.UploadSVGGlyph;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -32,6 +33,7 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.KeyEvent;
@@ -1244,5 +1246,21 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     public String fileInfo() {
         long size = this.totalSize();
         return this.getItemSize() + I18nHelper.items() + ", " + NumberUtil.formatSize(size, 2);
+    }
+
+    /**
+     * 初始化上传菜单
+     *
+     * @return 上传菜单
+     */
+    protected Menu initUploadMenu() {
+        Menu menu = MenuItemHelper.menu(I18nHelper.upload(), new UploadSVGGlyph("12"));
+        // 文件
+        MenuItem file = MenuItemHelper.menuItem(I18nHelper.file(), this::uploadFile);
+        // 文件夹
+        MenuItem folder = MenuItemHelper.menuItem(I18nHelper.folder(), this::uploadFolder);
+        menu.getItems().add(file);
+        menu.getItems().add(folder);
+        return menu;
     }
 }

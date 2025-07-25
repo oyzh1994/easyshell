@@ -49,12 +49,14 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>(super.getMenuItems());
         menuItems.add(MenuItemHelper.separator());
-        // 上传文件
-        FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
-        // 上传文件夹
-        FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
-        menuItems.add(uploadFile);
-        menuItems.add(uploadFolder);
+        // // 上传文件
+        // FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+        // // 上传文件夹
+        // FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+        // menuItems.add(uploadFile);
+        // menuItems.add(uploadFolder);
+        // 初始化上传菜单
+        menuItems.add(super.initUploadMenu());
         // 获取选中的文件
         List<ShellFTPFile> files = this.getFilterSelectedItems();
         // 下载文件

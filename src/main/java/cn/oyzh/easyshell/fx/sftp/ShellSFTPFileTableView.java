@@ -96,12 +96,14 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
 //        deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
 //        menuItems.add(deleteFile);
         menuItems.add(MenuItemHelper.separator());
-        // 上传文件
-        FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
-        // 上传文件夹
-        FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
-        menuItems.add(uploadFile);
-        menuItems.add(uploadFolder);
+        // // 上传文件
+        // FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+        // // 上传文件夹
+        // FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+        // menuItems.add(uploadFile);
+        // menuItems.add(uploadFolder);
+        // 初始化上传菜单
+        menuItems.add(super.initUploadMenu());
         // 获取选中的文件
         List<ShellSFTPFile> files = this.getFilterSelectedItems();
         // 下载文件
