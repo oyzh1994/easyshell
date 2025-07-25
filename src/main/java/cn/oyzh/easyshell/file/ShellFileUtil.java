@@ -130,20 +130,22 @@ public class ShellFileUtil {
         if (!file.isFile()) {
             return false;
         }
-        if (file.getFileSize() > 500 * 1024) {
+        // 限制大小1mb
+        if (file.getFileSize() > 1024 * 1024) {
             return false;
         }
-        // 检查类型
-        String extName = FileNameUtil.extName(file.getFileName());
-        return StringUtil.equalsAnyIgnoreCase(extName,
-                "txt", "text", "log", "yaml", "java",
-                "xml", "json", "htm", "html", "xhtml",
-                "php", "css", "c", "cpp", "rs",
-                "js", "csv", "sql", "md", "ini",
-                "cfg", "sh", "bat", "py", "asp",
-                "aspx", "env", "tsv", "conf",
-                "plist"
-        );
+        // // 检查类型
+        // String extName = FileNameUtil.extName(file.getFileName());
+        // return StringUtil.equalsAnyIgnoreCase(extName,
+        //         "txt", "text", "log", "yaml", "java",
+        //         "xml", "json", "htm", "html", "xhtml",
+        //         "php", "css", "c", "cpp", "rs",
+        //         "js", "csv", "sql", "md", "ini",
+        //         "cfg", "sh", "bat", "py", "asp",
+        //         "aspx", "env", "tsv", "conf",
+        //         "plist"
+        // );
+        return true;
     }
 
     /**
@@ -165,19 +167,6 @@ public class ShellFileUtil {
         String extName = FileNameUtil.extName(file.getFileName());
         String type = null;
         if (StringUtil.equalsAnyIgnoreCase(extName,
-                "txt", "text", "log", "yaml", "java",
-                "xml", "json", "htm", "html", "xhtml",
-                "php", "css", "c", "cpp", "rs",
-                "js", "csv", "sql", "md", "ini",
-                "cfg", "sh", "bat", "py", "asp",
-                "aspx", "env", "tsv", "conf",
-                "plist"
-        )) {
-            // 限制大小10mb
-            if (file.getFileSize() < 10 * 1024 * 1024) {
-                type = "txt";
-            }
-        } else if (StringUtil.equalsAnyIgnoreCase(extName,
                 "png", "jpg", "jpeg", "gif", "ico", "bmp", "wbmp", "tiff", "webp"
         )) {
             type = "img";
@@ -189,6 +178,20 @@ public class ShellFileUtil {
                 "mp3", "wav", "aac", "aiff", "flac", "pcm", "m4a", "ogg", "wma"
         )) {
             type = "audio";
+        } else if (file.getFileSize() < 10 * 1024 * 1024) { // 限制大小10mb
+            if (StringUtil.equalsAnyIgnoreCase(extName,
+                    "txt", "text", "log", "yaml", "java",
+                    "xml", "json", "htm", "html", "xhtml",
+                    "php", "css", "c", "cpp", "rs",
+                    "js", "csv", "sql", "md", "ini",
+                    "cfg", "sh", "bat", "py", "asp",
+                    "aspx", "env", "tsv", "conf",
+                    "plist"
+            )) {
+                type = "txt";
+            } else {
+                type = "unknown";
+            }
         }
         return type;
     }

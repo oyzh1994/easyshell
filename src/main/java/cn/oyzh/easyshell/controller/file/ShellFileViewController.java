@@ -161,7 +161,7 @@ public class ShellFileViewController extends StageController {
      * 初始化视图
      */
     private void initView() {
-        if (this.isTxtType()) {
+        if (this.isTxtType() || this.isUnknownType()) {
             // 初始化字体配置
             this.txt.setFontSize(this.setting.getEditorFontSize());
             this.txt.setFontFamily(this.setting.getEditorFontFamily());
@@ -282,7 +282,7 @@ public class ShellFileViewController extends StageController {
                     this.layoutRoot(2);
                 }
             });
-        } else if (this.isTxtType()) {
+        } else if (this.isTxtType() || this.isUnknownType()) {
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
                 this.txt.setHighlightText(t1);
@@ -330,6 +330,9 @@ public class ShellFileViewController extends StageController {
         return "txt".equalsIgnoreCase(this.type);
     }
 
+    private boolean isUnknownType() {
+        return "unknown".equalsIgnoreCase(this.type);
+    }
 
     @Override
     public void onWindowHiding(WindowEvent event) {
