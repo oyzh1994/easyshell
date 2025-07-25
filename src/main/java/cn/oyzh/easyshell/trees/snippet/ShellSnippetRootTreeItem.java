@@ -3,10 +3,8 @@ package cn.oyzh.easyshell.trees.snippet;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
-import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
-import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
@@ -61,16 +59,17 @@ public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeI
 
     @Override
     public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem add = MenuItemHelper.add("12", this::add);
-        items.add(add);
-        return items;
+        // List<MenuItem> items = new ArrayList<>(12);
+        // FXMenuItem add = MenuItemHelper.add("12", this::add);
+        // items.add(add);
+        // return items;
+        return this.getTreeView().getMenuItems();
     }
 
-    /**
-     * 添加
-     */
-    private void add() {
-        this.getTreeView().addSnippet();
-    }
+    // /**
+    //  * 添加
+    //  */
+    // private void add() {
+    //     this.getTreeView().addSnippet();
+    // }
 }

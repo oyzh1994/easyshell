@@ -1,12 +1,18 @@
 package cn.oyzh.easyshell.trees.snippet;
 
 import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.menu.MenuItemAdapter;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -15,7 +21,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-06-11
  */
-public class ShellSnippetTreeView extends RichTreeView {
+public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapter {
 
     @Override
     protected void initTreeView() {
@@ -108,5 +114,13 @@ public class ShellSnippetTreeView extends RichTreeView {
         if (this.deleteCallback != null) {
             this.deleteCallback.accept(snippet);
         }
+    }
+
+    @Override
+    public List<MenuItem> getMenuItems() {
+        List<MenuItem> items = new ArrayList<>(12);
+        FXMenuItem addSnippet = MenuItemHelper.addSnippet("12", this::addSnippet);
+        items.add(addSnippet);
+        return items;
     }
 }

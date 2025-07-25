@@ -91,13 +91,9 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
 
     @Override
     public void rename() {
-        String groupName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName(), this.value.getName());
         // 名称为null或者跟当前名称相同，则忽略
-        if (groupName == null || Objects.equals(groupName, this.value.getName())) {
-            return;
-        }
-        // 检查名称
-        if (StringUtil.isBlank(groupName)) {
+        if (StringUtil.isBlank(groupName) || Objects.equals(groupName, this.value.getName())) {
             return;
         }
         // 检查是否存在

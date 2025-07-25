@@ -26,7 +26,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
-        realHeight="480">
+        realHeight="420">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">

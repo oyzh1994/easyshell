@@ -14,13 +14,14 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
@@ -184,19 +185,29 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(4);
-        FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
-        FXMenuItem exportConnect = MenuItemHelper.exportConnect("12", this::exportConnect);
-        FXMenuItem importConnect = MenuItemHelper.importConnect("12", this::importConnect);
+        // 添加
+        Menu add = MenuItemHelper.menu(I18nHelper.add(), new AddSVGGlyph("12"));
+        MenuItem addConnect = MenuItemHelper.menuItem(I18nHelper.connection(),  this::addConnect);
+        MenuItem addGroup = MenuItemHelper.menuItem(I18nHelper.group(),  this::addGroup);
+        add.getItems().add(addConnect);
+        add.getItems().add(addGroup);
+
+        // 连接
+        Menu connection = MenuItemHelper.menu(I18nHelper.connection(), new ConnectionSVGGlyph("12"));
+        MenuItem exportConnect = MenuItemHelper.menuItem(I18nHelper.export(),  this::exportConnect);
+        MenuItem importConnect = MenuItemHelper.menuItem(I18nHelper._import(),  this::importConnect);
+        connection.getItems().add(exportConnect);
+        connection.getItems().add(importConnect);
+
+        // 查看
         Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph("12"));
         MenuItem showType = MenuItemHelper.menuItem(I18nHelper.type(), this.setting.isConnectShowType() ? this.initShowBox() : null, this::showType);
         MenuItem showMoreInfo = MenuItemHelper.menuItem(I18nHelper.moreInfo(), this.setting.isConnectShowMoreInfo() ? this.initShowBox() : null, this::showMoreInfo);
         view.getItems().add(showType);
         view.getItems().add(showMoreInfo);
-        items.add(addConnect);
-        items.add(addGroup);
-        items.add(exportConnect);
-        items.add(importConnect);
+
+        items.add(add);
+        items.add(connection);
         items.add(view);
         return items;
     }
@@ -229,7 +240,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.contentTip1());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName());
         // 名称为null，则忽略
         if (groupName == null) {
             return;

@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,12 +49,12 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
 
     @Override
     public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem edit = MenuItemHelper.edit("12", this::edit);
+        List<MenuItem> items = this.getTreeView().getMenuItems();
+        FXMenuItem edit = MenuItemHelper.editSnippet("12", this::edit);
         items.add(edit);
-        FXMenuItem rename = MenuItemHelper.rename("12", this::rename);
+        FXMenuItem rename = MenuItemHelper.renameSnippet("12", this::rename);
         items.add(rename);
-        FXMenuItem delete = MenuItemHelper.delete("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteSnippet("12", this::delete);
         items.add(delete);
         return items;
     }
