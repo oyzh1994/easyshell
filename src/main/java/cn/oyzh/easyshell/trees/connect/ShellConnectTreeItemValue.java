@@ -52,10 +52,10 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
             sb.append("@").append(type.toUpperCase());
         }
         if (sb.toString().startsWith("@")) {
-            return "(" + sb.substring(1) + ")";
+            return sb.substring(1);
         }
         if (!sb.isEmpty()) {
-            return "(" + sb + ")";
+            return sb.toString();
         }
         return null;
     }
