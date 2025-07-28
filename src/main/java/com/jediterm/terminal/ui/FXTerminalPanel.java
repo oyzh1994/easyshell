@@ -1265,8 +1265,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 updateSelection(null);
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseWheelMoved(p.x, p.y, new FXMouseWheelEvent(e));
-            }
-            if (myTerminalTextBuffer.isUsingAlternateBuffer() && mySettingsProvider.sendArrowKeysInAlternativeMode()) {
+            } else if (myTerminalTextBuffer.isUsingAlternateBuffer() && mySettingsProvider.sendArrowKeysInAlternativeMode()) {
                 // Send Arrow keys instead
                 final byte[] arrowKeys;
                 if (e.getDeltaY() > 0) {
