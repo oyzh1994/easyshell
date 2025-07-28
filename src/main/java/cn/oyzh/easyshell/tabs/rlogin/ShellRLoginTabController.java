@@ -67,7 +67,7 @@ public class ShellRLoginTabController extends RichTabController  implements Shel
         Charset charset = this.client.getCharset();
         ShellRLoginTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);
-        this.widget.onTermination(exitCode -> this.widget.close());
+        // this.widget.onTermination(exitCode -> this.widget.close());
         connector.init(this.client);
     }
 
