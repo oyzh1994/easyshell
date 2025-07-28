@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -78,14 +79,16 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
 
     @Override
     public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = this.getTreeView().getMenuItems();
-        // FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
+        List<MenuItem> items = new ArrayList<>();
+        FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
         items.add(MenuItemHelper.separator());
         FXMenuItem renameGroup = MenuItemHelper.renameGroup("12", this::rename);
         FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
-        // items.add(addConnect);
+        items.add(addConnect);
         items.add(renameGroup);
         items.add(delGroup);
+        items.add(MenuItemHelper.separator());
+        items.addAll(this.getTreeView().getMenuItems());
         return items;
     }
 
@@ -140,13 +143,13 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
         this.remove();
     }
 
-//     /**
-//      * 添加连接
-//      */
-//     private void addConnect() {
-// //        ShellEventUtil.showAddConnect(this.value);
-//         ShellViewFactory.addGuid(this.value);
-//     }
+    /**
+     * 添加连接
+     */
+    private void addConnect() {
+//        ShellEventUtil.showAddConnect(this.value);
+        ShellViewFactory.addGuid(this.value);
+    }
 
     @Override
     public ShellRootTreeItem parent() {

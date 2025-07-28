@@ -1,33 +1,25 @@
 package cn.oyzh.easyshell.trees.connect;
 
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
-import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.event.FXEventListener;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
@@ -46,11 +38,6 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      * shell分组储存
      */
     private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
-
-    /**
-     * shell连接储存
-     */
-    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * shell设置
@@ -135,8 +122,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      */
     @EventSubscribe
     public void addGroup(ShellAddGroupEvent event) {
-        this.addGroup();
-        // this.root().addGroup();
+        // this.addGroup();
+        this.root().addGroup();
     }
 
     /**
@@ -184,21 +171,21 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
     @Override
     public List<MenuItem> getMenuItems() {
-        TreeItem<?> item = this.getSelectedItem();
+        // TreeItem<?> item = this.getSelectedItem();
         List<MenuItem> items = new ArrayList<>(4);
-        // 添加
-        Menu add = MenuItemHelper.menu(I18nHelper.add(), new AddSVGGlyph("12"));
-        MenuItem addConnect = MenuItemHelper.menuItem(I18nHelper.connection(), this::addConnect);
-        MenuItem addGroup = MenuItemHelper.menuItem(I18nHelper.group(), this::addGroup);
-        add.getItems().add(addConnect);
-        add.getItems().add(addGroup);
-
-        // 连接
-        Menu connection = MenuItemHelper.menu(I18nHelper.connection(), new ConnectionSVGGlyph("12"));
-        MenuItem exportConnect = MenuItemHelper.menuItem(I18nHelper.export(), this::exportConnect);
-        MenuItem importConnect = MenuItemHelper.menuItem(I18nHelper._import(), this::importConnect);
-        connection.getItems().add(exportConnect);
-        connection.getItems().add(importConnect);
+        // // 添加
+        // Menu add = MenuItemHelper.menu(I18nHelper.add(), new AddSVGGlyph("12"));
+        // MenuItem addConnect = MenuItemHelper.menuItem(I18nHelper.connection(), this::addConnect);
+        // MenuItem addGroup = MenuItemHelper.menuItem(I18nHelper.group(), this::addGroup);
+        // add.getItems().add(addConnect);
+        // add.getItems().add(addGroup);
+        //
+        // // 连接
+        // Menu connection = MenuItemHelper.menu(I18nHelper.connection(), new ConnectionSVGGlyph("12"));
+        // MenuItem exportConnect = MenuItemHelper.menuItem(I18nHelper.export(), this::exportConnect);
+        // MenuItem importConnect = MenuItemHelper.menuItem(I18nHelper._import(), this::importConnect);
+        // connection.getItems().add(exportConnect);
+        // connection.getItems().add(importConnect);
 
         // 查看
         Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph("12"));
@@ -207,17 +194,17 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         view.getItems().add(showType);
         view.getItems().add(showMoreInfo);
 
-        items.add(add);
-        items.add(connection);
+        // items.add(add);
+        // items.add(connection);
         items.add(view);
-
-        if (item instanceof ShellConnectTreeItem) {
-            add.setDisable(true);
-            connection.setDisable(true);
-        } else if (item instanceof ShellGroupTreeItem) {
-            addGroup.setDisable(true);
-            connection.setDisable(true);
-        }
+        //
+        // if (item instanceof ShellConnectTreeItem) {
+        //     add.setDisable(true);
+        //     connection.setDisable(true);
+        // } else if (item instanceof ShellGroupTreeItem) {
+        //     addGroup.setDisable(true);
+        //     connection.setDisable(true);
+        // }
         return items;
     }
 
@@ -233,53 +220,53 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         return checkBox;
     }
 
-    /**
-     * 添加连接
-     */
-    private void addConnect() {
-        TreeItem<?> item = this.getSelectedItem();
-        if (item instanceof ShellGroupTreeItem groupTreeItem) {
-            ShellViewFactory.addGuid(groupTreeItem.value());
-        } else {
-            ShellViewFactory.addGuid(null);
-        }
-    }
+    // /**
+    //  * 添加连接
+    //  */
+    // private void addConnect() {
+    //     TreeItem<?> item = this.getSelectedItem();
+    //     if (item instanceof ShellGroupTreeItem groupTreeItem) {
+    //         ShellViewFactory.addGuid(groupTreeItem.value());
+    //     } else {
+    //         ShellViewFactory.addGuid(null);
+    //     }
+    // }
 
-    /**
-     * 添加分组
-     */
-    public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName());
-        // 名称为null，则忽略
-        if (groupName == null) {
-            return;
-        }
-        // 不能为空
-        if (StringUtil.isBlank(groupName)) {
-            MessageBox.warn(I18nHelper.nameCanNotEmpty());
-            return;
-        }
-        // 检查是否存在
-        if (this.groupStore.exist(groupName)) {
-            MessageBox.warn(I18nHelper.contentAlreadyExists());
-            return;
-        }
-        ShellGroup group = new ShellGroup();
-        group.setName(groupName);
-        if (this.groupStore.replace(group)) {
-            this.root().addChild(new ShellGroupTreeItem(group, this));
-            ShellEventUtil.groupAdded(groupName);
-        } else {
-            MessageBox.warn(I18nHelper.operationFail());
-        }
-    }
-
-    /**
-     * 导入连接
-     */
-    private void importConnect() {
-        ShellViewFactory.importConnect(null);
-    }
+    // /**
+    //  * 添加分组
+    //  */
+    // public void addGroup() {
+    //     String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName());
+    //     // 名称为null，则忽略
+    //     if (groupName == null) {
+    //         return;
+    //     }
+    //     // 不能为空
+    //     if (StringUtil.isBlank(groupName)) {
+    //         MessageBox.warn(I18nHelper.nameCanNotEmpty());
+    //         return;
+    //     }
+    //     // 检查是否存在
+    //     if (this.groupStore.exist(groupName)) {
+    //         MessageBox.warn(I18nHelper.contentAlreadyExists());
+    //         return;
+    //     }
+    //     ShellGroup group = new ShellGroup();
+    //     group.setName(groupName);
+    //     if (this.groupStore.replace(group)) {
+    //         this.root().addChild(new ShellGroupTreeItem(group, this));
+    //         ShellEventUtil.groupAdded(groupName);
+    //     } else {
+    //         MessageBox.warn(I18nHelper.operationFail());
+    //     }
+    // }
+    //
+    // /**
+    //  * 导入连接
+    //  */
+    // private void importConnect() {
+    //     ShellViewFactory.importConnect(null);
+    // }
 
     /**
      * 显示类型

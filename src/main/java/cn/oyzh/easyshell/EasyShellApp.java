@@ -5,7 +5,6 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
-import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -167,13 +166,14 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     @Override
     protected void showMainView() {
-        try {
-            // 显示主页面
-            StageManager.showStage(MainController.class);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JulLog.warn("showMainView error", ex);
-        }
+        // try {
+        //     // 显示主页面
+        //     StageManager.showStage(MainController.class);
+        // } catch (Exception ex) {
+        //     ex.printStackTrace();
+        //     JulLog.warn("showMainView error", ex);
+        // }
+        ShellViewFactory.main();
     }
 
     @Override
