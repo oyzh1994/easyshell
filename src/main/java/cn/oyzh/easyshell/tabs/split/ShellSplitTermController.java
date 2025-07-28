@@ -107,7 +107,7 @@ public class ShellSplitTermController extends SubTabController {
         this.widget.openSession(ttyConnector);
         this.widget.setFlexWidth("100%");
         this.widget.setFlexHeight("100%");
-        this.widget.onTermination(exitCode -> this.widget.close());
+        // this.widget.onTermination(exitCode -> this.widget.close());
     }
 
     /**

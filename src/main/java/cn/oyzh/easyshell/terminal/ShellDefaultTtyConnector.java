@@ -1,14 +1,16 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.jeditermfx.app.pty.PtyProcessTtyConnector;
 import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.ProcessTtyConnector;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
+public class ShellDefaultTtyConnector extends ProcessTtyConnector {
 // public class ShellDefaultTtyConnector extends PtyProcessTtyConnector implements LoggingTtyConnector {
 
 //    protected int maxLogSize = 200;
@@ -136,32 +138,55 @@ public class ShellDefaultTtyConnector extends PtyProcessTtyConnector   {
         return (PtyProcess) super.getProcess();
     }
 
-    /**
-     * 重置tty连接器回调
-     */
-    @Deprecated
-    private Runnable resetTtyConnectorCallback;
-
-    @Deprecated
-    public Runnable getResetTtyConnectorCallback() {
-        return resetTtyConnectorCallback;
+    @Override
+    public String getName() {
+        return "";
     }
 
-    @Deprecated
-    public void setResetTtyConnectorCallback(Runnable resetTtyConnectorCallback) {
-        this.resetTtyConnectorCallback = resetTtyConnectorCallback;
+    // /**
+    //  * 重置tty连接器回调
+    //  */
+    // @Deprecated
+    // private Runnable resetTtyConnectorCallback;
+    //
+    // @Deprecated
+    // public Runnable getResetTtyConnectorCallback() {
+    //     return resetTtyConnectorCallback;
+    // }
+    //
+    // @Deprecated
+    // public void setResetTtyConnectorCallback(Runnable resetTtyConnectorCallback) {
+    //     this.resetTtyConnectorCallback = resetTtyConnectorCallback;
+    // }
+
+    // /**
+    //  * 重置tty连接器
+    //  */
+    // @Deprecated
+    // public void resetTtyConnector() {
+    //     if (this.resetTtyConnectorCallback != null) {
+    //         // 只允许执行一次，执行完成就销毁
+    //         Runnable func = this.resetTtyConnectorCallback;
+    //         this.resetTtyConnectorCallback = null;
+    //         func.run();
+    //     }
+    // }
+
+    /**
+     * 获取真实的输入流
+     *
+     * @return 输入流
+     */
+    public InputStream input() {
+        return null;
     }
 
     /**
-     * 重置tty连接器
+     * 获取真实的输出流
+     *
+     * @return 输出流
      */
-    @Deprecated
-    public void resetTtyConnector() {
-        if (this.resetTtyConnectorCallback != null) {
-            // 只允许执行一次，执行完成就销毁
-            Runnable func = this.resetTtyConnectorCallback;
-            this.resetTtyConnectorCallback = null;
-            func.run();
-        }
+    public OutputStream output() {
+        return null;
     }
 }

@@ -28,7 +28,7 @@ public class ShellTerminalTabController extends RichTabController {
     private void initWidget() throws IOException {
         ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) this.widget.createTtyConnector();
         this.widget.openSession(connector);
-        this.widget.onTermination(exitCode -> this.widget.close());
+        // this.widget.onTermination(exitCode -> this.widget.close());
         // // 初始化部分参数
         // connector.write("export LANG=en_US.utf-8\n");
         // connector.write("export TERM=xterm-256color\n");

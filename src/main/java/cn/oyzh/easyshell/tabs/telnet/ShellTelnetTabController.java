@@ -67,7 +67,7 @@ public class ShellTelnetTabController extends RichTabController implements Shell
         Charset charset = this.client.getCharset();
         ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);
-        this.widget.onTermination(exitCode -> this.widget.close());
+        // this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小
         this.widget.initPtySize();
         // 初始化

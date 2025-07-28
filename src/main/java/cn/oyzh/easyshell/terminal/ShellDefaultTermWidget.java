@@ -7,7 +7,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
-import cn.oyzh.jeditermfx.app.pty.TtyConnectorWaitFor;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXHyperlinkFilter;
@@ -24,7 +23,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntConsumer;
 
 /**
  * @author oyzh
@@ -190,11 +188,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         }
     }
 
-    public TtyConnectorWaitFor onTermination(IntConsumer terminationCallback) {
-        return new TtyConnectorWaitFor(this.getTtyConnector(),
-                this.getExecutorServiceManager().getUnboundedExecutorService(),
-                terminationCallback);
-    }
+    // public TtyConnectorWaitFor onTermination(IntConsumer terminationCallback) {
+    //     return new TtyConnectorWaitFor(this.getTtyConnector(),
+    //             this.getExecutorServiceManager().getUnboundedExecutorService(),
+    //             terminationCallback);
+    // }
 
     @Override
     public ShellDefaultTtyConnector getTtyConnector() {

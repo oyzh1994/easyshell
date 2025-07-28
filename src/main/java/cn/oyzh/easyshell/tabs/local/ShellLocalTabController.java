@@ -54,7 +54,7 @@ public class ShellLocalTabController extends RichTabController implements ShellS
         }
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
         this.widget.openSession(connector);
-        this.widget.onTermination(exitCode -> this.widget.close());
+        // this.widget.onTermination(exitCode -> this.widget.close());
     }
 
     /**
