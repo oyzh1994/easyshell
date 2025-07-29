@@ -86,8 +86,6 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     private volatile TerminalExecutorServiceManager myExecutorServiceManager;
 
-//    private final Set<ScrollBarMark> findResultMarkers = new HashSet<>();
-
     public FXJediTermWidget(@NotNull SettingsProvider settingsProvider) {
         this(80, 24, settingsProvider);
     }
@@ -258,11 +256,6 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
         }
     }
 
-    // public void stopSession() {
-    //    this.stopRunningSession();
-    //    this.myRunningSession.set(null);
-    // }
-
     public boolean isSessionRunning() {
         return myRunningSession.get() != null;
     }
@@ -376,13 +369,10 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
             myFindComponent.addKeyListener((t, e) -> {
                 if (e.getCode() == KeyCode.ESCAPE) {
                     listener.hideSearchComponent();
-                    e.consume();
                 } else if (e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.DOWN) {
                     listener.selectNextFindResult();
-                    e.consume();
                 } else if (e.getCode() == KeyCode.UP) {
                     listener.selectPrevFindResult();
-                    e.consume();
                 }
             });
         } else {

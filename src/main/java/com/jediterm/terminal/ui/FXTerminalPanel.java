@@ -190,11 +190,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     protected int myClientScrollOrigin;
 
-    private final List<BiConsumer<EventType<KeyEvent>, KeyEvent>> myCustomKeyListeners = new CopyOnWriteArrayList<>();
+    private final List<FXKeyListener> myCustomKeyListeners = new CopyOnWriteArrayList<>();
 
     private final List<TerminalSelectionChangesListener> selectionChangesListeners = new CopyOnWriteArrayList<>();
 
-    // private String myWindowTitle;
     private String myWindowTitle = "Terminal";
 
     private TerminalActionProvider myNextActionProvider;
@@ -209,8 +208,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private final AtomicBoolean needRepaint = new AtomicBoolean(true);
 
-    private int myMaxFPS;
-    // private int myMaxFPS = 50;
+    private int myMaxFPS = 50;
 
     private int myBlinkingPeriod = 500;
 
@@ -379,7 +377,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         });
 
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-            this.canvas.requestFocus();
+            this.requestFocus();
             // 隐藏右键菜单
             if (this.popup != null && e.getButton() == MouseButton.PRIMARY) {
                 this.popup.hide();
@@ -453,7 +451,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         });
 
         this.scrollBar.valueProperty().addListener((ov, oldV, newV) -> {
-            this.myClientScrollOrigin = resolveSwingScrollBarValue();
+            myClientScrollOrigin = resolveSwingScrollBarValue();
             repaint();
         });
 
@@ -477,7 +475,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (unitsToScroll == 0) {
             return;
         }
-        this.moveScrollBar(unitsToScroll);
+        moveScrollBar(unitsToScroll);
         e.consume();
     }
 
@@ -558,7 +556,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     private void updateCursor(Cursor cursorType) {
         if (cursorType != myCursorType) {
             myCursorType = cursorType;
-            this.setCursor(myCursorType);
+            setCursor(myCursorType);
         }
     }
 
@@ -597,11 +595,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     public void setFindResult(@Nullable SubstringFinder.FindResult findResult) {
         myFindResult = findResult;
+        repaint();
         // 选中内容
         if (myFindResult != null && !myFindResult.getItems().isEmpty()) {
             selectFindResultItem(myFindResult.selectedItem());
         }
-        repaint();
     }
 
     public SubstringFinder.FindResult getFindResult() {
@@ -619,11 +617,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     protected @Nullable SubstringFinder.FindResult selectPrevOrNextFindResultItem(boolean next) {
         if (myFindResult != null && !myFindResult.getItems().isEmpty()) {
             SubstringFinder.FindResult.FindItem item = next ? myFindResult.nextFindItem() : myFindResult.prevFindItem();
-            TerminalSelection sel = new TerminalSelection(new com.jediterm.core.compatibility.Point(item.getStart().x, item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
+            TerminalSelection selection = new TerminalSelection(new com.jediterm.core.compatibility.Point(item.getStart().x, item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
                     new com.jediterm.core.compatibility.Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
-            this.updateSelection(sel);
-            if (sel.getStart().y < getTerminalTextBuffer().getHeight() / 2) {
-                this.scrollBar.setValue(sel.getStart().y - getTerminalTextBuffer().getHeight() / 2);
+            updateSelection(selection);
+            if (mySelection.get().getStart().y < getTerminalTextBuffer().getHeight() / 2) {
+                this.scrollBar.setValue(mySelection.get().getStart().y - getTerminalTextBuffer().getHeight() / 2);
             } else {
                 this.scrollBar.setValue(scrollBar.getMin());
             }
@@ -646,7 +644,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     item.getEnd().x, item.getEnd().y);
         }
         if (mySelection.get().getStart().y < getTerminalTextBuffer().getHeight() / 2) {
-            var value = FXScrollBarUtils.getValueFor(item.getStart().y, historyLineCount + screenLineCount,
+            double value = FXScrollBarUtils.getValueFor(item.getStart().y, historyLineCount + screenLineCount,
                     scrollBar.getMin(), scrollBar.getMax());
             this.scrollBar.setValue(value);
         } else {
@@ -831,11 +829,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         sizeTerminalFromComponent();
     }
 
-    public void addCustomKeyListener(@NotNull BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener) {
+    public void addCustomKeyListener(@NotNull FXKeyListener keyListener) {
         myCustomKeyListeners.add(keyListener);
     }
 
-    public void removeCustomKeyListener(@NotNull BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener) {
+    public void removeCustomKeyListener(@NotNull FXKeyListener keyListener) {
         myCustomKeyListeners.remove(keyListener);
     }
 
@@ -954,9 +952,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         setupAntialiasing(gfx);
 
-        gfx.setFill(this.getFXBackground());
+        gfx.setFill(getFXBackground());
 
-        gfx.fillRect(0, 0, this.getWidth(), this.getHeight());
+        gfx.fillRect(0, 0, getWidth(), getHeight());
         this.fixScrollBarThumbVisibility();
 
         try {
@@ -1039,7 +1037,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         resetColorCache();
         drawInputMethodUncommitedChars(gfx);
 
-        drawMargins(gfx, this.getWidth(), this.getHeight());
+        drawMargins(gfx, getWidth(), getHeight());
     }
 
     private void resetColorCache() {
@@ -1130,12 +1128,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     // also called from com.intellij.terminal.JBTerminalPanel
     public void handleKeyEvent(@NotNull KeyEvent e) {
         if (e.getEventType() == KeyEvent.KEY_PRESSED) {
-            for (BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener : myCustomKeyListeners) {
-                keyListener.accept(e.getEventType(), e);
+            for (FXKeyListener keyListener : myCustomKeyListeners) {
+                keyListener.keyPressed(e);
             }
         } else if (e.getEventType() == KeyEvent.KEY_TYPED) {
-            for (BiConsumer<EventType<KeyEvent>, KeyEvent> keyListener : myCustomKeyListeners) {
-                keyListener.accept(e.getEventType(), e);
+            for (FXKeyListener keyListener : myCustomKeyListeners) {
+                keyListener.keyTyped(e);
             }
         }
     }
@@ -1710,8 +1708,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private void drawMargins(GraphicsContext gfx, double width, double height) {
         gfx.setFill(getFXBackground());
-        gfx.fillRect(0, height, this.getWidth(), this.getHeight() - height);
-        gfx.fillRect(width, 0, this.getWidth() - width, this.getHeight());
+        gfx.fillRect(0, height, getWidth(), getHeight() - height);
+        gfx.fillRect(width, 0, getWidth() - width, getHeight());
     }
 
     // Called in a background thread with myTerminalTextBuffer.lock() acquired
@@ -1816,8 +1814,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private @NotNull Rectangle2D getBounds(@NotNull LineCellInterval cellInterval) {
-        var x = cellInterval.getStartColumn() * myCharSize.getWidth() + getInsetX();
-        var y = cellInterval.getLine() * myCharSize.getHeight();
+        double x = cellInterval.getStartColumn() * myCharSize.getWidth() + getInsetX();
+        double y = cellInterval.getLine() * myCharSize.getHeight();
         return new Rectangle2D(x, y, myCharSize.getWidth() * cellInterval.getCellCount(), myCharSize.getHeight());
     }
 
@@ -1924,8 +1922,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     public List<TerminalAction> getActions() {
         List<TerminalAction> list = List.of(
                 new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getOpenUrlActionPresentation(), input -> {
-                    return openSelectedTextAsURL();
-                }).withEnabledSupplier(this::isSelectedTextUrl),
+                    return openSelectionAsURL();
+                }).withEnabledSupplier(this::selectionTextIsUrl),
                 new FXTerminalAction((FXTerminalActionPresentation) mySettingsProvider.getCopyActionPresentation(), this::handleCopy) {
                     @Override
                     public boolean isEnabled(@Nullable KeyEvent e) {
@@ -1980,8 +1978,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void selectAll() {
-        TerminalSelection mySelection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
-                new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
+        TerminalSelection mySelection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()), new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
         updateSelection(mySelection);
     }
 
@@ -2035,7 +2032,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     @NotNull
-    private Boolean isSelectedTextUrl() {
+    private Boolean selectionTextIsUrl() {
         String selectionText = getSelectionText();
         if (selectionText != null) {
             try {
@@ -2068,13 +2065,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return null;
     }
 
-    protected boolean openSelectedTextAsURL() {
+    protected boolean openSelectionAsURL() {
         if (FXConst.getHostServices() != null) {
             try {
                 String selectionText = getSelectionText();
 
                 if (selectionText != null) {
-                    FXConst.getHostServices().showDocument(selectionText.trim());
+                    FXConst.getHostServices().showDocument(selectionText);
                 }
             } catch (Exception e) {
                 // ok then
@@ -2152,12 +2149,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             // numLock does not change the code sent by keypad VK_DELETE
             // although it send the char '.'
             if (keycode == KeyCode.DELETE && keychar == '.') {
-                this.myTerminalStarter.sendBytes(new byte[]{'.'}, true);
+                myTerminalStarter.sendBytes(new byte[]{'.'}, true);
                 return true;
             }
             // CTRL + Space is not handled in KeyEvent; handle it manually
             if (keychar == ' ' && e.isControlDown()) {
-                this.myTerminalStarter.sendBytes(new byte[]{ASCII_NUL}, true);
+                myTerminalStarter.sendBytes(new byte[]{ASCII_NUL}, true);
                 return true;
             }
 
@@ -2326,8 +2323,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             return false;
         }
 
-        if (!Character.isISOControl(character.codePointAt(0))) {
-            // keys filtered out here will be processed in processTerminalKeyPressed
+        if (!Character.isISOControl(character.codePointAt(0))) {// keys filtered out here will be processed in processTerminalKeyPressed
             try {
                 return processCharacter(e, character.charAt(0));
             } catch (Exception ex) {
@@ -2337,13 +2333,14 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return false;
     }
 
-    private class TerminalKeyHandler implements BiConsumer<EventType<KeyEvent>, KeyEvent> {
+    private class TerminalKeyHandler implements FXKeyListener {
 
         private boolean myIgnoreNextKeyTypedEvent;
 
         public TerminalKeyHandler() {
         }
 
+        @Override
         public void keyPressed(KeyEvent e) {
             if (e.isConsumed()) {
                 return;
@@ -2355,22 +2352,18 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         }
 
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+
+        @Override
         public void keyTyped(KeyEvent e) {
             if (e.isConsumed()) {
                 return;
             }
             if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
                 e.consume();
-            }
-        }
-
-        @Override
-        public void accept(EventType<KeyEvent> type, KeyEvent event) {
-            if (type == KeyEvent.KEY_PRESSED) {
-                this.keyPressed(event);
-            } else if (type == KeyEvent.KEY_TYPED) {
-                this.keyTyped(event);
-                event.consume();
             }
         }
     }
@@ -2422,8 +2415,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         String committedText = e.getCommitted();
         if (!committedText.isEmpty()) {
+            myInputMethodUncommittedChars = null;
             StringBuilder sb = new StringBuilder();
 
+            // noinspection ForLoopThatDoesntUseLoopVariable
             for (char c : committedText.toCharArray()) {
                 if (c >= 0x20 && c != 0x7F) { // Filtering characters
                     sb.append(c);
@@ -2433,18 +2428,18 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             if (!sb.isEmpty()) {
                 myTerminalStarter.sendString(sb.toString(), true);
             }
-        }
-
-        // Handling uncommitted text (in-progress input)
-        ObservableList<InputMethodTextRun> composedTextRuns = e.getComposed();
-        if (!composedTextRuns.isEmpty()) {
-            StringBuilder uncommittedTextBuilder = new StringBuilder();
-            for (InputMethodTextRun run : composedTextRuns) {
-                uncommittedTextBuilder.append(run.getText()); // Extracting text from the run
-            }
-            myInputMethodUncommittedChars = uncommittedTextBuilder.toString();
         } else {
-            myInputMethodUncommittedChars = null;
+            // Handling uncommitted text (in-progress input)
+            ObservableList<InputMethodTextRun> composedTextRuns = e.getComposed();
+            if (!composedTextRuns.isEmpty()) {
+                StringBuilder uncommittedTextBuilder = new StringBuilder();
+                for (InputMethodTextRun run : composedTextRuns) {
+                    uncommittedTextBuilder.append(run.getText()); // Extracting text from the run
+                }
+                myInputMethodUncommittedChars = uncommittedTextBuilder.toString();
+            } else {
+                myInputMethodUncommittedChars = null;
+            }
         }
     }
 

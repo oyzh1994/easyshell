@@ -3,18 +3,15 @@ package com.jediterm.terminal.ui;
 
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.Terminal;
-import javafx.event.EventType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-
-import java.util.function.BiConsumer;
 
 /**
  * @deprecated
  */
 @SuppressWarnings("removal")
 @Deprecated(forRemoval = true)
-public final class FXPreConnectHandler implements Questioner, BiConsumer<EventType<KeyEvent>, KeyEvent> {
+public final class FXPreConnectHandler implements Questioner, FXKeyListener {
 
     private final Object mySync = new Object();
 
@@ -31,6 +28,7 @@ public final class FXPreConnectHandler implements Questioner, BiConsumer<EventTy
 
     // These methods will suspend the current thread and wait for
     // the event handling thread to provide the answer.
+    @Override
     public String questionHidden(String question) {
         myVisible = false;
         String answer = questionVisible(question, null);
@@ -38,6 +36,7 @@ public final class FXPreConnectHandler implements Questioner, BiConsumer<EventTy
         return answer;
     }
 
+    @Override
     public String questionVisible(String question, String defValue) {
         synchronized (mySync) {
             myTerminal.writeUnwrappedString(question);
@@ -57,11 +56,13 @@ public final class FXPreConnectHandler implements Questioner, BiConsumer<EventTy
         }
     }
 
+   @Override
     public void showMessage(String message) {
         myTerminal.writeUnwrappedString(message);
         myTerminal.nextLine();
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
         if (myAnswer == null) return;
         synchronized (mySync) {
@@ -83,33 +84,19 @@ public final class FXPreConnectHandler implements Questioner, BiConsumer<EventTy
 
             if (release) mySync.notifyAll();
         }
-
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
+    @Override
     public void keyTyped(KeyEvent e) {
         if (myAnswer == null) return;
         char c = e.getCharacter().charAt(0);
         if (Character.getType(c) != Character.CONTROL) {
             if (myVisible) myTerminal.writeCharacters(Character.toString(c));
             myAnswer.append(c);
-        }
-    }
-
-    @Override
-    public void accept(EventType<KeyEvent> type, KeyEvent event) {
-        if (type == KeyEvent.KEY_PRESSED) {
-            this.keyPressed(event);
-            event.consume();
-        } else if (type == KeyEvent.KEY_TYPED) {
-            this.keyTyped(event);
-            event.consume();
-        } else if (type == KeyEvent.KEY_RELEASED) {
-            this.keyReleased(event);
-            event.consume();
         }
     }
 }

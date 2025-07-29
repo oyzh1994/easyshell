@@ -8,13 +8,13 @@ import javafx.scene.text.Text;
 public class FXFontMetrics {
 
     public static FXFontMetrics create(Font font, String str) {
-        var text = new Text(str);
+        Text text = new Text(str);
         text.setFont(font);
         text.applyCss();//TODO???
-        var width = text.getLayoutBounds().getWidth();
-        var height = text.getLayoutBounds().getHeight();
-        var descent = text.getLayoutBounds().getHeight() - text.getBaselineOffset();
-        var metrics = new FXFontMetrics(width, height, descent);
+        double width = text.getLayoutBounds().getWidth();
+        double height = text.getLayoutBounds().getHeight();
+        double descent = text.getLayoutBounds().getHeight() - text.getBaselineOffset();
+        FXFontMetrics metrics = new FXFontMetrics(width, height, descent);
         if (JulLog.isTraceEnabled()) {
             JulLog.trace("Created metrics: {} for {}", metrics, font);
         }

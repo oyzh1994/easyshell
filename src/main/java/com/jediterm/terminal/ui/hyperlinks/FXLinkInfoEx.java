@@ -55,34 +55,34 @@ public final class FXLinkInfoEx extends LinkInfo {
          */
         void onMouseExited();
     }
-
-    public static final class Builder {
-
-        private Runnable myNavigateCallback;
-
-        private PopupMenuGroupProvider myPopupMenuGroupProvider;
-
-        private HoverConsumer myHoverConsumer;
-
-        public @NotNull Builder setNavigateCallback(@NotNull Runnable navigateCallback) {
-            myNavigateCallback = navigateCallback;
-            return this;
-        }
-
-        public @NotNull Builder setPopupMenuGroupProvider(@Nullable PopupMenuGroupProvider popupMenuGroupProvider) {
-            myPopupMenuGroupProvider = popupMenuGroupProvider;
-            return this;
-        }
-
-        public @NotNull Builder setHoverConsumer(@Nullable HoverConsumer hoverConsumer) {
-            myHoverConsumer = hoverConsumer;
-            return this;
-        }
-
-        public @NotNull LinkInfo build() {
-            return new FXLinkInfoEx(myNavigateCallback, myPopupMenuGroupProvider, myHoverConsumer);
-        }
-    }
+    //
+    // public static final class Builder {
+    //
+    //     private Runnable myNavigateCallback;
+    //
+    //     private PopupMenuGroupProvider myPopupMenuGroupProvider;
+    //
+    //     private HoverConsumer myHoverConsumer;
+    //
+    //     public @NotNull Builder setNavigateCallback(@NotNull Runnable navigateCallback) {
+    //         myNavigateCallback = navigateCallback;
+    //         return this;
+    //     }
+    //
+    //     public @NotNull Builder setPopupMenuGroupProvider(@Nullable PopupMenuGroupProvider popupMenuGroupProvider) {
+    //         myPopupMenuGroupProvider = popupMenuGroupProvider;
+    //         return this;
+    //     }
+    //
+    //     public @NotNull Builder setHoverConsumer(@Nullable HoverConsumer hoverConsumer) {
+    //         myHoverConsumer = hoverConsumer;
+    //         return this;
+    //     }
+    //
+    //     public @NotNull LinkInfo build() {
+    //         return new FXLinkInfoEx(myNavigateCallback, myPopupMenuGroupProvider, myHoverConsumer);
+    //     }
+    // }
 
     public static @Nullable PopupMenuGroupProvider getPopupMenuGroupProvider(@Nullable LinkInfo linkInfo) {
         return linkInfo instanceof FXLinkInfoEx ? ((FXLinkInfoEx) linkInfo).getPopupMenuGroupProvider() : null;
