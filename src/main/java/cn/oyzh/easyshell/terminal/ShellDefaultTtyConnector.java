@@ -53,7 +53,7 @@ public class ShellDefaultTtyConnector extends ProcessTtyConnector {
     }
 
     protected int doRead(char[] buf, int offset, int len) throws IOException {
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell read: {}", new String(buf));
         }
         return len;
@@ -80,7 +80,7 @@ public class ShellDefaultTtyConnector extends ProcessTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
         super.write(str);
@@ -89,7 +89,7 @@ public class ShellDefaultTtyConnector extends ProcessTtyConnector {
     @Override
     public void write(byte[] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
         super.write(bytes);
@@ -110,9 +110,13 @@ public class ShellDefaultTtyConnector extends ProcessTtyConnector {
 
     @Override
     public void resize(@NotNull TermSize termSize) {
-        super.resize(termSize);
-        if (this.terminalSizeProperty != null) {
-            this.terminalSizeProperty.set(termSize);
+        try {
+            this.getProcess().setWinSize(new WinSize(termSize.getColumns(), termSize.getRows()));
+            if (this.terminalSizeProperty != null) {
+                this.terminalSizeProperty.set(termSize);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

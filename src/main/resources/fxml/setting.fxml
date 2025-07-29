@@ -233,17 +233,29 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
-                    <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected">
-                        <FXHBox.margin>
-                            <Insets left="5" top="5"/>
-                        </FXHBox.margin>
-                    </FXToggleSwitch>
                     <FXToggleSwitch tipText="%base.useAntialiasing" selected="true" fx:id="termUseAntialiasing">
                         <FXHBox.margin>
                             <Insets left="5" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
                     <FXToggleSwitch tipText="%base.parseHyperlink" selected="true" fx:id="termParseHyperlink">
+                        <FXHBox.margin>
+                            <Insets left="5" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                </FXHBox>
+                <InfoLabel text="%shell.term.tip20">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </FXToggleSwitch>
+                    <FXToggleSwitch tipText="%shell.term.tip19" selected="true" fx:id="termPasteByMiddle">
                         <FXHBox.margin>
                             <Insets left="5" top="5"/>
                         </FXHBox.margin>

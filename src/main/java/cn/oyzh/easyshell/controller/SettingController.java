@@ -292,6 +292,12 @@ public class SettingController extends StageController {
     private FXToggleSwitch termParseHyperlink;
 
     /**
+     * 鼠标中键粘贴-终端
+     */
+    @FXML
+    private FXToggleSwitch termPasteByMiddle;
+
+    /**
      * 配置对象
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -355,6 +361,7 @@ public class SettingController extends StageController {
         this.termBeep.setSelected(this.setting.isTermBeep());
         this.termFps.selectFps(this.setting.getTermRefreshRate());
         this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
+        this.termPasteByMiddle.setSelected(this.setting.isTermPasteByMiddle());
         this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
         this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
         this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
@@ -390,6 +397,7 @@ public class SettingController extends StageController {
             this.setting.setTermRefreshRate(this.termFps.getFps());
             this.setting.setTermType(this.termType.getSelectedItem());
             this.setting.setTermMaxLineCount(this.termMaxLineCount.getIntValue());
+            this.setting.setTermPasteByMiddle(this.termPasteByMiddle.isSelected());
             this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());
             this.setting.setTermParseHyperlink(this.termParseHyperlink.isSelected());
             this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());

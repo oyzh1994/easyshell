@@ -89,6 +89,12 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean termParseHyperlink;
 
+    /**
+     * 鼠标中键粘贴-终端
+     */
+    @Column
+    private Boolean termPasteByMiddle;
+
     // /**
     //  * ssh协议，显示文件
     //  */
@@ -245,6 +251,14 @@ public class ShellSetting extends AppSetting {
 
     public void setTermCopyOnSelected(boolean termCopyOnSelected) {
         this.termCopyOnSelected = termCopyOnSelected;
+    }
+
+    public boolean isTermPasteByMiddle() {
+        return this.termPasteByMiddle == null || this.termPasteByMiddle;
+    }
+
+    public void setTermPasteByMiddle(boolean termPasteByMiddle) {
+        this.termPasteByMiddle = termPasteByMiddle;
     }
 
     public Integer getTermRefreshRate() {

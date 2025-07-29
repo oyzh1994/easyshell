@@ -213,4 +213,9 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     public boolean copyOnSelect() {
         return this.setting.isTermCopyOnSelected();
     }
+
+    @Override
+    public boolean pasteOnMiddleMouseClick() {
+        return this.setting.isTermPasteByMiddle();
+    }
 }
