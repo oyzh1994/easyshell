@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.fx.snippet;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.editor.EditorPane;
 import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import javafx.scene.text.Font;
 
 import java.util.HashSet;
@@ -13,10 +13,17 @@ import java.util.Set;
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellSnippetTextAreaPane extends RichDataTextAreaPane {
+public class ShellSnippetTextAreaPane extends EditorPane {
 
-    {
-        Set<String> prompts=new HashSet<>();
+    @Override
+    protected Font initFont() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        return FontManager.toFont(setting.editorFontConfig());
+    }
+
+    @Override
+    public void initPrompts() {
+        Set<String> prompts = new HashSet<>();
         // linux、macos、unix
         prompts.add("cd");
         prompts.add("sudo");
@@ -104,14 +111,6 @@ public class ShellSnippetTextAreaPane extends RichDataTextAreaPane {
         prompts.add("call");
         prompts.add("pause");
         prompts.add("start");
-        this.setContentPrompts(prompts);
+        this.setPrompts(prompts);
     }
-
-    @Override
-    protected Font initFont() {
-        ShellSetting setting = ShellSettingStore.SETTING;
-        return FontManager.toFont(setting.editorFontConfig());
-    }
-
-
 }

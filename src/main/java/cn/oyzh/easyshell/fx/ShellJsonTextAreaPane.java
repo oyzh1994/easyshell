@@ -2,15 +2,15 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.editor.JsonEditorPane;
 import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.rich.richtextfx.json.RichJsonTextAreaPane;
 import javafx.scene.text.Font;
 
 /**
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellJsonTextAreaPane extends RichJsonTextAreaPane {
+public class ShellJsonTextAreaPane extends JsonEditorPane {
 
     @Override
     protected Font initFont() {

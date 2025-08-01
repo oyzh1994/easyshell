@@ -7,7 +7,11 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.editor.EditorFormatType;
+import cn.oyzh.fx.editor.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.EditorLineNumPolicy;
 import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -23,10 +27,9 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.RichDataType;
-import cn.oyzh.fx.rich.RichDataTypeComboBox;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.input.KeyCode;
@@ -70,7 +73,7 @@ public class ShellFileViewController extends StageController {
      * 文本
      */
     @FXML
-    private RichDataTextAreaPane txt;
+    private ShellDataTextAreaPane txt;
 
     /**
      * 过滤组件
@@ -82,7 +85,7 @@ public class ShellFileViewController extends StageController {
      * 格式
      */
     @FXML
-    private RichDataTypeComboBox format;
+    private EditorFormatTypeComboBox format;
 
     /**
      * 字体大小
@@ -170,16 +173,26 @@ public class ShellFileViewController extends StageController {
             this.fontSize.selectSize(this.setting.getEditorFontSize());
             String extName = FileNameUtil.extName(this.file.getFilePath());
             if (FileNameUtil.isJsonType(extName)) {
-                this.format.select(RichDataType.JSON);
+                // this.format.select(RichDataType.JSON);
+                this.txt.showData(this.getData(), EditorFormatType.JSON);
             } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-                this.format.select(RichDataType.HTML);
+                // this.format.select(RichDataType.HTML);
+                this.txt.showData(this.getData(), EditorFormatType.HTML);
             } else if (FileNameUtil.isXmlType(extName)) {
-                this.format.select(RichDataType.XML);
+                // this.format.select(RichDataType.XML);
+                this.txt.showData(this.getData(), EditorFormatType.XML);
             } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
-                this.format.select(RichDataType.YAML);
+                // this.format.select(RichDataType.YAML);
+                this.txt.showData(this.getData(), EditorFormatType.YAML);
+            } else if (FileNameUtil.isCssType(extName)) {
+                this.txt.showData(this.getData(), EditorFormatType.CSS);
+            } else if (FileNameUtil.isPropertiesType(extName)) {
+                this.txt.showData(this.getData(), EditorFormatType.PROPERTIES);
             } else {
-                this.format.select(RichDataType.STRING);
+                // this.format.select(RichDataType.STRING);
+                this.txt.showData(this.getData(), EditorFormatType.RAW);
             }
+            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
             this.txt.display();
         } else if (this.isImageType()) {
@@ -287,21 +300,27 @@ public class ShellFileViewController extends StageController {
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
                 this.txt.setHighlightText(t1);
             });
-            // 内容格式
-            this.format.selectedItemChanged((observableValue, number, t1) -> {
-                if (this.format.isJsonFormat()) {
-                    this.txt.showJsonData(this.getData());
-                } else if (this.format.isXmlFormat()) {
-                    this.txt.showXmlData(this.getData());
-                } else if (this.format.isHtmlFormat()) {
-                    this.txt.showHtmlData(this.getData());
-                } else if (this.format.isYamlFormat()) {
-                    this.txt.showYamlData(this.getData());
-                } else if (this.format.isStringFormat()) {
-                    this.txt.showStringData(this.getData());
-                } else {
-                    this.txt.showRawData(this.getData());
-                }
+            // // 内容格式
+            // this.format.selectedItemChanged((observableValue, number, t1) -> {
+            //     if (this.format.isJsonFormat()) {
+            //         this.txt.showJsonData(this.getData());
+            //     } else if (this.format.isXmlFormat()) {
+            //         this.txt.showXmlData(this.getData());
+            //     } else if (this.format.isHtmlFormat()) {
+            //         this.txt.showHtmlData(this.getData());
+            //     } else if (this.format.isYamlFormat()) {
+            //         this.txt.showYamlData(this.getData());
+            //     } else if (this.format.isStringFormat()) {
+            //         this.txt.showStringData(this.getData());
+            //     } else {
+            //         this.txt.showRawData(this.getData());
+            //     }
+            // });
+            this.txt.formatTypeProperty().addListener((observableValue, formatType, t1) -> {
+                this.format.select(t1);
+            });
+            this.format.selectedItemChanged((observableValue, formatType, t1) -> {
+                this.txt.setFormatType(t1);
             });
             this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
                 if (t1 != null) {

@@ -1146,14 +1146,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         menuItems.add(refreshFile);
         // 删除文件
         if (!files.isEmpty()) {
-            E file = files.getFirst();
             if (this.isSupportDeleteAction()) {
-                FXMenuItem deleteFile;
-                if (file.isDirectory()) {
-                    deleteFile = MenuItemHelper.deleteDir("12", () -> this.deleteFile(files));
-                } else {
-                    deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
-                }
+                FXMenuItem deleteFile = MenuItemHelper.deleteFile("12", () -> this.deleteFile(files));
                 deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
                 menuItems.add(deleteFile);
             }

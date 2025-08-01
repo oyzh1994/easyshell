@@ -2,13 +2,13 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -30,7 +30,7 @@ public class ShellDockerLogsController extends StageController {
      * 日志
      */
     @FXML
-    private RichDataTextAreaPane data;
+    private ShellDataTextAreaPane data;
 
     /**
      * 过滤

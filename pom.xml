@@ -130,7 +130,7 @@
 
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>fx-rich</artifactId>
+            <artifactId>fx-editor</artifactId>
         </dependency>
 
         <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 &ndash;&gt; -->

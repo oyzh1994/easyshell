@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
@@ -15,7 +16,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -52,7 +52,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      * 数据
      */
     @FXML
-    private RichDataTextAreaPane data;
+    private ShellDataTextAreaPane data;
 
     /**
      * 数据过滤

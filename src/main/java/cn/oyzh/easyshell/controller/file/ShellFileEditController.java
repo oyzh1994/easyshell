@@ -8,7 +8,10 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.editor.EditorFormatType;
+import cn.oyzh.fx.editor.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -18,9 +21,6 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
-import cn.oyzh.fx.rich.RichDataType;
-import cn.oyzh.fx.rich.RichDataTypeComboBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
@@ -59,13 +59,13 @@ public class ShellFileEditController extends StageController {
      * 数据
      */
     @FXML
-    private RichDataTextAreaPane data;
+    private ShellDataTextAreaPane data;
 
     /**
      * 格式
      */
     @FXML
-    private RichDataTypeComboBox format;
+    private EditorFormatTypeComboBox format;
 
     /**
      * 字体大小
@@ -120,21 +120,24 @@ public class ShellFileEditController extends StageController {
                 this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {
-                    this.format.select(RichDataType.JSON);
+                    // this.format.select(RichDataType.JSON);
+                    this.data.showData(this.getData(), EditorFormatType.JSON);
                 } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-                    this.format.select(RichDataType.HTML);
+                    // this.format.select(RichDataType.HTML);
+                    this.data.showData(this.getData(), EditorFormatType.HTML);
                 } else if (FileNameUtil.isXmlType(extName)) {
-                    this.format.select(RichDataType.XML);
+                    // this.format.select(RichDataType.XML);
+                    this.data.showData(this.getData(), EditorFormatType.XML);
                 } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
-                    this.format.select(RichDataType.YAML);
-                    // } else if (FileNameUtil.isJavaType(extName) ) {
-                    //     this.format.select(RichDataType.JAVA);
-                    // } else if (FileNameUtil.isPythonType(extName) ) {
-                    //     this.format.select(RichDataType.PYTHON);
-                    // } else if (FileNameUtil.isJsType(extName) ) {
-                    //     this.format.select(RichDataType.JAVASCRIPT);
+                    // this.format.select(RichDataType.YAML);
+                    this.data.showData(this.getData(), EditorFormatType.YAML);
+                } else if (FileNameUtil.isCssType(extName)) {
+                    this.data.showData(this.getData(), EditorFormatType.CSS);
+                } else if (FileNameUtil.isPropertiesType(extName)) {
+                    this.data.showData(this.getData(), EditorFormatType.PROPERTIES);
                 } else {
-                    this.format.select(RichDataType.STRING);
+                    // this.format.select(RichDataType.STRING);
+                    this.data.showData(this.getData(), EditorFormatType.RAW);
                 }
                 this.data.scrollToTop();
             } catch (Exception ex) {
@@ -186,27 +189,33 @@ public class ShellFileEditController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 内容格式
-        this.format.selectedItemChanged((observableValue, number, t1) -> {
-            if (this.format.isJsonFormat()) {
-                this.data.showJsonData(this.getData());
-            } else if (this.format.isXmlFormat()) {
-                this.data.showXmlData(this.getData());
-            } else if (this.format.isHtmlFormat()) {
-                this.data.showHtmlData(this.getData());
-            } else if (this.format.isYamlFormat()) {
-                this.data.showYamlData(this.getData());
-            } else if (this.format.isStringFormat()) {
-                this.data.showStringData(this.getData());
-                // } else if (this.format.isJavaFormat()) {
-                //     this.data.showJavaData(this.getData());
-                // } else if (this.format.isPythonFormat()) {
-                //     this.data.showPythonData(this.getData());
-                // } else if (this.format.isJavaScriptFormat()) {
-                //     this.data.showJavaScriptData(this.getData());
-            } else {
-                this.data.showRawData(this.getData());
-            }
+        // // 内容格式
+        // this.format.selectedItemChanged((observableValue, number, t1) -> {
+        //     if (this.format.isJsonFormat()) {
+        //         this.data.showJsonData(this.getData());
+        //     } else if (this.format.isXmlFormat()) {
+        //         this.data.showXmlData(this.getData());
+        //     } else if (this.format.isHtmlFormat()) {
+        //         this.data.showHtmlData(this.getData());
+        //     } else if (this.format.isYamlFormat()) {
+        //         this.data.showYamlData(this.getData());
+        //     } else if (this.format.isStringFormat()) {
+        //         this.data.showStringData(this.getData());
+        //         // } else if (this.format.isJavaFormat()) {
+        //         //     this.data.showJavaData(this.getData());
+        //         // } else if (this.format.isPythonFormat()) {
+        //         //     this.data.showPythonData(this.getData());
+        //         // } else if (this.format.isJavaScriptFormat()) {
+        //         //     this.data.showJavaScriptData(this.getData());
+        //     } else {
+        //         this.data.showRawData(this.getData());
+        //     }
+        // });
+        this.data.formatTypeProperty().addListener((observableValue, formatType, t1) -> {
+            this.format.select(t1);
+        });
+        this.format.selectedItemChanged((observableValue, formatType, t1) -> {
+            this.data.setFormatType(t1);
         });
         this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
             if (t1 != null) {
@@ -285,8 +294,8 @@ public class ShellFileEditController extends StageController {
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
-        this.format.removeItem(RichDataType.HEX);
-        this.format.removeItem(RichDataType.BINARY);
+        // this.format.removeItem(RichDataType.HEX);
+        // this.format.removeItem(RichDataType.BINARY);
         // this.format.addItem(RichDataType.JAVA);
         // this.format.addItem(RichDataType.PYTHON);
         // this.format.addItem(RichDataType.JAVASCRIPT);

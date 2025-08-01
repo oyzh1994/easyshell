@@ -2,15 +2,15 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.editor.EditorPane;
 import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.rich.richtextfx.data.RichDataTextAreaPane;
 import javafx.scene.text.Font;
 
 /**
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellDataTextAreaPane extends RichDataTextAreaPane {
+public class ShellDataTextAreaPane extends EditorPane {
 
     @Override
     protected Font initFont() {
