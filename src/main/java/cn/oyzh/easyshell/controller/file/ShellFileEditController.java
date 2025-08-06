@@ -119,21 +119,8 @@ public class ShellFileEditController extends StageController {
                 FileUtil.touch(this.destPath);
                 this.client.get(this.file, this.destPath);
                 String extName = FileNameUtil.extName(this.file.getFilePath());
-                if (FileNameUtil.isJsonType(extName)) {
-                    this.data.showData(this.getData(), EditorFormatType.JSON);
-                } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-                    this.data.showData(this.getData(), EditorFormatType.HTML);
-                } else if (FileNameUtil.isXmlType(extName)) {
-                    this.data.showData(this.getData(), EditorFormatType.XML);
-                } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
-                    this.data.showData(this.getData(), EditorFormatType.YAML);
-                } else if (FileNameUtil.isCssType(extName)) {
-                    this.data.showData(this.getData(), EditorFormatType.CSS);
-                } else if (FileNameUtil.isPropertiesType(extName)) {
-                    this.data.showData(this.getData(), EditorFormatType.PROPERTIES);
-                } else {
-                    this.data.showData(this.getData(), EditorFormatType.RAW);
-                }
+                EditorFormatType formatType = EditorFormatType.ofName(extName);
+                this.data.showData(this.getData(), formatType);
                 this.data.scrollToTop();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -166,9 +153,8 @@ public class ShellFileEditController extends StageController {
         // 目标路径
         this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
-       this.data.setFont(FontManager.toFont(this.setting.editorFontConfig()));
-        // 字体大小
-       this.fontSize.selectSize(this.setting.getEditorFontSize());
+        this.fontSize.selectSize(this.setting.getEditorFontSize());
+        this.data.setFont(FontManager.toFont(this.setting.editorFontConfig()));
         // 初始化
         this.init();
     }
@@ -182,28 +168,6 @@ public class ShellFileEditController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // // 内容格式
-        // this.format.selectedItemChanged((observableValue, number, t1) -> {
-        //     if (this.format.isJsonFormat()) {
-        //         this.data.showJsonData(this.getData());
-        //     } else if (this.format.isXmlFormat()) {
-        //         this.data.showXmlData(this.getData());
-        //     } else if (this.format.isHtmlFormat()) {
-        //         this.data.showHtmlData(this.getData());
-        //     } else if (this.format.isYamlFormat()) {
-        //         this.data.showYamlData(this.getData());
-        //     } else if (this.format.isStringFormat()) {
-        //         this.data.showStringData(this.getData());
-        //         // } else if (this.format.isJavaFormat()) {
-        //         //     this.data.showJavaData(this.getData());
-        //         // } else if (this.format.isPythonFormat()) {
-        //         //     this.data.showPythonData(this.getData());
-        //         // } else if (this.format.isJavaScriptFormat()) {
-        //         //     this.data.showJavaScriptData(this.getData());
-        //     } else {
-        //         this.data.showRawData(this.getData());
-        //     }
-        // });
         this.data.formatTypeProperty().addListener((observableValue, formatType, t1) -> {
             this.format.select(t1);
         });

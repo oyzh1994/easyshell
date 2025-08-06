@@ -21,6 +21,7 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
+import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -164,27 +165,11 @@ public class ShellFileViewController extends StageController {
     private void initView() {
         if (this.isTxtType() || this.isUnknownType()) {
             // 初始化字体配置
-            this.txt.setFontSize(this.setting.getEditorFontSize());
-            this.txt.setFontFamily(this.setting.getEditorFontFamily());
-            this.txt.setFontWeight2(this.setting.getEditorFontWeight());
-            // 字体大小
             this.fontSize.selectSize(this.setting.getEditorFontSize());
+            this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
             String extName = FileNameUtil.extName(this.file.getFilePath());
-            if (FileNameUtil.isJsonType(extName)) {
-                this.txt.showData(this.getData(), EditorFormatType.JSON);
-            } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-                this.txt.showData(this.getData(), EditorFormatType.HTML);
-            } else if (FileNameUtil.isXmlType(extName)) {
-                this.txt.showData(this.getData(), EditorFormatType.XML);
-            } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
-                this.txt.showData(this.getData(), EditorFormatType.YAML);
-            } else if (FileNameUtil.isCssType(extName)) {
-                this.txt.showData(this.getData(), EditorFormatType.CSS);
-            } else if (FileNameUtil.isPropertiesType(extName)) {
-                this.txt.showData(this.getData(), EditorFormatType.PROPERTIES);
-            } else {
-                this.txt.showData(this.getData(), EditorFormatType.RAW);
-            }
+            EditorFormatType formatType = EditorFormatType.ofName(extName);
+            this.txt.showData(this.getData(), formatType);
             this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
             this.txt.display();
