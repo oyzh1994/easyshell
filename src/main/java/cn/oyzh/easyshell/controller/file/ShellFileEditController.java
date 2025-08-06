@@ -15,6 +15,7 @@ import cn.oyzh.fx.editor.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -117,26 +118,20 @@ public class ShellFileEditController extends StageController {
             try {
                 FileUtil.touch(this.destPath);
                 this.client.get(this.file, this.destPath);
-                this.data.setText(this.getData());
                 String extName = FileNameUtil.extName(this.file.getFilePath());
                 if (FileNameUtil.isJsonType(extName)) {
-                    // this.format.select(RichDataType.JSON);
                     this.data.showData(this.getData(), EditorFormatType.JSON);
                 } else if (FileNameUtil.isHtmType(extName) || FileNameUtil.isHtmlType(extName)) {
-                    // this.format.select(RichDataType.HTML);
                     this.data.showData(this.getData(), EditorFormatType.HTML);
                 } else if (FileNameUtil.isXmlType(extName)) {
-                    // this.format.select(RichDataType.XML);
                     this.data.showData(this.getData(), EditorFormatType.XML);
                 } else if (FileNameUtil.isYamlType(extName) || FileNameUtil.isYmlType(extName)) {
-                    // this.format.select(RichDataType.YAML);
                     this.data.showData(this.getData(), EditorFormatType.YAML);
                 } else if (FileNameUtil.isCssType(extName)) {
                     this.data.showData(this.getData(), EditorFormatType.CSS);
                 } else if (FileNameUtil.isPropertiesType(extName)) {
                     this.data.showData(this.getData(), EditorFormatType.PROPERTIES);
                 } else {
-                    // this.format.select(RichDataType.STRING);
                     this.data.showData(this.getData(), EditorFormatType.RAW);
                 }
                 this.data.scrollToTop();
@@ -171,11 +166,9 @@ public class ShellFileEditController extends StageController {
         // 目标路径
         this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
-        this.data.setFontSize(this.setting.getEditorFontSize());
-        this.data.setFontFamily(this.setting.getEditorFontFamily());
-        this.data.setFontWeight2(this.setting.getEditorFontWeight());
+       this.data.setFont(FontManager.toFont(this.setting.editorFontConfig()));
         // 字体大小
-        this.fontSize.selectSize(this.setting.getEditorFontSize());
+       this.fontSize.selectSize(this.setting.getEditorFontSize());
         // 初始化
         this.init();
     }
