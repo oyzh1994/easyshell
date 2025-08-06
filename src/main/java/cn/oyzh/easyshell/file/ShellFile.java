@@ -348,6 +348,14 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new FileLuaSVGGlyph("12");
             } else if (FileNameUtil.isKtType(extName)) {
                 glyph = new FileKtSVGGlyph("12");
+            } else if (FileNameUtil.isAsmType(extName)) {
+                glyph = new FileAsmSVGGlyph("12");
+            } else if (FileNameUtil.isLessType(extName)) {
+                glyph = new FileLessSVGGlyph("12");
+            } else if (FileNameUtil.isProtobufType(extName)) {
+                glyph = new FileProtobufSVGGlyph("12");
+            } else if (FileNameUtil.isPropertiesType(extName)) {
+                glyph = new FilePropertiesSVGGlyph("12");
             } else if (FileNameUtil.isKmkType(extName)) {
                 glyph = new FileKmkSVGGlyph("12");
             } else if (FileNameUtil.isIcnsType(extName)) {
