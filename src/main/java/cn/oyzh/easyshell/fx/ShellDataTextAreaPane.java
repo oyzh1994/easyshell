@@ -12,11 +12,18 @@ import javafx.scene.text.Font;
  */
 public class ShellDataTextAreaPane extends EditorPane {
 
+//     @Override
+//     protected Font initFont() {
+// //        // 禁用字体管理
+// //        super.disableFont();
+//         ShellSetting setting = ShellSettingStore.SETTING;
+//         return FontManager.toFont(setting.editorFontConfig());
+//     }
+
     @Override
-    protected Font initFont() {
-//        // 禁用字体管理
-//        super.disableFont();
+    public void changeFont(Font font) {
         ShellSetting setting = ShellSettingStore.SETTING;
-        return FontManager.toFont(setting.editorFontConfig());
+        Font font1 = FontManager.toFont(setting.editorFontConfig());
+        super.changeFont(font1);
     }
 }
