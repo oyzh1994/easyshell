@@ -225,6 +225,8 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new FilePhpSVGGlyph("12");
             } else if (FileNameUtil.isRustType(extName)) {
                 glyph = new FileRustSVGGlyph("12");
+            } else if (FileNameUtil.isRubyType(extName)) {
+                glyph = new FileRubySVGGlyph("12");
             } else if (FileNameUtil.isScalaType(extName)) {
                 glyph = new FileScalaSVGGlyph("12");
             } else if (FileNameUtil.isJpgType(extName)) {
