@@ -25,7 +25,7 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </NextSVGGlyph>
-        <EditorFormatTypeComboBox realHeight="22" fx:id="format">
+        <EditorFormatTypeComboBox realHeight="22" fx:id="format" format="RAW">
             <FXHBox.margin>
                 <Insets left="10" top="4"/>
             </FXHBox.margin>

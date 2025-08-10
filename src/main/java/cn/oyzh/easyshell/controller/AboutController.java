@@ -7,7 +7,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -61,6 +60,7 @@ public class AboutController extends StageController {
         // 设置标题
         this.stage.appendTitle(" " + this.project.getName());
         this.stage.hideOnEscape();
+        super.onWindowShown(event);
     }
 
     @Override

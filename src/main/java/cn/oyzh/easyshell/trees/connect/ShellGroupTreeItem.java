@@ -81,7 +81,6 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
-        items.add(MenuItemHelper.separator());
         FXMenuItem renameGroup = MenuItemHelper.renameGroup("12", this::rename);
         FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
         items.add(addConnect);

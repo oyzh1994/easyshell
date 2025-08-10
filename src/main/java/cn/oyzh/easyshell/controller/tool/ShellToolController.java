@@ -50,6 +50,7 @@ public class ShellToolController extends ParentStageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
