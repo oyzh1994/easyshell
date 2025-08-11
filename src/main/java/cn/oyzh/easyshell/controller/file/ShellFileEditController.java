@@ -218,7 +218,7 @@ public class ShellFileEditController extends StageController {
                 return;
             }
             this.searchIndex = index + filterText.length();
-            this.data.selectRangeAndGoto(index, index + filterText.length());
+            this.data.selectRange(index, index + filterText.length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

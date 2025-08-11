@@ -29,7 +29,6 @@ import java.util.List;
  */
 public class ShellSettingsProvider extends FXDefaultSettingsProvider implements FXTermSettingsProvider {
 
-
     /**
      * 程序设置
      */
@@ -115,8 +114,8 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     @Override
     public @NotNull TerminalActionPresentation getIncrTermSizePresentation() {
         KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.PLUS, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.PLUS, KeyCombination.CONTROL_DOWN);
+                ? new KeyCodeCombination(KeyCode.ADD, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN);
         KeyCombination keyCombination1 = OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.META_DOWN)
                 : new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.CONTROL_DOWN);

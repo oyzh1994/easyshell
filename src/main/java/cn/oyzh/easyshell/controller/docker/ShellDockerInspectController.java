@@ -84,21 +84,10 @@ public class ShellDockerInspectController extends StageController {
             if (StringUtil.isBlank(filterText)) {
                 return;
             }
-            //filterText = filterText.toLowerCase();
             String text = this.data.getText();
             int index = TextUtil.findIndex(text, filterText, this.searchIndex, false, false);
-            this.data.selectRangeAndGoto(index, index + filterText.length());
+            this.data.selectRange(index, index + filterText.length());
             this.searchIndex = index + filterText.length();
-            //if (this.searchIndex >= text.length()) {
-            //    this.searchIndex = 0;
-            //}
-            //int index = text.toLowerCase().indexOf(filterText, this.searchIndex);
-            //if (index == -1) {
-            //    this.searchIndex = 0;
-            //    return;
-            //}
-            //this.searchIndex = index + filterText.length();
-            //this.data.selectRangeAndGoto(index, index + filterText.length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

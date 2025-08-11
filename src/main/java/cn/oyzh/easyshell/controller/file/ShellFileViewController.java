@@ -366,7 +366,7 @@ public class ShellFileViewController extends StageController {
                 return;
             }
             this.searchIndex = index + filterText.length();
-            this.txt.selectRangeAndGoto(index, index + filterText.length());
+            this.txt.selectRange(index, index + filterText.length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
