@@ -130,8 +130,8 @@ public class ShellFileUtil {
         if (!file.isFile()) {
             return false;
         }
-        // 限制大小1mb
-        if (file.getFileSize() > 1024 * 1024) {
+        // 限制大小20mb
+        if (file.getFileSize() > 20 * 1024 * 1024) {
             return false;
         }
         // // 检查类型
@@ -178,7 +178,7 @@ public class ShellFileUtil {
                 "mp3", "wav", "aac", "aiff", "flac", "pcm", "m4a", "ogg", "wma"
         )) {
             type = "audio";
-        } else if (file.getFileSize() < 10 * 1024 * 1024) { // 限制大小10mb
+        } else if (file.getFileSize() < 100 * 1024 * 1024) { // 限制大小100mb
             if (StringUtil.equalsAnyIgnoreCase(extName,
                     "txt", "text", "log", "yaml", "java",
                     "xml", "json", "htm", "html", "xhtml",
