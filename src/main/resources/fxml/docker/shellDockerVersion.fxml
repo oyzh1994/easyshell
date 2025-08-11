@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditorPane?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerVersionController" prefWidth="900" realHeight="650">
     <FXHBox realHeight="30" flexWidth="100%">
@@ -15,9 +15,9 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellDataTextAreaPane editable="false" fx:id="version" flexHeight="100% - 40" flexWidth="100% - 20">
+    <ShellDataEditorPane editable="false" fx:id="version" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
-    </ShellDataTextAreaPane>
+    </ShellDataEditorPane>
 </FXVBox>

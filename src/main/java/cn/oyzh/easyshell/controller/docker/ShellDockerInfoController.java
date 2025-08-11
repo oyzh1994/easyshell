@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
+import cn.oyzh.easyshell.fx.ShellDataEditorPane;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -28,7 +27,7 @@ public class ShellDockerInfoController extends StageController {
      * 信息
      */
     @FXML
-    private ShellDataTextAreaPane data;
+    private ShellDataEditorPane data;
 
     @FXML
     private void copyInfo() {

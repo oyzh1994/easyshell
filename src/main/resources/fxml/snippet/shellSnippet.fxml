@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.snippet.ShellSnippetTextAreaPane?>
+<?import cn.oyzh.easyshell.fx.snippet.ShellSnippetEditorPane?>
 <?import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeView?>
 <?import cn.oyzh.fx.gui.label.TipsLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
@@ -16,9 +16,9 @@
 
     </ShellSnippetTreeView>
     <FXVBox flexWidth="100% - 240" flexHeight="100%">
-        <ShellSnippetTextAreaPane onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%" flexHeight="100% - 40">
+        <ShellSnippetEditorPane onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%" flexHeight="100% - 40">
 
-        </ShellSnippetTextAreaPane>
+        </ShellSnippetEditorPane>
         <FXHBox realHeight="40">
             <RunSVGGlyph tipText="%base.send" appendTipText="(Ctrl+R/Meta+R)" onMousePrimaryClicked="#run">
                 <FXHBox.margin>

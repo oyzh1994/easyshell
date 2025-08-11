@@ -13,7 +13,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellSnippetTextAreaPane extends EditorPane {
+public class ShellSnippetEditorPane extends EditorPane {
     //
     // @Override
     // protected Font initFont() {

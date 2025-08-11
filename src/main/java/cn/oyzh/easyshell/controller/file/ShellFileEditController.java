@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
+import cn.oyzh.easyshell.fx.ShellDataEditorPane;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.EditorFormatType;
 import cn.oyzh.fx.editor.EditorFormatTypeComboBox;
@@ -60,7 +60,7 @@ public class ShellFileEditController extends StageController {
      * 数据
      */
     @FXML
-    private ShellDataTextAreaPane data;
+    private ShellDataEditorPane data;
 
     /**
      * 格式

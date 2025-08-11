@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.ShellJsonTextAreaPane;
+import cn.oyzh.easyshell.fx.ShellJsonEditorPane;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
@@ -45,7 +45,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
      * cpu图表
      */
     @FXML
-    private ShellJsonTextAreaPane data;
+    private ShellJsonEditorPane data;
 
     @FXML
     private void refresh() {

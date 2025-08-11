@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.fx.ShellDataTextAreaPane;
+import cn.oyzh.easyshell.fx.ShellDataEditorPane;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -30,7 +30,7 @@ public class ShellDockerLogsController extends StageController {
      * 日志
      */
     @FXML
-    private ShellDataTextAreaPane data;
+    private ShellDataEditorPane data;
 
     /**
      * 过滤

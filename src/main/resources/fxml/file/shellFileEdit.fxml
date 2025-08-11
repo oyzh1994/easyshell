@@ -8,7 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataTextAreaPane?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditorPane?>
 <?import cn.oyzh.fx.editor.EditorFormatTypeComboBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileEditController" prefWidth="1200" realHeight="650">
@@ -40,9 +40,9 @@
             </FXHBox.margin>
         </SaveSVGGlyph>
     </FXHBox>
-    <ShellDataTextAreaPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
+    <ShellDataEditorPane onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
-    </ShellDataTextAreaPane>
+    </ShellDataEditorPane>
 </FXVBox>
