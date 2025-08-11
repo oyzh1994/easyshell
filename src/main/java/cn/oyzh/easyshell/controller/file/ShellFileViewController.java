@@ -173,15 +173,41 @@ public class ShellFileViewController extends StageController {
             this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
             this.txt.display();
+            // TODO: 监听事件
+            // 内容高亮
+            this.filter.addTextChangeListener((observableValue, s, t1) -> {
+                this.txt.setHighlightText(t1);
+            });
+            // 编辑器格式变化
+            this.txt.formatTypeProperty().addListener((observableValue, old, t1) -> {
+                this.format.select(t1);
+            });
+            // 下拉框格式变化
+            this.format.selectedItemChanged((observableValue, old, t1) -> {
+                this.txt.setFormatType(t1);
+            });
+            // 字体大小变化
+            this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
+                if (t1 != null) {
+                    this.txt.setFontSize(t1);
+                    // 记录字体大小
+                    this.setting.setEditorFontSize(t1.byteValue());
+                    this.settingStore.update(this.setting);
+                }
+            });
         } else if (this.isImageType()) {
             this.img.setUrl(this.destPath);
             this.img.display();
+            // 布局
+            this.layoutRoot(1);
         } else if (this.isVideoType()) {
             this.video.setUrl(this.destPath);
             this.mediaControl.setup(this.video.getMediaPlayer());
             this.video.play();
             this.video.display();
             this.mediaControl.display();
+            // 布局
+            this.layoutRoot(2);
         } else if (this.isAudioType()) {
             // 图标布局
             this.layoutMusic();
@@ -190,6 +216,15 @@ public class ShellFileViewController extends StageController {
             this.audio.play();
             this.music.display();
             this.mediaControl.display();
+            // TODO: 监听事件
+            // 宽度变化
+            this.root.widthProperty().addListener((observableValue, number, t1) -> {
+                this.layoutMusic();
+            });
+            // 高度变化
+            this.root.heightProperty().addListener((observableValue, number, t1) -> {
+                this.layoutMusic();
+            });
         }
     }
 
@@ -232,10 +267,10 @@ public class ShellFileViewController extends StageController {
             double w = -1;
             if (type == 1) {
                 w = this.img.getRealWidth();
-                w += 35;
+                w += 20;
             } else if (type == 2) {
                 w = this.video.getRealWidth();
-                w += 35;
+                w += 20;
             }
             this.stage.setWidth(Math.max(300, w));
         }, 20);
@@ -249,50 +284,6 @@ public class ShellFileViewController extends StageController {
     private String getData() {
         byte[] content = FileUtil.readBytes(this.destPath);
         return content == null ? "" : new String(content);
-    }
-
-    @Override
-    protected void bindListeners() {
-        super.bindListeners();
-        if (this.isAudioType()) {
-            this.root.widthProperty().addListener((observableValue, number, t1) -> {
-                this.layoutMusic();
-            });
-            this.root.heightProperty().addListener((observableValue, number, t1) -> {
-                this.layoutMusic();
-            });
-        } else if (this.isImageType()) {
-            this.img.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1 != null && t1) {
-                    this.layoutRoot(1);
-                }
-            });
-        } else if (this.isVideoType()) {
-            this.video.visibleProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1 != null && t1) {
-                    this.layoutRoot(2);
-                }
-            });
-        } else if (this.isTxtType() || this.isUnknownType()) {
-            // 内容高亮
-            this.filter.addTextChangeListener((observableValue, s, t1) -> {
-                this.txt.setHighlightText(t1);
-            });
-            this.txt.formatTypeProperty().addListener((observableValue, formatType, t1) -> {
-                this.format.select(t1);
-            });
-            this.format.selectedItemChanged((observableValue, formatType, t1) -> {
-                this.txt.setFormatType(t1);
-            });
-            this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
-                if (t1 != null) {
-                    this.txt.setFontSize(t1);
-                    // 记录字体大小
-                    this.setting.setEditorFontSize(t1.byteValue());
-                    this.settingStore.update(this.setting);
-                }
-            });
-        }
     }
 
     private boolean isAudioType() {
