@@ -35,7 +35,7 @@ public class ShellSSHServerGpuTabController extends SubTabController {
 
     @FXML
     private void refresh() {
-       this.refresh(true);
+        this.refresh(true);
     }
 
     private void refresh(boolean force) {
@@ -44,10 +44,8 @@ public class ShellSSHServerGpuTabController extends SubTabController {
         }
         StageManager.showMask(() -> {
             ShellSSHExec exec = this.client().sshExec();
-            StageManager.showMask(() -> {
-                String output = exec.gpu_info();
-                this.gpuInfo.text(output);
-            });
+            String output = exec.gpu_info();
+            this.gpuInfo.text(output);
         });
     }
 
