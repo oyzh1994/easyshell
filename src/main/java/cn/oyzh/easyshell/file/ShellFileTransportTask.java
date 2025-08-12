@@ -166,12 +166,12 @@ public class ShellFileTransportTask extends ShellFileTask {
     public void doTransport(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
+            // 尝试锁定
+            if (!this.competitor.tryLock(this)) {
+                this.updateStatus(ShellFileStatus.FAILED);
+                return;
+            }
             try {
-                // 尝试锁定
-                if (!this.competitor.tryLock(this)) {
-                    this.updateStatus(ShellFileStatus.FAILED);
-                    return;
-                }
                 this.localClient = this.localClient.forkClient();
                 this.remoteClient = this.remoteClient.forkClient();
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);

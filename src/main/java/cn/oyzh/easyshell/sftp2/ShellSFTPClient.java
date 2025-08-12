@@ -517,7 +517,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     /**
      * 传输竞争器
      */
-    private final Competitor transportCompetitor = new Competitor(2);
+    private final Competitor transportCompetitor = new Competitor(1);
 
     @Override
     public Competitor transportCompetitor() {

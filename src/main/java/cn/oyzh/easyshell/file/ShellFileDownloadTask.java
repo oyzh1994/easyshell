@@ -151,12 +151,12 @@ public class ShellFileDownloadTask extends ShellFileTask {
     public void doDownload(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
+            // 尝试锁定
+            if (!this.competitor.tryLock(this)) {
+                this.updateStatus(ShellFileStatus.FAILED);
+                return;
+            }
             try {
-                // 尝试锁定
-                if (!this.competitor.tryLock(this)) {
-                    this.updateStatus(ShellFileStatus.FAILED);
-                    return;
-                }
                 this.client = this.client.forkClient();
                 this.updateStatus(ShellFileStatus.IN_PREPARATION);
                 // 初始化文件
