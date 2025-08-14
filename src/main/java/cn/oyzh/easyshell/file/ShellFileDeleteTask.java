@@ -56,12 +56,12 @@ public class ShellFileDeleteTask extends ShellFileTask {
      */
     public void doDelete(Runnable finishCallback, Consumer<Exception> errorCallback) {
         this.worker = ThreadUtil.start(() -> {
+            // 尝试锁定
+            if (!this.competitor.tryLock(this)) {
+                this.updateStatus(ShellFileStatus.FAILED);
+                return;
+            }
             try {
-                // 尝试锁定
-                if (!this.competitor.tryLock(this)) {
-                    this.updateStatus(ShellFileStatus.FAILED);
-                    return;
-                }
                 this.client = this.client.forkClient();
                 this.doDelete();
             } catch (Exception ex) {
