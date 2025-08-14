@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.editor.JsonEditorPane;
+import cn.oyzh.fx.editor.rsyntaxtextarea.JsonEditorPane;
 import cn.oyzh.fx.plus.font.FontManager;
 import javafx.scene.text.Font;
 

@@ -10,7 +10,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
-<?import cn.oyzh.fx.editor.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.editor.rsyntaxtextarea.EditorFormatTypeComboBox?>
 <FXVBox fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
     <FXHBox flexWidth="100%" prefHeight="30" fx:id="filterBox" managedBindVisible="true" visible="false">
