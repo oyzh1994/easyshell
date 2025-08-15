@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.editor.rsyntaxtextarea.JsonEditorPane;
+import cn.oyzh.fx.editor.tm4javafx.JsonEditor;
 import cn.oyzh.fx.plus.font.FontManager;
 import javafx.scene.text.Font;
 
@@ -10,7 +10,7 @@ import javafx.scene.text.Font;
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellJsonEditorPane extends JsonEditorPane {
+public class ShellJsonEditorPane extends JsonEditor {
 
 //     @Override
 //     protected Font initFont() {

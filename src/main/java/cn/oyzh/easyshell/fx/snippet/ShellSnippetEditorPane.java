@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx.snippet;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.editor.rsyntaxtextarea.EditorPane;
+import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.font.FontManager;
 import javafx.scene.text.Font;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellSnippetEditorPane extends EditorPane {
+public class ShellSnippetEditorPane extends Editor {
     //
     // @Override
     // protected Font initFont() {
