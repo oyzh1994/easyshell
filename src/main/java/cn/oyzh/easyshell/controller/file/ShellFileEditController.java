@@ -119,7 +119,7 @@ public class ShellFileEditController extends StageController {
                 FileUtil.touch(this.destPath);
                 this.client.get(this.file, this.destPath);
                 String extName = FileNameUtil.extName(this.file.getFilePath());
-                EditorFormatType formatType = EditorFormatType.ofName(extName);
+                EditorFormatType formatType = EditorFormatType.ofExtension(extName);
                 this.data.showData(this.getData(), formatType);
                 this.data.scrollToTop();
             } catch (Exception ex) {
