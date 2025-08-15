@@ -9,9 +9,9 @@ import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditorPane;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.editor.EditorLineNumPolicy;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
-import cn.oyzh.fx.editor.EditorLineNumPolicy;
 import cn.oyzh.fx.gui.media.MediaControlBox;
 import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -164,15 +164,6 @@ public class ShellFileViewController extends StageController {
      */
     private void initView() {
         if (this.isTxtType() || this.isUnknownType()) {
-            // 初始化字体配置
-            this.fontSize.selectSize(this.setting.getEditorFontSize());
-            this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
-            String extName = FileNameUtil.extName(this.file.getFilePath());
-            EditorFormatType formatType = EditorFormatType.ofExtension(extName);
-            this.txt.showData(this.getData(), formatType);
-            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
-            this.txt.scrollToTop();
-            this.txt.display();
             // TODO: 监听事件
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
@@ -195,6 +186,15 @@ public class ShellFileViewController extends StageController {
                     this.settingStore.update(this.setting);
                 }
             });
+            // 初始化字体配置
+            this.fontSize.selectSize(this.setting.getEditorFontSize());
+            this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
+            String extName = FileNameUtil.extName(this.file.getFilePath());
+            EditorFormatType formatType = EditorFormatType.ofExtension(extName);
+            this.txt.showData(this.getData(), formatType);
+            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
+            this.txt.scrollToTop();
+            this.txt.display();
         } else if (this.isImageType()) {
             this.img.setUrl(this.destPath);
             this.img.display();
@@ -209,13 +209,6 @@ public class ShellFileViewController extends StageController {
             // 布局
             this.layoutRoot(2);
         } else if (this.isAudioType()) {
-            // 图标布局
-            this.layoutMusic();
-            this.audio.setUrl(this.destPath);
-            this.mediaControl.setup(this.audio.getMediaPlayer());
-            this.audio.play();
-            this.music.display();
-            this.mediaControl.display();
             // TODO: 监听事件
             // 宽度变化
             this.root.widthProperty().addListener((observableValue, number, t1) -> {
@@ -225,6 +218,13 @@ public class ShellFileViewController extends StageController {
             this.root.heightProperty().addListener((observableValue, number, t1) -> {
                 this.layoutMusic();
             });
+            // 图标布局
+            this.layoutMusic();
+            this.audio.setUrl(this.destPath);
+            this.mediaControl.setup(this.audio.getMediaPlayer());
+            this.audio.play();
+            this.music.display();
+            this.mediaControl.display();
         }
     }
 
