@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -57,16 +58,28 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
         menuItems.add(cancel);
 
         // 重试
-        ShellFileDownloadTask task = list.getFirst();
-        MenuItem retry = MenuItemHelper.retry("12", task::retry);
-        retry.setDisable(list.size() != 1 || !task.isFailed());
+        MenuItem retry = MenuItemHelper.retry("12", () -> this.retry(list));
         menuItems.add(retry);
 
         // 错误
+        ShellFileDownloadTask task = list.getFirst();
         MenuItem errorInfo = MenuItemHelper.errorInfo("12", () -> this.errorInfo(task));
-        errorInfo.setDisable(!task.isFailed());
+        errorInfo.setDisable(list.size() != 1 || !task.isFailed());
         menuItems.add(errorInfo);
         return menuItems;
+    }
+
+    /**
+     * 重试
+     *
+     * @param tasks 任务列表
+     */
+    protected void retry(List<ShellFileDownloadTask> tasks) {
+        for (ShellFileDownloadTask task : tasks) {
+            if (task.isFailed()) {
+                task.retry();
+            }
+        }
     }
 
     /**
