@@ -75,6 +75,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 抗锯齿优化
 //            System.setProperty("prism.text", "t2k");
 //            System.setProperty("prism.lcdtext", "false");
+            // 开启fx的预览功能
+            System.setProperty("javafx.enablePreview", "true");
+            System.setProperty("javafx.suppressPreviewWarning", "true");
             // 关闭BouncyCastle的自签名检查
             System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             // 设置默认异常捕捉器
