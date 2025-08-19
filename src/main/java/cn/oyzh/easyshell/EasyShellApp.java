@@ -2,6 +2,7 @@ package cn.oyzh.easyshell;
 
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
@@ -78,12 +79,19 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 开启fx的预览功能
             System.setProperty("javafx.enablePreview", "true");
             System.setProperty("javafx.suppressPreviewWarning", "true");
+            if (OSUtil.isWindows()) {
+                System.setProperty("systemtray.useWin32", "true");
+                System.setProperty("systemtray.useSwing", "false");
+                System.setProperty("dorkbox.logger.level", "DEBUG"); // 开启调试
+            }
             // 关闭BouncyCastle的自签名检查
             System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
-                ex.printStackTrace();
-                JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
+                if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
+                    ex.printStackTrace();
+                    JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
+                }
             });
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());
