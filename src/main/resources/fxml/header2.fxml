@@ -15,8 +15,8 @@
 <FXHeaderBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.controller.HeaderController2"
              prefHeight="30">
     <content>
-        <FXHBox flexHeight="100%">
-            <TransportSVGLabel  tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12">
+        <FXHBox prefHeight="30">
+            <TransportSVGLabel tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12">
                 <FXHBox.margin>
                     <Insets left="10" top="7"/>
                 </FXHBox.margin>

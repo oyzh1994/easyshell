@@ -33,7 +33,6 @@ public class HeaderController2 extends StageController {
      */
     @FXML
     private void setting() {
-//        ShellEventUtil.showSetting();
         ShellViewFactory.setting();
     }
 
@@ -42,7 +41,6 @@ public class HeaderController2 extends StageController {
      */
     @FXML
     private void about() {
-//        ShellEventUtil.showAbout();
         ShellViewFactory.about();
     }
 
@@ -61,7 +59,6 @@ public class HeaderController2 extends StageController {
      */
     @FXML
     private void transport() {
-//        ShellEventUtil.showTransportFile();
         ShellViewFactory.fileTransport(null);
     }
 
@@ -95,7 +92,6 @@ public class HeaderController2 extends StageController {
      */
     @FXML
     private void tool() {
-//        ShellEventUtil.showTool();
         ShellViewFactory.tool();
     }
 
@@ -133,34 +129,9 @@ public class HeaderController2 extends StageController {
         this.layoutPane.layout1();
     }
 
-//    /**
-//     * 布局1
-//     */
-//    @FXML
-//    private void layout1() {
-//        ShellEventUtil.layout1();
-//    }
-//
-//    /**
-//     * 布局2
-//     */
-//    @FXML
-//    private void layout2() {
-//        ShellEventUtil.layout2();
-//    }
-
-//    /**
-//     * 分割面板
-//     */
-//    @FXML
-//    private FXPane splitPane;
-
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
-//        if (OSUtil.isWindows()) {
-//            this.splitPane.setFlexHeight("100% - 282");
-//        }
         this.layoutPane.setTipText(I18nHelper.hiddenLeftSide());
     }
 }
