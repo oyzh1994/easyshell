@@ -529,7 +529,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     @Override
     public boolean chmod(int permissions, String filePath) throws Exception {
         // 操作
-        ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath + " permissions");
+        ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath + " " + permissions);
         // 发送命令到 FTP 服务器
         return this.ftpClient.sendSiteCommand("CHMOD " + permissions + " " + filePath);
     }

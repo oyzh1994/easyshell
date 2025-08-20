@@ -181,7 +181,7 @@ public class ShellFileTransportController extends StageController {
                 if (file.isCurrentFile() || file.isReturnDirectory()) {
                     continue;
                 }
-                if (this.sourceFile.existFile(file.getFileName())) {
+                if (this.targetFile.existFile(file.getFileName())) {
                     exists = true;
                     break;
                 }
