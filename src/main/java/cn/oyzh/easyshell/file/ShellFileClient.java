@@ -560,6 +560,29 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
     boolean chmod(int permissions, String filePath) throws Exception;
 
     /**
+     * 递归设置文件权限
+     *
+     * @param permissions 权限
+     * @param file        文件
+     * @return 结果
+     * @throws Exception 异常
+     */
+    default boolean chmodRecursive(int permissions, E file) throws Exception {
+        String filePath = file.getFilePath();
+        // 设置权限
+        this.chmod(permissions, filePath);
+        // 递归设置
+        if (file.isDirectory()) {
+            // 列举文件
+            List<E> files = this.lsFile(filePath);
+            for (E file1 : files) {
+                this.chmodRecursive(permissions, file1);
+            }
+        }
+        return true;
+    }
+
+    /**
      * 文件信息
      *
      * @param filePath 文件路径
@@ -651,19 +674,5 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
     default boolean isCreateDirRecursiveSupport() {
         return true;
     }
-
-    // String ACTION_cd = "cd";
-    //
-    // String ACTION_chmod = "chmod";
-    //
-    // String ACTION_workdir = "workdir";
-    //
-    // String ACTION_realpath = "realpath";
-    //
-    // String ACTION_putStream = "putStream";
-    //
-    // String ACTION_createDir = "createDir";
-    //
-    // String ACTION_createDirRecursive = "createDirRecursive";
 
 }

@@ -33,6 +33,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -126,7 +128,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             // 开始连接时间
             long starTime = System.currentTimeMillis();
             this.ftpClient.setConnectTimeout(timeout);
-            // this.ftpClient.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
+            this.ftpClient.setDataTimeout(Duration.of(timeout, ChronoUnit.MILLIS));
             this.ftpClient.connect(hostIp, port);
             // 连接失败
             if (!this.isConnected()) {
@@ -527,11 +529,9 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     @Override
     public boolean chmod(int permissions, String filePath) throws Exception {
         // 操作
-        ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath);
-        // 构建 SITE CHMOD 命令
-        String command = "CHMOD " + permissions + " " + filePath;
+        ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath + " permissions");
         // 发送命令到 FTP 服务器
-        return this.ftpClient.sendSiteCommand(command);
+        return this.ftpClient.sendSiteCommand("CHMOD " + permissions + " " + filePath);
     }
 
     @Override

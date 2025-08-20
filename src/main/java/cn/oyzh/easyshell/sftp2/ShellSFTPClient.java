@@ -424,12 +424,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    public boolean chmod(int permission, String filePath) throws Exception {
+    public boolean chmod(int permissions, String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         try {
             // 操作
-            ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath);
-            channel.chmod(permission, filePath);
+            ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath + " " + permissions);
+            channel.chmod(permissions, filePath);
         } finally {
             this.returnChannel(channel);
         }

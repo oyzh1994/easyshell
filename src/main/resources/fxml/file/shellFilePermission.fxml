@@ -13,16 +13,16 @@
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFilePermissionController" prefWidth="800"
         realHeight="630">
-    <InfoLabel text="%base.fileName">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <ReadOnlyTextField fx:id="fileName" realHeight="30" flexWidth="100% - 140">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </ReadOnlyTextField>
+    <!-- <InfoLabel text="%base.fileName"> -->
+    <!--     <VBox.margin> -->
+    <!--         <Insets left="30" top="10"/> -->
+    <!--     </VBox.margin> -->
+    <!-- </InfoLabel> -->
+    <!-- <ReadOnlyTextField fx:id="fileName" realHeight="30" flexWidth="100% - 140"> -->
+    <!--     <VBox.margin> -->
+    <!--         <Insets left="30" top="5"/> -->
+    <!--     </VBox.margin> -->
+    <!-- </ReadOnlyTextField> -->
     <InfoLabel text="%base.group">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -109,12 +109,22 @@
             </FXHBox.margin>
         </FXCheckBox>
     </FXHBox>
+    <InfoLabel text="%base.optional">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXCheckBox disable="true" text="%base.includeSubDir" fx:id="includeSub">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXCheckBox>
     <InfoLabel text="%base.perms">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXLabel fx:id="perms" >
+    <FXLabel fx:id="perms">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -124,7 +134,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXLabel fx:id="preview" >
+    <FXLabel fx:id="preview">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

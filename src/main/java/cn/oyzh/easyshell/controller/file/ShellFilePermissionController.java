@@ -38,11 +38,11 @@ public class ShellFilePermissionController extends StageController {
      */
     private ShellFileClient client;
 
-    /**
-     * 文件名称
-     */
-    @FXML
-    private ReadOnlyTextField fileName;
+    // /**
+    //  * 文件名称
+    //  */
+    // @FXML
+    // private ReadOnlyTextField fileName;
 
     /**
      * 拥有者名称
@@ -111,6 +111,12 @@ public class ShellFilePermissionController extends StageController {
     private FXCheckBox othersE;
 
     /**
+     * 包含子目录
+     */
+    @FXML
+    private FXCheckBox includeSub;
+
+    /**
      * 权限
      */
     @FXML
@@ -131,11 +137,20 @@ public class ShellFilePermissionController extends StageController {
             try {
                 String perms = this.getPerms();
                 int permission = ShellFileUtil.toPermissionInt(perms);
-                if (this.client.chmod(permission, this.file.getFilePath())) {
-                    this.file.setPermissions(perms);
-                    this.closeWindow();
+                if (this.includeSub.isSelected()) {
+                    if (this.client.chmodRecursive(permission, this.file)) {
+                        this.file.setPermissions(perms);
+                        this.closeWindow();
+                    } else {
+                        MessageBox.warn(I18nHelper.operationFail());
+                    }
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    if (this.client.chmod(permission, this.file.getFilePath())) {
+                        this.file.setPermissions(perms);
+                        this.closeWindow();
+                    } else {
+                        MessageBox.warn(I18nHelper.operationFail());
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -165,7 +180,7 @@ public class ShellFilePermissionController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
-        this.fileName.setText(this.file.getFileName());
+        // this.fileName.setText(this.file.getFileName());
         this.ownerName.setText(this.file.getOwner());
         this.groupName.setText(this.file.getGroup());
         if (this.file.hasOwnerReadPermission()) {
@@ -194,6 +209,10 @@ public class ShellFilePermissionController extends StageController {
         }
         if (this.file.hasOthersExecutePermission()) {
             this.othersE.setSelected(true);
+        }
+        // 目录
+        if(this.file.isDirectory()){
+            this.includeSub.enable();
         }
         this.appendTitle("-" + this.file.getFileName());
         this.flushPerms();
