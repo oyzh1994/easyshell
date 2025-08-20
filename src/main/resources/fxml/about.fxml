@@ -81,7 +81,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/FXMisc/RichTextFX">
+                <FXHyperlink text="https://github.com/openjdk/jfx/tree/master/modules/jfx.incubator.richtext">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -198,7 +198,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="%base.terminal" tipText="Terminal for javafx">
+                <InfoLabel text="Terminal for javafx">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -208,7 +208,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="Zmodem">
+                <InfoLabel text="ZModem">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -248,6 +248,26 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="TextMate">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/mkpaz/tm4java">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="TextMate for javafx">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/mkpaz/tm4javafx">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
