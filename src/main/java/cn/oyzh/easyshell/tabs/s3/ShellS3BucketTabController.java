@@ -46,7 +46,7 @@ public class ShellS3BucketTabController extends SubTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         try {
             this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {

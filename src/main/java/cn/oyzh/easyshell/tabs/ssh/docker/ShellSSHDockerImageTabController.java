@@ -73,7 +73,7 @@ public class ShellSSHDockerImageTabController extends SubTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         try {
             super.onTabInit(tab);
             this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {

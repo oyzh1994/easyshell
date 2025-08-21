@@ -66,8 +66,13 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     @FXML
     public void refresh() {
         StageManager.showMask(() -> {
-            String output = this.fileContent();
-            this.data.setText(output);
+            try {
+                String output = this.fileContent();
+                this.data.setText(output);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
         });
     }
 
@@ -91,9 +96,9 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         }
         String text = this.data.getText();
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().sshExec();
-            ShellSFTPClient sftpClient = this.sftpClient();
             try {
+                ShellSSHExec exec = this.client().sshExec();
+                ShellSFTPClient sftpClient = this.sftpClient();
                 // 创建临时文件
                 String tempFile;
                 if (filePath.startsWith("~")) {
@@ -134,15 +139,20 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         }
         ShellSSHExec exec = this.client().sshExec();
         StageManager.showMask(() -> {
-            String output = exec.source(this.filePath());
-            if (!StringUtil.isBlank(output)) {
-                MessageBox.warn(output);
+            try {
+                String output = exec.source(this.filePath());
+                if (!StringUtil.isBlank(output)) {
+                    MessageBox.warn(output);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
             }
         });
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         this.contentTab().selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {

@@ -344,7 +344,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         // 快捷键
         this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {

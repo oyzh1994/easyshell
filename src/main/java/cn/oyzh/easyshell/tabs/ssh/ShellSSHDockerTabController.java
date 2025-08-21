@@ -109,7 +109,7 @@ public class ShellSSHDockerTabController extends ParentTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         this.docker.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {

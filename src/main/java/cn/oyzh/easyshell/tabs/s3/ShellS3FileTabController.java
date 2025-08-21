@@ -139,7 +139,7 @@ public class ShellS3FileTabController extends SubTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         try {
             super.onTabInit(tab);
             // 监听位置

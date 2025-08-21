@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
 /**
@@ -30,7 +31,7 @@ public class ShellKeyTabController extends RichTabController {
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         this.refresh();
     }

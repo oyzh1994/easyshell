@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -107,7 +108,7 @@ public class ShellSplitTabController extends ParentTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         // 收起左侧
         if (this.setting.isHiddenLeftAfterConnected()) {

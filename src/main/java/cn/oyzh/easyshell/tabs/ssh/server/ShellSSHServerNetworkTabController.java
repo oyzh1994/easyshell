@@ -56,7 +56,7 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
     }
 
     @Override
-    public void onTabInit(RichTab tab) {
+    public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (t1) {
