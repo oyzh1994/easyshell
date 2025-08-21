@@ -92,6 +92,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private List<ShellJumpConfig> jumpConfigs;
 
     /**
+     * 客户端转发
+     */
+    @Column
+    private Boolean forwardAgent;
+
+    /**
      * x11转发
      */
     @Column
@@ -976,5 +982,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setSmbShareName(String smbShareName) {
         this.smbShareName = smbShareName;
+    }
+
+    public boolean isForwardAgent() {
+        return BooleanUtil.isTrue(this.forwardAgent);
+    }
+
+    public void setForwardAgent(boolean forwardAgent) {
+        this.forwardAgent = forwardAgent;
     }
 }

@@ -307,6 +307,12 @@ public class ShellAddSSHConnectController extends StageController {
     private FXCheckBox enableZModem;
 
     /**
+     * forwardAgent
+     */
+    @FXML
+    private FXCheckBox forwardAgent;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -387,6 +393,8 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // 客户端转发
+            shellConnect.setForwardAgent(this.forwardAgent.isSelected());
             if (shellConnect.isEnableProxy()) {
                 shellConnect.setProxyConfig(this.getProxyConfig());
             }
@@ -458,6 +466,7 @@ public class ShellAddSSHConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
+            boolean forwardAgent = this.forwardAgent.isSelected();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             boolean enableZModem = this.enableZModem.isSelected();
@@ -473,6 +482,8 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setTermType(termType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             shellConnect.setEnvironment(this.env.getTextTrim());
+            // 客户端转发
+            shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem
             shellConnect.setEnableZModem(enableZModem);
             // 启用压缩

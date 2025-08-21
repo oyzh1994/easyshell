@@ -479,7 +479,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.sshClient = (ShellSSHJGitClient) builder.build();
         // ssh agent处理
         if (this.shellConnect.isSSHAgentAuth()) {
-            this.sshClient.setAgentFactory(new JGitSshAgentFactory(SSHAgentConnectorFactory.INSTANCE, null));
+            this.sshClient.setAgentFactory(new SSHAgentConnectorFactory());
         }
         // 代理处理
         if (this.shellConnect.isEnableProxy()) {
