@@ -152,13 +152,14 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     }
 
     @Override
-    public void onTabInit(FXTab tab) {
-        super.onTabInit(tab);
-        this.contentTab().selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                this.refresh();
-            }
-        });
+    protected void bindListeners() {
+        super.bindListeners();
+        // // 选中时刷新数据
+        // this.contentTab().selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        //     if (t1) {
+        //         this.refresh();
+        //     }
+        // });
         // 快捷键
         this.contentTab().getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (KeyboardUtil.save_keyCombination.match(event)) {
@@ -168,7 +169,6 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
                 }
             } else if (KeyboardUtil.refresh_keyCombination.match(event)) {
                 if (this.refresh != null) {
-
                     this.refresh();
                     event.consume();
                 }
@@ -202,6 +202,11 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
             });
         }
     }
+
+    // @Override
+    // public void onTabInit(FXTab tab) {
+    //     super.onTabInit(tab);
+    // }
 
     public ShellSSHClient client() {
         return this.parent().getClient();

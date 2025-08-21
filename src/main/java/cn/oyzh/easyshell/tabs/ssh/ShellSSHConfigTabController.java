@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHBaseConfigTabController;
@@ -25,6 +26,8 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import cn.oyzh.fx.plus.ext.FXMLResult;
 import cn.oyzh.fx.plus.information.MessageBox;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
@@ -208,15 +211,26 @@ public class ShellSSHConfigTabController extends ParentTabController {
     //  */
     // private boolean initialized = false;
 
+
     @Override
-    public void onTabInit(FXTab tab) {
-        super.onTabInit(tab);
+    protected void bindListeners() {
+        super.bindListeners();
         this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && this.tabPane.isChildEmpty()) {
                 this.loadTabs();
             }
         });
     }
+
+    // @Override
+    // public void onTabInit(FXTab tab) {
+    //     super.onTabInit(tab);
+    //     this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+    //         if (newValue && this.tabPane.isChildEmpty()) {
+    //             this.loadTabs();
+    //         }
+    //     });
+    // }
 
     /**
      * 子控件列表
@@ -241,12 +255,10 @@ public class ShellSSHConfigTabController extends ParentTabController {
         try {
             if (this.client.isWindows()) {
                 FXMLResult result1 = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigWinHostsTab.fxml");
-                this.tabPane.addTab(result1.node());
-                FXMLResult result2 = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigWinSshdTab.fxml");
-                this.tabPane.addTab(result2.node());
-                FXMLResult result3 = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigWinEnvironmentTab.fxml");
                 this.initSubTab(result1);
+                FXMLResult result2 = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigWinSshdTab.fxml");
                 this.initSubTab(result2);
+                FXMLResult result3 = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigWinEnvironmentTab.fxml");
                 this.initSubTab(result3);
             } else {
                 ShellSFTPClient sftpClient = this.client.sftpClient();
@@ -292,6 +304,21 @@ public class ShellSSHConfigTabController extends ParentTabController {
                     this.initSubTab(result);
                 }
             }
+            // 选中时刷新数据
+            this.tabPane.selectedTabChanged((observableValue, tab, t1) -> {
+                for (RichTabController controller : this.subControllers) {
+                    if (controller.getTab() == t1) {
+                        if (controller instanceof ShellSSHBaseConfigTabController controller1) {
+                            controller1.refresh();
+                            break;
+                        }
+                    }
+                }
+            });
+            // 刷新首个数据
+            if (CollectionUtil.getFirst(this.subControllers) instanceof ShellSSHBaseConfigTabController controller) {
+                controller.refresh();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -304,16 +331,14 @@ public class ShellSSHConfigTabController extends ParentTabController {
      * @param result fxml解析结果
      */
     private void initSubTab(FXMLResult result) {
+        FXTab tab = result.node();
         if (result.controller() instanceof RichTabController controller) {
             if (controller instanceof SubTabController controller1) {
                 controller1.parent(this);
             }
-            if (this.tabPane.isChildEmpty() && controller instanceof ShellSSHBaseConfigTabController controller2) {
-                controller2.refresh();
-            }
-            controller.onTabInit(result.node());
+            controller.onTabInit(tab);
             this.subControllers.add(controller);
         }
-        this.tabPane.addTab(result.node());
+        this.tabPane.addTab(tab);
     }
 }
