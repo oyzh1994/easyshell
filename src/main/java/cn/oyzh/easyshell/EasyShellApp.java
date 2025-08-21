@@ -79,8 +79,6 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 开启fx的预览功能
             System.setProperty("javafx.enablePreview", "true");
             System.setProperty("javafx.suppressPreviewWarning", "true");
-            // 关闭BouncyCastle的自签名检查
-            System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
@@ -88,6 +86,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
                     JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
                 }
             });
+            // 关闭BouncyCastle的自签名检查
+            System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
