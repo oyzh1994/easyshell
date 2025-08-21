@@ -37,7 +37,7 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ShellDataEditorPane fx:id="data" flexWidth="100% - 10"
+        <ShellDataEditorPane formatType="HOSTS" fx:id="data" flexWidth="100% - 10"
                              flexHeight="100% - 40">
             <FXVBox.margin>
                 <Insets left="5" top="5"/>

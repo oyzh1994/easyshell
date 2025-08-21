@@ -270,7 +270,7 @@ public class ShellSSHConfigTabController extends ParentTabController {
                     FXMLResult result = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigResolvTab.fxml");
                     this.initSubTab(result);
                 }
-                if (sftpClient.exist("/etc/sshd_config")) {
+                if (sftpClient.exist("/etc/ssh/sshd_config")) {
                     FXMLResult result = FXMLLoaderExt.loadFromUrl("/tabs/ssh/config/shellSSHConfigSshdTab.fxml");
                     this.initSubTab(result);
                 }
