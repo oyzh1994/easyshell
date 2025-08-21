@@ -16,6 +16,7 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -119,6 +120,12 @@ public class ShellUpdateJumpController extends StageController {
     private FXToggleSwitch enable;
 
     /**
+     * forwardAgent
+     */
+    @FXML
+    private FXCheckBox forwardAgent;
+
+    /**
      * 获取连接地址
      *
      * @return 连接地址
@@ -144,6 +151,7 @@ public class ShellUpdateJumpController extends StageController {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setHost(host);
+            shellConnect.setForwardAgent(this.forwardAgent.isSelected());
             // 认证信息
             shellConnect.setUser(this.sshUser.getTextTrim());
             shellConnect.setPassword(this.sshPassword.getPassword());
@@ -187,7 +195,9 @@ public class ShellUpdateJumpController extends StageController {
             String host = this.sshHost.getTextTrim();
             int timeout = this.sshTimeout.getIntValue();
             String authType = this.sshAuthMethod.getAuthType();
+            boolean forwardAgent = this.forwardAgent.isSelected();
             String certificatePwd = this.sshCertificatePwd.getPassword();
+
             this.config.setName(name);
             this.config.setPort(port);
             this.config.setHost(host);
@@ -195,6 +205,7 @@ public class ShellUpdateJumpController extends StageController {
             this.config.setPassword(password);
             this.config.setAuthMethod(authType);
             this.config.setTimeout(timeout * 1000);
+            this.config.setForwardAgent(forwardAgent);
             // 按需设置为路径或者id
             if (this.sshAuthMethod.isManagerAuth()) {
                 this.config.setCertificatePath(key.getId());
@@ -267,6 +278,7 @@ public class ShellUpdateJumpController extends StageController {
             this.sshAuthMethod.selectLast();
             this.sshKey.selectById(this.config.getCertificatePath());
         }
+        this.forwardAgent.setSelected(this.config.isForwardAgent());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

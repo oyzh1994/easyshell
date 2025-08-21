@@ -18,6 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController" realWidth="750"
         realHeight="530">
@@ -124,16 +125,23 @@
             </HBox.margin>
         </PasswordTextField>
     </FXHBox>
-    <InfoLabel text="%base.status">
+    <InfoLabel text="%base.options">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <EnabledToggleSwitch fx:id="enable" selected="true">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </EnabledToggleSwitch>
+    <FXHBox>
+        <EnabledToggleSwitch fx:id="enable" selected="true">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </EnabledToggleSwitch>
+        <FXCheckBox fx:id="forwardAgent" text="Forward agent" fontSize="11">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
     <FXHBox>
         <TestButton onAction="#testConnect" iconSizePercent="0.8">
             <HBox.margin>

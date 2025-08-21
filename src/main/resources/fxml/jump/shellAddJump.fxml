@@ -18,6 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellAddJumpController" realWidth="750"
         realHeight="530">
@@ -98,7 +99,8 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </PasswordTextField>
-        <ShellKeyComboBox prefHeight="30" tipText="%base.privateKeyTip" fx:id="sshKey" visible="false" managedBindVisible="true" require="true" realHeight="30" groupId="sshKey"
+        <ShellKeyComboBox prefHeight="30" tipText="%base.privateKeyTip" fx:id="sshKey" visible="false"
+                          managedBindVisible="true" require="true" realHeight="30" groupId="sshKey"
                           flexWidth="100% - 340">
             <HBox.margin>
                 <Insets left="10" top="5"/>
@@ -116,7 +118,8 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </ChooseFileTextField>
-        <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true" visible="false" managedBindVisible="true"
+        <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true" visible="false"
+                           managedBindVisible="true"
                            groupId="certificate"
                            fx:id="sshCertificatePwd" prefWidth="100">
             <HBox.margin>
@@ -124,16 +127,23 @@
             </HBox.margin>
         </PasswordTextField>
     </FXHBox>
-    <InfoLabel text="%base.status">
+    <InfoLabel text="%base.options">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <EnabledToggleSwitch fx:id="enable" selected="true">
-        <VBox.margin>
-            <Insets left="30" top="5"/>
-        </VBox.margin>
-    </EnabledToggleSwitch>
+    <FXHBox>
+        <EnabledToggleSwitch fx:id="enable" selected="true">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </EnabledToggleSwitch>
+        <FXCheckBox fx:id="forwardAgent" text="Forward agent" fontSize="11">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
     <FXHBox>
         <TestButton onAction="#testConnect" iconSizePercent="0.8">
             <HBox.margin>
