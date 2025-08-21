@@ -198,11 +198,11 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 return;
             }
             // 初始化
-            // if (OSUtil.isWindows()) {
-            //     TrayManager.init(ShellConst.ICON_24_PATH);
-            // } else {
-            TrayManager.init(ShellConst.ICON_PATH);
-            // }
+            if (OSUtil.isWindows()) {
+                TrayManager.init(ShellConst.ICON_24_PATH);
+            } else {
+                TrayManager.init(ShellConst.ICON_PATH);
+            }
             // 设置标题
             TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
             // 打开主页
