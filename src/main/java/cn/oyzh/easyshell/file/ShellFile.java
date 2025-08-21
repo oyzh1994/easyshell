@@ -50,6 +50,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.f.FileFlacSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.f.FileFlvSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.f.FileFsharpSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.g.FileGifSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.g.FileGitIgnoreSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.g.FileGitRebaseSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.g.FileGoSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.g.FileGradleSVGGlyph;
@@ -114,6 +115,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.r.FileRtfSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.r.FileRubySVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.r.FileRustSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.s.FileSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.s.FileSasSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.s.FileScalaSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.s.FileScssSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.s.FileSearchResultSVGGlyph;
@@ -620,6 +622,10 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new FileBibtexSVGGlyph("12");
             } else if (FileNameUtil.isGitRebaseType(extName)) {
                 glyph = new FileGitRebaseSVGGlyph("12");
+            } else if (FileNameUtil.isSasType(extName)) {
+                glyph = new FileSasSVGGlyph("12");
+            } else if (FileNameUtil.isGitIgnoreType(extName)) {
+                glyph = new FileGitIgnoreSVGGlyph("12");
             } else {
                 glyph = new FileSVGGlyph("12");
             }
