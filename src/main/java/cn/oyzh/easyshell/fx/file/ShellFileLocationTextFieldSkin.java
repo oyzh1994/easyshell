@@ -76,11 +76,19 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
         this.itemListSupplier = itemListSupplier;
     }
 
+    // @Override
+    // protected void onPopupShowing(WindowEvent event) {
+    //     if (this.itemListSupplier != null) {
+    //         this.setItemList(this.itemListSupplier.get());
+    //     }
+    //     super.onPopupShowing(event);
+    // }
+
     @Override
-    protected void onPopupShowing(WindowEvent event) {
+    protected void initPopup() {
+        super.initPopup();
         if (this.itemListSupplier != null) {
             this.setItemList(this.itemListSupplier.get());
         }
-        super.onPopupShowing(event);
     }
 }
