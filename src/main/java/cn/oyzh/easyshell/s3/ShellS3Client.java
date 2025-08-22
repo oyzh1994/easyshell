@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.util.ShellProxyUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -142,9 +143,18 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         String secretKey = this.connect.getPassword();
         // 创建凭证提供者
         this.credentialsProvider = StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey));
+
         // http客户端
-        UrlConnectionHttpClient httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
-                .build();
+        UrlConnectionHttpClient httpClient;
+        // 代理处理
+        // if (this.connect.isEnableProxy()) {
+            httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
+                    .proxyConfiguration(ShellProxyUtil.initProxy2(this.connect.getProxyConfig()))
+                    .build();
+        // } else {// 正常处理
+        //     httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
+        //             .build();
+        // }
 
         // s3配置
         S3Configuration s3Configuration;

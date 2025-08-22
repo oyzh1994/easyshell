@@ -3,8 +3,11 @@ package cn.oyzh.easyshell.controller.connect.s3;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
 import cn.oyzh.easyshell.s3.ShellS3Util;
@@ -16,8 +19,11 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -106,7 +112,61 @@ public class ShellAddS3ConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
-     * 区域
+     * 开启代理
+     */
+    @FXML
+    private FXToggleSwitch enableProxy;
+
+    /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 代理地址
+     */
+    @FXML
+    private ClearableTextField proxyHost;
+
+    /**
+     * 代理端口
+     */
+    @FXML
+    private NumberTextField proxyPort;
+
+    /**
+     * 代理信息组件
+     */
+    @FXML
+    private FXHBox proxyAuthInfoBox;
+
+    /**
+     * 代理用户
+     */
+    @FXML
+    private ClearableTextField proxyUser;
+
+    /**
+     * 代理密码
+     */
+    @FXML
+    private PasswordTextField proxyPassword;
+
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolComboBox proxyProtocol;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeComboBox proxyAuthType;
+
+    /**
+     * 代理认证方式
      */
     @FXML
     private ShellS3RegionTextField region;
@@ -136,6 +196,22 @@ public class ShellAddS3ConnectController extends StageController {
     }
 
     /**
+     * 获取代理配置信息
+     *
+     * @return 代理配置信息
+     */
+    private ShellProxyConfig getProxyConfig() {
+        ShellProxyConfig proxyConfig = new ShellProxyConfig();
+        proxyConfig.setHost(this.proxyHost.getText());
+        proxyConfig.setPort(this.proxyPort.getIntValue());
+        proxyConfig.setUser(this.proxyUser.getTextTrim());
+        proxyConfig.setPassword(this.proxyPassword.getPassword());
+        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
+        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
+        return proxyConfig;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -153,11 +229,14 @@ public class ShellAddS3ConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // s3独有
             shellConnect.setS3Type(this.type.getType());
             shellConnect.setRegion(this.region.getText());
             shellConnect.setS3AppId(this.appId.getTextTrim());
+            ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
 
@@ -199,6 +278,9 @@ public class ShellAddS3ConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
+            // 代理配置
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // s3独有
             shellConnect.setS3Type(type);
             shellConnect.setRegion(region);
@@ -236,6 +318,27 @@ public class ShellAddS3ConnectController extends StageController {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            }
+        });
+        // 代理配置
+        this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.proxyTab, "proxy");
+                if (this.proxyAuthType.isPasswordAuth()) {
+                    this.proxyAuthInfoBox.enable();
+                } else {
+                    this.proxyAuthInfoBox.disable();
+                }
+            } else {
+                NodeGroupUtil.disable(this.proxyTab, "proxy");
+            }
+        });
+        // 代理认证配置
+        this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthType.isPasswordAuth()) {
+                this.proxyAuthInfoBox.enable();
+            } else {
+                this.proxyAuthInfoBox.disable();
             }
         });
     }
