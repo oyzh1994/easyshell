@@ -130,8 +130,8 @@ public class ShellConnectUtil {
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
+                    // } else {
+                        // MessageBox.warn(I18nHelper.connectFail());
                     }
                 } else if (shellConnect.isRloginType()) {
                     ShellRLoginClient client = new ShellRLoginClient(shellConnect);

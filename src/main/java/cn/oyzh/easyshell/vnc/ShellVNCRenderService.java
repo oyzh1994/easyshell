@@ -22,7 +22,7 @@ public class ShellVNCRenderService extends VncRenderService {
         // 异常处理
         this.exceptionCaughtProperty().addListener((observable, oldValue, newValue) -> {
             // 认证失败的有单独的弹窗
-            if (!ExceptionUtil.hasMessage(newValue, "Authentication failure")) {
+            if (!ExceptionUtil.hasMessage(newValue, "Authentication failed")) {
                 MessageBox.exception(newValue);
             }
         });
