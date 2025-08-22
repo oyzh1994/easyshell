@@ -539,7 +539,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.sshClient.start();
         // 测试环境使用，生产环境需替换
         this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
-        // 设置密码工厂
+        // 设置密钥工厂
         this.sshClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         // 心跳
         this.sshClient.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(60));
