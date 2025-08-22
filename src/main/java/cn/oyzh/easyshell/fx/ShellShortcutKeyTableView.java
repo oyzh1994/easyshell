@@ -73,8 +73,8 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         } else {
             data.add(KeyValueProperty.of("Ctrl + 1..9 (^ + 1..9)", I18nHelper.switchTab()));
         }
-        data.add(KeyValueProperty.of("HOME", I18nHelper.headOfLine()));
-        data.add(KeyValueProperty.of("END", I18nHelper.endOfLine()));
+        data.add(KeyValueProperty.of("Home", I18nHelper.headOfLine()));
+        data.add(KeyValueProperty.of("End", I18nHelper.endOfLine()));
         data.add(KeyValueProperty.of("Shift + PageUp (⇧ + ⇞)", ShellI18nHelper.termTip5()));
         data.add(KeyValueProperty.of("Shift + PageDown (⇧ + ⇟)", ShellI18nHelper.termTip6()));
         if (OSUtil.isMacOS()) {
