@@ -151,7 +151,7 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox fx:id="forwardAgent" text="Forward agent" fontSize="11">
+                    <FXCheckBox fx:id="forwardAgent" text="ForwardAgent" fontSize="11">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
