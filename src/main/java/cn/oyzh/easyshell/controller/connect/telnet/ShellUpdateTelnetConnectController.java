@@ -377,6 +377,19 @@ public class ShellUpdateTelnetConnectController extends StageController {
         // 背景配置
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
+        // 代理配置
+        this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
+        ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+        if (proxyConfig != null) {
+            this.proxyHost.setValue(proxyConfig.getHost());
+            this.proxyPort.setValue(proxyConfig.getPort());
+            this.proxyUser.setValue(proxyConfig.getUser());
+            this.proxyProtocol.select(proxyConfig.getProtocol());
+            this.proxyPassword.setValue(proxyConfig.getPassword());
+            if (proxyConfig.isPasswordAuth()) {
+                this.proxyAuthType.select(1);
+            }
+        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
