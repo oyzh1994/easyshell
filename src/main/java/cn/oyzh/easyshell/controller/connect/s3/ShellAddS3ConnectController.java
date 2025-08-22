@@ -166,7 +166,7 @@ public class ShellAddS3ConnectController extends StageController {
     private ShellProxyAuthTypeComboBox proxyAuthType;
 
     /**
-     * 代理认证方式
+     * 区域
      */
     @FXML
     private ShellS3RegionTextField region;

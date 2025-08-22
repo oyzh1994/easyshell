@@ -13,12 +13,14 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.util.ShellProxyUtil;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.protocol.commons.socket.ProxySocketFactory;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.SmbConfig;
 import com.hierynomus.smbj.auth.AuthenticationContext;
@@ -37,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -102,11 +105,15 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      * 初始化客户端
      */
     private void initClient() {
-        SmbConfig config = SmbConfig.builder()
+        SmbConfig.Builder builder = SmbConfig.builder()
                 .withTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withReadTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
-                .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
-                .build();
+                .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS);
+        if (this.connect.isEnableProxy()) {
+            Proxy proxy = ShellProxyUtil.initProxy1(this.connect.getProxyConfig());
+            builder.withSocketFactory(new ProxySocketFactory(proxy, this.connectTimeout()));
+        }
+        SmbConfig config = builder.build();
         this.smbClient = new SMBClient(config);
     }
 

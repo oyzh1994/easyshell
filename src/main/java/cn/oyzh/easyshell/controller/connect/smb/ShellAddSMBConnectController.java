@@ -3,8 +3,11 @@ package cn.oyzh.easyshell.controller.connect.smb;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.smb.ShellSMBUserTextField;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -15,9 +18,13 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -103,6 +110,60 @@ public class ShellAddSMBConnectController extends StageController {
     private ClearableTextField shareName;
 
     /**
+     * 开启代理
+     */
+    @FXML
+    private FXToggleSwitch enableProxy;
+
+    /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 代理地址
+     */
+    @FXML
+    private ClearableTextField proxyHost;
+
+    /**
+     * 代理端口
+     */
+    @FXML
+    private NumberTextField proxyPort;
+
+    /**
+     * 代理信息组件
+     */
+    @FXML
+    private FXHBox proxyAuthInfoBox;
+
+    /**
+     * 代理用户
+     */
+    @FXML
+    private ClearableTextField proxyUser;
+
+    /**
+     * 代理密码
+     */
+    @FXML
+    private PasswordTextField proxyPassword;
+
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolComboBox proxyProtocol;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeComboBox proxyAuthType;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -134,6 +195,22 @@ public class ShellAddSMBConnectController extends StageController {
     }
 
     /**
+     * 获取代理配置信息
+     *
+     * @return 代理配置信息
+     */
+    private ShellProxyConfig getProxyConfig() {
+        ShellProxyConfig proxyConfig = new ShellProxyConfig();
+        proxyConfig.setHost(this.proxyHost.getText());
+        proxyConfig.setPort(this.proxyPort.getIntValue());
+        proxyConfig.setUser(this.proxyUser.getTextTrim());
+        proxyConfig.setPassword(this.proxyPassword.getPassword());
+        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
+        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
+        return proxyConfig;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -151,9 +228,12 @@ public class ShellAddSMBConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
             // s3独有
             shellConnect.setSmbShareName(this.shareName.getTextTrim());
+            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
 
@@ -198,6 +278,9 @@ public class ShellAddSMBConnectController extends StageController {
             shellConnect.setPassword(password.trim());
             // s3独有
             shellConnect.setSmbShareName(shareName);
+            // 代理配置
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 分组及类型
             shellConnect.setType("smb");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -219,6 +302,39 @@ public class ShellAddSMBConnectController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 连接ip处理
+        this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
+            // 内容包含“:”，则直接切割字符为ip端口
+            if (t1 != null && t1.contains(":")) {
+                try {
+                    this.hostIp.setText(t1.split(":")[0]);
+                    this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        // 代理配置
+        this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.proxyTab, "proxy");
+                if (this.proxyAuthType.isPasswordAuth()) {
+                    this.proxyAuthInfoBox.enable();
+                } else {
+                    this.proxyAuthInfoBox.disable();
+                }
+            } else {
+                NodeGroupUtil.disable(this.proxyTab, "proxy");
+            }
+        });
+        // 代理认证配置
+        this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthType.isPasswordAuth()) {
+                this.proxyAuthInfoBox.enable();
+            } else {
+                this.proxyAuthInfoBox.disable();
+            }
+        });
     }
 
     @Override
