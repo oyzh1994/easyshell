@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.util.ShellProxyUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -57,6 +58,10 @@ public class ShellTelnetClient implements ShellBaseClient {
     private void initClient() {
         this.client = new TelnetClient();
         this.client.setCharset(ShellBaseClient.super.getCharset());
+        // 代理处理
+        if (this.shellConnect.isEnableProxy()) {
+            this.client.setProxy(ShellProxyUtil.initProxy1(this.shellConnect.getProxyConfig()));
+        }
     }
 
     @Override

@@ -3,8 +3,11 @@ package cn.oyzh.easyshell.controller.connect.telnet;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -15,6 +18,7 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -118,6 +122,60 @@ public class ShellAddTelnetConnectController extends StageController {
     private ChooseFileTextField backgroundImage;
 
     /**
+     * 开启代理
+     */
+    @FXML
+    private FXToggleSwitch enableProxy;
+
+    /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 代理地址
+     */
+    @FXML
+    private ClearableTextField proxyHost;
+
+    /**
+     * 代理端口
+     */
+    @FXML
+    private NumberTextField proxyPort;
+
+    /**
+     * 代理信息组件
+     */
+    @FXML
+    private FXHBox proxyAuthInfoBox;
+
+    /**
+     * 代理用户
+     */
+    @FXML
+    private ClearableTextField proxyUser;
+
+    /**
+     * 代理密码
+     */
+    @FXML
+    private PasswordTextField proxyPassword;
+
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolComboBox proxyProtocol;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeComboBox proxyAuthType;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -149,6 +207,22 @@ public class ShellAddTelnetConnectController extends StageController {
     }
 
     /**
+     * 获取代理配置信息
+     *
+     * @return 代理配置信息
+     */
+    private ShellProxyConfig getProxyConfig() {
+        ShellProxyConfig proxyConfig = new ShellProxyConfig();
+        proxyConfig.setHost(this.proxyHost.getText());
+        proxyConfig.setPort(this.proxyPort.getIntValue());
+        proxyConfig.setUser(this.proxyUser.getTextTrim());
+        proxyConfig.setPassword(this.proxyPassword.getPassword());
+        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
+        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
+        return proxyConfig;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -166,6 +240,9 @@ public class ShellAddTelnetConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
+            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -217,6 +294,9 @@ public class ShellAddTelnetConnectController extends StageController {
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);
             shellConnect.setEnableBackground(enableBackground);
+            // 代理配置
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 分组及类型
             shellConnect.setType("telnet");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -256,6 +336,27 @@ public class ShellAddTelnetConnectController extends StageController {
                 NodeGroupUtil.enable(this.backgroundTab, "background");
             } else {
                 NodeGroupUtil.disable(this.backgroundTab, "background");
+            }
+        });
+        // 代理配置
+        this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.proxyTab, "proxy");
+                if (this.proxyAuthType.isPasswordAuth()) {
+                    this.proxyAuthInfoBox.enable();
+                } else {
+                    this.proxyAuthInfoBox.disable();
+                }
+            } else {
+                NodeGroupUtil.disable(this.proxyTab, "proxy");
+            }
+        });
+        // 代理认证配置
+        this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthType.isPasswordAuth()) {
+                this.proxyAuthInfoBox.enable();
+            } else {
+                this.proxyAuthInfoBox.disable();
             }
         });
     }

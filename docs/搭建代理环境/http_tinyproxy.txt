@@ -4,10 +4,13 @@ apt update
 apt install tinyproxy -y
 # 2. 配置文件
 vim /etc/tinyproxy/tinyproxy.conf
-# 监听地址和端口
+# 监听地址，连不上请注释
 Listen 127.0.0.1
+# 端口，可调整
 Port 8888
-# 允许所有客户端连接（可根据实际情况调整）
+# 允许所有客户端连接，连不上请注释（可根据实际情况调整）
 Allow 0.0.0.0/0
 # 3. 重启服务
 systemctl restart tinyproxy
+# 4. 启用服务
+systemctl enable tinyproxy

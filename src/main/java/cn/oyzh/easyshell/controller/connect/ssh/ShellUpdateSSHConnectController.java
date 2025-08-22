@@ -411,13 +411,11 @@ public class ShellUpdateSSHConnectController extends StageController {
             shellConnect.setCertificatePwd(this.certificatePwd.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
-            // 代理
-            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 客户端转发
             shellConnect.setForwardAgent(this.forwardAgent.isSelected());
-            if (shellConnect.isEnableProxy()) {
-                shellConnect.setProxyConfig(this.getProxyConfig());
-            }
+            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
