@@ -142,60 +142,134 @@ public class ShellSSHExec implements AutoCloseable {
         return output;
     }
 
+    /**
+     * 查看profile
+     *
+     * @return 结果
+     */
     public String cat_profile() {
-        return this.client.exec("cat /etc/profile");
+        // return this.client.exec("cat /etc/profile");
+        return this.cat_file("/etc/profile");
     }
 
+    /**
+     * 查看环境变量
+     *
+     * @return 结果
+     */
     public String cat_environment() {
         if (this.client.isWindows()) {
             return this.client.exec("set");
         }
-        return this.client.exec("cat /etc/environment");
+        // return this.client.exec("cat /etc/environment");
+        return this.cat_file("/etc/environment");
     }
 
+    /**
+     * 查看解析文件
+     *
+     * @return 结果
+     */
     public String cat_resolv() {
-        return this.client.exec("cat /etc/resolv.conf");
+        // return this.client.exec("cat /etc/resolv.conf");
+        return this.cat_file("/etc/resolv.conf");
     }
 
+    /**
+     * 查看host文件
+     *
+     * @return 结果
+     */
     public String cat_hosts() {
         if (this.client.isWindows()) {
-            return this.client.exec("type C:\\Windows\\System32\\drivers\\etc\\HOSTS");
+            // return this.client.exec("type C:\\Windows\\System32\\drivers\\etc\\HOSTS");
+            return this.cat_file("C:\\Windows\\System32\\drivers\\etc\\HOSTS");
         }
-        return this.client.exec("cat /etc/hosts");
+        // return this.client.exec("cat /etc/hosts");
+        return this.cat_file("/etc/hosts");
     }
 
+    /**
+     * 查看sshd配置
+     *
+     * @return 结果
+     */
     public String cat_sshd_config() {
         if (this.client.isWindows()) {
-            return this.client.exec("type C:\\ProgramData\\ssh\\sshd_config");
+            // return this.client.exec("type C:\\ProgramData\\ssh\\sshd_config");
+            return this.cat_file("C:\\ProgramData\\ssh\\sshd_config");
         }
-        return this.client.exec("cat /etc/ssh/sshd_config");
+        // return this.client.exec("cat /etc/ssh/sshd_config");
+        return this.cat_file("/etc/ssh/sshd_config");
     }
 
+    /**
+     * 查看bash配置
+     *
+     * @return 结果
+     */
     public String cat_bash_bashrc() {
-        return this.client.exec("cat /etc/bash.bashrc");
+        // return this.client.exec("cat /etc/bash.bashrc");
+        return this.cat_file("/etc/bash.bashrc");
     }
 
+    /**
+     * 查看用户profile
+     *
+     * @return 结果
+     */
     public String cat_user_profile() {
-        return this.client.exec("cat ~/.profile");
+        // return this.client.exec("cat ~/.profile");
+        return this.cat_file("~/.profile");
     }
 
+    /**
+     * 查看用户bash profile
+     *
+     * @return 结果
+     */
     public String cat_user_bash_profile() {
-        return this.client.exec("cat ~/.bash_profile");
+        // return this.client.exec("cat ~/.bash_profile");
+        return this.cat_file("~/.bash_profile");
     }
 
+    /**
+     * 查看用户bash配置
+     *
+     * @return 结果
+     */
     public String cat_user_bashrc() {
-        return this.client.exec("cat ~/.bashrc");
+        // return this.client.exec("cat ~/.bashrc");
+        return this.cat_file("~/.bashrc");
     }
 
+    /**
+     * 查看用户zsh配置
+     *
+     * @return 结果
+     */
     public String cat_user_zshrc() {
-        return this.client.exec("cat ~/.zshrc");
+        // return this.client.exec("cat ~/.zshrc");
+        return this.cat_file("~/.zshrc");
     }
 
+    /**
+     * 执行source命令
+     *
+     * @param file 文件
+     * @return 结果
+     */
     public String source(String file) {
         return this.client.exec("source " + file);
     }
 
-    public String cat_docker_daemon(String filePath) {
+    /**
+     * 查看文件 内容
+     *
+     * @param filePath 文件路径
+     * @return 内容
+     */
+    public String cat_file(String filePath) {
         if (this.client.isWindows()) {
             filePath = ShellFileUtil.fixWindowsFilePath(filePath);
             return this.client.exec("type \"" + filePath + "\"");
@@ -203,14 +277,34 @@ public class ShellSSHExec implements AutoCloseable {
         return this.client.exec("cat " + filePath);
     }
 
+    /**
+     * echo命令
+     *
+     * @param text 内容
+     * @return 结果
+     */
     public String echo(String text) {
         return this.client.exec("echo " + text);
     }
 
+    /**
+     * echo命令
+     *
+     * @param text 内容
+     * @param file 文件
+     * @return 结果
+     */
     public String echo(String text, String file) {
         return this.client.exec("echo \"" + text + "\" > " + file);
     }
 
+    /**
+     * cat命令
+     *
+     * @param sourceFile 源文件
+     * @param targetFile 目标文件
+     * @return 结果
+     */
     public String cat_file(String sourceFile, String targetFile) {
         if (this.client.isMacos() || this.client.isLinux()) {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
@@ -223,10 +317,24 @@ public class ShellSSHExec implements AutoCloseable {
         return this.client.exec("cat " + sourceFile + " > " + targetFile);
     }
 
+    /**
+     * 追加内容
+     *
+     * @param text 文本
+     * @param file 文件
+     * @return 结果
+     */
     public String append(String text, String file) {
         return this.client.exec("echo \"" + text + "\" >> " + file);
     }
 
+    /**
+     * 追加文件
+     *
+     * @param sourceFile 源文件
+     * @param targetFile 目标文件
+     * @return 结果
+     */
     public String append_file(String sourceFile, String targetFile) {
         if (this.client.isMacos() || this.client.isLinux()) {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
@@ -239,6 +347,11 @@ public class ShellSSHExec implements AutoCloseable {
         return this.client.exec("cat " + sourceFile + " >> " + targetFile);
     }
 
+    /**
+     * 执行whoami命令
+     *
+     * @return 结果
+     */
     public String whoami() {
         return this.client.exec("whoami");
     }

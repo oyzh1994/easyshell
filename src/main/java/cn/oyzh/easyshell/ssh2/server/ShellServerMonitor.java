@@ -6,16 +6,34 @@ package cn.oyzh.easyshell.ssh2.server;
  */
 public class ShellServerMonitor {
 
+    /**
+     * cpu使用率
+     */
     private double cpuUsage;
 
+    /**
+     * 内存使用率
+     */
     private double memoryUsage;
 
+    /**
+     * 磁盘读取速度
+     */
     private double diskReadSpeed;
 
+    /**
+     * 磁盘写入速度
+     */
     private double diskWriteSpeed;
 
+    /**
+     * 网络发送速度
+     */
     private double networkSendSpeed;
 
+    /**
+     * 网络接收速度
+     */
     private double networkReceiveSpeed;
 
     public double getDiskReadSpeed() {

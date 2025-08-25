@@ -6,6 +6,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 
 /**
+ * docker执行器
+ *
  * @author oyzh
  * @since 2025-03-13
  */
@@ -21,6 +23,11 @@ public class ShellDockerExec implements AutoCloseable {
         return client;
     }
 
+    /**
+     * 获取容器格式
+     *
+     * @return 结果
+     */
     protected String getContainerFormat() {
         if (this.client.isWindows()) {
             return "\"{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}\"";
@@ -28,6 +35,11 @@ public class ShellDockerExec implements AutoCloseable {
         return "'{{.ID}}\t{{.Image}}\t{{.Command}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}\t{{.Names}}'";
     }
 
+    /**
+     * 获取镜像格式
+     *
+     * @return 结果
+     */
     protected String getImageFormat() {
         if (this.client.isWindows()) {
             return "\"{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}\"";
@@ -35,6 +47,11 @@ public class ShellDockerExec implements AutoCloseable {
         return "'{{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}'";
     }
 
+    /**
+     * 获取历史格式
+     *
+     * @return 结果
+     */
     protected String getHistoryFormat() {
         if (this.client.isWindows()) {
             return "\"{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}\"";
@@ -42,6 +59,11 @@ public class ShellDockerExec implements AutoCloseable {
         return "'{{.ID}}\r\t{{.CreatedAt}}\r\t{{.CreatedBy}}\r\t{{.Size}}\r\t{{.Comment}}'";
     }
 
+    /**
+     * 执行docker ps命令
+     *
+     * @return 结果
+     */
     public String docker_ps() {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker ps --format  \"" + container_format.substring(1, container_format.length() - 1) + "\"");
@@ -49,6 +71,11 @@ public class ShellDockerExec implements AutoCloseable {
         return this.client.exec("docker ps --format " + this.getContainerFormat());
     }
 
+    /**
+     * 执行docker ps -a命令
+     *
+     * @return 结果
+     */
     public String docker_ps_a() {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker ps -a --format \"" + container_format + "\"");
@@ -56,6 +83,11 @@ public class ShellDockerExec implements AutoCloseable {
         return this.client.exec("docker ps -a --format " + this.getContainerFormat());
     }
 
+    /**
+     * 执行docker ps -f 'status=exited' 命令
+     *
+     * @return 结果
+     */
     public String docker_ps_exited() {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker ps -f \"status=exited\" --format \"" + container_format + "\"");
@@ -63,76 +95,176 @@ public class ShellDockerExec implements AutoCloseable {
         return this.client.exec("docker ps -f \"status=exited\" --format " + this.getContainerFormat());
     }
 
+    /**
+     * 执行docker rm命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_rm(String containerId) {
         return this.client.exec("docker rm " + containerId);
     }
 
+    /**
+     * 执行docker logs命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_logs(String containerId) {
         return this.client.exec("docker logs " + containerId);
     }
 
+    /**
+     * 执行docker rename命令
+     *
+     * @param containerId 容器id
+     * @param newName     新名称
+     * @return 结果
+     */
     public String docker_rename(String containerId, String newName) {
         return this.client.exec("docker rename " + containerId + " " + newName);
     }
 
+    /**
+     * 执行docker port命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_port(String containerId) {
         return this.client.exec("docker port " + containerId);
     }
 
+    /**
+     * 执行docker rm -f命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_rm_f(String containerId) {
         return this.client.exec("docker rm -f " + containerId);
     }
 
+    /**
+     * 执行docker start命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_start(String containerId) {
         return this.client.exec("docker start " + containerId);
     }
 
+    /**
+     * 执行docker restart命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_restart(String containerId) {
         return this.client.exec("docker restart " + containerId);
     }
 
+    /**
+     * 执行docker pause命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_pause(String containerId) {
         return this.client.exec("docker pause " + containerId);
     }
 
+    /**
+     * 执行docker unpause命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_unpause(String containerId) {
         return this.client.exec("docker unpause " + containerId);
     }
 
+    /**
+     * 执行docker stop命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_stop(String containerId) {
         return this.client.exec("docker stop " + containerId);
     }
 
+    /**
+     * 执行docker kill命令
+     *
+     * @param containerId 容器id
+     * @return 结果
+     */
     public String docker_kill(String containerId) {
         return this.client.exec("docker kill " + containerId);
     }
 
+    /**
+     * 执行docker rmi命令
+     *
+     * @param imageId 镜像id
+     * @return 结果
+     */
     public String docker_rmi(String imageId) {
         return this.client.exec("docker rmi " + imageId);
     }
 
+    /**
+     * 执行docker rm -f命令
+     *
+     * @param imageId 镜像id
+     * @return 结果
+     */
     public String docker_rmi_f(String imageId) {
         return this.client.exec("docker rmi -f " + imageId);
     }
 
+    /**
+     * 执行docker inspect命令
+     *
+     * @param id id
+     * @return 结果
+     */
     public String docker_inspect(String id) {
         return docker_inspect(id, null);
     }
 
+    /**
+     * 执行docker inspect命令
+     *
+     * @param id     id
+     * @param format 格式
+     * @return 结果
+     */
     public String docker_inspect(String id, String format) {
         if (format == null) {
             return this.client.exec("docker inspect " + id);
         }
-        return this.client.exec("docker inspect --format=" + format + " " + id,3000);
+        return this.client.exec("docker inspect --format=" + format + " " + id, 3000);
     }
 
+    /**
+     * 执行docker images命令
+     *
+     * @return 结果
+     */
     public String docker_images() {
-//        if (this.client.isWindows()) {
-//            return this.client.exec("docker images --format \"" + image_format + "\"");
-//        }
         return this.client.exec("docker images --format " + this.getImageFormat(), 3000);
     }
 
+    /**
+     * 获取docker资源
+     *
+     * @param id id
+     * @return 结果
+     */
     public String docker_resource(String id) {
         StringBuilder builder = new StringBuilder();
         builder.append(this.docker_inspect(id, "{{.HostConfig.Memory}}")).append("\t");
@@ -144,6 +276,13 @@ public class ShellDockerExec implements AutoCloseable {
         return builder.toString();
     }
 
+    /**
+     * 修改docker资源
+     *
+     * @param resource 资源
+     * @param id       id
+     * @return 结果
+     */
     public String docker_update(ShellDockerResource resource, String id) {
         StringBuilder builder = new StringBuilder("docker update");
         if (resource.getMemory() > 0) {
@@ -285,45 +424,88 @@ public class ShellDockerExec implements AutoCloseable {
         return this.client.exec(builder.toString());
     }
 
+    /**
+     * 执行docker info命令
+     *
+     * @return 结果
+     */
     public String docker_info() {
         return this.client.exec("docker info");
     }
 
+    /**
+     * 执行docker version命令
+     *
+     * @return 结果
+     */
     public String docker_version() {
         return this.client.exec("docker version");
     }
 
+    /**
+     * 执行docker-compose version命令
+     *
+     * @return 结果
+     */
     public String docker_compose_version() {
         return this.client.exec("docker-compose version");
     }
 
+    /**
+     * 重启docker
+     *
+     * @return 结果
+     */
     public String docker_restart() {
         return this.client.exec("systemctl restart docker");
     }
 
-    public String docker_v() {
-        return this.client.exec("docker --version");
-    }
+    // public String docker_v() {
+    //     return this.client.exec("docker --version");
+    // }
 
+    /**
+     * 执行docker history命令
+     *
+     * @param imageId 镜像id
+     * @return 结果
+     */
     public String docker_history(String imageId) {
-//        if (this.client.isWindows()) {
-//            return this.client.exec("docker history " + imageId + " --format  \"" + history_format + "\"");
-//        }
         return this.client.exec("docker history " + imageId + " --format " + this.getHistoryFormat());
     }
 
+    /**
+     * 执行docker container prune -f命令
+     *
+     * @return 结果
+     */
     public String docker_container_prune_f() {
         return this.client.exec("docker container prune -f");
     }
 
+    /**
+     * 执行docker image prune -f命令
+     *
+     * @return 结果
+     */
     public String docker_image_prune_f() {
         return this.client.exec("docker image prune -f");
     }
 
+    /**
+     * 执行docker network prune -f命令
+     *
+     * @return 结果
+     */
     public String docker_network_prune_f() {
         return this.client.exec("docker network prune -f");
     }
 
+    /**
+     * 执行docker volume prune -f命令
+     *
+     * @return 结果
+     */
     public String docker_volume_prune_f() {
         return this.client.exec("docker volume prune -f");
     }
@@ -333,6 +515,11 @@ public class ShellDockerExec implements AutoCloseable {
         this.client = null;
     }
 
+    /**
+     * 获取配置文件路径
+     *
+     * @return 配置文件
+     */
     public String getDaemonFilePath() {
         if (this.client.isMacos()) {
             return this.client.getUserHome() + ".docker/daemon.json";

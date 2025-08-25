@@ -6,10 +6,19 @@ package cn.oyzh.easyshell.ssh2.server;
  */
 public class ShellServerNetwork {
 
+    /**
+     * 最后更新时间
+     */
     private long lastUpdateTime;
 
+    /**
+     * 最后发送值
+     */
     private double lastSend = -1;
 
+    /**
+     * 最后接收值
+     */
     private double lastReceive = -1;
 
     public double[] calcSpeed(double[] data) {

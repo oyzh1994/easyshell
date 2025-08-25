@@ -6,12 +6,27 @@ package cn.oyzh.easyshell.ssh2.server;
  */
 public class ShellServerDisk {
 
+    /**
+     * 最后更新时间
+     */
     private long lastUpdateTime;
 
+    /**
+     * 最后读取值
+     */
     private double lastRead = -1;
 
+    /**
+     * 最后写入值
+     */
     private double lastWrite = -1;
 
+    /**
+     * 计算速度
+     *
+     * @param data 数据
+     * @return 速度
+     */
     public double[] calcSpeed(double[] data) {
         double read = data[0];
         double write = data[1];

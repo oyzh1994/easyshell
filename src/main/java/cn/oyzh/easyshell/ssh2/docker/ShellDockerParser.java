@@ -16,8 +16,14 @@ public class ShellDockerParser {
     private ShellDockerParser() {
     }
 
+    /**
+     * 解析容器
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellDockerContainer> ps(String output) {
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
@@ -49,8 +55,14 @@ public class ShellDockerParser {
         return containers;
     }
 
+    /**
+     * 解析镜像
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellDockerImage> images(String output) {
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
@@ -78,6 +90,12 @@ public class ShellDockerParser {
         return images;
     }
 
+    /**
+     * 解析资源
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static ShellDockerResource resource(String output) {
         if (StringUtil.isBlank(output)) {
             return null;
@@ -109,6 +127,12 @@ public class ShellDockerParser {
         return dockerResource;
     }
 
+    /**
+     * 解析端口
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellDockerPort> port(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();
@@ -132,6 +156,12 @@ public class ShellDockerParser {
         return ports;
     }
 
+    /**
+     * 解析镜像历史
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellDockerImageHistory> history(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();

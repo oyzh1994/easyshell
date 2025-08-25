@@ -6,16 +6,34 @@ package cn.oyzh.easyshell.ssh2.exec;
  */
 public class ShellSSHDiskInfo {
 
+    /**
+     * 文件系统
+     */
     private String fileSystem;
 
+    /**
+     * 大小
+     */
     private String size;
 
+    /**
+     * 已用
+     */
     private String used;
 
+    /**
+     * 可用
+     */
     private String avail;
 
+    /**
+     * 使用率
+     */
     private String use;
 
+    /**
+     * 挂载点
+     */
     private String mountedOn;
 
     public String getFileSystem() {

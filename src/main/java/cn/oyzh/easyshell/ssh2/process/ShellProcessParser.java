@@ -18,6 +18,12 @@ import java.util.Map;
  */
 public class ShellProcessParser {
 
+    /**
+     * 解析进程信息，linux
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellProcessInfo> psForLinux(String output) {
         try {
             String[] lines = output.split("\n");
@@ -45,6 +51,12 @@ public class ShellProcessParser {
         return Collections.emptyList();
     }
 
+    /**
+     * 解析进程信息，unix
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellProcessInfo> psForUnix(String output) {
         try {
             String[] lines = output.split("\n");
@@ -72,6 +84,12 @@ public class ShellProcessParser {
         return Collections.emptyList();
     }
 
+    /**
+     * 解析进程信息，macos
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellProcessInfo> psForMacos(String output) {
         try {
             String[] lines = output.split("\n");
@@ -128,6 +146,12 @@ public class ShellProcessParser {
 //        return Collections.emptyList();
 //    }
 
+    /**
+     * 解析进程信息，windows
+     *
+     * @param output 输出
+     * @return 结果
+     */
     public static List<ShellProcessInfo> psForWindows(String output, Map<String, ShellProcessAttr> attrs, long totalMemory) {
         try {
             String[] lines = output.split("\n");

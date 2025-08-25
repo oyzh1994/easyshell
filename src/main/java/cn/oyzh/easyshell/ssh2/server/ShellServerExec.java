@@ -48,6 +48,11 @@ public class ShellServerExec implements AutoCloseable {
         this.network = new ShellServerNetwork();
     }
 
+    /**
+     * 获取服务信息
+     *
+     * @return 服务信息
+     */
     public ShellServerInfo info() {
         ShellServerInfo info = new ShellServerInfo();
         String arch = this.arch();
@@ -297,6 +302,11 @@ public class ShellServerExec implements AutoCloseable {
         return -1;
     }
 
+    /**
+     * 获取文件限制
+     *
+     * @return 文件限制
+     */
     public String ulimit() {
         try {
             if (!this.client.isWindows()) {
@@ -312,6 +322,11 @@ public class ShellServerExec implements AutoCloseable {
         return "N/A";
     }
 
+    /**
+     * 获取系统名称
+     *
+     * @return 系统名称
+     */
     public String uname() {
         try {
             if (this.client.isWindows()) {

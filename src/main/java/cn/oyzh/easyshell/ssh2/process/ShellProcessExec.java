@@ -43,6 +43,11 @@ public class ShellProcessExec implements AutoCloseable {
      */
     private Map<String, ShellProcessAttr> processAttr;
 
+    /**
+     * 获取进程信息
+     *
+     * @return 结果
+     */
     public List<ShellProcessInfo> ps() {
         if (this.client.isWindows()) {
             ShellServerExec serverExec = this.client.serverExec();
@@ -104,6 +109,12 @@ public class ShellProcessExec implements AutoCloseable {
         return Collections.emptyList();
     }
 
+    /**
+     * 杀死进程
+     *
+     * @param pid 进程id
+     * @return 结果
+     */
     public String kill(int pid) {
         if (this.client.isWindows()) {
             String command = "taskkill /PID " + pid;
@@ -112,6 +123,12 @@ public class ShellProcessExec implements AutoCloseable {
         return this.client.exec("kill " + pid);
     }
 
+    /**
+     * 强制杀死进程
+     *
+     * @param pid 进程id
+     * @return 结果
+     */
     public String forceKill(int pid) {
         if (this.client.isWindows()) {
             String command = "taskkill /F /PID " + pid;

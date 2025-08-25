@@ -3,11 +3,10 @@ package cn.oyzh.easyshell.tabs.ssh.docker;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellJsonEditorPane;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
-import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -58,7 +57,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                 String filePath = this.filePath.getText();
                 if (this.sftpClient().exist(filePath)) {
                     ShellSSHExec exec = this.client().sshExec();
-                    String output = exec.cat_docker_daemon(filePath);
+                    String output = exec.cat_file(filePath);
                     this.data.setText(output);
                 }
             } catch (Exception ex) {

@@ -10,38 +10,49 @@ import cn.oyzh.common.object.ObjectCopier;
  */
 public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
 
+    /**
+     * 用户
+     */
     private String user;
 
+    /**
+     * 进程id
+     */
     private int pid;
 
+    /**
+     * 状态
+     */
     private String stat;
 
-    public String getStart() {
-        return start;
-    }
-
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
+    /**
+     * 开始时间
+     */
     private String start;
 
+    /**
+     * cpu总使用时间
+     */
     private String time;
 
+    /**
+     * cpu使用率
+     */
     private double cpuUsage;
 
+    /**
+     * 内存使用率
+     */
     private double memUsage;
 
+    /**
+     * 启动命令
+     */
     private String command;
 
+    /**
+     * rss
+     */
     private double rss;
 
     public double getRss() {
@@ -98,6 +109,22 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
 
     public void setMemUsage(double memUsage) {
         this.memUsage = memUsage;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     @Override

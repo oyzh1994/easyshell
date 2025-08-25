@@ -6,12 +6,24 @@ package cn.oyzh.easyshell.ssh2.server;
  */
 public class ShellServerInfo {
 
+    /**
+     * 文件限制
+     */
     private String ulimit;
 
+    /**
+     * 系统架构
+     */
     private String arch;
 
+    /**
+     * 系统名称
+     */
     private String uname;
 
+    /**
+     * 启动时间
+     */
     private String uptime;
 
     /**
