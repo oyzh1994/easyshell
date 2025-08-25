@@ -231,39 +231,6 @@
                 </FXHBox>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.background" fx:id="backgroundTab">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.enableBackground">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <SwitchToggleSwitch fx:id="enableBackground">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </SwitchToggleSwitch>
-                <InfoLabel text="%base.file">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <!-- <FXHBox groupId="background" disable="true"> -->
-                <ChooseFileTextField groupId="background" editable="true" require="true" realHeight="30"
-                                     flexWidth="100% - 180" fx:id="backgroundImage"
-                                     tipText="%base.fileTip1" disable="true">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ChooseFileTextField>
-                <!--     <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage"> -->
-                <!--         <HBox.margin> -->
-                <!--             <Insets left="5" top="9"/> -->
-                <!--         </HBox.margin> -->
-                <!--     </ChooseSVGGlyph> -->
-                <!-- </FXHBox> -->
-            </FXVBox>
-        </FXTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
         <TestButton onAction="#testConnect" iconSizePercent="0.8">

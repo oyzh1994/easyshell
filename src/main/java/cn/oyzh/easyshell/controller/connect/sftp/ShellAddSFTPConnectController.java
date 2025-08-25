@@ -4,10 +4,13 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -19,9 +22,12 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
@@ -143,6 +149,60 @@ public class ShellAddSFTPConnectController extends StageController {
     private FXCheckBox enableCompress;
 
     /**
+     * 开启代理
+     */
+    @FXML
+    private FXToggleSwitch enableProxy;
+
+    /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 代理地址
+     */
+    @FXML
+    private ClearableTextField proxyHost;
+
+    /**
+     * 代理端口
+     */
+    @FXML
+    private NumberTextField proxyPort;
+
+    /**
+     * 代理信息组件
+     */
+    @FXML
+    private FXHBox proxyAuthInfoBox;
+
+    /**
+     * 代理用户
+     */
+    @FXML
+    private ClearableTextField proxyUser;
+
+    /**
+     * 代理密码
+     */
+    @FXML
+    private PasswordTextField proxyPassword;
+
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolComboBox proxyProtocol;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeComboBox proxyAuthType;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -174,6 +234,22 @@ public class ShellAddSFTPConnectController extends StageController {
     }
 
     /**
+     * 获取代理配置信息
+     *
+     * @return 代理配置信息
+     */
+    private ShellProxyConfig getProxyConfig() {
+        ShellProxyConfig proxyConfig = new ShellProxyConfig();
+        proxyConfig.setHost(this.proxyHost.getText());
+        proxyConfig.setPort(this.proxyPort.getIntValue());
+        proxyConfig.setUser(this.proxyUser.getTextTrim());
+        proxyConfig.setPassword(this.proxyPassword.getPassword());
+        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
+        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
+        return proxyConfig;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -195,6 +271,9 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
             shellConnect.setCertificatePwd(this.certificatePwd.getPassword());
+            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -256,6 +335,9 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setCertificate(certificate);
             shellConnect.setCertificatePwd(certificatePwd);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
+            // 代理配置
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 分组及类型
             shellConnect.setType("sftp");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -311,6 +393,27 @@ public class ShellAddSFTPConnectController extends StageController {
                 NodeGroupUtil.disappear(this.tabPane, "sshAgent");
                 NodeGroupUtil.disappear(this.tabPane, "password");
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
+            }
+        });
+        // 代理配置
+        this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.proxyTab, "proxy");
+                if (this.proxyAuthType.isPasswordAuth()) {
+                    this.proxyAuthInfoBox.enable();
+                } else {
+                    this.proxyAuthInfoBox.disable();
+                }
+            } else {
+                NodeGroupUtil.disable(this.proxyTab, "proxy");
+            }
+        });
+        // 代理认证配置
+        this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthType.isPasswordAuth()) {
+                this.proxyAuthInfoBox.enable();
+            } else {
+                this.proxyAuthInfoBox.disable();
             }
         });
     }

@@ -46,7 +46,6 @@ import org.apache.sshd.common.session.SessionHeartbeatController;
 import org.apache.sshd.common.signature.BuiltinSignatures;
 import org.apache.sshd.common.signature.Signature;
 import org.apache.sshd.core.CoreModuleProperties;
-import org.eclipse.jgit.internal.transport.sshd.agent.JGitSshAgentFactory;
 import org.eclipse.jgit.internal.transport.sshd.proxy.HttpClientConnector;
 import org.eclipse.jgit.internal.transport.sshd.proxy.Socks5ClientConnector;
 import org.eclipse.jgit.transport.CredentialsProvider;
