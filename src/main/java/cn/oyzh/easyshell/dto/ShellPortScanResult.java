@@ -8,8 +8,14 @@ package cn.oyzh.easyshell.dto;
  */
 public class ShellPortScanResult {
 
+    /**
+     * 端口
+     */
     private int port;
 
+    /**
+     * 描述
+     */
     private String desc;
 
     public int getPort() {

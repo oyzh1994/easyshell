@@ -144,13 +144,14 @@ public class ShellSetting extends AppSetting {
             this.x11Path = setting.x11Path;
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
-            // this.showHiddenFile = setting.showHiddenFile;
             this.efficiencyMode = setting.efficiencyMode;
             this.termRefreshRate = setting.termRefreshRate;
+            this.connectShowType = setting.connectShowType;
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
             this.termParseHyperlink = setting.termParseHyperlink;
             this.termCopyOnSelected = setting.termCopyOnSelected;
+            this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.termUseAntialiasing = setting.termUseAntialiasing;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
         }

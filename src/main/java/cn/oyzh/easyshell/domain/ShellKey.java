@@ -11,6 +11,8 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import java.io.Serializable;
 
 /**
+ * 密钥
+ *
  * @author oyzh
  * @since 2023/6/16
  */

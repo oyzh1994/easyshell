@@ -109,6 +109,12 @@ public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config
         this.cookie = t1.getCookie();
     }
 
+    /**
+     * 克隆配置
+     *
+     * @param config 配置
+     * @return 结果
+     */
     public static ShellX11Config clone(ShellX11Config config) {
         if (config == null) {
             return null;

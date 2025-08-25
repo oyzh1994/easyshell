@@ -24,7 +24,6 @@ public class ShellJumpConfig extends SSHConnect implements Serializable {
 
     /**
      * id
-     *
      */
     @Column
     @PrimaryKey
@@ -78,6 +77,12 @@ public class ShellJumpConfig extends SSHConnect implements Serializable {
         return toggleSwitch;
     }
 
+    /**
+     * 克隆配置
+     *
+     * @param configs 配置
+     * @return 结果
+     */
     public static List<ShellJumpConfig> clone(List<ShellJumpConfig> configs) {
         if (CollectionUtil.isEmpty(configs)) {
             return Collections.emptyList();

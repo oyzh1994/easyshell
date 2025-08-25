@@ -89,6 +89,12 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return I18nHelper.dynamic();
     }
 
+    /**
+     * 克隆配置
+     *
+     * @param configs 配置
+     * @return 结果
+     */
     public static List<ShellTunnelingConfig> clone(List<ShellTunnelingConfig> configs) {
         if (CollectionUtil.isEmpty(configs)) {
             return Collections.emptyList();

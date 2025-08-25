@@ -5,6 +5,8 @@ import cn.oyzh.fx.plus.domain.AppGroup;
 import cn.oyzh.store.jdbc.Table;
 
 /**
+ * 分组
+ *
  * @author oyzh
  * @since 2023/6/16
  */
@@ -12,7 +14,7 @@ import cn.oyzh.store.jdbc.Table;
 public class ShellGroup extends AppGroup {
 
     public ShellGroup() {
-
+        super();
     }
 
     public ShellGroup(String gid, String name, boolean expand) {
