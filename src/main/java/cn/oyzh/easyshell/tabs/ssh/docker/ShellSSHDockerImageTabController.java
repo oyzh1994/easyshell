@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -115,7 +114,13 @@ public class ShellSSHDockerImageTabController extends SubTabController {
 
     @FXML
     public void refreshImage() {
-        StageManager.showMask(() -> this.imageTable.loadImage());
+        StageManager.showMask(() -> {
+            try {
+                this.imageTable.loadImage();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     @FXML

@@ -139,23 +139,23 @@ public class ShellDockerRunController extends StageController {
 
     @FXML
     private void run() {
-        try {
-            ShellDockerRun run = new ShellDockerRun();
-            run.setI(this.i.isSelected());
-            run.setD(this.d.isSelected());
-            run.setT(this.t.isSelected());
-            run.setRm(this.rm.isSelected());
-            run.setEnvs(this.envTable.getItems());
-            run.setPorts(this.portTable.getItems());
-            run.setImageId(this.image.getImageId());
-            run.setContainerName(this.name.getText());
-            run.setLabels(this.labelTable.getItems());
-            run.setVolumes(this.volumeTable.getItems());
-            run.setRestart(this.restart.selectedUserData());
-            run.setPrivileged(this.privileged.isSelected());
+        ShellDockerRun run = new ShellDockerRun();
+        run.setI(this.i.isSelected());
+        run.setD(this.d.isSelected());
+        run.setT(this.t.isSelected());
+        run.setRm(this.rm.isSelected());
+        run.setEnvs(this.envTable.getItems());
+        run.setPorts(this.portTable.getItems());
+        run.setImageId(this.image.getImageId());
+        run.setContainerName(this.name.getText());
+        run.setLabels(this.labelTable.getItems());
+        run.setVolumes(this.volumeTable.getItems());
+        run.setRestart(this.restart.selectedUserData());
+        run.setPrivileged(this.privileged.isSelected());
 
-            // 执行
-            StageManager.showMask(() -> {
+        // 执行
+        StageManager.showMask(() -> {
+            try {
                 String output = this.exec.docker_run(run);
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("docker run result: {}", output);
@@ -167,11 +167,12 @@ public class ShellDockerRunController extends StageController {
                     ShellEventUtil.containerRun(this.exec);
                     this.closeWindow();
                 }
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+
     }
 
     /**

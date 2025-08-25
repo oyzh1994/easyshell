@@ -43,9 +43,14 @@ public class ShellSSHServerGpuTabController extends SubTabController {
             return;
         }
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().sshExec();
-            String output = exec.gpu_info();
-            this.gpuInfo.text(output);
+            try {
+                ShellSSHExec exec = this.client().sshExec();
+                String output = exec.gpu_info();
+                this.gpuInfo.text(output);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
         });
     }
 

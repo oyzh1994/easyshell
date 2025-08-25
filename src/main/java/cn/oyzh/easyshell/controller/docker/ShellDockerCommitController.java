@@ -82,8 +82,8 @@ public class ShellDockerCommitController extends StageController {
 
     @FXML
     private void run() {
-        try {
-            StageManager.showMask(() -> {
+        StageManager.showMask(() -> {
+            try {
                 ShellDockerCommit commit = new ShellDockerCommit();
                 commit.setTag(this.tag.getTextTrim());
                 commit.setComment(this.comment.getTextTrim());
@@ -97,10 +97,10 @@ public class ShellDockerCommitController extends StageController {
                     ShellEventUtil.containerCommit(this.exec);
                     this.closeWindow();
                 }
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 }

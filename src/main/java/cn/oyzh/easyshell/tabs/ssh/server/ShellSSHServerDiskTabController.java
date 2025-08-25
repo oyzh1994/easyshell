@@ -5,9 +5,9 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHDiskInfo;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 
@@ -42,7 +42,13 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         if (!force && !this.diskTable.isChildEmpty()) {
             return;
         }
-        StageManager.showMask(this::init);
+        StageManager.showMask(() -> {
+            try {
+                this.init();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     @Override

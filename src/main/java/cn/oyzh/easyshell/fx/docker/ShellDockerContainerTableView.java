@@ -95,7 +95,14 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
     public void setStatus(byte status) {
         if (status != this.status) {
             this.status = status;
-            StageManager.showMask(this::loadContainer);
+            StageManager.showMask(() -> {
+                try {
+                    this.loadContainer();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
         }
     }
 

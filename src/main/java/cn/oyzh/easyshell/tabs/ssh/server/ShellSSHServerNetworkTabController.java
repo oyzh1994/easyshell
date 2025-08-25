@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.tabs.ssh.server;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -43,9 +42,13 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
             return;
         }
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().sshExec();
-            String output = exec.network_interface_info();
-            this.networkCardInfo.text(output);
+            try {
+                ShellSSHExec exec = this.client().sshExec();
+                String output = exec.network_interface_info();
+                this.networkCardInfo.text(output);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
         });
     }
 

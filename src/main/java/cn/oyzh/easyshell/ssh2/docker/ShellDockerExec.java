@@ -123,14 +123,14 @@ public class ShellDockerExec implements AutoCloseable {
         if (format == null) {
             return this.client.exec("docker inspect " + id);
         }
-        return this.client.exec("docker inspect --format=" + format + " " + id);
+        return this.client.exec("docker inspect --format=" + format + " " + id,3000);
     }
 
     public String docker_images() {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker images --format \"" + image_format + "\"");
 //        }
-        return this.client.exec("docker images --format " + this.getImageFormat());
+        return this.client.exec("docker images --format " + this.getImageFormat(), 3000);
     }
 
     public String docker_resource(String id) {

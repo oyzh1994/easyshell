@@ -43,9 +43,14 @@ public class ShellSSHServerCpuTabController extends SubTabController {
             return;
         }
         StageManager.showMask(() -> {
-            ShellSSHExec exec = this.client().sshExec();
-            String output = exec.cpu_info();
-            this.cpuInfo.text(output);
+            try {
+                ShellSSHExec exec = this.client().sshExec();
+                String output = exec.cpu_info();
+                this.cpuInfo.text(output);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
         });
     }
 

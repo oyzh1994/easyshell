@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -124,7 +123,14 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
 //        if (this.containerTable.getExec() == null) {
 //            this.containerTable.setExec(this.client().dockerExec());
 //        }
-        StageManager.showMask(() -> this.containerTable.loadContainer());
+        StageManager.showMask(() -> {
+            try {
+                this.containerTable.loadContainer();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     @FXML
