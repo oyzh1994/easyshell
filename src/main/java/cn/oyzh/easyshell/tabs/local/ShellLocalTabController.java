@@ -3,13 +3,12 @@ package cn.oyzh.easyshell.tabs.local;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.tabs.RichTabController;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -25,7 +24,7 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025/03/20
  */
-public class ShellLocalTabController extends RichTabController implements ShellSnippetAdapter {
+public class ShellLocalTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
     /**
      * 根节点
@@ -69,9 +68,10 @@ public class ShellLocalTabController extends RichTabController implements ShellS
     public void init(ShellConnect shellConnect) throws IOException {
         this.shellConnect = shellConnect;
         // 收起左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout1();
-        }
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout1();
+        // }
+        this.hideLeft();
         // 初始化组件
         this.initWidget();
         // 异步加载背景
@@ -82,10 +82,10 @@ public class ShellLocalTabController extends RichTabController implements ShellS
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.widget.close();
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     public ShellConnect shellConnect() {

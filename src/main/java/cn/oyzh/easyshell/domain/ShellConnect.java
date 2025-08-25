@@ -349,9 +349,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return backgroundImage;
     }
 
+    @JSONField(serialize = false)
     public String getBackgroundImageUrl() {
         // 处理图片
-        if (!StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
+        if (StringUtil.isNotBlank(this.backgroundImage) && !StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
             return ResourceUtil.getLocalFileUrl(backgroundImage);
         }
         return backgroundImage;
@@ -366,6 +367,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      *
      * @return 结果
      */
+    @JSONField(serialize = false)
     public boolean isBackgroundImageInvalid() {
         if (this.isEnableBackground()) {
             if (StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {

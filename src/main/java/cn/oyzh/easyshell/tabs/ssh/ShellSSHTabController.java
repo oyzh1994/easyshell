@@ -2,13 +2,11 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
-import cn.oyzh.fx.gui.tabs.ParentTabController;
+import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -26,7 +24,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/16
  */
-public class ShellSSHTabController extends ParentTabController {
+public class ShellSSHTabController extends ShellParentTabController {
 
     /**
      * shell客户端
@@ -131,9 +129,10 @@ public class ShellSSHTabController extends ParentTabController {
                     return;
                 }
                 // 收起左侧
-                if (this.setting.isHiddenLeftAfterConnected()) {
-                    ShellEventUtil.layout1();
-                }
+                // if (this.setting.isHiddenLeftAfterConnected()) {
+                //     ShellEventUtil.layout1();
+                // }
+                this.hideLeft();
                 // 效率模式
                 if (this.setting.isEfficiencyMode()) {
                     this.effTabController.init();
@@ -159,10 +158,10 @@ public class ShellSSHTabController extends ParentTabController {
         this.client.close();
         // 保存设置
         this.connectStore.update(this.shellConnect());
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     @Override

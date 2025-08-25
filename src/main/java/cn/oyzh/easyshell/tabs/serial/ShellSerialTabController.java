@@ -3,14 +3,13 @@ package cn.oyzh.easyshell.tabs.serial;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
 import cn.oyzh.easyshell.serial.ShellSerialTtyConnector;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -29,7 +28,7 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025/04/24
  */
-public class ShellSerialTabController extends RichTabController implements ShellSnippetAdapter {
+public class ShellSerialTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
     /**
      * 终端组件
@@ -103,9 +102,10 @@ public class ShellSerialTabController extends RichTabController implements Shell
                 // 默认发送一次换行符，因为串口可能未默认返回内容
                 this.client.write("\r");
                 // 收起左侧
-                if (this.setting.isHiddenLeftAfterConnected()) {
-                    ShellEventUtil.layout1();
-                }
+                // if (this.setting.isHiddenLeftAfterConnected()) {
+                //     ShellEventUtil.layout1();
+                // }
+                this.hideLeft();
                 // 初始化组件
                 this.initWidget();
                 // 异步加载背景
@@ -123,10 +123,10 @@ public class ShellSerialTabController extends RichTabController implements Shell
         super.onTabClosed(event);
         this.getClient().close();
         this.widget.close();
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     /**

@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.smb;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
@@ -11,11 +10,10 @@ import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.smb.ShellSMBFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
-import cn.oyzh.fx.gui.tabs.RichTab;
-import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -40,7 +38,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/25
  */
-public class ShellSMBTabController extends RichTabController {
+public class ShellSMBTabController extends ShellBaseTabController {
 
     /**
      * 根节点
@@ -135,9 +133,10 @@ public class ShellSMBTabController extends RichTabController {
                     return;
                 }
                 // 收起左侧
-                if (this.setting.isHiddenLeftAfterConnected()) {
-                    ShellEventUtil.layout1();
-                }
+                // if (this.setting.isHiddenLeftAfterConnected()) {
+                //     ShellEventUtil.layout1();
+                // }
+                this.hideLeft();
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
                 this.hiddenFile(this.shellConnect().isShowHiddenFile());
@@ -165,10 +164,10 @@ public class ShellSMBTabController extends RichTabController {
         this.client.close();
         // 保存设置
         this.connectStore.update(this.shellConnect());
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     @Override

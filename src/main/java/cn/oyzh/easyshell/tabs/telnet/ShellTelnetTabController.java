@@ -3,14 +3,13 @@ package cn.oyzh.easyshell.tabs.telnet;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
 import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -29,7 +28,7 @@ import java.nio.charset.Charset;
  * @author oyzh
  * @since 2025/04/24
  */
-public class ShellTelnetTabController extends RichTabController implements ShellSnippetAdapter {
+public class ShellTelnetTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
     /**
      * 终端组件
@@ -103,9 +102,10 @@ public class ShellTelnetTabController extends RichTabController implements Shell
                     return;
                 }
                 // 收起左侧
-                if (this.setting.isHiddenLeftAfterConnected()) {
-                    ShellEventUtil.layout1();
-                }
+                // if (this.setting.isHiddenLeftAfterConnected()) {
+                //     ShellEventUtil.layout1();
+                // }
+                this.hideLeft();
                 // 初始化组件
                 this.initWidget();
                 // 异步加载背景
@@ -123,10 +123,10 @@ public class ShellTelnetTabController extends RichTabController implements Shell
         super.onTabClosed(event);
         this.getClient().close();
         this.widget.close();
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     /**

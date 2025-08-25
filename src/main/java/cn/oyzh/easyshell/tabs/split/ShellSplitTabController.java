@@ -4,13 +4,10 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.gui.tabs.ParentTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.window.StageManager;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.io.IOException;
@@ -23,7 +20,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/05/29
  */
-public class ShellSplitTabController extends ParentTabController {
+public class ShellSplitTabController extends ShellParentTabController {
 
     /**
      * 终端1
@@ -111,19 +108,20 @@ public class ShellSplitTabController extends ParentTabController {
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         // 收起左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout1();
-        }
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout1();
+        // }
+        this.hideLeft();
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
-    }
+    // @Override
+    // public void onTabClosed(Event event) {
+    //     super.onTabClosed(event);
+    //     // 展开左侧
+    //     if (this.setting.isHiddenLeftAfterConnected()) {
+    //         ShellEventUtil.layout2();
+    //     }
+    // }
 
     @Override
     public List<ShellSplitTermController> getSubControllers() {

@@ -3,11 +3,10 @@ package cn.oyzh.easyshell.tabs.vnc;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.easyshell.vnc.ShellVNCRenderService;
-import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -26,7 +25,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2025/05/23
  */
-public class ShellVNCTabController extends RichTabController {
+public class ShellVNCTabController extends ShellBaseTabController {
 
     /**
      * 根节点
@@ -84,9 +83,10 @@ public class ShellVNCTabController extends RichTabController {
                     return;
                 }
                 // 收起左侧
-                if (this.setting.isHiddenLeftAfterConnected()) {
-                    ShellEventUtil.layout1();
-                }
+                // if (this.setting.isHiddenLeftAfterConnected()) {
+                //     ShellEventUtil.layout1();
+                // }
+                this.hideLeft();
                 // 初始化缩放
                 this.initScale();
             } catch (Throwable ex) {
@@ -119,10 +119,10 @@ public class ShellVNCTabController extends RichTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.client.close();
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     @Override

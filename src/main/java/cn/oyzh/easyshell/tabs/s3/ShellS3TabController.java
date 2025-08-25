@@ -2,10 +2,9 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.gui.tabs.ParentTabController;
+import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -21,7 +20,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/06/14
  */
-public class ShellS3TabController extends ParentTabController {
+public class ShellS3TabController extends ShellParentTabController {
 
     /**
      * 文件
@@ -69,9 +68,10 @@ public class ShellS3TabController extends ParentTabController {
                     return;
                 }
                 // 收起左侧
-                if (this.setting.isHiddenLeftAfterConnected()) {
-                    ShellEventUtil.layout1();
-                }
+                // if (this.setting.isHiddenLeftAfterConnected()) {
+                //     ShellEventUtil.layout1();
+                // }
+                this.hideLeft();
                 this.fileTabController.init();
                 // this.bucketTabController.init();
             } catch (Throwable ex) {
@@ -86,10 +86,10 @@ public class ShellS3TabController extends ParentTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.client.close();
-        // 展开左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+        // // 展开左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout2();
+        // }
     }
 
     @Override
