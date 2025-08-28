@@ -184,7 +184,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      *
      * @return 分组树节点组件
      */
-    private List<ShellGroupTreeItem> getGroupItems() {
+    public List<ShellGroupTreeItem> getGroupItems() {
         List<ShellGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof ShellGroupTreeItem groupTreeItem) {

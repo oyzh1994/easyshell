@@ -292,4 +292,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     private void exportConnect() {
         ShellViewFactory.exportConnect();
     }
+
+    public List<ShellGroupTreeItem> getGroupItems() {
+        return this.root().getGroupItems();
+    }
 }

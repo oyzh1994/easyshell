@@ -1,16 +1,19 @@
 package cn.oyzh.easyshell.trees.connect;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.MoveSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
@@ -53,21 +56,49 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
+        FXMenuItem openConnect = MenuItemHelper.openConnect("12", this::onPrimaryDoubleClick);
+        items.add(openConnect);
         FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
         items.add(editConnect);
         FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
         items.add(renameConnect);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
         items.add(cloneConnect);
+        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
+        items.add(deleteConnect);
+        items.add(MenuItemHelper.separator());
         if (this.isSSHType() || this.isSFTPType() || this.isFTPType()) {
             FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
             items.add(transportFile);
         }
-        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
-        items.add(deleteConnect);
+        // 处理分组移动
+        List<ShellGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
+        Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
+        if (CollectionUtil.isNotEmpty(groupItems)) {
+            for (ShellGroupTreeItem item : groupItems) {
+                MenuItem menuItem = MenuItemHelper.menuItem(item.getGroupName(), () -> this.moveTo(item));
+                if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
+                    menuItem.setDisable(true);
+                }
+                moveTo.getItems().add(menuItem);
+            }
+        } else {
+            moveTo.setDisable(true);
+        }
+        items.add(moveTo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
         return items;
+    }
+
+    /**
+     * 移动到分组
+     *
+     * @param groupItem 分组节点
+     */
+    private void moveTo(ShellGroupTreeItem groupItem) {
+        this.remove();
+        groupItem.addConnectItem(this);
     }
 
     public boolean isSSHType() {
@@ -325,5 +356,9 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public String getId() {
         return this.value.getId();
+    }
+
+    public String getGroupId() {
+        return this.value.getGroupId();
     }
 }

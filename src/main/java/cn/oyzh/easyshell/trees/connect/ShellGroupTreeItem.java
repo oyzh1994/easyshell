@@ -221,8 +221,11 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
         }
     }
 
-    public String getGid() {
+    public String getGroupId() {
         return this.value.getGid();
     }
 
+    public String getGroupName() {
+        return this.value.getName();
+    }
 }
