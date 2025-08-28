@@ -181,7 +181,7 @@ public class ShellServerExec implements AutoCloseable {
                 return 100 - Double.parseDouble(cpuUsage);
             }
             if (this.client.isWindows()) {
-                String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 500);
+                String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 1500);
                 cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
                 if (StringUtil.isBlank(cpuUsage)) {
                     return -1;
