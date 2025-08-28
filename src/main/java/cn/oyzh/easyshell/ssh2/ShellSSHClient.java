@@ -101,7 +101,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * @param output 输出
      */
     private void doResolveWorkerDir(String output) {
-        String workDir = ShellSSHUtil.resolveWorkerDir(output, this.userHome);
+        String workDir = ShellSSHUtil.resolveWorkerDir(output, this.getUserHome());
         // 跟随目录
         if (StringUtil.isNotBlank(workDir)) {
             this.workDirProperty().set(workDir);
