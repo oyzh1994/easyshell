@@ -32,7 +32,7 @@ import java.util.List;
         usePrimary = true,
         fullScreenAble = true,
         alwaysOnTopAble = true,
-        stageStyle = FXStageStyle.EXTENDED,
+        stageStyle = FXStageStyle.DECORATED,
         value = FXConst.FXML_PATH + "main.fxml"
 )
 public class MainController extends ParentStageController {
