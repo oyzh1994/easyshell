@@ -8,14 +8,15 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import javafx.geometry.Insets?>
-<FXTab fx:id="root" text="%base.monitor" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXTab fx:id="root" text="%base.monitor" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHMonitorTabController">
     <graphic>
         <MonitorSVGGlyph sizeStr="11"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox prefHeight="30">
-            <SwitchToggleSwitch unselectedText="%base.disableRefresh" selectedText="%base.enableRefresh" fx:id="refreshBtn" selected="true">
+            <SwitchToggleSwitch unselectedText="%base.disableRefresh" selectedText="%base.enableRefresh"
+                                fx:id="refreshBtn" selected="true">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

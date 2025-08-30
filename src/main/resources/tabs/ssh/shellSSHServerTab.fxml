@@ -5,7 +5,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
-<FXTab fx:id="root" text="%base.server" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXTab fx:id="root" text="%base.server" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController">
     <graphic>
         <ServerSVGGlyph sizeStr="11"/>

@@ -9,13 +9,13 @@
 <?import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.ProcessSVGGlyph?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
-<FXTab fx:id="root" text="%base.process1" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXTab fx:id="root" text="%base.process1" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHProcessTabController">
     <graphic>
         <ProcessSVGGlyph sizeStr="11"/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox prefHeight="30" >
+        <FXHBox prefHeight="30">
             <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
                 <FXHBox.margin>
                     <Insets left="5" top="3"/>
