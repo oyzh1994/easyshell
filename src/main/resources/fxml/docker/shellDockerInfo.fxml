@@ -16,7 +16,7 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellDataEditor editable="false" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
+    <ShellDataEditor formatType="YAML" editable="false" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellJsonEditor?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
@@ -36,11 +36,11 @@
                 </FXHBox.margin>
             </FXLabel>
         </FXHBox>
-        <ShellJsonEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 10"
+        <ShellDataEditor formatType="JSON" onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 10"
                          flexHeight="100% - 40">
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
             </FXVBox.margin>
-        </ShellJsonEditor>
+        </ShellDataEditor>
     </FXVBox>
 </FXTab>

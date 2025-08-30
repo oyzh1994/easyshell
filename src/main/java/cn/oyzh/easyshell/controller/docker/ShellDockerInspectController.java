@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.docker;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.fx.ShellJsonEditor;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -31,7 +31,7 @@ public class ShellDockerInspectController extends StageController {
      * 信息
      */
     @FXML
-    private ShellJsonEditor data;
+    private ShellDataEditor data;
 
     /**
      * 过滤
