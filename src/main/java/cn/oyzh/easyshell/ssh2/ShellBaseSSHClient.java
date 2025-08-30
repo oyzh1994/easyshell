@@ -59,6 +59,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -238,8 +239,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * 初始化环境
      */
-    protected void initEnvironment() {
-        this.environment = new ArrayList<>();
+    protected synchronized void initEnvironment() {
+        this.environment = new CopyOnWriteArrayList<>();
         if (this.isWindows()) {
             this.environment.add("C:/Windows/System");
             this.environment.add("C:/Windows/System32");

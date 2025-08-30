@@ -166,7 +166,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private com.jediterm.core.compatibility.Point mySelectionStartPoint = null;
 
-    private final ObjectProperty<TerminalSelection> mySelection = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<TerminalSelection> mySelection = new SimpleObjectProperty<>();
 
     private final TerminalCopyPasteHandler myCopyPasteHandler;
 
@@ -308,11 +308,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.setChild(this.canvas, scrollBar);
         scrollBar.setOrientation(Orientation.VERTICAL);
 
-        this.addEventFilter(MouseEvent.MOUSE_MOVED, (e) -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_MOVED, (e) -> {
             handleHyperlinks(createPoint(e));
         });
 
-        this.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
             if (!isLocalMouseAction(e)) {
                 return;
             }
@@ -340,13 +340,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         });
 
-        this.addEventFilter(ScrollEvent.SCROLL, e -> {
+        this.canvas.addEventFilter(ScrollEvent.SCROLL, e -> {
             if (isLocalMouseAction(e)) {
                 handleMouseWheelEvent(e, scrollBar);
             }
         });
 
-        this.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
             if (myLinkHoverConsumer != null) {
                 myLinkHoverConsumer.onMouseExited();
                 myLinkHoverConsumer = null;
@@ -354,7 +354,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             updateHoveredHyperlink(null);
         });
 
-        this.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 if (e.getClickCount() == 1) {
                     mySelectionStartPoint = panelToCharCoords(createPoint(e));
@@ -368,7 +368,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         });
 
-        this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             this.requestFocus();
             repaint();
             // TODO: 更新选中内容，解决可能出现多个选区的问题
@@ -377,7 +377,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         });
 
-        this.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+        this.canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
             this.requestFocus();
             // TODO: 隐藏右键菜单
             if (this.popup != null && e.getButton() == MouseButton.PRIMARY) {
@@ -440,7 +440,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         });
 
         myFillCharacterBackgroundIncludingLineSpacing = mySettingsProvider.shouldFillCharacterBackgroundIncludingLineSpacing();
-        this.focusedProperty().addListener((ov, oldV, newV) -> {
+        this.canvas.focusedProperty().addListener((ov, oldV, newV) -> {
             if (newV) {
                 myFillCharacterBackgroundIncludingLineSpacing = mySettingsProvider.shouldFillCharacterBackgroundIncludingLineSpacing();
                 myCursor.cursorChanged();
@@ -459,7 +459,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         createRepaintTimer();
 
         // 事件处理
-        this.addEventFilter(KeyEvent.ANY, this::handleKeyEvent);
+        this.canvas.addEventFilter(KeyEvent.ANY, this::handleKeyEvent);
     }
 
     private boolean isFollowLinkEvent(@NotNull MouseEvent e) {
@@ -628,7 +628,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     protected void selectFindResultItem(SubstringFinder.FindResult.FindItem item) {
         int historyLineCount = getTerminalTextBuffer().getHistoryLinesCount();
         int screenLineCount = getTerminalTextBuffer().getScreenLinesCount();
-        var selection = new TerminalSelection(new com.jediterm.core.compatibility.Point(item.getStart().x,
+        TerminalSelection selection = new TerminalSelection(new com.jediterm.core.compatibility.Point(item.getStart().x,
                 item.getStart().y - myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(item.getEnd().x, item.getEnd().y - myTerminalTextBuffer.getHistoryLinesCount()));
         updateSelection(selection);
@@ -947,7 +947,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         gfx.setFill(getFXBackground());
 
-        gfx.fillRect(0, 0, getWidth(), getHeight());
+        gfx.fillRect(0, 0, this.getTermWidth(), this.getTermHeight());
         this.fixScrollBarThumbVisibility();
 
         try {
@@ -1030,7 +1030,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         resetColorCache();
         drawInputMethodUncommitedChars(gfx);
 
-        drawMargins(gfx, getWidth(), getHeight());
+        drawMargins(gfx, this.getTermWidth(), this.getTermHeight());
     }
 
     private void resetColorCache() {
@@ -1141,11 +1141,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void updateSelection(@Nullable TerminalSelection selection, boolean updateSelectedText) {
-        this.mySelection.set(selection);
-        for (TerminalSelectionChangesListener selectionListener : selectionChangesListeners) {
-            selectionListener.selectionChanged(selection);
+        try {
+            this.mySelection.set(selection);
+            for (TerminalSelectionChangesListener selectionListener : selectionChangesListeners) {
+                selectionListener.selectionChanged(selection);
+            }
+            this.updateSelectedText = updateSelectedText;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        this.updateSelectedText = updateSelectedText;
     }
 
     public double getPixelWidth() {
@@ -1402,8 +1406,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             double xCoord = x * myCharSize.getWidth() + getInsetX();
             double yCoord = y * myCharSize.getHeight();
             double textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(), mySettingsProvider.ambiguousCharsAreDoubleWidth());
-            double height = Math.min(myCharSize.getHeight(), getHeight() - yCoord);
-            double width = Math.min(textLength * FXTerminalPanel.this.myCharSize.getWidth(), FXTerminalPanel.this.getWidth() - xCoord);
+            double height = Math.min(myCharSize.getHeight(), getTermHeight() - yCoord);
+            double width = Math.min(textLength * FXTerminalPanel.this.myCharSize.getWidth(), FXTerminalPanel.this.getTermWidth() - xCoord);
             int lineStrokeSize = 2;
 
             javafx.scene.paint.Color fgColor = getEffectiveForeground(style);
@@ -1494,13 +1498,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         double xCoord = x * myCharSize.getWidth() + getInsetX();
         double yCoord = y * myCharSize.getHeight() + (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines / 2.0);
 
-        if (xCoord < 0 || xCoord > getWidth() || yCoord < 0 || yCoord > getHeight()) {
+        if (xCoord < 0 || xCoord > getTermWidth() || yCoord < 0 || yCoord > getTermHeight()) {
             return;
         }
 
         int textLength = CharUtils.getTextLengthDoubleWidthAware(buf.getBuf(), buf.getStart(), buf.length(), mySettingsProvider.ambiguousCharsAreDoubleWidth());
-        double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), getHeight() - yCoord);
-        double width = Math.min(textLength * this.myCharSize.getWidth(), FXTerminalPanel.this.getWidth() - xCoord);
+        double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), getTermHeight() - yCoord);
+        double width = Math.min(textLength * this.myCharSize.getWidth(), FXTerminalPanel.this.getTermWidth() - xCoord);
 
         if (style instanceof HyperlinkStyle) {
             HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
@@ -1576,7 +1580,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             double xCoord = (x + startOffset) * charWidth + getInsetX();
             gfx.save();
             gfx.beginPath();
-            gfx.rect(Math.round(xCoord), yCoord1, Math.round(this.getWidth() - xCoord), Math.round(this.getHeight() - yCoord));
+            gfx.rect(Math.round(xCoord), yCoord1, Math.round(this.getTermWidth() - xCoord), Math.round(this.getTermHeight() - yCoord));
             gfx.closePath();
             gfx.clip();
 
@@ -1702,8 +1706,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     private void drawMargins(GraphicsContext gfx, double width, double height) {
         gfx.setFill(getFXBackground());
-        gfx.fillRect(0, height, getWidth(), getHeight() - height);
-        gfx.fillRect(width, 0, getWidth() - width, getHeight());
+        gfx.fillRect(0, height, getTermWidth(), getTermHeight() - height);
+        gfx.fillRect(width, 0, getTermWidth() - width, getTermHeight());
     }
 
     // Called in a background thread with myTerminalTextBuffer.lock() acquired
@@ -2614,5 +2618,23 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             this.scrollBar.getStyleClass().remove("no-thumb");
             scrollBarThumbVisible = true;
         }
+    }
+
+    /**
+     * 获取终端宽
+     *
+     * @return 结果
+     */
+    public double getTermWidth() {
+        return this.canvas.getWidth();
+    }
+
+    /**
+    * 获取终端高
+     *
+     * @return 结果
+     */
+    public double getTermHeight() {
+        return this.canvas.getHeight();
     }
 }
