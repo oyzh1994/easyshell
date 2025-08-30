@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.snippet.ShellSnippetListView?>
-<ShellSnippetListView fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<ShellSnippetListView fx:id="root"  xmlns:fx="http://javafx.com/fxml/1"
                       fx:controller="cn.oyzh.easyshell.popups.ShellSnippetPopupController"
                       realHeight="450" realWidth="240">
 </ShellSnippetListView>

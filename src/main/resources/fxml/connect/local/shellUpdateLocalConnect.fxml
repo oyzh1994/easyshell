@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController" realWidth="750"
         realHeight="530">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">

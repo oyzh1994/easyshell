@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.plus.changelog.ChangelogListView?>
-<ChangelogListView styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<ChangelogListView  xmlns:fx="http://javafx.com/fxml/1"
                    fx:controller="cn.oyzh.easyshell.tabs.changelog.ShellChangelogTabController" flexWidth="100%"
                    flexHeight="100%" fx:id="changelog">
 </ChangelogListView>

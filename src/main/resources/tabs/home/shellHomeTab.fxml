@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.button.LocalTerminalButton?>
 <?import cn.oyzh.fx.gui.button.SplitViewButton?>
-<FXPane styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<FXPane  flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
     <ImageView fitWidth="240" fitHeight="240" layoutX="40" layoutY="90">

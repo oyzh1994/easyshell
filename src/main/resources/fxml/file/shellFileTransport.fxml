@@ -20,7 +20,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXPane  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileTransportController" realWidth="1400"
         realHeight="750">
     <FXVBox flexWidth="100%" flexHeight="100%">

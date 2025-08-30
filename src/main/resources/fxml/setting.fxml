@@ -31,7 +31,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
-<SettingMainPane fx:id="root" styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<SettingMainPane fx:id="root"  xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
         <SettingLeftTreeView flexWidth="100%" flexHeight="100%">

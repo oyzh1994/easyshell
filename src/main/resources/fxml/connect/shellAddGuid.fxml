@@ -24,7 +24,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
         realHeight="420">
     <FXHBox flexWidth="100%" realHeight="80">

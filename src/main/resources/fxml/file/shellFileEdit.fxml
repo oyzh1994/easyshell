@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileEditController" prefWidth="1200" realHeight="650">
     <FXHBox prefHeight="30" flexWidth="100%">
         <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"

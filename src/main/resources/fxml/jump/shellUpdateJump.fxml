@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController" realWidth="750"
         realHeight="530">
     <InfoLabel text="%base.name">

@@ -8,7 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox styleClass="root" flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<FXVBox  flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.key.ShellKeyTabController">
     <FXHBox prefHeight="30">

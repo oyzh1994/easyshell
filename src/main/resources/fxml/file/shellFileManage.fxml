@@ -7,7 +7,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<FXTabPane prefWidth="1200" prefHeight="650" fx:id="root" styleClass="root"
+<FXTabPane prefWidth="1200" prefHeight="650" fx:id="root"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cn.oyzh.easyshell.controller.file.ShellFileManageController">
     <FXTab text="%base.upload">

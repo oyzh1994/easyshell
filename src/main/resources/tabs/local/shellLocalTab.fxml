@@ -5,7 +5,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
 <?import javafx.geometry.Insets?>
-<FXVBox styleClass="root" flexHeight="100%" flexWidth="100%"
+<FXVBox flexHeight="100%" flexWidth="100%"
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.local.ShellLocalTabController">

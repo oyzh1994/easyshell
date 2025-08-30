@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXHBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXHBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.snippet.ShellSnippetController" realWidth="600"
         realHeight="260">
     <ShellSnippetTreeView fx:id="snippetTreeView" realWidth="140" flexHeight="100%">
