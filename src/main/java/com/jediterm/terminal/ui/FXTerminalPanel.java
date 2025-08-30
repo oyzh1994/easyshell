@@ -58,7 +58,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Bounds;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Orientation;
@@ -110,7 +109,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 
 
 public class FXTerminalPanel extends FXHBox implements TerminalDisplay, TerminalActionProvider {
@@ -246,6 +244,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         updateScrolling(true);
 
+        // TODO: 滚动条样式
         String css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
         this.getStylesheets().add(css);
         setScrollBarRangeProperties(0, 80, 0, 80);
@@ -362,6 +361,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     updateSelection(null);
                     repaint();
                 }
+                // TODO: 隐藏旧菜单
                 if (this.popup != null) {
                     this.popup.hide();
                 }
@@ -371,6 +371,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             this.requestFocus();
             repaint();
+            // TODO: 更新选中内容，解决可能出现多个选区的问题
             if (mySelection.get() != null) {
                 updateSelectedText();
             }
@@ -378,7 +379,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
             this.requestFocus();
-            // 隐藏右键菜单
+            // TODO: 隐藏右键菜单
             if (this.popup != null && e.getButton() == MouseButton.PRIMARY) {
                 this.popup.hide();
                 this.popup = null;
@@ -468,11 +469,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     protected void handleMouseWheelEvent(@NotNull ScrollEvent e, @NotNull ScrollBar scrollBar) {
-        if (e.isShiftDown() || Math.abs(e.getDeltaY()) < 0.01) {
-            return;
-        }
         double unitsToScroll = this.getUnitsToScroll(e);
-        if (unitsToScroll == 0) {
+        if (e.isShiftDown() || unitsToScroll == 0 || Math.abs(e.getDeltaY()) < 0.01) {
             return;
         }
         moveScrollBar(unitsToScroll);
@@ -494,10 +492,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         }
         myLinkHoverConsumer = linkHoverConsumer;
-        if (linkStyle != null
-                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER) {
-//                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER_WITH_ORIGINAL_COLOR
-//                && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER_WITH_CUSTOM_COLOR) {
+        if (linkStyle != null && linkStyle.getHighlightMode() != HyperlinkStyle.HighlightMode.NEVER) {
             updateHoveredHyperlink(linkStyle.getLinkInfo());
         } else {
             updateHoveredHyperlink(null);
@@ -525,10 +520,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void handleHyperlinks(Node component) {
-        if (component == null) {
-            return;
-        }
-        Point2D a = component.localToScreen(0, 0);
+        Point2D a = component == null ? null : component.localToScreen(0, 0);
         if (a != null) {
             handleHyperlinks(a);
         }
@@ -596,7 +588,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     public void setFindResult(@Nullable SubstringFinder.FindResult findResult) {
         myFindResult = findResult;
         repaint();
-        // 选中内容
+        // TODO: 选中内容，解决选区可能异常问题
         if (myFindResult != null && !myFindResult.getItems().isEmpty()) {
             selectFindResultItem(myFindResult.selectedItem());
         }
@@ -625,6 +617,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             } else {
                 this.scrollBar.setValue(scrollBar.getMin());
             }
+            // TODO: 设置选中结果，解决选区可能异常问题
             this.selectFindResultItem(item);
             repaint();
             return myFindResult;
@@ -764,7 +757,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             return;
         }
         String selectionText = SelectionUtil.getSelectionText(selectionStart, selectionEnd, myTerminalTextBuffer);
-        if (!selectionText.isEmpty()) {
+        if (selectionText.length() != 0) {
             myCopyPasteHandler.setContents(selectionText, useSystemSelectionClipboardIfAvailable);
         }
     }
@@ -1509,7 +1502,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), getHeight() - yCoord);
         double width = Math.min(textLength * this.myCharSize.getWidth(), FXTerminalPanel.this.getWidth() - xCoord);
 
-        if (style instanceof HyperlinkStyle hyperlinkStyle) {
+        if (style instanceof HyperlinkStyle) {
+            HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
 
             if (hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.ALWAYS || (isHoveredHyperlink(hyperlinkStyle) && hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.HOVER)) {
 
@@ -2057,8 +2051,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                             .getSelectionText(points.getFirst(), points.getSecond(), myTerminalTextBuffer);
 
                 }
-            } catch (Exception ignored) {
-
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
 
