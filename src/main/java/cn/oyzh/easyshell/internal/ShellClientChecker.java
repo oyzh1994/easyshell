@@ -50,7 +50,7 @@ public class ShellClientChecker {
     private synchronized static void doCheck() {
         if (taskFuture == null) {
             // 创建任务
-            taskFuture = TaskManager.startInterval("client:check", () -> {
+            taskFuture = TaskManager.startInterval(() -> {
                 List<ShellBaseClient> closedList = null;
                 for (ShellBaseClient client : CLIENTS) {
                     client.checkState();

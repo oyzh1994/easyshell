@@ -14,10 +14,8 @@ import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -259,7 +257,7 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
         }
         try {
             ShellServerExec serverExec = this.client().serverExec();
-            this.serverMonitorTask = TaskManager.startInterval("ssh:eff_monitor:task", () -> {
+            this.serverMonitorTask = TaskManager.startInterval(() -> {
                 // 任务已取消
                 if (serverExec.getClient() == null) {
                     ExecutorUtil.cancel(this.serverMonitorTask);

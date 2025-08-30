@@ -3,10 +3,9 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.chart.ChartHelper;
 import cn.oyzh.fx.plus.controls.chart.FXLineChart;
@@ -200,7 +199,7 @@ public class ShellSSHMonitorTabController extends SubTabController {
             return;
         }
         try {
-            this.refreshTask = TaskManager.startInterval("ssh:monitor:task", this::renderPane, 3_000, 0);
+            this.refreshTask = TaskManager.startInterval(this::renderPane, 3_000, 0);
             if (JulLog.isDebugEnabled()) {
                 JulLog.debug("RefreshTask started.");
             }
