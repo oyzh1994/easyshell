@@ -21,7 +21,6 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
-import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -188,7 +187,7 @@ public class ShellFileViewController extends StageController {
             });
             // 初始化字体配置
             this.fontSize.selectSize(this.setting.getEditorFontSize());
-            this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
+            //this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
             String extName = FileNameUtil.extName(this.file.getFilePath());
             EditorFormatType formatType = EditorFormatType.ofExtension(extName);
             this.txt.showData(this.getData(), formatType);

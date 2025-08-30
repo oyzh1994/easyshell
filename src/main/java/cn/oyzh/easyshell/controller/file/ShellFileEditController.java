@@ -15,7 +15,6 @@ import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -154,7 +153,7 @@ public class ShellFileEditController extends StageController {
         this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
         this.fontSize.selectSize(this.setting.getEditorFontSize());
-        this.data.setFont(FontManager.toFont(this.setting.editorFontConfig()));
+        //this.data.setFont(FontManager.toFont(this.setting.editorFontConfig()));
         // 初始化
         this.init();
     }
