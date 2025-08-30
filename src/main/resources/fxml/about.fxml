@@ -115,7 +115,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2">
+                <FXHyperlink text="https://github.com/alibaba/fastjson2">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -125,7 +125,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/org.jetbrains.jediterm">
+                <FXHyperlink text="https://github.com/JetBrains/jediterm">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -135,7 +135,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/org.jetbrains.pty4j/pty4j">
+                <FXHyperlink text="https://github.com/JetBrains/pty4j">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -149,7 +149,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/com.h2database/h2">
+                <FXHyperlink text="https://github.com/h2database/h2database">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -159,7 +159,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/commons-net/commons-net">
+                <FXHyperlink text="https://github.com/apache/commons-net">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -169,7 +169,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/com.fazecast/jSerialComm">
+                <FXHyperlink text="https://github.com/Fazecast/jSerialComm">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -179,7 +179,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle">
+                <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -268,6 +268,30 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHyperlink text="https://github.com/mkpaz/tm4javafx">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.dependency" appendText="5">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="S3 Client">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://mvnrepository.com/artifact/software.amazon.awssdk/s3">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="SMB Client">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/hierynomus/smbj">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
