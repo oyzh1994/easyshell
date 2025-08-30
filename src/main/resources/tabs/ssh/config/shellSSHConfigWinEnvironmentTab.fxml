@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditorPane?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
@@ -31,11 +31,11 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ShellDataEditorPane formatType="PROFILE" editable="false" fx:id="data" flexWidth="100% - 10"
-                             flexHeight="100% - 40">
+        <ShellDataEditor formatType="PROFILE" editable="false" fx:id="data" flexWidth="100% - 10"
+                         flexHeight="100% - 40">
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
             </FXVBox.margin>
-        </ShellDataEditorPane>
+        </ShellDataEditor>
     </FXVBox>
 </FXTab>

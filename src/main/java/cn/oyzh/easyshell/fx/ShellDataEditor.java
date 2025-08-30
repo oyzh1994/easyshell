@@ -10,7 +10,7 @@ import javafx.scene.text.Font;
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellDataEditorPane extends Editor {
+public class ShellDataEditor extends Editor {
 
 //     @Override
 //     protected Font initFont() {

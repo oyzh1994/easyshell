@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellJsonEditorPane?>
+<?import cn.oyzh.easyshell.fx.ShellJsonEditor?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
@@ -28,9 +28,9 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellJsonEditorPane editable="false" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
+    <ShellJsonEditor editable="false" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>
-    </ShellJsonEditorPane>
+    </ShellJsonEditor>
 </FXVBox>

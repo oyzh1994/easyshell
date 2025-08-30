@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.docker;
 
-import cn.oyzh.easyshell.fx.ShellDataEditorPane;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -27,7 +27,7 @@ public class ShellDockerInfoController extends StageController {
      * 信息
      */
     @FXML
-    private ShellDataEditorPane data;
+    private ShellDataEditor data;
 
     @FXML
     private void copyInfo() {

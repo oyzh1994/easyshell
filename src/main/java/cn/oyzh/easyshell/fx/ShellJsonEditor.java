@@ -10,7 +10,7 @@ import javafx.scene.text.Font;
  * @author oyzh
  * @since 2025-03-26
  */
-public class ShellJsonEditorPane extends JsonEditor {
+public class ShellJsonEditor extends JsonEditor {
 
 //     @Override
 //     protected Font initFont() {

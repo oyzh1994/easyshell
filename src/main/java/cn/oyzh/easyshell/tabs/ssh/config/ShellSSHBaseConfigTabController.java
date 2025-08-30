@@ -2,12 +2,11 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.ShellDataEditorPane;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -52,7 +51,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      * 数据
      */
     @FXML
-    private ShellDataEditorPane data;
+    private ShellDataEditor data;
 
     /**
      * 数据过滤
