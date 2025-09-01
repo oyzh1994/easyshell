@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.fx.redis.RedisKeyRowTableView;
 import cn.oyzh.easyshell.popups.redis.RedisPageSettingPopupController;
 import cn.oyzh.easyshell.redis.key.RedisKeyRow;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.redis.RedisRowKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.RedisRowKeyTreeItem;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;

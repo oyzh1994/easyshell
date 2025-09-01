@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis;
+package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;

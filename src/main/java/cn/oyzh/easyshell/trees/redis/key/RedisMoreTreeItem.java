@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis;
+package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import javafx.scene.control.TreeItem;

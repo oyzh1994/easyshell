@@ -11,37 +11,43 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
+<?import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeView?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.redis.query.RedisQueryTabController"
-text="%base.queries">
+       text="%base.queries">
     <graphic>
         <QuerySVGGlyph sizeStr="11"/>
     </graphic>
-    <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox realHeight="30" flexWidth="100%">
-            <RedisDatabaseComboBox fx:id="database">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </RedisDatabaseComboBox>
-            <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </SaveSVGGlyph>
-            <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </RunSVGGlyph>
-        </FXHBox>
-        <RedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                          flexWidth="100% - 30" flexHeight="100% - 60">
-            <VBox.margin>
-                <Insets left="5"/>
-            </VBox.margin>
-        </RedisQueryEditor>
-        <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
-                   visible="false">
-        </FXTabPane>
-    </FXVBox>
+    <FXHBox flexHeight="100%" flexWidth="100%">
+        <ShellRedisQueryTreeView fx:id="queryTreeView" flexHeight="100%" realWidth="200">
+
+        </ShellRedisQueryTreeView>
+        <FXVBox flexWidth="100% - 200" flexHeight="100%">
+            <FXHBox realHeight="30" flexWidth="100%">
+                <RedisDatabaseComboBox fx:id="database">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </RedisDatabaseComboBox>
+                <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
+                    <HBox.margin>
+                        <Insets left="5" top="10"/>
+                    </HBox.margin>
+                </SaveSVGGlyph>
+                <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
+                    <HBox.margin>
+                        <Insets left="5" top="10"/>
+                    </HBox.margin>
+                </RunSVGGlyph>
+            </FXHBox>
+            <RedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
+                              flexWidth="100% - 30" flexHeight="100% - 60">
+                <VBox.margin>
+                    <Insets left="5"/>
+                </VBox.margin>
+            </RedisQueryEditor>
+            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
+                       visible="false">
+            </FXTabPane>
+        </FXVBox>
+    </FXHBox>
 </FXTab>

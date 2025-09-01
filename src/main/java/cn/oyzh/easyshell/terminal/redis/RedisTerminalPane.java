@@ -137,7 +137,7 @@ public class RedisTerminalPane extends TerminalPane {
         this.client = client;
         this.dbIndex = dbIndex;
         this.disableInput();
-        this.outputLine(I18nResourceBundle.i18nString("redis.home.welcome"));
+        this.outputLine(I18nResourceBundle.i18nString("shell.home.welcome"));
         this.outputLine("Powered By oyzh(2023-2025).");
         this.flushPrompt();
         if (this.isTemporary()) {

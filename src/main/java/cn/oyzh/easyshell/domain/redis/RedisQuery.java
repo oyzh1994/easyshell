@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.domain.redis;
 
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -12,8 +13,9 @@ import java.io.Serializable;
  * @author oyzh
  * @since 2025-01-20
  */
-@Table("t_query")
+@Table("t_redis_query")
 public class RedisQuery implements Serializable {
+
     public String getIid() {
         return iid;
     }

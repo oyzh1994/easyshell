@@ -1,22 +1,24 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.redis.RedisQuery;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.query.redis.RedisQueryEditor;
 import cn.oyzh.easyshell.query.redis.RedisQueryParam;
 import cn.oyzh.easyshell.query.redis.RedisQueryResult;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.store.redis.RedisQueryStore;
+import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
+import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeView;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -67,6 +69,12 @@ public class RedisQueryTabController extends RichTabController {
     private FXTabPane resultTabPane;
 
     /**
+     * 片段列表
+     */
+    @FXML
+    private ShellRedisQueryTreeView queryTreeView;
+
+    /**
      * 查询存储
      */
     private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
@@ -75,21 +83,13 @@ public class RedisQueryTabController extends RichTabController {
         return this.redisClient.shellConnect();
     }
 
-    public void init(RedisClient client, RedisQuery query) {
+    public void init(RedisClient client) {
         this.redisClient = client;
         this.content.setClient(client);
-        if (query == null) {
-            query = new RedisQuery();
-            query.setIid(client.iid());
-            query.setName(I18nHelper.unnamedQuery());
-            this.unsaved = true;
-        } else {
-            this.content.setText(query.getContent());
-            this.content.setPromptText(null);
-        }
         // 初始化数据库
         this.database.setDbCount(client.databases());
-        this.database.setInitIndex(query.getDbIndex());
+        this.database.selectFirst();
+        // this.database.setInitIndex(query.getDbIndex());
         // 监听数据库变化
         this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
             this.unsaved = true;
@@ -101,7 +101,6 @@ public class RedisQueryTabController extends RichTabController {
             this.unsaved = true;
             this.flushTab();
         });
-        this.query = query;
     }
 
     /**
@@ -112,16 +111,7 @@ public class RedisQueryTabController extends RichTabController {
         try {
             this.query.setContent(this.content.getText());
             this.query.setDbIndex(this.database.getSelectedIndex());
-            if (this.query.getUid() == null) {
-                String name = MessageBox.prompt(I18nHelper.pleaseInputName());
-                if (StringUtil.isNotBlank(name)) {
-                    this.query.setName(name);
-                    this.queryStore.insert(this.query);
-                    RedisEventUtil.queryAdded(this.query);
-                }
-            } else {
-                this.queryStore.update(this.query);
-            }
+            this.queryStore.update(this.query);
             this.unsaved = false;
             this.flushTab();
         } catch (Exception ex) {
@@ -177,6 +167,51 @@ public class RedisQueryTabController extends RichTabController {
             event.consume();
         } else {
             super.onTabCloseRequest(event);
+        }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 片段选择事件
+        this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
+            if (t1 instanceof ShellRedisQueryTreeItem item) {
+                this.doEdit(item.value());
+            } else {
+                this.doEdit(null);
+            }
+        });
+        // 片段新增回调
+        this.queryTreeView.setAddCallback(this::doEdit);
+        // 片段编辑回调
+        this.queryTreeView.setEditCallback(this::doEdit);
+        // 片段删除回调
+        this.queryTreeView.setDeleteCallback(this::doDelete);
+    }
+
+    /**
+     * 编辑片段
+     *
+     * @param query 片段
+     */
+    private void doEdit(RedisQuery query) {
+        this.query = query;
+        if (query == null) {
+            this.content.clear();
+        } else {
+            this.content.setText(query.getContent());
+        }
+    }
+
+    /**
+     * 删除片段
+     *
+     * @param query 片段
+     */
+    private void doDelete(RedisQuery query) {
+        if (query == this.query) {
+            this.query = null;
+            this.content.clear();
         }
     }
 }

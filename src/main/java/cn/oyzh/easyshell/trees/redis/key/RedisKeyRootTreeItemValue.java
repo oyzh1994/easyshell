@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis;
+package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;

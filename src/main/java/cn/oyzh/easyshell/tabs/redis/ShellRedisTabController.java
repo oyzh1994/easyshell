@@ -40,8 +40,8 @@ public class ShellRedisTabController extends ParentTabController {
         this.client = client;
         this.keysController.init(client);
         this.serverController.init(client);
+        this.queryController.init(client);
         this.terminalController.init(client, null);
-        this.queryController.init(client, null);
     }
 
     public RedisClient getClient() {

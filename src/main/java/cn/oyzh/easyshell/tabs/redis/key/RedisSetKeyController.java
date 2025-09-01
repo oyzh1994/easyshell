@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.RedisKeyRow;
 import cn.oyzh.easyshell.redis.key.RedisSetValue;
-import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
 import cn.oyzh.easyshell.util.RedisViewFactory;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
