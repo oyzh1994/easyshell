@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.redis;
 
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController;
+import cn.oyzh.easyshell.tabs.redis.query.RedisQueryTabController;
 import cn.oyzh.easyshell.tabs.redis.server.RedisServerTabController;
 import cn.oyzh.easyshell.tabs.redis.terminal.RedisTerminalTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -22,6 +23,9 @@ public class ShellRedisTabController extends ParentTabController {
     private RedisKeysTabController keysController;
 
     @FXML
+    private RedisQueryTabController queryController;
+
+    @FXML
     private RedisServerTabController serverController;
 
     @FXML
@@ -29,7 +33,7 @@ public class ShellRedisTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(keysController, serverController, terminalController);
+        return List.of(keysController, queryController, serverController, terminalController);
     }
 
     public void init(RedisClient client) {
@@ -37,6 +41,7 @@ public class ShellRedisTabController extends ParentTabController {
         this.keysController.init(client);
         this.serverController.init(client);
         this.terminalController.init(client, null);
+        this.queryController.init(client, null);
     }
 
     public RedisClient getClient() {
