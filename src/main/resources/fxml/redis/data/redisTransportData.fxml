@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.redis.RedisTransportDataController" realWidth="800"
+        fx:controller="cn.oyzh.easyshell.controller.redis.data.RedisTransportDataController" realWidth="800"
         realHeight="600">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">

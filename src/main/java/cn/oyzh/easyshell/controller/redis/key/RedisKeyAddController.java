@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.ArrayUtil;
@@ -41,8 +41,8 @@ import java.util.stream.Collectors;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
-        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "/redis/key/redisKeyAdd.fxml"
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "redis/key/redisKeyAdd.fxml"
 )
 public class RedisKeyAddController extends StageController {
 

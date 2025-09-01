@@ -51,7 +51,7 @@ import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
-import cn.oyzh.easyshell.controller.redis.RedisKeyAddController;
+import cn.oyzh.easyshell.controller.redis.key.RedisKeyAddController;
 import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
 import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
 import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;

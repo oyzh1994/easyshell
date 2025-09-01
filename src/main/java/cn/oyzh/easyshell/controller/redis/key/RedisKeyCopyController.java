@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
@@ -31,7 +31,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "key/redisKeyCopy.fxml"
+        value = FXConst.FXML_PATH + "redis/key/redisKeyCopy.fxml"
 )
 public class RedisKeyCopyController extends StageController {
 

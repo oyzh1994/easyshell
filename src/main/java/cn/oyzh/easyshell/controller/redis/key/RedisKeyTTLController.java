@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.common.Const;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
@@ -30,7 +30,7 @@ import java.sql.Date;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "key/redisKeyTTL.fxml"
+        value = FXConst.FXML_PATH + "redis/key/redisKeyTTL.fxml"
 )
 public class RedisKeyTTLController extends StageController {
 

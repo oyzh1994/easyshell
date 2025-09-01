@@ -1,12 +1,11 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
-import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -28,9 +27,15 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "row/redisZSetMemberAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/redisHashFieldAdd.fxml"
 )
-public class RedisZSetMemberAddController extends StageController {
+public class RedisHashFieldAddController extends StageController {
+
+    /**
+     * 字段
+     */
+    @FXML
+    private Editor fieldValue;
 
     /**
      * 行数据
@@ -39,15 +44,9 @@ public class RedisZSetMemberAddController extends StageController {
     private Editor rowValue;
 
     /**
-     * 分数
-     */
-    @FXML
-    private DecimalTextField score;
-
-    /**
      * redis键
      */
-    private RedisZSetKeyTreeItem treeItem;
+    private RedisHashKeyTreeItem treeItem;
 
     /**
      * 添加行
@@ -55,15 +54,15 @@ public class RedisZSetMemberAddController extends StageController {
     @FXML
     private void addRow() {
         try {
+            String fieldValue = this.fieldValue.getText();
+            if (fieldValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.fieldValue);
+                return;
+            }
             // 行数据
             String rowValue = this.rowValue.getText();
             if (StringUtil.isEmpty(rowValue)) {
                 MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
-                return;
-            }
-            Number scoreValue = this.score.getValue();
-            if (scoreValue == null) {
-                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.score);
                 return;
             }
             // redis键
@@ -72,17 +71,16 @@ public class RedisZSetMemberAddController extends StageController {
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
             RedisClient client = this.treeItem.client();
-            if (client.zrank(dbIndex, key, rowValue) != null) {
+            if (client.hexists(dbIndex, key, fieldValue)) {
                 MessageBox.warn(I18nHelper.alreadyExists());
                 return;
             }
-            double score = scoreValue.doubleValue();
             // 添加元素
-            client.zadd(dbIndex, key, score, rowValue);
+            client.hset(dbIndex, key, fieldValue, rowValue);
             // 结果
             this.setProp("result", true);
             // 发送事件
-            RedisEventUtil.zSetMemberAdded(this.treeItem, key, rowValue, score);
+            RedisEventUtil.hashFieldAdded(this.treeItem, key, fieldValue, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -137,6 +135,6 @@ public class RedisZSetMemberAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.zSetMemberAdd");
+        return I18nResourceBundle.i18nString("redis.title.hashFieldAdd");
     }
 }

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
@@ -43,7 +43,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "key/redisKeyBatchOperation.fxml"
+        value = FXConst.FXML_PATH + "redis/key/redisKeyBatchOperation.fxml"
 )
 public class RedisKeyBatchOperationController extends StageController {
 

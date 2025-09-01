@@ -1,13 +1,12 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -15,44 +14,40 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
-import com.alibaba.fastjson2.JSONObject;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-import redis.clients.jedis.params.XAddParams;
-
-import java.util.Map;
 
 
 /**
- * redis添加stream消息
+ * redis添加set成员
  *
  * @author oyzh
- * @since 2023/07/07
+ * @since 2023/06/27
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "row/redisStreamMessageAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/redisZSetMemberAdd.fxml"
 )
-public class RedisStreamMessageAddController extends StageController {
+public class RedisZSetMemberAddController extends StageController {
 
     /**
-     * 消息内容
+     * 行数据
      */
     @FXML
     private Editor rowValue;
 
     /**
-     * 消息id
+     * 分数
      */
     @FXML
-    private ClearableTextField streamID;
+    private DecimalTextField score;
 
     /**
      * redis键
      */
-    private RedisStreamKeyTreeItem treeItem;
+    private RedisZSetKeyTreeItem treeItem;
 
     /**
      * 添加行
@@ -66,18 +61,9 @@ public class RedisStreamMessageAddController extends StageController {
                 MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
                 return;
             }
-            if (!JSONUtil.isJson(rowValue)) {
-                MessageBox.warn(RedisI18nHelper.addTip4());
-                return;
-            }
-            JSONObject fields = JSONUtil.parseObject(rowValue);
-            if (fields.isEmpty()) {
-                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
-                return;
-            }
-            String streamIDText = this.streamID.getText();
-            if (streamIDText == null) {
-                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.streamID);
+            Number scoreValue = this.score.getValue();
+            if (scoreValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.score);
                 return;
             }
             // redis键
@@ -86,18 +72,19 @@ public class RedisStreamMessageAddController extends StageController {
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
             RedisClient client = this.treeItem.client();
-            // 流添加参数
-            XAddParams params = new XAddParams();
-            params.id(streamIDText);
-            // 添加流
-            client.xadd(dbIndex, key, (Map) fields, params);
+            if (client.zrank(dbIndex, key, rowValue) != null) {
+                MessageBox.warn(I18nHelper.alreadyExists());
+                return;
+            }
+            double score = scoreValue.doubleValue();
+            // 添加元素
+            client.zadd(dbIndex, key, score, rowValue);
             // 结果
             this.setProp("result", true);
             // 发送事件
-            RedisEventUtil.streamMessageAdded(this.treeItem, key, rowValue);
+            RedisEventUtil.zSetMemberAdded(this.treeItem, key, rowValue, score);
             this.closeWindow();
         } catch (Exception ex) {
-            ex.printStackTrace();
             MessageBox.exception(ex);
         }
     }
@@ -145,12 +132,11 @@ public class RedisStreamMessageAddController extends StageController {
         this.treeItem = this.getProp("treeItem");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
-        this.rowValue.requestFocus();
         super.onWindowShown(event);
     }
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.streamMessageAdd");
+        return I18nResourceBundle.i18nString("redis.title.zSetMemberAdd");
     }
 }

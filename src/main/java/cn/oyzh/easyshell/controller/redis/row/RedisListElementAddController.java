@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -28,7 +28,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "row/redisListElementAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/redisListElementAdd.fxml"
 )
 public class RedisListElementAddController extends StageController {
 

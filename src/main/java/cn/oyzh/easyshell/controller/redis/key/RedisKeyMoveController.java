@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
@@ -29,7 +29,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "key/redisKeyMove.fxml"
+        value = FXConst.FXML_PATH + "redis/key/redisKeyMove.fxml"
 )
 public class RedisKeyMoveController extends StageController {
 

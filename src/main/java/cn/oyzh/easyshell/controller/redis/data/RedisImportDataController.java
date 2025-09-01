@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.redis;
+package cn.oyzh.easyshell.controller.redis.data;
 
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -44,7 +44,7 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "data/redisImportData.fxml"
+        value = FXConst.FXML_PATH + "redis/data/redisImportData.fxml"
 )
 public class RedisImportDataController extends StageController {
 
