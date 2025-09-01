@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -67,7 +67,7 @@ public class RedisStreamMessageAddController extends StageController {
                 return;
             }
             if (!JSONUtil.isJson(rowValue)) {
-                MessageBox.warn(RedisI18nHelper.addTip4());
+                MessageBox.warn(ShellI18nHelper.redisAddTip4());
                 return;
             }
             JSONObject fields = JSONUtil.parseObject(rowValue);

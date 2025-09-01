@@ -7,8 +7,8 @@ import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
 import cn.oyzh.easyshell.util.RedisKeyUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
-        modality = Modality.WINDOW_MODAL,
+        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/key/redisKeyBatchOperation.fxml"
 )
 public class RedisKeyBatchOperationController extends StageController {
@@ -262,7 +262,7 @@ public class RedisKeyBatchOperationController extends StageController {
     private void flushDB() {
         try {
             this.client.throwSentinelException();
-            if (MessageBox.confirm(RedisI18nHelper.batchTip3())) {
+            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip3())) {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
@@ -291,11 +291,11 @@ public class RedisKeyBatchOperationController extends StageController {
             this.client.throwSentinelException();
             int targetDBIndex = this.moveTargetDB.getDB();
             if (targetDBIndex == this.dbIndex) {
-                MessageBox.warn(RedisI18nHelper.batchTip4());
+                MessageBox.warn(ShellI18nHelper.redisBatchTip4());
                 return;
             }
             String pattern = StringUtil.isBlank(this.pattern4.getText()) ? "*" : this.pattern4.getText();
-            if (MessageBox.confirm(RedisI18nHelper.batchTip5())) {
+            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip5())) {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
@@ -344,11 +344,11 @@ public class RedisKeyBatchOperationController extends StageController {
             this.client.throwCommandException("copy");
             int targetDBIndex = this.copyTargetDB.getDB();
             if (targetDBIndex == this.dbIndex) {
-                MessageBox.warn(RedisI18nHelper.batchTip4());
+                MessageBox.warn(ShellI18nHelper.redisBatchTip4());
                 return;
             }
             String pattern = StringUtil.isBlank(this.pattern5.getText()) ? "*" : this.pattern5.getText();
-            if (MessageBox.confirm(RedisI18nHelper.batchTip6())) {
+            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip6())) {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
@@ -552,6 +552,6 @@ public class RedisKeyBatchOperationController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.key.batchOperation");
+        return I18nResourceBundle.i18nString("shell.redis.title.key.batchOperation");
     }
 }

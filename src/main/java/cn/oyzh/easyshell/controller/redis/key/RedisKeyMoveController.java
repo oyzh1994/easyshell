@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.button.SubmitButton;
 import cn.oyzh.fx.gui.text.field.DisabledTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -78,11 +78,11 @@ public class RedisKeyMoveController extends StageController {
             this.client.throwClusterException();
             this.client.throwSentinelException();
             if (targetDBIndex == fromDBIndex) {
-                MessageBox.warn(RedisI18nHelper.moveTip1());
+                MessageBox.warn(ShellI18nHelper.redisMoveTip1());
                 return;
             }
             if (this.client.exists(targetDBIndex, key)) {
-                MessageBox.warn(RedisI18nHelper.moveTip2());
+                MessageBox.warn(ShellI18nHelper.redisMoveTip2());
                 return;
             }
             // 保留ttl

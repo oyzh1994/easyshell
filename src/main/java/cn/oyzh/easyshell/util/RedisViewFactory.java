@@ -1,17 +1,16 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.easyshell.controller.redis.data.RedisExportDataController;
-import cn.oyzh.easyshell.controller.redis.row.RedisHashFieldAddController;
-import cn.oyzh.easyshell.controller.redis.row.RedisHylogElementsAddController;
 import cn.oyzh.easyshell.controller.redis.data.RedisImportDataController;
-import cn.oyzh.easyshell.controller.redis.key.RedisKeyBatchOperationController;
+import cn.oyzh.easyshell.controller.redis.data.RedisTransportDataController;
 import cn.oyzh.easyshell.controller.redis.key.RedisKeyCopyController;
 import cn.oyzh.easyshell.controller.redis.key.RedisKeyMoveController;
 import cn.oyzh.easyshell.controller.redis.key.RedisKeyTTLController;
+import cn.oyzh.easyshell.controller.redis.row.RedisHashFieldAddController;
+import cn.oyzh.easyshell.controller.redis.row.RedisHylogElementsAddController;
 import cn.oyzh.easyshell.controller.redis.row.RedisListElementAddController;
 import cn.oyzh.easyshell.controller.redis.row.RedisSetMemberAddController;
 import cn.oyzh.easyshell.controller.redis.row.RedisStreamMessageAddController;
-import cn.oyzh.easyshell.controller.redis.data.RedisTransportDataController;
 import cn.oyzh.easyshell.controller.redis.row.RedisZSetCoordinateAddController;
 import cn.oyzh.easyshell.controller.redis.row.RedisZSetMemberAddController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -413,21 +412,21 @@ public class RedisViewFactory {
         return null;
     }
 
-    /**
-     * 批量操作
-     *
-     * @param dbIndex db树节点
-     */
-    public static void batchOperation(Integer dbIndex) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(RedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
-            adapter.setProp("dbIndex", dbIndex);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+    // /**
+    //  * 批量操作
+    //  *
+    //  * @param dbIndex db树节点
+    //  */
+    // public static void batchOperation(Integer dbIndex) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(RedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("dbIndex", dbIndex);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
 
     /**
      * 移动键

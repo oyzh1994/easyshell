@@ -39,7 +39,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXCheckBox fx:id="replace" text="%redis.batch.tip8">
+    <FXCheckBox fx:id="replace" text="%shell.redis.batch.tip8">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

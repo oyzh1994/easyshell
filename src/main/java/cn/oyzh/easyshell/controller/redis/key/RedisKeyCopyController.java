@@ -4,13 +4,12 @@ import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.button.SubmitButton;
 import cn.oyzh.fx.gui.text.field.DisabledTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -82,7 +81,7 @@ public class RedisKeyCopyController extends StageController {
             this.client.throwSentinelException();
             this.client.throwCommandException("copy");
             if (targetDBIndex == fromDBIndex) {
-                MessageBox.warn(RedisI18nHelper.moveTip1());
+                MessageBox.warn(ShellI18nHelper.redisMoveTip1());
                 return;
             }
             // 移动键
@@ -92,7 +91,7 @@ public class RedisKeyCopyController extends StageController {
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
-                MessageBox.warn(RedisI18nHelper.copyTip1());
+                MessageBox.warn(ShellI18nHelper.redisCopyTip1());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -127,6 +126,6 @@ public class RedisKeyCopyController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.key.copy");
+        return I18nHelper.copyKey();
     }
 }

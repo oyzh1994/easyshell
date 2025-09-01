@@ -146,10 +146,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      */
     @FXML
     private void batchOperation() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyBatchOperationController.class, this.window());
-//        adapter.setProp("treeItem", this);
-//        adapter.display();
-        RedisViewFactory.batchOperation(this.dbIndex);
+        ShellViewFactory.redisBatchOperation(this.client(), this.dbIndex);
     }
 
     /**

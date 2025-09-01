@@ -285,7 +285,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
 
     @Override
     public void rename() {
-        String newKey = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getKey());
+        String newKey = MessageBox.prompt(I18nHelper.renameKey(), this.value.getKey());
         // 名称为空或者跟当前名称相同，则忽略
         if (StringUtil.isBlank(newKey) || Objects.equals(newKey, this.value.getKey())) {
             return;

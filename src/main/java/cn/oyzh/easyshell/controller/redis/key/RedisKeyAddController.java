@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisKeyTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisKeyType;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
@@ -229,7 +229,7 @@ public class RedisKeyAddController extends StageController {
         try {
             long ttl = this.ttlValue.getValue();
             if (ttl == 0) {
-                MessageBox.warn(RedisI18nHelper.addTip2());
+                MessageBox.warn(ShellI18nHelper.redisAddTip2());
                 return;
             }
             if (key.isEmpty()) {
@@ -419,7 +419,7 @@ public class RedisKeyAddController extends StageController {
             return false;
         }
         if (!JSONUtil.isJson(nodeValue)) {
-            MessageBox.warn(RedisI18nHelper.addTip1());
+            MessageBox.warn(ShellI18nHelper.redisAddTip1());
             return false;
         }
         String streamID = this.streamIDValue.getText();

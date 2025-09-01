@@ -9,8 +9,8 @@ import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.RedisKeyRow;
 import cn.oyzh.easyshell.redis.key.RedisSetValue;
 import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
 import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -258,7 +258,7 @@ public class RedisSetKeyController extends RedisRowKeyController<RedisSetKeyTree
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
             // 异步处理，避免阻塞主程序
             TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), RedisI18nHelper.keyTip9(), null, StageManager.getPrimaryStage())) {
+                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getPrimaryStage())) {
                     this.saveBinaryFile();
                 }
             }, 10);

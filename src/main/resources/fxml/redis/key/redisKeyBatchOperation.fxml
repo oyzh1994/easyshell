@@ -22,7 +22,7 @@
            realHeight="600" fx:id="root">
     <FXTab text="%base.deleteKey" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%redis.key.tip3">
+            <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -33,13 +33,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </ClearableTextField>
-                <FXButton text="%redis.key.tip2" tipText="%redis.key.tip5" onAction="#showKeys1" groupId="exec">
+                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys1" groupId="exec">
                     <HBox.margin>
                         <Insets left="5" top="10"/>
                     </HBox.margin>
                 </FXButton>
             </FXHBox>
-            <InfoLabel text="%redis.key.tip1">
+            <InfoLabel text="%shell.redis.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -71,14 +71,14 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <NumberTextField realHeight="30" fx:id="ttl" flexWidth="100% -180" tipText="%redis.batch.tip7"
+            <NumberTextField realHeight="30" fx:id="ttl" flexWidth="100% -180" tipText="%shell.redis.batch.tip7"
                              value="-1" require="true" min="-1" max="9223372036854775807" step="3600"
                              groupId="exec">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </NumberTextField>
-            <InfoLabel text="%redis.key.tip3">
+            <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -89,13 +89,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </ClearableTextField>
-                <FXButton text="%redis.key.tip2" tipText="%redis.key.tip5" onAction="#showKeys2" groupId="exec">
+                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys2" groupId="exec">
                     <HBox.margin>
                         <Insets left="10" top="10"/>
                     </HBox.margin>
                 </FXButton>
             </FXHBox>
-            <AccentLabel text="%redis.key.tip1">
+            <AccentLabel text="%shell.redis.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -126,12 +126,12 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <FXButton text="%redis.key.tip2" tipText="%redis.key.tip5" onAction="#showKeys3" groupId="exec">
+            <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys3" groupId="exec">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </FXButton>
-            <InfoLabel text="%redis.key.tip1">
+            <InfoLabel text="%shell.redis.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -168,7 +168,7 @@
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </RedisDatabaseComboBox>
-            <InfoLabel text="%redis.key.tip3">
+            <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -179,13 +179,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </ClearableTextField>
-                <FXButton text="%redis.key.tip2" tipText="%redis.key.tip5" onAction="#showKeys4" groupId="exec">
+                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys4" groupId="exec">
                     <HBox.margin>
                         <Insets left="10" top="10"/>
                     </HBox.margin>
                 </FXButton>
             </FXHBox>
-            <InfoLabel text="%redis.key.tip1">
+            <InfoLabel text="%shell.redis.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -223,13 +223,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </RedisDatabaseComboBox>
-                <FXCheckBox fx:id="replaceOnCopy" text="%redis.batch.tip8" groupId="exec">
+                <FXCheckBox fx:id="replaceOnCopy" text="%shell.redis.batch.tip8" groupId="exec">
                     <HBox.margin>
                         <Insets left="10" top="10"/>
                     </HBox.margin>
                 </FXCheckBox>
             </FXHBox>
-            <InfoLabel text="%redis.key.tip3">
+            <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -240,13 +240,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </ClearableTextField>
-                <FXButton text="%redis.key.tip2" tipText="%redis.key.tip5" onAction="#showKeys5" groupId="exec">
+                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys5" groupId="exec">
                     <HBox.margin>
                         <Insets left="10" top="10"/>
                     </HBox.margin>
                 </FXButton>
             </FXHBox>
-            <InfoLabel text="%redis.key.tip1">
+            <InfoLabel text="%shell.redis.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -272,7 +272,7 @@
     </FXTab>
     <FXTab text="%base.count" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%redis.key.tip3">
+            <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>

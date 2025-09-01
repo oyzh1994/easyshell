@@ -4,7 +4,7 @@ import cn.oyzh.common.Const;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -72,7 +72,7 @@ public class RedisKeyTTLController extends StageController {
             if (ttlValue.longValue() <= -1) {
                 this.client.persist(this.treeItem.dbIndex(), this.treeItem.key());
             } else if (ttlValue.longValue() == 0) {
-                if (MessageBox.confirm(RedisI18nHelper.ttlTip1())) {
+                if (MessageBox.confirm(ShellI18nHelper.redisTtlTip1())) {
                     this.client.del(this.treeItem.dbIndex(), this.treeItem.key());
                 }
             } else {

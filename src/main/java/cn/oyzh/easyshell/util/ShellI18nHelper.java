@@ -132,4 +132,66 @@ public class ShellI18nHelper {
     public static String x11Tip1() {
         return I18nResourceBundle.i18nString("shell.x11.tip1");
     }
+
+    public static String redisKeyTip9() {
+        return I18nResourceBundle.i18nString("shell.redis.key.tip9");
+    }
+
+    public static String redisTtlTip1() {
+        return I18nResourceBundle.i18nString("shell.redis.ttl.tip1");
+    }
+
+    public static String redisAddTip2() {
+        return I18nResourceBundle.i18nString("shell.redis.add.tip2");
+    }
+
+    public static String redisAddTip3() {
+        return I18nResourceBundle.i18nString("shell.redis.add.tip3");
+    }
+
+    public static String redisAddTip4() {
+        return I18nResourceBundle.i18nString("shell.redis.add.tip4");
+    }
+
+    public static String redisAddTip1() {
+        return I18nResourceBundle.i18nString("shell.redis.add.tip1");
+    }
+
+    public static String redisBatchTip1() {
+        return I18nResourceBundle.i18nString("shell.redis.batch.tip1");
+    }
+
+    public static String redisBatchTip2() {
+        return I18nResourceBundle.i18nString("shell.redis.batch.tip2");
+    }
+
+    public static String redisBatchTip3() {
+        return I18nResourceBundle.i18nString("shell.redis.batch.tip3");
+    }
+
+    public static String redisBatchTip4() {
+        return I18nResourceBundle.i18nString("shell.redis.batch.tip4");
+    }
+
+    public static String redisBatchTip5() {
+        return I18nResourceBundle.i18nString("shell.redis.batch.tip5");
+    }
+
+    public static String redisBatchTip6() {
+        return I18nResourceBundle.i18nString("shell.redis.batch.tip6");
+    }
+
+    public static String redisMoveTip1() {
+        return I18nResourceBundle.i18nString("shell.redis.move.tip1");
+    }
+
+    public static String redisMoveTip2() {
+        return I18nResourceBundle.i18nString("shell.redis.move.tip2");
+    }
+
+    public static String redisCopyTip1() {
+        return I18nResourceBundle.i18nString("shell.redis.copy.tip1");
+    }
+
+
 }

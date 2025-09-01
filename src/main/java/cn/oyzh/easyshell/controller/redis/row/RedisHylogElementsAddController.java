@@ -6,7 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -73,7 +73,7 @@ public class RedisHylogElementsAddController extends StageController {
             RedisClient client = this.treeItem.client();
             String[] array = ArrayUtil.toArray(elements, String.class);
             if (client.pfadd(dbIndex, key, array) <= 0) {
-                MessageBox.warn(RedisI18nHelper.addTip3());
+                MessageBox.warn(ShellI18nHelper.redisAddTip3());
                 return;
             }
             // 结果
