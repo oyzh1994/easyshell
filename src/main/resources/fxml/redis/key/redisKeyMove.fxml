@@ -39,7 +39,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXCheckBox selected="true" fx:id="retainTTL" text="%redis.key.move.options1">
+    <FXCheckBox selected="true" fx:id="retainTTL" text="%shell.redis.key.move.options1">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

@@ -10,7 +10,6 @@ import cn.oyzh.fx.gui.text.field.DisabledTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -144,6 +143,6 @@ public class RedisKeyMoveController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.key.move");
+        return I18nHelper.moveKey();
     }
 }

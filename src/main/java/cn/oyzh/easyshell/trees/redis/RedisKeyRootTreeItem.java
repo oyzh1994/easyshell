@@ -38,7 +38,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         // // 添加
         // FXMenuItem add = MenuItemHelper.addKey("12", this::addKey);
         // 重载
-        FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.reloadDatabase("12", this::reloadChild);
         // // 卸载
         // FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
         // // 加载全部
@@ -69,6 +69,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
 
     @Override
     public void reloadChild() {
+        this.clearChild();
         this.loadChild();
     }
 
