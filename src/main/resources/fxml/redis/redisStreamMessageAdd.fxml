@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.redis.RedisStreamMessageAddController" realWidth="750"
+        realHeight="550">
+    <InfoLabel text="%base.messageId">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField flexWidth="100% - 180" fx:id="streamID" tipText="%redis.row.tip2" text="*" require="true">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <FXVBox flexWidth="100%" flexHeight="100% - 145">
+        <InfoLabel text="%base.content">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexHeight="100% - 45" flexWidth="100%">
+            <Editor fx:id="rowValue" flexHeight="100%" tipText="%redis.row.tip1"
+                    flexWidth="100% - 180">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </Editor>
+            <FXVBox flexHeight="100%">
+                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </ClearSVGGlyph>
+                <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </JSONSVGGlyph>
+            </FXVBox>
+        </FXHBox>
+    </FXVBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#addRow">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

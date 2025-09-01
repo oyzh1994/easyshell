@@ -59,4 +59,13 @@ public class ShellConst {
     //     return System.getProperty(SFTP_VISIBLE) != null;
     // }
 
+    /**
+     * 获取键缓存路径
+     *
+     * @return 键缓存路径
+     */
+    public static String getKeyCachePath() {
+        return getCachePath() + "key_cache" + File.separator;
+    }
+
 }

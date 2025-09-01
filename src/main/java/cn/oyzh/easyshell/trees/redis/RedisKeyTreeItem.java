@@ -1,0 +1,468 @@
+package cn.oyzh.easyshell.trees.redis;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.key.RedisKeyValue;
+import cn.oyzh.easyshell.store.redis.RedisCollectStore;
+import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.tree.view.RichTreeItem;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.control.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * @author oyzh
+ * @since 2023/6/30
+ */
+public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValue> {
+
+    /**
+     * 单行最大值
+     */
+    public static final int LINE_MAX = 100 * 1024;
+
+    /**
+     * 数据最大值
+     */
+    public static final int DATA_MAX = 10 * 1024 * 1024;
+
+    /**
+     * redis键
+     */
+    protected RedisKey value;
+
+    public RedisKey value() {
+        return value;
+    }
+
+    /**
+     * 设置键数据
+     *
+     * @param data 未键数据
+     */
+    public void data(Object data) {
+        this.keyValue().setUnSavedValue(data);
+        this.refresh();
+    }
+
+    /**
+     * 获取键数据
+     *
+     * @return 键数据
+     */
+    public Object data() {
+        Object data;
+        if (this.isDataUnsaved()) {
+            data = this.unsavedValue();
+        } else {
+            data = this.rawValue();
+        }
+        return data;
+    }
+
+    /**
+     * 清除键数据
+     */
+    public void clearData() {
+        this.keyValue().clearUnSavedValue();
+        this.refresh();
+    }
+
+    /**
+     * 数据是否未保存
+     *
+     * @return 结果
+     */
+    public Object unsavedValue() {
+        RedisKeyValue<?> keyValue = this.keyValue();
+        return keyValue == null ? null : keyValue.getUnSavedValue();
+    }
+
+    /**
+     * 数据是否未保存
+     *
+     * @return 结果
+     */
+    public boolean isDataUnsaved() {
+        RedisKeyValue<?> keyValue = this.keyValue();
+        return keyValue != null && keyValue.hasUnSavedValue();
+    }
+
+    public RedisKeyTreeItem(RedisKey value, RedisKeyTreeView treeView) {
+        super(treeView);
+        this.value = value;
+        super.setFilterable(true);
+        this.setValue(new RedisKeyTreeItemValue(this));
+    }
+
+    @Override
+    public List<MenuItem> getMenuItems() {
+        List<MenuItem> items = new ArrayList<>(8);
+        FXMenuItem rename = MenuItemHelper.renameKey("12", this::rename);
+        FXMenuItem delete = MenuItemHelper.deleteKey("12", this::delete);
+        FXMenuItem moveKey = MenuItemHelper.moveKey("12", this::moveKey);
+        FXMenuItem copyKey = MenuItemHelper.copyKey("12", this::copyKey);
+        FXMenuItem updateTtl = MenuItemHelper.updateTtl("12", this::updateTtl);
+        items.add(rename);
+        items.add(moveKey);
+        items.add(copyKey);
+        items.add(updateTtl);
+        items.add(delete);
+        return items;
+    }
+
+    /**
+     * 修改ttl
+     */
+    private void updateTtl() {
+//        StageAdapter adapter = StageManager.parseStage(RedisKeyTTLController.class, this.window());
+//        adapter.setProp("treeItem", this);
+//        adapter.display();
+        RedisViewFactory.ttlKey(this);
+    }
+
+    /**
+     * 移动键
+     */
+    private void moveKey() {
+//        StageAdapter adapter = StageManager.parseStage(RedisKeyMoveController.class, this.window());
+//        adapter.setProp("treeItem", this);
+//        adapter.display();
+        RedisViewFactory.moveKey(this);
+    }
+
+    /**
+     * 复制键
+     */
+    private void copyKey() {
+//        StageAdapter adapter = StageManager.parseStage(RedisKeyCopyController.class, this.window());
+//        adapter.setProp("treeItem", this);
+//        adapter.display();
+        RedisViewFactory.copyKey(this);
+    }
+
+    @Override
+    public RedisKeyTreeView getTreeView() {
+        return (RedisKeyTreeView) super.getTreeView();
+    }
+
+    /**
+     * redis信息
+     *
+     * @return redis信息
+     */
+    public ShellConnect redisConnect() {
+        return this.getTreeView().redisConnect();
+    }
+
+    /**
+     * 获取redis连接名称
+     *
+     * @return redis连接名称
+     */
+    public String infoName() {
+        return this.getTreeView().redisConnect().getName();
+    }
+
+    /**
+     * 获取db索引
+     *
+     * @return db索引值
+     */
+    public int dbIndex() {
+        return this.getTreeView().dbIndex();
+    }
+
+    /**
+     * 获取键名称
+     *
+     * @return 键名称
+     */
+    public String key() {
+        return this.value.getKey();
+    }
+
+    /**
+     * 获取键二进制名称
+     *
+     * @return 键二进制名称
+     */
+    public byte[] keyBinary() {
+        return this.value.keyBinary();
+    }
+
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
+    public RedisClient client() {
+        if (this.getTreeView() == null) {
+            return null;
+        }
+        return this.getTreeView().client();
+    }
+
+    /**
+     * 保存键值
+     */
+    public void saveKeyValue() {
+    }
+
+    /**
+     * 设置键值
+     *
+     * @param value 值
+     */
+    protected void setKeyValue(Object value) {
+    }
+
+    /**
+     * 刷新键值
+     */
+    public void refreshKeyValue() {
+    }
+
+    /**
+     * 键是否被收藏
+     */
+    public boolean isCollect() {
+        return RedisCollectStore.INSTANCE.exist(this.iid(), this.dbIndex(), this.key());
+    }
+
+    /**
+     * 收藏键
+     */
+    public void collect() {
+        RedisCollectStore.INSTANCE.replace(this.iid(), this.dbIndex(), this.key());
+    }
+
+    /**
+     * 取消收藏键
+     */
+    public void unCollect() {
+        RedisCollectStore.INSTANCE.delete(this.iid(), this.dbIndex(), this.key());
+    }
+
+    private String iid() {
+        return this.redisConnect().getId();
+    }
+
+    @Override
+    public void delete() {
+        try {
+            if (!MessageBox.confirm(I18nHelper.deleteKey() + " " + this.key())) {
+                return;
+            }
+            // 删除此键
+            this.client().del(this.dbIndex(), this.key());
+            // 取消此键的收藏
+            this.unCollect();
+            // 移除此键
+            this.remove();
+            // 发送事件
+            RedisEventUtil.keyDeleted(this.redisConnect(), this.key(), this.dbIndex());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    @Override
+    public void rename() {
+        String newKey = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getKey());
+        // 名称为空或者跟当前名称相同，则忽略
+        if (StringUtil.isBlank(newKey) || Objects.equals(newKey, this.value.getKey())) {
+            return;
+        }
+        // 键已存在
+        if (this.client().exists(this.dbIndex(), newKey)) {
+            MessageBox.warn(I18nHelper.contentAlreadyExists());
+            return;
+        }
+        try {
+            String oldKey = this.key();
+            String result = this.client().rename(this.dbIndex(), this.key(), newKey);
+            if (StringUtil.equalsIgnoreCase(result, "OK")) {
+                this.value.setKey(newKey);
+                this.refresh();
+                RedisEventUtil.keyRenamed(this, oldKey);
+            } else {
+                MessageBox.warn(I18nHelper.operationFail());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 获取当前ttl值
+     *
+     * @return 当前ttl值
+     */
+    public Long ttl() {
+        try {
+            this.value.setTtl(this.client().ttl(this.dbIndex(), this.key()));
+            return this.value.getTtl();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return -1L;
+    }
+
+    /**
+     * 键是否过期
+     *
+     * @return 结果
+     */
+    public boolean isExpire() {
+        if (this.value.getTtl() == null) {
+            this.ttl();
+        }
+        if (this.value.getTtl() == null) {
+            return false;
+        }
+        return this.value.getTtl() == -2;
+    }
+
+    /**
+     * 获取原始数据
+     *
+     * @return 原始数据
+     */
+    public abstract Object rawValue();
+
+    /**
+     * 获取键类型
+     *
+     * @return 键类型
+     */
+    public RedisKeyType type() {
+        return this.value.getType();
+    }
+
+    /**
+     * 获取加载耗时
+     *
+     * @return 加载耗时
+     */
+    public short loadTime() {
+        return this.value.getLoadTime() == 0 ? 1 : this.value.getLoadTime();
+    }
+
+    /**
+     * 删除键，当键已过期
+     */
+    public void deleteByExpired() {
+        try {
+            this.unCollect();
+            this.remove();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取内存占用
+     *
+     * @return 内存占用
+     */
+    public Long memoryUsage() {
+        try {
+            return this.client().memoryUsage(this.dbIndex(), this.key());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return -1L;
+        }
+    }
+
+    /**
+     * 获取内存占用信息
+     *
+     * @return 内存占用信息
+     */
+    public String memoryUsageInfo() {
+        Long memoryUsage = this.memoryUsage();
+        if (memoryUsage == null || memoryUsage < 0) {
+            return "N/A";
+        }
+        if (memoryUsage < 1024) {
+            return memoryUsage + "bytes";
+        }
+        if (memoryUsage < 1024 * 1024) {
+            return memoryUsage / 1024.0 + "KB";
+        }
+        if (memoryUsage < 1024 * 1024 * 1024) {
+            return memoryUsage / 1024.0 / 1024 + "MB";
+        }
+        return memoryUsage / 1024.0 / 1024 / 1024 + "GB";
+    }
+
+    private StringProperty memoryUsageInfoProperty;
+
+    public void flushMemoryUsage() {
+        this.memoryUsageInfoProperty.set(I18nHelper.size() + " : " + this.memoryUsageInfo());
+    }
+
+    public StringProperty memoryUsageInfoProperty() {
+        if (this.memoryUsageInfoProperty == null) {
+            this.memoryUsageInfoProperty = new SimpleStringProperty();
+        }
+        return this.memoryUsageInfoProperty;
+    }
+
+    /**
+     * 是否raw格式
+     *
+     * @return 结果
+     */
+    public boolean isRawEncoding() {
+        return this.isRawEncoding(false);
+    }
+
+    /**
+     * 是否raw格式
+     *
+     * @param flushEncoding 刷新编码
+     * @return 结果
+     */
+    public boolean isRawEncoding(boolean flushEncoding) {
+        if (this.value.getObjectedEncoding() == null || flushEncoding) {
+            this.value.setObjectedEncoding(this.client().objectEncoding(this.dbIndex(), this.key()));
+        }
+        return this.value.isRawEncoding();
+    }
+
+    public RedisKeyValue<?> keyValue() {
+        return this.value.getValue();
+    }
+
+    public abstract Object rawData();
+
+    public boolean keyEquals(RedisKey redisKey) {
+        if (redisKey != null) {
+            return this.value.compareTo(redisKey) == 0;
+        }
+        return false;
+    }
+
+    public void keyCopy(RedisKey redisKey) {
+        if (redisKey != null) {
+            this.value.copy(redisKey);
+        }
+    }
+}

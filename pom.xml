@@ -22,6 +22,7 @@
         <s3.version>2.31.78</s3.version>
         <jna.version>5.17.0</jna.version>
         <smbj.version>0.14.0</smbj.version>
+        <jedis.version>5.2.0</jedis.version>
         <pty4j.version>0.13.10-1</pty4j.version>
         <jediterm.version>3.54</jediterm.version>
         <jSerialComm.version>2.11.2</jSerialComm.version>
@@ -126,6 +127,12 @@
             <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-gui</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.oyzh1994</groupId>
+            <artifactId>fx-terminal</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
@@ -386,6 +393,14 @@
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>${commons-net.version}</version>
+        </dependency>
+
+        <!-- redis客户端 -->
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
         </dependency>
 
         <!-- java注解 -->

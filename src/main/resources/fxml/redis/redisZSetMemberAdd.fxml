@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.DecimalTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.redis.RedisZSetMemberAddController" realWidth="750"
+        realHeight="550">
+    <InfoLabel text="%base.member">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox flexWidth="100%" flexHeight="100% - 190">
+        <Editor fx:id="rowValue" flexHeight="100%" tipText="%base.contentTip1"
+                    flexWidth="100% - 180">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </Editor>
+        <FXVBox>
+            <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </PasteSVGGlyph>
+            <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </ClearSVGGlyph>
+            <JSONSVGGlyph onMousePrimaryClicked="#parseToJson">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </JSONSVGGlyph>
+        </FXVBox>
+    </FXHBox>
+    <InfoLabel text="%base.score">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <DecimalTextField realHeight="30" flexWidth="100% - 180" scaleLen="10" fx:id="score" tipText="%base.contentTip1"
+                      value="0" require="true">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </DecimalTextField>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#addRow">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

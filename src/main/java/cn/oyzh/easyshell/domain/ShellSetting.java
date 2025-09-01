@@ -125,13 +125,37 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean connectShowMoreInfo;
 
+    /**
+     * 键加载上限
+     */
+    @Column
+    private Integer keyLoadLimit;
+
+    /**
+     * 行页码限制
+     */
+    @Column
+    private Integer rowPageLimit;
+
+    public int getKeyLoadLimit() {
+        return this.keyLoadLimit == null ? 0 : this.keyLoadLimit;
+    }
+
+    public void setKeyLoadLimit(int keyLoadLimit) {
+        this.keyLoadLimit = keyLoadLimit;
+    }
+
+    public void setRowPageLimit(int rowPageLimit) {
+        this.rowPageLimit = rowPageLimit;
+    }
+
+    public int getRowPageLimit() {
+        return this.rowPageLimit == null ? 100 : this.rowPageLimit;
+    }
+
     public boolean isHiddenLeftAfterConnected() {
         return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
-
-    // public Boolean getHiddenLeftAfterConnected() {
-    //     return hiddenLeftAfterConnected;
-    // }
 
     public void setHiddenLeftAfterConnected(boolean hiddenLeftAfterConnected) {
         this.hiddenLeftAfterConnected = hiddenLeftAfterConnected;
@@ -144,6 +168,8 @@ public class ShellSetting extends AppSetting {
             this.x11Path = setting.x11Path;
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
+            this.rowPageLimit = setting.rowPageLimit;
+            this.keyLoadLimit = setting.keyLoadLimit;
             this.efficiencyMode = setting.efficiencyMode;
             this.termRefreshRate = setting.termRefreshRate;
             this.connectShowType = setting.connectShowType;

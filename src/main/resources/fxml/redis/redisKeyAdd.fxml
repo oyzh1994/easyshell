@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.redis.RedisKeyTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.redis.RedisLatitudeField?>
+<?import cn.oyzh.easyshell.fx.redis.RedisLongitudeField?>
+<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.DecimalTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.redis.RedisKeyAddController" realWidth="750" realHeight="750"
+        fx:id="root">
+    <InfoLabel text="%base.keyType">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <RedisKeyTypeComboBox initIndex="0" fx:id="type" realHeight="30.0" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </RedisKeyTypeComboBox>
+    <InfoLabel text="%base.keyName">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="key" realHeight="30.0" flexWidth="100% - 140"
+                        tipText="%redis.key.keyNameTip1" require="true">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.ttl">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <NumberTextField realHeight="30" flexWidth="100% - 140" fx:id="ttlValue" tipText="%redis.key.ttlTip2" value="-1"
+                     min="-1"
+                     max="9223372036854775807" step="3600">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </NumberTextField>
+    <FXVBox fx:id="zSetBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.score">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <DecimalTextField realHeight="30" flexWidth="100% - 140" fx:id="scoreValue" tipText="%base.contentTip1"
+                          value="0">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </DecimalTextField>
+        <FXVBox flexWidth="100%" flexHeight="100% - 70">
+            <InfoLabel text="%base.member">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox flexHeight="100% - 45">
+                <Editor flexHeight="100%" tipText="%base.contentTip1"
+                        flexWidth="100% - 140">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </Editor>
+                <FXVBox>
+                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </PasteSVGGlyph>
+                    <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </ClearSVGGlyph>
+                    <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </JSONSVGGlyph>
+                </FXVBox>
+            </FXHBox>
+        </FXVBox>
+    </FXVBox>
+    <FXVBox fx:id="bitBox" flexWidth="100%" flexHeight="100" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.subscript">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <NumberTextField realHeight="30" flexWidth="100% - 140" fx:id="bitIndex" tipText="%base.contentTip1"
+                         value="0" min="0">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </NumberTextField>
+        <InfoLabel text="%base.subscriptValue">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXToggleSwitch fx:id="bitValue" selected="true" selectedText="1" unselectedText="0">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXToggleSwitch>
+    </FXVBox>
+    <FXVBox fx:id="coordinateBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.longitude">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <RedisLongitudeField realHeight="30" flexWidth="100% - 140" fx:id="longitudeValue" tipText="%base.contentTip1"
+                             value="0" step="5">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </RedisLongitudeField>
+        <InfoLabel text="%base.latitude">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <RedisLatitudeField realHeight="30" flexWidth="100% - 140" fx:id="latitudeValue" tipText="%base.contentTip1"
+                            value="0" step="5">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </RedisLatitudeField>
+        <FXVBox flexWidth="100%" flexHeight="100% - 140">
+            <InfoLabel text="%base.coordinates">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox flexHeight="100% - 45">
+                <Editor flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </Editor>
+                <FXVBox>
+                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </PasteSVGGlyph>
+                    <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </ClearSVGGlyph>
+                    <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </JSONSVGGlyph>
+                </FXVBox>
+            </FXHBox>
+        </FXVBox>
+    </FXVBox>
+    <FXVBox fx:id="hashBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.fieldName">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <Editor fx:id="fieldValue" flexHeight="50% - 50" tipText="%base.contentTip1"
+                    flexWidth="100% - 140">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </Editor>
+        <FXVBox flexWidth="100%" flexHeight="50%">
+            <InfoLabel text="%base.fieldValue">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox flexHeight="100% - 45">
+                <Editor flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </Editor>
+                <FXVBox>
+                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </PasteSVGGlyph>
+                    <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </ClearSVGGlyph>
+                    <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </JSONSVGGlyph>
+                </FXVBox>
+            </FXHBox>
+        </FXVBox>
+    </FXVBox>
+    <FXVBox fx:id="streamBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.messageId">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ClearableTextField realHeight="30" flexWidth="100% - 140" fx:id="streamIDValue"
+                            tipText="%redis.key.msgTip1" text="*">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ClearableTextField>
+        <FXVBox flexWidth="100%" flexHeight="100% - 70">
+            <InfoLabel text="%base.content">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox flexHeight="100% - 45">
+                <Editor flexHeight="100%" tipText="%redis.key.msgTip2"
+                        flexWidth="100% - 140">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </Editor>
+                <FXVBox>
+                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </PasteSVGGlyph>
+                    <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </ClearSVGGlyph>
+                    <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                        <VBox.margin>
+                            <Insets left="5" top="10"/>
+                        </VBox.margin>
+                    </JSONSVGGlyph>
+                </FXVBox>
+            </FXHBox>
+        </FXVBox>
+    </FXVBox>
+    <FXVBox fx:id="listBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.member">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexHeight="100% - 45">
+            <Editor flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </Editor>
+            <FXVBox>
+                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </ClearSVGGlyph>
+                <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </JSONSVGGlyph>
+            </FXVBox>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="setBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.member">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexHeight="100% - 45">
+            <Editor flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </Editor>
+            <FXVBox>
+                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </ClearSVGGlyph>
+                <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </JSONSVGGlyph>
+            </FXVBox>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="hylogBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.elements">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexHeight="100% - 45">
+            <Editor flexHeight="100%" tipText="%redis.key.tip4"
+                    flexWidth="100% - 140">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </Editor>
+            <FXVBox>
+                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </ClearSVGGlyph>
+                <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </JSONSVGGlyph>
+            </FXVBox>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="stringBox" flexWidth="100%" flexHeight="100% - 300">
+        <InfoLabel text="%base.content">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexHeight="100% - 45">
+            <Editor flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </Editor>
+            <FXVBox>
+                <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </ClearSVGGlyph>
+                <JSONSVGGlyph onMousePrimaryClicked="#parseToJson">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </JSONSVGGlyph>
+            </FXVBox>
+        </FXHBox>
+    </FXVBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#addKey">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

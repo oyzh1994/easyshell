@@ -293,6 +293,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String smbShareName;
 
+    /**
+     * 只读，zk、redis协议
+     */
+    @Column
+    private Boolean readonly;
+
+    /**
+     * 执行超时，redis协议
+     */
+    @Column
+    private Integer executeTimeOut;
+
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
@@ -478,6 +490,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.s3AppId = t1.s3AppId;
         // smb
         this.smbShareName = t1.smbShareName;
+        // redis
+        this.readonly = t1.readonly;
+        this.executeTimeOut = t1.executeTimeOut;
     }
 
     /**
@@ -992,5 +1007,30 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setForwardAgent(boolean forwardAgent) {
         this.forwardAgent = forwardAgent;
+    }
+
+    public boolean isReadonly() {
+        return BooleanUtil.isTrue(this.readonly);
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+
+    public Integer getExecuteTimeOut() {
+        return this.executeTimeOut == null ? 3 : this.executeTimeOut;
+    }
+
+    public void setExecuteTimeOut(Integer executeTimeOut) {
+        this.executeTimeOut = executeTimeOut;
+    }
+
+    /**
+     * 获取执行超时毫秒值
+     *
+     * @return 执行超时毫秒值
+     */
+    public int executeTimeOutMs() {
+        return this.getExecuteTimeOut() * 1000;
     }
 }
