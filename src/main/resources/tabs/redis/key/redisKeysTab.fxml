@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController" text="%base.data">
+       fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController" text="%base.keys">
     <graphic>
         <KeysSVGGlyph sizeStr="11"/>
     </graphic>

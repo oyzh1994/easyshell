@@ -6,4 +6,5 @@
            rotateGraphic="true" disable="true" side="RIGHT">
     <fx:include fx:id="keys" source="key/redisKeysTab.fxml"/>
     <fx:include fx:id="server" source="server/redisServerTab.fxml"/>
+    <fx:include fx:id="terminal" source="terminal/redisTerminalTab.fxml"/>
 </FXTabPane>

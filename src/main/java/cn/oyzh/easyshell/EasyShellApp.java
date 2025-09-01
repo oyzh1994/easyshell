@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
+import cn.oyzh.easyshell.terminal.redis.RedisTerminalManager;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
@@ -29,6 +30,7 @@ import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nManager;
 import javafx.stage.Stage;
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
@@ -152,6 +154,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             super.start(primaryStage);
             // 开启定期gc
             SystemUtil.gcInterval(60_000);
+            // 注册命令
+            TerminalManager.setLoadHandlerAction(RedisTerminalManager::registerHandlers);
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("start error", ex);

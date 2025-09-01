@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTextSVGGlyph?>
 <FXTab text="%base.data" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeyDataController" fx:id="dataRoot">
     <graphic>
-        <SVGGlyph url="/font/keys.svg" sizeStr="12" cursorType="DEFAULT"/>
+        <FileTextSVGGlyph sizeStr="12" cursorType="DEFAULT"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <fx:include groupId="key-data" fx:id="stringKey" source="redisStringKey.fxml"/>
