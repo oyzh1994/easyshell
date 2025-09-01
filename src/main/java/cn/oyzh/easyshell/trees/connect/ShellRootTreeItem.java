@@ -133,7 +133,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      */
     private void addConnect() {
 //        ShellEventUtil.showAddConnect();
-        ShellViewFactory.addGuid(null);
+        ShellViewFactory.addConnectGuid(null);
     }
 
     /**

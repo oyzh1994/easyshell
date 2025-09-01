@@ -24,8 +24,8 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddGuidController" realWidth="600"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
         realHeight="420">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
@@ -175,12 +175,20 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
+        <FXRadioButton toggleGroup="$type" text="Redis" userData="redis">
             <graphic>
                 <VNCSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
+            <graphic>
+                <VNCSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
     </FXHBox>

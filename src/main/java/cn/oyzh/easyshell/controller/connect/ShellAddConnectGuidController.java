@@ -20,9 +20,9 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellAddGuid.fxml"
+        value = FXConst.FXML_PATH + "connect/shellAddConnectGuid.fxml"
 )
-public class ShellAddGuidController extends StageController {
+public class ShellAddConnectGuidController extends StageController {
 
     /**
      * tab组件
@@ -70,6 +70,8 @@ public class ShellAddGuidController extends StageController {
                 ShellViewFactory.addRLoginConnect(group);
             } else if ("smb".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSMBConnect(group);
+            } else if ("redis".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addRedisConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

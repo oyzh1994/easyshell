@@ -4,13 +4,14 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
-import cn.oyzh.easyshell.controller.connect.ShellAddGuidController;
+import cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController;
 import cn.oyzh.easyshell.controller.connect.ShellExportConnectController;
 import cn.oyzh.easyshell.controller.connect.ShellImportConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.redis.ShellAddRedisConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellUpdateRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController;
@@ -98,13 +99,13 @@ import java.util.function.Consumer;
 public class ShellViewFactory {
 
     /**
-     * 新增引导
+     * 新增连接引导
      *
      * @param group 分组
      */
-    public static void addGuid(ShellGroup group) {
+    public static void addConnectGuid(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddGuidController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddConnectGuidController.class);
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -270,6 +271,23 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddSMBConnectController.class);
             adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 新增redis连接
+     *
+     * @param group 分组
+     */
+    public static void addRedisConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddRedisConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();

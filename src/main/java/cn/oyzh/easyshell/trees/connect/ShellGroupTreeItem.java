@@ -147,7 +147,7 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      */
     private void addConnect() {
 //        ShellEventUtil.showAddConnect(this.value);
-        ShellViewFactory.addGuid(this.value);
+        ShellViewFactory.addConnectGuid(this.value);
     }
 
     @Override

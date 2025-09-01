@@ -92,7 +92,7 @@ public class ConnectController extends SubStageController {
 
     @FXML
     private void addConnect() {
-        ShellViewFactory.addGuid(null);
+        ShellViewFactory.addConnectGuid(null);
     }
 
     @FXML
