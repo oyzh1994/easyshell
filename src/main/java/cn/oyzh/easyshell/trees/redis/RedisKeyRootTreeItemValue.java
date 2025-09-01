@@ -38,7 +38,7 @@ public class RedisKeyRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String name() {
-        return I18nHelper.keys();
+        return I18nHelper.database();
     }
 
     @Override

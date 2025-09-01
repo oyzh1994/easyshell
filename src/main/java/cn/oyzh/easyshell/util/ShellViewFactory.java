@@ -51,6 +51,7 @@ import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
+import cn.oyzh.easyshell.controller.redis.RedisKeyAddController;
 import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
 import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
 import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;
@@ -69,6 +70,8 @@ import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
+import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.RedisKeyType;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
@@ -1177,4 +1180,23 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 添加键
+     *
+     * @param client  客户端
+     * @param dbIndex db库节点
+     * @param type    键类型
+     */
+    public static void addRedisKey(RedisClient client, Integer dbIndex, RedisKeyType type) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
+            adapter.setProp("type", type);
+            adapter.setProp("client", client);
+            adapter.setProp("dbIndex", dbIndex);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 }

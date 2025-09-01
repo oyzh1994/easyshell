@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.RedisKeyUtil;
 import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -199,7 +200,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      * 添加键
      */
     public void addKey() {
-        RedisViewFactory.addKey(this.dbIndex, null);
+        ShellViewFactory.addRedisKey(this.client(), this.dbIndex, null);
     }
 
     /**

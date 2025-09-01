@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView;
-import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -178,10 +178,7 @@ public class RedisKeysTabController extends ParentTabController {
 
     @FXML
     private void addKey() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class);
-//        adapter.setProp("dbItem", this.treeItem);
-//        adapter.display();
-        RedisViewFactory.addKey(this.dbIndex(), null);
+        ShellViewFactory.addRedisKey(this.client, this.dbIndex(), null);
     }
 
     @FXML

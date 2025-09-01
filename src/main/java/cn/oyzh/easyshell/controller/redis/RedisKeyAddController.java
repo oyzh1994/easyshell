@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "key/redisKeyAdd.fxml"
+        value = FXConst.FXML_PATH + "/redis/key/redisKeyAdd.fxml"
 )
 public class RedisKeyAddController extends StageController {
 
@@ -226,7 +226,6 @@ public class RedisKeyAddController extends StageController {
         int type = this.type.getSelectedIndex();
         String key = this.key.getTextTrim();
         int dbIndex = this.dbIndex;
-        // int dbIndex = this.dbItem.dbIndex();
         try {
             long ttl = this.ttlValue.getValue();
             if (ttl == 0) {

@@ -38,7 +38,7 @@
         </VBox.margin>
     </InfoLabel>
     <ClearableTextField fx:id="key" realHeight="30.0" flexWidth="100% - 140"
-                        tipText="%redis.key.keyNameTip1" require="true">
+                        tipText="%shell.redis.keyNameTip1" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -48,7 +48,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <NumberTextField realHeight="30" flexWidth="100% - 140" fx:id="ttlValue" tipText="%redis.key.ttlTip2" value="-1"
+    <NumberTextField realHeight="30" flexWidth="100% - 140" fx:id="ttlValue" tipText="%shell.redis.ttlTip2" value="-1"
                      min="-1"
                      max="9223372036854775807" step="3600">
         <VBox.margin>
@@ -229,7 +229,7 @@
             </VBox.margin>
         </InfoLabel>
         <ClearableTextField realHeight="30" flexWidth="100% - 140" fx:id="streamIDValue"
-                            tipText="%redis.key.msgTip1" text="*">
+                            tipText="%shell.redis.msgTip1" text="*">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
@@ -241,7 +241,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox flexHeight="100% - 45">
-                <Editor flexHeight="100%" tipText="%redis.key.msgTip2"
+                <Editor flexHeight="100%" tipText="%shell.redis.msgTip2"
                         flexWidth="100% - 140">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
@@ -336,7 +336,7 @@
             </VBox.margin>
         </InfoLabel>
         <FXHBox flexHeight="100% - 45">
-            <Editor flexHeight="100%" tipText="%redis.key.tip4"
+            <Editor flexHeight="100%" tipText="%shell.redis.tip4"
                     flexWidth="100% - 140">
                 <HBox.margin>
                     <Insets left="30" top="5"/>

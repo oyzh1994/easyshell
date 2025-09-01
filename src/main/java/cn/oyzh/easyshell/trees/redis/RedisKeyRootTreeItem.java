@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.RedisKeyUtil;
 import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -63,20 +64,13 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
      * 添加键
      */
     public void addKey() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, this.window());
-//        adapter.setProp("dbItem", this.dbItem());
-//        adapter.display();
-        RedisViewFactory.addKey(this.dbIndex(), null);
+        ShellViewFactory.addRedisKey(this.client(), this.dbIndex(), null);
     }
 
     /**
      * 导出redis键
      */
     public void exportData() {
-//        StageAdapter adapter = StageManager.parseStage(RedisExportDataController.class, this.window());
-//        adapter.setProp("connect", this.redisConnect());
-//        adapter.setProp("dbIndex", this.dbIndex());
-//        adapter.display();
         RedisViewFactory.exportData(this.shellConnect(), this.dbIndex());
     }
 
@@ -177,7 +171,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         }
     }
 
-    protected void loadDatabase(){
+    protected void loadDatabase() {
         // cluster集群模式
         if (this.client().isClusterMode()) {
             this.setChild(new RedisDatabaseTreeItem(null, this.getTreeView()));

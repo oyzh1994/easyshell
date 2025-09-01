@@ -4,7 +4,6 @@ import cn.oyzh.easyshell.controller.redis.RedisExportDataController;
 import cn.oyzh.easyshell.controller.redis.RedisHashFieldAddController;
 import cn.oyzh.easyshell.controller.redis.RedisHylogElementsAddController;
 import cn.oyzh.easyshell.controller.redis.RedisImportDataController;
-import cn.oyzh.easyshell.controller.redis.RedisKeyAddController;
 import cn.oyzh.easyshell.controller.redis.RedisKeyBatchOperationController;
 import cn.oyzh.easyshell.controller.redis.RedisKeyCopyController;
 import cn.oyzh.easyshell.controller.redis.RedisKeyMoveController;
@@ -16,7 +15,6 @@ import cn.oyzh.easyshell.controller.redis.RedisTransportDataController;
 import cn.oyzh.easyshell.controller.redis.RedisZSetCoordinateAddController;
 import cn.oyzh.easyshell.controller.redis.RedisZSetMemberAddController;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.redis.RedisKeyType;
 import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
@@ -255,23 +253,23 @@ public class RedisViewFactory {
     //     return null;
     // }
 
-    /**
-     * 添加键
-     *
-     * @param dbIndex db库节点
-     * @param type   键类型
-     */
-    public static void addKey(Integer dbIndex, RedisKeyType type) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("dbIndex", dbIndex);
-            adapter.setProp("type", type);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+    // /**
+    //  * 添加键
+    //  *
+    //  * @param dbIndex db库节点
+    //  * @param type   键类型
+    //  */
+    // public static void addKey(Integer dbIndex, RedisKeyType type) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("dbIndex", dbIndex);
+    //         adapter.setProp("type", type);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
 
     /**
      * 键ttl
