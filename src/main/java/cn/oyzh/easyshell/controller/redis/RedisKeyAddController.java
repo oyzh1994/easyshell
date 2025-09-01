@@ -278,6 +278,7 @@ public class RedisKeyAddController extends StageController {
             if (ttl != -1) {
                 this.client.expire(dbIndex, key, ttl, null);
             }
+            this.setProp("key", key);
             RedisEventUtil.keyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
             MessageBox.okToast(I18nHelper.operationSuccess());
             this.closeWindow();

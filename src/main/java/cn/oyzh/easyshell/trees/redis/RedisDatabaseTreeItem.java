@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.trees.redis;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.StringUtil;
@@ -17,6 +18,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -200,7 +202,11 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      * 添加键
      */
     public void addKey() {
-        ShellViewFactory.addRedisKey(this.client(), this.dbIndex, null);
+        StageAdapter adapter = ShellViewFactory.addRedisKey(this.client(), this.dbIndex, null);
+        if (adapter != null) {
+            String key = adapter.getProp("key");
+            this.keyAdded(key);
+        }
     }
 
     /**
@@ -378,6 +384,19 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
             super.onPrimaryDoubleClick();
         } else {
             this.loadChild();
+        }
+    }
+
+    public void keyAdded(String key) {
+        try {
+            RedisKey redisKey = RedisKeyUtil.getKey(this.dbIndex, key, false, false, this.client());
+            if (redisKey == null) {
+                JulLog.warn("redisKey is null");
+            } else {
+                this.addChild(this.initKeyItem(redisKey));
+            }
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
         }
     }
 

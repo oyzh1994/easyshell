@@ -1187,16 +1187,18 @@ public class ShellViewFactory {
      * @param dbIndex db库节点
      * @param type    键类型
      */
-    public static void addRedisKey(RedisClient client, Integer dbIndex, RedisKeyType type) {
+    public static StageAdapter addRedisKey(RedisClient client, Integer dbIndex, RedisKeyType type) {
         try {
             StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("type", type);
             adapter.setProp("client", client);
             adapter.setProp("dbIndex", dbIndex);
-            adapter.display();
+            adapter.showAndWait();
+            return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+        return null;
     }
 }
