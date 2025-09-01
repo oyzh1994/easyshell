@@ -108,7 +108,7 @@ public class RedisServerTabController extends ParentTabController {
      *
      * @param client redis客户端
      */
-    public void init( RedisClient client) {
+    public void init(RedisClient client) {
         this.client = client;
         if (!client.isSentinelMode()) {
             this.pubsubController.init(client);
@@ -184,7 +184,13 @@ public class RedisServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.initRefreshTask();
+        this.getTab().selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.initRefreshTask();
+            } else {
+                this.closeRefreshTask();
+            }
+        });
     }
 
     @Override

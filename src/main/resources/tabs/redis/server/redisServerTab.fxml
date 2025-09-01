@@ -4,8 +4,12 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.redis.server.RedisServerTabController" text="%base.server">
+    <graphic>
+        <ServerSVGGlyph sizeStr="11"/>
+    </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXTableView flexWidth="100%" realHeight="80" fx:id="propTable">
             <columns>
