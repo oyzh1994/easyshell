@@ -21,7 +21,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ClearableTextField flexWidth="100% - 180" fx:id="streamID" tipText="%redis.row.tip2" text="*" require="true">
+    <ClearableTextField flexWidth="100% - 180" fx:id="streamID" tipText="%shell.redis.row.tip2" text="*" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -33,7 +33,7 @@
             </VBox.margin>
         </InfoLabel>
         <FXHBox flexHeight="100% - 45" flexWidth="100%">
-            <Editor fx:id="rowValue" flexHeight="100%" tipText="%redis.row.tip1"
+            <Editor fx:id="rowValue" flexHeight="100%" tipText="%shell.redis.row.tip1"
                     flexWidth="100% - 180">
                 <HBox.margin>
                     <Insets left="30" top="5"/>

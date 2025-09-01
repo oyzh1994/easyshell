@@ -21,7 +21,7 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox flexWidth="100%" flexHeight="100% - 120">
-        <Editor fx:id="rowValue" flexHeight="100%" tipText="%redis.key.tip6"
+        <Editor fx:id="rowValue" flexHeight="100%" tipText="%shell.redis.key.tip6"
                     flexWidth="100% - 180">
             <HBox.margin>
                 <Insets left="30" top="5"/>

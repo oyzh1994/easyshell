@@ -195,13 +195,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </ClearableTextField>
-                <FXButton text="%redis.key.tip2" onAction="#showKeys">
+                <FXButton text="%shell.redis.key.tip2" onAction="#showKeys">
                     <HBox.margin>
                         <Insets left="3" top="5"/>
                     </HBox.margin>
                 </FXButton>
             </FXHBox>
-            <InfoLabel text="%redis.key.tip1">
+            <InfoLabel text="%shell.redis.key.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -253,7 +253,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox>
-                <FXCheckBox fx:id="retainTTL" text="%redis.transport.tip10" selected="true">
+                <FXCheckBox fx:id="retainTTL" text="%shell.redis.transport.tip10" selected="true">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
                     </HBox.margin>

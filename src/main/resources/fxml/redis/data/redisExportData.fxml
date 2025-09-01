@@ -28,7 +28,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </ExportSVGGlyph>
-            <FXText realHeight="25" text="%redis.export.tip1" fontSize="15">
+            <FXText realHeight="25" text="%shell.redis.export.tip1" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>
@@ -107,13 +107,13 @@
                         <Insets left="30" top="5"/>
                     </HBox.margin>
                 </ClearableTextField>
-                <FXButton text="%redis.key.tip2" onAction="#showKeys">
+                <FXButton text="%shell.redis.key.tip2" onAction="#showKeys">
                     <HBox.margin>
                         <Insets left="3" top="5"/>
                     </HBox.margin>
                 </FXButton>
             </FXHBox>
-            <InfoLabel text="%redis.key.tip1">
+            <InfoLabel text="%shell.redis.key.tip1">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -172,7 +172,7 @@
                         <Insets left="10" top="5"/>
                     </HBox.margin>
                 </FXCheckBox>
-                <FXCheckBox fx:id="retainTTL" text="%redis.transport.tip10" selected="true">
+                <FXCheckBox fx:id="retainTTL" text="%shell.redis.transport.tip10" selected="true">
                     <HBox.margin>
                         <Insets left="10" top="5"/>
                     </HBox.margin>
