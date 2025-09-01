@@ -171,9 +171,23 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
                     .onFinish(this::expend)
                     .onSuccess(this::refresh)
                     .onError(MessageBox::exception)
-                    .onStart(() -> this.loadChild(this.setting.getKeyLoadLimit()))
+                    .onStart(this::loadDatabase)
                     .build();
             this.startWaiting(task);
+        }
+    }
+
+    protected void loadDatabase(){
+        // cluster集群模式
+        if (this.client().isClusterMode()) {
+            this.setChild(new RedisDatabaseTreeItem(null, this.getTreeView()));
+        } else {// 正常模式
+            int databases = this.client().databases();
+            for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
+                RedisDatabaseTreeItem dbItem = new RedisDatabaseTreeItem(dbIndex, this.getTreeView());
+                this.addChild(dbItem);
+                this.expend();
+            }
         }
     }
 
@@ -285,5 +299,4 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
             this.loadChild();
         }
     }
-
 }
