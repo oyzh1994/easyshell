@@ -1,10 +1,7 @@
 package cn.oyzh.easyshell.trees.redis;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.redis.key.RedisKeyAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyCopiedEvent;
-import cn.oyzh.easyshell.event.redis.key.RedisKeyDeletedEvent;
-import cn.oyzh.easyshell.event.redis.key.RedisKeyFilteredEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyFlushedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyMovedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeysMovedEvent;
@@ -14,13 +11,13 @@ import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * redis树
@@ -30,20 +27,19 @@ import java.util.Objects;
  */
 public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
-
-    private final IntegerProperty dbIndexProperty = new SimpleIntegerProperty(0);
-
-    public IntegerProperty dbIndexProperty() {
-        return dbIndexProperty;
-    }
-
-    public Integer getDbIndex() {
-        return this.dbIndexProperty.get();
-    }
-
-    public void setDbIndex(int dbIndex) {
-        this.dbIndexProperty.set(dbIndex);
-    }
+    // private final IntegerProperty dbIndexProperty = new SimpleIntegerProperty(0);
+    //
+    // public IntegerProperty dbIndexProperty() {
+    //     return dbIndexProperty;
+    // }
+    //
+    // public Integer getDbIndex() {
+    //     return this.dbIndexProperty.get();
+    // }
+    //
+    // public void setDbIndex(int dbIndex) {
+    //     this.dbIndexProperty.set(dbIndex);
+    // }
 
     private RedisClient client;
 
@@ -75,7 +71,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     @Override
     public RedisKeyTreeItemFilter getItemFilter() {
         // 初始化过滤器
-        if (this.itemFilter == null && this.getDbIndex() != null) {
+        if (this.itemFilter == null) {
             RedisKeyTreeItemFilter filter = new RedisKeyTreeItemFilter();
             filter.initFilters(this.client().iid());
             this.itemFilter = filter;
@@ -88,28 +84,39 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         return (RedisKeyRootTreeItem) super.root();
     }
 
-    /**
-     * 键添加事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void keyAdded(RedisKeyAddedEvent event) {
-        if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
-            this.root().keyAdded(event.getKey());
-        }
-    }
+    // /**
+    //  * 键添加事件
+    //  *
+    //  * @param event 事件
+    //  */
+    // @EventSubscribe
+    // private void keyAdded(RedisKeyAddedEvent event) {
+    //     if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
+    //         this.root().keyAdded(event.getKey());
+    //     }
+    // }
 
-    /**
-     * 键删除事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void keyDeleted(RedisKeyDeletedEvent event) {
-        if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
-            this.root().keyDeleted(event.getKey());
+    // /**
+    //  * 键删除事件
+    //  *
+    //  * @param event 事件
+    //  */
+    // @EventSubscribe
+    // private void keyDeleted(RedisKeyDeletedEvent event) {
+    //     if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
+    //         this.root().keyDeleted(event.getKey());
+    //     }
+    // }
+
+    public List<RedisDatabaseTreeItem> dbItems() {
+        List<TreeItem<?>> list = this.root().getChildren();
+        List<RedisDatabaseTreeItem> items = new ArrayList<>();
+        for (TreeItem<?> item : list) {
+            if (item instanceof RedisDatabaseTreeItem) {
+                items.add((RedisDatabaseTreeItem) item);
+            }
         }
+        return items;
     }
 
     /**
@@ -119,23 +126,24 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      */
     @EventSubscribe
     private void keyFlushed(RedisKeyFlushedEvent event) {
-        if (Objects.equals(event.data(), this.getDbIndex())) {
-            this.loadItems();
+        for (RedisDatabaseTreeItem item : this.dbItems()) {
+            item.reloadChild();
         }
+
     }
 
-    /**
-     * 键过滤事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void keyFiltered(RedisKeyFilteredEvent event) {
-        if (Objects.equals(event.data(), this.getDbIndex())) {
-            this.root().unloadChild();
-            this.root().loadChild();
-        }
-    }
+    // /**
+    //  * 键过滤事件
+    //  *
+    //  * @param event 事件
+    //  */
+    // @EventSubscribe
+    // private void keyFiltered(RedisKeyFilteredEvent event) {
+    //     if (Objects.equals(event.data(), this.getDbIndex())) {
+    //         this.root().unloadChild();
+    //         this.root().loadChild();
+    //     }
+    // }
 
     /**
      * 键复制事件
@@ -144,9 +152,11 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      */
     @EventSubscribe
     private void keyCopied(RedisKeyCopiedEvent event) {
-        int dbIndex = event.getTargetDB();
-        if (dbIndex == this.getDbIndex()) {
-            this.loadItems();
+        for (RedisDatabaseTreeItem item : this.dbItems()) {
+            int dbIndex = event.getTargetDB();
+            if (dbIndex == item.dbIndex()) {
+                item.reloadChild();
+            }
         }
     }
 
@@ -161,11 +171,10 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         if (event.shellConnect() != this.shellConnect()) {
             return;
         }
-        // 目标库刷新节点
-        if (event.getTargetDB() == this.getDbIndex()) {
-            this.loadItems();
-        } else if (event.sourceDB() == this.getDbIndex()) {// 来源库，移除此节点
-            event.data().remove();
+        for (RedisDatabaseTreeItem item : this.dbItems()) {
+            if (event.getTargetDB() == item.dbIndex()) {
+                item.reloadChild();
+            }
         }
     }
 
@@ -181,8 +190,10 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
             return;
         }
         // 来源库、目标库刷新节点
-        if (event.getTargetDB() == this.getDbIndex() || event.sourceDB() == this.getDbIndex()) {
-            this.loadItems();
+        for (RedisDatabaseTreeItem item : this.dbItems()) {
+            if (event.getTargetDB() == item.dbIndex() || event.sourceDB() == item.dbIndex()) {
+                item.reloadChild();
+            }
         }
     }
 
@@ -218,16 +229,16 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         this.refresh();
     }
 
-    /**
-     * 键过滤模式
-     */
-    private String filterPattern;
-
-    public String getFilterPattern() {
-        return filterPattern;
-    }
-
-    public void setFilterPattern(String filterPattern) {
-        this.filterPattern = filterPattern;
-    }
+    // /**
+    //  * 键过滤模式
+    //  */
+    // private String filterPattern;
+    //
+    // public String getFilterPattern() {
+    //     return filterPattern;
+    // }
+    //
+    // public void setFilterPattern(String filterPattern) {
+    //     this.filterPattern = filterPattern;
+    // }
 }

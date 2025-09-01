@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -15,14 +16,18 @@ import cn.oyzh.easyshell.util.RedisViewFactory;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
+import cn.oyzh.fx.plus.window.PopupAdapter;
+import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -112,7 +117,10 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
         FXMenuItem batchOperation = MenuItemHelper.batchOpt("12", this::batchOperation);
         FXMenuItem openTerminal = MenuItemHelper.openTerminal("12", this::openTerminal);
-
+        // 加载全部
+        FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
+        // 卸载
+        FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
         items.add(add);
 //        items.add(keyFilter);
         // items.add(refresh);
@@ -120,6 +128,8 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         items.add(transportData);
         items.add(batchOperation);
         items.add(openTerminal);
+        items.add(loadAll);
+        items.add(unload);
         return items;
     }
 
@@ -358,22 +368,22 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      */
     private RedisKeyTreeItem initKeyItem(RedisKey redisKey) {
         if (redisKey.isStringKey()) {
-            return new RedisStringKeyTreeItem(redisKey, this.getTreeView());
+            return new RedisStringKeyTreeItem(redisKey, this);
         }
         if (redisKey.isListKey()) {
-            return new RedisListKeyTreeItem(redisKey, this.getTreeView());
+            return new RedisListKeyTreeItem(redisKey, this);
         }
         if (redisKey.isSetKey()) {
-            return new RedisSetKeyTreeItem(redisKey, this.getTreeView());
+            return new RedisSetKeyTreeItem(redisKey, this);
         }
         if (redisKey.isZSetKey()) {
-            return new RedisZSetKeyTreeItem(redisKey, this.getTreeView());
+            return new RedisZSetKeyTreeItem(redisKey, this);
         }
         if (redisKey.isHashKey()) {
-            return new RedisHashKeyTreeItem(redisKey, this.getTreeView());
+            return new RedisHashKeyTreeItem(redisKey, this);
         }
         if (redisKey.isStreamKey()) {
-            return new RedisStreamKeyTreeItem(redisKey, this.getTreeView());
+            return new RedisStreamKeyTreeItem(redisKey, this);
         }
         return null;
     }
@@ -397,6 +407,51 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);
+        }
+    }
+
+    @Override
+    public void reloadChild() {
+        this.loadChild();
+    }
+
+    /**
+     * 键过滤
+     */
+    public void doKeyFilter(MouseEvent event) {
+        String filterPattern = this.getFilterPattern();
+        PopupAdapter popup = PopupManager.parsePopup(RedisKeyFilterPopupController.class);
+        popup.setProp("pattern", filterPattern);
+        SVGGlyph glyph = (SVGGlyph) event.getSource();
+        if (glyph == null) {
+            glyph = (SVGGlyph) event.getTarget();
+        }
+        popup.setSubmitHandler(o -> {
+            if (o instanceof String pattern && !StringUtil.equals(pattern, filterPattern)) {
+                this.setFilterPattern(pattern);
+                this.unloadChild();
+                this.loadChild();
+            }
+        });
+        popup.showPopup(glyph);
+    }
+
+    /**
+     * 取消加载
+     */
+    public void unloadChild() {
+        this.clearChild();
+        this.setLoaded(false);
+    }
+
+    private void loadChildAll() {
+        if (!this.isLoaded() && !this.isLoading()) {
+            Task task = TaskBuilder.newBuilder()
+                    .onSuccess(this::expend)
+                    .onStart(() -> this.loadChild(0))
+                    .onError(MessageBox::exception)
+                    .build();
+            this.startWaiting(task);
         }
     }
 

@@ -100,6 +100,8 @@ public class RedisKeyMoveController extends StageController {
                 if (ttl > 0) {
                     this.client.expire(targetDBIndex, key, ttl, null);
                 }
+                // 移除此节点
+                this.treeItem.remove();
                 RedisEventUtil.keyMoved(this.treeItem, targetDBIndex);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

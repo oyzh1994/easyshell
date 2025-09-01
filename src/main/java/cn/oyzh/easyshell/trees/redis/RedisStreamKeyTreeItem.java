@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class RedisStreamKeyTreeItem extends RedisRowKeyTreeItem<RedisStreamValue.RedisStreamRow> {
 
-    public RedisStreamKeyTreeItem( RedisKey value,  RedisKeyTreeView treeView) {
-        super(value, treeView);
+    public RedisStreamKeyTreeItem( RedisKey value,  RedisDatabaseTreeItem dbItem) {
+        super(value, dbItem);
     }
 
     @Override

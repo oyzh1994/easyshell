@@ -122,8 +122,8 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
         return this;
     }
 
-    public RedisZSetKeyTreeItem(RedisKey value, RedisKeyTreeView treeView) {
-        super(value, treeView);
+    public RedisZSetKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+        super(value, dbItem);
     }
 
     /**

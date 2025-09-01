@@ -11,8 +11,8 @@ import cn.oyzh.fx.plus.information.MessageBox;
  */
 public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
 
-    public RedisStringKeyTreeItem( RedisKey value,  RedisKeyTreeView treeView) {
-        super(value, treeView);
+    public RedisStringKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+        super(value, dbItem);
     }
 
     @Override

@@ -30,56 +30,56 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox flexWidth="100%">
-        <FXButton text="%redis.ttl.tip3" onMousePrimaryClicked="#appendWith1M">
+        <FXButton text="%shell.redis.ttl.tip3" onMousePrimaryClicked="#appendWith1M">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </FXButton>
-        <FXButton text="%redis.ttl.tip4" onMousePrimaryClicked="#appendWith1H">
+        <FXButton text="%shell.redis.ttl.tip4" onMousePrimaryClicked="#appendWith1H">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXButton>
-        <FXButton text="%redis.ttl.tip5" onMousePrimaryClicked="#appendWith1D">
+        <FXButton text="%shell.redis.ttl.tip5" onMousePrimaryClicked="#appendWith1D">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXButton>
     </FXHBox>
-    <InfoLabel text="%redis.ttl.tip6">
+    <InfoLabel text="%shell.redis.ttl.tip6">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXHBox flexWidth="100%">
-        <FXButton text="%redis.ttl.tip7" onMousePrimaryClicked="#expireAt1M">
+        <FXButton text="%shell.redis.ttl.tip7" onMousePrimaryClicked="#expireAt1M">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </FXButton>
-        <FXButton text="%redis.ttl.tip8" onMousePrimaryClicked="#expireAt1H">
+        <FXButton text="%shell.redis.ttl.tip8" onMousePrimaryClicked="#expireAt1H">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXButton>
-        <FXButton text="%redis.ttl.tip9" onMousePrimaryClicked="#expireAt1D">
+        <FXButton text="%shell.redis.ttl.tip9" onMousePrimaryClicked="#expireAt1D">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXButton>
     </FXHBox>
-    <InfoLabel text="%redis.ttl.tip10">
+    <InfoLabel text="%shell.redis.ttl.tip10">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXHBox flexWidth="100%">
-        <FXButton text="%redis.ttl.tip11" onMousePrimaryClicked="#resetTTL">
+        <FXButton text="%shell.redis.ttl.tip11" onMousePrimaryClicked="#resetTTL">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </FXButton>
-        <FXButton text="%redis.ttl.tip12" onMousePrimaryClicked="#persistKey">
+        <FXButton text="%shell.redis.ttl.tip12" onMousePrimaryClicked="#persistKey">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>

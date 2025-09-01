@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.trees.redis;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -45,10 +44,10 @@ public class RedisKeyRootTreeItemValue extends RichTreeItemValue {
     public String extra() {
         int size = this.item().keyChildrenSize();
         String extra = "(" + size + ")";
-        String filterPattern = this.item().getTreeView().getFilterPattern();
-        if (StringUtil.isNotBlank(filterPattern)) {
-            extra += "[" + I18nHelper.keyFilter() + ":" + filterPattern + "]";
-        }
+        // String filterPattern = this.item().getTreeView().getFilterPattern();
+        // if (StringUtil.isNotBlank(filterPattern)) {
+        //     extra += "[" + I18nHelper.keyFilter() + ":" + filterPattern + "]";
+        // }
         return extra;
     }
 

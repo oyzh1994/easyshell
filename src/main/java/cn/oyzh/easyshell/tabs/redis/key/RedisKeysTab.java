@@ -64,9 +64,9 @@ public class RedisKeysTab extends RichTab {
         this.controller().flushTTL();
     }
 
-    public int dbIndex() {
-       return this.controller().dbIndex();
-    }
+    // public int dbIndex() {
+    //    return this.controller().dbIndex();
+    // }
 
     public RedisClient client() {
         return this.controller().getClient();

@@ -173,6 +173,6 @@ public class RedisKeyTTLController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.key.ttlUpdate");
+        return I18nResourceBundle.i18nString("shell.redis.title.key.ttlUpdate");
     }
 }

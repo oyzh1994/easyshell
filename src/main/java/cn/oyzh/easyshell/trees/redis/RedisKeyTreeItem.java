@@ -38,6 +38,8 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      */
     public static final int DATA_MAX = 10 * 1024 * 1024;
 
+    private RedisDatabaseTreeItem dbItem;
+
     /**
      * redis键
      */
@@ -100,9 +102,10 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
         return keyValue != null && keyValue.hasUnSavedValue();
     }
 
-    public RedisKeyTreeItem(RedisKey value, RedisKeyTreeView treeView) {
-        super(treeView);
+    public RedisKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+        super(dbItem.getTreeView());
         this.value = value;
+        this.dbItem = dbItem;
         super.setFilterable(true);
         this.setValue(new RedisKeyTreeItemValue(this));
     }
@@ -182,7 +185,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * @return db索引值
      */
     public int dbIndex() {
-        return this.getTreeView().getDbIndex();
+        return this.dbItem.dbIndex();
     }
 
     /**

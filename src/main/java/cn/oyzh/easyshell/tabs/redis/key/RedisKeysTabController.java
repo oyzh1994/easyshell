@@ -1,34 +1,26 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.common.util.CostUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox;
-import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
-import cn.oyzh.fx.plus.window.PopupAdapter;
-import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
-import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
@@ -85,9 +77,9 @@ public class RedisKeysTabController extends ParentTabController {
         return activeItem;
     }
 
-    public void setActiveItem(RedisKeyTreeItem activeItem) {
-        this.activeItem = activeItem;
-    }
+    // public void setActiveItem(RedisKeyTreeItem activeItem) {
+    //     this.activeItem = activeItem;
+    // }
 
     /**
      * 当前激活的节点
@@ -176,10 +168,10 @@ public class RedisKeysTabController extends ParentTabController {
         this.treeView.filter();
     }
 
-    @FXML
-    private void addKey() {
-        ShellViewFactory.addRedisKey(this.client, this.dbIndex(), null);
-    }
+    // @FXML
+    // private void addKey() {
+    //     ShellViewFactory.addRedisKey(this.client, this.dbIndex(), null);
+    // }
 
     @FXML
     private void deleteKey() {
@@ -201,17 +193,17 @@ public class RedisKeysTabController extends ParentTabController {
         }
     }
 
-    @FXML
-    private void refreshKey() {
-        StageManager.showMask(() -> {
-            try {
-                this.treeView.loadItems();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+    // @FXML
+    // private void refreshKey() {
+    //     StageManager.showMask(() -> {
+    //         try {
+    //             this.treeView.loadItems();
+    //         } catch (Exception ex) {
+    //             ex.printStackTrace();
+    //             MessageBox.exception(ex);
+    //         }
+    //     });
+    // }
 
     @FXML
     private void positionNode() {
@@ -312,28 +304,28 @@ public class RedisKeysTabController extends ParentTabController {
         return List.of(this.keyDataController, this.keyInfoController);
     }
 
-    /**
-     * 键过滤
-     */
-    @FXML
-    private void doKeyFilter(MouseEvent event) {
-        String filterPattern = this.treeView.getFilterPattern();
-        PopupAdapter popup = PopupManager.parsePopup(RedisKeyFilterPopupController.class);
-        popup.setProp("pattern", filterPattern);
-        SVGGlyph glyph = (SVGGlyph) event.getSource();
-        if (glyph == null) {
-            glyph = (SVGGlyph) event.getTarget();
-        }
-        popup.setSubmitHandler(o -> {
-            if (o instanceof String pattern && !StringUtil.equals(pattern, filterPattern)) {
-                this.treeView.setFilterPattern(pattern);
-                RedisEventUtil.keyFiltered(this.dbIndex());
-            }
-        });
-        popup.showPopup(glyph);
-    }
+    // /**
+    //  * 键过滤
+    //  */
+    // @FXML
+    // private void doKeyFilter(MouseEvent event) {
+    //     String filterPattern = this.treeView.getFilterPattern();
+    //     PopupAdapter popup = PopupManager.parsePopup(RedisKeyFilterPopupController.class);
+    //     popup.setProp("pattern", filterPattern);
+    //     SVGGlyph glyph = (SVGGlyph) event.getSource();
+    //     if (glyph == null) {
+    //         glyph = (SVGGlyph) event.getTarget();
+    //     }
+    //     popup.setSubmitHandler(o -> {
+    //         if (o instanceof String pattern && !StringUtil.equals(pattern, filterPattern)) {
+    //             this.treeView.setFilterPattern(pattern);
+    //             RedisEventUtil.keyFiltered(this.dbIndex());
+    //         }
+    //     });
+    //     popup.showPopup(glyph);
+    // }
 
-    public Integer dbIndex() {
-        return this.treeView.getDbIndex();
-    }
+    // public Integer dbIndex() {
+    //     return this.treeView.getDbIndex();
+    // }
 }

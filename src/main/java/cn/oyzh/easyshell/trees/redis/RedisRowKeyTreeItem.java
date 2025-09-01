@@ -30,8 +30,8 @@ public abstract class RedisRowKeyTreeItem<R extends RedisKeyRow> extends RedisKe
      */
     protected R currentRow;
 
-    public RedisRowKeyTreeItem(RedisKey value, RedisKeyTreeView treeView) {
-        super(value, treeView);
+    public RedisRowKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+        super(value, dbItem);
     }
 
     /**
