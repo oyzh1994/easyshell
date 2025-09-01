@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyredis.fx.svg.glyph.RedisSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
+<?import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RedisSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -67,11 +69,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <RedisConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
+                <ShellConnectTextField fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </RedisConnectComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.database" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>
@@ -125,11 +127,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <RedisConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                <ShellConnectTextField fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </RedisConnectComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.database" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>
