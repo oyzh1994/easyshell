@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.redis.RedisFilterSettingPopupController" realHeight="80">
+    <FXHBox>
+<!--        <FXCheckBox fx:id="searchKey" text="%base.key" selected="true">-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="15" top="15"/>-->
+<!--            </HBox.margin>-->
+<!--        </FXCheckBox>-->
+<!--        <FXCheckBox fx:id="searchData" text="%base.data" selected="true">-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="5" top="15"/>-->
+<!--            </HBox.margin>-->
+<!--        </FXCheckBox>-->
+        <FXCheckBox fx:id="matchCase" text="%base.matchCase">
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="matchFull" text="%base.matchFull">
+            <HBox.margin>
+                <Insets left="5" top="15"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox>
+        <SubmitSVGGlyph onMousePrimaryClicked="#apply" sizeStr="15,11">
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </SubmitSVGGlyph>
+        <CloseSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </CloseSVGGlyph>
+    </FXHBox>
+</FXVBox>

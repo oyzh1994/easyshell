@@ -16,7 +16,7 @@ import javafx.stage.WindowEvent;
  * @since 2025/01/24
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "redisFilterSettingPopup.fxml"
+        value = FXConst.POPUP_PATH + "redis/redisFilterSettingPopup.fxml"
 )
 public class RedisFilterSettingPopupController extends PopupController {
 

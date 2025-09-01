@@ -22,7 +22,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_TOP_LEFT;
  * @since 2025/02/10
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "redisKeyFilterPopup.fxml",
+        value = FXConst.POPUP_PATH + "redis/redisKeyFilterPopup.fxml",
         arrowLocation = BOTTOM_LEFT,
         anchorLocation = WINDOW_TOP_LEFT
 )

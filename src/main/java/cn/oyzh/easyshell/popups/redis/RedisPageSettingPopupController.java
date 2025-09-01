@@ -20,7 +20,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_TOP_LEFT;
  * @since 2025/02/08
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "redisPageSettingPopup.fxml",
+        value = FXConst.POPUP_PATH + "redis/redisPageSettingPopup.fxml",
         arrowLocation = BOTTOM_LEFT,
         anchorLocation = WINDOW_TOP_LEFT
 )

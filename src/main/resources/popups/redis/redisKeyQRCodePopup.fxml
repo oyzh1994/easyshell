@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import javafx.scene.image.ImageView?>
+<FXPane  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.redis.RedisKeyQRCodePopupController">
+    <ImageView fitWidth="450" fitHeight="450" fx:id="qrcode"/>
+</FXPane>
