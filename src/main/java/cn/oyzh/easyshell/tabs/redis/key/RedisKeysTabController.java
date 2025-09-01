@@ -128,16 +128,15 @@ public class RedisKeysTabController extends ParentTabController {
      * 初始化
      */
     public void init(ShellConnect connect) {
+        this.client = new RedisClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {
             try {
-                RedisClient client = new RedisClient(connect);
-                client.start();
-                if (!client.isConnected()) {
+                this.client.start();
+                if (!this.client.isConnected()) {
                     MessageBox.warn(I18nHelper.connectFail());
                     return;
                 }
-                this.client = client;
                 this.treeView.setClient(client);
                 this.treeView.loadItems();
             } catch (Exception ex) {
@@ -338,6 +337,6 @@ public class RedisKeysTabController extends ParentTabController {
     }
 
     public Integer dbIndex() {
-        return this.treeView.dbIndex();
+        return this.treeView.getDbIndex();
     }
 }

@@ -146,10 +146,10 @@ public class RedisClient {
     /**
      * redis信息
      */
-    private final ShellConnect redisConnect;
+    private final ShellConnect shellConnect;
 
-    public ShellConnect redisConnect() {
-        return redisConnect;
+    public ShellConnect shellConnect() {
+        return shellConnect;
     }
 
     // /**
@@ -181,8 +181,8 @@ public class RedisClient {
         return this.stateProperty().get();
     }
 
-    public RedisClient(ShellConnect redisConnect) {
-        this.redisConnect = redisConnect;
+    public RedisClient(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
         // if (redisConnect.isSSHForward() && redisConnect.getSshConfig() != null) {
         //     this.sshForwarder = new SSHForwarder(redisConnect.getSshConfig());
         // }
@@ -239,16 +239,16 @@ public class RedisClient {
 //        // 过滤配置
 //        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(RedisJumpConfig::isEnabled).collect(Collectors.toList());
         // 初始化跳板转发
-        if (this.redisConnect.isEnableJump()) {
+        if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
                 this.jumpForwarder = new SSHJumpForwarder();
             }
             // 初始化跳板配置
-            List<ShellJumpConfig> jumpConfigs = this.redisConnect.getJumpConfigs();
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
             // 转换为目标连接
             SSHConnect target = new SSHConnect();
-            target.setHost(this.redisConnect.hostIp());
-            target.setPort(this.redisConnect.hostPort());
+            target.setHost(this.shellConnect.hostIp());
+            target.setPort(this.shellConnect.hostPort());
             // 执行连接
             int localPort = this.jumpForwarder.forward(jumpConfigs, target);
             // 连接信息
@@ -259,7 +259,7 @@ public class RedisClient {
                 this.jumpForwarder = null;
             }
             // 连接信息
-            host = this.redisConnect.hostIp() + ":" + this.redisConnect.hostPort();
+            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
         }
         return host;
     }
@@ -304,7 +304,7 @@ public class RedisClient {
 //            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
 //        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.redisConnect.getUser(), this.redisConnect.getPassword(), connectTimeout, this.redisConnect.executeTimeOutMs());
+        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect.getUser(), this.shellConnect.getPassword(), connectTimeout, this.shellConnect.executeTimeOutMs());
         // 初始化连接池
         this.initPool(host, clientConfig);
         try {
@@ -459,7 +459,7 @@ public class RedisClient {
      * @return 结果
      */
     public boolean isReadonly() {
-        return this.redisConnect.isReadonly();
+        return this.shellConnect.isReadonly();
     }
 
     /**
@@ -626,7 +626,7 @@ public class RedisClient {
      * 开始连接客户端
      */
     public void start() {
-        this.startDatabase(0, this.redisConnect.connectTimeOutMs());
+        this.startDatabase(0, this.shellConnect.connectTimeOutMs());
     }
 
     /**
@@ -642,7 +642,7 @@ public class RedisClient {
      * @param dbIndex 默认db索引
      */
     public void startDatabase(int dbIndex) {
-        this.startDatabase(dbIndex, this.redisConnect.connectTimeOutMs());
+        this.startDatabase(dbIndex, this.shellConnect.connectTimeOutMs());
     }
 
     /**
@@ -4870,11 +4870,11 @@ public class RedisClient {
      * @return 连接名称
      */
     public String connectName() {
-        return this.redisConnect.getName();
+        return this.shellConnect.getName();
     }
 
     public String iid() {
-        return this.redisConnect.getId();
+        return this.shellConnect.getId();
     }
 
     /**

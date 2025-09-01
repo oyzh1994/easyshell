@@ -10,7 +10,7 @@ import cn.oyzh.event.Event;
  */
 public class RedisServerEvent extends Event<RedisClient> {
 
-    public ShellConnect redisConnect() {
-        return this.data().redisConnect();
+    public ShellConnect shellConnect() {
+        return this.data().shellConnect();
     }
 }

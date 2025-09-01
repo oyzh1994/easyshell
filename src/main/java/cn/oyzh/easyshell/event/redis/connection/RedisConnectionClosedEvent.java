@@ -17,7 +17,7 @@ public class RedisConnectionClosedEvent extends Event<RedisClient> implements Ev
         return String.format("[%s] " + I18nHelper.connectionDisconnected(), this.data().connectName());
     }
 
-    public ShellConnect redisConnect() {
-        return this.data().redisConnect();
+    public ShellConnect shellConnect() {
+        return this.data().shellConnect();
     }
 }

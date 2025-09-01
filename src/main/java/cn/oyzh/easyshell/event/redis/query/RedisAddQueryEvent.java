@@ -11,6 +11,6 @@ import cn.oyzh.event.Event;
 public class RedisAddQueryEvent extends Event<RedisClient> {
 
     public ShellConnect redisConnect(){
-        return this.data().redisConnect();
+        return this.data().shellConnect();
     }
 }

@@ -106,8 +106,8 @@ public class RedisTerminalPane extends TerminalPane {
         } else {
             str = this.client.connectName();
         }
-        if (this.redisConnect().getHost() != null) {
-            str += "@" + this.redisConnect().getHost();
+        if (this.shellConnect().getHost() != null) {
+            str += "@" + this.shellConnect().getHost();
         }
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + this.getDbName() + ")> ";
@@ -199,7 +199,7 @@ public class RedisTerminalPane extends TerminalPane {
         this.connectInfo = RedisConnectUtil.parse(input);
         if (this.connectInfo != null) {
             this.disable();
-            RedisConnectUtil.copyConnect(this.connectInfo, this.redisConnect());
+            RedisConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
             this.start(this.connectInfo.getDb());
         }
     }
@@ -266,7 +266,7 @@ public class RedisTerminalPane extends TerminalPane {
             this.stateChangeListener = (observableValue, state, t1) -> {
                 this.flushPrompt();
                 // 获取连接
-                String host = this.client.redisConnect().getHost();
+                String host = this.client.shellConnect().getHost();
                 if (t1 == RedisConnState.CONNECTED) {
                     this.outputLine(host + I18nHelper.connectSuccess() + " .");
                     this.outputLine(I18nHelper.terminalTip2());
@@ -307,8 +307,8 @@ public class RedisTerminalPane extends TerminalPane {
         }
     }
 
-    public ShellConnect redisConnect() {
-        return this.getClient().redisConnect();
+    public ShellConnect shellConnect() {
+        return this.getClient().shellConnect();
     }
 
     @Override

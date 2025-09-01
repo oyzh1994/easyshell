@@ -88,7 +88,7 @@ public class RedisKeyCopyController extends StageController {
             // 移动键
             boolean result = this.client.copy(fromDBIndex, key, key, targetDBIndex, this.replace.isSelected());
             if (result) {
-                RedisEventUtil.keyCopied(this.client.redisConnect(), List.of(key), fromDBIndex, targetDBIndex);
+                RedisEventUtil.keyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {

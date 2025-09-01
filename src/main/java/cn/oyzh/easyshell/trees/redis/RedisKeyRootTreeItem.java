@@ -77,7 +77,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
 //        adapter.setProp("connect", this.redisConnect());
 //        adapter.setProp("dbIndex", this.dbIndex());
 //        adapter.display();
-        RedisViewFactory.exportData(this.redisConnect(), this.dbIndex());
+        RedisViewFactory.exportData(this.shellConnect(), this.dbIndex());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     public void keyAdded(String key) {
         try {
             RedisKeyTreeView treeView = this.getTreeView();
-            RedisKey redisKey = treeView == null ? null : RedisKeyUtil.getKey(treeView.dbIndex(), key, false, false, treeView.client());
+            RedisKey redisKey = treeView == null ? null : RedisKeyUtil.getKey(treeView.getDbIndex(), key, false, false, treeView.client());
             if (redisKey == null) {
                 JulLog.warn("redisKey is null");
             } else {
@@ -161,7 +161,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     }
 
     public Integer dbIndex() {
-        return this.getTreeView().dbIndex();
+        return this.getTreeView().getDbIndex();
     }
 
     @Override
@@ -241,8 +241,8 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         return this.getTreeView().getFilterPattern();
     }
 
-    private ShellConnect redisConnect() {
-        return this.getTreeView().redisConnect();
+    private ShellConnect shellConnect() {
+        return this.getTreeView().shellConnect();
     }
 
     private RedisClient client() {

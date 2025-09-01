@@ -25,15 +25,15 @@ public class RedisKeyMovedEvent extends Event<RedisKeyTreeItem> implements Event
         return this.data().dbIndex();
     }
 
-    public ShellConnect redisConnect() {
-        return this.data().redisConnect();
+    public ShellConnect shellConnect() {
+        return this.data().shellConnect();
     }
 
     @Override
     public String eventFormat() {
         return String.format(
                 "[%s] " + I18nHelper.keyMoved() + "[%s-db%s] " + I18nHelper.targetDatabase() + ":%s",
-                this.redisConnect().getName(), this.data().key(), this.data().dbIndex(), this.targetDB
+                this.shellConnect().getName(), this.data().key(), this.data().dbIndex(), this.targetDB
         );
     }
 }

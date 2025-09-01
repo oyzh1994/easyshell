@@ -10,7 +10,7 @@ import cn.oyzh.event.Event;
 public class RedisZSetReverseViewEvent extends Event<RedisZSetKeyTreeItem> {
 
     public Integer dbIndex() {
-        return this.data().getTreeView().dbIndex();
+        return this.data().getTreeView().getDbIndex();
     }
 
 }

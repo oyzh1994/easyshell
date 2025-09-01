@@ -163,8 +163,8 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      *
      * @return redis信息
      */
-    public ShellConnect redisConnect() {
-        return this.getTreeView().redisConnect();
+    public ShellConnect shellConnect() {
+        return this.getTreeView().shellConnect();
     }
 
     /**
@@ -173,7 +173,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * @return redis连接名称
      */
     public String infoName() {
-        return this.getTreeView().redisConnect().getName();
+        return this.getTreeView().shellConnect().getName();
     }
 
     /**
@@ -182,7 +182,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * @return db索引值
      */
     public int dbIndex() {
-        return this.getTreeView().dbIndex();
+        return this.getTreeView().getDbIndex();
     }
 
     /**
@@ -257,7 +257,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
     }
 
     private String iid() {
-        return this.redisConnect().getId();
+        return this.shellConnect().getId();
     }
 
     @Override
@@ -273,7 +273,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             // 移除此键
             this.remove();
             // 发送事件
-            RedisEventUtil.keyDeleted(this.redisConnect(), this.key(), this.dbIndex());
+            RedisEventUtil.keyDeleted(this.shellConnect(), this.key(), this.dbIndex());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

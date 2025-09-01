@@ -14,6 +14,8 @@ import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
 import javafx.util.Callback;
@@ -28,14 +30,19 @@ import java.util.Objects;
  */
 public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
-    private Integer dbIndex = 0;
 
-    public Integer dbIndex() {
-        return dbIndex;
+    private final IntegerProperty dbIndexProperty = new SimpleIntegerProperty(0);
+
+    public IntegerProperty dbIndexProperty() {
+        return dbIndexProperty;
     }
 
-    public void dbIndex(int dbItem) {
-        this.dbIndex = dbItem;
+    public Integer getDbIndex() {
+        return this.dbIndexProperty.get();
+    }
+
+    public void setDbIndex(int dbIndex) {
+        this.dbIndexProperty.set(dbIndex);
     }
 
     private RedisClient client;
@@ -48,8 +55,8 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         return this.client;
     }
 
-    public ShellConnect redisConnect() {
-        return this.client.redisConnect();
+    public ShellConnect shellConnect() {
+        return this.client.shellConnect();
     }
 
     @Override
@@ -68,7 +75,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     @Override
     public RedisKeyTreeItemFilter getItemFilter() {
         // 初始化过滤器
-        if (this.itemFilter == null && this.dbIndex != null) {
+        if (this.itemFilter == null && this.getDbIndex() != null) {
             RedisKeyTreeItemFilter filter = new RedisKeyTreeItemFilter();
             filter.initFilters(this.client().iid());
             this.itemFilter = filter;
@@ -88,7 +95,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      */
     @EventSubscribe
     private void keyAdded(RedisKeyAddedEvent event) {
-        if (event.data() == this.redisConnect() && event.getDbIndex() == this.dbIndex()) {
+        if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
             this.root().keyAdded(event.getKey());
         }
     }
@@ -100,7 +107,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      */
     @EventSubscribe
     private void keyDeleted(RedisKeyDeletedEvent event) {
-        if (event.data() == this.redisConnect() && event.getDbIndex() == this.dbIndex()) {
+        if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
             this.root().keyDeleted(event.getKey());
         }
     }
@@ -112,7 +119,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      */
     @EventSubscribe
     private void keyFlushed(RedisKeyFlushedEvent event) {
-        if (Objects.equals(event.data(), this.dbIndex)) {
+        if (Objects.equals(event.data(), this.getDbIndex())) {
             this.loadItems();
         }
     }
@@ -124,7 +131,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      */
     @EventSubscribe
     private void keyFiltered(RedisKeyFilteredEvent event) {
-        if (Objects.equals(event.data(), this.dbIndex)) {
+        if (Objects.equals(event.data(), this.getDbIndex())) {
             this.root().unloadChild();
             this.root().loadChild();
         }
@@ -138,7 +145,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     @EventSubscribe
     private void keyCopied(RedisKeyCopiedEvent event) {
         int dbIndex = event.getTargetDB();
-        if (dbIndex == this.dbIndex()) {
+        if (dbIndex == this.getDbIndex()) {
             this.loadItems();
         }
     }
@@ -151,13 +158,13 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     @EventSubscribe
     private void onKeyMoved(RedisKeyMovedEvent event) {
         // 检查连接
-        if (event.redisConnect() != this.redisConnect()) {
+        if (event.shellConnect() != this.shellConnect()) {
             return;
         }
         // 目标库刷新节点
-        if (event.getTargetDB() == this.dbIndex()) {
+        if (event.getTargetDB() == this.getDbIndex()) {
             this.loadItems();
-        } else if (event.sourceDB() == this.dbIndex()) {// 来源库，移除此节点
+        } else if (event.sourceDB() == this.getDbIndex()) {// 来源库，移除此节点
             event.data().remove();
         }
     }
@@ -170,11 +177,11 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     @EventSubscribe
     private void onKeysMoved(RedisKeysMovedEvent event) {
         // 检查连接
-        if (event.redisConnect() != this.redisConnect()) {
+        if (event.redisConnect() != this.shellConnect()) {
             return;
         }
         // 来源库、目标库刷新节点
-        if (event.getTargetDB() == this.dbIndex() || event.sourceDB() == this.dbIndex()) {
+        if (event.getTargetDB() == this.getDbIndex() || event.sourceDB() == this.getDbIndex()) {
             this.loadItems();
         }
     }

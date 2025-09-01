@@ -1,9 +1,12 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.scene.Cursor;
 
 /**
  * @author oyzh
@@ -22,50 +25,19 @@ public class RedisKeysTab extends RichTab {
     }
 
     @Override
-    protected String getTabTitle() {
-        // String name = this.redisConnect().getName();
-        // Integer dbIndex = this.treeItem().getInnerDbIndex();
-        // if (dbIndex != null) {
-        //     name += "@" + dbIndex;
-        // }
-        // RedisKeyTreeItem keyItem = this.activeItem();
-        // if (keyItem != null) {
-        //     name += "#" + keyItem.key();
-        // }
-        // return name;
-        return super.getTabTitle();
+    public String getTabTitle() {
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
     public void flushGraphic() {
-        // if (this.treeItem() == null) {
-        //     return;
-        // }
-        // SVGGlyph graphic = this.treeItem().itemGraphic();
-        // if (graphic == null) {
-        //     return;
-        // }
-        // SVGGlyph glyph = (SVGGlyph) this.getGraphic();
-        // if (glyph == null || !StringUtil.notEquals(glyph.getUrl(), graphic.getUrl())) {
-        //     glyph = graphic.clone();
-        //     glyph.disableTheme();
-        //     this.setGraphic(glyph);
-        // }
-    }
-
-    @Override
-    public void flushGraphicColor() {
-        // SVGGlyph graphic = this.treeItem().itemGraphic();
-        // if (graphic == null) {
-        //     return;
-        // }
-        // SVGGlyph glyph = (SVGGlyph) this.getGraphic();
-        // if (glyph == null) {
-        //     return;
-        // }
-        // if (graphic.getColor() != glyph.getColor()) {
-        //     glyph.setColor(graphic.getColor());
-        // }
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        if (graphic == null) {
+            graphic = ShellOsTypeComboBox.getGlyph(this.shellConnect().getOsType());
+            graphic.setSizeStr("13");
+            graphic.setCursor(Cursor.DEFAULT);
+            this.setGraphic(graphic);
+        }
     }
 
     /**
@@ -100,8 +72,8 @@ public class RedisKeysTab extends RichTab {
         return this.controller().getClient();
     }
 
-    public ShellConnect redisConnect() {
-        return this.client().redisConnect();
+    public ShellConnect shellConnect() {
+        return this.client().shellConnect();
     }
 
 }

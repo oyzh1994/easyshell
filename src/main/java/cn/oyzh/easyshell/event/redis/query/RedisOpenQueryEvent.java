@@ -22,6 +22,6 @@ public class RedisOpenQueryEvent extends Event<RedisQuery> {
     }
 
     public ShellConnect redisConnect() {
-        return this.client.redisConnect();
+        return this.client.shellConnect();
     }
 }
