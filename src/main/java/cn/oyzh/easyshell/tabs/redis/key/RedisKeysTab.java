@@ -77,7 +77,7 @@ public class RedisKeysTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/redis/keys/redisRedisTab.fxml";
+        return "/tabs/redis/key/redisKeysTab.fxml";
     }
 
     @Override

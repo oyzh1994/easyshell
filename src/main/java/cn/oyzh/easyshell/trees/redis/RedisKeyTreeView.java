@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
-    private Integer  dbIndex;
+    private Integer dbIndex = 0;
 
     public Integer dbIndex() {
         return dbIndex;
