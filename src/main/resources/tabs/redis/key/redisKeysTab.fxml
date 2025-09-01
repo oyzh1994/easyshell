@@ -3,79 +3,79 @@
 <?import cn.oyzh.easyshell.filter.RedisKeyFilterTextField?>
 <?import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView?>
-<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.FilterSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.pane.CollectSVGPane?>
 <?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXHBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
-        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController">
-    <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
-        <FXHBox realHeight="30" flexWidth="100%">
-            <RedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
-                <HBox.margin>
-                    <Insets left="5" top="3"/>
-                </HBox.margin>
-            </RedisKeyFilterTypeComboBox>
-            <RedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                     flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30">
-                <HBox.margin>
-                    <Insets left="5" top="3"/>
-                </HBox.margin>
-            </RedisKeyFilterTextField>
-        </FXHBox>
-        <RedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+<FXTab xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController" text="%base.data">
+    <FXHBox fx:id="root" flexWidth="100%" flexHeight="100%">
+        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+            <FXHBox realHeight="30" flexWidth="100%">
+                <RedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
+                    <HBox.margin>
+                        <Insets left="5" top="3"/>
+                    </HBox.margin>
+                </RedisKeyFilterTypeComboBox>
+                <RedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
+                                         flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30">
+                    <HBox.margin>
+                        <Insets left="5" top="3"/>
+                    </HBox.margin>
+                </RedisKeyFilterTextField>
+            </FXHBox>
+            <RedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
 
-        </RedisKeyTreeView>
-        <FXHBox flexWidth="100%" flexHeight="30">
-            <!-- <AddSVGGlyph size="16" onMousePrimaryClicked="#addKey"> -->
-            <!--     <HBox.margin> -->
-            <!--         <Insets left="5" top="5"/> -->
-            <!--     </HBox.margin> -->
-            <!-- </AddSVGGlyph> -->
-            <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteKey">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </DeleteSVGGlyph>
-            <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectKey">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </CollectSVGPane>
-            <!-- <RefreshSVGGlyph size="15" onMousePrimaryClicked="#refreshKey"> -->
-            <!--     <HBox.margin> -->
-            <!--         <Insets left="5" top="5"/> -->
-            <!--     </HBox.margin> -->
-            <!-- </RefreshSVGGlyph> -->
-            <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </SortSVGPane>
-            <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </PositioningSVGGlyph>
-            <!-- <FilterSVGGlyph size="15" onMousePrimaryClicked="#doKeyFilter"> -->
-            <!--     <HBox.margin> -->
-            <!--         <Insets left="5" top="6"/> -->
-            <!--     </HBox.margin> -->
-            <!-- </FilterSVGGlyph> -->
-        </FXHBox>
-    </FXVBox>
-    <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="RIGHT" flexWidth="100% - 305"
-                 flexHeight="100%"
-                 rotateGraphic="true" disable="true">
-        <fx:include fx:id="keyData" source="redisKeyDataTab.fxml"/>
-        <fx:include fx:id="keyInfo" source="redisKeyInfoTab.fxml"/>
-    </FXTabPane>
-</FXHBox>
+            </RedisKeyTreeView>
+            <FXHBox flexWidth="100%" flexHeight="30">
+                <!-- <AddSVGGlyph size="16" onMousePrimaryClicked="#addKey"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </AddSVGGlyph> -->
+                <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteKey">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </DeleteSVGGlyph>
+                <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectKey">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </CollectSVGPane>
+                <!-- <RefreshSVGGlyph size="15" onMousePrimaryClicked="#refreshKey"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </RefreshSVGGlyph> -->
+                <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </SortSVGPane>
+                <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </PositioningSVGGlyph>
+                <!-- <FilterSVGGlyph size="15" onMousePrimaryClicked="#doKeyFilter"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="6"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </FilterSVGGlyph> -->
+            </FXHBox>
+        </FXVBox>
+        <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="LEFT" flexWidth="100% - 305"
+                   flexHeight="100%"
+                   rotateGraphic="true" disable="true">
+            <fx:include fx:id="keyData" source="redisKeyDataTab.fxml"/>
+            <fx:include fx:id="keyInfo" source="redisKeyInfoTab.fxml"/>
+        </FXTabPane>
+    </FXHBox>
+</FXTab>

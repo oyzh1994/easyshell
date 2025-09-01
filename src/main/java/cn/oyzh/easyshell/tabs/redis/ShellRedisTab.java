@@ -1,31 +1,25 @@
-package cn.oyzh.easyshell.tabs.redis.key;
+package cn.oyzh.easyshell.tabs.redis;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
  * @author oyzh
  * @since 2024-12-03
  */
-public class RedisKeysTab extends RichTab {
+public class ShellRedisTab extends RichTab {
 
-    public RedisKeysTab(  ) {
+    public ShellRedisTab(ShellConnect connect) {
         super();
-    }
-
-    public RedisKeysTab(ShellConnect connect ) {
-        super();
-        this.controller().init(connect);
+        this.init(connect);
         super.flush();
-    }
-
-    public void flushData() {
-        this.controller().initData();
     }
 
     @Override
@@ -44,40 +38,42 @@ public class RedisKeysTab extends RichTab {
         }
     }
 
-    /**
-     * redis键节点
-     */
-    public RedisKeyTreeItem activeItem() {
-        return this.controller().getActiveItem();
-    }
-
     @Override
     protected String url() {
-        return "/tabs/redis/key/redisKeysTab.fxml";
+        return "/tabs/redis/shellRedisTab.fxml";
     }
 
     @Override
-    protected RedisKeysTabController controller() {
-        return (RedisKeysTabController) super.controller();
+    protected ShellRedisTabController controller() {
+        return (ShellRedisTabController) super.controller();
     }
 
-    /**
-     * ttl更新事件
-     */
-    public void flushTTL() {
-        this.controller().flushTTL();
-    }
-
-    // public int dbIndex() {
-    //    return this.controller().dbIndex();
-    // }
+    private RedisClient client;
 
     public RedisClient client() {
-        return this.controller().getClient();
+        return this.client;
     }
 
     public ShellConnect shellConnect() {
         return this.client().shellConnect();
+    }
+
+    public void init(ShellConnect connect) {
+        this.client = new RedisClient(connect);
+        // 加载根节点
+        StageManager.showMask(() -> {
+            try {
+                client.start();
+                if (!client.isConnected()) {
+                    MessageBox.warn(I18nHelper.connectFail());
+                    return;
+                }
+                this.controller().init(client);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.server.RedisClientInfoTabController" text="%base.client">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox flexWidth="100%" realHeight="40">
+            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+                <HBox.margin>
+                    <Insets left="10" top="10"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <FXTableView flexWidth="100% - 2" flexHeight="100% - 40" fx:id="listTable">
+            <columns>
+                <FXTableColumn flexWidth="10%" text="%base.No" valueName="index"/>
+                <FXTableColumn flexWidth="25%" text="%base.clientAddr" valueName="addr"/>
+                <FXTableColumn flexWidth="20%" text="%shell.redis.server.survival" valueName="age"/>
+                <FXTableColumn flexWidth="20%" text="%base.idle" valueName="idle"/>
+                <FXTableColumn flexWidth="10%" text="%base.flags" valueName="flags"/>
+                <FXTableColumn flexWidth="15% - 12" text="%shell.redis.server.currDB" valueName="db"/>
+            </columns>
+        </FXTableView>
+    </FXVBox>
+
+</FXTab>

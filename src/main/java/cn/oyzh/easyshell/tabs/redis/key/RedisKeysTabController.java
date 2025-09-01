@@ -138,6 +138,15 @@ public class RedisKeysTabController extends ParentTabController {
         });
     }
 
+    /**
+     * 初始化
+     */
+    public void init(RedisClient client) {
+        this.client = client;
+        this.treeView.setClient(client);
+        this.treeView.loadItems();
+    }
+
     @FXML
     private void doFilter() {
         String kw = this.filterKW.getTextTrim();

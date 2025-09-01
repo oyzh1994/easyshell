@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.server.RedisSlowlogTabController" text="%base.slowlog">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox flexWidth="100%" realHeight="40">
+            <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
+                <HBox.margin>
+                    <Insets left="10" top="10"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <FXTableView flexWidth="100% - 2" flexHeight="100% - 40" fx:id="listTable">
+            <columns>
+                <FXTableColumn flexWidth="7%" valueName="logId" text="ID"/>
+                <FXTableColumn flexWidth="33%" valueName="command" text="%base.cmd"/>
+                <FXTableColumn flexWidth="20%" valueName="timeStamp" text="%base.time"/>
+                <FXTableColumn flexWidth="16%" valueName="clientHost" text="%base.clientAddr"/>
+                <FXTableColumn flexWidth="12%" valueName="clientName" text="%base.clientName"/>
+                <FXTableColumn flexWidth="12% - 12" valueName="executionTime" text="%shell.redis.slowlog.tip1"/>
+            </columns>
+        </FXTableView>
+    </FXVBox>
+</FXTab>
