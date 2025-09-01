@@ -784,6 +784,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "smb".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isRedisType() {
+        return "redis".equalsIgnoreCase(this.type);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }

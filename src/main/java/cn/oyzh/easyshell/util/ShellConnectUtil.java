@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
@@ -163,6 +164,17 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
+                } else if (shellConnect.isRedisType()) {
+                    RedisClient client = new RedisClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+
                 }
             } catch (Throwable ex) {
                 ex.printStackTrace();

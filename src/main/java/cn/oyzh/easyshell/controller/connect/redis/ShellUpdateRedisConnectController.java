@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
-import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -106,24 +105,6 @@ public class ShellUpdateRedisConnectController extends StageController {
      */
     @FXML
     private ShellOsTypeComboBox osType;
-
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
 
     /**
      * 开启代理
@@ -237,7 +218,7 @@ public class ShellUpdateRedisConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("redis");
+            shellConnect.setType("Redis");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
@@ -265,13 +246,6 @@ public class ShellUpdateRedisConnectController extends StageController {
 //            return;
 //        }
         String password = this.password.getPassword();
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -282,8 +256,6 @@ public class ShellUpdateRedisConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
-            boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
@@ -294,9 +266,6 @@ public class ShellUpdateRedisConnectController extends StageController {
             // 认证信息
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
-            // 背景配置
-            this.shellConnect.setBackgroundImage(backgroundImage);
-            this.shellConnect.setEnableBackground(enableBackground);
             // 代理配置
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -327,14 +296,6 @@ public class ShellUpdateRedisConnectController extends StageController {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }
-        });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
             }
         });
         // 代理配置
@@ -374,9 +335,6 @@ public class ShellUpdateRedisConnectController extends StageController {
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
-        // 背景配置
-        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
-        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 代理配置
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
         ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
@@ -398,15 +356,4 @@ public class ShellUpdateRedisConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectUpdateTitle();
     }
-
-    // /**
-    //  * 选择背景图片
-    //  */
-    // @FXML
-    // private void chooseBackgroundImage() {
-    //     File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
-    //     if (file != null) {
-    //         this.backgroundImage.setText(file.getPath());
-    //     }
-    // }
 }

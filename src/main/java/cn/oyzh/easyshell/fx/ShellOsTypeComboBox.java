@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.protocol.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SFTPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph;
@@ -66,6 +67,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
+        this.addItem("Redis");
         // 设置单元格工厂
         this.setCellFactory(new Callback<>() {
             @Override
@@ -118,6 +120,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "Alibaba Cloud" -> new AlibabaCloudSVGGlyph();
             case "Tencent Cloud" -> new TencentCloudSVGGlyph();
             case "Huawei Cloud" -> new HuaweiCloudSVGGlyph();
+            case "Redis" -> new RedisSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

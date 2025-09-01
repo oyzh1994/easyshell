@@ -235,6 +235,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateRLoginConnect(this.value);
         } else if (this.value.isSMBType()) {
             ShellViewFactory.updateSMBConnect(this.value);
+        } else if (this.value.isRedisType()) {
+            ShellViewFactory.updateRedisConnect(this.value);
         }
     }
 

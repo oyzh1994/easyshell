@@ -11,11 +11,13 @@ import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
+import cn.oyzh.easyshell.tabs.redis.key.RedisKeysTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
@@ -201,6 +203,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellVNCTab(event.data());
         } else if (connect.isRloginType()) {
             tab = new ShellRLoginTab(event.data());
+        } else if (connect.isRedisType()) {
+            tab = new RedisKeysTab(event.data());
         } else {
             throw new RuntimeException("unknown connect type");
         }

@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class KeysSVGGlyph extends SVGGlyph {
 
     public KeysSVGGlyph() {
-        super("/font/key.svg");
+        super("/font/keys.svg");
     }
 
     public KeysSVGGlyph(String size) {

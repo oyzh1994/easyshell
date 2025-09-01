@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellAddRedisConnectController;
+import cn.oyzh.easyshell.controller.connect.redis.ShellUpdateRedisConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellUpdateRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController;
@@ -447,6 +448,22 @@ public class ShellViewFactory {
     public static void updateSMBConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateSMBConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改redis连接
+     *
+     * @param connect 连接
+     */
+    public static void updateRedisConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRedisConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

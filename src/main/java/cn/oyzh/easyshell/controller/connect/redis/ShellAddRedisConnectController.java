@@ -11,7 +11,6 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
-import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -102,24 +101,6 @@ public class ShellAddRedisConnectController extends StageController {
      */
     @FXML
     private ShellOsTypeComboBox osType;
-
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
 
     /**
      * 开启代理
@@ -234,7 +215,7 @@ public class ShellAddRedisConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("redis");
+            shellConnect.setType("Redis");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             // 认证信息
@@ -261,13 +242,6 @@ public class ShellAddRedisConnectController extends StageController {
 //            return;
 //        }
         String password = this.password.getPassword();
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -279,8 +253,6 @@ public class ShellAddRedisConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
-            boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -291,14 +263,11 @@ public class ShellAddRedisConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 分组及类型
-            shellConnect.setType("redis");
+            shellConnect.setType("Redis");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {
@@ -330,14 +299,6 @@ public class ShellAddRedisConnectController extends StageController {
                 }
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
         // 代理配置
         this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -365,7 +326,7 @@ public class ShellAddRedisConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        this.osType.select("Telnet");
+        this.osType.select("Redis");
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -374,15 +335,4 @@ public class ShellAddRedisConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
     }
-
-    // /**
-    //  * 选择背景图片
-    //  */
-    // @FXML
-    // private void chooseBackgroundImage() {
-    //     File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), new FileExtensionFilter("Types", "*.jpeg", "*.jpg", "*.png", "*.gif"));
-    //     if (file != null) {
-    //         this.backgroundImage.setText(file.getPath());
-    //     }
-    // }
 }

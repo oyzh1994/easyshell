@@ -1,0 +1,1998 @@
+[
+    {
+        "args": "ACL",
+        "command": "ACL",
+        "available": "6.0.0"
+    },
+    {
+        "args": "CLIENT",
+        "command": "CLIENT",
+        "available": "2.4.0"
+    },
+    {
+        "args": "CLUSTER",
+        "command": "CLUSTER",
+        "available": "3.0.0"
+    },
+    {
+        "args": "LATENCY",
+        "command": "LATENCY",
+        "available": "2.8.13"
+    },
+    {
+        "args": "MEMORY",
+        "command": "MEMORY",
+        "available": "4.0.0"
+    },
+    {
+        "args": "MODULE",
+        "command": "MODULE",
+        "available": "4.0.0"
+    },
+    {
+        "args": "OBJECT",
+        "command": "OBJECT",
+        "available": "2.2.3"
+    },
+    {
+        "args": "FUNCTION",
+        "command": "FUNCTION",
+        "available": "7.0.0"
+    },
+    {
+        "args": "SCRIPT",
+        "command": "SCRIPT",
+        "available": "2.6.0"
+    },
+    {
+        "args": "PUBSUB",
+        "command": "PUBSUB",
+        "available": "2.8.0"
+    },
+    {
+        "args": "CONFIG",
+        "command": "CONFIG",
+        "available": "2.0.0"
+    },
+    {
+        "args": "SLOWLOG",
+        "command": "SLOWLOG",
+        "available": "2.2.12"
+    },
+    {
+        "args": "XGROUP",
+        "command": "XGROUP",
+        "available": "5.0.0"
+    },
+    {
+        "args": "XINFO",
+        "command": "XINFO",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Sets hash slot ranges as unbound for a node.",
+        "args": "CLUSTER DELSLOTSRANGE start-slot end-slot [start-slot end-slot ...]",
+        "command": "CLUSTER DELSLOTSRANGE",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Sets the configuration epoch for a new node.",
+        "args": "CLUSTER SET-CONFIG-EPOCH config-epoch",
+        "command": "CLUSTER SET-CONFIG-EPOCH",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Lists the ACL categories, or the commands inside a category.",
+        "args": "ACL CAT [category]",
+        "command": "ACL CAT",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Deletes ACL users, and terminates their connections.",
+        "args": "ACL DELUSER username [username ...]",
+        "command": "ACL DELUSER",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Simulates the execution of a command by a user, without executing the command.",
+        "args": "ACL DRYRUN username command [arg [arg ...]]",
+        "command": "ACL DRYRUN",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Generates a pseudorandom, secure password that can be used to identify ACL users.",
+        "args": "ACL GENPASS [bits]",
+        "command": "ACL GENPASS",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Lists the ACL rules of a user.",
+        "args": "ACL GETUSER username",
+        "command": "ACL GETUSER",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Dumps the effective rules in ACL file format.",
+        "args": "ACL LIST",
+        "command": "ACL LIST",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Reloads the rules from the configured ACL file.",
+        "args": "ACL LOAD",
+        "command": "ACL LOAD",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Lists recent security events generated due to ACL rules.",
+        "args": "ACL LOG [count | RESET]",
+        "command": "ACL LOG",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Saves the effective ACL rules in the configured ACL file.",
+        "args": "ACL SAVE",
+        "command": "ACL SAVE",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Creates and modifies an ACL user and its rules.",
+        "args": "ACL SETUSER username [rule [rule ...]]",
+        "command": "ACL SETUSER",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Lists all ACL users.",
+        "args": "ACL USERS",
+        "command": "ACL USERS",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Returns the authenticated username of the current connection.",
+        "args": "ACL WHOAMI",
+        "command": "ACL WHOAMI",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Instructs the server whether to track the keys in the next request.",
+        "args": "CLIENT CACHING <YES | NO>",
+        "command": "CLIENT CACHING",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Returns the name of the connection.",
+        "args": "CLIENT GETNAME",
+        "command": "CLIENT GETNAME",
+        "available": "2.6.9"
+    },
+    {
+        "desc": "Returns the client ID to which the connection's tracking notifications are redirected.",
+        "args": "CLIENT GETREDIR",
+        "command": "CLIENT GETREDIR",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Returns the unique client ID of the connection.",
+        "args": "CLIENT ID",
+        "command": "CLIENT ID",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns information about the connection.",
+        "args": "CLIENT INFO",
+        "command": "CLIENT INFO",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Lists open connections.",
+        "args": "CLIENT LIST [TYPE\u00a0<NORMAL | MASTER | REPLICA | PUBSUB>]\n  [ID\u00a0client-id [client-id ...]]",
+        "command": "CLIENT LIST",
+        "available": "2.4.0"
+    },
+    {
+        "desc": "Sets the client eviction mode of the connection.",
+        "args": "CLIENT NO-EVICT <ON | OFF>",
+        "command": "CLIENT NO-EVICT",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Controls whether commands sent by the client affect the LRU/LFU of accessed keys.",
+        "args": "CLIENT NO-TOUCH <ON | OFF>",
+        "command": "CLIENT NO-TOUCH",
+        "available": "7.2.0"
+    },
+    {
+        "desc": "Suspends commands processing.",
+        "args": "CLIENT PAUSE timeout [WRITE | ALL]",
+        "command": "CLIENT PAUSE",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Instructs the server whether to reply to commands.",
+        "args": "CLIENT REPLY <ON | OFF | SKIP>",
+        "command": "CLIENT REPLY",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Sets information specific to the client or connection.",
+        "args": "CLIENT SETINFO <LIB-NAME\u00a0libname | LIB-VER\u00a0libver>",
+        "command": "CLIENT SETINFO",
+        "available": "7.2.0"
+    },
+    {
+        "desc": "Sets the connection name.",
+        "args": "CLIENT SETNAME connection-name",
+        "command": "CLIENT SETNAME",
+        "available": "2.6.9"
+    },
+    {
+        "desc": "Controls server-assisted client-side caching for the connection.",
+        "args": "CLIENT TRACKING <ON | OFF> [REDIRECT\u00a0client-id] [PREFIX\u00a0prefix\n  [PREFIX prefix ...]] [BCAST] [OPTIN] [OPTOUT] [NOLOOP]",
+        "command": "CLIENT TRACKING",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Returns information about server-assisted client-side caching for the connection.",
+        "args": "CLIENT TRACKINGINFO",
+        "command": "CLIENT TRACKINGINFO",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Unblocks a client blocked by a blocking command from a different connection.",
+        "args": "CLIENT UNBLOCK client-id [TIMEOUT | ERROR]",
+        "command": "CLIENT UNBLOCK",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Resumes processing commands from paused clients.",
+        "args": "CLIENT UNPAUSE",
+        "command": "CLIENT UNPAUSE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Assigns new hash slots to a node.",
+        "args": "CLUSTER ADDSLOTS slot [slot ...]",
+        "command": "CLUSTER ADDSLOTS",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Assigns new hash slot ranges to a node.",
+        "args": "CLUSTER ADDSLOTSRANGE start-slot end-slot [start-slot end-slot ...]",
+        "command": "CLUSTER ADDSLOTSRANGE",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Advances the cluster config epoch.",
+        "args": "CLUSTER BUMPEPOCH",
+        "command": "CLUSTER BUMPEPOCH",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the number of active failure reports active for a node.",
+        "args": "CLUSTER COUNT-FAILURE-REPORTS node-id",
+        "command": "CLUSTER COUNT-FAILURE-REPORTS",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the number of keys in a hash slot.",
+        "args": "CLUSTER COUNTKEYSINSLOT slot",
+        "command": "CLUSTER COUNTKEYSINSLOT",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Sets hash slots as unbound for a node.",
+        "args": "CLUSTER DELSLOTS slot [slot ...]",
+        "command": "CLUSTER DELSLOTS",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Forces a replica to perform a manual failover of its master.",
+        "args": "CLUSTER FAILOVER [FORCE | TAKEOVER]",
+        "command": "CLUSTER FAILOVER",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Deletes all slots information from a node.",
+        "args": "CLUSTER FLUSHSLOTS",
+        "command": "CLUSTER FLUSHSLOTS",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Removes a node from the nodes table.",
+        "args": "CLUSTER FORGET node-id",
+        "command": "CLUSTER FORGET",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the key names in a hash slot.",
+        "args": "CLUSTER GETKEYSINSLOT slot count",
+        "command": "CLUSTER GETKEYSINSLOT",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns information about the state of a node.",
+        "args": "CLUSTER INFO",
+        "command": "CLUSTER INFO",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the hash slot for a key.",
+        "args": "CLUSTER KEYSLOT key",
+        "command": "CLUSTER KEYSLOT",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns a list of all TCP links to and from peer nodes.",
+        "args": "CLUSTER LINKS",
+        "command": "CLUSTER LINKS",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Forces a node to handshake with another node.",
+        "args": "CLUSTER MEET ip port [cluster-bus-port]",
+        "command": "CLUSTER MEET",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the ID of a node.",
+        "args": "CLUSTER MYID",
+        "command": "CLUSTER MYID",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the shard ID of a node.",
+        "args": "CLUSTER MYSHARDID",
+        "command": "CLUSTER MYSHARDID",
+        "available": "7.2.0"
+    },
+    {
+        "desc": "Returns the cluster configuration for a node.",
+        "args": "CLUSTER NODES",
+        "command": "CLUSTER NODES",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Configure a node as replica of a master node.",
+        "args": "CLUSTER REPLICATE node-id",
+        "command": "CLUSTER REPLICATE",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Resets a node.",
+        "args": "CLUSTER RESET [HARD | SOFT]",
+        "command": "CLUSTER RESET",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Forces a node to save the cluster configuration to disk.",
+        "args": "CLUSTER SAVECONFIG",
+        "command": "CLUSTER SAVECONFIG",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Binds a hash slot to a node.",
+        "args": "CLUSTER SETSLOT slot <IMPORTING\u00a0node-id | MIGRATING\u00a0node-id |\n  NODE\u00a0node-id | STABLE>",
+        "command": "CLUSTER SETSLOT",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the mapping of cluster slots to shards.",
+        "args": "CLUSTER SHARDS",
+        "command": "CLUSTER SHARDS",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Lists the replica nodes of a master node.",
+        "args": "CLUSTER SLAVES node-id",
+        "command": "CLUSTER SLAVES",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns the mapping of cluster slots to nodes.",
+        "args": "CLUSTER SLOTS",
+        "command": "CLUSTER SLOTS",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Returns a count of commands.",
+        "args": "COMMAND COUNT",
+        "command": "COMMAND COUNT",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Returns documentary information about one, multiple or all commands.",
+        "args": "COMMAND DOCS [command-name [command-name ...]]",
+        "command": "COMMAND DOCS",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Extracts the key names from an arbitrary command.",
+        "args": "COMMAND GETKEYS command [arg [arg ...]]",
+        "command": "COMMAND GETKEYS",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Extracts the key names and access flags for an arbitrary command.",
+        "args": "COMMAND GETKEYSANDFLAGS command [arg [arg ...]]",
+        "command": "COMMAND GETKEYSANDFLAGS",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns information about one, multiple or all commands.",
+        "args": "COMMAND INFO [command-name [command-name ...]]",
+        "command": "COMMAND INFO",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Returns a list of command names.",
+        "args": "COMMAND LIST [FILTERBY\u00a0<MODULE\u00a0module-name | ACLCAT\u00a0category |\n  PATTERN\u00a0pattern>]",
+        "command": "COMMAND LIST",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns the effective values of configuration parameters.",
+        "args": "CONFIG GET parameter [parameter ...]",
+        "command": "CONFIG GET",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Resets the server's statistics.",
+        "args": "CONFIG RESETSTAT",
+        "command": "CONFIG RESETSTAT",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Persists the effective configuration to file.",
+        "args": "CONFIG REWRITE",
+        "command": "CONFIG REWRITE",
+        "available": "2.8.0"
+    },
+    {
+        "desc": "Sets configuration parameters in-flight.",
+        "args": "CONFIG SET parameter value [parameter value ...]",
+        "command": "CONFIG SET",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Deletes a library and its functions.",
+        "args": "FUNCTION DELETE library-name",
+        "command": "FUNCTION DELETE",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Dumps all libraries into a serialized binary payload.",
+        "args": "FUNCTION DUMP",
+        "command": "FUNCTION DUMP",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Deletes all libraries and functions.",
+        "args": "FUNCTION FLUSH [ASYNC | SYNC]",
+        "command": "FUNCTION FLUSH",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Terminates a function during execution.",
+        "args": "FUNCTION KILL",
+        "command": "FUNCTION KILL",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns information about all libraries.",
+        "args": "FUNCTION LIST [LIBRARYNAME\u00a0library-name-pattern] [WITHCODE]",
+        "command": "FUNCTION LIST",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Creates a library.",
+        "args": "FUNCTION LOAD [REPLACE] function-code",
+        "command": "FUNCTION LOAD",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Restores all libraries from a payload.",
+        "args": "FUNCTION RESTORE serialized-value [FLUSH | APPEND | REPLACE]",
+        "command": "FUNCTION RESTORE",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns information about a function during execution.",
+        "args": "FUNCTION STATS",
+        "command": "FUNCTION STATS",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns a human-readable latency analysis report.",
+        "args": "LATENCY DOCTOR",
+        "command": "LATENCY DOCTOR",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Returns a latency graph for an event.",
+        "args": "LATENCY GRAPH event",
+        "command": "LATENCY GRAPH",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Returns the cumulative distribution of latencies of a subset or all commands.",
+        "args": "LATENCY HISTOGRAM [command [command ...]]",
+        "command": "LATENCY HISTOGRAM",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns timestamp-latency samples for an event.",
+        "args": "LATENCY HISTORY event",
+        "command": "LATENCY HISTORY",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Returns the latest latency samples for all events.",
+        "args": "LATENCY LATEST",
+        "command": "LATENCY LATEST",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Resets the latency data for one or more events.",
+        "args": "LATENCY RESET [event [event ...]]",
+        "command": "LATENCY RESET",
+        "available": "2.8.13"
+    },
+    {
+        "desc": "Outputs a memory problems report.",
+        "args": "MEMORY DOCTOR",
+        "command": "MEMORY DOCTOR",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Returns the allocator statistics.",
+        "args": "MEMORY MALLOC-STATS",
+        "command": "MEMORY MALLOC-STATS",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Asks the allocator to release memory.",
+        "args": "MEMORY PURGE",
+        "command": "MEMORY PURGE",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Returns details about memory usage.",
+        "args": "MEMORY STATS",
+        "command": "MEMORY STATS",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Estimates the memory usage of a key.",
+        "args": "MEMORY USAGE key [SAMPLES\u00a0count]",
+        "command": "MEMORY USAGE",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Returns all loaded modules.",
+        "args": "MODULE LIST",
+        "command": "MODULE LIST",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Loads a module.",
+        "args": "MODULE LOAD path [arg [arg ...]]",
+        "command": "MODULE LOAD",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Loads a module using extended parameters.",
+        "args": "MODULE LOADEX path [CONFIG\u00a0name value [CONFIG name value ...]]\n  [ARGS\u00a0args [args ...]]",
+        "command": "MODULE LOADEX",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Unloads a module.",
+        "args": "MODULE UNLOAD name",
+        "command": "MODULE UNLOAD",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Sets the debug mode of server-side Lua scripts.",
+        "args": "SCRIPT DEBUG <YES | SYNC | NO>",
+        "command": "SCRIPT DEBUG",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Determines whether server-side Lua scripts exist in the script cache.",
+        "args": "SCRIPT EXISTS sha1 [sha1 ...]",
+        "command": "SCRIPT EXISTS",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Removes all server-side Lua scripts from the script cache.",
+        "args": "SCRIPT FLUSH [ASYNC | SYNC]",
+        "command": "SCRIPT FLUSH",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Terminates a server-side Lua script during execution.",
+        "args": "SCRIPT KILL",
+        "command": "SCRIPT KILL",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Loads a server-side Lua script to the script cache.",
+        "args": "SCRIPT LOAD script",
+        "command": "SCRIPT LOAD",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Returns the slow log's entries.",
+        "args": "SLOWLOG GET [count]",
+        "command": "SLOWLOG GET",
+        "available": "2.2.12"
+    },
+    {
+        "desc": "Returns the number of entries in the slow log.",
+        "args": "SLOWLOG LEN",
+        "command": "SLOWLOG LEN",
+        "available": "2.2.12"
+    },
+    {
+        "desc": "Clears all entries from the slow log.",
+        "args": "SLOWLOG RESET",
+        "command": "SLOWLOG RESET",
+        "available": "2.2.12"
+    },
+    {
+        "desc": "Creates a consumer group.",
+        "args": "XGROUP CREATE key group <id | $> [MKSTREAM]\n  [ENTRIESREAD\u00a0entries-read]",
+        "command": "XGROUP CREATE",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Creates a consumer in a consumer group.",
+        "args": "XGROUP CREATECONSUMER key group consumer",
+        "command": "XGROUP CREATECONSUMER",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Deletes a consumer from a consumer group.",
+        "args": "XGROUP DELCONSUMER key group consumer",
+        "command": "XGROUP DELCONSUMER",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Destroys a consumer group.",
+        "args": "XGROUP DESTROY key group",
+        "command": "XGROUP DESTROY",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Sets the last-delivered ID of a consumer group.",
+        "args": "XGROUP SETID key group <id | $> [ENTRIESREAD\u00a0entries-read]",
+        "command": "XGROUP SETID",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns a list of the consumers in a consumer group.",
+        "args": "XINFO CONSUMERS key group",
+        "command": "XINFO CONSUMERS",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns a list of the consumer groups of a stream.",
+        "args": "XINFO GROUPS key",
+        "command": "XINFO GROUPS",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns information about a stream.",
+        "args": "XINFO STREAM key [FULL [COUNT\u00a0count]]",
+        "command": "XINFO STREAM",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Resets the connection.",
+        "args": "RESET",
+        "command": "RESET",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Blocks until all of the preceding write commands sent by the connection are written to the append-only file of the master and/or replicas.",
+        "args": "WAITAOF numlocal numreplicas timeout",
+        "command": "WAITAOF",
+        "available": "7.2.0"
+    },
+    {
+        "desc": "Returns the server's liveliness response.",
+        "args": "PING [message]",
+        "command": "PING",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Authenticates the connection.",
+        "args": "AUTH [username] password",
+        "command": "AUTH",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Handshakes with the Redis server.",
+        "args": "HELLO [protover [AUTH\u00a0username password] [SETNAME\u00a0clientname]]",
+        "command": "HELLO",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Sets the string value of a key, ignoring its type. The key is created if it doesn't exist.",
+        "args": "SET key value [NX | XX] [GET] [EX\u00a0seconds | PX\u00a0milliseconds |\n  EXAT\u00a0unix-time-seconds | PXAT\u00a0unix-time-milliseconds | KEEPTTL]",
+        "command": "SET",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the string value of a key.",
+        "args": "GET key",
+        "command": "GET",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the string value of a key after deleting the key.",
+        "args": "GETDEL key",
+        "command": "GETDEL",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns the string value of a key after setting its expiration time.",
+        "args": "GETEX key [EX\u00a0seconds | PX\u00a0milliseconds | EXAT\u00a0unix-time-seconds |\n  PXAT\u00a0unix-time-milliseconds | PERSIST]",
+        "command": "GETEX",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Determines whether one or more keys exist.",
+        "args": "EXISTS key [key ...]",
+        "command": "EXISTS",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Deletes one or more keys.",
+        "args": "DEL key [key ...]",
+        "command": "DEL",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Asynchronously deletes one or more keys.",
+        "args": "UNLINK key [key ...]",
+        "command": "UNLINK",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Determines the type of value stored at a key.",
+        "args": "TYPE key",
+        "command": "TYPE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Remove all keys from the current database.",
+        "args": "FLUSHDB [ASYNC | SYNC]",
+        "command": "FLUSHDB",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Removes all keys from all databases.",
+        "args": "FLUSHALL [ASYNC | SYNC]",
+        "command": "FLUSHALL",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Moves a key to another database.",
+        "args": "MOVE key db",
+        "command": "MOVE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns all key names that match a pattern.",
+        "args": "KEYS pattern",
+        "command": "KEYS",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns a random key name from the database.",
+        "args": "RANDOMKEY",
+        "command": "RANDOMKEY",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Renames a key and overwrites the destination.",
+        "args": "RENAME key newkey",
+        "command": "RENAME",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Renames a key only when the target key name doesn't exist.",
+        "args": "RENAMENX key newkey",
+        "command": "RENAMENX",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns a serialized representation of the value stored at a key.",
+        "args": "DUMP key",
+        "command": "DUMP",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Creates a key from the serialized representation of a value.",
+        "args": "RESTORE key ttl serialized-value [REPLACE] [ABSTTL]\n  [IDLETIME\u00a0seconds] [FREQ\u00a0frequency]",
+        "command": "RESTORE",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Returns the number of keys in the database.",
+        "args": "DBSIZE",
+        "command": "DBSIZE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Changes the selected database.",
+        "args": "SELECT index",
+        "command": "SELECT",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Swaps two Redis databases.",
+        "args": "SWAPDB index1 index2",
+        "command": "SWAPDB",
+        "available": "4.0.0"
+    },
+    {
+        "desc": "Atomically transfers a key from one Redis instance to another.",
+        "args": "MIGRATE host port <key | \"\"> destination-db timeout [COPY] [REPLACE]\n  [AUTH\u00a0password | AUTH2\u00a0username password] [KEYS\u00a0key [key ...]]",
+        "command": "MIGRATE",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Returns the given string.",
+        "args": "ECHO message",
+        "command": "ECHO",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Sets the expiration time of a key in seconds.",
+        "args": "EXPIRE key seconds [NX | XX | GT | LT]",
+        "command": "EXPIRE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Sets the expiration time of a key to a Unix timestamp.",
+        "args": "EXPIREAT key unix-time-seconds [NX | XX | GT | LT]",
+        "command": "EXPIREAT",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns the expiration time of a key as a Unix timestamp.",
+        "args": "EXPIRETIME key",
+        "command": "EXPIRETIME",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Sets the expiration time of a key in milliseconds.",
+        "args": "PEXPIRE key milliseconds [NX | XX | GT | LT]",
+        "command": "PEXPIRE",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Sets the expiration time of a key to a Unix milliseconds timestamp.",
+        "args": "PEXPIREAT key unix-time-milliseconds [NX | XX | GT | LT]",
+        "command": "PEXPIREAT",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Returns the expiration time of a key as a Unix milliseconds timestamp.",
+        "args": "PEXPIRETIME key",
+        "command": "PEXPIRETIME",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns the expiration time in seconds of a key.",
+        "args": "TTL key",
+        "command": "TTL",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the expiration time in milliseconds of a key.",
+        "args": "PTTL key",
+        "command": "PTTL",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Starts a transaction.",
+        "args": "MULTI",
+        "command": "MULTI",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Discards a transaction.",
+        "args": "DISCARD",
+        "command": "DISCARD",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Executes all commands in a transaction.",
+        "args": "EXEC",
+        "command": "EXEC",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Monitors changes to keys to determine the execution of a transaction.",
+        "args": "WATCH key [key ...]",
+        "command": "WATCH",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Forgets about watched keys of a transaction.",
+        "args": "UNWATCH",
+        "command": "UNWATCH",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Sorts the elements in a list, a set, or a sorted set, optionally storing the result.",
+        "args": "SORT key [BY\u00a0pattern] [LIMIT\u00a0offset count] [GET\u00a0pattern [GET pattern\n  ...]] [ASC | DESC] [ALPHA] [STORE\u00a0destination]",
+        "command": "SORT",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the sorted elements of a list, a set, or a sorted set.",
+        "args": "SORT_RO key [BY\u00a0pattern] [LIMIT\u00a0offset count] [GET\u00a0pattern [GET\n  pattern ...]] [ASC | DESC] [ALPHA]",
+        "command": "SORT_RO",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns information and statistics about the server.",
+        "args": "INFO [section [section ...]]",
+        "command": "INFO",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Synchronously saves the database(s) to disk and shuts down the Redis server.",
+        "args": "SHUTDOWN [NOSAVE | SAVE] [NOW] [FORCE] [ABORT]",
+        "command": "SHUTDOWN",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Listens for all requests received by the server in real-time.",
+        "args": "MONITOR",
+        "command": "MONITOR",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Finds the longest common substring.",
+        "args": "LCS key1 key2 [LEN] [IDX] [MINMATCHLEN\u00a0min-match-len] [WITHMATCHLEN]",
+        "command": "LCS",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns the previous string value of a key after setting it to a new value.",
+        "args": "GETSET key value",
+        "command": "GETSET",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Atomically returns the string values of one or more keys.",
+        "args": "MGET key [key ...]",
+        "command": "MGET",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Set the string value of a key only when the key doesn't exist.",
+        "args": "SETNX key value",
+        "command": "SETNX",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Sets the string value and expiration time of a key. Creates the key if it doesn't exist.",
+        "args": "SETEX key seconds value",
+        "command": "SETEX",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Sets both string value and expiration time in milliseconds of a key. The key is created if it doesn't exist.",
+        "args": "PSETEX key milliseconds value",
+        "command": "PSETEX",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Atomically creates or modifies the string values of one or more keys.",
+        "args": "MSET key value [key value ...]",
+        "command": "MSET",
+        "available": "1.0.1"
+    },
+    {
+        "desc": "Atomically modifies the string values of one or more keys only when all keys don't exist.",
+        "args": "MSETNX key value [key value ...]",
+        "command": "MSETNX",
+        "available": "1.0.1"
+    },
+    {
+        "desc": "Decrements the integer value of a key by one. Uses 0 as initial value if the key doesn't exist.",
+        "args": "DECR key",
+        "command": "DECR",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Decrements a number from the integer value of a key. Uses 0 as initial value if the key doesn't exist.",
+        "args": "DECRBY key decrement",
+        "command": "DECRBY",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Increments the integer value of a key by one. Uses 0 as initial value if the key doesn't exist.",
+        "args": "INCR key",
+        "command": "INCR",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Increments the integer value of a key by a number. Uses 0 as initial value if the key doesn't exist.",
+        "args": "INCRBY key increment",
+        "command": "INCRBY",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Increment the floating point value of a key by a number. Uses 0 as initial value if the key doesn't exist.",
+        "args": "INCRBYFLOAT key increment",
+        "command": "INCRBYFLOAT",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Returns the length of a string value.",
+        "args": "STRLEN key",
+        "command": "STRLEN",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Appends a string to the value of a key. Creates the key if it doesn't exist.",
+        "args": "APPEND key value",
+        "command": "APPEND",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns a substring from a string value.",
+        "args": "SUBSTR key start end",
+        "command": "SUBSTR",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Sets or clears the bit at offset of the string value. Creates the key if it doesn't exist.",
+        "args": "SETBIT key offset value",
+        "command": "SETBIT",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Returns a bit value by offset.",
+        "args": "GETBIT key offset",
+        "command": "GETBIT",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Finds the first set (1) or clear (0) bit in a string.",
+        "args": "BITPOS key bit [start [end [BYTE | BIT]]]",
+        "command": "BITPOS",
+        "available": "2.8.7"
+    },
+    {
+        "desc": "Overwrites a part of a string value with another by an offset. Creates the key if it doesn't exist.",
+        "args": "SETRANGE key offset value",
+        "command": "SETRANGE",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Returns a substring of the string stored at a key.",
+        "args": "GETRANGE key start end",
+        "command": "GETRANGE",
+        "available": "2.4.0"
+    },
+    {
+        "desc": "Counts the number of set bits (population counting) in a string.",
+        "args": "BITCOUNT key [start end [BYTE | BIT]]",
+        "command": "BITCOUNT",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Performs bitwise operations on multiple strings, and stores the result.",
+        "args": "BITOP <AND | OR | XOR | NOT> destkey key [key ...]",
+        "command": "BITOP",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Performs arbitrary bitfield integer operations on strings.",
+        "args": "BITFIELD key [GET\u00a0encoding offset | [OVERFLOW\u00a0<WRAP | SAT | FAIL>]\n  <SET\u00a0encoding offset value | INCRBY\u00a0encoding offset increment>\n  [GET\u00a0encoding offset | [OVERFLOW\u00a0<WRAP | SAT | FAIL>]\n  <SET\u00a0encoding offset value | INCRBY\u00a0encoding offset increment>\n  ...]]",
+        "command": "BITFIELD",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Performs arbitrary read-only bitfield integer operations on strings.",
+        "args": "BITFIELD_RO key [GET\u00a0encoding offset [GET encoding offset ...]]",
+        "command": "BITFIELD_RO",
+        "available": "6.0.0"
+    },
+    {
+        "desc": "Creates or modifies the value of a field in a hash.",
+        "args": "HSET key field value [field value ...]",
+        "command": "HSET",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the value of a field in a hash.",
+        "args": "HGET key field",
+        "command": "HGET",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Sets the value of a field in a hash only when the field doesn't exist.",
+        "args": "HSETNX key field value",
+        "command": "HSETNX",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Sets the values of multiple fields.",
+        "args": "HMSET key field value [field value ...]",
+        "command": "HMSET",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the values of all fields in a hash.",
+        "args": "HMGET key field [field ...]",
+        "command": "HMGET",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Increments the integer value of a field in a hash by a number. Uses 0 as initial value if the field doesn't exist.",
+        "args": "HINCRBY key field increment",
+        "command": "HINCRBY",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Determines whether a field exists in a hash.",
+        "args": "HEXISTS key field",
+        "command": "HEXISTS",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Deletes one or more fields and their values from a hash. Deletes the hash if no fields remain.",
+        "args": "HDEL key field [field ...]",
+        "command": "HDEL",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the number of fields in a hash.",
+        "args": "HLEN key",
+        "command": "HLEN",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns all fields in a hash.",
+        "args": "HKEYS key",
+        "command": "HKEYS",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns all values in a hash.",
+        "args": "HVALS key",
+        "command": "HVALS",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns all fields and values in a hash.",
+        "args": "HGETALL key",
+        "command": "HGETALL",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the length of the value of a field.",
+        "args": "HSTRLEN key field",
+        "command": "HSTRLEN",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Returns one or more random fields from a hash.",
+        "args": "HRANDFIELD key [count [WITHVALUES]]",
+        "command": "HRANDFIELD",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Increments the floating point value of a field by a number. Uses 0 as initial value if the field doesn't exist.",
+        "args": "HINCRBYFLOAT key field increment",
+        "command": "HINCRBYFLOAT",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Appends one or more elements to a list. Creates the key if it doesn't exist.",
+        "args": "RPUSH key element [element ...]",
+        "command": "RPUSH",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Prepends one or more elements to a list. Creates the key if it doesn't exist.",
+        "args": "LPUSH key element [element ...]",
+        "command": "LPUSH",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the length of a list.",
+        "args": "LLEN key",
+        "command": "LLEN",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns a range of elements from a list.",
+        "args": "LRANGE key start stop",
+        "command": "LRANGE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Removes elements from both ends a list. Deletes the list if all elements were trimmed.",
+        "args": "LTRIM key start stop",
+        "command": "LTRIM",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns an element from a list by its index.",
+        "args": "LINDEX key index",
+        "command": "LINDEX",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Sets the value of an element in a list by its index.",
+        "args": "LSET key index element",
+        "command": "LSET",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Removes elements from a list. Deletes the list if the last element was removed.",
+        "args": "LREM key count element",
+        "command": "LREM",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the first elements in a list after removing it. Deletes the list if the last element was popped.",
+        "args": "LPOP key [count]",
+        "command": "LPOP",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns and removes the last elements of a list. Deletes the list if the last element was popped.",
+        "args": "RPOP key [count]",
+        "command": "RPOP",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Removes and returns the first element in a list. Blocks until an element is available otherwise. Deletes the list if the last element was popped.",
+        "args": "BLPOP key [key ...] timeout",
+        "command": "BLPOP",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Removes and returns the last element in a list. Blocks until an element is available otherwise. Deletes the list if the last element was popped.",
+        "args": "BRPOP key [key ...] timeout",
+        "command": "BRPOP",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Inserts an element before or after another element in a list.",
+        "args": "LINSERT key <BEFORE | AFTER> pivot element",
+        "command": "LINSERT",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Returns the index of matching elements in a list.",
+        "args": "LPOS key element [RANK\u00a0rank] [COUNT\u00a0num-matches] [MAXLEN\u00a0len]",
+        "command": "LPOS",
+        "available": "6.0.6"
+    },
+    {
+        "desc": "Returns the last element of a list after removing and pushing it to another list. Deletes the list if the last element was popped.",
+        "args": "RPOPLPUSH source destination",
+        "command": "RPOPLPUSH",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Pops an element from a list, pushes it to another list and returns it. Block until an element is available otherwise. Deletes the list if the last element was popped.",
+        "args": "BRPOPLPUSH source destination timeout",
+        "command": "BRPOPLPUSH",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Pops an element from a list, pushes it to another list and returns it. Blocks until an element is available otherwise. Deletes the list if the last element was moved.",
+        "args": "BLMOVE source destination <LEFT | RIGHT> <LEFT | RIGHT> timeout",
+        "command": "BLMOVE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns an element after popping it from one list and pushing it to another. Deletes the list if the last element was moved.",
+        "args": "LMOVE source destination <LEFT | RIGHT> <LEFT | RIGHT>",
+        "command": "LMOVE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns multiple elements from a list after removing them. Deletes the list if the last element was popped.",
+        "args": "LMPOP numkeys key [key ...] <LEFT | RIGHT> [COUNT\u00a0count]",
+        "command": "LMPOP",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Pops the first element from one of multiple lists. Blocks until an element is available otherwise. Deletes the list if the last element was popped.",
+        "args": "BLMPOP timeout numkeys key [key ...] <LEFT | RIGHT> [COUNT\u00a0count]",
+        "command": "BLMPOP",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Prepends one or more elements to a list only when the list exists.",
+        "args": "LPUSHX key element [element ...]",
+        "command": "LPUSHX",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Appends an element to a list only when the list exists.",
+        "args": "RPUSHX key element [element ...]",
+        "command": "RPUSHX",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Adds one or more members to a set. Creates the key if it doesn't exist.",
+        "args": "SADD key member [member ...]",
+        "command": "SADD",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns all members of a set.",
+        "args": "SMEMBERS key",
+        "command": "SMEMBERS",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Removes one or more members from a set. Deletes the set if the last member was removed.",
+        "args": "SREM key member [member ...]",
+        "command": "SREM",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns one or more random members from a set after removing them. Deletes the set if the last member was popped.",
+        "args": "SPOP key [count]",
+        "command": "SPOP",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Moves a member from one set to another.",
+        "args": "SMOVE source destination member",
+        "command": "SMOVE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the number of members in a set.",
+        "args": "SCARD key",
+        "command": "SCARD",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Get one or multiple random members from a set",
+        "args": "SRANDMEMBER key [count]",
+        "command": "SRANDMEMBER",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the intersect of multiple sets.",
+        "args": "SINTER key [key ...]",
+        "command": "SINTER",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Stores the intersect of multiple sets in a key.",
+        "args": "SINTERSTORE destination key [key ...]",
+        "command": "SINTERSTORE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the union of multiple sets.",
+        "args": "SUNION key [key ...]",
+        "command": "SUNION",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Stores the union of multiple sets in a key.",
+        "args": "SUNIONSTORE destination key [key ...]",
+        "command": "SUNIONSTORE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the difference of multiple sets.",
+        "args": "SDIFF key [key ...]",
+        "command": "SDIFF",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Stores the difference of multiple sets in a key.",
+        "args": "SDIFFSTORE destination key [key ...]",
+        "command": "SDIFFSTORE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Determines whether a member belongs to a set.",
+        "args": "SISMEMBER key member",
+        "command": "SISMEMBER",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Determines whether multiple members belong to a set.",
+        "args": "SMISMEMBER key member [member ...]",
+        "command": "SMISMEMBER",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns the number of members of the intersect of multiple sets.",
+        "args": "SINTERCARD numkeys key [key ...] [LIMIT\u00a0limit]",
+        "command": "SINTERCARD",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Adds one or more members to a sorted set, or updates their scores. Creates the key if it doesn't exist.",
+        "args": "ZADD key [NX | XX] [GT | LT] [CH] [INCR] score member [score member\n  ...]",
+        "command": "ZADD",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns the difference between multiple sorted sets.",
+        "args": "ZDIFF numkeys key [key ...] [WITHSCORES]",
+        "command": "ZDIFF",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Stores the difference of multiple sorted sets in a key.",
+        "args": "ZDIFFSTORE destination numkeys key [key ...]",
+        "command": "ZDIFFSTORE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns members in a sorted set within a range of indexes.",
+        "args": "ZRANGE key start stop [BYSCORE | BYLEX] [REV] [LIMIT\u00a0offset count]\n  [WITHSCORES]",
+        "command": "ZRANGE",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Removes one or more members from a sorted set. Deletes the sorted set if all members were removed.",
+        "args": "ZREM key member [member ...]",
+        "command": "ZREM",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Increments the score of a member in a sorted set.",
+        "args": "ZINCRBY key increment member",
+        "command": "ZINCRBY",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns the index of a member in a sorted set ordered by ascending scores.",
+        "args": "ZRANK key member [WITHSCORE]",
+        "command": "ZRANK",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the index of a member in a sorted set ordered by descending scores.",
+        "args": "ZREVRANK key member [WITHSCORE]",
+        "command": "ZREVRANK",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns members in a sorted set within a range of indexes in reverse order.",
+        "args": "ZREVRANGE key start stop [WITHSCORES]",
+        "command": "ZREVRANGE",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns one or more random members from a sorted set.",
+        "args": "ZRANDMEMBER key [count [WITHSCORES]]",
+        "command": "ZRANDMEMBER",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns the number of members in a sorted set.",
+        "args": "ZCARD key",
+        "command": "ZCARD",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns the score of a member in a sorted set.",
+        "args": "ZSCORE key member",
+        "command": "ZSCORE",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns the highest-scoring members from a sorted set after removing them. Deletes the sorted set if the last member was popped.",
+        "args": "ZPOPMAX key [count]",
+        "command": "ZPOPMAX",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the lowest-scoring members from a sorted set after removing them. Deletes the sorted set if the last member was popped.",
+        "args": "ZPOPMIN key [count]",
+        "command": "ZPOPMIN",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the count of members in a sorted set that have scores within a range.",
+        "args": "ZCOUNT key min max",
+        "command": "ZCOUNT",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the union of multiple sorted sets.",
+        "args": "ZUNION numkeys key [key ...] [WEIGHTS\u00a0weight [weight ...]]\n  [AGGREGATE\u00a0<SUM | MIN | MAX>] [WITHSCORES]",
+        "command": "ZUNION",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Stores the union of multiple sorted sets in a key.",
+        "args": "ZUNIONSTORE destination numkeys key [key ...] [WEIGHTS\u00a0weight\n  [weight ...]] [AGGREGATE\u00a0<SUM | MIN | MAX>]",
+        "command": "ZUNIONSTORE",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns the intersect of multiple sorted sets.",
+        "args": "ZINTER numkeys key [key ...] [WEIGHTS\u00a0weight [weight ...]]\n  [AGGREGATE\u00a0<SUM | MIN | MAX>] [WITHSCORES]",
+        "command": "ZINTER",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Stores the intersect of multiple sorted sets in a key.",
+        "args": "ZINTERSTORE destination numkeys key [key ...] [WEIGHTS\u00a0weight\n  [weight ...]] [AGGREGATE\u00a0<SUM | MIN | MAX>]",
+        "command": "ZINTERSTORE",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Returns members in a sorted set within a range of scores.",
+        "args": "ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT\u00a0offset count]",
+        "command": "ZRANGEBYSCORE",
+        "available": "1.0.5"
+    },
+    {
+        "desc": "Returns members in a sorted set within a range of scores in reverse order.",
+        "args": "ZREVRANGEBYSCORE key max min [WITHSCORES] [LIMIT\u00a0offset count]",
+        "command": "ZREVRANGEBYSCORE",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Removes members in a sorted set within a range of indexes. Deletes the sorted set if all members were removed.",
+        "args": "ZREMRANGEBYRANK key start stop",
+        "command": "ZREMRANGEBYRANK",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Removes members in a sorted set within a range of scores. Deletes the sorted set if all members were removed.",
+        "args": "ZREMRANGEBYSCORE key min max",
+        "command": "ZREMRANGEBYSCORE",
+        "available": "1.2.0"
+    },
+    {
+        "desc": "Returns the number of members in a sorted set within a lexicographical range.",
+        "args": "ZLEXCOUNT key min max",
+        "command": "ZLEXCOUNT",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Returns members in a sorted set within a lexicographical range.",
+        "args": "ZRANGEBYLEX key min max [LIMIT\u00a0offset count]",
+        "command": "ZRANGEBYLEX",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Returns members in a sorted set within a lexicographical range in reverse order.",
+        "args": "ZREVRANGEBYLEX key max min [LIMIT\u00a0offset count]",
+        "command": "ZREVRANGEBYLEX",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Removes members in a sorted set within a lexicographical range. Deletes the sorted set if all members were removed.",
+        "args": "ZREMRANGEBYLEX key min max",
+        "command": "ZREMRANGEBYLEX",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Returns the score of one or more members in a sorted set.",
+        "args": "ZMSCORE key member [member ...]",
+        "command": "ZMSCORE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Stores a range of members from sorted set in a key.",
+        "args": "ZRANGESTORE dst src min max [BYSCORE | BYLEX] [REV] [LIMIT\u00a0offset\n  count]",
+        "command": "ZRANGESTORE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns the number of members of the intersect of multiple sorted sets.",
+        "args": "ZINTERCARD numkeys key [key ...] [LIMIT\u00a0limit]",
+        "command": "ZINTERCARD",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Returns the highest- or lowest-scoring members from one or more sorted sets after removing them. Deletes the sorted set if the last member was popped.",
+        "args": "ZMPOP numkeys key [key ...] <MIN | MAX> [COUNT\u00a0count]",
+        "command": "ZMPOP",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Removes and returns a member by score from one or more sorted sets. Blocks until a member is available otherwise. Deletes the sorted set if the last element was popped.",
+        "args": "BZMPOP timeout numkeys key [key ...] <MIN | MAX> [COUNT\u00a0count]",
+        "command": "BZMPOP",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Removes and returns the member with the lowest score from one or more sorted sets. Blocks until a member is available otherwise. Deletes the sorted set if the last element was popped.",
+        "args": "BZPOPMIN key [key ...] timeout",
+        "command": "BZPOPMIN",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Removes and returns the member with the highest score from one or more sorted sets. Blocks until a member available otherwise. Deletes the sorted set if the last element was popped.",
+        "args": "BZPOPMAX key [key ...] timeout",
+        "command": "BZPOPMAX",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Adds one or more members to a geospatial index. The key is created if it doesn't exist.",
+        "args": "GEOADD key [NX | XX] [CH] longitude latitude member [longitude\n  latitude member ...]",
+        "command": "GEOADD",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Returns the distance between two members of a geospatial index.",
+        "args": "GEODIST key member1 member2 [M | KM | FT | MI]",
+        "command": "GEODIST",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Returns members from a geospatial index as geohash strings.",
+        "args": "GEOHASH key [member [member ...]]",
+        "command": "GEOHASH",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Returns the longitude and latitude of members from a geospatial index.",
+        "args": "GEOPOS key [member [member ...]]",
+        "command": "GEOPOS",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Queries a geospatial index for members within a distance from a coordinate, optionally stores the result.",
+        "args": "GEORADIUS key longitude latitude radius <M | KM | FT | MI>\n  [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT\u00a0count [ANY]] [ASC | DESC]\n  [STORE\u00a0key | STOREDIST\u00a0key]",
+        "command": "GEORADIUS",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Returns members from a geospatial index that are within a distance from a coordinate.",
+        "args": "GEORADIUS_RO key longitude latitude radius <M | KM | FT | MI>\n  [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT\u00a0count [ANY]] [ASC | DESC]",
+        "command": "GEORADIUS_RO",
+        "available": "3.2.10"
+    },
+    {
+        "desc": "Queries a geospatial index for members inside an area of a box or a circle.",
+        "args": "GEOSEARCH key <FROMMEMBER\u00a0member | FROMLONLAT\u00a0longitude latitude>\n  <BYRADIUS\u00a0radius <M | KM | FT | MI> | BYBOX\u00a0width height <M | KM |\n  FT | MI>> [ASC | DESC] [COUNT\u00a0count [ANY]] [WITHCOORD] [WITHDIST]\n  [WITHHASH]",
+        "command": "GEOSEARCH",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Queries a geospatial index for members inside an area of a box or a circle, optionally stores the result.",
+        "args": "GEOSEARCHSTORE destination source <FROMMEMBER\u00a0member |\n  FROMLONLAT\u00a0longitude latitude> <BYRADIUS\u00a0radius <M | KM | FT | MI>\n  | BYBOX\u00a0width height <M | KM | FT | MI>> [ASC | DESC] [COUNT\u00a0count\n  [ANY]] [STOREDIST]",
+        "command": "GEOSEARCHSTORE",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Queries a geospatial index for members within a distance from a member, optionally stores the result.",
+        "args": "GEORADIUSBYMEMBER key member radius <M | KM | FT | MI> [WITHCOORD]\n  [WITHDIST] [WITHHASH] [COUNT\u00a0count [ANY]] [ASC | DESC] [STORE\u00a0key\n  | STOREDIST\u00a0key]",
+        "command": "GEORADIUSBYMEMBER",
+        "available": "3.2.0"
+    },
+    {
+        "desc": "Returns members from a geospatial index that are within a distance from a member.",
+        "args": "GEORADIUSBYMEMBER_RO key member radius <M | KM | FT | MI>\n  [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT\u00a0count [ANY]] [ASC | DESC]",
+        "command": "GEORADIUSBYMEMBER_RO",
+        "available": "3.2.10"
+    },
+    {
+        "desc": "Adds elements to a HyperLogLog key. Creates the key if it doesn't exist.",
+        "args": "PFADD key [element [element ...]]",
+        "command": "PFADD",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Returns the approximated cardinality of the set(s) observed by the HyperLogLog key(s).",
+        "args": "PFCOUNT key [key ...]",
+        "command": "PFCOUNT",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Merges one or more HyperLogLog values into a single key.",
+        "args": "PFMERGE destkey [sourcekey [sourcekey ...]]",
+        "command": "PFMERGE",
+        "available": "2.8.9"
+    },
+    {
+        "desc": "Appends a new message to a stream. Creates the key if it doesn't exist.",
+        "args": "XADD key [NOMKSTREAM] [<MAXLEN | MINID> [= | ~] threshold\n  [LIMIT\u00a0count]] <* | id> field value [field value ...]",
+        "command": "XADD",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Return the number of messages in a stream.",
+        "args": "XLEN key",
+        "command": "XLEN",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the number of messages after removing them from a stream.",
+        "args": "XDEL key id [id ...]",
+        "command": "XDEL",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Deletes messages from the beginning of a stream.",
+        "args": "XTRIM key <MAXLEN | MINID> [= | ~] threshold [LIMIT\u00a0count]",
+        "command": "XTRIM",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the messages from a stream within a range of IDs.",
+        "args": "XRANGE key start end [COUNT\u00a0count]",
+        "command": "XRANGE",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the messages from a stream within a range of IDs in reverse order.",
+        "args": "XREVRANGE key end start [COUNT\u00a0count]",
+        "command": "XREVRANGE",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns messages from multiple streams with IDs greater than the ones requested. Blocks until a message is available otherwise.",
+        "args": "XREAD [COUNT\u00a0count] [BLOCK\u00a0milliseconds] STREAMS\u00a0key [key ...] id\n  [id ...]",
+        "command": "XREAD",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the number of messages that were successfully acknowledged by the consumer group member of a stream.",
+        "args": "XACK key group id [id ...]",
+        "command": "XACK",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns new or historical messages from a stream for a consumer in a group. Blocks until a message is available otherwise.",
+        "args": "XREADGROUP GROUP\u00a0group consumer [COUNT\u00a0count] [BLOCK\u00a0milliseconds]\n  [NOACK] STREAMS\u00a0key [key ...] id [id ...]",
+        "command": "XREADGROUP",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns the information and entries from a stream consumer group's pending entries list.",
+        "args": "XPENDING key group [[IDLE\u00a0min-idle-time] start end count [consumer]]",
+        "command": "XPENDING",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Changes, or acquires, ownership of a message in a consumer group, as if the message was delivered a consumer group member.",
+        "args": "XCLAIM key group consumer min-idle-time id [id ...] [IDLE\u00a0ms]\n  [TIME\u00a0unix-time-milliseconds] [RETRYCOUNT\u00a0count] [FORCE] [JUSTID]\n  [LASTID\u00a0lastid]",
+        "command": "XCLAIM",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Changes, or acquires, ownership of messages in a consumer group, as if the messages were delivered to as consumer group member.",
+        "args": "XAUTOCLAIM key group consumer min-idle-time start [COUNT\u00a0count]\n  [JUSTID]",
+        "command": "XAUTOCLAIM",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Executes a server-side Lua script.",
+        "args": "EVAL script numkeys [key [key ...]] [arg [arg ...]]",
+        "command": "EVAL",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Executes a server-side Lua script by SHA1 digest.",
+        "args": "EVALSHA sha1 numkeys [key [key ...]] [arg [arg ...]]",
+        "command": "EVALSHA",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Executes a read-only server-side Lua script.",
+        "args": "EVAL_RO script numkeys [key [key ...]] [arg [arg ...]]",
+        "command": "EVAL_RO",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Executes a read-only server-side Lua script by SHA1 digest.",
+        "args": "EVALSHA_RO sha1 numkeys [key [key ...]] [arg [arg ...]]",
+        "command": "EVALSHA_RO",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Invokes a function.",
+        "args": "FCALL function numkeys [key [key ...]] [arg [arg ...]]",
+        "command": "FCALL",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Invokes a read-only function.",
+        "args": "FCALL_RO function numkeys [key [key ...]] [arg [arg ...]]",
+        "command": "FCALL_RO",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Listens for messages published to channels.",
+        "args": "SUBSCRIBE channel [channel ...]",
+        "command": "SUBSCRIBE",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Stops listening to messages posted to channels.",
+        "args": "UNSUBSCRIBE [channel [channel ...]]",
+        "command": "UNSUBSCRIBE",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Listens for messages published to channels that match one or more patterns.",
+        "args": "PSUBSCRIBE pattern [pattern ...]",
+        "command": "PSUBSCRIBE",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Stops listening to messages published to channels that match one or more patterns.",
+        "args": "PUNSUBSCRIBE [pattern [pattern ...]]",
+        "command": "PUNSUBSCRIBE",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Posts a message to a channel.",
+        "args": "PUBLISH channel message",
+        "command": "PUBLISH",
+        "available": "2.0.0"
+    },
+    {
+        "desc": "Listens for messages published to shard channels.",
+        "args": "SSUBSCRIBE shardchannel [shardchannel ...]",
+        "command": "SSUBSCRIBE",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Stops listening to messages posted to shard channels.",
+        "args": "SUNSUBSCRIBE [shardchannel [shardchannel ...]]",
+        "command": "SUNSUBSCRIBE",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Post a message to a shard channel",
+        "args": "SPUBLISH shardchannel message",
+        "command": "SPUBLISH",
+        "available": "7.0.0"
+    },
+    {
+        "desc": "Synchronously saves the database(s) to disk.",
+        "args": "SAVE",
+        "command": "SAVE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Asynchronously saves the database(s) to disk.",
+        "args": "BGSAVE [SCHEDULE]",
+        "command": "BGSAVE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Asynchronously rewrites the append-only file to disk.",
+        "args": "BGREWRITEAOF",
+        "command": "BGREWRITEAOF",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Returns the Unix timestamp of the last successful save to disk.",
+        "args": "LASTSAVE",
+        "command": "LASTSAVE",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Removes the expiration time of a key.",
+        "args": "PERSIST key",
+        "command": "PERSIST",
+        "available": "2.2.0"
+    },
+    {
+        "desc": "Returns the replication role.",
+        "args": "ROLE",
+        "command": "ROLE",
+        "available": "2.8.12"
+    },
+    {
+        "desc": "Starts a coordinated failover from a server to one of its replicas.",
+        "args": "FAILOVER [TO\u00a0host port [FORCE]] [ABORT] [TIMEOUT\u00a0milliseconds]",
+        "command": "FAILOVER",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns the server time.",
+        "args": "TIME",
+        "command": "TIME",
+        "available": "2.6.0"
+    },
+    {
+        "desc": "Iterates over the key names in the database.",
+        "args": "SCAN cursor [MATCH\u00a0pattern] [COUNT\u00a0count] [TYPE\u00a0type]",
+        "command": "SCAN",
+        "available": "2.8.0"
+    },
+    {
+        "desc": "Iterates over fields and values of a hash.",
+        "args": "HSCAN key cursor [MATCH\u00a0pattern] [COUNT\u00a0count] [NOVALUES]",
+        "command": "HSCAN",
+        "available": "2.8.0"
+    },
+    {
+        "desc": "Iterates over members of a set.",
+        "args": "SSCAN key cursor [MATCH\u00a0pattern] [COUNT\u00a0count]",
+        "command": "SSCAN",
+        "available": "2.8.0"
+    },
+    {
+        "desc": "Iterates over members and scores of a sorted set.",
+        "args": "ZSCAN key cursor [MATCH\u00a0pattern] [COUNT\u00a0count]",
+        "command": "ZSCAN",
+        "available": "2.8.0"
+    },
+    {
+        "desc": "Blocks until the asynchronous replication of all preceding write commands sent by the connection is completed.",
+        "args": "WAIT numreplicas timeout",
+        "command": "WAIT",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Signals that a cluster client is following an -ASK redirect.",
+        "args": "ASKING",
+        "command": "ASKING",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Enables read-only queries for a connection to a Redis Cluster replica node.",
+        "args": "READONLY",
+        "command": "READONLY",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Enables read-write queries for a connection to a Reids Cluster replica node.",
+        "args": "READWRITE",
+        "command": "READWRITE",
+        "available": "3.0.0"
+    },
+    {
+        "desc": "Sets a Redis server as a replica of another, or promotes it to being a master.",
+        "args": "SLAVEOF <host port | NO ONE>",
+        "command": "SLAVEOF",
+        "available": "1.0.0"
+    },
+    {
+        "desc": "Configures a server as replica of another, or promotes it to a master.",
+        "args": "REPLICAOF <host port | NO ONE>",
+        "command": "REPLICAOF",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Copies the value of a key to a new key.",
+        "args": "COPY source destination [DB\u00a0destination-db] [REPLACE]",
+        "command": "COPY",
+        "available": "6.2.0"
+    },
+    {
+        "desc": "Returns the number of existing keys out of those specified after updating the time they were last accessed.",
+        "args": "TOUCH key [key ...]",
+        "command": "TOUCH",
+        "available": "3.2.1"
+    },
+    {
+        "desc": "Displays computer art and the Redis version",
+        "args": "LOLWUT [VERSION\u00a0version]",
+        "command": "LOLWUT",
+        "available": "5.0.0"
+    },
+    {
+        "desc": "Returns detailed information about all commands.",
+        "args": "COMMAND",
+        "command": "COMMAND",
+        "available": "2.8.13"
+    }
+]

@@ -40,6 +40,10 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
     private RedisClient client;
 
+    public void setClient(RedisClient client) {
+        this.client = client;
+    }
+
     public RedisClient client() {
         return this.client;
     }

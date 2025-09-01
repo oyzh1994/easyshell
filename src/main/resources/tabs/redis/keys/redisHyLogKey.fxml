@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RenameSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisHylogKeyController">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <RenameSVGGlyph tipText="%base.rename" size="16" onMousePrimaryClicked="#renameKey">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </RenameSVGGlyph>
+        <CopySVGGlyph size="16" onMousePrimaryClicked="#copyKey">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+        <AddSVGGlyph size="16" fx:id="addRow" onMousePrimaryClicked="#addRow">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <FXText realHeight="22" fx:id="count" tipText="%shell.redis.elementCount" fontSize="11">
+            <HBox.margin>
+                <Insets left="5" top="1"/>
+            </HBox.margin>
+        </FXText>
+        <FXText realHeight="22" fontSize="11" text="%base.binary" style="-fx-fill: green" fx:id="binary"
+                managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="5" top="1"/>
+            </HBox.margin>
+        </FXText>
+        <padding>
+            <Insets top="7"/>
+        </padding>
+    </FXHBox>
+    <ShellDataEditor editable="false" formatType="RAW" fontSize="11" fx:id="nodeData"
+                     flexHeight="100% - 30" flexWidth="100% - 4">
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </ShellDataEditor>
+</FXVBox>

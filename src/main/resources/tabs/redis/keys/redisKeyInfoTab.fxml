@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.label.SystemLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTab text="%base.info" xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeyInfoController" fx:id="infoRoot">
+    <graphic>
+        <SVGGlyph url="/font/status.svg" sizeStr="12" cursorType="DEFAULT"/>
+    </graphic>
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <CopySVGGlyph size="16" onMousePrimaryClicked="#copy">
+                <HBox.margin>
+                    <Insets left="5"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+            <RefreshSVGGlyph tipText="%base.refresh" size="15" onMousePrimaryClicked="#refresh">
+                <HBox.margin>
+                    <Insets left="5"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+            <padding>
+                <Insets top="7"/>
+            </padding>
+        </FXHBox>
+        <FXVBox flexHeight="100% - 30" flexWidth="100%" fontSize="11">
+            <SystemLabel fx:id="objectEncoding" realHeight="25" flexWidth="100%">
+                <VBox.margin>
+                    <Insets left="5" top="15"/>
+                </VBox.margin>
+            </SystemLabel>
+            <SystemLabel fx:id="objectIdletime" realHeight="25" flexWidth="100%">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </SystemLabel>
+            <SystemLabel fx:id="objectRefcount" realHeight="25" flexWidth="100%">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </SystemLabel>
+        </FXVBox>
+    </FXVBox>
+</FXTab>

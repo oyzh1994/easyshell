@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.redis.RedisKeyRowTableView?>
+<?import cn.oyzh.easyshell.fx.redis.RedisLatitudeField?>
+<?import cn.oyzh.easyshell.fx.redis.RedisLongitudeField?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane?>
+<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.gui.page.PageBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RenameSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ReverseSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisCoordinateKeyController">
+    <FXHBox groupId="coordinate_list" realHeight="30" flexWidth="100%">
+        <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadKey">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <RenameSVGGlyph tipText="%base.rename" size="16" onMousePrimaryClicked="#renameKey">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </RenameSVGGlyph>
+        <CopySVGGlyph size="16" onMousePrimaryClicked="#copyKey">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" realHeight="22" prefWidth="200">
+            <HBox.margin>
+                <Insets left="5" top="-5"/>
+            </HBox.margin>
+        </ClearableTextField>
+        <ReverseSVGGlyph onMousePrimaryClicked="#reverseView" tipText="%shell.redis.tip7" size="16">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </ReverseSVGGlyph>
+        <padding>
+            <Insets top="7"/>
+        </padding>
+    </FXHBox>
+    <RedisKeyRowTableView groupId="coordinate_list" flexWidth="100% - 4" realHeight="295" fx:id="listTable"
+                          fixedCellSize="25">
+        <columns>
+            <FXTableColumn flexWidth="50%" valueName="value" text="%base.name"/>
+            <FXTableColumn flexWidth="25%" valueName="longitude" text="%base.longitude"/>
+            <FXTableColumn flexWidth="25% - 12" valueName="latitude" text="%base.latitude"/>
+        </columns>
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </RedisKeyRowTableView>
+    <FXHBox realHeight="24">
+        <CopySVGGlyph size="16" onMousePrimaryClicked="#copyRow">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+        <AddSVGGlyph size="16" onMousePrimaryClicked="#addRow">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteRow">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <ExpandListSVGPane size="14" fx:id="expandPane" onMousePrimaryClicked="#expendList">
+            <HBox.margin>
+                <Insets left="5" top="6"/>
+            </HBox.margin>
+        </ExpandListSVGPane>
+        <PageBox onJumpFired="#pageJump" onSettingClicked="#pageSetting" fx:id="pagePane" realHeight="22"
+                 onFirstClicked="#firstPage" onLastClicked="#lastPage"
+                 onPrevClicked="#prevPage" onNextClicked="#nextPage" hideIfLessPage="false">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </PageBox>
+    </FXHBox>
+    <FXText text="%base.coordinates">
+        <VBox.margin>
+            <Insets left="5" top="5"/>
+        </VBox.margin>
+    </FXText>
+    <FXHBox groupId="dataToBig" disable="true" realHeight="24" flexWidth="100%" fx:id="dataAction">
+        <EditorFormatTypeComboBox prefHeight="22" tipText="%base.format" fx:id="format">
+            <HBox.margin>
+                <Insets left="5"/>
+            </HBox.margin>
+        </EditorFormatTypeComboBox>
+        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1" size="16"
+                      onMousePrimaryClicked="#saveKeyValue">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1" size="16"
+                      onMousePrimaryClicked="#dataUndo">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </UndoSVGGlyph>
+        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1" size="16"
+                      onMousePrimaryClicked="#dataRedo">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </RedoSVGGlyph>
+        <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </PasteSVGGlyph>
+        <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearData">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </ClearSVGGlyph>
+        <CopySVGGlyph size="16" onMousePrimaryClicked="#copyRow">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+    </FXHBox>
+    <ShellDataEditor groupId="dataToBig" disable="true" fontSize="11" fx:id="nodeData" flexHeight="100% - 478"
+                     flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </ShellDataEditor>
+    <FXText text="%base.longitude">
+        <VBox.margin>
+            <Insets top="5" left="5"/>
+        </VBox.margin>
+    </FXText>
+    <RedisLongitudeField groupId="dataToBig" scaleLen="5" realHeight="24" flexWidth="100% - 4" fx:id="longitudeVal"
+                         tipText="%base.longitude" value="0" step="5" onKeyPressed="#onKeyDataKeyPressed">
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </RedisLongitudeField>
+    <FXText text="%base.latitude">
+        <VBox.margin>
+            <Insets top="5" left="5"/>
+        </VBox.margin>
+    </FXText>
+    <RedisLatitudeField groupId="dataToBig" scaleLen="5" realHeight="24" flexWidth="100% - 4" fx:id="latitudeVal"
+                        tipText="%base.latitude" value="0" step="5" onKeyPressed="#onKeyDataKeyPressed">
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </RedisLatitudeField>
+</FXVBox>
