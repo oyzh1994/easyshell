@@ -47,9 +47,9 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     /**
      * 当前db索引
      */
-    private final int dbIndex;
+    private final Integer dbIndex;
 
-    public int dbIndex() {
+    public Integer dbIndex() {
         return dbIndex;
     }
 

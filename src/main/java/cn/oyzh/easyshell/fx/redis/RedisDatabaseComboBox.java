@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.redis;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * redis数据库选择框
@@ -10,16 +11,20 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class RedisDatabaseComboBox extends FXComboBox<String> {
 
-    public int getDbCount() {
+    public Integer getDbCount() {
         return dbCount;
     }
 
-    private int dbCount;
+    private Integer dbCount;
 
-    public void setDbCount(int dbCount) {
+    public void setDbCount(Integer dbCount) {
         this.dbCount = dbCount;
-        for (int i = 0; i < dbCount; i++) {
-            this.addDB(i);
+        if (dbCount == null) {
+            this.addItem(I18nHelper.allDatabase());
+        } else {
+            for (int i = 0; i < dbCount; i++) {
+                this.addDB(i);
+            }
         }
     }
 

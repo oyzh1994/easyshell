@@ -285,9 +285,12 @@ public class ShellAddRedisConnectController extends StageController {
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
+            shellConnect.setHost(host.trim());
             // 超时设置
             shellConnect.setExecuteTimeOut(executeTimOut);
             shellConnect.setConnectTimeOut(connectTimeOut);
+            // 只读模式
+            shellConnect.setReadonly(this.readonlyMode.isSelected());
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());

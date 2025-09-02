@@ -111,15 +111,20 @@ public class RedisPoolManager {
      * 初始化资源
      */
     public void initResource() {
-        // 创建数个待备用的
-        if (this.jedisPool != null) {
-            synchronized (this.resources) {
-                for (int i = 0; i < this.initPoolSize; i++) {
-                    Jedis jedis = this.jedisPool.getResource();
-                    jedis.select(i);
-                    this.resources.add(new RedisConn(jedis));
+        try {
+
+            // 创建数个待备用的
+            if (this.jedisPool != null) {
+                synchronized (this.resources) {
+                    for (int i = 0; i < this.initPoolSize; i++) {
+                        Jedis jedis = this.jedisPool.getResource();
+                        jedis.select(i);
+                        this.resources.add(new RedisConn(jedis));
+                    }
                 }
             }
+        } catch (Throwable ex) {
+            ex.printStackTrace();
         }
     }
 

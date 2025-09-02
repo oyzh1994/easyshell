@@ -4485,7 +4485,7 @@ public class RedisClient implements ShellBaseClient {
      *
      * @return db数量
      */
-    public int databases() {
+    public Integer databases() {
         if (this.databases != null) {
             return this.databases;
         }
