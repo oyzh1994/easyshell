@@ -11,7 +11,6 @@ import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -30,11 +29,11 @@ import java.util.List;
  */
 public class RedisKeysTabController extends ParentTabController {
 
-    /**
-     * 根节点
-     */
-    @FXML
-    private FXHBox root;
+    // /**
+    //  * 根节点
+    //  */
+    // @FXML
+    // private FXHBox root;
 
     /**
      * tab节点

@@ -18,24 +18,24 @@
         <QuerySVGGlyph sizeStr="11"/>
     </graphic>
     <FXHBox flexHeight="100%" flexWidth="100%">
-        <ShellRedisQueryTreeView fx:id="queryTreeView" flexHeight="100%" realWidth="200">
+        <ShellRedisQueryTreeView fx:id="queryTreeView" flexHeight="100%" prefWidth="240">
 
         </ShellRedisQueryTreeView>
-        <FXVBox flexWidth="100% - 200" flexHeight="100%">
+        <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
             <FXHBox realHeight="30" flexWidth="100%">
-                <RedisDatabaseComboBox fx:id="database">
+                <RedisDatabaseComboBox fx:id="database" prefHeight="22">
                     <HBox.margin>
-                        <Insets left="5" top="5"/>
+                        <Insets left="5" top="4"/>
                     </HBox.margin>
                 </RedisDatabaseComboBox>
                 <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
                     <HBox.margin>
-                        <Insets left="5" top="10"/>
+                        <Insets left="5" top="7"/>
                     </HBox.margin>
                 </SaveSVGGlyph>
                 <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
                     <HBox.margin>
-                        <Insets left="5" top="10"/>
+                        <Insets left="5" top="7"/>
                     </HBox.margin>
                 </RunSVGGlyph>
             </FXHBox>

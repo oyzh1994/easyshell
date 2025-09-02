@@ -19,7 +19,7 @@
     <graphic>
         <KeysSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXHBox fx:id="root" flexWidth="100%" flexHeight="100%">
+    <FXHBox flexWidth="100%" flexHeight="100%">
         <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
                 <RedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
@@ -75,7 +75,7 @@
                 <!-- </FilterSVGGlyph> -->
             </FXHBox>
         </FXVBox>
-        <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="LEFT" flexWidth="100% - 305"
+        <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
             <fx:include fx:id="keyData" source="redisKeyDataTab.fxml"/>

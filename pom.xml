@@ -133,7 +133,6 @@
             <artifactId>fx-terminal</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-editor</artifactId>
@@ -300,6 +299,13 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- 二维码工具 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->

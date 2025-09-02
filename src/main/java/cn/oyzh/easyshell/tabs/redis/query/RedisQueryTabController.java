@@ -11,13 +11,16 @@ import cn.oyzh.easyshell.store.redis.RedisQueryStore;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeView;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
@@ -69,10 +72,16 @@ public class RedisQueryTabController extends RichTabController {
     private FXTabPane resultTabPane;
 
     /**
-     * 片段列表
+     * 查询列表
      */
     @FXML
     private ShellRedisQueryTreeView queryTreeView;
+
+    /**
+     * 右边组件
+     */
+    @FXML
+    private FXVBox rightBox;
 
     /**
      * 查询存储
@@ -173,7 +182,7 @@ public class RedisQueryTabController extends RichTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 片段选择事件
+        // 查询选择事件
         this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
             if (t1 instanceof ShellRedisQueryTreeItem item) {
                 this.doEdit(item.value());
@@ -181,18 +190,37 @@ public class RedisQueryTabController extends RichTabController {
                 this.doEdit(null);
             }
         });
-        // 片段新增回调
+        // 查询新增回调
         this.queryTreeView.setAddCallback(this::doEdit);
-        // 片段编辑回调
+        // 查询编辑回调
         this.queryTreeView.setEditCallback(this::doEdit);
-        // 片段删除回调
+        // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
+        // 拉伸辅助
+        NodeWidthResizer resizer = new NodeWidthResizer(this.queryTreeView, Cursor.DEFAULT, this::resizeLeft);
+        resizer.widthLimit(240f, 750f);
+        resizer.initResizeEvent();
     }
 
     /**
-     * 编辑片段
+     * 左侧组件重新布局
      *
-     * @param query 片段
+     * @param newWidth 新宽度
+     */
+    private void resizeLeft(Float newWidth) {
+        if (newWidth != null && !Float.isNaN(newWidth)) {
+            // 设置组件宽
+            this.queryTreeView.setRealWidth(newWidth);
+            this.rightBox.setLayoutX(newWidth);
+            this.rightBox.setFlexWidth("100% - " + newWidth);
+            this.queryTreeView.parentAutosize();
+        }
+    }
+
+    /**
+     * 编辑查询
+     *
+     * @param query 查询
      */
     private void doEdit(RedisQuery query) {
         this.query = query;
@@ -204,9 +232,9 @@ public class RedisQueryTabController extends RichTabController {
     }
 
     /**
-     * 删除片段
+     * 删除查询
      *
-     * @param query 片段
+     * @param query 查询
      */
     private void doDelete(RedisQuery query) {
         if (query == this.query) {
