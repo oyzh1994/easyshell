@@ -344,11 +344,11 @@ public class ShellAddSSHConnectController extends StageController {
      * @return x11配置信息
      */
     private ShellX11Config getX11Config() {
-        ShellX11Config sshConfig = new ShellX11Config();
-        sshConfig.setHost(this.x11Host.getText());
-        sshConfig.setPort(this.x11Port.getIntValue());
-        sshConfig.setCookie(this.x11Cookie.getText());
-        return sshConfig;
+        ShellX11Config config = new ShellX11Config();
+        config.setHost(this.x11Host.getText());
+        config.setPort(this.x11Port.getIntValue());
+        config.setCookie(this.x11Cookie.getText());
+        return config;
     }
 
     /**
@@ -357,14 +357,14 @@ public class ShellAddSSHConnectController extends StageController {
      * @return 代理配置信息
      */
     private ShellProxyConfig getProxyConfig() {
-        ShellProxyConfig proxyConfig = new ShellProxyConfig();
-        proxyConfig.setHost(this.proxyHost.getText());
-        proxyConfig.setPort(this.proxyPort.getIntValue());
-        proxyConfig.setUser(this.proxyUser.getTextTrim());
-        proxyConfig.setPassword(this.proxyPassword.getPassword());
-        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
-        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
-        return proxyConfig;
+        ShellProxyConfig config = new ShellProxyConfig();
+        config.setHost(this.proxyHost.getText());
+        config.setPort(this.proxyPort.getIntValue());
+        config.setUser(this.proxyUser.getTextTrim());
+        config.setPassword(this.proxyPassword.getPassword());
+        config.setAuthType(this.proxyAuthType.getAuthType());
+        config.setProtocol(this.proxyProtocol.getSelectedItem());
+        return config;
     }
 
     /**
