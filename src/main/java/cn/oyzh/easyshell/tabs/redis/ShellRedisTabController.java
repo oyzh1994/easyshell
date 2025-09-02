@@ -8,6 +8,8 @@ import cn.oyzh.easyshell.tabs.redis.query.RedisQueryTabController;
 import cn.oyzh.easyshell.tabs.redis.server.RedisServerTabController;
 import cn.oyzh.easyshell.tabs.redis.terminal.RedisTerminalTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -25,6 +27,18 @@ public class ShellRedisTabController extends ShellParentTabController {
      * 客户端
      */
     private RedisClient client;
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXTabPane root;
+
+    /**
+     * 键组件
+     */
+    @FXML
+    private FXTab keys;
 
     /**
      * 键
@@ -73,10 +87,17 @@ public class ShellRedisTabController extends ShellParentTabController {
                     return;
                 }
                 this.hideLeft();
-                this.keysController.init(this.client);
-                this.queryController.init(this.client);
-                this.serverController.init(this.client);
-                this.terminalController.init(this.client);
+                if (this.client.isSentinelMode()) {
+                    this.root.removeTab(this.keys);
+                    this.queryController.init(this.client);
+                    this.serverController.init(this.client);
+                    this.terminalController.init(this.client);
+                } else {
+                    this.keysController.init(this.client);
+                    this.queryController.init(this.client);
+                    this.serverController.init(this.client);
+                    this.terminalController.init(this.client);
+                }
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

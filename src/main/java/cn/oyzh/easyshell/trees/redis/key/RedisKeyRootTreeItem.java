@@ -166,8 +166,9 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     }
 
     protected void loadDatabase() {
-        // cluster集群模式
-        if (this.client().isClusterMode()) {
+        // 哨兵模式
+        if (this.client().isSentinelMode()) {
+        } else if (this.client().isClusterMode()) {// cluster集群模式
             this.setChild(new RedisDatabaseTreeItem(null, this.getTreeView()));
         } else {// 正常模式
             int databases = this.client().databases();
