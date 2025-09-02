@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
+import cn.oyzh.easyshell.event.redis.client.RedisClientActionEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisHashFieldAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisHyLogElementsAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyAddedEvent;
@@ -57,6 +58,7 @@ import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import javafx.scene.control.TreeItem;
+import redis.clients.jedis.CommandArguments;
 
 import java.io.File;
 import java.util.List;
@@ -700,5 +702,15 @@ public class ShellEventUtil {
         RedisPubsubOpenEvent event = new RedisPubsubOpenEvent();
         event.data(item);
         EventUtil.post(event);
+    }
+
+    /**
+     * 客户端操作
+     */
+    public static void redisClientAction(String connectName, CommandArguments arguments) {
+        RedisClientActionEvent event = new RedisClientActionEvent();
+        event.data(connectName);
+        event.setArguments(arguments);
+        EventUtil.postAsync(event);
     }
 }
