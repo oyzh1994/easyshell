@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: redis
+    container_name: redis-example
+    volumes:
+      - ./redis-example.conf:/conf/redis.conf
+      - /Volumes/SD_Card/redis-3.0.6/data:/data
+#      - /Volumes/Files/redis-3.0.6/data:/data
+#      - D:/redis/bak_redis136/data:/data
+    ports:
+      - 7381:7381
+    command: redis-server /conf/redis.conf

@@ -1,0 +1,74 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: redis
+    container_name: redis-master
+    restart: always
+    volumes:
+      - ./redis-master.conf:/conf/redis.conf
+    ports:
+      - 6981:6981
+    # 192.168.31.180（替换成自己的IP）master节点宿主机IP地址，如果安装同一台机子上，不能写127.0.0.1 因为这样访问的是容器本身的地址
+    # command: redis-server --port 6379 --requirepass 123456 --appendonly yes
+    command: redis-server /conf/redis.conf
+
+  # 从节点1
+  slave1:
+    image: redis
+    container_name: redis-slave1
+    restart: always
+    volumes:
+      - ./redis-slave1.conf:/conf/redis.conf
+    ports:
+      - 6982:6982
+    depends_on:
+      - master
+    # 192.168.31.180（替换成自己的IP）master节点宿主机IP地址，如果安装同一台机子上，不能写127.0.0.1 因为这样访问的是容器本身的地址
+    # command: redis-server --slaveof 192.168.31.180 6981 --port 6379 --requirepass 123456 --masterauth 123456 --appendonly yes
+    command: redis-server /conf/redis.conf
+
+  # 从节点2
+  slave2:
+    image: redis
+    container_name: redis-slave2
+    restart: always
+    volumes:
+      - ./redis-slave2.conf:/conf/redis.conf
+    ports:
+      - 6983:6983
+    depends_on:
+      - master
+    # 192.168.31.180（替换成自己的IP） master节点宿主机IP地址，如果安装同一台机子上，不能写127.0.0.1 因为这样访问的是容器本身的地址
+    # command: redis-server --slaveof 192.168.31.180 6981 --port 6379 --requirepass 123456 --masterauth 123456 --appendonly yes
+    command: redis-server /conf/redis.conf
+
+  # 哨兵节点1
+  sentinel1:
+    image: redis
+    container_name: redis-sentinel1
+    restart: always
+    volumes:
+      - ./redis-sentinel1.conf:/conf/redis.conf
+    ports:
+      - 6984:6984
+    depends_on:
+      - master
+      - slave1
+      - slave2
+    command: redis-sentinel /conf/redis.conf
+
+  # 哨兵节点2
+  sentinel2:
+    image: redis
+    container_name: redis-sentinel2
+    restart: always
+    volumes:
+      - ./redis-sentinel2.conf:/conf/redis.conf
+    ports:
+      - 6985:6985
+    depends_on:
+      - master
+      - slave1
+      - slave2
+    command: redis-sentinel /conf/redis.conf
