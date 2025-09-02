@@ -14,7 +14,6 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
@@ -25,7 +24,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
-import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -108,7 +106,11 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem add = MenuItemHelper.addKey("12", this::addKey);
+        FXMenuItem addKey = MenuItemHelper.addKey("12", this::addKey);
+        items.add(addKey);
+        FXMenuItem filterKey = MenuItemHelper.filterKey("12", this::filterKey);
+        items.add(filterKey);
+        items.add(MenuItemHelper.separator());
 //        FXMenuItem keyFilter = MenuItemHelper.keyFilter("12", this::keyFilter);
         // FXMenuItem refresh = MenuItemHelper.refreshData("12", this::reloadChild);
         FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
@@ -119,7 +121,6 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
         // 卸载
         FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
-        items.add(add);
 //        items.add(keyFilter);
         // items.add(refresh);
         items.add(exportData);
@@ -412,14 +413,10 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     /**
      * 键过滤
      */
-    public void doKeyFilter(MouseEvent event) {
+    public void filterKey( ) {
         String filterPattern = this.getFilterPattern();
         PopupAdapter popup = PopupManager.parsePopup(RedisKeyFilterPopupController.class);
         popup.setProp("pattern", filterPattern);
-        SVGGlyph glyph = (SVGGlyph) event.getSource();
-        if (glyph == null) {
-            glyph = (SVGGlyph) event.getTarget();
-        }
         popup.setSubmitHandler(o -> {
             if (o instanceof String pattern && !StringUtil.equals(pattern, filterPattern)) {
                 this.setFilterPattern(pattern);
@@ -427,7 +424,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
                 this.loadChild();
             }
         });
-        popup.showPopup(glyph);
+        popup.showPopup(this.itemGraphic());
     }
 
     /**

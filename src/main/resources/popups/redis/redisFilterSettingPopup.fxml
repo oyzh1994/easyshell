@@ -31,7 +31,7 @@
         </FXCheckBox>
     </FXHBox>
     <FXHBox>
-        <SubmitSVGGlyph onMousePrimaryClicked="#apply" sizeStr="15,11">
+        <SubmitSVGGlyph onMousePrimaryClicked="#apply" sizeStr="11">
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>

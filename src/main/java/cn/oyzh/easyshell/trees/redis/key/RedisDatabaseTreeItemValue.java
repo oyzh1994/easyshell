@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * Redis DB值
@@ -51,10 +53,10 @@ public class RedisDatabaseTreeItemValue extends RichTreeItemValue {
             if (dbSize != null) {
                 extra += "(" + dbSize + ")";
             }
-//            String filterPattern = this.item().getFilterPattern();
-//            if (StringUtil.isNotBlank(filterPattern)) {
-//                extra += "[" + I18nHelper.keyFilter() + ":" + filterPattern + "]";
-//            }
+           String filterPattern = this.item().getFilterPattern();
+           if (StringUtil.isNotBlank(filterPattern)) {
+               extra += "[" + I18nHelper.keyFilter() + ":" + filterPattern + "]";
+           }
             return extra;
         } catch (Exception ex) {
             ex.printStackTrace();
