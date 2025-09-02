@@ -2,7 +2,7 @@
 <?import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
-<FXTab xmlns="http://javafx.com/javafx"
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.redis.terminal.RedisTerminalTabController" text="%base.terminal">
     <graphic>

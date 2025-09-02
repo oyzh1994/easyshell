@@ -193,5 +193,7 @@ public class ShellI18nHelper {
         return I18nResourceBundle.i18nString("shell.redis.copy.tip1");
     }
 
-
+    public static String redisPubsubTip1() {
+        return I18nResourceBundle.i18nString("shell.redis.pubsub.tip1");
+    }
 }

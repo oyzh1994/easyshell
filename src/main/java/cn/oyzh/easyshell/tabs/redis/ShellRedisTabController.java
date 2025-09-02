@@ -17,17 +17,32 @@ import java.util.List;
  */
 public class ShellRedisTabController extends ParentTabController {
 
+    /**
+     * 客户端
+     */
     private RedisClient client;
 
+    /**
+     * 键
+     */
     @FXML
     private RedisKeysTabController keysController;
 
+    /**
+     * 查询
+     */
     @FXML
     private RedisQueryTabController queryController;
 
+    /**
+     * 服务
+     */
     @FXML
     private RedisServerTabController serverController;
 
+    /**
+     * 终端
+     */
     @FXML
     private RedisTerminalTabController terminalController;
 
@@ -36,12 +51,17 @@ public class ShellRedisTabController extends ParentTabController {
         return List.of(keysController, queryController, serverController, terminalController);
     }
 
+    /**
+     * 初始化
+     *
+     * @param client 客户端
+     */
     public void init(RedisClient client) {
         this.client = client;
         this.keysController.init(client);
-        this.serverController.init(client);
         this.queryController.init(client);
-        this.terminalController.init(client, null);
+        this.serverController.init(client);
+        this.terminalController.init(client);
     }
 
     public RedisClient getClient() {

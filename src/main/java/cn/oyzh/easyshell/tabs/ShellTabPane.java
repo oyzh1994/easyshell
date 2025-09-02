@@ -3,9 +3,11 @@ package cn.oyzh.easyshell.tabs;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
+import cn.oyzh.easyshell.event.redis.key.RedisPubsubOpenEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
@@ -17,6 +19,7 @@ import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
+import cn.oyzh.easyshell.tabs.redis.pubsub.RedisPubsubTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
@@ -334,4 +337,40 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         this.removeTab(closeTabs);
     }
 
+    /**
+     * 获取发布及订阅tab
+     *
+     * @param item 发布及订阅节点
+     * @return 发布及订阅tab
+     */
+    private RedisPubsubTab getPubsubTab(RedisPubsubItem item) {
+        if (item != null) {
+            for (Tab tab : this.getTabs()) {
+                if (tab instanceof RedisPubsubTab cmdTab && cmdTab.getItem() == item) {
+                    return cmdTab;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 初始化发布及订阅tab
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    public void pubsubOpen(RedisPubsubOpenEvent event) {
+        RedisPubsubTab tab = this.getPubsubTab(event.data());
+        if (tab == null) {
+            tab = new RedisPubsubTab();
+            tab.init(event.data());
+            super.addTab(tab);
+        } else {
+            tab.flushGraphic();
+        }
+        if (!tab.isSelected()) {
+            this.select(tab);
+        }
+    }
 }

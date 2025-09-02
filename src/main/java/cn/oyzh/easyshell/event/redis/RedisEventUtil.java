@@ -1,26 +1,14 @@
 package cn.oyzh.easyshell.event.redis;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.redis.RedisQuery;
 import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
-import cn.oyzh.easyshell.event.redis.client.RedisClientActionEvent;
-import cn.oyzh.easyshell.event.redis.connect.RedisConnectAddedEvent;
-import cn.oyzh.easyshell.event.redis.connect.RedisConnectDeletedEvent;
-import cn.oyzh.easyshell.event.redis.connect.RedisConnectImportedEvent;
-import cn.oyzh.easyshell.event.redis.connect.RedisConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.redis.connection.RedisConnectionClosedEvent;
 import cn.oyzh.easyshell.event.redis.connection.RedisConnectionConnectedEvent;
-import cn.oyzh.easyshell.event.redis.connection.RedisServerEvent;
-import cn.oyzh.easyshell.event.redis.group.RedisAddGroupEvent;
-import cn.oyzh.easyshell.event.redis.group.RedisGroupAddedEvent;
-import cn.oyzh.easyshell.event.redis.group.RedisGroupDeletedEvent;
-import cn.oyzh.easyshell.event.redis.group.RedisGroupRenamedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisHashFieldAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisHyLogElementsAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyCopiedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyDeletedEvent;
-import cn.oyzh.easyshell.event.redis.key.RedisKeyFilteredEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyFlushedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyMovedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyRenamedEvent;
@@ -33,14 +21,7 @@ import cn.oyzh.easyshell.event.redis.key.RedisStreamMessageAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisZSetCoordinateAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisZSetMemberAddedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisZSetReverseViewEvent;
-import cn.oyzh.easyshell.event.redis.query.RedisAddQueryEvent;
-import cn.oyzh.easyshell.event.redis.query.RedisOpenQueryEvent;
-import cn.oyzh.easyshell.event.redis.query.RedisQueryAddedEvent;
-import cn.oyzh.easyshell.event.redis.query.RedisQueryDeletedEvent;
-import cn.oyzh.easyshell.event.redis.query.RedisQueryRenamedEvent;
-import cn.oyzh.easyshell.event.redis.terminal.RedisTerminalCloseEvent;
 import cn.oyzh.easyshell.event.redis.terminal.RedisTerminalOpenEvent;
-import cn.oyzh.easyshell.event.redis.tree.RedisTreeItemChangedEvent;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
@@ -50,11 +31,7 @@ import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.event.EventUtil;
-import cn.oyzh.fx.gui.event.Layout1Event;
-import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
-import javafx.scene.control.TreeItem;
-import redis.clients.jedis.CommandArguments;
 
 import java.util.List;
 
@@ -100,17 +77,17 @@ public class RedisEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 终端关闭事件
-     *
-     * @param redisConnect redis信息
-     */
-    public static void terminalClose(ShellConnect redisConnect, Integer dbIndex) {
-        RedisTerminalCloseEvent event = new RedisTerminalCloseEvent();
-        event.data(redisConnect);
-        event.setDbIndex(dbIndex);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 终端关闭事件
+    //  *
+    //  * @param redisConnect redis信息
+    //  */
+    // public static void terminalClose(ShellConnect redisConnect, Integer dbIndex) {
+    //     RedisTerminalCloseEvent event = new RedisTerminalCloseEvent();
+    //     event.data(redisConnect);
+    //     event.setDbIndex(dbIndex);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * list行添加事件
@@ -281,45 +258,45 @@ public class RedisEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 键过滤事件
-     *
-     * @param item redis树节点
-     */
-    public static void keyFiltered(Integer item) {
-        RedisKeyFilteredEvent event = new RedisKeyFilteredEvent();
-        event.data(item);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 键过滤事件
+    //  *
+    //  * @param item redis树节点
+    //  */
+    // public static void keyFiltered(Integer item) {
+    //     RedisKeyFilteredEvent event = new RedisKeyFilteredEvent();
+    //     event.data(item);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 连接已新增事件
-     *
-     * @param redisConnect redis信息
-     */
-    public static void connectAdded(ShellConnect redisConnect) {
-        RedisConnectAddedEvent event = new RedisConnectAddedEvent();
-        event.data(redisConnect);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 连接已新增事件
+    //  *
+    //  * @param redisConnect redis信息
+    //  */
+    // public static void connectAdded(ShellConnect redisConnect) {
+    //     RedisConnectAddedEvent event = new RedisConnectAddedEvent();
+    //     event.data(redisConnect);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 连接已修改事件
+    //  *
+    //  * @param redisConnect Redis信息
+    //  */
+    // public static void connectUpdated(ShellConnect redisConnect) {
+    //     RedisConnectUpdatedEvent event = new RedisConnectUpdatedEvent();
+    //     event.data(redisConnect);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 连接已修改事件
-     *
-     * @param redisConnect Redis信息
-     */
-    public static void connectUpdated(ShellConnect redisConnect) {
-        RedisConnectUpdatedEvent event = new RedisConnectUpdatedEvent();
-        event.data(redisConnect);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 终端打开事件
-     */
-    public static void terminalOpen() {
-        terminalOpen(null, null);
-    }
+    // /**
+    //  * 终端打开事件
+    //  */
+    // public static void terminalOpen() {
+    //     terminalOpen(null, null);
+    // }
 
     /**
      * 终端打开事件
@@ -367,16 +344,16 @@ public class RedisEventUtil {
     //     EventUtil.post(new RedisSearchFireEvent());
     // }
 
-    /**
-     * 连接已删除事件
-     *
-     * @param redisConnect Redis信息
-     */
-    public static void connectDeleted(ShellConnect redisConnect) {
-        RedisConnectDeletedEvent event = new RedisConnectDeletedEvent();
-        event.data(redisConnect);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 连接已删除事件
+    //  *
+    //  * @param redisConnect Redis信息
+    //  */
+    // public static void connectDeleted(ShellConnect redisConnect) {
+    //     RedisConnectDeletedEvent event = new RedisConnectDeletedEvent();
+    //     event.data(redisConnect);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * 键ttl更新事件
@@ -447,16 +424,16 @@ public class RedisEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 服务信息事件
-     *
-     * @param client redis客户端
-     */
-    public static void server(RedisClient client) {
-        RedisServerEvent event = new RedisServerEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 服务信息事件
+    //  *
+    //  * @param client redis客户端
+    //  */
+    // public static void server(RedisClient client) {
+    //     RedisServerEvent event = new RedisServerEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * 订阅打开事件
@@ -469,12 +446,12 @@ public class RedisEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 添加分组
-     */
-    public static void addGroup() {
-        EventUtil.post(new RedisAddGroupEvent());
-    }
+    // /**
+    //  * 添加分组
+    //  */
+    // public static void addGroup() {
+    //     EventUtil.post(new RedisAddGroupEvent());
+    // }
 
 //    /**
 //     * 添加连接
@@ -543,120 +520,120 @@ public class RedisEventUtil {
     //     EventUtil.postSync(event);
     // }
 
-    public static void treeItemChanged(TreeItem<?> treeItem) {
-        RedisTreeItemChangedEvent event = new RedisTreeItemChangedEvent();
-        event.data(treeItem);
-        EventUtil.postSync(event);
-    }
+    // public static void treeItemChanged(TreeItem<?> treeItem) {
+    //     RedisTreeItemChangedEvent event = new RedisTreeItemChangedEvent();
+    //     event.data(treeItem);
+    //     EventUtil.postSync(event);
+    // }
+    //
+    // /**
+    //  * 布局1
+    //  */
+    // public static void layout1() {
+    //     EventUtil.post(new Layout1Event());
+    // }
+    //
+    // /**
+    //  * 布局2
+    //  */
+    // public static void layout2() {
+    //     EventUtil.post(new Layout2Event());
+    // }
 
-    /**
-     * 布局1
-     */
-    public static void layout1() {
-        EventUtil.post(new Layout1Event());
-    }
+    // /**
+    //  * 分组已添加
+    //  */
+    // public static void groupAdded(String group) {
+    //     RedisGroupAddedEvent event = new RedisGroupAddedEvent();
+    //     event.data(group);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 布局2
-     */
-    public static void layout2() {
-        EventUtil.post(new Layout2Event());
-    }
+    // /**
+    //  * 分组已删除
+    //  */
+    // public static void groupDeleted(String group) {
+    //     RedisGroupDeletedEvent event = new RedisGroupDeletedEvent();
+    //     event.data(group);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 分组已添加
-     */
-    public static void groupAdded(String group) {
-        RedisGroupAddedEvent event = new RedisGroupAddedEvent();
-        event.data(group);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 分组已更名
+    //  */
+    // public static void groupRenamed(String group, String oldName) {
+    //     RedisGroupRenamedEvent event = new RedisGroupRenamedEvent();
+    //     event.data(group);
+    //     event.setOldName(oldName);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 分组已删除
-     */
-    public static void groupDeleted(String group) {
-        RedisGroupDeletedEvent event = new RedisGroupDeletedEvent();
-        event.data(group);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 客户端操作
+    //  */
+    // public static void clientAction(String connectName, CommandArguments arguments) {
+    //     RedisClientActionEvent event = new RedisClientActionEvent();
+    //     event.data(connectName);
+    //     event.setArguments(arguments);
+    //     EventUtil.postAsync(event);
+    // }
 
-    /**
-     * 分组已更名
-     */
-    public static void groupRenamed(String group, String oldName) {
-        RedisGroupRenamedEvent event = new RedisGroupRenamedEvent();
-        event.data(group);
-        event.setOldName(oldName);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 客户端操作
-     */
-    public static void clientAction(String connectName, CommandArguments arguments) {
-        RedisClientActionEvent event = new RedisClientActionEvent();
-        event.data(connectName);
-        event.setArguments(arguments);
-        EventUtil.postAsync(event);
-    }
-
-    /**
-     * 添加查询事件
-     *
-     * @param client Redis查询
-     */
-    public static void addQuery(RedisClient client) {
-        RedisAddQueryEvent event = new RedisAddQueryEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询已添加事件
-     *
-     * @param query Redis查询
-     */
-    public static void queryAdded(RedisQuery query) {
-        RedisQueryAddedEvent event = new RedisQueryAddedEvent();
-        event.data(query);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询打开事件
-     *
-     * @param client Redis客户端
-     * @param query  Redis查询
-     */
-    public static void openQuery(RedisClient client, RedisQuery query) {
-        RedisOpenQueryEvent event = new RedisOpenQueryEvent();
-        event.data(query);
-        event.setClient(client);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询更名事件
-     *
-     * @param query Redis查询
-     */
-    public static void queryRenamed(RedisQuery query) {
-        RedisQueryRenamedEvent event = new RedisQueryRenamedEvent();
-        event.data(query);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询删除事件
-     *
-     * @param query Redis查询
-     */
-    public static void queryDeleted(RedisQuery query) {
-        RedisQueryDeletedEvent event = new RedisQueryDeletedEvent();
-        event.data(query);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 添加查询事件
+    //  *
+    //  * @param client Redis查询
+    //  */
+    // public static void addQuery(RedisClient client) {
+    //     RedisAddQueryEvent event = new RedisAddQueryEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 查询已添加事件
+    //  *
+    //  * @param query Redis查询
+    //  */
+    // public static void queryAdded(RedisQuery query) {
+    //     RedisQueryAddedEvent event = new RedisQueryAddedEvent();
+    //     event.data(query);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 查询打开事件
+    //  *
+    //  * @param client Redis客户端
+    //  * @param query  Redis查询
+    //  */
+    // public static void openQuery(RedisClient client, RedisQuery query) {
+    //     RedisOpenQueryEvent event = new RedisOpenQueryEvent();
+    //     event.data(query);
+    //     event.setClient(client);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 查询更名事件
+    //  *
+    //  * @param query Redis查询
+    //  */
+    // public static void queryRenamed(RedisQuery query) {
+    //     RedisQueryRenamedEvent event = new RedisQueryRenamedEvent();
+    //     event.data(query);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 查询删除事件
+    //  *
+    //  * @param query Redis查询
+    //  */
+    // public static void queryDeleted(RedisQuery query) {
+    //     RedisQueryDeletedEvent event = new RedisQueryDeletedEvent();
+    //     event.data(query);
+    //     EventUtil.post(event);
+    // }
 
 //    /**
 //     * 显示导出连接页面
@@ -804,10 +781,10 @@ public class RedisEventUtil {
 //        EventUtil.post(event);
 //    }
 
-    /**
-     * 连接已导入事件
-     */
-    public static void connectImported() {
-        EventUtil.post(new RedisConnectImportedEvent());
-    }
+    // /**
+    //  * 连接已导入事件
+    //  */
+    // public static void connectImported() {
+    //     EventUtil.post(new RedisConnectImportedEvent());
+    // }
 }

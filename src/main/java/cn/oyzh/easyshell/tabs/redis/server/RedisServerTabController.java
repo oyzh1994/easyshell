@@ -26,16 +26,18 @@ import java.util.concurrent.Future;
 public class RedisServerTabController extends ParentTabController {
 
     /**
+     * 根节点
+     */
+    @FXML
+    private FXTab root;
+
+    /**
      * redis客户端
      */
     private RedisClient client;
 
     public RedisClient getClient() {
         return client;
-    }
-
-    public void setClient(RedisClient client) {
-        this.client = client;
     }
 
     /**
@@ -184,7 +186,7 @@ public class RedisServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.getTab().selectedProperty().addListener((observable, oldValue, newValue) -> {
+        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 this.initRefreshTask();
             } else {
@@ -201,7 +203,10 @@ public class RedisServerTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.aggregationController, this.pubsubController, this.slowlogController,
-                this.serverInfoController, this.clientInfoController);
+        return List.of(this.aggregationController,
+                this.pubsubController,
+                this.slowlogController,
+                this.serverInfoController,
+                this.clientInfoController);
     }
 }

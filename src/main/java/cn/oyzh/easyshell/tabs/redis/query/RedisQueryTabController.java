@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.store.redis.RedisQueryStore;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeView;
-import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,7 +28,7 @@ import javafx.scene.input.KeyEvent;
  * @author oyzh
  * @since 2025/02/06
  */
-public class RedisQueryTabController extends RichTabController {
+public class RedisQueryTabController extends SubTabController {
 
     /**
      * 查询对象
@@ -51,7 +51,7 @@ public class RedisQueryTabController extends RichTabController {
     /**
      * zk客户端
      */
-    private RedisClient redisClient;
+    private RedisClient client;
 
     /**
      * 当前内容
@@ -89,27 +89,16 @@ public class RedisQueryTabController extends RichTabController {
     private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
 
     public ShellConnect shellConnect() {
-        return this.redisClient.shellConnect();
+        return this.client.shellConnect();
     }
 
     public void init(RedisClient client) {
-        this.redisClient = client;
+        this.client = client;
         this.content.setClient(client);
         // 初始化数据库
         this.database.setDbCount(client.databases());
         this.database.selectFirst();
         // this.database.setInitIndex(query.getDbIndex());
-        // 监听数据库变化
-        this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
-            this.unsaved = true;
-            this.flushTab();
-            this.content.setDbIndex(newValue.intValue());
-        });
-        // 监听内容变化
-        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.unsaved = true;
-            this.flushTab();
-        });
     }
 
     /**
@@ -138,7 +127,7 @@ public class RedisQueryTabController extends RichTabController {
             RedisQueryParam param = new RedisQueryParam();
             param.setContent(this.content.getText());
             param.setDbIndex(this.database.getSelectedIndex());
-            RedisQueryResult result = this.redisClient.query(param);
+            RedisQueryResult result = this.client.query(param);
             this.content.flexHeight("30% - 60");
             this.resultTabPane.setVisible(true);
             this.resultTabPane.clearChild();
@@ -182,6 +171,17 @@ public class RedisQueryTabController extends RichTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 监听数据库变化
+        this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
+            this.unsaved = true;
+            this.flushTab();
+            this.content.setDbIndex(newValue.intValue());
+        });
+        // 监听内容变化
+        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.unsaved = true;
+            this.flushTab();
+        });
         // 查询选择事件
         this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
             if (t1 instanceof ShellRedisQueryTreeItem item) {

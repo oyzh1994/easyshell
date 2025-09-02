@@ -27,7 +27,10 @@ import java.util.function.Consumer;
  */
 public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAdapter {
 
-    private RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
+    /**
+     * 查询存储
+     */
+    private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
 
     @Override
     protected void initTreeView() {

@@ -3,9 +3,8 @@ package cn.oyzh.easyshell.tabs.redis.terminal;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
-import cn.oyzh.easyshell.util.RedisConnectUtil;
-import cn.oyzh.fx.gui.tabs.RichTabController;
-import javafx.event.Event;
+import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
 /**
@@ -14,7 +13,13 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2023/07/21
  */
-public class RedisTerminalTabController extends RichTabController {
+public class RedisTerminalTabController extends SubTabController {
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXTab root;
 
     /**
      * redis命令行文本域
@@ -23,12 +28,18 @@ public class RedisTerminalTabController extends RichTabController {
     private RedisTerminalPane terminal;
 
     /**
+     * redis客户端
+     */
+    private RedisClient client;
+
+    /**
      * 初始化
      *
      * @param client redis客户端
      */
-    public void init(RedisClient client, Integer dbIndex) {
-        this.terminal.init(client, dbIndex);
+    public void init(RedisClient client) {
+        // this.terminal.init(client, dbIndex);
+        this.client = client;
     }
 
     /**
@@ -44,15 +55,31 @@ public class RedisTerminalTabController extends RichTabController {
         return this.terminal.getDbIndex();
     }
 
-    public RedisClient client() {
+    public RedisClient getClient() {
         return this.terminal.getClient();
     }
 
+    // @Override
+    // public void onTabClosed(Event event) {
+    //     if (this.terminal.isTemporary()) {
+    //         RedisConnectUtil.close(this.client(), true, true);
+    //     }
+    //     super.onTabClosed(event);
+    // }
+
+    /**
+     * 初始化标志位
+     */
+    private boolean initFlag = false;
+
     @Override
-    public void onTabClosed(Event event) {
-        if (this.terminal.isTemporary()) {
-            RedisConnectUtil.close(this.client(), true, true);
-        }
-        super.onTabClosed(event);
+    public void onTabInit(FXTab tab) {
+        super.onTabInit(tab);
+        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && !this.initFlag) {
+                this.initFlag = true;
+                this.terminal.init(this.client, null);
+            }
+        });
     }
 }
