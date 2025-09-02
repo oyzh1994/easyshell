@@ -7,8 +7,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.redis.RedisConnectInfo;
 import cn.oyzh.easyshell.exception.redis.RedisExceptionParser;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.redis.RedisConnectUtil;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -87,7 +87,7 @@ public class RedisTerminalPane extends TerminalPane {
     /**
      * redis客户端连接状态监听器
      */
-    private ChangeListener<RedisConnState> stateChangeListener;
+    private ChangeListener<ShellConnState> stateChangeListener;
 
     /**
      * db索引
@@ -267,23 +267,23 @@ public class RedisTerminalPane extends TerminalPane {
                 this.flushPrompt();
                 // 获取连接
                 String host = this.client.shellConnect().getHost();
-                if (t1 == RedisConnState.CONNECTED) {
+                if (t1 == ShellConnState.CONNECTED) {
                     this.outputLine(host + I18nHelper.connectSuccess() + " .");
                     this.outputLine(I18nHelper.terminalTip2());
                     this.outputLine(I18nHelper.terminalTip1());
                     this.outputPrompt();
                     this.flushCaret();
                     super.enableInput();
-                } else if (t1 == RedisConnState.CLOSED) {
+                } else if (t1 == ShellConnState.CLOSED) {
                     this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
                     this.enableInput();
-                } else if (t1 == RedisConnState.CONNECTING) {
+                } else if (t1 == ShellConnState.CONNECTING) {
                     this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .");
                     this.disableInput();
-                } else if (t1 == RedisConnState.BROKEN) {
+                } else if (t1 == ShellConnState.INTERRUPT) {
                     this.outputLine(host + " " + I18nHelper.connectionBroken() + " .");
                     this.enableInput();
-                } else if (t1 == RedisConnState.FAILED) {
+                } else if (t1 == ShellConnState.FAILED) {
                     this.outputLine(host + " " + I18nHelper.connectFail() + " .");
                     if (this.connectInfo != null) {
                         this.appendByPrompt(this.connectInfo.getInput());

@@ -12,6 +12,8 @@ import cn.oyzh.easyshell.exception.redis.ClusterOperationException;
 import cn.oyzh.easyshell.exception.redis.ReadonlyOperationException;
 import cn.oyzh.easyshell.exception.redis.SentinelOperationException;
 import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.redis.RedisQueryParam;
 import cn.oyzh.easyshell.query.redis.RedisQueryResult;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
@@ -21,8 +23,8 @@ import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.BuilderFactory;
@@ -81,17 +83,17 @@ import java.util.Set;
  * @author oyzh
  * @since 2023/6/16
  */
-public class RedisClient {
+public class RedisClient implements ShellBaseClient {
 
 //    /**
 //     * redis连接池
 //     */
 //    private JedisPool pool;
 
-    /**
-     * 静默关闭标志位
-     */
-    private boolean closeQuietly;
+    // /**
+    //  * 静默关闭标志位
+    //  */
+    // private boolean closeQuietly;
 
     /**
      * 连接池管理器
@@ -156,10 +158,10 @@ public class RedisClient {
     //  */
     // private List<ConnectionPool> clusterMasterPools;
 
-    /**
-     * 连接状态
-     */
-    private final ReadOnlyObjectWrapper<RedisConnState> state = new ReadOnlyObjectWrapper<>(RedisConnState.NOT_INITIALIZED);
+    // /**
+    //  * 连接状态
+    //  */
+    // private final ReadOnlyObjectWrapper<RedisConnState> state = new ReadOnlyObjectWrapper<>(RedisConnState.NOT_INITIALIZED);
 
 //    /**
 //     * ssh配置储存
@@ -171,13 +173,28 @@ public class RedisClient {
     //  */
     // private final RedisJumpConfigStore jumpConfigStore = RedisJumpConfigStore.INSTANCE;
 
+    // /**
+    //  * 获取连接状态
+    //  *
+    //  * @return 连接状态
+    //  */
+    // public RedisConnState state() {
+    //     return this.stateProperty().get();
+    // }
+
     /**
-     * 获取连接状态
-     *
-     * @return 连接状态
+     * 连接状态
      */
-    public RedisConnState state() {
-        return this.stateProperty().get();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
+
+    @Override
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
     public RedisClient(ShellConnect shellConnect) {
@@ -198,28 +215,29 @@ public class RedisClient {
         //         }
         //     }
         // });
+        this.addStateListener(this.stateListener);
     }
 
-    /**
-     * 连接状态属性
-     *
-     * @return 连接状态属性
-     */
-    public ReadOnlyObjectProperty<RedisConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
-    }
+    // /**
+    //  * 连接状态属性
+    //  *
+    //  * @return 连接状态属性
+    //  */
+    // public ReadOnlyObjectProperty<RedisConnState> stateProperty() {
+    //     return this.state.getReadOnlyProperty();
+    // }
 
-    /**
-     * 添加连接状态监听器
-     *
-     * @param stateListener 监听器
-     */
-    public void addStateListener(ChangeListener<RedisConnState> stateListener) {
-        if (stateListener != null) {
-            this.state.addListener(stateListener);
-//            this.state.addListener(new WeakChangeListener<>(stateListener));
-        }
-    }
+//     /**
+//      * 添加连接状态监听器
+//      *
+//      * @param stateListener 监听器
+//      */
+//     public void addStateListener(ChangeListener<RedisConnState> stateListener) {
+//         if (stateListener != null) {
+//             this.state.addListener(stateListener);
+// //            this.state.addListener(new WeakChangeListener<>(stateListener));
+//         }
+//     }
 
     /**
      * 初始化连接
@@ -563,13 +581,11 @@ public class RedisClient {
      * 关闭客户端，静默模式
      */
     public void closeQuiet() {
-        this.closeQuietly = true;
+        // this.closeQuietly = true;
         this.close();
     }
 
-    /**
-     * 关闭客户端
-     */
+    @Override
     public void close() {
         try {
             // boolean isClosed = false;
@@ -595,7 +611,7 @@ public class RedisClient {
             this.poolManager.destroy();
             // 已关闭
             // if (isClosed) {
-            this.state.set(RedisConnState.CLOSED);
+            this.state.set(ShellConnState.CLOSED);
 //                RedisEventUtil.connectionClosed(this);
             // }
             // 重置变量
@@ -606,6 +622,7 @@ public class RedisClient {
             this.clearInfoProp();
 //            this.sentinelPool = null;
             this.commandObjects = null;
+            this.removeStateListener(this.stateListener);
             // this.clusterMasterPools = null;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -618,21 +635,24 @@ public class RedisClient {
     public void reset() {
         // 移除监听器
 //        this.close();
-        this.state.set(RedisConnState.NOT_INITIALIZED);
+        this.state.set(ShellConnState.NOT_INITIALIZED);
     }
 
-    /**
-     * 开始连接客户端
-     */
-    public void start() {
-        this.startDatabase(0, this.shellConnect.connectTimeOutMs());
-    }
+    // /**
+    //  * 开始连接客户端
+    //  */
+    // public void start() {
+    //     this.startDatabase(0, this.shellConnect.connectTimeOutMs());
+    // }
 
-    /**
-     * 开始连接客户端
-     */
+    @Override
     public void start(int connectTimeout) {
         this.startDatabase(0, connectTimeout);
+    }
+
+    @Override
+    public ShellConnect getShellConnect() {
+        return this.shellConnect;
     }
 
     /**
@@ -666,17 +686,17 @@ public class RedisClient {
         try {
             this.errorMsg = null;
             // 初始化连接池
-            this.state.set(RedisConnState.CONNECTING);
+            this.state.set(ShellConnState.CONNECTING);
             // 初始化客户端
             this.initClient(connectTimeout);
             // 初始化数据库
             if (!this.isClusterMode() && !this.isSentinelMode()) {
                 this.select(dbIndex);
             }
-            this.state.set(RedisConnState.CONNECTED);
+            this.state.set(ShellConnState.CONNECTED);
         } catch (Exception ex) {
             ex.printStackTrace();
-            this.state.set(RedisConnState.FAILED);
+            this.state.set(ShellConnState.FAILED);
             JulLog.warn("redisClient start error", ex);
             this.errorMsg = ex.getMessage();
 //            throw new RedisException(ex);
@@ -704,34 +724,28 @@ public class RedisClient {
      */
     public boolean isConnecting() {
         if (!this.isClosed()) {
-            return this.state.get() == RedisConnState.CONNECTING;
+            return this.state.get() == ShellConnState.CONNECTING;
         }
         return false;
     }
 
-    /**
-     * 是否已连接
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isConnected() {
-        if (!this.isClosed()) {
-            return this.state.get().isConnected();
-        }
-        return false;
+        Pool<?> pool=this.getPool();
+        return pool != null && !pool.isClosed();
     }
 
-    /**
-     * 是否已关闭
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        if (this.getPool() == null || this.getPool().isClosed()) {
-            return true;
-        }
-        return !this.state.get().isConnected();
-    }
+    // /**
+    //  * 是否已关闭
+    //  *
+    //  * @return 结果
+    //  */
+    // public boolean isClosed() {
+    //     if (this.getPool() == null || this.getPool().isClosed()) {
+    //         return true;
+    //     }
+    //     return !this.state.get().isConnected();
+    // }
 
     /**
      * 获取连接池

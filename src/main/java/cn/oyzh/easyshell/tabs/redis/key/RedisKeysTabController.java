@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.common.util.CostUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
@@ -16,7 +15,6 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
@@ -115,27 +113,27 @@ public class RedisKeysTabController extends ParentTabController {
     @FXML
     private SortSVGPane sortPane;
 
-    /**
-     * 初始化
-     */
-    public void init(ShellConnect connect) {
-        this.client = new RedisClient(connect);
-        // 加载根节点
-        StageManager.showMask(() -> {
-            try {
-                this.client.start();
-                if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail());
-                    return;
-                }
-                this.treeView.setClient(client);
-                this.treeView.loadItems();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+    // /**
+    //  * 初始化
+    //  */
+    // public void init(ShellConnect connect) {
+    //     this.client = new RedisClient(connect);
+    //     // 加载根节点
+    //     StageManager.showMask(() -> {
+    //         try {
+    //             this.client.start();
+    //             if (!this.client.isConnected()) {
+    //                 MessageBox.warn(I18nHelper.connectFail());
+    //                 return;
+    //             }
+    //             this.treeView.setClient(client);
+    //             this.treeView.loadItems();
+    //         } catch (Throwable ex) {
+    //             ex.printStackTrace();
+    //             MessageBox.exception(ex);
+    //         }
+    //     });
+    // }
 
     /**
      * 初始化

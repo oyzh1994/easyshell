@@ -68,8 +68,8 @@ public class ShellRedisTabController extends ShellParentTabController {
                 this.client.start();
                 if (!this.client.isConnected()) {
                     this.client.close();
-                    this.closeTab();
                     MessageBox.warn(I18nHelper.connectFail());
+                    this.closeTab();
                     return;
                 }
                 this.hideLeft();
@@ -77,9 +77,10 @@ public class ShellRedisTabController extends ShellParentTabController {
                 this.queryController.init(this.client);
                 this.serverController.init(this.client);
                 this.terminalController.init(this.client);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
+                this.closeTab();
             }
         });
     }
