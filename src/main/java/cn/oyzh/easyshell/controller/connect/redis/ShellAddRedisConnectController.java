@@ -1,16 +1,21 @@
 package cn.oyzh.easyshell.controller.connect.redis;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
+import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.fx.gui.combobox.CharsetComboBox;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -18,13 +23,17 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -85,10 +94,10 @@ public class ShellAddRedisConnectController extends StageController {
     private PortTextField hostPort;
 
     /**
-     * 字符集
+     * 执行超时时间
      */
     @FXML
-    private CharsetComboBox charset;
+    private NumberTextField executeTimOut;
 
     /**
      * 连接超时时间
@@ -162,9 +171,26 @@ public class ShellAddRedisConnectController extends StageController {
     private ShellGroup group;
 
     /**
+     * 跳板机配置
+     */
+    @FXML
+    private ShellJumpTableView jumpTableView;
+
+    /**
+     * 只读模式
+     */
+    @FXML
+    private FXCheckBox readonlyMode;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+
+    /**
+     * ssh跳板储存对象
+     */
+    private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -193,14 +219,14 @@ public class ShellAddRedisConnectController extends StageController {
      * @return 代理配置信息
      */
     private ShellProxyConfig getProxyConfig() {
-        ShellProxyConfig proxyConfig = new ShellProxyConfig();
-        proxyConfig.setHost(this.proxyHost.getText());
-        proxyConfig.setPort(this.proxyPort.getIntValue());
-        proxyConfig.setUser(this.proxyUser.getTextTrim());
-        proxyConfig.setPassword(this.proxyPassword.getPassword());
-        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
-        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
-        return proxyConfig;
+        ShellProxyConfig config = new ShellProxyConfig();
+        config.setHost(this.proxyHost.getText());
+        config.setPort(this.proxyPort.getIntValue());
+        config.setUser(this.proxyUser.getTextTrim());
+        config.setPassword(this.proxyPassword.getPassword());
+        config.setAuthType(this.proxyAuthType.getAuthType());
+        config.setProtocol(this.proxyProtocol.getSelectedItem());
+        return config;
     }
 
     /**
@@ -221,6 +247,8 @@ public class ShellAddRedisConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -251,18 +279,20 @@ public class ShellAddRedisConnectController extends StageController {
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
-            String charset = this.charset.getCharsetName();
+            int executeTimOut = this.executeTimOut.getIntValue();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
-            shellConnect.setCharset(charset);
-            shellConnect.setHost(host.trim());
+            // 超时设置
+            shellConnect.setExecuteTimeOut(executeTimOut);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -335,4 +365,84 @@ public class ShellAddRedisConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
     }
+
+    /**
+     * 添加主机
+     */
+    @FXML
+    private void addHost() {
+        StageAdapter adapter = ShellViewFactory.addHost(null);
+        if (adapter == null) {
+            return;
+        }
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 添加跳板
+     */
+    @FXML
+    private void addJump() {
+        StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class);
+        adapter.showAndWait();
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 编辑跳板
+     */
+    @FXML
+    private void updateJump() {
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (config == null) {
+            return;
+        }
+        StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class);
+        adapter.setProp("config", config);
+        adapter.showAndWait();
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.refresh();
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 删除跳板
+     */
+    @FXML
+    private void deleteJump() {
+        ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
+        this.jumpConfigStore.delete(config);
+        this.jumpTableView.updateOrder();
+    }
+
+    /**
+     * 上移跳板
+     */
+    @FXML
+    private void moveJumpUp() {
+        TableViewUtil.moveUp(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
+    }
+
+    /**
+     * 下移跳板
+     */
+    @FXML
+    private void moveJumpDown() {
+        TableViewUtil.moveDown(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
+    }
+
 }

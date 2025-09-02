@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.redis;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
@@ -19,7 +20,7 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder;
+import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -139,7 +140,7 @@ public class RedisClient {
     /**
      * ssh端口转发器
      */
-    private SSHJumpForwarder jumpForwarder;
+    private SSHJumpForwarder2 jumpForwarder;
 
     /**
      * redis信息
@@ -239,7 +240,7 @@ public class RedisClient {
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder();
+                this.jumpForwarder = new SSHJumpForwarder2();
             }
             // 初始化跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
@@ -253,7 +254,7 @@ public class RedisClient {
             host = "127.0.0.1:" + localPort;
         } else {// 直连
             if (this.jumpForwarder != null) {
-                this.jumpForwarder.destroy();
+                IOUtil.close(this.jumpForwarder);
                 this.jumpForwarder = null;
             }
             // 连接信息
@@ -589,7 +590,7 @@ public class RedisClient {
 //            }
             // 销毁端口转发
             if (this.jumpForwarder != null) {
-                this.jumpForwarder.destroy();
+                IOUtil.close(this.jumpForwarder);
             }
             this.poolManager.destroy();
             // 已关闭
