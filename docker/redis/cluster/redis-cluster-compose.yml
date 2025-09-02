@@ -4,7 +4,7 @@ services:
   #该容器只是执行一条命令，可以删除手动进入执行
   redis-cluster:
     image: redis
-    command: 'redis-cli -a 123456 --cluster create 192.168.3.4:6491 192.168.3.4:6492 192.168.3.4:6493 192.168.3.4:6494 192.168.3.4:6495 192.168.3.4:6496 --cluster-yes --cluster-replicas 1'
+    command: 'redis-cli -a 123456 --cluster create 192.168.3.132:6491 192.168.3.132:6492 192.168.3.132:6493 192.168.3.132:6494 192.168.3.132:6495 192.168.3.132:6496 --cluster-yes --cluster-replicas 1'
     depends_on:
       - redis1
       - redis2

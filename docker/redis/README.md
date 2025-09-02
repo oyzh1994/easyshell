@@ -9,6 +9,6 @@ docker-compose -f .\redis-example-compose.yml up -d
 docker-compose -f .\redis-master-compose.yml up -d
 
 ###### docker启动redis(macos)
-docker compose -f ./redis-cluster-compose.yml up -d
-docker compose -f ./redis-example-compose.yml up -d
-docker compose -f ./redis-master-compose.yml up -d
+docker compose -f redis-cluster-compose.yml up -d
+docker compose -f redis-example-compose.yml up -d
+docker compose -f redis-master-compose.yml up -d
