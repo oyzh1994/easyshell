@@ -45,7 +45,7 @@ public class RedisAggregationTabController extends SubTabController {
     /**
      * 日期格式化
      */
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH-mm-ss");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
     /**
      * 执行初始化

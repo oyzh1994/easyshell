@@ -1,12 +1,16 @@
 package cn.oyzh.easyshell.tabs.redis;
 
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController;
 import cn.oyzh.easyshell.tabs.redis.query.RedisQueryTabController;
 import cn.oyzh.easyshell.tabs.redis.server.RedisServerTabController;
 import cn.oyzh.easyshell.tabs.redis.terminal.RedisTerminalTabController;
-import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -15,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-03
  */
-public class ShellRedisTabController extends ParentTabController {
+public class ShellRedisTabController extends ShellParentTabController {
 
     /**
      * 客户端
@@ -54,14 +58,30 @@ public class ShellRedisTabController extends ParentTabController {
     /**
      * 初始化
      *
-     * @param client 客户端
+     * @param connect 连接
      */
-    public void init(RedisClient client) {
-        this.client = client;
-        this.keysController.init(client);
-        this.queryController.init(client);
-        this.serverController.init(client);
-        this.terminalController.init(client);
+    public void init(ShellConnect connect) {
+        this.client = new RedisClient(connect);
+        // 加载根节点
+        StageManager.showMask(() -> {
+            try {
+                this.client.start();
+                if (!this.client.isConnected()) {
+                    this.client.close();
+                    this.closeTab();
+                    MessageBox.warn(I18nHelper.connectFail());
+                    return;
+                }
+                this.hideLeft();
+                this.keysController.init(this.client);
+                this.queryController.init(this.client);
+                this.serverController.init(this.client);
+                this.terminalController.init(this.client);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     public RedisClient getClient() {
