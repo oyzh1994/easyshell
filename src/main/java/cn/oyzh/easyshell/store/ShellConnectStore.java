@@ -2,12 +2,11 @@ package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
-import cn.oyzh.store.jdbc.QueryParam;
 import cn.oyzh.store.jdbc.SelectParam;
 
 import java.util.List;
@@ -65,10 +64,25 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      *
      * @return ssh类型连接
      */
-    public synchronized List<ShellConnect> loadSSHType() {
+    public List<ShellConnect> loadSSHType() {
+        // SelectParam selectParam = new SelectParam();
+        // selectParam.addQueryParam(QueryParam.of("type", "ssh"));
+        // return super.selectList(selectParam);
         SelectParam selectParam = new SelectParam();
-        selectParam.addQueryParam(QueryParam.of("type", "ssh"));
-        return super.selectList(selectParam);
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isSSHType).collect(Collectors.toList());
+
+    }
+
+    /**
+     * 加载redis类型
+     *
+     * @return redis类型连接
+     */
+    public List<ShellConnect> loadRedisType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isRedisType).collect(Collectors.toList());
     }
 
     /**
@@ -76,7 +90,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      *
      * @return 终端类型连接
      */
-    public synchronized List<ShellConnect> loadTermType() {
+    public List<ShellConnect> loadTermType() {
         SelectParam selectParam = new SelectParam();
         List<ShellConnect> connects = super.selectList(selectParam);
         return connects.stream().filter(ShellConnect::isTermType).collect(Collectors.toList());
@@ -87,7 +101,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      *
      * @return 终端类型连接
      */
-    public synchronized List<ShellConnect> loadFileType() {
+    public List<ShellConnect> loadFileType() {
         SelectParam selectParam = new SelectParam();
         List<ShellConnect> connects = super.selectList(selectParam);
         return connects.stream().filter(ShellConnect::isFileType).collect(Collectors.toList());

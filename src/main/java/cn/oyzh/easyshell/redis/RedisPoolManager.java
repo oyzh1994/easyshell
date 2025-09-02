@@ -112,7 +112,6 @@ public class RedisPoolManager {
      */
     public void initResource() {
         try {
-
             // 创建数个待备用的
             if (this.jedisPool != null) {
                 synchronized (this.resources) {

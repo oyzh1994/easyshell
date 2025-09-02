@@ -70,6 +70,19 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         if (this.isSSHType() || this.isSFTPType() || this.isFTPType()) {
             FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
             items.add(transportFile);
+        } else if (this.isRedisType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
+                ShellViewFactory.redisTransportData(this.value, null);
+            });
+            items.add(transportData);
+            FXMenuItem importData = MenuItemHelper.importData("12", () -> {
+                ShellViewFactory.redisImportData(this.value);
+            });
+            items.add(importData);
+            FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
+                ShellViewFactory.redisImportData(this.value);
+            });
+            items.add(exportData);
         }
         // 处理分组移动
         List<ShellGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
@@ -123,6 +136,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public boolean isTelnetType() {
         return value.isTelnetType();
+    }
+
+    public boolean isRedisType() {
+        return value.isRedisType();
     }
 
     public boolean isRloginType() {

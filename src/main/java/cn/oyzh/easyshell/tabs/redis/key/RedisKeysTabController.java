@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.common.util.CostUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -307,6 +309,31 @@ public class RedisKeysTabController extends ParentTabController {
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.keyDataController, this.keyInfoController);
+    }
+
+    /**
+     * 导入数据
+     */
+    @FXML
+    public void importData() {
+        ShellViewFactory.redisImportData(this.shellConnect());
+    }
+
+    /**
+     * 导出数据
+     */
+    @FXML
+    private void exportData() {
+        ShellViewFactory.redisExportData(this.shellConnect(), null);
+    }
+
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
+    public ShellConnect shellConnect() {
+        return this.client.shellConnect();
     }
 
     // /**

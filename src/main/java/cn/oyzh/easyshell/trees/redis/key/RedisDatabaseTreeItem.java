@@ -90,7 +90,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
 
     public RedisDatabaseTreeItem(Integer dbIndex, RedisKeyTreeView treeView) {
         super(treeView);
-        super.setSortable(false);
+        super.setSortable(true);
         this.innerDbIndex = dbIndex;
         this.dbIndex = dbIndex == null ? 0 : dbIndex;
         this.value = dbIndex == null ? I18nHelper.cluster() : "db" + dbIndex;
@@ -112,9 +112,16 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         items.add(filterKey);
         items.add(MenuItemHelper.separator());
 //        FXMenuItem keyFilter = MenuItemHelper.keyFilter("12", this::keyFilter);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
+        items.add(sortAsc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+        items.add(sortDesc);
         // FXMenuItem refresh = MenuItemHelper.refreshData("12", this::reloadChild);
         FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
+        items.add(exportData);
         FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
+        items.add(transportData);
+        items.add(MenuItemHelper.separator());
         FXMenuItem batchOperation = MenuItemHelper.batchOpt("12", this::batchOperation);
         // FXMenuItem openTerminal = MenuItemHelper.openTerminal("12", this::openTerminal);
         // 加载全部
@@ -123,8 +130,6 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
 //        items.add(keyFilter);
         // items.add(refresh);
-        items.add(exportData);
-        items.add(transportData);
         items.add(batchOperation);
         // items.add(openTerminal);
         items.add(loadAll);

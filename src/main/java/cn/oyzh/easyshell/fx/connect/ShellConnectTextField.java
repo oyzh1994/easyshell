@@ -115,16 +115,19 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadFileType();
         } else if ("term".equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadTermType();
+        } else if ("redis".equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadRedisType();
         } else {
             this.connects = store.load();
         }
+        this.setItemList(this.connects);
     }
 
     @Override
     public void initNode() {
         super.initNode();
         this.loadConnects();
-        this.setItemList(this.connects);
+        // this.setItemList(this.connects);
         this.skin().setConverter(new SimpleStringConverter<>() {
             @Override
             public String toString(ShellConnect o) {

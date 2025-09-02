@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
+import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -31,11 +32,13 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
     public void setClient(RedisClient client) {
         this.client = client;
-        if (client.isClusterMode()) {
-            this.setRoot(new RedisDatabaseTreeItem(null, this));
-        } else {
-            this.setRoot(new RedisKeyRootTreeItem(this));
-        }
+        FXUtil.runWait(() -> {
+            if (client.isClusterMode()) {
+                this.setRoot(new RedisDatabaseTreeItem(null, this));
+            } else {
+                this.setRoot(new RedisKeyRootTreeItem(this));
+            }
+        });
     }
 
     public RedisClient getClient() {
