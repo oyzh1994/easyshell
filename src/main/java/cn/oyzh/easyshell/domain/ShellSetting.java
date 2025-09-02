@@ -138,7 +138,7 @@ public class ShellSetting extends AppSetting {
     private Integer rowPageLimit;
 
     public int getKeyLoadLimit() {
-        return this.keyLoadLimit == null ? 0 : this.keyLoadLimit;
+        return this.keyLoadLimit == null ? 500 : this.keyLoadLimit;
     }
 
     public void setKeyLoadLimit(int keyLoadLimit) {

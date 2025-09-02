@@ -30,7 +30,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
 <SettingMainPane fx:id="root"  xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
@@ -273,6 +272,20 @@
                 <VBox.margin>
                     <Insets left="30"/>
                 </VBox.margin>
+            </FXVBox>
+            <FXVBox managedBindVisible="true" visible="false" fx:id="redis_box" flexWidth="100%" flexHeight="100%"
+                    groupId="setting_item">
+                <InfoLabel text="%shell.redis.setting.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <NumberTextField step="100" fx:id="keyLoadLimit" minVal="0" value="500"
+                                 tipText="%shell.redis.setting.tip2" flexWidth="100% - 180" prefHeight="25">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </NumberTextField>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="font_general_box" flexWidth="100%"
                     flexHeight="100%" groupId="setting_item">

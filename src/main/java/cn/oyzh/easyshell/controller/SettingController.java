@@ -298,6 +298,12 @@ public class SettingController extends StageController {
     private FXToggleSwitch termPasteByMiddle;
 
     /**
+     * 键加载限制
+     */
+    @FXML
+    private NumberTextField keyLoadLimit;
+
+    /**
      * 配置对象
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -370,6 +376,8 @@ public class SettingController extends StageController {
         this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
         // 连接后收起左侧
         this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
+        // redis
+        this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
     }
 
     /**
@@ -380,8 +388,9 @@ public class SettingController extends StageController {
         try {
             String locale = this.locale.name();
             Byte fontSize = this.fontSize.byteValue();
-            short fontWeight = this.fontWeight.getWeight();
             String fontFamily = this.fontFamily.getText();
+            short fontWeight = this.fontWeight.getWeight();
+            int keyLoadLimit = this.keyLoadLimit.getIntValue();
             Byte editorFontSize = this.editorFontSize.byteValue();
             short editorFontWeight = this.editorFontWeight.getWeight();
             String editorFontFamily = this.editorFontFamily.getText();
@@ -432,6 +441,8 @@ public class SettingController extends StageController {
             // 其他设置
             this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
+            // redis
+            this.setting.setKeyLoadLimit(keyLoadLimit);
             // 更新设置
             if (this.settingStore.update(this.setting)) {
                 // 关闭窗口
@@ -491,6 +502,7 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.shortcutKey(), "shortcut_box"));
+        treeView.addItem(SettingLeftItem.of(I18nHelper.redis(), "redis_box"));
 
         SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font_box"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.general(), "font_general_box"));
