@@ -44,26 +44,48 @@ public class RedisCollectStore extends JdbcStandardStore<RedisCollect> {
         return false;
     }
 
-    public boolean delete(String iid) {
-        if (StringUtil.isEmpty(iid)) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("iid", iid);
-            return this.delete(params);
+    // /**
+    //  * 删除
+    //  *
+    //  * @param iid 连接id
+    //  * @return 结果
+    //  */
+    // public boolean delete(String iid) {
+    //     if (StringUtil.isNotBlank(iid)) {
+    //         DeleteParam param = new DeleteParam();
+    //         param.addQueryParam(QueryParam.of("iid", iid));
+    //         return this.delete(param);
+    //     }
+    //     return false;
+    // }
+
+    /**
+     * 删除
+     *
+     * @param iid     连接id
+     * @param dbIndex db索引
+     * @param key     键
+     * @return 结果
+     */
+    public boolean delete(String iid, Integer dbIndex, String key) {
+        if (StringUtil.isNotBlank(iid) && StringUtil.isNotBlank(key)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(QueryParam.of("key", key));
+            param.addQueryParam(QueryParam.of("iid", iid));
+            param.addQueryParam(QueryParam.of("dbIndex", dbIndex));
+            return this.delete(param);
         }
         return false;
     }
 
-    public boolean delete(String iid, int dbIndex, String key) {
-        if (StringUtil.isEmpty(iid) && StringUtil.isEmpty(key)) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("iid", iid);
-            params.put("key", key);
-            params.put("dbIndex", dbIndex);
-            return this.delete(params);
-        }
-        return false;
-    }
-
+    /**
+     * 是否存在
+     *
+     * @param iid     数据id
+     * @param dbIndex db索引
+     * @param key     键
+     * @return 结果
+     */
     public boolean exist(String iid, int dbIndex, String key) {
         if (StringUtil.isNotBlank(iid) && StringUtil.isNotBlank(key)) {
             Map<String, Object> params = new HashMap<>();
@@ -80,6 +102,11 @@ public class RedisCollectStore extends JdbcStandardStore<RedisCollect> {
         return RedisCollect.class;
     }
 
+    /**
+     * 根据iid删除
+     *
+     * @param iid 连接id
+     */
     public void deleteByIid(String iid) {
         DeleteParam param = new DeleteParam();
         param.addQueryParam(QueryParam.of("iid", iid));

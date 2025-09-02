@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView;
-import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -101,11 +100,11 @@ public class RedisKeysTabController extends ParentTabController {
     @FXML
     private RedisKeyFilterTypeComboBox filterType;
 
-    /**
-     * 收藏面板
-     */
-    @FXML
-    private CollectSVGPane collectPane;
+    // /**
+    //  * 收藏面板
+    //  */
+    // @FXML
+    // private CollectSVGPane collectPane;
 
     /**
      * 排序面板
@@ -179,25 +178,25 @@ public class RedisKeysTabController extends ParentTabController {
     //     ShellViewFactory.addRedisKey(this.client, this.dbIndex(), null);
     // }
 
-    @FXML
-    private void deleteKey() {
-        if (this.activeItem != null) {
-            this.activeItem.delete();
-        }
-    }
+    // @FXML
+    // private void deleteKey() {
+    //     if (this.activeItem != null) {
+    //         this.activeItem.delete();
+    //     }
+    // }
 
-    @FXML
-    private void collectKey() {
-        if (this.activeItem != null) {
-            if (this.collectPane.isCollect()) {
-                this.activeItem.unCollect();
-                this.collectPane.unCollect();
-            } else {
-                this.activeItem.collect();
-                this.collectPane.collect();
-            }
-        }
-    }
+    // @FXML
+    // private void collectKey() {
+    //     if (this.activeItem != null) {
+    //         if (this.collectPane.isCollect()) {
+    //             this.activeItem.unCollect();
+    //             this.collectPane.unCollect();
+    //         } else {
+    //             this.activeItem.collect();
+    //             this.collectPane.collect();
+    //         }
+    //     }
+    // }
 
     // @FXML
     // private void refreshKey() {
@@ -283,7 +282,7 @@ public class RedisKeysTabController extends ParentTabController {
         if (this.activeItem != null) {
             this.keyDataController.init(this.activeItem);
             this.keyInfoController.init(this.activeItem);
-            this.collectPane.setCollect(this.activeItem.isCollect());
+            // this.collectPane.setCollect(this.activeItem.isCollect());
         }
     }
 

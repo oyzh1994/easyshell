@@ -38,7 +38,10 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      */
     public static final int DATA_MAX = 10 * 1024 * 1024;
 
-    private RedisDatabaseTreeItem dbItem;
+    /**
+     * db节点
+     */
+    private final RedisDatabaseTreeItem dbItem;
 
     /**
      * redis键
@@ -114,15 +117,23 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(8);
         FXMenuItem rename = MenuItemHelper.renameKey("12", this::rename);
-        FXMenuItem delete = MenuItemHelper.deleteKey("12", this::delete);
-        FXMenuItem moveKey = MenuItemHelper.moveKey("12", this::moveKey);
-        FXMenuItem copyKey = MenuItemHelper.copyKey("12", this::copyKey);
-        FXMenuItem updateTtl = MenuItemHelper.updateTtl("12", this::updateTtl);
         items.add(rename);
+        FXMenuItem moveKey = MenuItemHelper.moveKey("12", this::moveKey);
         items.add(moveKey);
+        FXMenuItem copyKey = MenuItemHelper.copyKey("12", this::copyKey);
         items.add(copyKey);
-        items.add(updateTtl);
+        FXMenuItem delete = MenuItemHelper.deleteKey("12", this::delete);
         items.add(delete);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem updateTtl = MenuItemHelper.updateTtl("12", this::updateTtl);
+        items.add(updateTtl);
+        if (this.isCollect()) {
+            FXMenuItem unCollectKey = MenuItemHelper.unCollectKey("12", this::unCollect);
+            items.add(unCollectKey);
+        } else {
+            FXMenuItem collectKey = MenuItemHelper.collectKey("12", this::collect);
+            items.add(collectKey);
+        }
         return items;
     }
 
@@ -206,7 +217,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
         if (this.getTreeView() == null) {
             return null;
         }
-        return this.getTreeView().client();
+        return this.getTreeView().getClient();
     }
 
     /**

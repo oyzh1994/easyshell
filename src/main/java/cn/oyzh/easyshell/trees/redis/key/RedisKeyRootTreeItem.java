@@ -165,18 +165,15 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         }
     }
 
+    /**
+     * 加载数据库
+     */
     protected void loadDatabase() {
-        // 哨兵模式
-        if (this.client().isSentinelMode()) {
-        } else if (this.client().isClusterMode()) {// cluster集群模式
-            this.setChild(new RedisDatabaseTreeItem(null, this.getTreeView()));
-        } else {// 正常模式
-            int databases = this.client().databases();
-            for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
-                RedisDatabaseTreeItem dbItem = new RedisDatabaseTreeItem(dbIndex, this.getTreeView());
-                this.addChild(dbItem);
-                this.expend();
-            }
+        int databases = this.client().databases();
+        for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
+            RedisDatabaseTreeItem dbItem = new RedisDatabaseTreeItem(dbIndex, this.getTreeView());
+            this.addChild(dbItem);
+            this.expend();
         }
     }
 
@@ -249,7 +246,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     }
 
     private RedisClient client() {
-        return this.getTreeView().client();
+        return this.getTreeView().getClient();
     }
 
     // /**

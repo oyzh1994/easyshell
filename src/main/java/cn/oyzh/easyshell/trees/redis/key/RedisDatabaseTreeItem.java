@@ -190,7 +190,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      * @return redis客户端
      */
     public RedisClient client() {
-        return getTreeView().client();
+        return getTreeView().getClient();
     }
 
     /**

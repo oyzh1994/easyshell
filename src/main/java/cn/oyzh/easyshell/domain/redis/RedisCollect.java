@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.domain.redis;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.store.jdbc.Column;
+import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 
 import java.io.Serializable;
@@ -14,8 +15,15 @@ import java.util.List;
  * @author oyzh
  * @since 2024-09-26
  */
-@Table("t_collect")
+@Table("t_redis_collect")
 public class RedisCollect implements Serializable, ObjectCopier<RedisCollect> {
+
+    /**
+     * 数据id
+     */
+    @Column
+    @PrimaryKey
+    private String uid;
 
     /**
      * 信息id
@@ -70,9 +78,18 @@ public class RedisCollect implements Serializable, ObjectCopier<RedisCollect> {
         this.key = key;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     @Override
     public void copy(RedisCollect t1) {
         this.key = t1.getKey();
+        this.iid = t1.getIid();
         this.dbIndex = t1.getDbIndex();
     }
 

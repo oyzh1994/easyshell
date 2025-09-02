@@ -27,27 +27,18 @@ import java.util.List;
  */
 public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
-    // private final IntegerProperty dbIndexProperty = new SimpleIntegerProperty(0);
-    //
-    // public IntegerProperty dbIndexProperty() {
-    //     return dbIndexProperty;
-    // }
-    //
-    // public Integer getDbIndex() {
-    //     return this.dbIndexProperty.get();
-    // }
-    //
-    // public void setDbIndex(int dbIndex) {
-    //     this.dbIndexProperty.set(dbIndex);
-    // }
-
     private RedisClient client;
 
     public void setClient(RedisClient client) {
         this.client = client;
+        if (client.isClusterMode()) {
+            this.setRoot(new RedisDatabaseTreeItem(null, this));
+        } else {
+            this.setRoot(new RedisKeyRootTreeItem(this));
+        }
     }
 
-    public RedisClient client() {
+    public RedisClient getClient() {
         return this.client;
     }
 
@@ -62,27 +53,20 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     }
 
     @Override
-    protected void initRoot() {
-        this.setRoot(new RedisKeyRootTreeItem(this));
-//        super.setShowRoot(false);
-        super.initRoot();
-    }
-
-    @Override
     public RedisKeyTreeItemFilter getItemFilter() {
         // 初始化过滤器
         if (this.itemFilter == null) {
             RedisKeyTreeItemFilter filter = new RedisKeyTreeItemFilter();
-            filter.initFilters(this.client().iid());
+            filter.initFilters(this.getClient().iid());
             this.itemFilter = filter;
         }
         return (RedisKeyTreeItemFilter) this.itemFilter;
     }
 
-    @Override
-    public RedisKeyRootTreeItem root() {
-        return (RedisKeyRootTreeItem) super.root();
-    }
+    // @Override
+    // public RedisKeyRootTreeItem root() {
+    //     return (RedisKeyRootTreeItem) super.root();
+    // }
 
     // /**
     //  * 键添加事件
