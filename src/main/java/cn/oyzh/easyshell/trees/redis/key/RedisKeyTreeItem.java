@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.redis.key.RedisKeyValue;
 import cn.oyzh.easyshell.store.redis.RedisCollectStore;
 import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -130,30 +131,21 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * 修改ttl
      */
     private void updateTtl() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyTTLController.class, this.window());
-//        adapter.setProp("treeItem", this);
-//        adapter.display();
-        RedisViewFactory.ttlKey(this);
+        ShellViewFactory.redisTtlKey(this);
     }
 
     /**
      * 移动键
      */
     private void moveKey() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyMoveController.class, this.window());
-//        adapter.setProp("treeItem", this);
-//        adapter.display();
-        RedisViewFactory.moveKey(this);
+        ShellViewFactory.redisMoveKey(this);
     }
 
     /**
      * 复制键
      */
     private void copyKey() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyCopyController.class, this.window());
-//        adapter.setProp("treeItem", this);
-//        adapter.display();
-        RedisViewFactory.copyKey(this);
+        ShellViewFactory.redisCopyKey(this);
     }
 
     @Override

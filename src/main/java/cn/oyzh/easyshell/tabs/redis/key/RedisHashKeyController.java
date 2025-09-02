@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.RedisHashValue;
 import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -227,10 +227,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
     @FXML
     @Override
     protected void addRow() {
-//        StageAdapter adapter = StageManager.parseStage(RedisHashFieldAddController.class, this.treeItem.window());
-//        adapter.setProp("treeItem", this.treeItem);
-//        adapter.display();
-        StageAdapter adapter = RedisViewFactory.hashFieldAdd(this.treeItem);
+        StageAdapter adapter = ShellViewFactory.redisHashFieldAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

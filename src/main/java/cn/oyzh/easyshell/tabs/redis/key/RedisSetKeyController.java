@@ -9,8 +9,8 @@ import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.RedisKeyRow;
 import cn.oyzh.easyshell.redis.key.RedisSetValue;
 import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisViewFactory;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -148,10 +148,7 @@ public class RedisSetKeyController extends RedisRowKeyController<RedisSetKeyTree
     @FXML
     @Override
     protected void addRow() {
-//        StageAdapter adapter = StageManager.parseStage(RedisSetMemberAddController.class, this.treeItem.window());
-//        adapter.setProp("treeItem", this.treeItem);
-//        adapter.display();
-        StageAdapter adapter = RedisViewFactory.setMemberAdd(this.treeItem);
+        StageAdapter adapter = ShellViewFactory.redisSetMemberAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

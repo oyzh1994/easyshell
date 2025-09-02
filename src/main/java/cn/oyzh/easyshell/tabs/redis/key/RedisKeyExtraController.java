@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.text.FXText;
@@ -72,9 +72,6 @@ public class RedisKeyExtraController extends SubTabController {
      */
     @FXML
     protected void ttlUpdate() {
-//        StageAdapter adapter = StageManager.parseStage(RedisKeyTTLController.class, this.treeItem.window());
-//        adapter.setProp("treeItem", this.treeItem);
-//        adapter.display();
-        RedisViewFactory.ttlKey(this.treeItem);
+        ShellViewFactory.redisTtlKey(this.treeItem);
     }
 }
