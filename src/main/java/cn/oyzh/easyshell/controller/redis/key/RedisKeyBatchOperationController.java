@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
-import cn.oyzh.easyshell.util.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;

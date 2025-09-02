@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
-import cn.oyzh.easyshell.util.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;

@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.redis.RedisKeyType;
 import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.redis.key.RedisKeyValue;
 import cn.oyzh.easyshell.store.redis.RedisCollectStore;
-import cn.oyzh.easyshell.util.RedisViewFactory;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;

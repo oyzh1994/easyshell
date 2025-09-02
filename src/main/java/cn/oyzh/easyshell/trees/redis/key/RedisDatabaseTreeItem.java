@@ -11,8 +11,7 @@ import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.RedisKeyUtil;
-import cn.oyzh.easyshell.util.RedisViewFactory;
+import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -152,16 +151,15 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     /**
      * 传输数据
      */
-    @FXML
-    private void transportData() {
-        RedisViewFactory.transportData(this.shellConnect(), this.dbIndex);
+    public void transportData() {
+        ShellViewFactory.redisTransportData(this.shellConnect(), this.dbIndex);
     }
 
     /**
      * 导出键
      */
     public void exportData() {
-        RedisViewFactory.exportData(this.shellConnect(), this.dbIndex);
+        ShellViewFactory.redisExportData(this.shellConnect(), this.dbIndex);
     }
 
     /**

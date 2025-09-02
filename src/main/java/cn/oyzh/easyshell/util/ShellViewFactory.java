@@ -51,6 +51,9 @@ import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
+import cn.oyzh.easyshell.controller.redis.data.RedisExportDataController;
+import cn.oyzh.easyshell.controller.redis.data.RedisImportDataController;
+import cn.oyzh.easyshell.controller.redis.data.RedisTransportDataController;
 import cn.oyzh.easyshell.controller.redis.key.RedisKeyAddController;
 import cn.oyzh.easyshell.controller.redis.key.RedisKeyBatchOperationController;
 import cn.oyzh.easyshell.controller.redis.key.RedisKeyCopyController;
@@ -1410,5 +1413,57 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
         return null;
+    }
+
+    /**
+     * 导入数据
+     *
+     * @param connect redis连接
+     */
+    public static void redisImportData(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(RedisImportDataController.class, StageManager.getPrimaryStage());
+            adapter.setProp("connect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 导出数据
+     *
+     * @param connect redis连接
+     * @param dbIndex db索引
+     */
+    public static void redisExportData(ShellConnect connect, Integer dbIndex) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(RedisExportDataController.class, StageManager.getPrimaryStage());
+            adapter.setProp("connect", connect);
+            adapter.setProp("dbIndex", dbIndex);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 传输数据
+     *
+     * @param connect redis连接
+     * @param dbIndex db索引
+     */
+    public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(RedisTransportDataController.class, StageManager.getPrimaryStage());
+            adapter.setProp("sourceConnect", connect);
+            adapter.setProp("dbIndex", dbIndex);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 }

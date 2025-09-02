@@ -4,7 +4,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.redis.key.RedisZSetValue;
-import cn.oyzh.easyshell.util.RedisVersionUtil;
+import cn.oyzh.easyshell.redis.RedisVersionUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import redis.clients.jedis.GeoCoordinate;
 

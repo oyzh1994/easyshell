@@ -1,16 +1,12 @@
-package cn.oyzh.easyshell.util;
+package cn.oyzh.easyshell.redis;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.redis.RedisConnectInfo;
-import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import org.apache.sshd.client.session.ClientSession;
 
 /**
  * redis连接工具类
@@ -21,31 +17,30 @@ import org.apache.sshd.client.session.ClientSession;
 
 public class RedisConnectUtil {
 
-    /**
-     * 测试连接
-     *
-     * @param adapter    页面
-     * @param sshConnect 连接信息
-     */
-    public static void testSSHConnect(StageAdapter adapter, SSHConnect sshConnect) {
-        StageManager.showMask(adapter, () -> {
-            try {
-                SSHJumpForwarder2 forwarder = new SSHJumpForwarder2();
-                ClientSession session = forwarder.initSession(sshConnect);
-                // 判断是否成功
-                if (session != null && session.isOpen()) {
-                    session.close();
-                    MessageBox.okToast(I18nHelper.connectSuccess());
-                } else {
-                    MessageBox.warn(I18nHelper.connectFail());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
+    // /**
+    //  * 测试连接
+    //  *
+    //  * @param adapter    页面
+    //  * @param sshConnect 连接信息
+    //  */
+    // public static void testSSHConnect(StageAdapter adapter, SSHConnect sshConnect) {
+    //     StageManager.showMask(adapter, () -> {
+    //         try {
+    //             SSHJumpForwarder2 forwarder = new SSHJumpForwarder2();
+    //             ClientSession session = forwarder.initSession(sshConnect);
+    //             // 判断是否成功
+    //             if (session != null && session.isOpen()) {
+    //                 session.close();
+    //                 MessageBox.okToast(I18nHelper.connectSuccess());
+    //             } else {
+    //                 MessageBox.warn(I18nHelper.connectFail());
+    //             }
+    //         } catch (Exception ex) {
+    //             ex.printStackTrace();
+    //             MessageBox.exception(ex);
+    //         }
+    //     });
+    // }
 
     /**
      * 测试连接

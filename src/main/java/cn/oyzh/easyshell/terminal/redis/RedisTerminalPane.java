@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.exception.redis.RedisExceptionParser;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.RedisConnectUtil;
+import cn.oyzh.easyshell.redis.RedisConnectUtil;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.TerminalPane;

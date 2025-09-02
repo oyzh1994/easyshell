@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.util.RedisCacheUtil;
+import cn.oyzh.easyshell.redis.RedisCacheUtil;
 import redis.clients.jedis.GeoCoordinate;
 
 import java.util.ArrayList;

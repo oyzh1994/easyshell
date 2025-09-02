@@ -16,7 +16,6 @@ import cn.oyzh.easyshell.query.redis.RedisQueryParam;
 import cn.oyzh.easyshell.query.redis.RedisQueryResult;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
-import cn.oyzh.easyshell.util.RedisVersionUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.util.TerminalManager;

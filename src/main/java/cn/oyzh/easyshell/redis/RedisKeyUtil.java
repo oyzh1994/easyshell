@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.util;
+package cn.oyzh.easyshell.redis;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
@@ -6,8 +6,6 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.redis.RedisFilter;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyType;
 import cn.oyzh.easyshell.redis.batch.RedisCountResult;
 import cn.oyzh.easyshell.redis.batch.RedisDeleteResult;
 import cn.oyzh.easyshell.redis.batch.RedisScanResult;

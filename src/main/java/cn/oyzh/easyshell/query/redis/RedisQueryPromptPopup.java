@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.query.redis;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.util.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.fx.plus.controls.popup.FXPopup;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.util;
+package cn.oyzh.easyshell.redis;
 
 
 import cn.oyzh.easyshell.command.RedisCommand;
