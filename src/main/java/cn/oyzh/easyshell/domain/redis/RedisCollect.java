@@ -19,6 +19,7 @@ public class RedisCollect implements Serializable, ObjectCopier<RedisCollect> {
 
     /**
      * 信息id
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

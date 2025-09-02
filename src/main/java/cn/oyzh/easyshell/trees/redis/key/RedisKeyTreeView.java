@@ -174,6 +174,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         for (RedisDatabaseTreeItem item : this.dbItems()) {
             if (event.getTargetDB() == item.dbIndex()) {
                 item.reloadChild();
+                break;
             }
         }
     }

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -82,7 +82,7 @@ public class RedisZSetMemberAddController extends StageController {
             // 结果
             this.setProp("result", true);
             // 发送事件
-            RedisEventUtil.zSetMemberAdded(this.treeItem, key, rowValue, score);
+            ShellEventUtil.redisZSetMemberAdded(this.treeItem, key, rowValue, score);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -137,6 +137,6 @@ public class RedisZSetMemberAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.zSetMemberAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.zSetMemberAdd");
     }
 }

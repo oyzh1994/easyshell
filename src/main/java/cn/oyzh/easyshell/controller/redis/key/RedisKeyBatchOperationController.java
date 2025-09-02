@@ -3,11 +3,11 @@ package cn.oyzh.easyshell.controller.redis.key;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
 import cn.oyzh.easyshell.redis.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -195,7 +195,7 @@ public class RedisKeyBatchOperationController extends StageController {
                             this.keys1.appendLine(I18nHelper.deleteKey() + ": [" + key + "] " + I18nHelper.fail());
                         }
                     }
-                    RedisEventUtil.keyFlushed(this.dbIndex);
+                    ShellEventUtil.redisKeyFlushed(this.dbIndex);
                     // 提示信息
                     String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
                     MessageBox.info(msg);
@@ -241,7 +241,7 @@ public class RedisKeyBatchOperationController extends StageController {
                             this.keys2.appendLine(I18nHelper.handleKey() + ": [" + key + "] " + I18nHelper.fail());
                         }
                     }
-                    RedisEventUtil.keyFlushed(this.dbIndex);
+                    ShellEventUtil.redisKeyFlushed(this.dbIndex);
                     // 提示信息
                     String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
                     MessageBox.info(msg);
@@ -268,7 +268,7 @@ public class RedisKeyBatchOperationController extends StageController {
                         NodeGroupUtil.disable(this.root, "exec");
                         this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
                         this.client.flushDB(this.dbIndex);
-                        RedisEventUtil.keyFlushed(this.dbIndex);
+                        ShellEventUtil.redisKeyFlushed(this.dbIndex);
                         MessageBox.okToast(I18nHelper.operationSuccess());
                     } finally {
                         this.stopExec();
@@ -318,7 +318,7 @@ public class RedisKeyBatchOperationController extends StageController {
                                 this.keys4.appendLine(I18nHelper.moveKey() + ": [" + key + "] " + I18nHelper.fail());
                             }
                         }
-                        RedisEventUtil.keysMoved(this.dbIndex, targetDBIndex);
+                        ShellEventUtil.redisKeysMoved(this.client.shellConnect(), this.dbIndex, targetDBIndex);
                         // 提示信息
                         String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
                         MessageBox.info(msg);
@@ -371,7 +371,7 @@ public class RedisKeyBatchOperationController extends StageController {
                                 this.keys5.appendLine(I18nHelper.copyKey() + ": [" + key + "] " + I18nHelper.fail());
                             }
                         }
-                        RedisEventUtil.keyCopied(this.client.shellConnect(), keys, this.dbIndex, targetDBIndex);
+                        ShellEventUtil.redisKeyCopied(this.client.shellConnect(), keys, this.dbIndex, targetDBIndex);
                         // 提示信息
                         String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
                         MessageBox.info(msg);

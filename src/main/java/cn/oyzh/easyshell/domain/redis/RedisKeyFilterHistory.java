@@ -26,10 +26,9 @@ public class RedisKeyFilterHistory implements ObjectComparator<RedisKeyFilterHis
 
     /**
      * 连接id
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
-    // @PrimaryKey
     private String iid;
 
     /**

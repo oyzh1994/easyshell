@@ -7,7 +7,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.exception.redis.ClusterOperationException;
 import cn.oyzh.easyshell.exception.redis.ReadonlyOperationException;
 import cn.oyzh.easyshell.exception.redis.SentinelOperationException;
@@ -185,19 +184,19 @@ public class RedisClient {
         // if (redisConnect.isSSHForward() && redisConnect.getSshConfig() != null) {
         //     this.sshForwarder = new SSHForwarder(redisConnect.getSshConfig());
         // }
-        this.stateProperty().addListener((observable, oldValue, newValue) -> {
-            switch (newValue) {
-                case CLOSED -> {
-                    if (!this.closeQuietly) {
-                        RedisEventUtil.connectionClosed(this);
-                    }
-                }
-                case CONNECTED -> RedisEventUtil.connectionConnected(this);
-                default -> {
-
-                }
-            }
-        });
+        // this.stateProperty().addListener((observable, oldValue, newValue) -> {
+        //     switch (newValue) {
+        //         case CLOSED -> {
+        //             if (!this.closeQuietly) {
+        //                 RedisEventUtil.connectionClosed(this);
+        //             }
+        //         }
+        //         case CONNECTED -> RedisEventUtil.connectionConnected(this);
+        //         default -> {
+        //
+        //         }
+        //     }
+        // });
     }
 
     /**

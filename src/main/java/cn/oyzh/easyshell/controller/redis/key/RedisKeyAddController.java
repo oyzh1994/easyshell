@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisKeyTypeComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisKeyType;
@@ -279,7 +279,7 @@ public class RedisKeyAddController extends StageController {
                 this.client.expire(dbIndex, key, ttl, null);
             }
             this.setProp("key", key);
-            RedisEventUtil.keyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
+            ShellEventUtil.redisKeyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
             MessageBox.okToast(I18nHelper.operationSuccess());
             this.closeWindow();
         } catch (Exception ex) {

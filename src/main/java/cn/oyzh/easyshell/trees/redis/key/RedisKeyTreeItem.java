@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisKeyType;
 import cn.oyzh.easyshell.redis.key.RedisKey;
@@ -267,7 +267,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             // 移除此键
             this.remove();
             // 发送事件
-            RedisEventUtil.keyDeleted(this.shellConnect(), this.key(), this.dbIndex());
+            ShellEventUtil.redisKeyDeleted(this.shellConnect(), this.key(), this.dbIndex());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -292,7 +292,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             if (StringUtil.equalsIgnoreCase(result, "OK")) {
                 this.value.setKey(newKey);
                 this.refresh();
-                RedisEventUtil.keyRenamed(this, oldKey);
+                ShellEventUtil.redisKeyRenamed(this, oldKey);
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
             }

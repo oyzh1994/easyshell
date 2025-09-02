@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -93,7 +93,7 @@ public class RedisZSetCoordinateAddController extends StageController {
             // 结果
             this.setProp("result", true);
             // 发送事件
-            RedisEventUtil.zSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
+            ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -128,6 +128,6 @@ public class RedisZSetCoordinateAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.zSetCoordinateAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.zSetCoordinateAdd");
     }
 }

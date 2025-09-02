@@ -37,7 +37,7 @@ public class RedisFilter implements ObjectComparator<RedisFilter>, Serializable 
     /**
      * redis连接id
      *
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

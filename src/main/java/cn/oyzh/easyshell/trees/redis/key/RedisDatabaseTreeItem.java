@@ -6,12 +6,11 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
 import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
 import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.RedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -115,7 +114,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
         FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
         FXMenuItem batchOperation = MenuItemHelper.batchOpt("12", this::batchOperation);
-        FXMenuItem openTerminal = MenuItemHelper.openTerminal("12", this::openTerminal);
+        // FXMenuItem openTerminal = MenuItemHelper.openTerminal("12", this::openTerminal);
         // 加载全部
         FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
         // 卸载
@@ -126,19 +125,19 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         items.add(exportData);
         items.add(transportData);
         items.add(batchOperation);
-        items.add(openTerminal);
+        // items.add(openTerminal);
         items.add(loadAll);
         items.add(unload);
         return items;
     }
 
-    /**
-     * 打开终端
-     */
-    @FXML
-    private void openTerminal() {
-        RedisEventUtil.terminalOpen(this.client(), this.dbIndex);
-    }
+    // /**
+    //  * 打开终端
+    //  */
+    // @FXML
+    // private void openTerminal() {
+    //     RedisEventUtil.terminalOpen(this.client(), this.dbIndex);
+    // }
 
     /**
      * 批量操作

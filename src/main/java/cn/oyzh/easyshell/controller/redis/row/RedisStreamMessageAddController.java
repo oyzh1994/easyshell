@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -94,7 +94,7 @@ public class RedisStreamMessageAddController extends StageController {
             // 结果
             this.setProp("result", true);
             // 发送事件
-            RedisEventUtil.streamMessageAdded(this.treeItem, key, rowValue);
+            ShellEventUtil.redisStreamMessageAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -151,6 +151,6 @@ public class RedisStreamMessageAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.streamMessageAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.streamMessageAdd");
     }
 }

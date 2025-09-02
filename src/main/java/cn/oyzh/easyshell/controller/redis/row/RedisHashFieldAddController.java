@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -80,7 +80,7 @@ public class RedisHashFieldAddController extends StageController {
             // 结果
             this.setProp("result", true);
             // 发送事件
-            RedisEventUtil.hashFieldAdded(this.treeItem, key, fieldValue, rowValue);
+            ShellEventUtil.redisHashFieldAdded(this.treeItem, key, fieldValue, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -135,6 +135,6 @@ public class RedisHashFieldAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.hashFieldAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.hashFieldAdd");
     }
 }

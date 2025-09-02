@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.redis.key;
 
-import cn.oyzh.easyshell.event.redis.RedisEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
@@ -87,7 +87,7 @@ public class RedisKeyCopyController extends StageController {
             // 移动键
             boolean result = this.client.copy(fromDBIndex, key, key, targetDBIndex, this.replace.isSelected());
             if (result) {
-                RedisEventUtil.keyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
+                ShellEventUtil.redisKeyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
