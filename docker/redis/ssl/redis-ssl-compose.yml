@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: redis
+    container_name: redis-ssl
+    volumes:
+      - ./redis-ssl.conf:/conf/redis.conf
+      - ./ca.crt:/ssl/ca.crt
+      - ./redis.crt:/ssl/redis.crt
+      - ./redis.key:/ssl/redis.key
+    ports:
+      - 8380:8380
+      - 8379:8379
+    command: redis-server /conf/redis.conf

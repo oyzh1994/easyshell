@@ -1,0 +1,10 @@
+# 生成CA私钥
+openssl genrsa -out ca.key 2048
+# 生成CA根证书（自签名CA）
+openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
+# 生成服务器私钥（同测试环境步骤1）
+openssl genrsa -out redis-server.key 2048
+# 生成服务器CSR（同测试环境步骤2）
+openssl req -new -key redis-server.key -out redis-server.csr
+# 使用CA根证书签名服务器证书
+openssl x509 -req -in redis-server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out redis-server.crt -days 365
