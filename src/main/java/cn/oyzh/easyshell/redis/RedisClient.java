@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.query.redis.RedisQueryParam;
 import cn.oyzh.easyshell.query.redis.RedisQueryResult;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
+import cn.oyzh.easyshell.util.ShellProxyUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.util.TerminalManager;
@@ -65,6 +66,7 @@ import redis.clients.jedis.resps.Tuple;
 import redis.clients.jedis.util.KeyValue;
 import redis.clients.jedis.util.Pool;
 
+import java.net.Proxy;
 import java.security.InvalidParameterException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -288,7 +290,7 @@ public class RedisClient implements ShellBaseClient {
         String hostAddr = this.initHost();
         String hostIp = hostAddr.split(":")[0];
         int port = Integer.parseInt(hostAddr.split(":")[1]);
-        HostAndPort host = new HostAndPort(hostIp, port);
+        // HostAndPort host = new HostAndPort(hostIp, port);
 //        // ssh端口转发
 //        if (this.redisConnect.isSSHForward()) {
 //            // 初始化ssh转发器
@@ -323,7 +325,7 @@ public class RedisClient implements ShellBaseClient {
         // 客户端配置
         DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect.getUser(), this.shellConnect.getPassword(), connectTimeout, this.shellConnect.executeTimeOutMs());
         // 初始化连接池
-        this.initPool(host, clientConfig);
+        this.initPool(hostIp, port, clientConfig);
         try {
             // 获取当前角色
             this.role = (String) CollectionUtil.getFirst(this.role());
@@ -332,7 +334,7 @@ public class RedisClient implements ShellBaseClient {
         // cluster集群模式
         if (this.isClusterMode()) {
             // 初始化cluster集群
-            this.initCluster(host, clientConfig);
+            this.initCluster(hostIp, port, clientConfig);
         }
     }
 
@@ -340,15 +342,16 @@ public class RedisClient implements ShellBaseClient {
      * 初始化cluster集群
      *
      * @param host         地址
+     * @param port         端口
      * @param clientConfig 客户端配置
      */
-    private void initCluster(HostAndPort host, DefaultJedisClientConfig clientConfig) {
+    private void initCluster(String host, int port, DefaultJedisClientConfig clientConfig) {
         // 集群连接池配置
         ConnectionPoolConfig clusterPoolConfig = new ConnectionPoolConfig();
         // 初始化连接池
         this.intPoolConfig(clusterPoolConfig);
         // 初始化cluster集群操作对象
-        JedisCluster cluster = new JedisCluster(host, clientConfig, 10, clusterPoolConfig);
+        JedisCluster cluster = new JedisCluster(new HostAndPort(host, port), clientConfig, 10, clusterPoolConfig);
         // 集群配置
         this.poolManager.setCluster(cluster);
         // 初始化指令对象
@@ -359,15 +362,29 @@ public class RedisClient implements ShellBaseClient {
      * 初始化连接池
      *
      * @param host         地址
+     * @param port         端口
      * @param clientConfig 客户端配置
      */
-    private void initPool(HostAndPort host, DefaultJedisClientConfig clientConfig) {
+    private void initPool(String host, int port, DefaultJedisClientConfig clientConfig) {
         // 连接池配置
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         // 初始化连接池
         this.intPoolConfig(poolConfig);
-        // 生成连接池
-        JedisPool pool = new JedisPool(poolConfig, host, clientConfig);
+        // 连接池
+        JedisPool pool;
+        // 开启代理
+        if (this.shellConnect.isEnableProxy()) {
+            // 生成代理对象
+            Proxy proxy = ShellProxyUtil.initProxy1(this.shellConnect.getProxyConfig());
+            // 生成socket工厂
+            ShellRedisSocketFactory socketFactory = new ShellRedisSocketFactory(host, port, proxy);
+            // 生成连接池
+            pool = new JedisPool(poolConfig, socketFactory, clientConfig);
+        } else {
+            HostAndPort hostAndPort = new HostAndPort(host, port);
+            // 生成连接池
+            pool = new JedisPool(poolConfig, hostAndPort, clientConfig);
+        }
         // 连接配置
         this.poolManager.setJedisPool(pool);
         this.poolManager.initResource();
@@ -731,7 +748,7 @@ public class RedisClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        Pool<?> pool=this.getPool();
+        Pool<?> pool = this.getPool();
         return pool != null && !pool.isClosed();
     }
 
