@@ -66,6 +66,7 @@ import redis.clients.jedis.resps.Tuple;
 import redis.clients.jedis.util.KeyValue;
 import redis.clients.jedis.util.Pool;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.net.Proxy;
 import java.security.InvalidParameterException;
 import java.time.Duration;
@@ -286,7 +287,7 @@ public class RedisClient implements ShellBaseClient {
     /**
      * 初始化客户端
      */
-    private void initClient(int connectTimeout) {
+    private void initClient(int connectTimeout) throws Exception {
         String hostAddr = this.initHost();
         String hostIp = hostAddr.split(":")[0];
         int port = Integer.parseInt(hostAddr.split(":")[1]);
@@ -323,7 +324,12 @@ public class RedisClient implements ShellBaseClient {
 //            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
 //        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect.getUser(), this.shellConnect.getPassword(), connectTimeout, this.shellConnect.executeTimeOutMs());
+        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect.getUser(),
+                this.shellConnect.getPassword(),
+                connectTimeout,
+                this.shellConnect.executeTimeOutMs(),
+                this.shellConnect.isSSLMode()
+        );
         // 初始化连接池
         this.initPool(hostIp, port, clientConfig);
         try {
@@ -372,19 +378,22 @@ public class RedisClient implements ShellBaseClient {
         this.intPoolConfig(poolConfig);
         // 连接池
         JedisPool pool;
+        // s大力
+        Proxy proxy = null;
+        // ssl工厂
+        SSLSocketFactory sslSocketFactory = null;
+        // 开启ssl
+        if (this.shellConnect.isSSLMode()) {
+            sslSocketFactory = clientConfig.getSslSocketFactory();
+        }
         // 开启代理
         if (this.shellConnect.isEnableProxy()) {
-            // 生成代理对象
-            Proxy proxy = ShellProxyUtil.initProxy1(this.shellConnect.getProxyConfig());
-            // 生成socket工厂
-            ShellRedisSocketFactory socketFactory = new ShellRedisSocketFactory(host, port, proxy);
-            // 生成连接池
-            pool = new JedisPool(poolConfig, socketFactory, clientConfig);
-        } else {
-            HostAndPort hostAndPort = new HostAndPort(host, port);
-            // 生成连接池
-            pool = new JedisPool(poolConfig, hostAndPort, clientConfig);
+            proxy = ShellProxyUtil.initProxy1(this.shellConnect.getProxyConfig());
         }
+        // 生成socket工厂
+        ShellRedisSocketFactory socketFactory = new ShellRedisSocketFactory(sslSocketFactory, host, port, proxy, clientConfig.getSocketTimeoutMillis());
+        // 生成连接池
+        pool = new JedisPool(poolConfig, socketFactory, clientConfig);
         // 连接配置
         this.poolManager.setJedisPool(pool);
         this.poolManager.initResource();

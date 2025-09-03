@@ -216,7 +216,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     /**
      * ssl模式
-     * ftp、vnc协议使用此字段
+     * ftp、vnc、redis协议使用此字段
      */
     @Column
     private Boolean sslMode;

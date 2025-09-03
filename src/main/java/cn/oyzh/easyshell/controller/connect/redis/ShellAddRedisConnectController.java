@@ -183,6 +183,12 @@ public class ShellAddRedisConnectController extends StageController {
     private FXCheckBox readonlyMode;
 
     /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -252,6 +258,8 @@ public class ShellAddRedisConnectController extends StageController {
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // ssl模式
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -299,6 +307,8 @@ public class ShellAddRedisConnectController extends StageController {
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // ssl模式
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 分组及类型
             shellConnect.setType("Redis");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());

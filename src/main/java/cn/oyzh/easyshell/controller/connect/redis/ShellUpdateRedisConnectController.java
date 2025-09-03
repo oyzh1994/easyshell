@@ -182,6 +182,12 @@ public class ShellUpdateRedisConnectController extends StageController {
     private FXCheckBox readonlyMode;
 
     /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -253,6 +259,8 @@ public class ShellUpdateRedisConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
+            // ssl模式
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -302,6 +310,8 @@ public class ShellUpdateRedisConnectController extends StageController {
             // 代理配置
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // ssl模式
+            this.shellConnect.setSSLMode(this.sslMode.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -384,6 +394,8 @@ public class ShellUpdateRedisConnectController extends StageController {
         }
         // 跳板机配置
         this.jumpTableView.setItem(this.shellConnect.getJumpConfigs());
+        // ssl配置
+        this.sslMode.setSelected(this.shellConnect.isSSLMode());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
