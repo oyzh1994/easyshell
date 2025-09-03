@@ -164,7 +164,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellProxyProtocolComboBox initIndex="0" disable="true" fx:id="proxyProtocol" tipText="%base.hostTip"
+                <ShellProxyProtocolComboBox initIndex="1" disable="true" fx:id="proxyProtocol" tipText="%base.hostTip"
                                             require="true"
                                             realHeight="30"
                                             flexWidth="100% - 180" groupId="proxy">
