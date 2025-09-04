@@ -24,7 +24,7 @@
 //
 //     @Override
 //     protected String url() {
-//         return "/tabs/server/redisServerTab.fxml";
+//         return "/tabs/server/shellRedisServerTab.fxml";
 //     }
 //
 //     @Override

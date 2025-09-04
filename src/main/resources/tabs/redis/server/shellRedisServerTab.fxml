@@ -25,11 +25,11 @@
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 70" fx:id="tabPane">
-            <fx:include fx:id="aggregation" source="redisAggregationTab.fxml"/>
-            <fx:include fx:id="serverInfo" source="redisServerInfoTab.fxml"/>
-            <fx:include fx:id="slowlog" source="redisSlowlogTab.fxml"/>
-            <fx:include fx:id="clientInfo" source="redisClientInfoTab.fxml"/>
-            <fx:include fx:id="pubsub" source="redisPubsubTab.fxml"/>
+            <fx:include fx:id="aggregation" source="shellRedisAggregationTab.fxml"/>
+            <fx:include fx:id="serverInfo" source="shellRedisServerInfoTab.fxml"/>
+            <fx:include fx:id="slowlog" source="shellRedisSlowlogTab.fxml"/>
+            <fx:include fx:id="clientInfo" source="shellRedisClientInfoTab.fxml"/>
+            <fx:include fx:id="pubsub" source="shellRedisPubsubTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

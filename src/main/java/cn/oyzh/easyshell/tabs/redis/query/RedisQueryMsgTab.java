@@ -19,7 +19,7 @@ public class RedisQueryMsgTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/redis/query/redisQueryMsgTab.fxml";
+        return "/tabs/redis/query/shellRedisQueryMsgTab.fxml";
     }
 
     @Override

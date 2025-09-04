@@ -31,7 +31,7 @@
 //
 //     @Override
 //     protected String url() {
-//         return "/tabs/query/redisQueryTab.fxml";
+//         return "/tabs/query/shellRedisQueryTab.fxml";
 //     }
 //
 //     @Override

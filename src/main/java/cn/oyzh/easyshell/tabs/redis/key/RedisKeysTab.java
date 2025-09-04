@@ -53,7 +53,7 @@
 //
 //     @Override
 //     protected String url() {
-//         return "/tabs/redis/key/redisKeysTab.fxml";
+//         return "/tabs/redis/key/shellRedisKeysTab.fxml";
 //     }
 //
 //     @Override

@@ -72,8 +72,8 @@
         <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
-            <fx:include fx:id="keyData" source="redisKeyDataTab.fxml"/>
-            <fx:include fx:id="keyInfo" source="redisKeyInfoTab.fxml"/>
+            <fx:include fx:id="keyData" source="shellRedisKeyDataTab.fxml"/>
+            <fx:include fx:id="keyInfo" source="shellRedisKeyInfoTab.fxml"/>
         </FXTabPane>
     </FXHBox>
 </FXTab>

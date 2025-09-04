@@ -4,8 +4,8 @@
 <FXTabPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%"
            fx:controller="cn.oyzh.easyshell.tabs.redis.ShellRedisTabController" flexHeight="100%"
            rotateGraphic="true" disable="true" side="RIGHT">
-    <fx:include fx:id="keys" source="key/redisKeysTab.fxml"/>
-    <fx:include fx:id="server" source="server/redisServerTab.fxml"/>
-    <fx:include fx:id="query" source="query/redisQueryTab.fxml"/>
-    <fx:include fx:id="terminal" source="terminal/redisTerminalTab.fxml"/>
+    <fx:include fx:id="keys" source="key/shellRedisKeysTab.fxml"/>
+    <fx:include fx:id="server" source="server/shellRedisServerTab.fxml"/>
+    <fx:include fx:id="query" source="query/shellRedisQueryTab.fxml"/>
+    <fx:include fx:id="terminal" source="terminal/shellRedisTerminalTab.fxml"/>
 </FXTabPane>

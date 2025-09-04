@@ -41,7 +41,7 @@ public class RedisPubsubTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/redis/pubsub/redisPubsubTab.fxml";
+        return "/tabs/redis/pubsub/shellRedisPubsubTab.fxml";
     }
 
     @Override

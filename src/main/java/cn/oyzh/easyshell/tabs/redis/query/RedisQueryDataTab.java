@@ -23,7 +23,7 @@ public class RedisQueryDataTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/redis/query/redisQueryDataTab.fxml";
+        return "/tabs/redis/query/shellRedisQueryDataTab.fxml";
     }
 
     @Override
