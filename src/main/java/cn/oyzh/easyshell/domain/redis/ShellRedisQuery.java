@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @since 2025-01-20
  */
 @Table("t_redis_query")
-public class RedisQuery implements Serializable {
+public class ShellRedisQuery implements Serializable {
 
     public String getIid() {
         return iid;

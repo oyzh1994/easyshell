@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/20
  */
-public class RedisListRowAddedEvent extends Event<RedisListKeyTreeItem> implements EventFormatter {
+public class ShellRedisListRowAddedEvent extends Event<RedisListKeyTreeItem> implements EventFormatter {
 
     private String key;
 

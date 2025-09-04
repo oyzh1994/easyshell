@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/20
  */
-public class RedisKeyDeletedEvent extends Event<ShellConnect> implements  EventFormatter {
+public class ShellRedisKeyDeletedEvent extends Event<ShellConnect> implements  EventFormatter {
 
     private String key;
 

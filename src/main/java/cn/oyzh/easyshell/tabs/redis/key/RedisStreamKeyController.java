@@ -169,7 +169,7 @@ public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamK
 //     * @param msg 消息
 //     */
 //    @EventSubscribe
-//    private void onStreamMessageAdded(RedisStreamMessageAddedEvent msg) {
+//    private void onStreamMessageAdded(ShellRedisStreamMessageAddedEvent msg) {
 //        if (this.treeItem == msg.data()) {
 //            this.firstPage();
 //            // 刷新内存占用

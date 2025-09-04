@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.store.redis;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.RedisKeyFilterHistory;
+import cn.oyzh.easyshell.domain.redis.ShellRedisKeyFilterHistory;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.OrderByParam;
 import cn.oyzh.store.jdbc.PageParam;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/07/19
  */
-public class RedisKeyFilterHistoryStore extends JdbcStandardStore<RedisKeyFilterHistory> {
+public class RedisKeyFilterHistoryStore extends JdbcStandardStore<ShellRedisKeyFilterHistory> {
 
     /**
      * 最大历史数量
@@ -33,11 +33,11 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<RedisKeyFilter
      */
     public static final RedisKeyFilterHistoryStore INSTANCE = new RedisKeyFilterHistoryStore();
 
-    public List<RedisKeyFilterHistory> load() {
+    public List<ShellRedisKeyFilterHistory> load() {
         return super.selectList();
     }
 
-    public boolean replace(RedisKeyFilterHistory model) {
+    public boolean replace(ShellRedisKeyFilterHistory model) {
         if (model == null) {
             return false;
         }
@@ -51,7 +51,7 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<RedisKeyFilter
             selectParam.addQueryParam(new QueryParam("iid", model.getIid()));
             selectParam.addQueryParam(new QueryParam("pattern", model.getPattern()));
             selectParam.addOrderByParam(new OrderByParam("saveTime", "asc"));
-            RedisKeyFilterHistory data = super.selectOne(selectParam);
+            ShellRedisKeyFilterHistory data = super.selectOne(selectParam);
             // 删除超出限制的数据
             if (data != null) {
                 this.delete(data.getUid());
@@ -70,10 +70,10 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<RedisKeyFilter
 //        return false;
 //    }
 
-    public Paging<RedisKeyFilterHistory> getPage(long pageNo, int limit, String kw) {
+    public Paging<ShellRedisKeyFilterHistory> getPage(long pageNo, int limit, String kw) {
         PageParam pageParam = new PageParam(limit, pageNo * limit);
-        List<RedisKeyFilterHistory> list = this.selectPage(kw, List.of("pattern"), pageParam);
-        Paging<RedisKeyFilterHistory> paging;
+        List<ShellRedisKeyFilterHistory> list = this.selectPage(kw, List.of("pattern"), pageParam);
+        Paging<ShellRedisKeyFilterHistory> paging;
         if (CollectionUtil.isNotEmpty(list)) {
             long count = this.selectCount(kw, List.of("pattern"));
             paging = new Paging<>(list, limit, count);
@@ -94,12 +94,12 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<RedisKeyFilter
     }
 
     @Override
-    protected Class<RedisKeyFilterHistory> modelClass() {
-        return RedisKeyFilterHistory.class;
+    protected Class<ShellRedisKeyFilterHistory> modelClass() {
+        return ShellRedisKeyFilterHistory.class;
     }
 
     public List<String> getPatterns() {
-        List<RedisKeyFilterHistory> histories = this.load();
-        return histories.parallelStream().map(RedisKeyFilterHistory::getPattern).collect(Collectors.toList());
+        List<ShellRedisKeyFilterHistory> histories = this.load();
+        return histories.parallelStream().map(ShellRedisKeyFilterHistory::getPattern).collect(Collectors.toList());
     }
 }

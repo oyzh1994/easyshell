@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/20
  */
-public class RedisKeyAddedEvent extends Event<ShellConnect> implements EventFormatter {
+public class ShellRedisKeyAddedEvent extends Event<ShellConnect> implements EventFormatter {
     public String getType() {
         return type;
     }

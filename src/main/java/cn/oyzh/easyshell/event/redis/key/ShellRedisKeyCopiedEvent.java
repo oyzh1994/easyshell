@@ -11,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/12
  */
-public class RedisKeyCopiedEvent extends Event<List<String>> implements EventFormatter {
+public class ShellRedisKeyCopiedEvent extends Event<List<String>> implements EventFormatter {
 
     private int dbIndex;
 

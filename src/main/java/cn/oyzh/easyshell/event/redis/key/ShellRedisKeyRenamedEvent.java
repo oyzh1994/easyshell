@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/12/11
  */
-public class RedisKeyRenamedEvent extends Event<RedisKeyTreeItem> implements EventFormatter {
+public class ShellRedisKeyRenamedEvent extends Event<RedisKeyTreeItem> implements EventFormatter {
 
     private String oldKey;
 

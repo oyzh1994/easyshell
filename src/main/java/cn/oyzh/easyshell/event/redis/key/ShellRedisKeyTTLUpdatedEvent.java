@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/12/11
  */
-public class RedisKeyTTLUpdatedEvent extends Event<ShellConnect> implements  EventFormatter {
+public class ShellRedisKeyTTLUpdatedEvent extends Event<ShellConnect> implements  EventFormatter {
 
     private Long ttl;
 

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.redis.key.RedisPubsubOpenEvent;
+import cn.oyzh.easyshell.event.redis.key.ShellRedisPubsubOpenEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
@@ -360,7 +360,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    public void pubsubOpen(RedisPubsubOpenEvent event) {
+    public void pubsubOpen(ShellRedisPubsubOpenEvent event) {
         RedisPubsubTab tab = this.getPubsubTab(event.data());
         if (tab == null) {
             tab = new RedisPubsubTab();

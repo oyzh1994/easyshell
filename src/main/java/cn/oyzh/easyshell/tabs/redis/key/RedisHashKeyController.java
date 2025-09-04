@@ -465,7 +465,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    private void onHashFieldAdded(RedisHashFieldAddedEvent event) {
+//    private void onHashFieldAdded(ShellRedisHashFieldAddedEvent event) {
 //        if (this.treeItem == event.data()) {
 //            this.firstPage();
 //            // 刷新内存占用

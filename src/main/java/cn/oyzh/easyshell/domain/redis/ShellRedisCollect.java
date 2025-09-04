@@ -16,7 +16,7 @@ import java.util.List;
  * @since 2024-09-26
  */
 @Table("t_redis_collect")
-public class RedisCollect implements Serializable, ObjectCopier<RedisCollect> {
+public class ShellRedisCollect implements Serializable, ObjectCopier<ShellRedisCollect> {
 
     /**
      * 数据id
@@ -44,11 +44,11 @@ public class RedisCollect implements Serializable, ObjectCopier<RedisCollect> {
     @Column
     private String key;
 
-    public RedisCollect() {
+    public ShellRedisCollect() {
 
     }
 
-    public RedisCollect(String iid, int dbIndex, String key) {
+    public ShellRedisCollect(String iid, int dbIndex, String key) {
         this.iid = iid;
         this.key = key;
         this.dbIndex = dbIndex;
@@ -87,19 +87,19 @@ public class RedisCollect implements Serializable, ObjectCopier<RedisCollect> {
     }
 
     @Override
-    public void copy(RedisCollect t1) {
+    public void copy(ShellRedisCollect t1) {
         this.key = t1.getKey();
         this.iid = t1.getIid();
         this.dbIndex = t1.getDbIndex();
     }
 
-    public static List<RedisCollect> clone(List<RedisCollect> collects) {
+    public static List<ShellRedisCollect> clone(List<ShellRedisCollect> collects) {
         if (CollectionUtil.isEmpty(collects)) {
             return Collections.emptyList();
         }
-        List<RedisCollect> list = new ArrayList<>();
-        for (RedisCollect collect : collects) {
-            RedisCollect redisCollect = new RedisCollect();
+        List<ShellRedisCollect> list = new ArrayList<>();
+        for (ShellRedisCollect collect : collects) {
+            ShellRedisCollect redisCollect = new ShellRedisCollect();
             redisCollect.copy(collect);
             list.add(redisCollect);
         }

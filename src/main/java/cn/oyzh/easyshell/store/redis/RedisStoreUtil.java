@@ -6,11 +6,11 @@
 // import cn.oyzh.common.util.CollectionUtil;
 // import cn.oyzh.common.util.StringUtil;
 // import cn.oyzh.easyshell.ShellConst;
-// import cn.oyzh.easyshell.domain.redis.RedisCollect;
+// import cn.oyzh.easyshell.domain.redis.ShellRedisCollect;
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.redis.RedisFilter;
 // import cn.oyzh.easyshell.domain.redis.RedisGroup;
-// import cn.oyzh.easyshell.domain.redis.RedisKeyFilterHistory;
+// import cn.oyzh.easyshell.domain.redis.ShellRedisKeyFilterHistory;
 // import cn.oyzh.easyshell.domain.redis.RedisSetting;
 // import cn.oyzh.easyshell.terminal.redis.RedisTerminalHistory;
 // import cn.oyzh.fx.plus.information.MessageBox;
@@ -114,9 +114,9 @@
 //                     if (obj.containsKey("collects")) {
 //                         List<String> collects = obj.getList("collects", String.class);
 //                         if (CollectionUtil.isNotEmpty(collects)) {
-//                             List<RedisCollect> collectList = new ArrayList<>();
+//                             List<ShellRedisCollect> collectList = new ArrayList<>();
 //                             for (String collect : collects) {
-//                                 collectList.add(new RedisCollect(connect.getId(), 0, collect));
+//                                 collectList.add(new ShellRedisCollect(connect.getId(), 0, collect));
 //                             }
 //                             connect.setCollects(collectList);
 //                         }
@@ -239,8 +239,8 @@
 //      *
 //      * @return 旧版本键过滤历史数据
 //      */
-//     public static List<RedisKeyFilterHistory> loadKeyFilterHistory() {
-//         List<RedisKeyFilterHistory> histories = new ArrayList<>(24);
+//     public static List<ShellRedisKeyFilterHistory> loadKeyFilterHistory() {
+//         List<ShellRedisKeyFilterHistory> histories = new ArrayList<>(24);
 //         try {
 //             String storePath = SysConst.storeDir();
 //             String file = storePath + File.separator + "redis_key_filter_history.json";
@@ -249,7 +249,7 @@
 //                 JSONArray array = JSONUtil.parseArray(json);
 //                 for (int i = 0; i < array.size(); i++) {
 //                     JSONObject obj = array.getJSONObject(i);
-//                     RedisKeyFilterHistory history = new RedisKeyFilterHistory();
+//                     ShellRedisKeyFilterHistory history = new ShellRedisKeyFilterHistory();
 //                     if (obj.containsKey("uid")) {
 //                         history.setUid(obj.getString("uid"));
 //                     }

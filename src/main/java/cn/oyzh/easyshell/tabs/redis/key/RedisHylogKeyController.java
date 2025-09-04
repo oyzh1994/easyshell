@@ -120,7 +120,7 @@ public class RedisHylogKeyController extends RedisKeyController<RedisStringKeyTr
 //     * @param msg 消息
 //     */
 //    @EventSubscribe
-//    private void onHyLogElementAdded(RedisHyLogElementsAddedEvent msg) {
+//    private void onHyLogElementAdded(ShellRedisHyLogElementsAddedEvent msg) {
 //        if (this.treeItem == msg.data()) {
 //            // 刷新统计值
 //            this.treeItem.flushCount();

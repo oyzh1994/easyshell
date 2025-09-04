@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis.query;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.RedisQuery;
+import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
 import cn.oyzh.easyshell.store.redis.RedisQueryStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -30,13 +30,13 @@ public class ShellRedisQueryTreeItem extends RichTreeItem<ShellRedisQueryTreeIte
     /**
      * shell查询
      */
-    private RedisQuery value;
+    private ShellRedisQuery value;
 
-    public RedisQuery value() {
+    public ShellRedisQuery value() {
         return value;
     }
 
-    public ShellRedisQueryTreeItem(RedisQuery value, RichTreeView treeView) {
+    public ShellRedisQueryTreeItem(ShellRedisQuery value, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         this.value(value);
@@ -104,7 +104,7 @@ public class ShellRedisQueryTreeItem extends RichTreeItem<ShellRedisQueryTreeIte
      *
      * @param value ssh信息
      */
-    public void value(RedisQuery value) {
+    public void value(ShellRedisQuery value) {
         this.value = value;
         super.setValue(new ShellRedisQueryTreeItemValue(this));
     }

@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.store.redis;
 //
 // import cn.oyzh.common.util.CollectionUtil;
-// import cn.oyzh.easyshell.domain.redis.RedisCollect;
+// import cn.oyzh.easyshell.domain.redis.ShellRedisCollect;
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.redis.RedisFilter;
 // import cn.oyzh.easyshell.domain.redis.RedisJumpConfig;
@@ -90,9 +90,9 @@
 //             }
 //
 //             // 收藏处理
-//             List<RedisCollect> collects = model.getCollects();
+//             List<ShellRedisCollect> collects = model.getCollects();
 //             if (CollectionUtil.isNotEmpty(collects)) {
-//                 for (RedisCollect collect : collects) {
+//                 for (ShellRedisCollect collect : collects) {
 //                     collect.setIid(model.getId());
 //                     this.collectStore.replace(collect);
 //                 }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store.redis;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.RedisCollect;
+import cn.oyzh.easyshell.domain.redis.ShellRedisCollect;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -14,30 +14,30 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/09/26
  */
-public class RedisCollectStore extends JdbcStandardStore<RedisCollect> {
+public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
 
     /**
      * 当前实例
      */
     public static final RedisCollectStore INSTANCE = new RedisCollectStore();
 
-    public List<RedisCollect> loadByIid(String iid) {
+    public List<ShellRedisCollect> loadByIid(String iid) {
         QueryParam param = new QueryParam();
         param.setName("iid");
         param.setData(iid);
         return super.selectList(param);
-//        List<RedisCollect> collects = super.selectList(param);
+//        List<ShellRedisCollect> collects = super.selectList(param);
 //        if (CollectionUtil.isNotEmpty(collects)) {
-//            return collects.parallelStream().map(RedisCollect::getKey).collect(Collectors.toList());
+//            return collects.parallelStream().map(ShellRedisCollect::getKey).collect(Collectors.toList());
 //        }
 //        return Collections.emptyList();
     }
 
     public boolean replace(String iid, int dbIndex, String key) {
-        return this.replace(new RedisCollect(iid, dbIndex, key));
+        return this.replace(new ShellRedisCollect(iid, dbIndex, key));
     }
 
-    public boolean replace(RedisCollect model) {
+    public boolean replace(ShellRedisCollect model) {
         if (model != null && !this.exist(model.getIid(), model.getDbIndex(), model.getKey())) {
             return this.insert(model);
         }
@@ -98,8 +98,8 @@ public class RedisCollectStore extends JdbcStandardStore<RedisCollect> {
     }
 
     @Override
-    protected Class<RedisCollect> modelClass() {
-        return RedisCollect.class;
+    protected Class<ShellRedisCollect> modelClass() {
+        return ShellRedisCollect.class;
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.Objects;
  * @since 2023/07/19
  */
 @Table("t_redis_key_filter_history")
-public class RedisKeyFilterHistory implements ObjectComparator<RedisKeyFilterHistory>, Serializable {
+public class ShellRedisKeyFilterHistory implements ObjectComparator<ShellRedisKeyFilterHistory>, Serializable {
 
     /**
      * 数据id
@@ -43,16 +43,16 @@ public class RedisKeyFilterHistory implements ObjectComparator<RedisKeyFilterHis
     @Column
     private long saveTime = System.currentTimeMillis();
 
-//    public RedisKeyFilterHistory() {
+//    public ShellRedisKeyFilterHistory() {
 //    }
 //
-//    public RedisKeyFilterHistory(String uid, String pattern) {
+//    public ShellRedisKeyFilterHistory(String uid, String pattern) {
 //        this.uid = uid;
 //        this.pattern = pattern;
 //    }
 
     @Override
-    public boolean compare(RedisKeyFilterHistory t1) {
+    public boolean compare(ShellRedisKeyFilterHistory t1) {
         if (t1 == null) {
             return false;
         }

@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/20
  */
-public class RedisHashFieldAddedEvent extends Event<RedisHashKeyTreeItem> implements EventFormatter {
+public class ShellRedisHashFieldAddedEvent extends Event<RedisHashKeyTreeItem> implements EventFormatter {
     public String getKey() {
         return key;
     }

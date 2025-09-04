@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/20
  */
-public class RedisZSetCoordinateAddedEvent extends Event<RedisZSetKeyTreeItem> implements EventFormatter {
+public class ShellRedisZSetCoordinateAddedEvent extends Event<RedisZSetKeyTreeItem> implements EventFormatter {
 
     private String key;
 

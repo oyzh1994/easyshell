@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/12/12
  */
-public class RedisKeysMovedEvent extends Event<Integer>   {
+public class ShellRedisKeysMovedEvent extends Event<Integer>   {
 
     private int targetDB;
 

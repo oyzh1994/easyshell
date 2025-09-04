@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.store.redis;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.RedisQuery;
+import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/20
  */
-public class RedisQueryStore extends JdbcStandardStore<RedisQuery> {
+public class RedisQueryStore extends JdbcStandardStore<ShellRedisQuery> {
 
     /**
      * 当前实例
@@ -27,7 +27,7 @@ public class RedisQueryStore extends JdbcStandardStore<RedisQuery> {
      * @param iid zk连接id
      * @return 收藏列表
      */
-    public List<RedisQuery> list(String iid) {
+    public List<ShellRedisQuery> list(String iid) {
         QueryParam param = new QueryParam();
         param.setName("iid");
         param.setData(iid);
@@ -40,7 +40,7 @@ public class RedisQueryStore extends JdbcStandardStore<RedisQuery> {
      * @param model 模型
      * @return 结果
      */
-    public boolean replace(RedisQuery model) {
+    public boolean replace(ShellRedisQuery model) {
         if (model != null) {
             if (!this.exist(model.getUid())) {
                 return this.insert(model);
@@ -67,7 +67,7 @@ public class RedisQueryStore extends JdbcStandardStore<RedisQuery> {
     }
 
     @Override
-    protected Class<RedisQuery> modelClass() {
-        return RedisQuery.class;
+    protected Class<ShellRedisQuery> modelClass() {
+        return ShellRedisQuery.class;
     }
 }

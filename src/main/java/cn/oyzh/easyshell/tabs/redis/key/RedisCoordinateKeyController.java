@@ -386,7 +386,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    private void zSetCoordinateAdded(RedisZSetCoordinateAddedEvent event) {
+//    private void zSetCoordinateAdded(ShellRedisZSetCoordinateAddedEvent event) {
 //        if (this.treeItem == event.data()) {
 //            this.firstPage();
 //            // 刷新内存占用

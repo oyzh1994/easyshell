@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/20
  */
-public class RedisHyLogElementsAddedEvent extends Event<RedisStringKeyTreeItem> implements EventFormatter {
+public class ShellRedisHyLogElementsAddedEvent extends Event<RedisStringKeyTreeItem> implements EventFormatter {
     public String getKey() {
         return key;
     }

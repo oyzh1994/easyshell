@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.redis.RedisQuery;
+import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.query.redis.RedisQueryEditor;
 import cn.oyzh.easyshell.query.redis.RedisQueryParam;
@@ -33,7 +33,7 @@ public class RedisQueryTabController extends SubTabController {
     /**
      * 查询对象
      */
-    private RedisQuery query;
+    private ShellRedisQuery query;
 
     /**
      * 未保存标志位
@@ -44,7 +44,7 @@ public class RedisQueryTabController extends SubTabController {
         return unsaved;
     }
 
-    public RedisQuery getQuery() {
+    public ShellRedisQuery getQuery() {
         return query;
     }
 
@@ -222,7 +222,7 @@ public class RedisQueryTabController extends SubTabController {
      *
      * @param query 查询
      */
-    private void doEdit(RedisQuery query) {
+    private void doEdit(ShellRedisQuery query) {
         this.query = query;
         if (query == null) {
             this.content.clear();
@@ -236,7 +236,7 @@ public class RedisQueryTabController extends SubTabController {
      *
      * @param query 查询
      */
-    private void doDelete(RedisQuery query) {
+    private void doDelete(ShellRedisQuery query) {
         if (query == this.query) {
             this.query = null;
             this.content.clear();

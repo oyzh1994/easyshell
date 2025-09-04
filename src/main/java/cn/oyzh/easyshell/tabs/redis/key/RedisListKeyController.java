@@ -362,7 +362,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
 //     * @param msg 消息
 //     */
 //    @EventSubscribe
-//    private void onListRowAdded(RedisListRowAddedEvent msg) {
+//    private void onListRowAdded(ShellRedisListRowAddedEvent msg) {
 //        if (this.treeItem == msg.data()) {
 //            this.firstPage();
 //            // 刷新内存占用

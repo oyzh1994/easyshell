@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis.query;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.domain.redis.RedisQuery;
+import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
 import cn.oyzh.easyshell.store.redis.RedisQueryStore;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -46,10 +46,10 @@ public class ShellRedisQueryRootTreeItem extends RichTreeItem<ShellRedisQueryRoo
     @Override
     public void loadChild() {
         // 初始化查询
-        List<RedisQuery> queries = this.queryStore.selectList();
+        List<ShellRedisQuery> queries = this.queryStore.selectList();
         if (CollectionUtil.isNotEmpty(queries)) {
             List<TreeItem<?>> list = new ArrayList<>();
-            for (RedisQuery query : queries) {
+            for (ShellRedisQuery query : queries) {
                 list.add(new ShellRedisQueryTreeItem(query, this.getTreeView()));
             }
             this.addChild(list);

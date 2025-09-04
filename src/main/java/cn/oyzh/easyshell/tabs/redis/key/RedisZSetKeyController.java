@@ -374,7 +374,7 @@ public class RedisZSetKeyController extends RedisRowKeyController<RedisZSetKeyTr
 //     * @param msg 消息
 //     */
 //    @EventSubscribe
-//    private void onZSetMemberAdded(RedisZSetMemberAddedEvent msg) {
+//    private void onZSetMemberAdded(ShellRedisZSetMemberAddedEvent msg) {
 //        if (this.treeItem == msg.data()) {
 //            this.firstPage();
 //            // 刷新内存占用

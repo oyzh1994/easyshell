@@ -73,7 +73,7 @@
 //     /**
 //      * 收藏的键
 //      */
-//     private List<RedisCollect> collects;
+//     private List<ShellRedisCollect> collects;
 //
 //     /**
 //      * 过滤列表
@@ -115,7 +115,7 @@
 //         // 过滤
 //         this.filters = RedisFilter.clone(redisConnect.filters);
 //         // 收藏
-//         this.collects = RedisCollect.clone(redisConnect.collects);
+//         this.collects = ShellRedisCollect.clone(redisConnect.collects);
 //         // 跳板机
 //         this.jumpConfigs = RedisJumpConfig.clone(redisConnect.jumpConfigs);
 //         return this;
@@ -230,11 +230,11 @@
 //         this.readonly = readonly;
 //     }
 //
-//     public List<RedisCollect> getCollects() {
+//     public List<ShellRedisCollect> getCollects() {
 //         return collects;
 //     }
 //
-//     public void setCollects(List<RedisCollect> collects) {
+//     public void setCollects(List<ShellRedisCollect> collects) {
 //         this.collects = collects;
 //     }
 //

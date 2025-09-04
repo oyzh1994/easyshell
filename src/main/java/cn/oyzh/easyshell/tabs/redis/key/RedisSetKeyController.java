@@ -360,7 +360,7 @@ public class RedisSetKeyController extends RedisRowKeyController<RedisSetKeyTree
 //     * @param msg 消息
 //     */
 //    @EventSubscribe
-//    private void onSetMemberAdded(RedisSetMemberAddedEvent msg) {
+//    private void onSetMemberAdded(ShellRedisSetMemberAddedEvent msg) {
 //        if (this.treeItem == msg.data()) {
 //            this.firstPage();
 //            // 刷新内存占用
