@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.node;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -16,7 +16,7 @@ import javafx.event.Event;
  */
 public class ZKNodeTab extends RichTab {
 
-    public ZKNodeTab(ZKConnect connect) {
+    public ZKNodeTab(ShellConnect connect) {
         ZKClient client = new ZKClient(connect);
         // 初始化
         this.controller().init(client);
@@ -104,7 +104,7 @@ public class ZKNodeTab extends RichTab {
      *
      * @return zk信息
      */
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         // return this.treeItem() == null ? null : this.treeItem().value();
 
         return null;

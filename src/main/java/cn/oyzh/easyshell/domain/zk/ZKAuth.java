@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2022/6/9
  */
-@Table("t_auth")
+@Table("t_zk_auth")
 public class ZKAuth implements ObjectComparator<ZKAuth>, ObjectCopier<ZKAuth>, Serializable {
 
     /**
@@ -39,7 +39,7 @@ public class ZKAuth implements ObjectComparator<ZKAuth>, ObjectCopier<ZKAuth>, S
     /**
      * iid
      *
-     * @see ZKConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

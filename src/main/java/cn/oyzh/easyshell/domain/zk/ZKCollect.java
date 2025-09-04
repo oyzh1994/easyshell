@@ -16,13 +16,13 @@ import java.util.List;
  * @author oyzh
  * @since 2024-09-26
  */
-@Table("t_collect")
+@Table("t_zk_collect")
 public class ZKCollect implements Serializable, ObjectCopier<ZKCollect> {
 
     /**
      * 连接id
      *
-     * @see ZKConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

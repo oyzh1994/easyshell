@@ -5,7 +5,6 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph?>
@@ -13,7 +12,9 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.SSHSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
@@ -182,6 +183,14 @@
             </graphic>
             <HBox.margin>
                 <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Zookeeper" userData="zk">
+            <graphic>
+                <ZookeeperSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
         <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">

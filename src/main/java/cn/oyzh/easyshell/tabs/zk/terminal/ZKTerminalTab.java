@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.terminal;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -19,7 +19,7 @@ public class ZKTerminalTab extends RichTab {
         this.init(client);
     }
 //
-//    public ZKTerminalTab(ZKConnect connect) {
+//    public ZKTerminalTab(ShellConnect connect) {
 //        this.init(connect);
 //    }
 
@@ -38,10 +38,10 @@ public class ZKTerminalTab extends RichTab {
 //     *
 //     * @param zkConnect zk连接
 //     */
-//    public void init(ZKConnect zkConnect) {
+//    public void init(ShellConnect zkConnect) {
 //        try {
 //            if (zkConnect == null) {
-//                zkConnect = new ZKConnect();
+//                zkConnect = new ShellConnect();
 //                zkConnect.setName(I18nHelper.unnamedConnection());
 //            }
 //            // 刷新图标
@@ -68,7 +68,7 @@ public class ZKTerminalTab extends RichTab {
     private void init(ZKClient client) {
         try {
             if (client == null) {
-                ZKConnect connect = new ZKConnect();
+                ShellConnect connect = new ShellConnect();
                 connect.setName(I18nHelper.unnamedConnection());
                 // 刷新图标
                 this.flushGraphic();
@@ -104,7 +104,7 @@ public class ZKTerminalTab extends RichTab {
      *
      * @return zk信息
      */
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.controller().zkConnect();
     }
 

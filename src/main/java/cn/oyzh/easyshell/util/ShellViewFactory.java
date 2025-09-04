@@ -29,6 +29,8 @@ import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectControll
 import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellUpdateVNCConnectController;
+import cn.oyzh.easyshell.controller.connect.zk.ShellAddZKConnectController;
+import cn.oyzh.easyshell.controller.connect.zk.ShellUpdateZKConnectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerCommitController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
@@ -321,6 +323,24 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增zk连接
+     *
+     * @param group 分组
+     */
+    public static void addZKConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddZKConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+
+    /**
      * 修改ssh连接
      *
      * @param connect 连接
@@ -488,6 +508,22 @@ public class ShellViewFactory {
     public static void updateRedisConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateRedisConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改zk连接
+     *
+     * @param connect 连接
+     */
+    public static void updateZKConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateZKConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.connection;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.event.Event;
 
@@ -10,7 +10,7 @@ import cn.oyzh.event.Event;
  */
 public class ZKServerEvent extends Event<ZKClient> {
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.data().zkConnect();
     }
 }

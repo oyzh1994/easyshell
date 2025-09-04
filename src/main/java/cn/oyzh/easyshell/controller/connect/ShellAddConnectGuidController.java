@@ -72,6 +72,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addSMBConnect(group);
             } else if ("redis".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRedisConnect(group);
+            } else if ("zk".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addZKConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

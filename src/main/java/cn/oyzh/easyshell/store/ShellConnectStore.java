@@ -92,6 +92,18 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载zk类型
+     *
+     * @return zk类型连接
+     */
+    public List<ShellConnect> loadZKype() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isZKType).collect(Collectors.toList());
+    }
+
+
+    /**
      * 加载终端类型
      *
      * @return 终端类型连接

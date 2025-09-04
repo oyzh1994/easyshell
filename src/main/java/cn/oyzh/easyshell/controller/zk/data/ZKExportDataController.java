@@ -5,7 +5,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.zk.ZKDataExportHandler;
 import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -167,7 +167,7 @@ public class ZKExportDataController extends StageController {
     /**
      * 当前zk对象
      */
-    private ZKConnect connect;
+    private ShellConnect connect;
 
     /**
      * 当前zk客户端

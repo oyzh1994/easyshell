@@ -1,6 +1,6 @@
 // package cn.oyzh.easyshell.event.zk.connect;
 //
-// import cn.oyzh.easyshell.domain.zk.ZKConnect;
+// import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyzk.trees.connect.ZKConnectTreeItem;
 // import cn.oyzh.easyshell.zk.ZKClient;
 // import cn.oyzh.event.Event;
@@ -15,7 +15,7 @@
 //         return this.data().getClient();
 //     }
 //
-//     public ZKConnect connect() {
+//     public ShellConnect connect() {
 //         return this.data().getClient().zkConnect();
 //     }
 // }

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.connection;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
@@ -17,7 +17,7 @@ public class ZKConnectionConnectedEvent extends Event<ZKClient> implements Event
         return String.format("[%s:%s connected] " , I18nHelper.connect(), this.data().connectName());
     }
 
-    public ZKConnect connect() {
+    public ShellConnect connect() {
         return this.data().zkConnect();
     }
 }

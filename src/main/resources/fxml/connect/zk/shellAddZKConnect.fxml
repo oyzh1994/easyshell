@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
+<?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.button.TestButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
+<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.connect.zk.ShellAddZKConnectController" realWidth="750"
+        realHeight="480">
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
+        <FXTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="name" tipText="%base.nameTip" maxLen="30" require="true" realHeight="30"
+                                    flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.userName">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.password">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
+                                   realHeight="30"
+                                   flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PasswordTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="60%" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="2181">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="readonlyMode" text="%base.readonlyMode" fontSize="11">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.extra">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.osType">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellOsTypeComboBox fx:id="osType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellOsTypeComboBox>
+                <InfoLabel text="%base.executeTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="executeTimOut"
+                                     tipText="%shell.redis.info.executeTimoutTip" value="5" require="true">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.connectTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
+                                     tipText="%shell.info.connectTimoutTip" value="5" require="true">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.remark">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="remark" realHeight="80" flexWidth="100% - 180" tipText="%base.remarkTip"
+                            maxLen="100">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="SSL" fx:id="sslTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableSSL">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="enableSSL">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.clientKey">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField disable="true" fx:id="sslClientKey" tipText="%base.chooseTip1"
+                                     require="true"
+                                     realHeight="30"
+                                     flexWidth="100% - 180" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <InfoLabel text="%base.clientCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField disable="true"  fx:id="sslClientCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <InfoLabel text="%base.caCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.proxy" fx:id="proxyTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableProxy">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="enableProxy">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.protocol">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellProxyProtocolComboBox initIndex="1" disable="true" fx:id="proxyProtocol" tipText="%base.hostTip"
+                                            require="true"
+                                            realHeight="30"
+                                            flexWidth="100% - 180" groupId="proxy">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellProxyProtocolComboBox>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox disable="true" groupId="proxy">
+                    <ClearableTextField fx:id="proxyHost" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="100% - 285" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField realWidth="100" fx:id="proxyPort" require="true" realHeight="30" value="7890">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.authMethod">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellProxyAuthTypeComboBox initIndex="0" disable="true" groupId="proxy" fx:id="proxyAuthType"
+                                            realHeight="30"
+                                            flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellProxyAuthTypeComboBox>
+                <InfoLabel text="%base.authInfo">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox disable="true" fx:id="proxyAuthInfoBox" groupId="proxy">
+                    <ClearableTextField fx:id="proxyUser" tipText="%base.userNameTip" require="true"
+                                        realHeight="30"
+                                        flexWidth="50% - 90">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PasswordTextField fx:id="proxyPassword" tipText="%base.passwordTip" require="true"
+                                       realHeight="30"
+                                       flexWidth="50% - 95">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </PasswordTextField>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.jumpHosts">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox realHeight="30">
+                    <AddHostSVGGlyph onMousePrimaryClicked="#addHost">
+                        <FXHBox.margin>
+                            <Insets left="30" top="7"/>
+                        </FXHBox.margin>
+                    </AddHostSVGGlyph>
+                    <AddSVGGlyph onMousePrimaryClicked="#addJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </AddSVGGlyph>
+                    <EditSVGGlyph onMousePrimaryClicked="#updateJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </EditSVGGlyph>
+                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </DeleteSVGGlyph>
+                    <MoveUpSVGGlyph onMousePrimaryClicked="#moveJumpUp">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </MoveUpSVGGlyph>
+                    <MoveDownSVGGlyph onMousePrimaryClicked="#moveJumpDown">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </MoveDownSVGGlyph>
+                    <FXVBox.margin>
+                        <Insets top="10"/>
+                    </FXVBox.margin>
+                </FXHBox>
+                <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 50" flexHeight="100% - 50">
+                    <columns>
+                        <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
+                        <FXTableColumn flexWidth="100% - 365" valueName="host" text="%base.host"/>
+                        <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
+                        <FXTableColumn prefWidth="100" valueName="enabledStatus" text="%base.status"/>
+                    </columns>
+                    <FXVBox.margin>
+                        <Insets left="30" top="7"/>
+                    </FXVBox.margin>
+                </ShellJumpTableView>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <TestButton onAction="#testConnect" iconSizePercent="0.8">
+            <HBox.margin>
+                <Insets left="30" top="10"/>
+            </HBox.margin>
+        </TestButton>
+        <SubmitButton onAction="#add">
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.zk.node.ZKNodeImportController;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.zk.ZKDataImportHandler;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKClientUtil;
@@ -150,7 +150,7 @@ public class ZKImportDataController extends StageController {
     /**
      * 当前zk对象
      */
-    private ZKConnect connect;
+    private ShellConnect connect;
 
     /**
      * 当前zk客户端

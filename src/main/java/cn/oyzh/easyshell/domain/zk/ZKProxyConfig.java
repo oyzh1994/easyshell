@@ -17,7 +17,7 @@ package cn.oyzh.easyshell.domain.zk;//package cn.oyzh.easyzk.domain;
 //    /**
 //     * 所属连接id
 //     *
-//     * @see ZKConnect
+//     * @see ShellConnect
 //     */
 //    @Column
 //    private String iid;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.search;//package cn.oyzh.easyshell.event.zk.search;
 //
-//import cn.oyzh.easyshell.domain.zk.ZKConnect;
+//import cn.oyzh.easyshell.domain.ShellConnect;
 //import cn.oyzh.event.Event;
 //
 ///**
@@ -9,7 +9,7 @@ package cn.oyzh.easyshell.event.zk.search;//package cn.oyzh.easyshell.event.zk.s
 // * @author oyzh
 // * @since 2025/01/17
 // */
-//public class ZKSearchFinishEvent extends Event<ZKConnect> {
+//public class ZKSearchFinishEvent extends Event<ShellConnect> {
 //
 //
 //}

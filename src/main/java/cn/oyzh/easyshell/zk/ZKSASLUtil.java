@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.zk;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKSASLConfig;
-import cn.oyzh.easyshell.store.zk.ZKConnectStore;
+import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.zk.ZKSASLConfigStore;
 import cn.oyzh.easyshell.zk.ZKSASLConfiguration;
 import cn.oyzh.store.jdbc.QueryParam;
@@ -27,7 +27,7 @@ public class ZKSASLUtil {
     /**
      * 连接存储
      */
-    private static final ZKConnectStore CONNECT_STORE = ZKConnectStore.INSTANCE;
+    private static final ShellConnectStore CONNECT_STORE = ShellConnectStore.INSTANCE;
 
     /**
      * sasl配置存储
@@ -45,7 +45,7 @@ public class ZKSASLUtil {
      * 移除sasl配置
      *
      * @param iid zk连接id
-     * @see ZKConnect
+     * @see ShellConnect
      */
     public synchronized static void removeSasl(String iid) {
         if (Configuration.getConfiguration() instanceof ZKSASLConfiguration configuration) {
@@ -58,7 +58,7 @@ public class ZKSASLUtil {
      *
      * @param iid zk连接id
      * @return 结果
-     * @see ZKConnect
+     * @see ShellConnect
      */
     public static boolean isNeedSasl(String iid) {
         if (StringUtil.isNotBlank(iid) && Configuration.getConfiguration() instanceof ZKSASLConfiguration configuration) {
@@ -69,7 +69,7 @@ public class ZKSASLUtil {
             SelectParam selectParam = new SelectParam();
             selectParam.addQueryParam(QueryParam.of("id", iid));
             selectParam.addQueryColumn("saslAuth");
-            ZKConnect connect = CONNECT_STORE.selectOne(selectParam);
+            ShellConnect connect = CONNECT_STORE.selectOne(selectParam);
             if (connect != null && connect.isSASLAuth()) {
                 ZKSASLConfig config = CONFIG_STORE.getByIid(iid);
                 if (config == null || config.checkInvalid()) {

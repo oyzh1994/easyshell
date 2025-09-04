@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.history;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
@@ -27,7 +27,7 @@ public class ZKHistoryRestoreEvent extends Event<byte[]> implements EventFormatt
         return String.format("[%s:%s path:%s restored data] ", I18nHelper.connect(), this.connect().getName(), this.item.nodePath());
     }
 
-    public ZKConnect connect() {
+    public ShellConnect connect() {
         return this.item.zkConnect();
     }
 }

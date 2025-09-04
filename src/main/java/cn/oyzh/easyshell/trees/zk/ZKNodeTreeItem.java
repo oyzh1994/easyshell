@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
 import cn.oyzh.easyshell.domain.zk.ZKSetting;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
@@ -643,7 +643,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
         return this.getTreeView().client();
     }
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.getTreeView().connect();
     }
 

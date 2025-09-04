@@ -7,7 +7,7 @@
 // import cn.oyzh.common.util.StringUtil;
 // import cn.oyzh.easyshell.domain.zk.ZKAuth;
 // import cn.oyzh.easyshell.domain.zk.ZKCollect;
-// import cn.oyzh.easyshell.domain.zk.ZKConnect;
+// import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.zk.ZKFilter;
 // import cn.oyzh.easyshell.domain.zk.ZKGroup;
 // import cn.oyzh.easyshell.domain.zk.ZKSetting;
@@ -88,8 +88,8 @@
 //      *
 //      * @return 旧版本连接数据
 //      */
-//     public static List<ZKConnect> loadConnects() {
-//         List<ZKConnect> connects = new ArrayList<>(24);
+//     public static List<ShellConnect> loadConnects() {
+//         List<ShellConnect> connects = new ArrayList<>(24);
 //         try {
 //             String storePath = SysConst.storeDir();
 //             String file = storePath + File.separator + "zk_info.json";
@@ -98,7 +98,7 @@
 //                 JSONArray array = JSONUtil.parseArray(json);
 //                 for (int i = 0; i < array.size(); i++) {
 //                     JSONObject obj = array.getJSONObject(i);
-//                     ZKConnect connect = new ZKConnect();
+//                     ShellConnect connect = new ShellConnect();
 //                     if (obj.containsKey("id")) {
 //                         connect.setId(obj.getString("id"));
 //                     }

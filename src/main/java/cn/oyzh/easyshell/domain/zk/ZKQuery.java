@@ -12,13 +12,13 @@ import java.io.Serializable;
  * @author oyzh
  * @since 2025-01-20
  */
-@Table("t_query")
+@Table("t_zk_query")
 public class ZKQuery implements Serializable {
 
     /**
      * 连接id
      *
-     * @see ZKConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.util.zk;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -52,7 +52,7 @@ public class ZKConnectUtil {
      * @param adapter   页面
      * @param zkConnect zk信息
      */
-    public static void testConnect(StageAdapter adapter, ZKConnect zkConnect) {
+    public static void testConnect(StageAdapter adapter, ShellConnect zkConnect) {
         StageManager.showMask(adapter, () -> {
             try {
                 if (zkConnect.getName() == null) {
@@ -151,7 +151,7 @@ public class ZKConnectUtil {
      * @param connectInfo 连接信息
      * @param connect     连接
      */
-    public static void copyConnect(ZKConnectInfo connectInfo, ZKConnect connect) {
+    public static void copyConnect(ZKConnectInfo connectInfo, ShellConnect connect) {
         if (connectInfo != null && connect != null) {
             connect.setReadonly(connectInfo.isReadonly());
             connect.setConnectTimeOut(connectInfo.getTimeout());

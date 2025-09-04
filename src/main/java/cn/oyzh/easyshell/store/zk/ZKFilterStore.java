@@ -30,7 +30,7 @@ public class ZKFilterStore extends JdbcStandardStore<ZKFilter> {
      *
      * @param iid zk连接id
      * @return 已启用的数据列表
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public List<ZKFilter> loadEnable(String iid) {
         if (StringUtil.isEmpty(iid)) {
@@ -69,7 +69,7 @@ public class ZKFilterStore extends JdbcStandardStore<ZKFilter> {
      *
      * @param iid zk连接id
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteByIid(String iid) {
         if (StringUtil.isNotBlank(iid)) {
@@ -86,7 +86,7 @@ public class ZKFilterStore extends JdbcStandardStore<ZKFilter> {
      * @param kw  关键字
      * @param iid zk连接id
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean exist(String kw, String iid) {
         if (StringUtil.isNotBlank(kw)) {

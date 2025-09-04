@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/04/23
  */
-@Table("t_data_history")
+@Table("t_zk_data_history")
 public class ZKDataHistory implements ObjectComparator<ZKDataHistory>, ObjectCopier<ZKDataHistory>, Serializable {
 
     /**
@@ -45,7 +45,7 @@ public class ZKDataHistory implements ObjectComparator<ZKDataHistory>, ObjectCop
     /**
      * 连接信息id
      *
-     * @see ZKConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

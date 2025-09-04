@@ -30,7 +30,7 @@ public class ZKAuthStore extends JdbcStandardStore<ZKAuth> {
      *
      * @param iid zk连接id
      * @return 数据列表
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public List<ZKAuth> load(String iid) {
         return super.selectList(QueryParam.of("iid", iid));
@@ -45,7 +45,7 @@ public class ZKAuthStore extends JdbcStandardStore<ZKAuth> {
      *
      * @param iid zk连接id
      * @return 已启用的数据列表
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public List<ZKAuth> loadEnable(String iid) {
         if (StringUtil.isEmpty(iid)) {
@@ -80,7 +80,7 @@ public class ZKAuthStore extends JdbcStandardStore<ZKAuth> {
      *
      * @param iid zk连接id
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteByIid(String iid) {
         if (StringUtil.isNotBlank(iid)) {
@@ -98,7 +98,7 @@ public class ZKAuthStore extends JdbcStandardStore<ZKAuth> {
      * @param password 密码
      * @param iid      zk连接id
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean exist(String user, String password, String iid) {
         if (StringUtil.isNotBlank(user) && StringUtil.isNotBlank(password) && StringUtil.isNotBlank(iid)) {

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.terminal.zk;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKSetting;
 import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
 import cn.oyzh.easyshell.exception.zk.ZKExceptionParser;
@@ -307,7 +307,7 @@ public class ZKTerminalPane extends TerminalPane {
         }
     }
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.getClient().zkConnect();
     }
 

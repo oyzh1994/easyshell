@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.terminal;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.zk.ZKConnectUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -45,7 +45,7 @@ public class ZKTerminalTabController extends RichTabController {
      *
      * @return zk信息
      */
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.terminal.zkConnect();
     }
 

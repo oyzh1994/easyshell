@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.zk.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
-import cn.oyzh.easyshell.fx.zk.ZKConnectComboBox;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.handler.zk.ZKDataTransportHandler;
 import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -79,7 +79,7 @@ public class ZKTransportDataController extends StageController {
      * 来源信息
      */
     @FXML
-    private ZKConnectComboBox sourceInfo;
+    private ShellConnectTextField sourceInfo;
 
     /**
      * 来源字符集
@@ -97,7 +97,7 @@ public class ZKTransportDataController extends StageController {
      * 目标信息
      */
     @FXML
-    private ZKConnectComboBox targetInfo;
+    private ShellConnectTextField targetInfo;
 
     /**
      * 目标字符集
@@ -198,15 +198,15 @@ public class ZKTransportDataController extends StageController {
             this.transportHandler = new ZKDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str));
             this.transportHandler.setProcessedHandler(count -> {
-                        if (count == 0) {
-                            this.counter.updateIgnore();
-                        } else if (count < 0) {
-                            this.counter.incrFail(count);
-                        } else {
-                            this.counter.incrSuccess(count);
-                        }
-                        this.updateStatus(I18nHelper.transportInProgress());
-                    });
+                if (count == 0) {
+                    this.counter.updateIgnore();
+                } else if (count < 0) {
+                    this.counter.incrFail(count);
+                } else {
+                    this.counter.incrSuccess(count);
+                }
+                this.updateStatus(I18nHelper.transportInProgress());
+            });
         } else {
             this.transportHandler.interrupt(false);
         }
@@ -275,7 +275,7 @@ public class ZKTransportDataController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.sourceInfo.selectedItemChanged((observable, oldValue, newValue) -> {
+        this.sourceInfo.selectedItemChanged(newValue -> {
             if (newValue != null) {
                 this.sourceHost.setText(newValue.getHost());
                 this.sourceInfoName.setText(newValue.getName());
@@ -288,7 +288,7 @@ public class ZKTransportDataController extends StageController {
                 this.sourceClient = null;
             }
         });
-        this.targetInfo.selectedItemChanged((observable, oldValue, newValue) -> {
+        this.targetInfo.selectedItemChanged(newValue -> {
             if (newValue != null) {
                 this.targetHost.setText(newValue.getHost());
                 this.targetInfoName.setText(newValue.getName());
@@ -321,9 +321,9 @@ public class ZKTransportDataController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         // 来源连接不为null，则禁用来源选项
-        ZKConnect sourceConnect = this.stage.getProp("sourceConnect");
+        ShellConnect sourceConnect = this.stage.getProp("sourceConnect");
         if (sourceConnect != null) {
-            this.sourceInfo.select(sourceConnect);
+            this.sourceInfo.selectItem(sourceConnect);
             this.sourceInfo.disable();
         }
         this.stage.hideOnEscape();
@@ -369,8 +369,8 @@ public class ZKTransportDataController extends StageController {
     @FXML
     private void showStep2() {
         try {
-            ZKConnect sourceInfo = this.sourceInfo.getSelectedItem();
-            ZKConnect targetInfo = this.targetInfo.getSelectedItem();
+            ShellConnect sourceInfo = this.sourceInfo.getSelectedItem();
+            ShellConnect targetInfo = this.targetInfo.getSelectedItem();
             if (sourceInfo == null) {
 //                this.sourceInfo.requestFocus();
 //                MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());

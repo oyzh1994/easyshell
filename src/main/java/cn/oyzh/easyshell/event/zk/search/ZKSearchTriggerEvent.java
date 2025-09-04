@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.search;//package cn.oyzh.easyshell.event.zk.search;
 //
-//import cn.oyzh.easyshell.domain.zk.ZKConnect;
+//import cn.oyzh.easyshell.domain.ShellConnect;
 //import cn.oyzh.easyzk.search.ZKSearchParam;
 //import cn.oyzh.event.Event;
 //import lombok.Data;
@@ -17,7 +17,7 @@ package cn.oyzh.easyshell.event.zk.search;//package cn.oyzh.easyshell.event.zk.s
 //@Data
 //@EqualsAndHashCode(callSuper = false)
 //@Accessors(chain = false, fluent = true)
-//public class ZKSearchTriggerEvent extends Event<ZKConnect> {
+//public class ZKSearchTriggerEvent extends Event<ShellConnect> {
 //
 //    private ZKSearchParam param;
 //

@@ -55,7 +55,7 @@ public class ZKQueryStore extends JdbcStandardStore<ZKQuery> {
      *
      * @param iid zk连接id
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {

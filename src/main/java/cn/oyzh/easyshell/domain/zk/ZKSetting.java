@@ -11,7 +11,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
  * @author oyzh
  * @since 2022/8/26
  */
-@Table("t_setting")
+@Table("t_zk_setting")
 public class ZKSetting extends AppSetting {
 
     /**

@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2022/12/20
  */
-@Table("t_filter")
+@Table("t_zk_filter")
 public class ZKFilter implements ObjectComparator<ZKFilter>, ObjectCopier<ZKFilter>, Serializable {
 
     /**
@@ -38,7 +38,7 @@ public class ZKFilter implements ObjectComparator<ZKFilter>, ObjectCopier<ZKFilt
     /**
      * iid
      *
-     * @see ZKConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

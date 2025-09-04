@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
@@ -68,6 +69,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
         this.addItem("Redis");
+        this.addItem("Zookeeper");
         // 设置单元格工厂
         this.setCellFactory(new Callback<>() {
             @Override
@@ -121,6 +123,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "Tencent Cloud" -> new TencentCloudSVGGlyph();
             case "Huawei Cloud" -> new HuaweiCloudSVGGlyph();
             case "Redis" -> new RedisSVGGlyph();
+            case "Zookeeper" -> new ZookeeperSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

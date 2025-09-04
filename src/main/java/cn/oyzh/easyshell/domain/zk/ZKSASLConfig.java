@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author oyzh
  * @since 2024-12-20
  */
-@Table("t_sasl_config")
+@Table("t_zk_sasl_config")
 public class ZKSASLConfig implements Serializable, ObjectCopier<ZKSASLConfig> {
 
     /**
@@ -25,7 +25,7 @@ public class ZKSASLConfig implements Serializable, ObjectCopier<ZKSASLConfig> {
     /**
      * zk连接id
      *
-     * @see ZKConnect
+     * @see ShellConnect
      */
     @Column
     private String iid;

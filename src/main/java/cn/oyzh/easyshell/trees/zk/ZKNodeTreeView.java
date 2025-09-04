@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.util.zk.ZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -37,7 +37,7 @@ public class ZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
         return this.client;
     }
 
-    public ZKConnect connect() {
+    public ShellConnect connect() {
         return this.client.zkConnect();
     }
 

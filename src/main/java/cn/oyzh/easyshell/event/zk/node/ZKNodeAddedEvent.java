@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.node;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -11,13 +11,13 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ZKNodeAddedEvent extends Event<String> implements EventFormatter {
 
-    private ZKConnect zkConnect;
+    private ShellConnect zkConnect;
 
-    public ZKConnect getZkConnect() {
+    public ShellConnect getZkConnect() {
         return zkConnect;
     }
 
-    public void setZkConnect(ZKConnect zkConnect) {
+    public void setZkConnect(ShellConnect zkConnect) {
         this.zkConnect = zkConnect;
     }
 

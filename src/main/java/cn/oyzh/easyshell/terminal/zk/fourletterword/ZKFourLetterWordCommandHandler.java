@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.zk.fourletterword;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.fourletterword.ZKFourLetterWordCommand;
@@ -43,7 +43,7 @@ public abstract class ZKFourLetterWordCommandHandler<C extends TerminalCommand> 
         TerminalExecuteResult result = new TerminalExecuteResult();
         try {
             terminal.disable();
-            ZKConnect connect = terminal.zkConnect();
+            ShellConnect connect = terminal.zkConnect();
             String execResult = this.furLetterWordCommand().exec(connect.hostIp(), connect.hostPort());
             result.setResult(execResult);
         } catch (Exception ex) {

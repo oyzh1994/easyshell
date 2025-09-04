@@ -42,7 +42,7 @@ public class ZKCollectStore extends JdbcStandardStore<ZKCollect> {
      * @param iid  zk连接id
      * @param path zk路径
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean replace(String iid, String path) {
         return this.replace(new ZKCollect(iid, path));
@@ -66,7 +66,7 @@ public class ZKCollectStore extends JdbcStandardStore<ZKCollect> {
      *
      * @param iid zk连接id
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteByIid(String iid) {
         if (StringUtil.isEmpty(iid)) {
@@ -83,7 +83,7 @@ public class ZKCollectStore extends JdbcStandardStore<ZKCollect> {
      * @param iid  zk连接id
      * @param path zk路径
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean delete(String iid, String path) {
         if (StringUtil.isEmpty(iid) && StringUtil.isEmpty(path)) {
@@ -101,7 +101,7 @@ public class ZKCollectStore extends JdbcStandardStore<ZKCollect> {
      * @param iid  zk连接id
      * @param path zk路径
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean exist(String iid, String path) {
         if (StringUtil.isNotBlank(iid) && StringUtil.isNotBlank(path)) {

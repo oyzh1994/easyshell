@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKQuery;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
@@ -51,7 +51,7 @@ public class ZKQueryTab extends RichTab {
         return this.controller().getQuery();
     }
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.controller().zkConnect();
     }
 

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.server;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph;
@@ -68,7 +68,7 @@ public class ZKServerTab extends RichTab {
      *
      * @return zk信息
      */
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.controller().getClient().zkConnect();
     }
 

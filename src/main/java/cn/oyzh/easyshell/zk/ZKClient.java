@@ -5,9 +5,9 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
-import cn.oyzh.easyshell.domain.zk.ZKJumpConfig;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
@@ -22,7 +22,6 @@ import cn.oyzh.easyshell.exception.zk.ZKNoReadPermException;
 import cn.oyzh.easyshell.exception.zk.ZKNoWritePermException;
 import cn.oyzh.easyshell.query.zk.ZKQueryParam;
 import cn.oyzh.easyshell.query.zk.ZKQueryResult;
-import cn.oyzh.easyshell.store.zk.ZKJumpConfigStore;
 import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
@@ -91,9 +90,9 @@ public class ZKClient {
     /**
      * zk信息
      */
-    private final ZKConnect zkConnect;
+    private final ShellConnect zkConnect;
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return zkConnect;
     }
 
@@ -157,10 +156,10 @@ public class ZKClient {
 //     */
 //    private final ZKSSHConfigStore sshConfigStore = ZKSSHConfigStore.INSTANCE;
 
-    /**
-     * 跳板配置存储
-     */
-    private final ZKJumpConfigStore jumpConfigStore = ZKJumpConfigStore.INSTANCE;
+    // /**
+    //  * 跳板配置存储
+    //  */
+    // private final ZKJumpConfigStore jumpConfigStore = ZKJumpConfigStore.INSTANCE;
 
 //    /**
 //     * 代理配置存储
@@ -185,7 +184,7 @@ public class ZKClient {
         return this.state.getReadOnlyProperty();
     }
 
-    public ZKClient(ZKConnect zkConnect) {
+    public ZKClient(ShellConnect zkConnect) {
         this.zkConnect = zkConnect;
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {
@@ -274,7 +273,7 @@ public class ZKClient {
      * @return 结果
      */
     public boolean isEnableListen() {
-        return this.zkConnect.getListen();
+        return this.zkConnect.isListen();
     }
 
     /**
@@ -369,7 +368,7 @@ public class ZKClient {
                 this.jumpForwarder = new SSHJumpForwarder();
             }
             // 初始化跳板配置
-            List<ZKJumpConfig> jumpConfigs = this.zkConnect.getJumpConfigs();
+            List<ShellJumpConfig> jumpConfigs = this.zkConnect.getJumpConfigs();
             // 转换为目标连接
             SSHConnect target = new SSHConnect();
             target.setHost(this.zkConnect.hostIp());

@@ -203,7 +203,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param path     zk路径
      * @param saveTime 保存时间
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteLocal(String iid, String path, long saveTime) {
         return this.deleteLocalInner(iid, MD5Util.md5Hex(path), saveTime);
@@ -216,7 +216,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param path     zk路径
      * @param saveTime 保存时间
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     private boolean deleteLocalInner(String iid, String path, long saveTime) {
         DeleteParam deleteParam = new DeleteParam();
@@ -235,7 +235,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param saveTime 保存时间
      * @param client   zk客户端
      * @return 结果
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteServer(String iid, String path, long saveTime, ZKClient client) {
         try {

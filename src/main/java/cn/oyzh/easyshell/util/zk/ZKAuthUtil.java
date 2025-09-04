@@ -110,7 +110,7 @@ public class ZKAuthUtil {
      *
      * @param iid 连接id
      * @return 认证信息列表
-     * @see cn.oyzh.easyshell.domain.zk.ZKConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public static List<ZKAuth> loadAuths(String iid) {
         if (StringUtil.isNotBlank(iid)) {

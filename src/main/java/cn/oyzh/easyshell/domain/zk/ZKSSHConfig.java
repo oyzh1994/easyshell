@@ -19,7 +19,7 @@ package cn.oyzh.easyshell.domain.zk;//package cn.oyzh.easyzk.domain;
 //    /**
 //     * 连接id
 //     *
-//     * @see ZKConnect
+//     * @see ShellConnect
 //     */
 //    @Column
 //    @PrimaryKey

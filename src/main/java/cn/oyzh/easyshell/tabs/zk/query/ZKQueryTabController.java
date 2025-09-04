@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKQuery;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.query.zk.ZKQueryEditor;
@@ -72,7 +72,7 @@ public class ZKQueryTabController extends RichTabController {
      */
     private final ZKQueryStore queryStore = ZKQueryStore.INSTANCE;
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.zkClient.zkConnect();
     }
 

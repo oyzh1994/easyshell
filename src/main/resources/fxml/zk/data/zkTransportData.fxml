@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.zk.svg.glyph.ZookeeperSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.zk.ZKConnectComboBox?>
+<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -18,7 +17,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.zk.data.ZKTransportDataController" realWidth="800" realHeight="600">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
@@ -65,11 +64,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <ZKConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
+                <ShellConnectTextField filterMode="zk" fx:id="sourceInfo" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ZKConnectComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.charset" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>
@@ -123,11 +122,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <ZKConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                <ShellConnectTextField filterMode="zk" fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ZKConnectComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.charset" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>

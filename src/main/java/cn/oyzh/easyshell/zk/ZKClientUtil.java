@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.zk;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKThread;
 import org.apache.curator.RetryPolicy;
@@ -52,7 +52,7 @@ public class ZKClientUtil {
         return builder.build();
     }
 
-    public static ZKClient newClient(ZKConnect zkConnect) {
+    public static ZKClient newClient(ShellConnect zkConnect) {
         return new ZKClient(zkConnect);
     }
 }

@@ -117,6 +117,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadTermType();
         } else if ("redis".equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadRedisType();
+        } else if ("zk".equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadZKype();
         } else {
             this.connects = store.load();
         }

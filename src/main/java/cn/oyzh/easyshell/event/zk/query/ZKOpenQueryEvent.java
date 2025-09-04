@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.query;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKQuery;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.event.Event;
@@ -20,7 +20,7 @@ public class ZKOpenQueryEvent extends Event<ZKQuery> {
 
     private ZKClient client;
 
-    public ZKConnect zkConnect() {
+    public ShellConnect zkConnect() {
         return this.client.zkConnect();
     }
 }

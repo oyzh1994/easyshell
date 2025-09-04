@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.event.zk.window;//package cn.oyzh.easyshell.event.zk.window;
 //
-//import cn.oyzh.easyshell.domain.zk.ZKConnect;
+//import cn.oyzh.easyshell.domain.ShellConnect;
 //import cn.oyzh.event.Event;
 //
 ///**
 // * @author oyzh
 // * @since 2025-02-20
 // */
-//public class ZKShowExportDataEvent extends Event<ZKConnect> {
+//public class ZKShowExportDataEvent extends Event<ShellConnect> {
 //
 //    private String path;
 //

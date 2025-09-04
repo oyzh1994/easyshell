@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk;
 
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
 import cn.oyzh.easyshell.domain.zk.ZKQuery;
 import cn.oyzh.easyshell.event.zk.auth.ZKAuthAuthedEvent;
@@ -104,7 +104,7 @@ public class ZKEventUtil {
      * @param zkConnect zk连接
      * @param path      路径
      */
-    public static void nodeAdded(ZKConnect zkConnect, String path) {
+    public static void nodeAdded(ShellConnect zkConnect, String path) {
         ZKNodeAddedEvent event = new ZKNodeAddedEvent();
         event.data(path);
         event.setZkConnect(zkConnect);
@@ -183,7 +183,7 @@ public class ZKEventUtil {
     //  *
     //  * @param zkConnect zk连接
     //  */
-    // public static void connectAdded(ZKConnect zkConnect) {
+    // public static void connectAdded(ShellConnect zkConnect) {
     //     ZKConnectAddedEvent event = new ZKConnectAddedEvent();
     //     event.data(zkConnect);
     //     EventUtil.post(event);
@@ -194,7 +194,7 @@ public class ZKEventUtil {
     //  *
     //  * @param zkConnect zk连接
     //  */
-    // public static void connectUpdated(ZKConnect zkConnect) {
+    // public static void connectUpdated(ShellConnect zkConnect) {
     //     ZKConnectUpdatedEvent event = new ZKConnectUpdatedEvent();
     //     event.data(zkConnect);
     //     EventUtil.post(event);
@@ -205,7 +205,7 @@ public class ZKEventUtil {
     //  *
     //  * @param zkConnect zk连接
     //  */
-    // public static void connectDeleted(ZKConnect zkConnect) {
+    // public static void connectDeleted(ShellConnect zkConnect) {
     //     ZKConnectDeletedEvent event = new ZKConnectDeletedEvent();
     //     event.data(zkConnect);
     //     EventUtil.post(event);
@@ -326,7 +326,7 @@ public class ZKEventUtil {
      *
      * @param zkConnect zk连接
      */
-    public static void nodeACLAdded(ZKConnect zkConnect, String nodePath) {
+    public static void nodeACLAdded(ShellConnect zkConnect, String nodePath) {
         ZKNodeACLAddedEvent event = new ZKNodeACLAddedEvent();
         event.data(zkConnect);
         event.setNodePath(nodePath);
@@ -338,7 +338,7 @@ public class ZKEventUtil {
      *
      * @param zkConnect zk连接
      */
-    public static void nodeACLUpdated(ZKConnect zkConnect, String nodePath) {
+    public static void nodeACLUpdated(ShellConnect zkConnect, String nodePath) {
         ZKNodeACLUpdatedEvent event = new ZKNodeACLUpdatedEvent();
         event.data(zkConnect);
         event.setNodePath(nodePath);
@@ -447,7 +447,7 @@ public class ZKEventUtil {
 //     * @param param     搜索参数
 //     * @param zkConnect zk连接
 //     */
-//    public static void searchTrigger(ZKSearchParam param, ZKConnect zkConnect) {
+//    public static void searchTrigger(ZKSearchParam param, ShellConnect zkConnect) {
 //        ZKSearchTriggerEvent event = new ZKSearchTriggerEvent();
 //        event.data(zkConnect);
 //        event.param(param);
@@ -459,7 +459,7 @@ public class ZKEventUtil {
 //     *
 //     * @param zkConnect zk连接
 //     */
-//    public static void searchComplete(ZKConnect zkConnect) {
+//    public static void searchComplete(ShellConnect zkConnect) {
 //        ZKSearchCompleteEvent event = new ZKSearchCompleteEvent();
 //        event.data(zkConnect);
 //        EventUtil.post(event);
@@ -470,7 +470,7 @@ public class ZKEventUtil {
 //     *
 //     * @param zkConnect zk连接
 //     */
-//    public static void searchFinish(ZKConnect zkConnect) {
+//    public static void searchFinish(ShellConnect zkConnect) {
 //        ZKSearchFinishEvent event = new ZKSearchFinishEvent();
 //        event.data(zkConnect);
 //        EventUtil.post(event);
@@ -481,7 +481,7 @@ public class ZKEventUtil {
 //     *
 //     * @param zkConnect zk连接
 //     */
-//    public static void searchClose(ZKConnect zkConnect) {
+//    public static void searchClose(ShellConnect zkConnect) {
 //        ZKSearchCloseEvent event = new ZKSearchCloseEvent();
 //        event.data(zkConnect);
 //        EventUtil.post(event);
@@ -581,7 +581,7 @@ public class ZKEventUtil {
 //     *
 //     * @param connect zk连接
 //     */
-//    public static void showTransportData(ZKConnect connect) {
+//    public static void showTransportData(ShellConnect connect) {
 //        ZKShowTransportDataEvent event = new ZKShowTransportDataEvent();
 //        event.data(connect);
 //        EventUtil.post(event);
@@ -592,7 +592,7 @@ public class ZKEventUtil {
 //     *
 //     * @param connect zk连接
 //     */
-//    public static void showExportData(ZKConnect connect, String path) {
+//    public static void showExportData(ShellConnect connect, String path) {
 //        ZKShowExportDataEvent event = new ZKShowExportDataEvent();
 //        event.data(connect);
 //        event.setPath(path);
@@ -604,7 +604,7 @@ public class ZKEventUtil {
 //     *
 //     * @param connect zk连接
 //     */
-//    public static void showImportData(ZKConnect connect) {
+//    public static void showImportData(ShellConnect connect) {
 //        ZKShowImportDataEvent event = new ZKShowImportDataEvent();
 //        event.data(connect);
 //        EventUtil.post(event);
@@ -622,7 +622,7 @@ public class ZKEventUtil {
 //     *
 //     * @param connect zk连接
 //     */
-//    public static void showUpdateConnect(ZKConnect connect) {
+//    public static void showUpdateConnect(ShellConnect connect) {
 //        ZKShowUpdateConnectEvent event = new ZKShowUpdateConnectEvent();
 //        event.data(connect);
 //        EventUtil.post(event);

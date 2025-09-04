@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.controller.zk.data.ZKImportDataController;
 import cn.oyzh.easyshell.controller.zk.data.ZKTransportDataController;
 import cn.oyzh.easyshell.controller.zk.node.ZKAddNodeController;
 import cn.oyzh.easyshell.controller.zk.node.ZKAuthNodeController;
-import cn.oyzh.easyshell.domain.zk.ZKConnect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -44,7 +44,7 @@ public class ZKViewFactory {
     //  *
     //  * @param connect 连接
     //  */
-    // public static void updateConnect(ZKConnect connect) {
+    // public static void updateConnect(ShellConnect connect) {
     //     try {
     //         StageAdapter adapter = StageManager.parseStage(ZKUpdateConnectController.class, StageManager.getPrimaryStage());
     //         adapter.setProp("zkConnect", connect);
@@ -72,7 +72,7 @@ public class ZKViewFactory {
      *
      * @param connect zk连接
      */
-    public static void transportData(ZKConnect connect) {
+    public static void transportData(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKTransportDataController.class, StageManager.getPrimaryStage());
             adapter.setProp("sourceConnect", connect);
@@ -128,7 +128,7 @@ public class ZKViewFactory {
      *
      * @param connect zk连接
      */
-    public static void importData(ZKConnect connect) {
+    public static void importData(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKImportDataController.class, StageManager.getPrimaryStage());
             adapter.setProp("connect", connect);
@@ -145,7 +145,7 @@ public class ZKViewFactory {
      * @param connect  zk连接
      * @param nodePath 节点路径
      */
-    public static void exportData(ZKConnect connect, String nodePath) {
+    public static void exportData(ShellConnect connect, String nodePath) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKExportDataController.class, StageManager.getPrimaryStage());
             adapter.setProp("connect", connect);

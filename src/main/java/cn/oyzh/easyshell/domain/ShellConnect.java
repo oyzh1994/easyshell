@@ -7,16 +7,19 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author oyzh
@@ -174,6 +177,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * local 本地
      * serial 串口
      * telnet telnet
+     * vnc nvc
+     * smb smb
+     * s3 s3
+     * redis redis
+     * zk zookeeper
      */
     @Column
     private String type;
@@ -309,6 +317,39 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @Column
     private Integer executeTimeOut;
+
+    /**
+     * 监听节点 zk协议
+     * false: 否
+     * null|true: 是
+     */
+    @Column
+    private Boolean listen;
+
+    /**
+     * 是否开启sasl认证 zk协议
+     */
+    @Column
+    private Boolean saslAuth;
+
+    /**
+     * 会话超时时间 zk协议
+     */
+    @Column
+    private Integer sessionTimeOut;
+
+    /**
+     * 兼容模式 zk协议
+     * null: 无
+     * 1: 兼容3.4.x版本
+     */
+    @Column
+    private Integer compatibility;
+
+    /**
+     * 认证列表 zk协议
+     */
+    private List<ZKAuth> auths;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
@@ -494,12 +535,19 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.s3AppId = t1.s3AppId;
         // smb
         this.smbShareName = t1.smbShareName;
-        // redis
-        this.readonly = t1.readonly;
-        this.executeTimeOut = t1.executeTimeOut;
         // ssl
         this.sslMode = t1.sslMode;
+        // 只读模式
+        this.readonly = t1.readonly;
+        // redis
+        this.executeTimeOut = t1.executeTimeOut;
         this.sslConfig = ShellSSLConfig.clone(t1.sslConfig);
+        // zk
+        this.listen = t1.listen;
+        this.saslAuth = t1.saslAuth;
+        this.auths = ZKAuth.clone(t1.auths);
+        this.compatibility = t1.compatibility;
+        this.sessionTimeOut = t1.sessionTimeOut;
     }
 
     /**
@@ -796,6 +844,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return "redis".equalsIgnoreCase(this.type);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isZKType() {
+        return "zk".equalsIgnoreCase(this.type);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }
@@ -1052,5 +1105,90 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setSslConfig(ShellSSLConfig sslConfig) {
         this.sslConfig = sslConfig;
+    }
+
+    public void setSaslAuth(Boolean saslAuth) {
+        this.saslAuth = saslAuth;
+    }
+
+    /**
+     * 是否开启sasl认证
+     *
+     * @return 结果
+     */
+    public boolean isSASLAuth() {
+        return BooleanUtil.isTrue(this.saslAuth);
+    }
+
+    public Integer getCompatibility() {
+        return compatibility;
+    }
+
+    public void setCompatibility(Integer compatibility) {
+        this.compatibility = compatibility;
+    }
+
+    /**
+     * 是否兼容3.4.x版本
+     *
+     * @return 结果
+     */
+    public boolean compatibility34() {
+        return Objects.equals(1, this.compatibility);
+    }
+
+    public void setListen(boolean listen) {
+        this.listen = listen;
+    }
+
+    /**
+     * 是否开启sasl认证
+     *
+     * @return 结果
+     */
+    public boolean isListen() {
+        return BooleanUtil.isTrue(this.listen);
+    }
+
+    public List<ZKAuth> getAuths() {
+        return auths;
+    }
+
+    public void setAuths(List<ZKAuth> auths) {
+        this.auths = auths;
+    }
+
+    public void addAuth(ZKAuth auth) {
+        if (auth == null) {
+            return;
+        }
+        if (this.auths == null) {
+            this.auths = new ArrayList<>();
+        } else {
+            for (ZKAuth zkAuth : auths) {
+                if (zkAuth.compare(auth)) {
+                    return;
+                }
+            }
+        }
+        this.auths.add(auth);
+    }
+
+    /**
+     * 获取会话超时
+     *
+     * @return 会话超时时间
+     */
+    public Integer getSessionTimeOut() {
+        return this.sessionTimeOut == null || this.sessionTimeOut < 1 ? 30 : this.sessionTimeOut;
+    }
+
+    /**
+     * 获取会话超时毫秒值
+     *
+     * @return 会话超时时间毫秒值
+     */
+    public int sessionTimeOutMs() {
+        return this.getSessionTimeOut() * 60 * 1000;
     }
 }
