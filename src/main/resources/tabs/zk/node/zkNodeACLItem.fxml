@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.label.SuccessLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXHBox flexWidth="100%" realHeight="24">
+    <SuccessLabel realWidth="135" maxHeight="20">
+        <HBox.margin>
+            <Insets right="5"/>
+        </HBox.margin>
+    </SuccessLabel>
+    <SuccessLabel realHeight="20" flexWidth="100% - 180"/>
+</FXHBox>

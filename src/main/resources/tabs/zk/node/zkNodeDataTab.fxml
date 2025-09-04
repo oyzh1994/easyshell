@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.zk.ZKDataEditor?>
+<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.QRCodeSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UnLockSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
+<FXTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeDataTabController">
+    <graphic>
+        <SVGGlyph cursorType="DEFAULT" url="/font/zk/file-text.svg" size="13"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <EditorFormatTypeComboBox prefHeight="22" fx:id="format" initIndex="0" groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </EditorFormatTypeComboBox>
+            <SaveSVGGlyph fx:id="dataSave" disable="true" size="16" tipText="%base.saveTip1"
+                          onMousePrimaryClicked="#saveNodeData" groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </SaveSVGGlyph>
+            <UndoSVGGlyph disable="true" fx:id="dataUndo" size="16" onMousePrimaryClicked="#dataUndo"
+                          tipText="%base.undoTip1" groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </UndoSVGGlyph>
+            <RedoSVGGlyph disable="true" fx:id="dataRedo" size="16" onMousePrimaryClicked="#dataRedo"
+                          tipText="%base.redoTip1" groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </RedoSVGGlyph>
+            <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1"
+                           groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </PasteSVGGlyph>
+            <ClearSVGGlyph tipText="%base.clear"  size="16" onMousePrimaryClicked="#clearData" groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </ClearSVGGlyph>
+            <QRCodeSVGGlyph tipText="%base.qrCode" size="16" onMousePrimaryClicked="#node2QRCode" groupId="dataToBig">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </QRCodeSVGGlyph>
+            <UnLockSVGGlyph tipText="%base.auth" size="15" onMousePrimaryClicked="#authNode">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </UnLockSVGGlyph>
+            <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+            <CopySVGGlyph tipText="%zk.node.main.copy1" size="16" onMousePrimaryClicked="#copyNode">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+            <SVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath"
+                      url="/font/copy-path.svg">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </SVGGlyph>
+            <BinarySVGGlyph tipText="%base.saveBinaryFile" size="16" onMousePrimaryClicked="#saveBinaryFile">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </BinarySVGGlyph>
+            <ClearableTextField fx:id="dataSearch" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
+                                prefWidth="165">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
+        </FXHBox>
+        <ZKDataEditor fontSize="12" fx:id="nodeData" flexHeight="100% - 60"
+                      flexWidth="100% - 2" onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
+        <FXHBox flexWidth="100%" flexHeight="30">
+            <CharsetComboBox prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
+                             style="-fx-padding: 0;">
+                <HBox.margin>
+                    <Insets left="5" top="3"/>
+                </HBox.margin>
+            </CharsetComboBox>
+            <FXText enableTheme="false" tipText="%base.dataSize" fx:id="dataSize"
+                    style="-fx-fill: #AD0EB5B2;"
+                    realHeight="22">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </FXText>
+            <FXText enableTheme="false" tipText="%base.loadCost" fx:id="loadTime" style="-fx-fill: #009933;"
+                    realHeight="22">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </FXText>
+        </FXHBox>
+    </FXVBox>
+</FXTab>

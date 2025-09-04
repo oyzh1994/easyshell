@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.button.ClearButton?>
+<?import cn.oyzh.fx.gui.label.SuccessLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTab text="%base.quota" fx:id="quotaTab" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeQuotaTabController">
+    <graphic>
+        <SVGGlyph cursorType="DEFAULT" url="/font/zk/quota.svg" size="13"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <SaveSVGGlyph tipText="%base.save" size="16" onMousePrimaryClicked="#saveQuota">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </SaveSVGGlyph>
+            <RefreshSVGGlyph tipText="%base.refresh" size="15" onMousePrimaryClicked="#reloadQuota">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+            <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyQuota">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+        </FXHBox>
+        <FXHBox flexWidth="100%" realHeight="30">
+            <SuccessLabel realWidth="135" text="%base.childNumber" maxHeight="30">
+                <HBox.margin>
+                    <Insets top="10" left="5"/>
+                </HBox.margin>
+            </SuccessLabel>
+            <NumberTextField fx:id="quotaCount" realHeight="30" flexWidth="100% - 270" min="-1" value="-1"
+                             tipText="%zk.node.main.quotaCountTip">
+                <HBox.margin>
+                    <Insets top="5" left="5"/>
+                </HBox.margin>
+            </NumberTextField>
+            <ClearButton onAction="#clearQuotaCount" realHeight="30">
+                <HBox.margin>
+                    <Insets top="5" left="5"/>
+                </HBox.margin>
+            </ClearButton>
+        </FXHBox>
+        <FXHBox flexWidth="100%" realHeight="30">
+            <FXVBox.margin>
+                <Insets top="5"/>
+            </FXVBox.margin>
+            <SuccessLabel realWidth="135" text="%base.size" maxHeight="30">
+                <HBox.margin>
+                    <Insets top="10" left="5"/>
+                </HBox.margin>
+            </SuccessLabel>
+            <NumberTextField fx:id="quotaBytes" realHeight="30" flexWidth="100% - 270" min="-1"
+                             value="-1"
+                             tipText="%zk.node.main.quotaBytesTip">
+                <HBox.margin>
+                    <Insets top="5" left="5"/>
+                </HBox.margin>
+            </NumberTextField>
+            <ClearButton onAction="#clearQuotaBytes" realHeight="30">
+                <HBox.margin>
+                    <Insets top="5" left="5"/>
+                </HBox.margin>
+            </ClearButton>
+        </FXHBox>
+    </FXVBox>
+</FXTab>

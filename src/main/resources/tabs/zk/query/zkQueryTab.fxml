@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyzk.query.ZKQueryEditor?>
+<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryTabController">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </RunSVGGlyph>
+    </FXHBox>
+    <ZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
+                   flexWidth="100% - 30" flexHeight="100% - 60">
+        <VBox.margin>
+            <Insets left="5"/>
+        </VBox.margin>
+    </ZKQueryEditor>
+    <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
+                 visible="false">
+    </FXTabPane>
+</FXVBox>

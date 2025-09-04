@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.zk.ZKACLTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.button.SuccessButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.DisabledTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.acl.ZKAddACLController" realWidth="600" realHeight="420">
+    <InfoLabel text="%base.path">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <DisabledTextField fx:id="nodePath" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </DisabledTextField>
+    <InfoLabel text="%zk.aclType">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ZKACLTypeComboBox fx:id="aclType" realHeight="30" flexWidth="100% - 140" initIndex="0" require="true">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ZKACLTypeComboBox>
+    <FXVBox fx:id="permsBox" managedBindVisible="true">
+        <InfoLabel text="%zk.aclScope">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox fx:id="perms">
+            <padding>
+                <Insets left="30" top="5"/>
+            </padding>
+            <FXCheckBox text="%base.admin" selected="true"/>
+            <FXCheckBox text="%base.write" selected="true">
+                <HBox.margin>
+                    <Insets left="10"/>
+                </HBox.margin>
+            </FXCheckBox>
+            <FXCheckBox text="%base.read" selected="true">
+                <HBox.margin>
+                    <Insets left="10"/>
+                </HBox.margin>
+            </FXCheckBox>
+            <FXCheckBox text="%base.delete" selected="true">
+                <HBox.margin>
+                    <Insets left="10"/>
+                </HBox.margin>
+            </FXCheckBox>
+            <FXCheckBox text="%zk.acl.c" selected="true">
+                <HBox.margin>
+                    <Insets left="10"/>
+                </HBox.margin>
+            </FXCheckBox>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox managedBindVisible="true" visible="false" fx:id="digest1ACL">
+        <InfoLabel text="%base.authInfo">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox>
+            <ClearableTextField tipText="%base.userNameTip" fx:id="digestInfo1User"
+                                realHeight="30" flexWidth="50% - 115">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
+            <ClearableTextField tipText="%base.passwordTip" fx:id="digestInfo1Password" realHeight="30"
+                                flexWidth="50% - 115">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
+            <FXCheckBox text="%base.save" fx:id="digestSaveInfo" selected="true">
+                <HBox.margin>
+                    <Insets left="10" top="10"/>
+                </HBox.margin>
+            </FXCheckBox>
+        </FXHBox>
+        <FXHBox>
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+            <FXLabel fx:id="digestText" realHeight="25"/>
+            <CopySVGGlyph tipText="%base.copy" fx:id="copyDigestText" sizeStr="16" visible="false" onMousePrimaryClicked="#copyDigestText">
+                <HBox.margin>
+                    <Insets left="10" top="5"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox flexWidth="100%" managedBindVisible="true" visible="false" fx:id="digest2ACL">
+        <InfoLabel text="%base.authInfo">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ClearableTextField tipText="user:digest" fx:id="digestInfo2" realHeight="30" flexWidth="100% - 140">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ClearableTextField>
+    </FXVBox>
+    <FXVBox flexWidth="100%" managedBindVisible="true" visible="false" fx:id="digest3ACL">
+        <InfoLabel text="%base.authInfo">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXComboBox fx:id="digestInfo3" realHeight="30" flexWidth="100% - 140">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXComboBox>
+    </FXVBox>
+    <FXVBox flexWidth="100%" managedBindVisible="true" visible="false" fx:id="ip1ACL">
+        <InfoLabel text="%base.ipAddr">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox>
+            <ClearableTextField fx:id="ipContent1" realHeight="30" flexWidth="100% - 335" tipText="%base.ipAddrTip">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
+            <SuccessButton realHeight="30" minWidth="80" text="%base.segmentMode" onMousePrimaryClicked="#segmentModel">
+                <HBox.margin>
+                    <Insets left="10" top="5"/>
+                </HBox.margin>
+            </SuccessButton>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox flexWidth="100%" managedBindVisible="true" visible="false" fx:id="ip2ACL">
+        <InfoLabel text="%base.ipContent">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXTextArea
+                tipText="%zk.acl.add.ipContentTip"
+                fx:id="ipContent2" prefHeight="160" flexWidth="100% - 140">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXTextArea>
+    </FXVBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#addACL">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

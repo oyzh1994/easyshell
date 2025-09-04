@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.zk.ZKAuthTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.UnLockButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.DisabledTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.node.ZKAuthNodeController" realWidth="600" realHeight="320">
+    <InfoLabel text="%base.path">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <DisabledTextField fx:id="nodePath" realHeight="30" flexWidth="100% - 200">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </DisabledTextField>
+    <InfoLabel text="%zk.authMethod">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ZKAuthTypeComboBox initIndex="0" fx:id="authType" realHeight="30" flexWidth="100% - 200">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ZKAuthTypeComboBox>
+    <FXVBox fx:id="authType1">
+        <InfoLabel text="%base.authInfo">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox>
+            <ClearableTextField fx:id="user" realHeight="30" flexWidth="50% - 105" tipText="%base.passwordTip">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
+            <ClearableTextField fx:id="password" realHeight="30" flexWidth="50% - 105" tipText="%base.passwordTip">
+                <HBox.margin>
+                    <Insets left="10" top="5"/>
+                </HBox.margin>
+            </ClearableTextField>
+            <FXCheckBox text="%base.save" fx:id="saveInfo1" selected="true">
+                <HBox.margin>
+                    <Insets left="10" top="10"/>
+                </HBox.margin>
+            </FXCheckBox>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="authType2" managedBindVisible="true" visible="false">
+        <InfoLabel text="%base.authInfo">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXComboBox fx:id="authList" realHeight="30" flexWidth="100% - 200">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXComboBox>
+    </FXVBox>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <UnLockButton onAction="#auth" text="%base.auth">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </UnLockButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

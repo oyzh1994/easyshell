@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.zk.ZKDataEditor?>
+<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryDataTabController">
+    <FXHBox realHeight="35" flexWidth="100%">
+        <ClearableTextField prefHeight="22" tipText="%base.searchKWTip" fx:id="filter">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </ClearableTextField>
+        <EditorFormatTypeComboBox prefHeight="22" fx:id="format" initIndex="0">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </EditorFormatTypeComboBox>
+        <SaveSVGGlyph enableWaiting="false" disable="true" tipText="%base.saveTip1" fx:id="save" size="16" onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <UndoSVGGlyph disable="true" tipText="%base.undoTip1" fx:id="undo" size="16" onMousePrimaryClicked="#undo">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </UndoSVGGlyph>
+        <RedoSVGGlyph disable="true" tipText="%base.redoTip1" fx:id="redo" size="16" onMousePrimaryClicked="#redo">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </RedoSVGGlyph>
+    </FXHBox>
+    <ZKDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 30" flexHeight="100% - 35">
+        <VBox.margin>
+            <Insets left="5"/>
+        </VBox.margin>
+    </ZKDataEditor>
+</FXVBox>

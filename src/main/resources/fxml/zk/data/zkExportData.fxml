@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.ExportButton?>
+<?import cn.oyzh.fx.gui.button.NextStepButton?>
+<?import cn.oyzh.fx.gui.button.PrevStepButton?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
+<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.data.ZKExportDataController" realWidth="800" realHeight="600">
+    <FXHBox flexWidth="100%" realHeight="80">
+        <FXHBox flexHeight="100%" flexWidth="100%">
+            <ExportSVGGlyph sizeStr="40,40" color="yellowgreen">
+                <HBox.margin>
+                    <Insets left="30" top="20"/>
+                </HBox.margin>
+            </ExportSVGGlyph>
+            <FXText realHeight="25" text="%zk.export.tip1" fontSize="15">
+                <HBox.margin>
+                    <Insets left="15" top="30"/>
+                </HBox.margin>
+            </FXText>
+        </FXHBox>
+    </FXHBox>
+    <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
+        <FXVBox flexHeight="100% - 60" flexWidth="100%">
+            <InfoLabel text="%base.fileFormat">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <fx:define>
+                <FXToggleGroup fx:id="format"/>
+            </fx:define>
+            <FXRadioButton userData="json" toggleGroup="$format" text="%base.jsonType" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+            <FXRadioButton userData="xls" toggleGroup="$format" text="%base.xlsType">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+            <FXRadioButton userData="xlsx" toggleGroup="$format" text="%base.xlsxType">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+            <FXRadioButton userData="xml" toggleGroup="$format" text="%base.xmlType">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+            <FXRadioButton userData="csv" toggleGroup="$format" text="%base.csvType">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+            <FXRadioButton userData="txt" toggleGroup="$format" text="%base.txtType">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+            <FXRadioButton userData="html" toggleGroup="$format" text="%base.htmlType">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </NextStepButton>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+        <FXVBox flexHeight="100% - 60" flexWidth="100%">
+            <InfoLabel text="%base.filePath">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox flexWidth="100%">
+                <FXButton fx:id="selectFile" onAction="#selectFile" text="%base.select">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </FXButton>
+                <FXText fx:id="fileName">
+                    <HBox.margin>
+                        <Insets left="10" top="10"/>
+                    </HBox.margin>
+                </FXText>
+            </FXHBox>
+            <InfoLabel text="%base.nodePath">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXText fx:id="nodePath">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </FXText>
+            <InfoLabel text="%base.charset">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <CharsetComboBox fx:id="charset" realHeight="25">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </CharsetComboBox>
+            <InfoLabel text="%base.options">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox>
+                <FXCheckBox fx:id="includeTitle" text="%base.includeTitle" selected="true" disable="true">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </FXCheckBox>
+                <FXCheckBox fx:id="compress" text="%base.compressContent" selected="true">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXCheckBox>
+                <FXCheckBox fx:id="applyFilter" text="%base.applyFilter">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXCheckBox>
+                <FXCheckBox fx:id="includeACL" text="%zk.aclTip4">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXCheckBox>
+            </FXHBox>
+            <InfoLabel text="%base.prefix">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox>
+                <fx:define>
+                    <FXToggleGroup fx:id="prefix"/>
+                </fx:define>
+                <FXRadioButton groupId="txt" userData="" toggleGroup="$prefix" text="%base.none" disable="true">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </FXRadioButton>
+                <FXRadioButton groupId="txt" userData="set" toggleGroup="$prefix" text="set" disable="true">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXRadioButton>
+                <FXRadioButton groupId="txt" userData="create" toggleGroup="$prefix" text="create" selected="true"
+                               disable="true">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXRadioButton>
+            </FXHBox>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <PrevStepButton onAction="#showStep1" groupId="exec" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </PrevStepButton>
+            <NextStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </NextStepButton>
+        </FXHBox>
+    </FXVBox>
+    <!-- <FXVBox fx:id="step3" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false"> -->
+    <!--     <FXVBox flexHeight="100% - 60" flexWidth="100%"> -->
+    <!--         <InfoLabel text="%base.nodePath"> -->
+    <!--             <VBox.margin> -->
+    <!--                 <Insets left="30" top="20"/> -->
+    <!--             </VBox.margin> -->
+    <!--         </InfoLabel> -->
+    <!--         <FXText fx:id="nodePath"> -->
+    <!--             <VBox.margin> -->
+    <!--                 <Insets left="30" top="10"/> -->
+    <!--             </VBox.margin> -->
+    <!--         </FXText> -->
+    <!--         <InfoLabel text="%base.charset"> -->
+    <!--             <VBox.margin> -->
+    <!--                 <Insets left="30" top="20"/> -->
+    <!--             </VBox.margin> -->
+    <!--         </InfoLabel> -->
+    <!--         <CharsetComboBox fx:id="charset" realHeight="25"> -->
+    <!--             <VBox.margin> -->
+    <!--                 <Insets left="30" top="10"/> -->
+    <!--             </VBox.margin> -->
+    <!--         </CharsetComboBox> -->
+    <!--     </FXVBox> -->
+    <!--     <FXHBox flexWidth="100%" realHeight="50"> -->
+    <!--         <PrevStepButton onAction="#showStep2" groupId="exec" realHeight="30" iconSizePercent="0.75"> -->
+    <!--             <HBox.margin> -->
+    <!--                 <Insets left="30" top="10"/> -->
+    <!--             </HBox.margin> -->
+    <!--         </PrevStepButton> -->
+    <!--         <NextStepButton onAction="#showStep4" realHeight="30" iconSizePercent="0.75"> -->
+    <!--             <HBox.margin> -->
+    <!--                 <Insets left="15" top="10"/> -->
+    <!--             </HBox.margin> -->
+    <!--         </NextStepButton> -->
+    <!--     </FXHBox> -->
+    <!-- </FXVBox> -->
+    <FXVBox fx:id="step3" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+        <FXVBox flexWidth="100%" flexHeight="100% - 60">
+            <MsgTextArea lineLimit="500" limitPolicy="4" fx:id="exportMsg" flexWidth="100% - 60"
+                         flexHeight="100% - 30">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </MsgTextArea>
+            <InfoLabel fx:id="exportStatus">
+                <VBox.margin>
+                    <Insets left="30"/>
+                </VBox.margin>
+            </InfoLabel>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <PrevStepButton onAction="#showStep2" groupId="exec" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </PrevStepButton>
+            <ExportButton tipText="%base.start" groupId="exec" onAction="#doExport" realHeight="30">
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </ExportButton>
+            <StopButton fx:id="stopExportBtn" groupId="exec" onAction="#stopExport" realHeight="30">
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </StopButton>
+        </FXHBox>
+    </FXVBox>
+</FXVBox>

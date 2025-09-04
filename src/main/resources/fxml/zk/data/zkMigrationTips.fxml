@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.data.ZKMigrationTipsController" realWidth="520" realHeight="150">
+    <FXText realHeight="25" text="%zk.migration.tip4" fontSize="16">
+        <VBox.margin>
+            <Insets left="20" top="20"/>
+        </VBox.margin>
+    </FXText>
+    <FXCheckBox text="%zk.migration.tip5" fx:id="ignoreMigration">
+        <VBox.margin>
+            <Insets left="20" top="20"/>
+        </VBox.margin>
+    </FXCheckBox>
+    <FXHBox realHeight="50" flexWidth="100%">
+        <FXButton text="%base.migration" onAction="#migration">
+            <HBox.margin>
+                <Insets left="20" top="20"/>
+            </HBox.margin>
+        </FXButton>
+        <FXButton text="%base.close" onAction="#close">
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </FXButton>
+    </FXHBox>
+</FXVBox>

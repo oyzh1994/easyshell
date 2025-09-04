@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXTab text="%base.stat" fx:id="statTab" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeStatTabController">
+    <graphic>
+        <SVGGlyph cursorType="DEFAULT" url="/font/status.svg" size="13"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%" fx:id="statBox">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <FXToggleSwitch realHeight="16" fx:id="statViewSwitch" unselectedText="%zk.node.main.toggle.normal"
+                            selectedText="%zk.node.main.toggle.friendly"
+                            selected="true">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </FXToggleSwitch>
+            <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyStat">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+            <RefreshSVGGlyph tipText="%base.refresh" size="15" onMousePrimaryClicked="#reloadStat">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="zkNodeStatItem.fxml"/>
+    </FXVBox>
+</FXTab>

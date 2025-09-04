@@ -5,7 +5,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RedisSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph?>

@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
 import cn.oyzh.easyshell.exception.redis.ClusterOperationException;
-import cn.oyzh.easyshell.exception.redis.ReadonlyOperationException;
+import cn.oyzh.easyshell.exception.ReadonlyOperationException;
 import cn.oyzh.easyshell.exception.redis.SentinelOperationException;
 import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;

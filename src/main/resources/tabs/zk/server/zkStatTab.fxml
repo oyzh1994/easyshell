@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.server.ZKStatTabController" text="Stat">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox realHeight="30" flexWidth="100% - 28">
+            <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refreshStat">
+                <HBox.margin>
+                    <Insets left="12" top="10"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <FXTableView flexWidth="100% - 28" fx:id="statTable" flexHeight="100%- 30">
+            <VBox.margin>
+                <Insets left="12" top="5"/>
+            </VBox.margin>
+            <columns>
+                <FXTableColumn flexWidth="35%" valueName="name" text="%base.name"/>
+                <FXTableColumn flexWidth="65% - 12" valueName="value" text="%base.value"/>
+            </columns>
+        </FXTableView>
+    </FXVBox>
+</FXTab>

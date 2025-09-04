@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.MigrationButton?>
+<?import cn.oyzh.fx.gui.button.NextStepButton?>
+<?import cn.oyzh.fx.gui.button.PrevStepButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.MigrationSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.data.ZKMigrationDataController" realWidth="800" realHeight="600">
+    <FXHBox flexWidth="100%" realHeight="80">
+        <FXHBox flexHeight="100%" flexWidth="100%">
+            <MigrationSVGGlyph sizeStr="40,40" color="yellowgreen">
+                <HBox.margin>
+                    <Insets left="30" top="20"/>
+                </HBox.margin>
+            </MigrationSVGGlyph>
+            <FXText realHeight="25" text="%zk.migration.tip2" fontSize="15">
+                <HBox.margin>
+                    <Insets left="15" top="30"/>
+                </HBox.margin>
+            </FXText>
+        </FXHBox>
+    </FXHBox>
+    <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
+        <FXVBox flexHeight="100% - 60" flexWidth="100%">
+            <InfoLabel text="%base.data">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXCheckBox fx:id="groups" text="%base.groups" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
+            <FXCheckBox fx:id="connections" text="%base.connections" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
+            <FXCheckBox fx:id="terminalHistory" text="%base.terminalHistory" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
+            <InfoLabel text="%base.setting">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXCheckBox fx:id="applicationSetting" text="%base.applicationSetting" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
+            <FXCheckBox fx:id="filters" text="%base.filters" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
+            <FXCheckBox fx:id="authInfos" text="%base.auth" selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </NextStepButton>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+        <FXVBox flexHeight="100% - 60" flexWidth="100%">
+            <InfoLabel text="%zk.migration.tip3">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXHBox>
+                <fx:define>
+                    <FXToggleGroup fx:id="dataPolicy"/>
+                </fx:define>
+                <FXRadioButton userData="1" toggleGroup="$dataPolicy" text="%base.merge" selected="true">
+                    <HBox.margin>
+                        <Insets left="30" top="5"/>
+                    </HBox.margin>
+                </FXRadioButton>
+                <FXRadioButton userData="2" toggleGroup="$dataPolicy" text="%base.cover">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXRadioButton>
+            </FXHBox>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <PrevStepButton onAction="#showStep1" groupId="exec" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </PrevStepButton>
+            <NextStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </NextStepButton>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="step3" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+        <FXVBox flexWidth="100%" flexHeight="100% - 60">
+            <MsgTextArea lineLimit="500" limitPolicy="4" fx:id="migrationMsg" flexWidth="100% - 60"
+                         flexHeight="100% - 30">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </MsgTextArea>
+            <InfoLabel fx:id="migrationStatus">
+                <VBox.margin>
+                    <Insets left="30"/>
+                </VBox.margin>
+            </InfoLabel>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <PrevStepButton onAction="#showStep2" groupId="exec" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </PrevStepButton>
+            <MigrationButton tipText="%base.start" groupId="exec" onAction="#doMigration" realHeight="30">
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </MigrationButton>
+        </FXHBox>
+    </FXVBox>
+</FXVBox>

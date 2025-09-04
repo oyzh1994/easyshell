@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100% - 30" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryEnvTabController">
+    <FXTableView fx:id="envTable" flexWidth="100%" flexHeight="100%">
+        <columns>
+            <FXTableColumn valueName="key" flexWidth="25%" text="%base.name"/>
+            <FXTableColumn valueName="value" flexWidth="75% - 12" text="%base.value"/>
+        </columns>
+        <VBox.margin>
+            <Insets left="5" top="5"/>
+        </VBox.margin>
+    </FXTableView>
+</FXVBox>

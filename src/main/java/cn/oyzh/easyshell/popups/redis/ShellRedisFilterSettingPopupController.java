@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.popups.redis;
 
-import cn.oyzh.easyshell.filter.RedisKeyFilterParam;
+import cn.oyzh.easyshell.filter.redis.RedisKeyFilterParam;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.server.ZKClusterTabController" text="%base.cluster">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox realHeight="30" flexWidth="100% - 28">
+            <RefreshSVGGlyph onMousePrimaryClicked="#refreshCluster">
+                <HBox.margin>
+                    <Insets left="12" top="10"/>
+                </HBox.margin>
+            </RefreshSVGGlyph>
+        </FXHBox>
+        <FXTableView flexWidth="100% - 28" fx:id="clusterTable" flexHeight="100%- 30">
+            <VBox.margin>
+                <Insets left="12" top="5"/>
+            </VBox.margin>
+            <columns>
+                <FXTableColumn flexWidth="10%" valueName="id" text="%base.No"/>
+                <FXTableColumn flexWidth="10%" valueName="weight" text="%base.weight"/>
+                <FXTableColumn flexWidth="16%" valueName="type" text="%base.type"/>
+                <FXTableColumn flexWidth="20%" valueName="clientAddr" text="%base.clientAddr"
+                               sortable="false"/>
+                <FXTableColumn flexWidth="22%" valueName="addr" text="%zk.node.service.tableCol.addr"
+                               sortable="false"/>
+                <FXTableColumn flexWidth="22% - 10" valueName="electionAddr"
+                               text="%zk.node.service.tableCol.electionAddr" sortable="false"/>
+            </columns>
+        </FXTableView>
+    </FXVBox>
+</FXTab>

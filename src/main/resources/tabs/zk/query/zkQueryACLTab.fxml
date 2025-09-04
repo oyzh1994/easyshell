@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryACLTabController" flexWidth="100% - 30" flexHeight="100%">
+    <FXTableView fx:id="aclTable" flexWidth="100%" flexHeight="100%">
+        <columns>
+            <FXTableColumn valueName="param1" flexWidth="30%" text="%base.id"/>
+            <FXTableColumn valueName="param2" flexWidth="30%" text="%base.schema"/>
+            <FXTableColumn valueName="param3" flexWidth="40% - 12" text="%base.perms"/>
+        </columns>
+        <VBox.margin>
+            <Insets left="5" top="5"/>
+        </VBox.margin>
+    </FXTableView>
+</FXVBox>

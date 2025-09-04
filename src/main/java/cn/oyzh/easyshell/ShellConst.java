@@ -68,4 +68,12 @@ public class ShellConst {
         return getCachePath() + "key_cache" + File.separator;
     }
 
+    /**
+     * 获取节点缓存路径
+     *
+     * @return 节点缓存路径
+     */
+    public static String getNodeCachePath() {
+        return getCachePath() + "node_cache" + File.separator;
+    }
 }

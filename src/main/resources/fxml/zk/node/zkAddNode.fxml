@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.zk.ZKACLType2ComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ZKCreateModeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.DisabledTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.node.ZKAddNodeController" realWidth="750" realHeight="650">
+    <FXTabPane flexWidth="100%" flexHeight="100% - 80">
+        <FXTab text="%base.data" fx:id="dataTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXVBox fx:id="parentNodeBox">
+                    <InfoLabel text="%base.parentNode">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <DisabledTextField fx:id="parentNode" realHeight="30" flexWidth="100% - 140">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </DisabledTextField>
+                </FXVBox>
+                <InfoLabel text="%base.type">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ZKCreateModeComboBox initIndex="0" fx:id="createMode" realHeight="30.0" flexWidth="100% - 140">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ZKCreateModeComboBox>
+                <InfoLabel text="%base.path">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="nodePath" realHeight="30.0" flexWidth="100% - 140"
+                                    tipText="%base.pathTip" require="true">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <FXVBox flexWidth="100%" flexHeight="100% - 310">
+                    <InfoLabel text="%base.data">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHBox flexHeight="100% - 40">
+                        <Editor fx:id="nodeData" flexHeight="100%"
+                                    tipText="%base.dataTip"
+                                    flexWidth="100% - 140">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </Editor>
+                        <FXVBox>
+                            <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                                <VBox.margin>
+                                    <Insets left="5" top="10"/>
+                                </VBox.margin>
+                            </PasteSVGGlyph>
+                            <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+                                <VBox.margin>
+                                    <Insets left="5" top="10"/>
+                                </VBox.margin>
+                            </ClearSVGGlyph>
+                            <JSONSVGGlyph tipText="%base.json" onMousePrimaryClicked="#parseToJson">
+                                <VBox.margin>
+                                    <Insets left="5" top="10"/>
+                                </VBox.margin>
+                            </JSONSVGGlyph>
+                        </FXVBox>
+                    </FXHBox>
+                </FXVBox>
+                <FXVBox>
+                    <InfoLabel text="%base.preview">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <DisabledTextField fx:id="nodePathPreview" flexWidth="100% - 140" style="-fx-text-fill: #808080"
+                                       realHeight="30.0">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </DisabledTextField>
+                </FXVBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.acl" fx:id="aclTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%zk.aclType">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ZKACLType2ComboBox fx:id="aclType" realHeight="30" flexWidth="100% - 140" initIndex="0"
+                                    require="true">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ZKACLType2ComboBox>
+                <FXVBox>
+                    <InfoLabel text="%zk.aclScope">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHBox fx:id="perms">
+                        <padding>
+                            <Insets left="30" top="10"/>
+                        </padding>
+                        <FXCheckBox text="%base.admin" selected="true"/>
+                        <FXCheckBox text="%base.write" selected="true">
+                            <HBox.margin>
+                                <Insets left="10"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox text="%base.read" selected="true">
+                            <HBox.margin>
+                                <Insets left="10"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox text="%base.delete" selected="true">
+                            <HBox.margin>
+                                <Insets left="10"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox text="%zk.acl.c" selected="true">
+                            <HBox.margin>
+                                <Insets left="10"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                    </FXHBox>
+                </FXVBox>
+                <FXVBox managedBindVisible="true" visible="false" fx:id="digestACL">
+                    <InfoLabel text="%base.authInfo">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHBox>
+                        <ClearableTextField tipText="%base.userName" fx:id="digestUser" realHeight="30"
+                                            flexWidth="50% - 115">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </ClearableTextField>
+                        <ClearableTextField tipText="%base.password" fx:id="digestPassword" realHeight="30"
+                                            flexWidth="50% - 115">
+                            <HBox.margin>
+                                <Insets left="5" top="5"/>
+                            </HBox.margin>
+                        </ClearableTextField>
+                    </FXHBox>
+                    <FXHBox>
+                        <VBox.margin>
+                            <Insets left="30"/>
+                        </VBox.margin>
+                        <FXLabel fx:id="digestText"/>
+                    </FXHBox>
+                </FXVBox>
+                <FXVBox managedBindVisible="true" visible="false" fx:id="ipACL">
+                    <InfoLabel text="%base.ipAddr">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ClearableTextField fx:id="ipContent" realHeight="30" flexWidth="100% - 335"
+                                        tipText="%base.ipAddrTip">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ClearableTextField>
+                </FXVBox>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#addNode">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>
