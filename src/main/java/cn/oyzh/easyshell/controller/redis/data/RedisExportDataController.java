@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.handler.redis.RedisDataExportHandler;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisClientUtil;
-import cn.oyzh.easyshell.store.redis.RedisFilterStore;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -122,11 +121,11 @@ public class RedisExportDataController extends StageController {
     @FXML
     private FXCheckBox compress;
 
-    /**
-     * 适用过滤配置
-     */
-    @FXML
-    private FXCheckBox applyFilter;
+    // /**
+    //  * 适用过滤配置
+    //  */
+    // @FXML
+    // private FXCheckBox applyFilter;
 
     /**
      * 受影响的键
@@ -225,10 +224,10 @@ public class RedisExportDataController extends StageController {
      */
     private final Counter counter = new Counter();
 
-    /**
-     * 过滤配置储存
-     */
-    private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
+    // /**
+    //  * 过滤配置储存
+    //  */
+    // private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
 
     /**
      * 导出处理器
@@ -278,12 +277,12 @@ public class RedisExportDataController extends StageController {
         }
         // 导出文件
         this.exportHandler.filePath(this.exportFile.getPath());
-        // 适用过滤
-        if (this.applyFilter.isSelected()) {
-            this.exportHandler.setFilters(this.filterStore.loadEnable(this.client.iid()));
-        } else {
-            this.exportHandler.setFilters(null);
-        }
+        // // 适用过滤
+        // if (this.applyFilter.isSelected()) {
+        //     this.exportHandler.setFilters(this.filterStore.loadEnable(this.client.iid()));
+        // } else {
+        //     this.exportHandler.setFilters(null);
+        // }
         // 键类型
         List<String> keyTypes = new ArrayList<>();
         if (this.setType.isSelected()) {

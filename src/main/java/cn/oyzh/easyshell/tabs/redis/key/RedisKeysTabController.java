@@ -71,9 +71,9 @@ public class RedisKeysTabController extends ParentTabController {
         this.client = client;
     }
 
-    public RedisKeyTreeItem getActiveItem() {
-        return activeItem;
-    }
+    // public RedisKeyTreeItem getActiveItem() {
+    //     return activeItem;
+    // }
 
     // public void setActiveItem(RedisKeyTreeItem activeItem) {
     //     this.activeItem = activeItem;

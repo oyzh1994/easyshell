@@ -5,7 +5,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.RedisFilter;
 import cn.oyzh.easyshell.redis.batch.RedisCountResult;
 import cn.oyzh.easyshell.redis.batch.RedisDeleteResult;
 import cn.oyzh.easyshell.redis.batch.RedisScanResult;
@@ -44,34 +43,34 @@ import java.util.stream.Collectors;
 
 public class RedisKeyUtil {
 
-    /**
-     * 是否被过滤
-     *
-     * @param key     键名称
-     * @param filters 过滤配置列表
-     * @return 结果
-     */
-    public static boolean isFiltered(String key, List<RedisFilter> filters) {
-        if (CollectionUtil.isEmpty(filters) || key == null) {
-            return false;
-        }
-        // 匹配结果
-        for (RedisFilter filter : filters) {
-            // 未启用，不处理
-            if (!filter.isEnable()) {
-                continue;
-            }
-            // 模糊匹配
-            if (filter.isPartMatch() && key.contains(filter.getKw())) {
-                return true;
-            }
-            // 完全匹配
-            if (key.equalsIgnoreCase(filter.getKw())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // /**
+    //  * 是否被过滤
+    //  *
+    //  * @param key     键名称
+    //  * @param filters 过滤配置列表
+    //  * @return 结果
+    //  */
+    // public static boolean isFiltered(String key, List<RedisFilter> filters) {
+    //     if (CollectionUtil.isEmpty(filters) || key == null) {
+    //         return false;
+    //     }
+    //     // 匹配结果
+    //     for (RedisFilter filter : filters) {
+    //         // 未启用，不处理
+    //         if (!filter.isEnable()) {
+    //             continue;
+    //         }
+    //         // 模糊匹配
+    //         if (filter.isPartMatch() && key.contains(filter.getKw())) {
+    //             return true;
+    //         }
+    //         // 完全匹配
+    //         if (key.equalsIgnoreCase(filter.getKw())) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     // /**
     //  * 序列化键

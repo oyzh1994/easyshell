@@ -2,20 +2,17 @@
 
 <?import cn.oyzh.easyshell.filter.RedisKeyFilterTextField?>
 <?import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
 <?import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.pane.CollectSVGPane?>
-<?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController" text="%base.keys">
     <graphic>

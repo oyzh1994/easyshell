@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.handler.redis;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.RedisFilter;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.RedisKey;
@@ -57,13 +56,13 @@ public class RedisDataExportHandler extends DataHandler {
         this.database = database;
     }
 
-    public List<RedisFilter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<RedisFilter> filters) {
-        this.filters = filters;
-    }
+    // public List<RedisFilter> getFilters() {
+    //     return filters;
+    // }
+    //
+    // public void setFilters(List<RedisFilter> filters) {
+    //     this.filters = filters;
+    // }
 
     public List<String> getKeyTypes() {
         return keyTypes;
@@ -117,10 +116,10 @@ public class RedisDataExportHandler extends DataHandler {
      */
     private Integer database;
 
-    /**
-     * 过滤内容列表
-     */
-    private List<RedisFilter> filters;
+    // /**
+    //  * 过滤内容列表
+    //  */
+    // private List<RedisFilter> filters;
 
     /**
      * 键类型
@@ -194,11 +193,11 @@ public class RedisDataExportHandler extends DataHandler {
                         this.processedSkip();
                         return false;
                     }
-                    if (RedisKeyUtil.isFiltered(key, this.filters)) {
-                        this.message("key[" + key + "] is filtered, skip it");
-                        this.processedSkip();
-                        return false;
-                    }
+                    // if (RedisKeyUtil.isFiltered(key, this.filters)) {
+                    //     this.message("key[" + key + "] is filtered, skip it");
+                    //     this.processedSkip();
+                    //     return false;
+                    // }
                     return true;
                 };
                 // 获取节点成功

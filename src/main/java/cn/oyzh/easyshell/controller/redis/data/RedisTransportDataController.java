@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.handler.redis.RedisDataTransportHandler;
 import cn.oyzh.easyshell.redis.RedisClient;
 import cn.oyzh.easyshell.redis.RedisClientUtil;
-import cn.oyzh.easyshell.store.redis.RedisFilterStore;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -175,11 +174,11 @@ public class RedisTransportDataController extends StageController {
     @FXML
     private FXCheckBox retainTTL;
 
-    /**
-     * 适用过滤配置
-     */
-    @FXML
-    private FXCheckBox applyFilter;
+    // /**
+    //  * 适用过滤配置
+    //  */
+    // @FXML
+    // private FXCheckBox applyFilter;
 
     /**
      * 受影响的键
@@ -244,10 +243,10 @@ public class RedisTransportDataController extends StageController {
      */
     private RedisDataTransportHandler transportHandler;
 
-    /**
-     * 过滤配置储存
-     */
-    private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
+    // /**
+    //  * 过滤配置储存
+    //  */
+    // private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
 
     /**
      * 预选的db索引
@@ -291,12 +290,12 @@ public class RedisTransportDataController extends StageController {
         this.transportHandler.setTargetDatabase(this.targetDatabase.getDB());
         // 节点存在时处理策略
         this.transportHandler.setExistsPolicy(this.existsPolicy.selectedUserData());
-        // 适用过滤
-        if (this.applyFilter.isSelected()) {
-            this.transportHandler.setFilters(this.filterStore.loadEnable(this.sourceClient.iid()));
-        } else {
-            this.transportHandler.setFilters(null);
-        }
+        // // 适用过滤
+        // if (this.applyFilter.isSelected()) {
+        //     this.transportHandler.setFilters(this.filterStore.loadEnable(this.sourceClient.iid()));
+        // } else {
+        //     this.transportHandler.setFilters(null);
+        // }
         // 键类型
         List<String> keyTypes = new ArrayList<>();
         if (this.setType.isSelected()) {

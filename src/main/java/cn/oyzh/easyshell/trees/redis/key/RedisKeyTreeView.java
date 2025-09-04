@@ -60,7 +60,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         // 初始化过滤器
         if (this.itemFilter == null) {
             RedisKeyTreeItemFilter filter = new RedisKeyTreeItemFilter();
-            filter.initFilters(this.getClient().iid());
+            // filter.initFilters(this.getClient().iid());
             this.itemFilter = filter;
         }
         return (RedisKeyTreeItemFilter) this.itemFilter;

@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/07/19
  */
-@Table("t_key_filter_history")
+@Table("t_redis_key_filter_history")
 public class RedisKeyFilterHistory implements ObjectComparator<RedisKeyFilterHistory>, Serializable {
 
     /**

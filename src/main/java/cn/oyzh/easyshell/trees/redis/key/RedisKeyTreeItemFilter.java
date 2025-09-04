@@ -2,13 +2,9 @@ package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.domain.redis.RedisFilter;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
-import cn.oyzh.easyshell.store.redis.RedisFilterStore;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
-import java.util.List;
 
 
 /**
@@ -76,13 +72,13 @@ public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
         this.scope = scope;
     }
 
-    public List<RedisFilter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<RedisFilter> filters) {
-        this.filters = filters;
-    }
+    // public List<RedisFilter> getFilters() {
+    //     return filters;
+    // }
+    //
+    // public void setFilters(List<RedisFilter> filters) {
+    //     this.filters = filters;
+    // }
 
     /**
      * 0: 键
@@ -91,22 +87,22 @@ public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
      */
     private byte scope;
 
-    /**
-     * 过滤内容列表
-     */
-    private List<RedisFilter> filters;
+    // /**
+    //  * 过滤内容列表
+    //  */
+    // private List<RedisFilter> filters;
 
-    /**
-     * 过滤配置储存
-     */
-    private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
-
-    /**
-     * 初始化过滤配置
-     */
-    public void initFilters(String iid) {
-        this.filters = this.filterStore.loadEnable(iid);
-    }
+    // /**
+    //  * 过滤配置储存
+    //  */
+    // private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
+    //
+    // /**
+    //  * 初始化过滤配置
+    //  */
+    // public void initFilters(String iid) {
+    //     this.filters = this.filterStore.loadEnable(iid);
+    // }
 
     @Override
     public boolean test(RichTreeItem<?> item) {
@@ -145,10 +141,10 @@ public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
                 return false;
             }
             String key = treeItem.key();
-            // 过滤节点
-            if (RedisKeyUtil.isFiltered(key, this.filters)) {
-                return false;
-            }
+            // // 过滤节点
+            // if (RedisKeyUtil.isFiltered(key, this.filters)) {
+            //     return false;
+            // }
             // 关键字匹配
             if (StringUtil.isNotBlank(this.kw)) {
                 // 匹配大小写

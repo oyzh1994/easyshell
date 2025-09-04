@@ -146,12 +146,12 @@ public class RedisKeyDataController extends ParentTabController {
         this.flushTab();
         // 判断这个key是否到期
         if (treeItem.isExpire()) {
-            BackgroundService.submitFXLater(() -> {
+            // BackgroundService.submitFXLater(() -> {
                 String tips = I18nHelper.key() + " [" + treeItem.key() + "] " + I18nHelper.expired() + ", " + I18nHelper.deleteKey() + "?";
                 if (MessageBox.confirm(tips)) {
                     this.treeItem.deleteByExpired();
                 }
-            });
+            // });
         }
     }
 

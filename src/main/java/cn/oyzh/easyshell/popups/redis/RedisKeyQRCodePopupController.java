@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.popups.redis;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.qrcode.QRCodeUtil;
 import cn.oyzh.easyshell.redis.key.RedisKey;
@@ -61,9 +62,13 @@ public class RedisKeyQRCodePopupController extends PopupController {
             this.qrcode.setImage(FXUtil.toImage(source));
         } catch (Exception ex) {
             this.closeWindow();
-            ex.printStackTrace();
-            JulLog.warn("initQRCode error, ex:{}", ex.getMessage());
-            MessageBox.warn(I18nHelper.operationFail());
+            if (ExceptionUtil.hasMessage(ex, "Data too big")) {
+                MessageBox.warn(I18nHelper.dataTooLarge());
+            } else {
+                ex.printStackTrace();
+                JulLog.warn("initQRCode error, ex:{}", ex.getMessage());
+                MessageBox.warn(I18nHelper.operationFail());
+            }
         }
     }
 }
