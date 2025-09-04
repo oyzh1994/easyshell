@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.fx.plus.controls.popup.FXPopup;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;
@@ -155,11 +155,11 @@ public class RedisQueryPromptPopup extends FXPopup {
      * @param dbIndex     db索引
      * @return 结果
      */
-    public synchronized boolean initPrompts(RedisQueryToken token, RedisClient redisClient, int dbIndex) {
+    public synchronized boolean initPrompts(RedisQueryToken token, ShellRedisClient redisClient, int dbIndex) {
         // 初始化提示的键列表
         if (token.isPossibilityKey()) {
             try {
-                List<String> keys = RedisKeyUtil.scanKeys(dbIndex, redisClient, "*", 30);
+                List<String> keys = ShellRedisKeyUtil.scanKeys(dbIndex, redisClient, "*", 30);
                 RedisQueryUtil.setKeys(keys);
             } catch (Exception ex) {
                 ex.printStackTrace();

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.redis;
 
 
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.i18n.I18nSelectAdapter;
 
@@ -19,12 +19,12 @@ public class RedisKeyTypeComboBox extends FXComboBox<String> implements I18nSele
     /**
      * 获取类型
      *
-     * @return RedisKeyType
+     * @return ShellRedisKeyType
      */
-    public RedisKeyType getType() {
+    public ShellRedisKeyType getType() {
         String type = this.getValue();
         if (type != null) {
-            return RedisKeyType.valueOf(type.substring(0, type.indexOf("(")));
+            return ShellRedisKeyType.valueOf(type.substring(0, type.indexOf("(")));
         }
         return null;
     }
@@ -34,7 +34,7 @@ public class RedisKeyTypeComboBox extends FXComboBox<String> implements I18nSele
      *
      * @param type 类型
      */
-    public void select(RedisKeyType type) {
+    public void select(ShellRedisKeyType type) {
         if (type != null) {
             this.select(type.ordinal());
         }
@@ -43,7 +43,7 @@ public class RedisKeyTypeComboBox extends FXComboBox<String> implements I18nSele
     @Override
     public List<String> values(Locale locale) {
         this.clearItems();
-        for (RedisKeyType value : RedisKeyType.values()) {
+        for (ShellRedisKeyType value : ShellRedisKeyType.values()) {
             this.getItems().add(value.name());
         }
         this.getItems().add("HYPERLOGLOG");

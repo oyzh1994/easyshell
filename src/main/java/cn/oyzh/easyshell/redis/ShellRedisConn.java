@@ -7,17 +7,17 @@ import redis.clients.jedis.Jedis;
  * @author oyzh
  * @since 2025/01/02
  */
-public class RedisConn {
+public class ShellRedisConn {
 
     private Jedis jedis;
 
     private boolean using;
 
-    public RedisConn(Jedis jedis) {
+    public ShellRedisConn(Jedis jedis) {
         this.jedis = jedis;
     }
 
-    public RedisConn(Jedis jedis, boolean using) {
+    public ShellRedisConn(Jedis jedis, boolean using) {
         this.jedis = jedis;
         this.using = using;
     }

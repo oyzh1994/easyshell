@@ -9,13 +9,13 @@ import cn.oyzh.easyshell.redis.batch.RedisCountResult;
 import cn.oyzh.easyshell.redis.batch.RedisDeleteResult;
 import cn.oyzh.easyshell.redis.batch.RedisScanResult;
 import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
-import cn.oyzh.easyshell.redis.key.RedisHashValue;
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisListValue;
-import cn.oyzh.easyshell.redis.key.RedisSetValue;
-import cn.oyzh.easyshell.redis.key.RedisStreamValue;
-import cn.oyzh.easyshell.redis.key.RedisStringValue;
-import cn.oyzh.easyshell.redis.key.RedisZSetValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisSetValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisStringValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @since 2023/06/30
  */
 
-public class RedisKeyUtil {
+public class ShellRedisKeyUtil {
 
     // /**
     //  * 是否被过滤
@@ -78,7 +78,7 @@ public class RedisKeyUtil {
     //  * @param redisKey redis键
     //  * @return 序列化内容
     //  */
-    // public static String serializeNode(RedisKey redisKey) {
+    // public static String serializeNode(ShellRedisKey redisKey) {
     //     return serializeNode(redisKey, true);
     // }
 
@@ -88,49 +88,49 @@ public class RedisKeyUtil {
      * @param redisKey redis键
      * @return 序列化内容
      */
-    public static String serializeNode(RedisKey redisKey) {
+    public static String serializeNode(ShellRedisKey redisKey) {
         String result = null;
         // string
         if (redisKey.isStringKey()) {
-            RedisStringValue stringValue = redisKey.asStringValue();
+            ShellRedisStringValue stringValue = redisKey.asStringValue();
             // if (redisKey.isRawEncoding() && binaryAsHex) {
             //     return "0x'" + TextUtil.bytesToHexStr(stringValue.bytesValue()) + "'";
             // }
             result = JSONUtil.toJson(stringValue.getValue());
         } else if (redisKey.isListKey()) { // list
-            RedisListValue value = redisKey.asListValue();
-            List<RedisListValue.RedisListRow> rows = value.getValue();
+            ShellRedisListValue value = redisKey.asListValue();
+            List<ShellRedisListValue.RedisListRow> rows = value.getValue();
             if (CollectionUtil.isEmpty(rows)) {
                 return null;
             }
             List<Map<String, Object>> list = new ArrayList<>(rows.size());
-            for (RedisListValue.RedisListRow row : rows) {
+            for (ShellRedisListValue.RedisListRow row : rows) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("value", row.getValue());
                 list.add(map);
             }
             result = JSONUtil.toJson(list);
         } else if (redisKey.isSetKey()) {  // set
-            RedisSetValue value = redisKey.asSetValue();
-            List<RedisSetValue.RedisSetRow> rows = value.getValue();
+            ShellRedisSetValue value = redisKey.asSetValue();
+            List<ShellRedisSetValue.RedisSetRow> rows = value.getValue();
             if (CollectionUtil.isEmpty(rows)) {
                 return null;
             }
             List<Map<String, Object>> list = new ArrayList<>(rows.size());
-            for (RedisSetValue.RedisSetRow row : rows) {
+            for (ShellRedisSetValue.RedisSetRow row : rows) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("value", row.getValue());
                 list.add(map);
             }
             result = JSONUtil.toJson(list);
         } else if (redisKey.isZSetKey()) {   // zset
-            RedisZSetValue value = redisKey.asZSetValue();
-            List<RedisZSetValue.RedisZSetRow> rows = value.getValue();
+            ShellRedisZSetValue value = redisKey.asZSetValue();
+            List<ShellRedisZSetValue.RedisZSetRow> rows = value.getValue();
             if (CollectionUtil.isEmpty(rows)) {
                 return null;
             }
             List<Map<String, Object>> list = new ArrayList<>(rows.size());
-            for (RedisZSetValue.RedisZSetRow row : rows) {
+            for (ShellRedisZSetValue.RedisZSetRow row : rows) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("value", row.getValue());
                 map.put("score", row.getScore());
@@ -138,13 +138,13 @@ public class RedisKeyUtil {
             }
             result = JSONUtil.toJson(list);
         } else if (redisKey.isStreamKey()) {  // stream
-            RedisStreamValue value = redisKey.asStreamValue();
-            List<RedisStreamValue.RedisStreamRow> rows = value.getValue();
+            ShellRedisStreamValue value = redisKey.asStreamValue();
+            List<ShellRedisStreamValue.RedisStreamRow> rows = value.getValue();
             if (CollectionUtil.isEmpty(rows)) {
                 return null;
             }
             List<Map<String, Object>> list = new ArrayList<>(rows.size());
-            for (RedisStreamValue.RedisStreamRow row : rows) {
+            for (ShellRedisStreamValue.RedisStreamRow row : rows) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", row.getId());
                 map.put("value", row.getValue());
@@ -152,13 +152,13 @@ public class RedisKeyUtil {
             }
             result = JSONUtil.toJson(list);
         } else if (redisKey.isHashKey()) {   // hash
-            RedisHashValue value = redisKey.asHashValue();
-            List<RedisHashValue.RedisHashRow> rows = value.getValue();
+            ShellRedisHashValue value = redisKey.asHashValue();
+            List<ShellRedisHashValue.RedisHashRow> rows = value.getValue();
             if (CollectionUtil.isEmpty(rows)) {
                 return null;
             }
             List<Map<String, Object>> list = new ArrayList<>(rows.size());
-            for (RedisHashValue.RedisHashRow row : rows) {
+            for (ShellRedisHashValue.RedisHashRow row : rows) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("field", row.getField());
                 map.put("value", row.getValue());
@@ -176,17 +176,17 @@ public class RedisKeyUtil {
      * @param value 值
      * @return redis键
      */
-    public static RedisKey deserializeNode(RedisKeyType type, String value) {
+    public static ShellRedisKey deserializeNode(ShellRedisKeyType type, String value) {
         // string
-        if (type == RedisKeyType.STRING) {
-            RedisKey node = new RedisKey();
+        if (type == ShellRedisKeyType.STRING) {
+            ShellRedisKey node = new ShellRedisKey();
             node.valueOfString(value == null ? "" : value);
             return node;
         }
 
         // list
-        if (type == RedisKeyType.LIST) {
-            RedisKey node = new RedisKey();
+        if (type == ShellRedisKeyType.LIST) {
+            ShellRedisKey node = new ShellRedisKey();
             List<String> list = new ArrayList<>();
             if (StringUtil.isNotBlank(value)) {
                 JSONArray array = JSONUtil.parseArray(value);
@@ -199,8 +199,8 @@ public class RedisKeyUtil {
         }
 
         // set
-        if (type == RedisKeyType.SET) {
-            RedisKey node = new RedisKey();
+        if (type == ShellRedisKeyType.SET) {
+            ShellRedisKey node = new ShellRedisKey();
             Set<String> list = new HashSet<>();
             if (StringUtil.isNotBlank(value)) {
                 JSONArray array = JSONUtil.parseArray(value);
@@ -213,8 +213,8 @@ public class RedisKeyUtil {
         }
 
         // zset
-        if (type == RedisKeyType.ZSET) {
-            RedisKey node = new RedisKey();
+        if (type == ShellRedisKeyType.ZSET) {
+            ShellRedisKey node = new ShellRedisKey();
             List<String> list1 = new ArrayList<>();
             List<Double> list2 = new ArrayList<>();
             if (StringUtil.isNotBlank(value)) {
@@ -230,8 +230,8 @@ public class RedisKeyUtil {
         }
 
         // hash
-        if (type == RedisKeyType.HASH) {
-            RedisKey node = new RedisKey();
+        if (type == ShellRedisKeyType.HASH) {
+            ShellRedisKey node = new ShellRedisKey();
             Map<String, String> map = new HashMap<>();
             if (StringUtil.isNotBlank(value)) {
                 JSONArray array = JSONUtil.parseArray(value);
@@ -245,8 +245,8 @@ public class RedisKeyUtil {
         }
 
         // stream
-        if (type == RedisKeyType.STREAM) {
-            RedisKey node = new RedisKey();
+        if (type == ShellRedisKeyType.STREAM) {
+            ShellRedisKey node = new ShellRedisKey();
             List<StreamEntry> list = new ArrayList<>();
             if (StringUtil.isNotBlank(value)) {
                 JSONArray array = JSONUtil.parseArray(value);
@@ -277,7 +277,7 @@ public class RedisKeyUtil {
      * @param dbIndex db索引
      * @param client  redis客户端
      */
-    public static void createKey(RedisKey node, Integer dbIndex, RedisClient client) {
+    public static void createKey(ShellRedisKey node, Integer dbIndex, ShellRedisClient client) {
         if (node == null || client == null) {
             return;
         }
@@ -286,58 +286,58 @@ public class RedisKeyUtil {
         if (node.isStringKey()) {
             client.set(dbIndex, key, (String) node.asStringValue().getValue());
         } else if (node.isListKey()) {// list
-            RedisListValue value = node.asListValue();
-            List<RedisListValue.RedisListRow> rows = value.getValue();
+            ShellRedisListValue value = node.asListValue();
+            List<ShellRedisListValue.RedisListRow> rows = value.getValue();
             String[] arr;
             if (CollectionUtil.isEmpty(rows)) {
                 arr = new String[]{""};
             } else {
-                List<String> list = rows.parallelStream().map(RedisListValue.RedisListRow::getValue).collect(Collectors.toList());
+                List<String> list = rows.parallelStream().map(ShellRedisListValue.RedisListRow::getValue).collect(Collectors.toList());
                 arr = ArrayUtil.toArray(list, String.class);
             }
             client.lpush(dbIndex, key, arr);
         } else if (node.isSetKey()) {// set
-            RedisSetValue value = node.asSetValue();
-            List<RedisSetValue.RedisSetRow> rows = value.getValue();
+            ShellRedisSetValue value = node.asSetValue();
+            List<ShellRedisSetValue.RedisSetRow> rows = value.getValue();
             String[] arr;
             if (CollectionUtil.isEmpty(rows)) {
                 arr = new String[]{""};
             } else {
-                List<String> list = rows.parallelStream().map(RedisSetValue.RedisSetRow::getValue).collect(Collectors.toList());
+                List<String> list = rows.parallelStream().map(ShellRedisSetValue.RedisSetRow::getValue).collect(Collectors.toList());
                 arr = ArrayUtil.toArray(list, String.class);
             }
             client.sadd(dbIndex, key, arr);
         } else if (node.isZSetKey()) {// zset
-            RedisZSetValue value = node.asZSetValue();
-            List<RedisZSetValue.RedisZSetRow> rows = value.getValue();
+            ShellRedisZSetValue value = node.asZSetValue();
+            List<ShellRedisZSetValue.RedisZSetRow> rows = value.getValue();
             Map<String, Double> scoreMembers;
             if (CollectionUtil.isEmpty(rows)) {
                 scoreMembers = Collections.emptyMap();
             } else {
                 scoreMembers = new HashMap<>();
-                for (RedisZSetValue.RedisZSetRow row : rows) {
+                for (ShellRedisZSetValue.RedisZSetRow row : rows) {
                     scoreMembers.put(row.getValue(), row.getScore());
                 }
             }
             client.zadd(dbIndex, key, scoreMembers);
         } else if (node.isHashKey()) {// hash
-            RedisHashValue value = node.asHashValue();
-            List<RedisHashValue.RedisHashRow> rows = value.getValue();
+            ShellRedisHashValue value = node.asHashValue();
+            List<ShellRedisHashValue.RedisHashRow> rows = value.getValue();
             Map<String, String> hash;
             if (CollectionUtil.isEmpty(rows)) {
                 hash = Collections.emptyMap();
             } else {
                 hash = new HashMap<>();
-                for (RedisHashValue.RedisHashRow row : rows) {
+                for (ShellRedisHashValue.RedisHashRow row : rows) {
                     hash.put(row.getField(), row.getValue());
                 }
             }
             client.hmset(dbIndex, key, hash);
         } else if (node.isStreamKey()) {// stream
-            RedisStreamValue value = node.asStreamValue();
-            List<RedisStreamValue.RedisStreamRow> rows = value.getValue();
+            ShellRedisStreamValue value = node.asStreamValue();
+            List<ShellRedisStreamValue.RedisStreamRow> rows = value.getValue();
             if (CollectionUtil.isNotEmpty(rows)) {
-                for (RedisStreamValue.RedisStreamRow row : rows) {
+                for (ShellRedisStreamValue.RedisStreamRow row : rows) {
                     client.xadd(dbIndex, key, row.getStreamId(), row.getFields());
                 }
             }
@@ -352,7 +352,7 @@ public class RedisKeyUtil {
      * @param key     键
      * @param client  redis客户端
      */
-    public static void keyValue(RedisKey node, Integer dbIndex, String key, RedisClient client) {
+    public static void keyValue(ShellRedisKey node, Integer dbIndex, String key, ShellRedisClient client) {
         // string
         if (node.isStringKey()) {
             String value = client.get(dbIndex, key);
@@ -383,7 +383,7 @@ public class RedisKeyUtil {
      * @param key     键
      * @param client  redis客户端
      */
-    public static void keyObject(RedisKey node, Integer dbIndex, String key, RedisClient client) {
+    public static void keyObject(ShellRedisKey node, Integer dbIndex, String key, ShellRedisClient client) {
         Long objectRefcount = client.objectRefcount(dbIndex, key);
         Long objectIdletime = client.objectIdletime(dbIndex, key);
         String objectEncoding = client.objectEncoding(dbIndex, key);
@@ -401,7 +401,7 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 扫描结果
      */
-    public static RedisScanResult scanKeys(Integer dbIndex, String cursor, ScanParams params, RedisClient client) {
+    public static RedisScanResult scanKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 开始时间
         long start = System.currentTimeMillis();
         // 扫描
@@ -415,7 +415,7 @@ public class RedisKeyUtil {
         // 获取游标结果
         List<String> keys = result.getResult();
         // 批量获取键类型
-        List<RedisKeyType> types = keyType(dbIndex, keys, client);
+        List<ShellRedisKeyType> types = keyType(dbIndex, keys, client);
         if (types == null) {
             throw new RuntimeException(I18nResourceBundle.i18nString("get", "keyType", "fail"));
         }
@@ -424,9 +424,9 @@ public class RedisKeyUtil {
         // 加载耗时
         short loadTime = (short) (end - start);
         // 处理键
-        List<RedisKey> redisKeys = new ArrayList<>(keys.size());
+        List<ShellRedisKey> redisKeys = new ArrayList<>(keys.size());
         for (int i = 0; i < keys.size(); i++) {
-            RedisKey redisKey = initKey(dbIndex, keys.get(i), types.get(i));
+            ShellRedisKey redisKey = initKey(dbIndex, keys.get(i), types.get(i));
             redisKey.setLoadTime(loadTime);
             redisKeys.add(redisKey);
         }
@@ -443,7 +443,7 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 扫描结果
      */
-    public static RedisScanSimpleResult scanKeysSimple(Integer dbIndex, String cursor, ScanParams params, RedisClient client) {
+    public static RedisScanSimpleResult scanKeysSimple(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
         RedisScanSimpleResult scanResult = new RedisScanSimpleResult();
@@ -467,7 +467,7 @@ public class RedisKeyUtil {
      * @param limit   最大限制
      * @return 键列表
      */
-    public static List<String> scanKeys(Integer dbIndex, RedisClient client, String pattern, int limit) {
+    public static List<String> scanKeys(Integer dbIndex, ShellRedisClient client, String pattern, int limit) {
         ScanParams params = new ScanParams();
         params.count(limit);
         params.match(pattern);
@@ -484,7 +484,7 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 本次键数量
      */
-    public static RedisCountResult countKeys(Integer dbIndex, String cursor, ScanParams params, RedisClient client) {
+    public static RedisCountResult countKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
         RedisCountResult countResult = new RedisCountResult();
@@ -506,7 +506,7 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 本次键数量
      */
-    public static RedisDeleteResult deleteKeys(Integer dbIndex, String cursor, ScanParams params, RedisClient client) {
+    public static RedisDeleteResult deleteKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
         RedisDeleteResult countResult = new RedisDeleteResult();
@@ -528,13 +528,13 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 键列表
      */
-    public static List<RedisKey> allKeys(Integer dbIndex, String pattern, RedisClient client) {
+    public static List<ShellRedisKey> allKeys(Integer dbIndex, String pattern, ShellRedisClient client) {
         // 开始时间
         long start = System.currentTimeMillis();
         // 获取键列表
         Set<String> keys = client.keys(dbIndex, pattern);
         // 批量获取键类型
-        List<RedisKeyType> types = keyType(dbIndex, keys, client);
+        List<ShellRedisKeyType> types = keyType(dbIndex, keys, client);
         if (types == null) {
             throw new RuntimeException(I18nResourceBundle.i18nString("base.get", "base.keyType", "base.fail"));
         }
@@ -543,9 +543,9 @@ public class RedisKeyUtil {
         // 加载耗时
         short loadTime = (short) (end - start);
         // 处理键
-        List<RedisKey> redisKeys = new ArrayList<>(keys.size());
+        List<ShellRedisKey> redisKeys = new ArrayList<>(keys.size());
         for (int i = 0; i < keys.size(); i++) {
-            RedisKey redisKey = initKey(dbIndex, CollectionUtil.get(keys, i), types.get(i));
+            ShellRedisKey redisKey = initKey(dbIndex, CollectionUtil.get(keys, i), types.get(i));
             redisKey.setLoadTime(loadTime);
             redisKeys.add(redisKey);
         }
@@ -562,7 +562,7 @@ public class RedisKeyUtil {
      * @param client    redis客户端
      * @return redis键
      */
-    public static RedisKey getKey(int dbIndex, String key, boolean ttl, boolean loadValue, RedisClient client) {
+    public static ShellRedisKey getKey(int dbIndex, String key, boolean ttl, boolean loadValue, ShellRedisClient client) {
         return getKey(dbIndex, key, ttl, false, loadValue, client);
     }
 
@@ -577,11 +577,11 @@ public class RedisKeyUtil {
      * @param client         redis客户端
      * @return redis键
      */
-    public static RedisKey getKey(int dbIndex, String key, boolean ttl, boolean objectEncoding, boolean loadValue, RedisClient client) {
+    public static ShellRedisKey getKey(int dbIndex, String key, boolean ttl, boolean objectEncoding, boolean loadValue, ShellRedisClient client) {
         // 开始时间
         long start = System.currentTimeMillis();
         // 初始化键
-        RedisKey redisKey = initKey(dbIndex, key, keyType(dbIndex, key, client));
+        ShellRedisKey redisKey = initKey(dbIndex, key, keyType(dbIndex, key, client));
         if (redisKey == null) {
             return null;
         }
@@ -613,12 +613,12 @@ public class RedisKeyUtil {
      * @param type    键类型
      * @return redis键
      */
-    public static RedisKey initKey(int dbIndex, String key, RedisKeyType type) {
+    public static ShellRedisKey initKey(int dbIndex, String key, ShellRedisKeyType type) {
         // 创建键
-        RedisKey redisKey = null;
+        ShellRedisKey redisKey = null;
         switch (type) {
-            case RedisKeyType.STRING, RedisKeyType.LIST, RedisKeyType.SET, RedisKeyType.ZSET, RedisKeyType.HASH,
-                 RedisKeyType.STREAM -> redisKey = new RedisKey();
+            case ShellRedisKeyType.STRING, ShellRedisKeyType.LIST, ShellRedisKeyType.SET, ShellRedisKeyType.ZSET, ShellRedisKeyType.HASH,
+                 ShellRedisKeyType.STREAM -> redisKey = new ShellRedisKey();
             case null, default -> JulLog.warn("type:{} is not support!", type);
         }
         // 处理键
@@ -638,10 +638,10 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 结果
      */
-    public static RedisKeyType keyType(Integer dbIndex, String key, RedisClient client) {
+    public static ShellRedisKeyType keyType(Integer dbIndex, String key, ShellRedisClient client) {
         try {
             String type = client.type(dbIndex, key);
-            return RedisKeyType.valueOfType(type);
+            return ShellRedisKeyType.valueOfType(type);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -656,7 +656,7 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 统计值
      */
-    public static Long count(Integer dbIndex, String key, RedisClient client) {
+    public static Long count(Integer dbIndex, String key, ShellRedisClient client) {
         try {
             return client.pfcount(dbIndex, key);
         } catch (Exception ex) {
@@ -675,7 +675,7 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 结果
      */
-    public static boolean isHylog(Integer dbIndex, String key, RedisClient client) {
+    public static boolean isHylog(Integer dbIndex, String key, ShellRedisClient client) {
         try {
             client.pfcount(dbIndex, key);
             return true;
@@ -695,13 +695,13 @@ public class RedisKeyUtil {
      * @param client  redis客户端
      * @return 结果
      */
-    public static List<RedisKeyType> keyType(Integer dbIndex, Collection<String> keys, RedisClient client) {
+    public static List<ShellRedisKeyType> keyType(Integer dbIndex, Collection<String> keys, ShellRedisClient client) {
         try {
             List<String> types = client.typeMulti(dbIndex, keys);
             if (types.size() == keys.size()) {
-                List<RedisKeyType> list = new ArrayList<>();
+                List<ShellRedisKeyType> list = new ArrayList<>();
                 for (String type : types) {
-                    list.add(RedisKeyType.valueOfType(type));
+                    list.add(ShellRedisKeyType.valueOfType(type));
                 }
                 return list;
             }
@@ -721,14 +721,14 @@ public class RedisKeyUtil {
      * @param limit        限制数量
      * @return 键列表
      */
-    public static List<RedisKey> getKeys(RedisClient client, int dbIndex, String pattern, List<String> existingKeys, int limit) {
+    public static List<ShellRedisKey> getKeys(ShellRedisClient client, int dbIndex, String pattern, List<String> existingKeys, int limit) {
         // 当前光标
         String cursor = null;
         // 扫描参数
         ScanParams params = new ScanParams();
         params.match(pattern);
         // 全部节点
-        List<RedisKey> allKeys = new ArrayList<>();
+        List<ShellRedisKey> allKeys = new ArrayList<>();
         // 数据计数
         int count = 0;
         // 扫描数据
@@ -740,15 +740,15 @@ public class RedisKeyUtil {
                 params.count(1000);
             }
             // 扫描数据
-            RedisScanResult result = RedisKeyUtil.scanKeys(dbIndex, cursor, params, client);
+            RedisScanResult result = ShellRedisKeyUtil.scanKeys(dbIndex, cursor, params, client);
             // 添加到集合
-            List<RedisKey> keys = result.getKeys();
+            List<ShellRedisKey> keys = result.getKeys();
             if (CollectionUtil.isNotEmpty(keys)) {
                 if (existingKeys.isEmpty()) {
                     allKeys.addAll(keys);
                     count += keys.size();
                 } else {
-                    for (RedisKey key : keys) {
+                    for (ShellRedisKey key : keys) {
                         if (!existingKeys.contains(key.getKey())) {
                             allKeys.add(key);
                             count++;

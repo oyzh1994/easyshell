@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -85,7 +85,7 @@ public class RedisStreamMessageAddController extends StageController {
             // 获取键值
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
-            RedisClient client = this.treeItem.client();
+            ShellRedisClient client = this.treeItem.client();
             // 流添加参数
             XAddParams params = new XAddParams();
             params.id(streamIDText);

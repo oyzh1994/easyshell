@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisListValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 import java.util.List;
@@ -10,20 +10,20 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisListKeyTreeItem extends RedisRowKeyTreeItem<RedisListValue.RedisListRow> {
+public class RedisListKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisListValue.RedisListRow> {
 
-    public RedisListKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+    public RedisListKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 
     @Override
-    public RedisListValue.RedisListRow data() {
-        return (RedisListValue.RedisListRow) super.data();
+    public ShellRedisListValue.RedisListRow data() {
+        return (ShellRedisListValue.RedisListRow) super.data();
     }
 
     @Override
     public void data(Object data) {
-        if (data instanceof RedisListValue.RedisListRow row) {
+        if (data instanceof ShellRedisListValue.RedisListRow row) {
             super.data(row.clone());
         } else {
             super.clearData();
@@ -31,13 +31,13 @@ public class RedisListKeyTreeItem extends RedisRowKeyTreeItem<RedisListValue.Red
     }
 
     @Override
-    public RedisListValue.RedisListRow unsavedValue() {
-        return (RedisListValue.RedisListRow) super.unsavedValue();
+    public ShellRedisListValue.RedisListRow unsavedValue() {
+        return (ShellRedisListValue.RedisListRow) super.unsavedValue();
     }
 
     @Override
     public void saveKeyValue() {
-        RedisListValue.RedisListRow row = this.data();
+        ShellRedisListValue.RedisListRow row = this.data();
         try {
             if (row != null) {
                 // 更新数据
@@ -56,7 +56,7 @@ public class RedisListKeyTreeItem extends RedisRowKeyTreeItem<RedisListValue.Red
     @Override
     protected void setKeyValue(Object value) {
         // 更新数据
-        if (value instanceof RedisListValue.RedisListRow row) {
+        if (value instanceof ShellRedisListValue.RedisListRow row) {
             this.client().lset(this.dbIndex(), this.key(), row.getIndex() - 1, row.getValue());
         }
     }
@@ -101,14 +101,14 @@ public class RedisListKeyTreeItem extends RedisRowKeyTreeItem<RedisListValue.Red
     }
 
     @Override
-    public RedisListValue.RedisListRow rawValue() {
+    public ShellRedisListValue.RedisListRow rawValue() {
         return this.currentRow;
     }
 
     @Override
     public boolean isDataTooBig() {
         Object o = this.data();
-        if (o instanceof RedisListValue.RedisListRow r) {
+        if (o instanceof ShellRedisListValue.RedisListRow r) {
             String s = r.getValue();
             if (s.length() > DATA_MAX) {
                 return true;

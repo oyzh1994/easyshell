@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.redis.pubsub;
 
 import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
 import cn.oyzh.easyshell.fx.svg.glyph.SubscribeSVGGlyph;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import javafx.event.Event;
 import javafx.scene.Cursor;
@@ -92,7 +92,7 @@ public class RedisPubsubTab extends RichTab {
         this.unsubscribe();
     }
 
-    public RedisClient client() {
+    public ShellRedisClient client() {
         return this.item.getClient();
     }
 

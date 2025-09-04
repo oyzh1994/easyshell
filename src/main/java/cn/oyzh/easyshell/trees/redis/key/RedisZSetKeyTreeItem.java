@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.easyshell.event.redis.RedisEventUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisZSetValue;
-import cn.oyzh.easyshell.redis.RedisVersionUtil;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
+import cn.oyzh.easyshell.redis.ShellRedisVersionUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import redis.clients.jedis.GeoCoordinate;
 
@@ -15,21 +15,21 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.RedisZSetRow> {
+public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisZSetValue.RedisZSetRow> {
 
     @Override
-    public RedisZSetValue.RedisZSetRow currentRow() {
+    public ShellRedisZSetValue.RedisZSetRow currentRow() {
         return super.currentRow();
     }
 
     @Override
-    public RedisZSetValue.RedisZSetRow data() {
-        return (RedisZSetValue.RedisZSetRow) super.data();
+    public ShellRedisZSetValue.RedisZSetRow data() {
+        return (ShellRedisZSetValue.RedisZSetRow) super.data();
     }
 
     @Override
     public void data(Object data) {
-        if (data instanceof RedisZSetValue.RedisZSetRow row) {
+        if (data instanceof ShellRedisZSetValue.RedisZSetRow row) {
             super.data(row.clone());
         } else {
             super.clearData();
@@ -37,8 +37,8 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
     }
 
     @Override
-    public RedisZSetValue.RedisZSetRow  unsavedValue() {
-        return (RedisZSetValue.RedisZSetRow) super.unsavedValue();
+    public ShellRedisZSetValue.RedisZSetRow  unsavedValue() {
+        return (ShellRedisZSetValue.RedisZSetRow) super.unsavedValue();
     }
 
     /**
@@ -116,13 +116,13 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
     private byte showType;
 
     @Override
-    public RedisZSetKeyTreeItem currentRow(RedisZSetValue.RedisZSetRow currentRow) {
+    public RedisZSetKeyTreeItem currentRow(ShellRedisZSetValue.RedisZSetRow currentRow) {
         this.currentRow = currentRow;
         this.clearData();
         return this;
     }
 
-    public RedisZSetKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+    public RedisZSetKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 
@@ -149,7 +149,7 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
      * @return 结果
      */
     public boolean isSupportCoordinate() {
-        return RedisVersionUtil.isCommandSupported(this.getServerVersion(), "geopos");
+        return ShellRedisVersionUtil.isCommandSupported(this.getServerVersion(), "geopos");
     }
 
     /**
@@ -163,7 +163,7 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
 
     @Override
     public void saveKeyValue() {
-        RedisZSetValue.RedisZSetRow value = this.data();
+        ShellRedisZSetValue.RedisZSetRow value = this.data();
         try {
             this.setKeyValue(value);
             this.currentRow.setValue(value.getValue());
@@ -183,7 +183,7 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
 
     @Override
     protected void setKeyValue(Object value) {
-        if (value instanceof RedisZSetValue.RedisZSetRow row) {
+        if (value instanceof ShellRedisZSetValue.RedisZSetRow row) {
             try {
                 String rowValue = row.getValue();
                 double rowScore = row.getScore();
@@ -240,13 +240,13 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
     }
 
     @Override
-    public RedisZSetValue.RedisZSetRow rawValue() {
+    public ShellRedisZSetValue.RedisZSetRow rawValue() {
         return this.currentRow;
     }
 
     @Override
     public boolean checkRowExists() {
-        RedisZSetValue.RedisZSetRow row = this.data();
+        ShellRedisZSetValue.RedisZSetRow row = this.data();
         String rowValue = row.getValue();
         if (this.isDataUnsaved() && !Objects.equals(this.currentRow.getValue(), rowValue)) {
             Long zrank = this.client().zrank(this.dbIndex(), this.key(), rowValue);
@@ -258,7 +258,7 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<RedisZSetValue.Red
     @Override
     public boolean isDataTooBig() {
         Object o = this.data();
-        if (o instanceof RedisZSetValue.RedisZSetRow r) {
+        if (o instanceof ShellRedisZSetValue.RedisZSetRow r) {
             String s = r.getValue();
             if (s.length() > DATA_MAX) {
                 return true;

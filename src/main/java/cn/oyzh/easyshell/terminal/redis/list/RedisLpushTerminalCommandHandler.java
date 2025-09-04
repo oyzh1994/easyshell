@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.redis.list;
 
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
@@ -18,7 +18,7 @@ public class RedisLpushTerminalCommandHandler extends RedisKeyTerminalCommandHan
     }
 
     @Override
-    protected RedisKeyType getKeyType() {
-        return RedisKeyType.LIST;
+    protected ShellRedisKeyType getKeyType() {
+        return ShellRedisKeyType.LIST;
     }
 }

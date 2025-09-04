@@ -84,8 +84,8 @@ import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
@@ -1208,7 +1208,7 @@ public class ShellViewFactory {
      * @param dbIndex db库节点
      * @param type    键类型
      */
-    public static StageAdapter addRedisKey(RedisClient client, Integer dbIndex, RedisKeyType type) {
+    public static StageAdapter addRedisKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
         try {
             StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("type", type);
@@ -1229,7 +1229,7 @@ public class ShellViewFactory {
      * @param client  客户端
      * @param dbIndex db索引
      */
-    public static void redisBatchOperation(RedisClient client, Integer dbIndex) {
+    public static void redisBatchOperation(ShellRedisClient client, Integer dbIndex) {
         try {
             StageAdapter adapter = StageManager.parseStage(RedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
             adapter.setProp("client", client);

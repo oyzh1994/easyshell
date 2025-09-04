@@ -19,7 +19,7 @@ public class RedisEventUtil {
     //  *
     //  * @param client redis客户端
     //  */
-    // public static void clientClosed(RedisClient client) {
+    // public static void clientClosed(ShellRedisClient client) {
     //     RedisClientClosedEvent event = new RedisClientClosedEvent();
     //     event.data(client);
     //     EventUtil.post(event);
@@ -30,7 +30,7 @@ public class RedisEventUtil {
     //  *
     //  * @param client redis客户端
     //  */
-    // public static void connectionClosed(RedisClient client) {
+    // public static void connectionClosed(ShellRedisClient client) {
     //     RedisConnectionClosedEvent event = new RedisConnectionClosedEvent();
     //     event.data(client);
     //     EventUtil.post(event);
@@ -41,7 +41,7 @@ public class RedisEventUtil {
     //  *
     //  * @param client redis客户端
     //  */
-    // public static void connectionConnected(RedisClient client) {
+    // public static void connectionConnected(ShellRedisClient client) {
     //     RedisConnectionConnectedEvent event = new RedisConnectionConnectedEvent();
     //     event.data(client);
     //     EventUtil.post(event);
@@ -274,7 +274,7 @@ public class RedisEventUtil {
     //  * @param client  redis客户端
     //  * @param dbIndex db索引
     //  */
-    // public static void terminalOpen(RedisClient client, Integer dbIndex) {
+    // public static void terminalOpen(ShellRedisClient client, Integer dbIndex) {
     //     RedisTerminalOpenEvent event = new RedisTerminalOpenEvent();
     //     event.data(client);
     //     event.setDbIndex(dbIndex);
@@ -399,7 +399,7 @@ public class RedisEventUtil {
     //  *
     //  * @param client redis客户端
     //  */
-    // public static void server(RedisClient client) {
+    // public static void server(ShellRedisClient client) {
     //     RedisServerEvent event = new RedisServerEvent();
     //     event.data(client);
     //     EventUtil.post(event);
@@ -553,7 +553,7 @@ public class RedisEventUtil {
     //  *
     //  * @param client Redis查询
     //  */
-    // public static void addQuery(RedisClient client) {
+    // public static void addQuery(ShellRedisClient client) {
     //     RedisAddQueryEvent event = new RedisAddQueryEvent();
     //     event.data(client);
     //     EventUtil.post(event);
@@ -576,7 +576,7 @@ public class RedisEventUtil {
     //  * @param client Redis客户端
     //  * @param query  Redis查询
     //  */
-    // public static void openQuery(RedisClient client, RedisQuery query) {
+    // public static void openQuery(ShellRedisClient client, RedisQuery query) {
     //     RedisOpenQueryEvent event = new RedisOpenQueryEvent();
     //     event.data(query);
     //     event.setClient(client);

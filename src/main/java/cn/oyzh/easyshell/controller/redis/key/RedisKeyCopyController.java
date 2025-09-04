@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.button.SubmitButton;
@@ -55,7 +55,7 @@ public class RedisKeyCopyController extends StageController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 提交按钮

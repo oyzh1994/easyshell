@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -95,7 +95,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     // public void keyAdded(String key) {
     //     try {
     //         RedisKeyTreeView treeView = this.getTreeView();
-    //         RedisKey redisKey = treeView == null ? null : RedisKeyUtil.getKey(treeView.getDbIndex(), key, false, false, treeView.client());
+    //         ShellRedisKey redisKey = treeView == null ? null : ShellRedisKeyUtil.getKey(treeView.getDbIndex(), key, false, false, treeView.client());
     //         if (redisKey == null) {
     //             JulLog.warn("redisKey is null");
     //         } else {
@@ -199,9 +199,9 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     //         // 已存在节点
     //         List<String> existingKeys = this.keyChildren().parallelStream().map(RedisKeyTreeItem::key).toList();
     //         // 获取节点列表
-    //         List<RedisKey> list = RedisKeyUtil.getKeys(this.client(), this.dbIndex(), pattern, existingKeys, limit);
+    //         List<ShellRedisKey> list = ShellRedisKeyUtil.getKeys(this.client(), this.dbIndex(), pattern, existingKeys, limit);
     //         // 处理节点
-    //         for (RedisKey node : list) {
+    //         for (ShellRedisKey node : list) {
     //             // 添加到集合
     //             addList.add(this.initKeyItem(node));
     //         }
@@ -245,7 +245,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         return this.getTreeView().shellConnect();
     }
 
-    private RedisClient client() {
+    private ShellRedisClient client() {
         return this.getTreeView().getClient();
     }
 
@@ -255,7 +255,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     //  * @param redisKey redis键
     //  * @return redis树键
     //  */
-    // private RedisKeyTreeItem initKeyItem(RedisKey redisKey) {
+    // private RedisKeyTreeItem initKeyItem(ShellRedisKey redisKey) {
     //     if (redisKey.isStringKey()) {
     //         return new RedisStringKeyTreeItem(redisKey, this.getTreeView());
     //     }

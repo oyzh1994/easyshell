@@ -86,7 +86,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2023/6/16
  */
-public class RedisClient implements ShellBaseClient {
+public class ShellRedisClient implements ShellBaseClient {
 
 //    /**
 //     * redis连接池
@@ -101,7 +101,7 @@ public class RedisClient implements ShellBaseClient {
     /**
      * 连接池管理器
      */
-    private final RedisPoolManager poolManager = new RedisPoolManager();
+    private final ShellRedisPoolManager poolManager = new ShellRedisPoolManager();
 
     // /**
     //  * redis集群操作对象
@@ -200,7 +200,7 @@ public class RedisClient implements ShellBaseClient {
         return this.state;
     }
 
-    public RedisClient(ShellConnect shellConnect) {
+    public ShellRedisClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         // if (redisConnect.isSSHForward() && redisConnect.getSshConfig() != null) {
         //     this.sshForwarder = new SSHForwarder(redisConnect.getSshConfig());
@@ -324,7 +324,7 @@ public class RedisClient implements ShellBaseClient {
 //            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
 //        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect);
+        DefaultJedisClientConfig clientConfig = ShellRedisClientUtil.newConfig(this.shellConnect);
         // 初始化连接池
         this.initPool(hostIp, port, clientConfig);
         try {
@@ -479,7 +479,7 @@ public class RedisClient implements ShellBaseClient {
      * @param command 指令
      */
     public void throwCommandException(String command) {
-        RedisVersionUtil.checkSupported(this.getServerVersion(), command);
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), command);
     }
 
     /**
@@ -784,7 +784,7 @@ public class RedisClient implements ShellBaseClient {
      * @return 结果
      */
     public String ping() {
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "ping");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "ping");
         if (this.isClusterMode()) {
             return this.getCluster().ping();
         }
@@ -804,7 +804,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String echo(String string) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "echo");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "echo");
         Jedis jedis = this.getResource();
         try {
             return jedis.echo(string);
@@ -822,7 +822,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String hrandfield(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hrandfield");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hrandfield");
         if (this.isClusterMode()) {
             return this.getCluster().hrandfield(key);
         }
@@ -845,7 +845,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> hrandfield(Integer dbIndex, String key, long count) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hrandfield");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hrandfield");
         if (this.isClusterMode()) {
             return this.getCluster().hrandfield(key, count);
         }
@@ -868,7 +868,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<Map.Entry<String, String>> hrandfieldWithValues(Integer dbIndex, String key, long count) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hrandfield");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hrandfield");
         if (this.isClusterMode()) {
             return this.getCluster().hrandfieldWithValues(key, count);
         }
@@ -890,7 +890,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Set<String> hkeys(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hkeys");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hkeys");
         if (this.isClusterMode()) {
             return this.getCluster().hkeys(key);
         }
@@ -912,7 +912,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> hvals(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hvals");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hvals");
         if (this.isClusterMode()) {
             return this.getCluster().hvals(key);
         }
@@ -934,7 +934,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long hlen(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hlen");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hlen");
         if (this.isClusterMode()) {
             return this.getCluster().hlen(key);
         }
@@ -958,7 +958,7 @@ public class RedisClient implements ShellBaseClient {
     public long hdel(Integer dbIndex, String key, String... fields) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hdel");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hdel");
         if (this.isClusterMode()) {
             return this.getCluster().hdel(key);
         }
@@ -986,7 +986,7 @@ public class RedisClient implements ShellBaseClient {
     public long hset(Integer dbIndex, String key, String field, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hset");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hset");
         if (this.isClusterMode()) {
             return this.getCluster().hset(key, field, value);
         }
@@ -1010,7 +1010,7 @@ public class RedisClient implements ShellBaseClient {
     public long hset(Integer dbIndex, String key, Map<String, String> hash) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hset");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hset");
         if (this.isClusterMode()) {
             return this.getCluster().hset(key, hash);
         }
@@ -1035,7 +1035,7 @@ public class RedisClient implements ShellBaseClient {
     public long hsetnx(Integer dbIndex, String key, String field, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hsetnx");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hsetnx");
         if (this.isClusterMode()) {
             return this.getCluster().hsetnx(key, field, value);
         }
@@ -1058,7 +1058,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long hstrlen(Integer dbIndex, String key, String field) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hstrlen");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hstrlen");
         if (this.isClusterMode()) {
             return this.getCluster().hstrlen(key, field);
         }
@@ -1082,7 +1082,7 @@ public class RedisClient implements ShellBaseClient {
     public String hmset(Integer dbIndex, String key, Map<String, String> hash) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hmset");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hmset");
         if (this.isClusterMode()) {
             return this.getCluster().hmset(key, hash);
         }
@@ -1105,7 +1105,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public boolean hexists(Integer dbIndex, String key, String field) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hexists");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hexists");
         if (this.isClusterMode()) {
             return this.getCluster().hexists(key, field);
         }
@@ -1128,7 +1128,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String hget(Integer dbIndex, String key, String field) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hget");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hget");
         if (this.isClusterMode()) {
             return this.getCluster().hget(key, field);
         }
@@ -1153,7 +1153,7 @@ public class RedisClient implements ShellBaseClient {
     public long hincrBy(Integer dbIndex, String key, String field, long increment) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hincrBy");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hincrBy");
         if (this.isClusterMode()) {
             return this.getCluster().hincrBy(key, field, increment);
         }
@@ -1178,7 +1178,7 @@ public class RedisClient implements ShellBaseClient {
     public double hincrByFloat(Integer dbIndex, String key, String field, double increment) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hincrByFloat");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hincrByFloat");
         if (this.isClusterMode()) {
             return this.getCluster().hincrByFloat(key, field, increment);
         }
@@ -1204,7 +1204,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hmget");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hmget");
         if (this.isClusterMode()) {
             return this.getCluster().hmget(key, fields);
         }
@@ -1226,7 +1226,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Map<String, String> hgetAll(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "hgetAll");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "hgetAll");
         if (this.isClusterMode()) {
             return this.getCluster().hgetAll(key);
         }
@@ -1248,7 +1248,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long zcard(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zcard");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zcard");
         if (this.isClusterMode()) {
             return this.getCluster().zcard(key);
         }
@@ -1272,7 +1272,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long zcount(Integer dbIndex, String key, double min, double max) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zcount");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zcount");
         if (this.isClusterMode()) {
             return this.getCluster().zcount(key, min, max);
         }
@@ -1297,7 +1297,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zdiff");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zdiff");
         if (this.isClusterMode()) {
             return this.getCluster().zdiff(keys);
         }
@@ -1322,7 +1322,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zdiff");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zdiff");
         if (this.isClusterMode()) {
             return this.getCluster().zdiffWithScores(keys);
         }
@@ -1349,7 +1349,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zdiffStore");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zdiffStore");
         if (this.isClusterMode()) {
             return this.getCluster().zdiffStore(destkey, keys);
         }
@@ -1372,7 +1372,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Double zscore(Integer dbIndex, String key, String member) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zscore");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zscore");
         if (this.isClusterMode()) {
             return this.getCluster().zscore(key, member);
         }
@@ -1398,7 +1398,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zmscore");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zmscore");
         if (this.isClusterMode()) {
             return this.getCluster().zmscore(key, members);
         }
@@ -1420,7 +1420,7 @@ public class RedisClient implements ShellBaseClient {
      * @return 分数
      */
     public List<Double> zmscore_ext(Integer dbIndex, String key, String... members) {
-        if (RedisVersionUtil.isSupported(this.getServerVersion(), RedisVersionUtil.getSupportedVersion("zmscore"))) {
+        if (ShellRedisVersionUtil.isSupported(this.getServerVersion(), ShellRedisVersionUtil.getSupportedVersion("zmscore"))) {
             return this.zmscore(dbIndex, key, members);
         }
         if (ArrayUtil.isEmpty(members)) {
@@ -1455,7 +1455,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String zrandmember(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zrandmember");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zrandmember");
         if (this.isClusterMode()) {
             return this.getCluster().zrandmember(key);
         }
@@ -1478,7 +1478,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> zrandmember(Integer dbIndex, String key, int count) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zrandmember");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zrandmember");
         if (this.isClusterMode()) {
             return this.getCluster().zrandmember(key, count);
         }
@@ -1513,7 +1513,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> zrange(Integer dbIndex, String key, long start, long end) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zrange");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zrange");
         if (this.isClusterMode()) {
             return this.getCluster().zrange(key, start, end);
         }
@@ -1540,7 +1540,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zrem");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zrem");
         if (this.isClusterMode()) {
             return this.getCluster().zrem(key, members);
         }
@@ -1563,7 +1563,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long zrank(Integer dbIndex, String key, String member) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zrank");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zrank");
         if (this.isClusterMode()) {
             return this.getCluster().zrank(key, member);
         }
@@ -1586,7 +1586,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long zrevrank(Integer dbIndex, String key, String member) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zrevrank");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zrevrank");
         if (this.isClusterMode()) {
             return this.getCluster().zrevrank(key, member);
         }
@@ -1611,7 +1611,7 @@ public class RedisClient implements ShellBaseClient {
     public long zadd(Integer dbIndex, String key, double score, String member) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zadd");
         if (this.isClusterMode()) {
             return this.getCluster().zadd(key, score, member);
         }
@@ -1635,7 +1635,7 @@ public class RedisClient implements ShellBaseClient {
     public long zadd(Integer dbIndex, String key, Map<String, Double> scoreMembers) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zadd");
         if (this.isClusterMode()) {
             return this.getCluster().zadd(key, scoreMembers);
         }
@@ -1660,7 +1660,7 @@ public class RedisClient implements ShellBaseClient {
     public double zincrby(Integer dbIndex, String key, double increment, String member) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "zincrby");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "zincrby");
         if (this.isClusterMode()) {
             return this.getCluster().zincrby(key, increment, member);
         }
@@ -1683,7 +1683,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public boolean sismember(Integer dbIndex, String key, String member) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sismember");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sismember");
         if (this.isClusterMode()) {
             return this.getCluster().sismember(key, member);
         }
@@ -1705,7 +1705,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String srandmember(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "srandmember");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "srandmember");
         if (this.isClusterMode()) {
             return this.getCluster().srandmember(key);
         }
@@ -1728,7 +1728,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> srandmember(Integer dbIndex, String key, int count) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "srandmember");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "srandmember");
         if (this.isClusterMode()) {
             return this.getCluster().srandmember(key, count);
         }
@@ -1750,7 +1750,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long scard(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "scard");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "scard");
         if (this.isClusterMode()) {
             return this.getCluster().scard(key);
         }
@@ -1774,7 +1774,7 @@ public class RedisClient implements ShellBaseClient {
     public long sadd(Integer dbIndex, String key, String... members) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sadd");
         if (this.isClusterMode()) {
             return this.getCluster().sadd(key, members);
         }
@@ -1800,7 +1800,7 @@ public class RedisClient implements ShellBaseClient {
     public String spop(Integer dbIndex, String key) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "spop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "spop");
         if (this.isClusterMode()) {
             return this.getCluster().spop(key);
         }
@@ -1825,7 +1825,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptySet();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sdiff");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sdiff");
         if (this.isClusterMode()) {
             return this.getCluster().sdiff(keys);
         }
@@ -1852,7 +1852,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sdiffstore");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sdiffstore");
         if (this.isClusterMode()) {
             return this.getCluster().sdiffstore(destkey, keys);
         }
@@ -1877,7 +1877,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptySet();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sunion");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sunion");
         if (this.isClusterMode()) {
             return this.getCluster().sunion(keys);
         }
@@ -1904,7 +1904,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sunionstore");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sunionstore");
         if (this.isClusterMode()) {
             return this.getCluster().sunionstore(destkey, keys);
         }
@@ -1929,7 +1929,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptySet();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sinter");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sinter");
         if (this.isClusterMode()) {
             return this.getCluster().sinter(keys);
         }
@@ -1956,7 +1956,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "sinterstore");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "sinterstore");
         if (this.isClusterMode()) {
             return this.getCluster().sinterstore(destkey, keys);
         }
@@ -1980,7 +1980,7 @@ public class RedisClient implements ShellBaseClient {
     public Set<String> spop(Integer dbIndex, String key, long count) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "spop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "spop");
         if (this.isClusterMode()) {
             return this.getCluster().spop(key, count);
         }
@@ -2007,7 +2007,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "srem");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "srem");
         if (this.isClusterMode()) {
             return this.getCluster().srem(key, members);
         }
@@ -2029,7 +2029,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Set<String> smembers(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "smembers");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "smembers");
         if (this.isClusterMode()) {
             return this.getCluster().smembers(key);
         }
@@ -2056,7 +2056,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "rpush");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "rpush");
         if (this.isClusterMode()) {
             return this.getCluster().rpush(key, values);
         }
@@ -2083,7 +2083,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "rpushx");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "rpushx");
         if (this.isClusterMode()) {
             return this.getCluster().rpushx(key, values);
         }
@@ -2110,7 +2110,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lpush");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lpush");
         if (this.isClusterMode()) {
             return this.getCluster().lpush(key, values);
         }
@@ -2137,7 +2137,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lpushx");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lpushx");
         if (this.isClusterMode()) {
             return this.getCluster().lpushx(key, values);
         }
@@ -2162,7 +2162,7 @@ public class RedisClient implements ShellBaseClient {
     public String lset(Integer dbIndex, String key, int index, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lset");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lset");
         if (this.isClusterMode()) {
             return this.getCluster().lset(key, index, value);
         }
@@ -2188,7 +2188,7 @@ public class RedisClient implements ShellBaseClient {
     public long linsert(Integer dbIndex, String key, ListPosition where, String pivot, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "linsert");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "linsert");
         if (this.isClusterMode()) {
             return this.getCluster().linsert(key, where, pivot, value);
         }
@@ -2215,7 +2215,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "blpop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "blpop");
         if (this.isClusterMode()) {
             return this.getCluster().blpop(timeout, keys);
         }
@@ -2242,7 +2242,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "brpop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "brpop");
         if (this.isClusterMode()) {
             return this.getCluster().brpop(timeout, keys);
         }
@@ -2279,7 +2279,7 @@ public class RedisClient implements ShellBaseClient {
     public long lrem(Integer dbIndex, String key, long count, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lrem");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lrem");
         if (this.isClusterMode()) {
             return this.getCluster().lrem(key, count, value);
         }
@@ -2314,7 +2314,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> lrange(Integer dbIndex, String key, long start, long end) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lrange");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lrange");
         if (this.isClusterMode()) {
             return this.getCluster().lrange(key, start, end);
         }
@@ -2337,7 +2337,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String lindex(Integer dbIndex, String key, long index) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lindex");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lindex");
         if (this.isClusterMode()) {
             return this.getCluster().lindex(key, index);
         }
@@ -2360,7 +2360,7 @@ public class RedisClient implements ShellBaseClient {
     public String lpop(Integer dbIndex, String key) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lpop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lpop");
         if (this.isClusterMode()) {
             return this.getCluster().lpop(key);
         }
@@ -2384,7 +2384,7 @@ public class RedisClient implements ShellBaseClient {
     public List<String> lpop(Integer dbIndex, String key, int count) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lpop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lpop");
         if (this.isClusterMode()) {
             return this.getCluster().lpop(key, count);
         }
@@ -2407,7 +2407,7 @@ public class RedisClient implements ShellBaseClient {
     public String rpop(Integer dbIndex, String key) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "rpop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "rpop");
         if (this.isClusterMode()) {
             return this.getCluster().rpop(key);
         }
@@ -2431,7 +2431,7 @@ public class RedisClient implements ShellBaseClient {
     public List<String> rpop(Integer dbIndex, String key, int count) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "rpop");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "rpop");
         if (this.isClusterMode()) {
             return this.getCluster().rpop(key, count);
         }
@@ -2456,7 +2456,7 @@ public class RedisClient implements ShellBaseClient {
     public String ltrim(Integer dbIndex, String key, long start, long stop) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "ltrim");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "ltrim");
         if (this.isClusterMode()) {
             return this.getCluster().ltrim(key, start, stop);
         }
@@ -2478,7 +2478,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long llen(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "llen");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "llen");
         if (this.isClusterMode()) {
             return this.getCluster().llen(key);
         }
@@ -2505,7 +2505,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pfadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pfadd");
         if (this.isClusterMode()) {
             return this.getCluster().pfadd(key, elements);
         }
@@ -2530,7 +2530,7 @@ public class RedisClient implements ShellBaseClient {
             return -1L;
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pfcount");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pfcount");
         if (this.isClusterMode()) {
             return this.getCluster().pfcount(keys);
         }
@@ -2557,7 +2557,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pfmerge");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pfmerge");
         if (this.isClusterMode()) {
             return this.getCluster().pfmerge(destKey, sourceKeys);
         }
@@ -2583,7 +2583,7 @@ public class RedisClient implements ShellBaseClient {
     public long geoadd(Integer dbIndex, String key, double longitude, double latitude, String member) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "geoadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "geoadd");
         if (this.isClusterMode()) {
             return this.getCluster().geoadd(key, longitude, latitude, member);
         }
@@ -2608,7 +2608,7 @@ public class RedisClient implements ShellBaseClient {
     public long geoadd(Integer dbIndex, String key, GeoAddParams params, Map<String, GeoCoordinate> memberCoordinate) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "geoadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "geoadd");
         if (this.isClusterMode()) {
             return this.getCluster().geoadd(key, params, memberCoordinate);
         }
@@ -2637,7 +2637,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "geohash");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "geohash");
         if (this.isClusterMode()) {
             return this.getCluster().geohash(key, members);
         }
@@ -2662,7 +2662,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Double geodist(Integer dbIndex, String key, String member1, String member2, GeoUnit unit) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "geodist");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "geodist");
         if (this.isClusterMode()) {
             if (unit == null) {
                 return this.getCluster().geodist(key, member1, member2);
@@ -2695,7 +2695,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "geopos");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "geopos");
         if (this.isClusterMode()) {
             return this.getCluster().geopos(key, members);
         }
@@ -2717,7 +2717,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public boolean exists(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "exists");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "exists");
         if (this.isClusterMode()) {
             return this.getCluster().exists(key);
         }
@@ -2742,7 +2742,7 @@ public class RedisClient implements ShellBaseClient {
             return -1L;
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "exists");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "exists");
         if (this.isClusterMode()) {
             return this.getCluster().exists(keys);
         }
@@ -2766,7 +2766,7 @@ public class RedisClient implements ShellBaseClient {
     public String set(Integer dbIndex, String key, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "set");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "set");
         if (this.isClusterMode()) {
             return this.getCluster().set(key, value);
         }
@@ -2790,7 +2790,7 @@ public class RedisClient implements ShellBaseClient {
     public String set(Integer dbIndex, byte[] key, byte[] value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "set");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "set");
         if (this.isClusterMode()) {
             return this.getCluster().set(key, value);
         }
@@ -2815,7 +2815,7 @@ public class RedisClient implements ShellBaseClient {
     public long setrange(Integer dbIndex, String key, long offset, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "setrange");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "setrange");
         if (this.isClusterMode()) {
             return this.getCluster().setrange(key, offset, value);
         }
@@ -2839,7 +2839,7 @@ public class RedisClient implements ShellBaseClient {
     public long setnx(Integer dbIndex, String key, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "setnx");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "setnx");
         if (this.isClusterMode()) {
             return this.getCluster().setnx(key, value);
         }
@@ -2864,7 +2864,7 @@ public class RedisClient implements ShellBaseClient {
     public String setex(Integer dbIndex, String key, long seconds, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "setex");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "setex");
         if (this.isClusterMode()) {
             return this.getCluster().setex(key, seconds, value);
         }
@@ -2890,7 +2890,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "mset");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "mset");
         if (this.isClusterMode()) {
             return this.getCluster().mset(keyValues);
         }
@@ -2916,7 +2916,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "msetnx");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "msetnx");
         if (this.isClusterMode()) {
             return this.getCluster().msetnx(keyValues);
         }
@@ -2938,7 +2938,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String get(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "get");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "get");
         if (this.isClusterMode()) {
             return this.getCluster().get(key);
         }
@@ -2960,7 +2960,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public byte[] get(Integer dbIndex, byte[] key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "get");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "get");
         if (this.isClusterMode()) {
             return this.getCluster().get(key);
         }
@@ -2984,7 +2984,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String getrange(Integer dbIndex, String key, long startOffset, long endOffset) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "getrange");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "getrange");
         if (this.isClusterMode()) {
             return this.getCluster().getrange(key, startOffset, endOffset);
         }
@@ -3009,7 +3009,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "mget");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "mget");
         if (this.isClusterMode()) {
             return this.getCluster().mget(keys);
         }
@@ -3033,7 +3033,7 @@ public class RedisClient implements ShellBaseClient {
     public long append(Integer dbIndex, String key, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "append");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "append");
         if (this.isClusterMode()) {
             return this.getCluster().append(key, value);
         }
@@ -3055,7 +3055,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long strlen(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "strlen");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "strlen");
         if (this.isClusterMode()) {
             return this.getCluster().strlen(key);
         }
@@ -3079,7 +3079,7 @@ public class RedisClient implements ShellBaseClient {
     public String getSet(Integer dbIndex, String key, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "getSet");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "getSet");
         if (this.isClusterMode()) {
             return this.getCluster().getSet(key, value);
         }
@@ -3102,7 +3102,7 @@ public class RedisClient implements ShellBaseClient {
     public long decr(Integer dbIndex, String key) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "decr");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "decr");
         if (this.isClusterMode()) {
             return this.getCluster().decr(key);
         }
@@ -3126,7 +3126,7 @@ public class RedisClient implements ShellBaseClient {
     public long decrBy(Integer dbIndex, String key, long decrement) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "decrBy");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "decrBy");
         if (this.isClusterMode()) {
             return this.getCluster().decrBy(key, decrement);
         }
@@ -3149,7 +3149,7 @@ public class RedisClient implements ShellBaseClient {
     public long incr(Integer dbIndex, String key) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "incr");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "incr");
         if (this.isClusterMode()) {
             return this.getCluster().incr(key);
         }
@@ -3173,7 +3173,7 @@ public class RedisClient implements ShellBaseClient {
     public long incrBy(Integer dbIndex, String key, long increment) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "incrBy");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "incrBy");
         if (this.isClusterMode()) {
             return this.getCluster().incrBy(key, increment);
         }
@@ -3197,7 +3197,7 @@ public class RedisClient implements ShellBaseClient {
     public double incrByFloat(Integer dbIndex, String key, double increment) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "incrByFloat");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "incrByFloat");
         if (this.isClusterMode()) {
             return this.getCluster().incrByFloat(key, increment);
         }
@@ -3222,7 +3222,7 @@ public class RedisClient implements ShellBaseClient {
     public boolean setbit(Integer dbIndex, String key, long offset, boolean value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "setbit");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "setbit");
         if (this.isClusterMode()) {
             return this.getCluster().setbit(key, offset, value);
         }
@@ -3245,7 +3245,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public boolean getbit(Integer dbIndex, String key, long offset) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "getbit");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "getbit");
         if (this.isClusterMode()) {
             return this.getCluster().getbit(key, offset);
         }
@@ -3270,7 +3270,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long bitcount(Integer dbIndex, String key, Long start, Long end, BitCountOption option) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "bitcount");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "bitcount");
         if (this.isClusterMode()) {
             if (start == null || end == null) {
                 return this.getCluster().bitcount(key);
@@ -3306,7 +3306,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long bitpos(Integer dbIndex, String key, boolean value, BitPosParams params) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "bitpos");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "bitpos");
         if (this.isClusterMode()) {
             if (params == null) {
                 return this.getCluster().bitpos(key, value);
@@ -3338,7 +3338,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "del");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "del");
         if (this.isClusterMode()) {
             return this.getCluster().del(keys);
         }
@@ -3377,7 +3377,7 @@ public class RedisClient implements ShellBaseClient {
     public StreamEntryID xadd(Integer dbIndex, String key, StreamEntryID id, Map<String, String> hash) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "xadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "xadd");
         if (this.isClusterMode()) {
             return this.getCluster().xadd(key, id, hash);
         }
@@ -3402,7 +3402,7 @@ public class RedisClient implements ShellBaseClient {
     public StreamEntryID xadd(Integer dbIndex, String key, Map<String, String> hash, XAddParams params) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "xadd");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "xadd");
         if (this.isClusterMode()) {
             return this.getCluster().xadd(key, hash, params);
         }
@@ -3429,7 +3429,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "xdel");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "xdel");
         if (this.isClusterMode()) {
             return this.getCluster().xdel(key, ids);
         }
@@ -3451,7 +3451,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public StreamInfo xinfoStream(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "xinfoStream");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "xinfoStream");
         if (this.isClusterMode()) {
             return this.getCluster().xinfoStream(key);
         }
@@ -3473,7 +3473,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public StreamFullInfo xinfoStreamFull(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "xinfoStreamFull");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "xinfoStreamFull");
         if (this.isClusterMode()) {
             return this.getCluster().xinfoStreamFull(key);
         }
@@ -3521,7 +3521,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<StreamEntry> xrange(Integer dbIndex, String key, StreamEntryID start, StreamEntryID end, Integer count) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "xrange");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "xrange");
         if (this.isClusterMode()) {
             if (count == null) {
                 return this.getCluster().xrange(key, start, end);
@@ -3548,7 +3548,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String randomKey(Integer dbIndex) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "randomKey");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "randomKey");
         if (this.isClusterMode()) {
             return this.getCluster().randomKey();
         }
@@ -3572,7 +3572,7 @@ public class RedisClient implements ShellBaseClient {
     public long move(String key, Integer formDBIndex, int targetDBIndex) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "move");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "move");
         if (this.isClusterMode()) {
             throw new ClusterOperationException();
         }
@@ -3594,7 +3594,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String type(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "type");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "type");
         if (this.isClusterMode()) {
             return this.getCluster().type(key);
         }
@@ -3619,7 +3619,7 @@ public class RedisClient implements ShellBaseClient {
             return Collections.emptyList();
         }
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "type");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "type");
         // 类型集合
         List<String> types = new ArrayList<>(keys.size());
         // cluster集群处理
@@ -3657,7 +3657,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long dbSize(Integer dbIndex) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "dbSize");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "dbSize");
         long dbsize = 0;
         // 集群模式
         if (this.isClusterMode()) {
@@ -3702,7 +3702,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public ScanResult<String> scan(int dbIndex, String cursor, ScanParams params) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "scan");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "scan");
         if (cursor == null) {
             cursor = ScanParams.SCAN_POINTER_START;
         }
@@ -3751,9 +3751,9 @@ public class RedisClient implements ShellBaseClient {
      * @param type    键类型
      * @return 键列表
      */
-    public Set<String> keys(Integer dbIndex, String pattern, RedisKeyType type) {
+    public Set<String> keys(Integer dbIndex, String pattern, ShellRedisKeyType type) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "keys");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "keys");
         Set<String> keys;
         // 集群模式
         if (this.isClusterMode()) {
@@ -3794,7 +3794,7 @@ public class RedisClient implements ShellBaseClient {
     public String rename(Integer dbIndex, String key, String newKey) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "rename");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "rename");
         if (this.isClusterMode()) {
             return this.getCluster().rename(key, newKey);
         }
@@ -3816,7 +3816,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long ttl(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "ttl");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "ttl");
         if (this.isClusterMode()) {
             return this.getCluster().ttl(key);
         }
@@ -3838,7 +3838,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long pttl(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pttl");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pttl");
         if (this.isClusterMode()) {
             return this.getCluster().pttl(key);
         }
@@ -3863,7 +3863,7 @@ public class RedisClient implements ShellBaseClient {
     public long expire(Integer dbIndex, String key, long seconds, ExpiryOption option) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "expire");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "expire");
         if (this.isClusterMode()) {
             if (option == null) {
                 return this.getCluster().expire(key, seconds);
@@ -3894,7 +3894,7 @@ public class RedisClient implements ShellBaseClient {
     public long pexpire(Integer dbIndex, String key, long milliseconds, ExpiryOption option) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pexpire");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pexpire");
         if (this.isClusterMode()) {
             return this.getCluster().pexpire(key, milliseconds, option);
         }
@@ -3922,7 +3922,7 @@ public class RedisClient implements ShellBaseClient {
     public long expireAt(Integer dbIndex, String key, long unixTime, ExpiryOption option) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "expireAt");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "expireAt");
         if (this.isClusterMode()) {
             return this.getCluster().expireAt(key, unixTime, option);
         }
@@ -3950,7 +3950,7 @@ public class RedisClient implements ShellBaseClient {
     public long pexpireAt(Integer dbIndex, String key, long millisecondsTimestamp, ExpiryOption option) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pexpireAt");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pexpireAt");
         if (this.isClusterMode()) {
             return this.getCluster().expireAt(key, millisecondsTimestamp, option);
         }
@@ -3976,7 +3976,7 @@ public class RedisClient implements ShellBaseClient {
     public long persist(Integer dbIndex, String key) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "persist");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "persist");
         if (this.isClusterMode()) {
             return this.getCluster().persist(key);
         }
@@ -4002,7 +4002,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "touch");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "touch");
         if (this.isClusterMode()) {
             return this.getCluster().touch(keys);
         }
@@ -4025,7 +4025,7 @@ public class RedisClient implements ShellBaseClient {
     public long waitReplicas(int replicas, long timeout) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "wait");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "wait");
         if (this.isClusterMode()) {
             return this.getCluster().waitReplicas((String) null, replicas, timeout);
         }
@@ -4048,7 +4048,7 @@ public class RedisClient implements ShellBaseClient {
     public KeyValue<Long, Long> waitAOF(long numLocal, int replicas, long timeout) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "waitAOF");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "waitAOF");
         if (this.isClusterMode()) {
             return this.getCluster().waitAOF((String) null, numLocal, replicas, timeout);
         }
@@ -4069,7 +4069,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String objectEncoding(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "object encoding");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "object encoding");
         if (this.isClusterMode()) {
             return this.getCluster().objectEncoding(key);
         }
@@ -4091,7 +4091,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long objectFreq(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "object freq");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "object freq");
         if (this.isClusterMode()) {
             return this.getCluster().objectFreq(key);
         }
@@ -4113,7 +4113,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long objectIdletime(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "object idletime");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "object idletime");
         if (this.isClusterMode()) {
             return this.getCluster().objectIdletime(key);
         }
@@ -4135,7 +4135,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long objectRefcount(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "object refcount");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "object refcount");
         if (this.isClusterMode()) {
             return this.getCluster().objectRefcount(key);
         }
@@ -4161,7 +4161,7 @@ public class RedisClient implements ShellBaseClient {
     public boolean copy(Integer dbIndex, String srcKey, String dstKey, Integer db, boolean replace) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "copy");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "copy");
         if (this.isClusterMode()) {
             return this.getCluster().copy(srcKey, dstKey, replace);
         }
@@ -4186,7 +4186,7 @@ public class RedisClient implements ShellBaseClient {
     public String flushDB(Integer dbIndex) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "flushDB");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "flushDB");
         if (this.isClusterMode()) {
             return this.getCluster().flushDB();
         }
@@ -4207,7 +4207,7 @@ public class RedisClient implements ShellBaseClient {
     public String flushAll() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "flushAll");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "flushAll");
         if (this.isClusterMode()) {
             return this.getCluster().flushAll();
         }
@@ -4227,7 +4227,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Map<String, String> configGet(String pattern) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "config get");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "config get");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.configGet(pattern);
@@ -4246,7 +4246,7 @@ public class RedisClient implements ShellBaseClient {
     public String configSet(String parameter, String value) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "config set");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "config set");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.configSet(parameter, value);
@@ -4264,7 +4264,7 @@ public class RedisClient implements ShellBaseClient {
     public String configSet(String... parameterValues) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "config set");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "config set");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.configSet(parameterValues);
@@ -4281,7 +4281,7 @@ public class RedisClient implements ShellBaseClient {
     public String configRewrite() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "config rewrite");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "config rewrite");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.configRewrite();
@@ -4298,7 +4298,7 @@ public class RedisClient implements ShellBaseClient {
     public String configResetStat() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "config resetStat");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "config resetStat");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.configResetStat();
@@ -4375,7 +4375,7 @@ public class RedisClient implements ShellBaseClient {
         if (this.isClusterMode()) {
             throw new ClusterOperationException();
         }
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "select");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "select");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return this.dbIndex(jedis, dbIndex);
@@ -4394,7 +4394,7 @@ public class RedisClient implements ShellBaseClient {
     public long publish(String channel, String message) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "publish");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "publish");
         if (this.isClusterMode()) {
             return this.getCluster().publish(channel, message);
         }
@@ -4414,7 +4414,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Map<String, Long> pubsubNumSub(String... channels) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pubsub numSub");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pubsub numSub");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.pubsubNumSub(channels);
@@ -4430,7 +4430,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long pubsubNumPat() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pubsub numPat");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pubsub numPat");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.pubsubNumPat();
@@ -4451,7 +4451,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "subscribe");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "subscribe");
         if (this.isClusterMode()) {
             this.getCluster().subscribe(pubSub, channels);
         } else {
@@ -4472,7 +4472,7 @@ public class RedisClient implements ShellBaseClient {
         }
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "psubscribe");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "psubscribe");
         if (this.isClusterMode()) {
             this.getCluster().subscribe(pubSub, patterns);
         } else {
@@ -4489,7 +4489,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> pubsubChannels(String pattern) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "pubsub channels");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "pubsub channels");
         Jedis jedis = this.getResource(dbIndex);
         try {
             if (pattern == null) {
@@ -4584,7 +4584,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<String> time() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "time");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "time");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.time();
@@ -4601,7 +4601,7 @@ public class RedisClient implements ShellBaseClient {
     public String save() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "save");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "save");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.save();
@@ -4617,7 +4617,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long lastsave() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "lastsave");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "lastsave");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.lastsave();
@@ -4634,7 +4634,7 @@ public class RedisClient implements ShellBaseClient {
     public String bgsave() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "bgsave");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "bgsave");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.bgsave();
@@ -4651,7 +4651,7 @@ public class RedisClient implements ShellBaseClient {
     public String bgrewriteaof() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "bgrewriteaof");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "bgrewriteaof");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.bgrewriteaof();
@@ -4667,7 +4667,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String clientList() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "client list");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "client list");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.clientList();
@@ -4683,7 +4683,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public String clientGetname() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "client getname");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "client getname");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.clientGetname();
@@ -4701,7 +4701,7 @@ public class RedisClient implements ShellBaseClient {
     public String clientSetname(String name) {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "client setname");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "client setname");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.clientSetname(name);
@@ -4717,7 +4717,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long slowlogLen() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog len");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog len");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.slowlogLen();
@@ -4734,7 +4734,7 @@ public class RedisClient implements ShellBaseClient {
     public String slowlogReset() {
         this.throwSentinelException();
         this.throwReadonlyException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog reset");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog reset");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.slowlogReset();
@@ -4750,7 +4750,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<Slowlog> slowlogGet() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog get");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog get");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.slowlogGet();
@@ -4767,7 +4767,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public List<Slowlog> slowlogGet(long entries) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog get");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "slowlog get");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.slowlogGet(entries);
@@ -4785,7 +4785,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Long memoryUsage(Integer dbIndex, String key) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "memoryUsage");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "memoryUsage");
         Jedis jedis = this.getResource(dbIndex);
         try {
             this.dbIndex(jedis, dbIndex);
@@ -4801,7 +4801,7 @@ public class RedisClient implements ShellBaseClient {
      * @return 当前服务的角色
      */
     public List<Object> role() {
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "role");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "role");
         Jedis jedis = this.getResource(dbIndex);
         try {
             return jedis.role();
@@ -4833,7 +4833,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public long commandCount() {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "command count");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "command count");
         Jedis jedis = this.getResource();
         try {
             return jedis.commandCount();
@@ -4850,7 +4850,7 @@ public class RedisClient implements ShellBaseClient {
      */
     public Map<String, CommandInfo> commandInfo(String... commands) {
         this.throwSentinelException();
-        RedisVersionUtil.checkSupported(this.getServerVersion(), "command info");
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "command info");
         Jedis jedis = this.getResource();
         try {
             return jedis.commandInfo(commands);

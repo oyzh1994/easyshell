@@ -8,9 +8,9 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.redis.RedisConnectInfo;
 import cn.oyzh.easyshell.exception.redis.RedisExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisConnectUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.redis.RedisConnectUtil;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.TerminalPane;
@@ -73,9 +73,9 @@ public class RedisTerminalPane extends TerminalPane {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
@@ -133,7 +133,7 @@ public class RedisTerminalPane extends TerminalPane {
      * @param client  redis客户端
      * @param dbIndex db索引
      */
-    public void init(RedisClient client, Integer dbIndex) {
+    public void init(ShellRedisClient client, Integer dbIndex) {
         this.client = client;
         this.dbIndex = dbIndex;
         this.disableInput();
@@ -196,10 +196,10 @@ public class RedisTerminalPane extends TerminalPane {
      * @param input 输入内容
      */
     public void connect(String input) {
-        this.connectInfo = RedisConnectUtil.parse(input);
+        this.connectInfo = ShellRedisConnectUtil.parse(input);
         if (this.connectInfo != null) {
             this.disable();
-            RedisConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
+            ShellRedisConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
             this.start(this.connectInfo.getDb());
         }
     }

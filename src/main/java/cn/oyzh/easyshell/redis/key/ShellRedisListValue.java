@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.RedisCacheUtil;
+import cn.oyzh.easyshell.redis.ShellRedisCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-02
  */
-public class RedisListValue implements RedisKeyValue<List<RedisListValue.RedisListRow>> {
+public class ShellRedisListValue implements ShellRedisKeyValue<List<ShellRedisListValue.RedisListRow>> {
 
     private List<RedisListRow> value;
 
@@ -34,11 +34,11 @@ public class RedisListValue implements RedisKeyValue<List<RedisListValue.RedisLi
 
     private RedisListRow unSavedRow;
 
-    public RedisListValue(List<RedisListRow> value) {
+    public ShellRedisListValue(List<RedisListRow> value) {
         this.value = value;
     }
 
-    public static RedisListValue valueOf(List<String> elements) {
+    public static ShellRedisListValue valueOf(List<String> elements) {
         List<RedisListRow> rows = new ArrayList<>(12);
         if (elements != null) {
             int index = 0;
@@ -46,7 +46,7 @@ public class RedisListValue implements RedisKeyValue<List<RedisListValue.RedisLi
                 rows.add(new RedisListRow(index++, element));
             }
         }
-        return new RedisListValue(rows);
+        return new ShellRedisListValue(rows);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class RedisListValue implements RedisKeyValue<List<RedisListValue.RedisLi
         }
     }
 
-    public static class RedisListRow implements RedisKeyRow {
+    public static class RedisListRow implements ShellRedisKeyRow {
 
         private final int index;
 
@@ -94,12 +94,12 @@ public class RedisListValue implements RedisKeyValue<List<RedisListValue.RedisLi
 
         @Override
         public void setValue(String value) {
-            RedisCacheUtil.cacheValue(this.hashCode(), value, "value");
+            ShellRedisCacheUtil.cacheValue(this.hashCode(), value, "value");
         }
 
         @Override
         public String getValue() {
-            return (String) RedisCacheUtil.loadValue(this.hashCode(), "value");
+            return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "value");
         }
 
         @Override

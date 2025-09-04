@@ -5,8 +5,8 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisKeyTypeComboBox;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -169,7 +169,7 @@ public class RedisKeyAddController extends StageController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 树键
@@ -527,7 +527,7 @@ public class RedisKeyAddController extends StageController {
         super.onWindowShown(event);
         this.client = this.getProp("client");
         this.dbIndex = this.getProp("dbIndex");
-        RedisKeyType type = this.getProp("type");
+        ShellRedisKeyType type = this.getProp("type");
         this.type.select(type);
         this.key.requestFocus();
     }

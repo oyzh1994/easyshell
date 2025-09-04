@@ -4,7 +4,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
-import cn.oyzh.easyshell.redis.key.RedisHashValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
 import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/21
  */
-public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTreeItem, RedisHashValue.RedisHashRow> {
+public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTreeItem, ShellRedisHashValue.RedisHashRow> {
 
     /**
      * 数据撤销
@@ -178,7 +178,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
      * 字段值监听器
      */
     private final ChangeListener<String> fieldValListener = (observable, oldValue, newValue) -> {
-        RedisHashValue.RedisHashRow row = this.treeItem.rawValue();
+        ShellRedisHashValue.RedisHashRow row = this.treeItem.rawValue();
         if (!this.ignoreDataChange && row != null && !Objects.equals(row.getField(), newValue)) {
             this.saveNodeData.enable();
             if (this.treeItem.unsavedValue() == null) {
@@ -199,7 +199,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
     }
 
     @Override
-    protected void initRow(RedisHashValue.RedisHashRow row) {
+    protected void initRow(ShellRedisHashValue.RedisHashRow row) {
         super.initRow(row);
         if (row == null) {
             this.hashField.clear();
@@ -213,8 +213,8 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
     }
 
     @Override
-    protected List<RedisHashValue.RedisHashRow> getRows() {
-        List<RedisHashValue.RedisHashRow> rows = this.treeItem.rows();
+    protected List<ShellRedisHashValue.RedisHashRow> getRows() {
+        List<ShellRedisHashValue.RedisHashRow> rows = this.treeItem.rows();
         String filterKW = this.filter.getText();
         if (StringUtil.isNotEmpty(filterKW)) {
             rows = rows.parallelStream()
@@ -369,7 +369,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
 
     @Override
     protected void firstShowData() {
-        RedisHashValue.RedisHashRow row = this.treeItem.data();
+        ShellRedisHashValue.RedisHashRow row = this.treeItem.data();
         if (row == null) {
             return;
         }
@@ -400,7 +400,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
 
     // @Override
     // protected void showData(EditorFormatType formatType) {
-    //     RedisHashValue.RedisHashRow row = this.treeItem.data();
+    //     ShellRedisHashValue.RedisHashRow row = this.treeItem.data();
     //     if (row != null) {
     //         this.nodeData.showData(row.getValue(), formatType);
     //     }
@@ -412,7 +412,7 @@ public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTr
         if (!this.treeItem.isSelectRow()) {
             return;
         }
-        RedisHashValue.RedisHashRow row = this.treeItem.currentRow();
+        ShellRedisHashValue.RedisHashRow row = this.treeItem.currentRow();
         if (!MessageBox.confirm(I18nHelper.deleteField() + ":" + row.getField())) {
             return;
         }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.RedisCacheUtil;
+import cn.oyzh.easyshell.redis.ShellRedisCacheUtil;
 import redis.clients.jedis.GeoCoordinate;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-02
  */
-public class RedisZSetValue implements RedisKeyValue<List<RedisZSetValue.RedisZSetRow>> {
+public class ShellRedisZSetValue implements ShellRedisKeyValue<List<ShellRedisZSetValue.RedisZSetRow>> {
 
     private List<RedisZSetRow> value;
 
@@ -35,11 +35,11 @@ public class RedisZSetValue implements RedisKeyValue<List<RedisZSetValue.RedisZS
 
     private RedisZSetRow unSavedRow;
 
-    public RedisZSetValue(List<RedisZSetRow> value) {
+    public ShellRedisZSetValue(List<RedisZSetRow> value) {
         this.value = value;
     }
 
-    public static RedisZSetValue valueOf(List<String> members, List<Double> scores) {
+    public static ShellRedisZSetValue valueOf(List<String> members, List<Double> scores) {
         List<RedisZSetRow> rows = new ArrayList<>(12);
         if (members != null) {
             int index = 0;
@@ -47,10 +47,10 @@ public class RedisZSetValue implements RedisKeyValue<List<RedisZSetValue.RedisZS
                 rows.add(new RedisZSetRow(member, scores.get(index++)));
             }
         }
-        return new RedisZSetValue(rows);
+        return new ShellRedisZSetValue(rows);
     }
 
-    public static RedisZSetValue valueOfCoordinates(List<String> members, List<GeoCoordinate> coordinates) {
+    public static ShellRedisZSetValue valueOfCoordinates(List<String> members, List<GeoCoordinate> coordinates) {
         List<RedisZSetRow> rows = new ArrayList<>(12);
         if (members != null) {
             int index = 0;
@@ -59,7 +59,7 @@ public class RedisZSetValue implements RedisKeyValue<List<RedisZSetValue.RedisZS
                 rows.add(new RedisZSetRow(member, coordinate.getLatitude(), coordinate.getLongitude()));
             }
         }
-        return new RedisZSetValue(rows);
+        return new ShellRedisZSetValue(rows);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class RedisZSetValue implements RedisKeyValue<List<RedisZSetValue.RedisZS
         }
     }
 
-    public static class RedisZSetRow implements RedisKeyRow {
+    public static class RedisZSetRow implements ShellRedisKeyRow {
 
         private double score;
 
@@ -140,12 +140,12 @@ public class RedisZSetValue implements RedisKeyValue<List<RedisZSetValue.RedisZS
 
         @Override
         public void setValue(String value) {
-            RedisCacheUtil.cacheValue(this.hashCode(), value, "value");
+            ShellRedisCacheUtil.cacheValue(this.hashCode(), value, "value");
         }
 
         @Override
         public String getValue() {
-            return (String) RedisCacheUtil.loadValue(this.hashCode(), "value");
+            return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "value");
         }
 
         @Override

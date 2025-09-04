@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.event.redis.key.RedisKeyCopiedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyFlushedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeyMovedEvent;
 import cn.oyzh.easyshell.event.redis.key.RedisKeysMovedEvent;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -28,9 +28,9 @@ import java.util.List;
  */
 public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
 
-    private RedisClient client;
+    private ShellRedisClient client;
 
-    public void setClient(RedisClient client) {
+    public void setClient(ShellRedisClient client) {
         this.client = client;
         FXUtil.runWait(() -> {
             if (client.isClusterMode()) {
@@ -41,7 +41,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         });
     }
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return this.client;
     }
 

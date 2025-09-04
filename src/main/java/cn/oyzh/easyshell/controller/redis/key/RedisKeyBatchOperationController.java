@@ -5,8 +5,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -133,7 +133,7 @@ public class RedisKeyBatchOperationController extends StageController {
     /**
      * redis客户端对象
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     // /**
     //  * 树键
@@ -403,7 +403,7 @@ public class RedisKeyBatchOperationController extends StageController {
                     ScanParams params = new ScanParams();
                     params.count(1000);
                     params.match(pattern);
-                    RedisScanSimpleResult result = RedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
+                    RedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
                     keySize += result.keySize();
                     cursor = result.getCursor();
                     this.keys6.setTextExt(I18nHelper.found() + ":" + keySize);
@@ -459,7 +459,7 @@ public class RedisKeyBatchOperationController extends StageController {
             ScanParams params = new ScanParams();
             params.count(1000);
             params.match(pattern);
-            RedisScanSimpleResult result = RedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
+            RedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
             keys.addAll(result.getKeys());
             cursor = result.getCursor();
             area.setTextExt(I18nHelper.found() + ":" + keys.size());
@@ -475,7 +475,7 @@ public class RedisKeyBatchOperationController extends StageController {
      */
     @FXML
     private void showKeys1() {
-        List<String> keys = RedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern1.getText(), 2000);
+        List<String> keys = ShellRedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern1.getText(), 2000);
         this.showKeys(keys, this.keys1);
     }
 
@@ -484,7 +484,7 @@ public class RedisKeyBatchOperationController extends StageController {
      */
     @FXML
     private void showKeys2() {
-        List<String> keys = RedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern2.getText(), 2000);
+        List<String> keys = ShellRedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern2.getText(), 2000);
         this.showKeys(keys, this.keys2);
     }
 
@@ -493,7 +493,7 @@ public class RedisKeyBatchOperationController extends StageController {
      */
     @FXML
     private void showKeys3() {
-        List<String> keys = RedisKeyUtil.scanKeys(this.dbIndex, this.client, "*", 2000);
+        List<String> keys = ShellRedisKeyUtil.scanKeys(this.dbIndex, this.client, "*", 2000);
         this.showKeys(keys, this.keys3);
     }
 
@@ -502,7 +502,7 @@ public class RedisKeyBatchOperationController extends StageController {
      */
     @FXML
     private void showKeys4() {
-        List<String> keys = RedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern4.getText(), 2000);
+        List<String> keys = ShellRedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern4.getText(), 2000);
         this.showKeys(keys, this.keys4);
     }
 
@@ -511,7 +511,7 @@ public class RedisKeyBatchOperationController extends StageController {
      */
     @FXML
     private void showKeys5() {
-        List<String> keys = RedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern5.getText(), 2000);
+        List<String> keys = ShellRedisKeyUtil.scanKeys(this.dbIndex, this.client, this.pattern5.getText(), 2000);
         this.showKeys(keys, this.keys5);
     }
 

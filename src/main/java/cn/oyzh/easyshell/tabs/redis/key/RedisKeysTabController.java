@@ -4,7 +4,7 @@ import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.RedisKeyFilterTypeComboBox;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -61,13 +61,13 @@ public class RedisKeysTabController extends ParentTabController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
-    public void setClient(RedisClient client) {
+    public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 
@@ -118,7 +118,7 @@ public class RedisKeysTabController extends ParentTabController {
     //  * 初始化
     //  */
     // public void init(ShellConnect connect) {
-    //     this.client = new RedisClient(connect);
+    //     this.client = new ShellRedisClient(connect);
     //     // 加载根节点
     //     StageManager.showMask(() -> {
     //         try {
@@ -139,7 +139,7 @@ public class RedisKeysTabController extends ParentTabController {
     /**
      * 初始化
      */
-    public void init(RedisClient client) {
+    public void init(ShellRedisClient client) {
         this.client = client;
         this.treeView.setClient(client);
         this.treeView.loadItems();

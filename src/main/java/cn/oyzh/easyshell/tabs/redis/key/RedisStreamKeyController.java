@@ -4,8 +4,8 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
-import cn.oyzh.easyshell.redis.key.RedisKeyRow;
-import cn.oyzh.easyshell.redis.key.RedisStreamValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
+import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
 import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/07/07
  */
-public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamKeyTreeItem, RedisStreamValue.RedisStreamRow> {
+public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
 
     /**
      * 消息id
@@ -54,8 +54,8 @@ public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamK
     }
 
     @Override
-    protected List<RedisStreamValue.RedisStreamRow> getRows() {
-        List<RedisStreamValue.RedisStreamRow> rows = this.treeItem.rows();
+    protected List<ShellRedisStreamValue.RedisStreamRow> getRows() {
+        List<ShellRedisStreamValue.RedisStreamRow> rows = this.treeItem.rows();
         String filterKW = this.filter.getText();
         if (StringUtil.isNotEmpty(filterKW)) {
             rows = rows.parallelStream()
@@ -79,7 +79,7 @@ public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamK
     }
 
     @Override
-    protected void initRow(RedisStreamValue.RedisStreamRow row) {
+    protected void initRow(ShellRedisStreamValue.RedisStreamRow row) {
         super.initRow(row);
         if (row == null) {
             this.nodeData.clear();
@@ -106,7 +106,7 @@ public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamK
 
     @Override
     protected void firstShowData() {
-        RedisStreamValue.RedisStreamRow row = this.treeItem.rawValue();
+        ShellRedisStreamValue.RedisStreamRow row = this.treeItem.rawValue();
         if (row != null) {
             this.nodeData.showData(row.getValue());
             this.nodeData.forgetHistory();
@@ -115,7 +115,7 @@ public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamK
 
     // @Override
     // protected void showData(EditorFormatType formatType) {
-    //     RedisStreamValue.RedisStreamRow row = this.treeItem.rawValue();
+    //     ShellRedisStreamValue.RedisStreamRow row = this.treeItem.rawValue();
     //     if (row != null) {
     //         this.nodeData.showData(row.getValue(), formatType);
     //     }
@@ -127,7 +127,7 @@ public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamK
         if (!this.treeItem.isSelectRow()) {
             return;
         }
-        RedisKeyRow row = this.treeItem.currentRow();
+        ShellRedisKeyRow row = this.treeItem.currentRow();
         if (!MessageBox.confirm(I18nHelper.deleteMessage() + ":" + row.getValue())) {
             return;
         }

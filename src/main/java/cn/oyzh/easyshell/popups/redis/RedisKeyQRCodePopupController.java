@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.popups.redis;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.qrcode.QRCodeUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -46,7 +46,7 @@ public class RedisKeyQRCodePopupController extends PopupController {
      */
     private void initQRCode() {
         try {
-            RedisKey key = this.getProp("key");
+            ShellRedisKey key = this.getProp("key");
             String keyData = this.getProp("keyData");
             StringBuilder builder = new StringBuilder();
             builder.append(I18nHelper.key()).append(": ")

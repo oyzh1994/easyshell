@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.redis.server;
 
 import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.fxml.FXML;
@@ -21,9 +21,9 @@ public class RedisPubsubTabController extends SubTabController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
@@ -38,7 +38,7 @@ public class RedisPubsubTabController extends SubTabController {
      *
      * @param client redis客户端
      */
-    public void init( RedisClient client) {
+    public void init( ShellRedisClient client) {
         this.client = client;
         this.initPubsub();
     }

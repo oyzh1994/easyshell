@@ -142,7 +142,7 @@ public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
             }
             String key = treeItem.key();
             // // 过滤节点
-            // if (RedisKeyUtil.isFiltered(key, this.filters)) {
+            // if (ShellRedisKeyUtil.isFiltered(key, this.filters)) {
             //     return false;
             // }
             // 关键字匹配

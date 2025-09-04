@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.redis.stream.xgroup;
 
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
@@ -16,8 +16,8 @@ import redis.clients.jedis.Protocol;
 public class RedisXgroupTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
-    protected RedisKeyType getKeyType() {
-        return RedisKeyType.STREAM;
+    protected ShellRedisKeyType getKeyType() {
+        return ShellRedisKeyType.STREAM;
     }
 
     @Override

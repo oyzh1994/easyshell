@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.dto.redis;
 
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 
 /**
  * 订阅发布项目
@@ -26,11 +26,11 @@ public class RedisPubsubItem {
         this.channel = channel;
     }
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
-    public void setClient(RedisClient client) {
+    public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 
@@ -47,6 +47,6 @@ public class RedisPubsubItem {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
 }

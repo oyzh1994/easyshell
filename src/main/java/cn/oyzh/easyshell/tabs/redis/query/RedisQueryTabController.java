@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.query.redis.RedisQueryEditor;
 import cn.oyzh.easyshell.query.redis.RedisQueryParam;
 import cn.oyzh.easyshell.query.redis.RedisQueryResult;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.store.redis.RedisQueryStore;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeView;
@@ -51,7 +51,7 @@ public class RedisQueryTabController extends SubTabController {
     /**
      * zk客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 当前内容
@@ -92,7 +92,7 @@ public class RedisQueryTabController extends SubTabController {
         return this.client.shellConnect();
     }
 
-    public void init(RedisClient client) {
+    public void init(ShellRedisClient client) {
         this.client = client;
         this.content.setClient(client);
         // 初始化数据库

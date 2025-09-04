@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.trees.redis.key;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyType;
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisKeyValue;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyValue;
 import cn.oyzh.easyshell.store.redis.RedisCollectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -46,9 +46,9 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
     /**
      * redis键
      */
-    protected RedisKey value;
+    protected ShellRedisKey value;
 
-    public RedisKey value() {
+    public ShellRedisKey value() {
         return value;
     }
 
@@ -91,7 +91,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * @return 结果
      */
     public Object unsavedValue() {
-        RedisKeyValue<?> keyValue = this.keyValue();
+        ShellRedisKeyValue<?> keyValue = this.keyValue();
         return keyValue == null ? null : keyValue.getUnSavedValue();
     }
 
@@ -101,11 +101,11 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * @return 结果
      */
     public boolean isDataUnsaved() {
-        RedisKeyValue<?> keyValue = this.keyValue();
+        ShellRedisKeyValue<?> keyValue = this.keyValue();
         return keyValue != null && keyValue.hasUnSavedValue();
     }
 
-    public RedisKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+    public RedisKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(dbItem.getTreeView());
         this.value = value;
         this.dbItem = dbItem;
@@ -213,7 +213,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      *
      * @return redis客户端
      */
-    public RedisClient client() {
+    public ShellRedisClient client() {
         if (this.getTreeView() == null) {
             return null;
         }
@@ -356,7 +356,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      *
      * @return 键类型
      */
-    public RedisKeyType type() {
+    public ShellRedisKeyType type() {
         return this.value.getType();
     }
 
@@ -452,20 +452,20 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
         return this.value.isRawEncoding();
     }
 
-    public RedisKeyValue<?> keyValue() {
+    public ShellRedisKeyValue<?> keyValue() {
         return this.value.getValue();
     }
 
     public abstract Object rawData();
 
-    public boolean keyEquals(RedisKey redisKey) {
+    public boolean keyEquals(ShellRedisKey redisKey) {
         if (redisKey != null) {
             return this.value.compareTo(redisKey) == 0;
         }
         return false;
     }
 
-    public void keyCopy(RedisKey redisKey) {
+    public void keyCopy(ShellRedisKey redisKey) {
         if (redisKey != null) {
             this.value.copy(redisKey);
         }

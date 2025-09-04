@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.RedisCacheUtil;
+import cn.oyzh.easyshell.redis.ShellRedisCacheUtil;
 import redis.clients.jedis.StreamEntryID;
 import redis.clients.jedis.resps.StreamEntry;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-12-02
  */
-public class RedisStreamValue implements RedisKeyValue<List<RedisStreamValue.RedisStreamRow>> {
+public class ShellRedisStreamValue implements ShellRedisKeyValue<List<ShellRedisStreamValue.RedisStreamRow>> {
 
     private List<RedisStreamRow> value;
 
@@ -38,18 +38,18 @@ public class RedisStreamValue implements RedisKeyValue<List<RedisStreamValue.Red
 
     private RedisStreamRow unSavedRow;
 
-    public RedisStreamValue(List<RedisStreamRow> value) {
+    public ShellRedisStreamValue(List<RedisStreamRow> value) {
         this.value = value;
     }
 
-    public static RedisStreamValue valueOf(List<StreamEntry> value) {
+    public static ShellRedisStreamValue valueOf(List<StreamEntry> value) {
         List<RedisStreamRow> rows = new ArrayList<>(12);
         if (value != null) {
             for (StreamEntry entry : value) {
                 rows.add(new RedisStreamRow(entry));
             }
         }
-        return new RedisStreamValue(rows);
+        return new ShellRedisStreamValue(rows);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class RedisStreamValue implements RedisKeyValue<List<RedisStreamValue.Red
         }
     }
 
-    public static class RedisStreamRow implements RedisKeyRow {
+    public static class RedisStreamRow implements ShellRedisKeyRow {
 
         public RedisStreamRow(StreamEntry entry) {
             this.setId(entry.getID().toString());
@@ -90,20 +90,20 @@ public class RedisStreamValue implements RedisKeyValue<List<RedisStreamValue.Red
         }
 
         public void setId(String id) {
-            RedisCacheUtil.cacheValue(this.hashCode(), id, "id");
+            ShellRedisCacheUtil.cacheValue(this.hashCode(), id, "id");
         }
 
         public String getId() {
-            return (String) RedisCacheUtil.loadValue(this.hashCode(), "id");
+            return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "id");
         }
 
         public String getValue() {
-            return (String) RedisCacheUtil.loadValue(this.hashCode(), "value");
+            return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "value");
         }
 
         @Override
         public void setValue(String value) {
-            RedisCacheUtil.cacheValue(this.hashCode(), value, "value");
+            ShellRedisCacheUtil.cacheValue(this.hashCode(), value, "value");
         }
 
         public StreamEntryID getStreamId() {

@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -32,12 +32,12 @@ public class RedisKeyInfoController extends RichTabController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * redis键
      */
-    private RedisKey redisKey;
+    private ShellRedisKey redisKey;
 
     /**
      * redis树节点
@@ -110,7 +110,7 @@ public class RedisKeyInfoController extends RichTabController {
             try {
                 String key = this.treeItem.key();
                 int dbIndex = this.treeItem.dbIndex();
-                RedisKeyUtil.keyObject(this.redisKey, dbIndex, key, this.client);
+                ShellRedisKeyUtil.keyObject(this.redisKey, dbIndex, key, this.client);
                 this.objectIdletime.text(I18nHelper.idleTime() + " : " + this.redisKey.objectIdletimeString());
                 this.objectRefcount.text(I18nHelper.refcount() + " : " + this.redisKey.objectRefcountString());
                 this.objectEncoding.text(I18nHelper.encoding() + " : " + this.redisKey.objectedEncodingString());

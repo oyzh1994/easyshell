@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025/01/01
  */
-public class RedisPoolManager {
+public class ShellRedisPoolManager {
 
     public String getConnectName() {
         return connectName;
@@ -100,7 +100,7 @@ public class RedisPoolManager {
     /**
      * 资源集合
      */
-    private final List<RedisConn> resources = new CopyOnWriteArrayList<>();
+    private final List<ShellRedisConn> resources = new CopyOnWriteArrayList<>();
 
     /**
      * cluster集群的主节点连接
@@ -118,7 +118,7 @@ public class RedisPoolManager {
                     for (int i = 0; i < this.initPoolSize; i++) {
                         Jedis jedis = this.jedisPool.getResource();
                         jedis.select(i);
-                        this.resources.add(new RedisConn(jedis));
+                        this.resources.add(new ShellRedisConn(jedis));
                     }
                 }
             }
@@ -157,12 +157,12 @@ public class RedisPoolManager {
         try {
             // 从已有连接里面找
             if (CollectionUtil.isNotEmpty(this.resources)) {
-                List<RedisConn> list;
+                List<ShellRedisConn> list;
                 synchronized (this.resources) {
                     list = this.resources.parallelStream().filter(i -> !i.isUsing()).collect(Collectors.toList());
                 }
                 Collections.shuffle(list);
-                for (RedisConn resource : list) {
+                for (ShellRedisConn resource : list) {
                     if (resource.isUsing()) {
                         continue;
                     }
@@ -182,7 +182,7 @@ public class RedisPoolManager {
             if (this.jedisPool != null) {
                 Jedis jedis = this.jedisPool.getResource();
                 synchronized (this.resources) {
-                    this.resources.add(new RedisConn(jedis, true));
+                    this.resources.add(new ShellRedisConn(jedis, true));
                 }
                 return jedis;
             }
@@ -200,8 +200,8 @@ public class RedisPoolManager {
     public void returnResource(Jedis jedis) {
         if (jedis != null) {
             // 寻找连接，标记为未使用
-            RedisConn conn = null;
-            for (RedisConn redisConn : this.resources) {
+            ShellRedisConn conn = null;
+            for (ShellRedisConn redisConn : this.resources) {
                 if (redisConn.getJedis() == jedis) {
                     redisConn.setUsing(false);
                     conn = redisConn;
@@ -216,7 +216,7 @@ public class RedisPoolManager {
                 // 从列表移除
                 this.resources.remove(conn);
                 // 执行资源返回
-                RedisConn finalConn = conn;
+                ShellRedisConn finalConn = conn;
                 ThreadUtil.startVirtual(() -> this.doReturnResource(finalConn.getJedis()));
             }
         }
@@ -244,7 +244,7 @@ public class RedisPoolManager {
     public void destroy() {
         // 清理一般连接
         if (CollectionUtil.isNotEmpty(this.resources)) {
-            for (RedisConn value : this.resources) {
+            for (ShellRedisConn value : this.resources) {
                 this.doReturnResource(value.getJedis());
             }
             this.resources.clear();

@@ -2,7 +2,7 @@
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.redis.RedisQuery;
-// import cn.oyzh.easyshell.redis.RedisClient;
+// import cn.oyzh.easyshell.redis.ShellRedisClient;
 // import cn.oyzh.event.Event;
 //
 // /**
@@ -11,13 +11,13 @@
 //  */
 // public class RedisOpenQueryEvent extends Event<RedisQuery> {
 //
-//     private RedisClient client;
+//     private ShellRedisClient client;
 //
-//     public RedisClient getClient() {
+//     public ShellRedisClient getClient() {
 //         return client;
 //     }
 //
-//     public void setClient(RedisClient client) {
+//     public void setClient(ShellRedisClient client) {
 //         this.client = client;
 //     }
 //

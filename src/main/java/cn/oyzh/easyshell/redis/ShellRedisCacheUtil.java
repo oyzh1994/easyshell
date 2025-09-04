@@ -12,8 +12,7 @@ import java.nio.charset.StandardCharsets;
  * @author oyzh
  * @since 2024-11-25
  */
-
-public class RedisCacheUtil {
+public class ShellRedisCacheUtil {
 
     private static String baseDir(int hashCode) {
         return ShellConst.getKeyCachePath() + hashCode;

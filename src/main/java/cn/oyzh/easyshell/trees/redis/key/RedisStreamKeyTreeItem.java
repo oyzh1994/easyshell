@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisStreamValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
 import cn.oyzh.fx.plus.information.MessageBox;
 import redis.clients.jedis.resps.StreamEntry;
 
@@ -11,9 +11,9 @@ import java.util.List;
  * @author oyzh
  * @since 2023/1/30
  */
-public class RedisStreamKeyTreeItem extends RedisRowKeyTreeItem<RedisStreamValue.RedisStreamRow> {
+public class RedisStreamKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisStreamValue.RedisStreamRow> {
 
-    public RedisStreamKeyTreeItem( RedisKey value,  RedisDatabaseTreeItem dbItem) {
+    public RedisStreamKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 
@@ -40,7 +40,7 @@ public class RedisStreamKeyTreeItem extends RedisRowKeyTreeItem<RedisStreamValue
     }
 
     @Override
-    public RedisStreamValue.RedisStreamRow rawValue() {
+    public ShellRedisStreamValue.RedisStreamRow rawValue() {
         return this.currentRow;
     }
 }

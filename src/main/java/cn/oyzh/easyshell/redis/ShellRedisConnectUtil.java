@@ -15,7 +15,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @since 2023/07/01
  */
 
-public class RedisConnectUtil {
+public class ShellRedisConnectUtil {
 
     // /**
     //  * 测试连接
@@ -54,7 +54,7 @@ public class RedisConnectUtil {
                 if (redisConnect.getName() == null) {
                     redisConnect.setName(I18nHelper.testConnection());
                 }
-                RedisClient client = new RedisClient(redisConnect);
+                ShellRedisClient client = new ShellRedisClient(redisConnect);
                 // 开始连接
                 client.start(3_000);
                 if (client.isConnected()) {
@@ -77,7 +77,7 @@ public class RedisConnectUtil {
      * @param async  是否异步
      * @param quiet  是否静默
      */
-    public static void close(RedisClient client, boolean async, boolean quiet) {
+    public static void close(ShellRedisClient client, boolean async, boolean quiet) {
         try {
             if (client != null && client.isConnected()) {
                 if (async && quiet) {

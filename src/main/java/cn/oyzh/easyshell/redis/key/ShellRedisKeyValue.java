@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.redis.key;
  * @author oyzh
  * @since 2024-12-02
  */
-public interface RedisKeyValue<V> {
+public interface ShellRedisKeyValue<V> {
 
     V getValue();
 

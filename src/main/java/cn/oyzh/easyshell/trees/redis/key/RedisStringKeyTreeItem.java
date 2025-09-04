@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisStringValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisStringValue;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 /**
@@ -11,7 +11,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
  */
 public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
 
-    public RedisStringKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+    public RedisStringKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 
@@ -66,7 +66,7 @@ public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
 
     @Override
     public Object rawValue() {
-        RedisStringValue rawValue = this.value.asStringValue();
+        ShellRedisStringValue rawValue = this.value.asStringValue();
         if (rawValue == null || !rawValue.hasValue()) {
             // 刷新值
             this.refreshKeyValue();
@@ -104,7 +104,7 @@ public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
      * @return 统计值大小
      */
     public boolean isHyLog() {
-        RedisStringValue stringValue = this.value.asStringValue();
+        ShellRedisStringValue stringValue = this.value.asStringValue();
         if (stringValue.getHyLog() == null) {
             this.flushCount();
         }
@@ -117,7 +117,7 @@ public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
      * @return 统计值
      */
     public Long count() {
-        RedisStringValue stringValue = this.value.asStringValue();
+        ShellRedisStringValue stringValue = this.value.asStringValue();
         if (stringValue.getCount() == null) {
             this.flushCount();
         }
@@ -128,7 +128,7 @@ public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
      * 刷新统计值
      */
     public void flushCount() {
-        RedisStringValue stringValue = this.value.asStringValue();
+        ShellRedisStringValue stringValue = this.value.asStringValue();
         try {
             stringValue.setCount(this.client().pfcount(this.dbIndex(), this.key()));
             stringValue.setHyLog(true);
@@ -142,8 +142,8 @@ public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
     }
 
     @Override
-    public RedisStringValue keyValue() {
-        return (RedisStringValue) super.keyValue();
+    public ShellRedisStringValue keyValue() {
+        return (ShellRedisStringValue) super.keyValue();
     }
 
     @Override

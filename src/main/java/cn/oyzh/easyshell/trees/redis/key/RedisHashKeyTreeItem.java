@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.redis.key.RedisHashValue;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 import java.util.Map;
@@ -12,20 +12,20 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<RedisHashValue.RedisHashRow> {
+public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisHashValue.RedisHashRow> {
 
-    public RedisHashKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+    public RedisHashKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 
     @Override
-    public RedisHashValue.RedisHashRow data() {
-        return (RedisHashValue.RedisHashRow) super.data();
+    public ShellRedisHashValue.RedisHashRow data() {
+        return (ShellRedisHashValue.RedisHashRow) super.data();
     }
 
     @Override
     public void data(Object data) {
-        if (data instanceof RedisHashValue.RedisHashRow row) {
+        if (data instanceof ShellRedisHashValue.RedisHashRow row) {
             super.data(row.clone());
         } else {
             super.clearData();
@@ -33,8 +33,8 @@ public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<RedisHashValue.Red
     }
 
     @Override
-    public RedisHashValue.RedisHashRow unsavedValue() {
-        return (RedisHashValue.RedisHashRow) super.unsavedValue();
+    public ShellRedisHashValue.RedisHashRow unsavedValue() {
+        return (ShellRedisHashValue.RedisHashRow) super.unsavedValue();
     }
 
     /**
@@ -72,7 +72,7 @@ public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<RedisHashValue.Red
 
     @Override
     public void saveKeyValue() {
-        RedisHashValue.RedisHashRow row = this.data();
+        ShellRedisHashValue.RedisHashRow row = this.data();
         try {
             // 保存数据
             this.setKeyValue(row);
@@ -89,7 +89,7 @@ public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<RedisHashValue.Red
 
     @Override
     protected void setKeyValue(Object value) {
-        if (value instanceof RedisHashValue.RedisHashRow row) {
+        if (value instanceof ShellRedisHashValue.RedisHashRow row) {
             String field = row.getField();
             String oldField = this.currentRow.getField();
             this.client().hset(this.dbIndex(), this.key(), field, row.getValue());
@@ -125,7 +125,7 @@ public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<RedisHashValue.Red
     }
 
     @Override
-    public RedisHashValue.RedisHashRow rawValue() {
+    public ShellRedisHashValue.RedisHashRow rawValue() {
         return this.currentRow;
     }
 
@@ -142,7 +142,7 @@ public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<RedisHashValue.Red
     @Override
     public boolean isDataTooBig() {
         Object o = this.data();
-        if (o instanceof RedisHashValue.RedisHashRow r) {
+        if (o instanceof ShellRedisHashValue.RedisHashRow r) {
             String s = r.getValue();
             if (s.length() > DATA_MAX) {
                 return true;

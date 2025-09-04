@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.redis.batch;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import redis.clients.jedis.params.ScanParams;
 
 import java.util.Collections;
@@ -25,11 +25,11 @@ public class RedisScanResult {
         this.cursor = cursor;
     }
 
-    public List<RedisKey> getKeys() {
+    public List<ShellRedisKey> getKeys() {
         return keys;
     }
 
-    public void setKeys(List<RedisKey> keys) {
+    public void setKeys(List<ShellRedisKey> keys) {
         this.keys = keys;
     }
 
@@ -41,7 +41,7 @@ public class RedisScanResult {
     /**
      * 数据
      */
-    private List<RedisKey> keys;
+    private List<ShellRedisKey> keys;
 
     public boolean isFinish() {
         return Objects.equals(this.cursor, ScanParams.SCAN_POINTER_START) || CollectionUtil.isEmpty(this.keys);
@@ -52,6 +52,6 @@ public class RedisScanResult {
     }
 
     public List<String> keys() {
-        return this.keys == null ? Collections.emptyList() : this.keys.parallelStream().map(RedisKey::getKey).collect(Collectors.toList());
+        return this.keys == null ? Collections.emptyList() : this.keys.parallelStream().map(ShellRedisKey::getKey).collect(Collectors.toList());
     }
 }

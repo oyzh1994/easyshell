@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.terminal.redis;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.util.TerminalUtil;
 
@@ -46,7 +46,7 @@ public abstract class RedisKeyTerminalCommandHandler<C extends TerminalCommand> 
         return false;
     }
 
-    protected RedisKeyType getKeyType() {
+    protected ShellRedisKeyType getKeyType() {
         return null;
     }
 

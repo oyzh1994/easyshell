@@ -11,7 +11,7 @@ import java.util.Locale;
  * @author oyzh
  * @since 2023/07/01
  */
-public enum RedisKeyType {
+public enum ShellRedisKeyType {
     STRING(),
     SET(),
     ZSET(),
@@ -51,10 +51,10 @@ public enum RedisKeyType {
         }
     }
 
-    RedisKeyType() {
+    ShellRedisKeyType() {
     }
 
-    public static RedisKeyType valueOfType(String type) {
+    public static ShellRedisKeyType valueOfType(String type) {
         if (StringUtil.isNotBlank(type)) {
             return switch (type.toLowerCase()) {
                 case "string", "bitmap", "hyperloglog", "hylog" -> STRING;
@@ -85,6 +85,6 @@ public enum RedisKeyType {
      * @return 长度
      */
     public static int length() {
-        return RedisKeyType.values().length;
+        return ShellRedisKeyType.values().length;
     }
 }

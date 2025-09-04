@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.redis.bit;
 
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
@@ -13,8 +13,8 @@ import redis.clients.jedis.Protocol;
 public class RedisBitfield_r0TerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
-    protected RedisKeyType getKeyType() {
-        return RedisKeyType.STRING;
+    protected ShellRedisKeyType getKeyType() {
+        return ShellRedisKeyType.STRING;
     }
 
     @Override

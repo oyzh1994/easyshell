@@ -4,15 +4,15 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyType;
-import cn.oyzh.easyshell.redis.key.RedisHashValue;
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisListValue;
-import cn.oyzh.easyshell.redis.key.RedisSetValue;
-import cn.oyzh.easyshell.redis.key.RedisStreamValue;
-import cn.oyzh.easyshell.redis.key.RedisZSetValue;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisSetValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.store.file.FileColumns;
 import cn.oyzh.store.file.FileHelper;
 import cn.oyzh.store.file.FileReadConfig;
@@ -39,11 +39,11 @@ public class RedisDataImportHandler extends DataHandler {
         this.fileType = fileType;
     }
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
-    public void setClient(RedisClient client) {
+    public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 
@@ -87,7 +87,7 @@ public class RedisDataImportHandler extends DataHandler {
     /**
      * 客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 保留ttl
@@ -151,7 +151,7 @@ public class RedisDataImportHandler extends DataHandler {
                             String value = (String) record.get(1);
                             String type = (String) record.get(3);
                             Number ttl = (Number) record.getValue(4, Long.class);
-                            RedisKeyType keyType = RedisKeyType.valueOfType(type);
+                            ShellRedisKeyType keyType = ShellRedisKeyType.valueOfType(type);
                             // 创建键
                             if (!this.client.exists(dbIndex.intValue(), key)) {
                                 this.createKey(key, dbIndex.intValue(), keyType, value, ttl.longValue());
@@ -217,8 +217,8 @@ public class RedisDataImportHandler extends DataHandler {
      * @param value   值
      * @param ttl     到期时间
      */
-    private void createKey(String key, int dbIndex, RedisKeyType type, String value, Long ttl) {
-        RedisKey redisKey = RedisKeyUtil.deserializeNode(type, value);
+    private void createKey(String key, int dbIndex, ShellRedisKeyType type, String value, Long ttl) {
+        ShellRedisKey redisKey = ShellRedisKeyUtil.deserializeNode(type, value);
         if (redisKey == null) {
             JulLog.warn("redisKey is null");
             return;
@@ -226,53 +226,53 @@ public class RedisDataImportHandler extends DataHandler {
         if (redisKey.isStringKey()) {
             this.client.set(dbIndex, key, (String) redisKey.asStringValue().getValue());
         } else if (redisKey.isListKey()) {
-            List<RedisListValue.RedisListRow> rows = redisKey.asListValue().getValue();
+            List<ShellRedisListValue.RedisListRow> rows = redisKey.asListValue().getValue();
             String[] arr;
             if (CollectionUtil.isEmpty(rows)) {
                 arr = new String[]{""};
             } else {
-                List<String> strings = rows.parallelStream().map(RedisListValue.RedisListRow::getValue).collect(Collectors.toList());
+                List<String> strings = rows.parallelStream().map(ShellRedisListValue.RedisListRow::getValue).collect(Collectors.toList());
                 arr = ArrayUtil.toArray(strings, String.class);
             }
             this.client.lpush(dbIndex, key, arr);
         } else if (redisKey.isSetKey()) {
-            List<RedisSetValue.RedisSetRow> rows = redisKey.asSetValue().getValue();
+            List<ShellRedisSetValue.RedisSetRow> rows = redisKey.asSetValue().getValue();
             String[] arr;
             if (CollectionUtil.isEmpty(rows)) {
                 arr = new String[]{""};
             } else {
-                List<String> strings = rows.parallelStream().map(RedisSetValue.RedisSetRow::getValue).collect(Collectors.toList());
+                List<String> strings = rows.parallelStream().map(ShellRedisSetValue.RedisSetRow::getValue).collect(Collectors.toList());
                 arr = ArrayUtil.toArray(strings, String.class);
             }
             this.client.sadd(dbIndex, key, arr);
         } else if (redisKey.isZSetKey()) {
-            List<RedisZSetValue.RedisZSetRow> rows = redisKey.asZSetValue().getValue();
+            List<ShellRedisZSetValue.RedisZSetRow> rows = redisKey.asZSetValue().getValue();
             Map<String, Double> scoreMembers;
             if (CollectionUtil.isEmpty(rows)) {
                 scoreMembers = new HashMap<>();
             } else {
                 scoreMembers = new HashMap<>();
-                for (RedisZSetValue.RedisZSetRow row : rows) {
+                for (ShellRedisZSetValue.RedisZSetRow row : rows) {
                     scoreMembers.put(row.getValue(), row.getScore());
                 }
             }
             this.client.zadd(dbIndex, key, scoreMembers);
         } else if (redisKey.isHashKey()) {
-            List<RedisHashValue.RedisHashRow> rows = redisKey.asHashValue().getValue();
+            List<ShellRedisHashValue.RedisHashRow> rows = redisKey.asHashValue().getValue();
             Map<String, String> hash;
             if (CollectionUtil.isEmpty(rows)) {
                 hash = new HashMap<>();
             } else {
                 hash = new HashMap<>();
-                for (RedisHashValue.RedisHashRow row : rows) {
+                for (ShellRedisHashValue.RedisHashRow row : rows) {
                     hash.put(row.getField(), row.getValue());
                 }
             }
             this.client.hmset(dbIndex, key, hash);
         } else if (redisKey.isStreamKey()) {
-            List<RedisStreamValue.RedisStreamRow> rows = redisKey.asStreamValue().getValue();
+            List<ShellRedisStreamValue.RedisStreamRow> rows = redisKey.asStreamValue().getValue();
             if (CollectionUtil.isNotEmpty(rows)) {
-                for (RedisStreamValue.RedisStreamRow row : rows) {
+                for (ShellRedisStreamValue.RedisStreamRow row : rows) {
                     this.client.xadd(dbIndex, key, row.getStreamId(), row.getFields());
                 }
             }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.RedisCacheUtil;
+import cn.oyzh.easyshell.redis.ShellRedisCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-12-02
  */
-public class RedisHashValue implements RedisKeyValue<List<RedisHashValue.RedisHashRow>> {
+public class ShellRedisHashValue implements ShellRedisKeyValue<List<ShellRedisHashValue.RedisHashRow>> {
 
     private List<RedisHashRow> value;
 
@@ -35,18 +35,18 @@ public class RedisHashValue implements RedisKeyValue<List<RedisHashValue.RedisHa
         this.unSavedRow = unSavedRow;
     }
 
-    public RedisHashValue(List<RedisHashRow> value) {
+    public ShellRedisHashValue(List<RedisHashRow> value) {
         this.value = value;
     }
 
-    public static RedisHashValue valueOf(Map<String, String> value) {
+    public static ShellRedisHashValue valueOf(Map<String, String> value) {
         List<RedisHashRow> rows = new ArrayList<>(12);
         if (value != null) {
             for (Map.Entry<String, String> entry : value.entrySet()) {
                 rows.add(new RedisHashRow(entry.getKey(), entry.getValue()));
             }
         }
-        return new RedisHashValue(rows);
+        return new ShellRedisHashValue(rows);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class RedisHashValue implements RedisKeyValue<List<RedisHashValue.RedisHa
         }
     }
 
-    public static class RedisHashRow implements RedisKeyRow {
+    public static class RedisHashRow implements ShellRedisKeyRow {
 
         public RedisHashRow(String field, String value) {
             this.setField(field);
@@ -87,21 +87,21 @@ public class RedisHashValue implements RedisKeyValue<List<RedisHashValue.RedisHa
         }
 
         public void setField(String field) {
-            RedisCacheUtil.cacheValue(this.hashCode(), field, "field");
+            ShellRedisCacheUtil.cacheValue(this.hashCode(), field, "field");
         }
 
         public String getField() {
-            return (String) RedisCacheUtil.loadValue(this.hashCode(), "field");
+            return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "field");
         }
 
         @Override
         public void setValue(String value) {
-            RedisCacheUtil.cacheValue(this.hashCode(), value, "value");
+            ShellRedisCacheUtil.cacheValue(this.hashCode(), value, "value");
         }
 
         @Override
         public String getValue() {
-            return (String) RedisCacheUtil.loadValue(this.hashCode(), "value");
+            return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "value");
         }
 
         @Override

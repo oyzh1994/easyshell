@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
 import cn.oyzh.easyshell.dto.redis.RedisServerItem;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -34,9 +34,9 @@ public class RedisServerTabController extends ParentTabController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
@@ -110,7 +110,7 @@ public class RedisServerTabController extends ParentTabController {
      *
      * @param client redis客户端
      */
-    public void init(RedisClient client) {
+    public void init(ShellRedisClient client) {
         this.client = client;
         if (!client.isSentinelMode()) {
             this.pubsubController.init(client);

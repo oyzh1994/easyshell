@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.terminal;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -30,14 +30,14 @@ public class RedisTerminalTabController extends SubTabController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 初始化
      *
      * @param client redis客户端
      */
-    public void init(RedisClient client) {
+    public void init(ShellRedisClient client) {
         // this.terminal.init(client, dbIndex);
         this.client = client;
     }
@@ -55,14 +55,14 @@ public class RedisTerminalTabController extends SubTabController {
         return this.terminal.getDbIndex();
     }
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return this.terminal.getClient();
     }
 
     // @Override
     // public void onTabClosed(Event event) {
     //     if (this.terminal.isTemporary()) {
-    //         RedisConnectUtil.close(this.client(), true, true);
+    //         ShellRedisConnectUtil.close(this.client(), true, true);
     //     }
     //     super.onTabClosed(event);
     // }

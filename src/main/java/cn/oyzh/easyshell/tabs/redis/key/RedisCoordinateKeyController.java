@@ -4,8 +4,8 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
-import cn.oyzh.easyshell.redis.key.RedisKeyRow;
-import cn.oyzh.easyshell.redis.key.RedisZSetValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
+import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSetKeyTreeItem, RedisZSetValue.RedisZSetRow> {
+public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSetKeyTreeItem, ShellRedisZSetValue.RedisZSetRow> {
 
     /**
      * 数据撤销
@@ -134,7 +134,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
      */
     private final ChangeListener<String> longitudeValListener = (observable, oldValue, newValue) -> {
         Number value = this.longitudeVal.getValue();
-        RedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
+        ShellRedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
         if (!this.ignoreDataChange && row != null && !Objects.equals(row.getLongitude(), value.doubleValue())) {
             this.saveNodeData.enable();
             if (this.treeItem.unsavedValue() == null) {
@@ -151,7 +151,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
      */
     private final ChangeListener<String> latitudeValListener = (observable, oldValue, newValue) -> {
         Number value = this.longitudeVal.getValue();
-        RedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
+        ShellRedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
         if (!this.ignoreDataChange && row != null && !Objects.equals(row.getLatitude(), value.doubleValue())) {
             this.saveNodeData.enable();
             if (this.treeItem.unsavedValue() == null) {
@@ -172,8 +172,8 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
     }
 
     @Override
-    protected List<RedisZSetValue.RedisZSetRow> getRows() {
-        List<RedisZSetValue.RedisZSetRow> rows = this.treeItem.rows();
+    protected List<ShellRedisZSetValue.RedisZSetRow> getRows() {
+        List<ShellRedisZSetValue.RedisZSetRow> rows = this.treeItem.rows();
         String filterKW = this.filter.getText();
         if (StringUtil.isNotEmpty(filterKW)) {
             rows = rows.parallelStream()
@@ -196,7 +196,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
     }
 
     @Override
-    protected void initRow(RedisZSetValue.RedisZSetRow row) {
+    protected void initRow(ShellRedisZSetValue.RedisZSetRow row) {
         super.initRow(row);
         if (row == null) {
 //            this.nodeData.clear();
@@ -296,7 +296,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
 
     @Override
     protected void firstShowData() {
-        RedisZSetValue.RedisZSetRow row = this.treeItem.data();
+        ShellRedisZSetValue.RedisZSetRow row = this.treeItem.data();
         if (row == null) {
             return;
         }
@@ -322,7 +322,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
 
     // @Override
     // protected void showData(EditorFormatType formatType) {
-    //     RedisZSetValue.RedisZSetRow row = this.treeItem.data();
+    //     ShellRedisZSetValue.RedisZSetRow row = this.treeItem.data();
     //     if (row != null) {
     //         this.nodeData.showData(row.getValue(), formatType);
     //     }
@@ -334,7 +334,7 @@ public class RedisCoordinateKeyController extends RedisRowKeyController<RedisZSe
         if (!this.treeItem.isSelectRow()) {
             return;
         }
-        RedisKeyRow row = this.treeItem.currentRow();
+        ShellRedisKeyRow row = this.treeItem.currentRow();
         if (!MessageBox.confirm(I18nHelper.deleteCoordinate() + ":" + row.getValue())) {
             return;
         }

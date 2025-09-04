@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.handler.redis.RedisDataTransportHandler;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisClientUtil;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -137,12 +137,12 @@ public class RedisTransportDataController extends StageController {
     /**
      * 来源客户端
      */
-    private RedisClient sourceClient;
+    private ShellRedisClient sourceClient;
 
     /**
      * 目标客户端
      */
-    private RedisClient targetClient;
+    private ShellRedisClient targetClient;
 
     /**
      * 结束传输按钮
@@ -457,7 +457,7 @@ public class RedisTransportDataController extends StageController {
             DownLatch latch = DownLatch.of();
             ThreadUtil.start(() -> {
                 try {
-                    this.sourceClient = RedisClientUtil.newClient(sourceInfo);
+                    this.sourceClient = ShellRedisClientUtil.newClient(sourceInfo);
                     this.sourceClient.start(2500);
                 } finally {
                     latch.countDown();
@@ -501,7 +501,7 @@ public class RedisTransportDataController extends StageController {
             DownLatch latch = DownLatch.of();
             ThreadUtil.start(() -> {
                 try {
-                    this.targetClient = RedisClientUtil.newClient(targetInfo);
+                    this.targetClient = ShellRedisClientUtil.newClient(targetInfo);
                     this.targetClient.start(2500);
                 } finally {
                     latch.countDown();

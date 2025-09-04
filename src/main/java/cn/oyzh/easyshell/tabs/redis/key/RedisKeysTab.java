@@ -2,7 +2,7 @@
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-// import cn.oyzh.easyshell.redis.RedisClient;
+// import cn.oyzh.easyshell.redis.ShellRedisClient;
 // import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -72,7 +72,7 @@
 //     //    return this.controller().dbIndex();
 //     // }
 //
-//     public RedisClient client() {
+//     public ShellRedisClient client() {
 //         return this.controller().getClient();
 //     }
 //

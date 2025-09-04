@@ -233,7 +233,7 @@
 //     //  * @param dbIndex db库节点
 //     //  * @param type   键类型
 //     //  */
-//     // public static void addKey(Integer dbIndex, RedisKeyType type) {
+//     // public static void addKey(Integer dbIndex, ShellRedisKeyType type) {
 //     //     try {
 //     //         StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("dbIndex", dbIndex);

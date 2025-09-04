@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.redis.RedisKeyRowTableView;
 import cn.oyzh.easyshell.popups.redis.RedisPageSettingPopupController;
-import cn.oyzh.easyshell.redis.key.RedisKeyRow;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.redis.key.RedisRowKeyTreeItem;
 import cn.oyzh.fx.gui.page.PageBox;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/30
  */
-public abstract class RedisRowKeyController<T extends RedisRowKeyTreeItem<R>, R extends RedisKeyRow> extends RedisKeyController<T> {
+public abstract class RedisRowKeyController<T extends RedisRowKeyTreeItem<R>, R extends ShellRedisKeyRow> extends RedisKeyController<T> {
 
     /**
      * 分页数据

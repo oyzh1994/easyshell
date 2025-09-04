@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.handler.redis;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 
 import java.util.List;
 import java.util.Set;
@@ -14,19 +14,19 @@ import java.util.Set;
  * @since 2024/10/15
  */
 public class RedisDataTransportHandler extends DataHandler {
-    public RedisClient getSourceClient() {
+    public ShellRedisClient getSourceClient() {
         return sourceClient;
     }
 
-    public void setSourceClient(RedisClient sourceClient) {
+    public void setSourceClient(ShellRedisClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
-    public RedisClient getTargetClient() {
+    public ShellRedisClient getTargetClient() {
         return targetClient;
     }
 
-    public void setTargetClient(RedisClient targetClient) {
+    public void setTargetClient(ShellRedisClient targetClient) {
         this.targetClient = targetClient;
     }
 
@@ -89,12 +89,12 @@ public class RedisDataTransportHandler extends DataHandler {
     /**
      * 来源客户端
      */
-    protected RedisClient sourceClient;
+    protected ShellRedisClient sourceClient;
 
     /**
      * 目标客户端
      */
-    protected RedisClient targetClient;
+    protected ShellRedisClient targetClient;
 
     /**
      * 节点存在时处理策略
@@ -155,13 +155,13 @@ public class RedisDataTransportHandler extends DataHandler {
             // 检查操作
             this.checkInterrupt();
             // // 被过滤
-            // if (RedisKeyUtil.isFiltered(key, this.filters)) {
+            // if (ShellRedisKeyUtil.isFiltered(key, this.filters)) {
             //     this.message("key[ " + key + "] is filtered, skip it");
             //     this.processedSkip();
             //     continue;
             // }
             // 获取键
-            RedisKey redisKey = RedisKeyUtil.getKey(fromDBIndex, key, this.retainTTL, true, this.sourceClient);
+            ShellRedisKey redisKey = ShellRedisKeyUtil.getKey(fromDBIndex, key, this.retainTTL, true, this.sourceClient);
             // 获取键失败
             if (redisKey == null) {
                 this.message("key[ " + key + "] does not exist");
@@ -201,7 +201,7 @@ public class RedisDataTransportHandler extends DataHandler {
      * @param node 键
      * @return 结果
      */
-    private boolean isExclude(RedisKey node) {
+    private boolean isExclude(ShellRedisKey node) {
         if (CollectionUtil.isEmpty(this.keyTypes)) {
             return true;
         }
@@ -229,9 +229,9 @@ public class RedisDataTransportHandler extends DataHandler {
      * @param redisKey      redis键
      * @param targetDBIndex 目标数据库索引
      */
-    private void createKey(RedisKey redisKey, int targetDBIndex) {
+    private void createKey(ShellRedisKey redisKey, int targetDBIndex) {
         if (redisKey != null) {
-            RedisKeyUtil.createKey(redisKey, targetDBIndex, this.targetClient);
+            ShellRedisKeyUtil.createKey(redisKey, targetDBIndex, this.targetClient);
             String key = redisKey.getKey();
             Long ttl = redisKey.getTtl();
             if (ttl != null && this.retainTTL) {

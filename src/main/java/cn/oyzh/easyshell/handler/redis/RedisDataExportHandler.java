@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.handler.redis;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.store.file.FileColumns;
 import cn.oyzh.store.file.FileHelper;
@@ -40,11 +40,11 @@ public class RedisDataExportHandler extends DataHandler {
         this.fileType = fileType;
     }
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
-    public void setClient(RedisClient client) {
+    public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 
@@ -107,7 +107,7 @@ public class RedisDataExportHandler extends DataHandler {
     /**
      * 客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 数据库
@@ -182,7 +182,7 @@ public class RedisDataExportHandler extends DataHandler {
                 // 写入头
                 writer.writeHeader();
                 // 节点过滤
-                BiPredicate<String, RedisKey> filter = (key, redisKey) -> {
+                BiPredicate<String, ShellRedisKey> filter = (key, redisKey) -> {
                     if (redisKey == null) {
                         this.message("key[" + key + "] don't exist");
                         this.processedDecr();
@@ -193,7 +193,7 @@ public class RedisDataExportHandler extends DataHandler {
                         this.processedSkip();
                         return false;
                     }
-                    // if (RedisKeyUtil.isFiltered(key, this.filters)) {
+                    // if (ShellRedisKeyUtil.isFiltered(key, this.filters)) {
                     //     this.message("key[" + key + "] is filtered, skip it");
                     //     this.processedSkip();
                     //     return false;
@@ -201,7 +201,7 @@ public class RedisDataExportHandler extends DataHandler {
                     return true;
                 };
                 // 获取节点成功
-                Consumer<RedisKey> success = redisKey -> {
+                Consumer<ShellRedisKey> success = redisKey -> {
                     try {
                         this.checkInterrupt();
                     } catch (InterruptedException e) {
@@ -211,7 +211,7 @@ public class RedisDataExportHandler extends DataHandler {
                     // 记录
                     FileRecord record = new FileRecord();
                     // 序列化键值
-                    String value = RedisKeyUtil.serializeNode(redisKey);
+                    String value = ShellRedisKeyUtil.serializeNode(redisKey);
                     record.put(0, key);
                     record.put(1, value);
                     record.put(2, redisKey.getDbIndex());
@@ -262,13 +262,13 @@ public class RedisDataExportHandler extends DataHandler {
      * @param error   异常操作
      * @param filter  过滤操作
      */
-    private void doExport(Consumer<RedisKey> success, BiConsumer<String, Exception> error, BiPredicate<String, RedisKey> filter) {
+    private void doExport(Consumer<ShellRedisKey> success, BiConsumer<String, Exception> error, BiPredicate<String, ShellRedisKey> filter) {
         // 导出业务处理
         BiConsumer<Integer, Set<String>> export = (dbIndex, keys) -> {
             for (String key : keys) {
                 try {
                     // 获取键
-                    RedisKey redisKey = RedisKeyUtil.getKey(dbIndex, key, this.retainTTL, true, this.client);
+                    ShellRedisKey redisKey = ShellRedisKeyUtil.getKey(dbIndex, key, this.retainTTL, true, this.client);
                     // 执行过滤
                     if (filter.test(key, redisKey)) {
                         // // 查询对象编码
@@ -301,7 +301,7 @@ public class RedisDataExportHandler extends DataHandler {
      * @param node 键
      * @return 结果
      */
-    private boolean isExclude(RedisKey node) {
+    private boolean isExclude(ShellRedisKey node) {
         if (CollectionUtil.isEmpty(this.keyTypes)) {
             return true;
         }

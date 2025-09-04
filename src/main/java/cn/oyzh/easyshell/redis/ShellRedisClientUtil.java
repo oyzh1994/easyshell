@@ -29,7 +29,7 @@ import java.util.Base64;
  * @author oyzh
  * @since 2024/12/10
  */
-public class RedisClientUtil {
+public class ShellRedisClientUtil {
 
     /**
      * 初始化客户端配置
@@ -71,8 +71,8 @@ public class RedisClientUtil {
         return builder.build();
     }
 
-    public static RedisClient newClient(ShellConnect redisConnect) {
-        return new RedisClient(redisConnect);
+    public static ShellRedisClient newClient(ShellConnect redisConnect) {
+        return new ShellRedisClient(redisConnect);
     }
 
     /**

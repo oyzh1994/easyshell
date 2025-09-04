@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -23,13 +23,13 @@ public class RedisQueryEditor extends Editor {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 
-    public void setClient(RedisClient client) {
+    public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 

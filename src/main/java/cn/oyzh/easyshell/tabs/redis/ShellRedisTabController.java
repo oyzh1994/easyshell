@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController;
 import cn.oyzh.easyshell.tabs.redis.query.RedisQueryTabController;
@@ -26,7 +26,7 @@ public class ShellRedisTabController extends ShellParentTabController {
     /**
      * 客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 根节点
@@ -75,7 +75,7 @@ public class ShellRedisTabController extends ShellParentTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.client = new RedisClient(connect);
+        this.client = new ShellRedisClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {
             try {
@@ -106,7 +106,7 @@ public class ShellRedisTabController extends ShellParentTabController {
         });
     }
 
-    public RedisClient getClient() {
+    public ShellRedisClient getClient() {
         return client;
     }
 }

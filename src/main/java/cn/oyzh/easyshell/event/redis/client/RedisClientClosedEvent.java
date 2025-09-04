@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.redis.client;// package cn.oyzh.easyredis.event;
 //
 // import cn.oyzh.easyshell.domain.redis.RedisInfo;
-// import cn.oyzh.easyshell.redis.RedisClient;
+// import cn.oyzh.easyshell.redis.ShellRedisClient;
 // import cn.oyzh.event.Event;
 // import cn.oyzh.event.EventFormatter;
 //
@@ -9,7 +9,7 @@ package cn.oyzh.easyshell.event.redis.client;// package cn.oyzh.easyredis.event;
 //  * @author oyzh
 //  * @since 2023/11/28
 //  */
-// public class RedisClientClosedEvent extends Event<RedisClient> implements EventFormatter {
+// public class RedisClientClosedEvent extends Event<ShellRedisClient> implements EventFormatter {
 //
 //     @Override
 //     public String eventFormat() {

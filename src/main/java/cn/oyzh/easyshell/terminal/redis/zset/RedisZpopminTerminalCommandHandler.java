@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.redis.zset;
 
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
@@ -13,8 +13,8 @@ import redis.clients.jedis.Protocol;
 public class RedisZpopminTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
-    protected RedisKeyType getKeyType() {
-        return RedisKeyType.ZSET;
+    protected ShellRedisKeyType getKeyType() {
+        return ShellRedisKeyType.ZSET;
     }
 
     @Override

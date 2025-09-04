@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
-import cn.oyzh.easyshell.redis.key.RedisKey;
-import cn.oyzh.easyshell.redis.key.RedisKeyRow;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 import java.util.Collections;
@@ -14,7 +14,7 @@ import java.util.List;
  * @since 2023/06/30
  */
 //@Slf4j
-public abstract class RedisRowKeyTreeItem<R extends RedisKeyRow> extends RedisKeyTreeItem {
+public abstract class RedisRowKeyTreeItem<R extends ShellRedisKeyRow> extends RedisKeyTreeItem {
 
     public R currentRow() {
         return currentRow;
@@ -30,7 +30,7 @@ public abstract class RedisRowKeyTreeItem<R extends RedisKeyRow> extends RedisKe
      */
     protected R currentRow;
 
-    public RedisRowKeyTreeItem(RedisKey value, RedisDatabaseTreeItem dbItem) {
+    public RedisRowKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

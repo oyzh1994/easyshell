@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.tabs.redis.server;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.redis.RedisClient;
+// import cn.oyzh.easyshell.redis.ShellRedisClient;
 // import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -42,7 +42,7 @@
 //      *
 //      * @param client redis客户端
 //      */
-//     public void init(RedisClient client) {
+//     public void init(ShellRedisClient client) {
 //         try {
 //             // 设置文本
 //             this.setText(I18nHelper.serverInfo() + "-" + client.connectName());
@@ -76,7 +76,7 @@
 //      *
 //      * @return redis客户端
 //      */
-//     public RedisClient client() {
+//     public ShellRedisClient client() {
 //         return this.controller().getClient();
 //     }
 //

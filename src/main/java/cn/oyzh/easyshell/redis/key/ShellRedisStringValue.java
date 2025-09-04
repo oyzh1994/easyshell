@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.util.BooleanUtil;
-import cn.oyzh.easyshell.redis.RedisCacheUtil;
+import cn.oyzh.easyshell.redis.ShellRedisCacheUtil;
 
 /**
  * @author oyzh
  * @since 2024-12-02
  */
-public class RedisStringValue implements RedisKeyValue<Object> {
+public class ShellRedisStringValue implements ShellRedisKeyValue<Object> {
 
     /**
      * 统计值
@@ -35,58 +35,58 @@ public class RedisStringValue implements RedisKeyValue<Object> {
      */
     private Boolean hyLog;
 
-    public RedisStringValue() {
+    public ShellRedisStringValue() {
     }
 
-    public RedisStringValue(String value) {
+    public ShellRedisStringValue(String value) {
         this.setValue(value);
     }
 
-    public RedisStringValue(byte[] value) {
+    public ShellRedisStringValue(byte[] value) {
         this.setValue(value);
     }
 
-    public static RedisStringValue valueOf(String value) {
-        return new RedisStringValue(value);
+    public static ShellRedisStringValue valueOf(String value) {
+        return new ShellRedisStringValue(value);
     }
 
-    public static RedisStringValue valueOf(byte[] value) {
-        return new RedisStringValue(value);
+    public static ShellRedisStringValue valueOf(byte[] value) {
+        return new ShellRedisStringValue(value);
     }
 
     @Override
     public void setValue(Object value) {
-        RedisCacheUtil.cacheValue(this.hashCode(), value, "value");
+        ShellRedisCacheUtil.cacheValue(this.hashCode(), value, "value");
     }
 
     @Override
     public Object getValue() {
-        return RedisCacheUtil.loadValue(this.hashCode(), "value");
+        return ShellRedisCacheUtil.loadValue(this.hashCode(), "value");
     }
 
     @Override
     public boolean hasValue() {
-        return RedisCacheUtil.hasValue(this.hashCode(), "value");
+        return ShellRedisCacheUtil.hasValue(this.hashCode(), "value");
     }
 
     @Override
     public Object getUnSavedValue() {
-        return RedisCacheUtil.loadValue(this.hashCode(), "unsaved");
+        return ShellRedisCacheUtil.loadValue(this.hashCode(), "unsaved");
     }
 
     @Override
     public void clearUnSavedValue() {
-        RedisCacheUtil.deleteValue(this.hashCode(), "unsaved");
+        ShellRedisCacheUtil.deleteValue(this.hashCode(), "unsaved");
     }
 
     @Override
     public boolean hasUnSavedValue() {
-        return RedisCacheUtil.hasValue(this.hashCode(), "unsaved");
+        return ShellRedisCacheUtil.hasValue(this.hashCode(), "unsaved");
     }
 
     @Override
     public void setUnSavedValue(Object unSavedValue) {
-        RedisCacheUtil.cacheValue(this.hashCode(), unSavedValue, "unsaved");
+        ShellRedisCacheUtil.cacheValue(this.hashCode(), unSavedValue, "unsaved");
     }
 
     public boolean isHyLog() {

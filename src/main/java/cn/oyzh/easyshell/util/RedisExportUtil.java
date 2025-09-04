@@ -7,7 +7,7 @@
 // import cn.oyzh.common.log.JulLog;
 // import cn.oyzh.common.system.OSUtil;
 // import cn.oyzh.easyshell.dto.redis.RedisNodeExport;
-// import cn.oyzh.easyshell.redis.key.RedisKey;
+// import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 // import com.alibaba.fastjson2.JSONArray;
 // import com.alibaba.fastjson2.JSONObject;
 //
@@ -36,7 +36,7 @@
 //      * @param prettyFormat 美化
 //      * @return 数据json字符串
 //      */
-//     public static String nodesToJSON(List<RedisKey> nodes, String charset, boolean prettyFormat) {
+//     public static String nodesToJSON(List<ShellRedisKey> nodes, String charset, boolean prettyFormat) {
 //         Project project = Project.load();
 //         String version = project.getVersion();
 //         String platform = OSUtil.getOSType();
@@ -47,7 +47,7 @@
 //         export.setCharset(charset);
 //         export.setPlatform(platform);
 //         // 拼接数据
-//         for (RedisKey n : nodes) {
+//         for (ShellRedisKey n : nodes) {
 //             Map<String, Object> node = new HashMap<>();
 //             node.put("key", n.getKey());
 //             node.put("type", n.getType().toString());
@@ -55,7 +55,7 @@
 //             if (n.getTtl() != null) {
 //                 node.put("ttl", n.getTtl());
 //             }
-//             String value = RedisKeyUtil.serializeNode(n);
+//             String value = ShellRedisKeyUtil.serializeNode(n);
 //             if (value != null) {
 //                 node.put("value", value);
 //             }

@@ -5,8 +5,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.redis.RedisDataImportHandler;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisClientUtil;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -127,7 +127,7 @@ public class RedisImportDataController extends StageController {
     /**
      * 当前redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 导入操作任务
@@ -313,7 +313,7 @@ public class RedisImportDataController extends StageController {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
                     try {
-                        this.client = RedisClientUtil.newClient(this.connect);
+                        this.client = ShellRedisClientUtil.newClient(this.connect);
                         this.client.start(2500);
                     } finally {
                         latch.countDown();

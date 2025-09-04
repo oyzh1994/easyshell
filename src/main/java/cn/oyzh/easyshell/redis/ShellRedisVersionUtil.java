@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
  * @since 2023/07/31
  */
 
-public class RedisVersionUtil {
+public class ShellRedisVersionUtil {
 
     /**
      * 获取支持的版本

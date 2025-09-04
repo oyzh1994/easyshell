@@ -6,8 +6,8 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
-import cn.oyzh.easyshell.redis.key.RedisKeyRow;
-import cn.oyzh.easyshell.redis.key.RedisListValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
+import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
 import cn.oyzh.easyshell.trees.redis.key.RedisListKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/21
  */
-public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTreeItem, RedisListValue.RedisListRow> {
+public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTreeItem, ShellRedisListValue.RedisListRow> {
 
     /**
      * 数据撤销
@@ -153,8 +153,8 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     }
 
     @Override
-    protected List<RedisListValue.RedisListRow> getRows() {
-        List<RedisListValue.RedisListRow> rows = this.treeItem.rows();
+    protected List<ShellRedisListValue.RedisListRow> getRows() {
+        List<ShellRedisListValue.RedisListRow> rows = this.treeItem.rows();
         String filterKW = this.filter.getText();
         if (StringUtil.isNotEmpty(filterKW)) {
             rows = rows.parallelStream()
@@ -177,7 +177,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     }
 
 //    @Override
-//    protected void initRow(RedisListValue.RedisListRow row) {
+//    protected void initRow(ShellRedisListValue.RedisListRow row) {
 //        super.initRow(row);
 //        if (row == null) {
 //            this.nodeData.clear();
@@ -257,7 +257,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
 
     @Override
     protected void firstShowData() {
-        RedisListValue.RedisListRow row = this.treeItem.data();
+        ShellRedisListValue.RedisListRow row = this.treeItem.data();
         if (row == null) {
             return;
         }
@@ -295,7 +295,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
         try {
             File file = FileChooserHelper.save(I18nHelper.saveFile(), this.treeItem.key(), FXChooser.allExtensionFilter());
             if (file != null) {
-                RedisListValue.RedisListRow row = this.treeItem.rawValue();
+                ShellRedisListValue.RedisListRow row = this.treeItem.rawValue();
                 byte[] bytes = row.getValue().getBytes();
                 FileUtil.writeBytes(bytes, file);
             }
@@ -306,7 +306,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
 
     // @Override
     // protected void showData(EditorFormatType formatType) {
-    //     RedisListValue.RedisListRow row = this.treeItem.data();
+    //     ShellRedisListValue.RedisListRow row = this.treeItem.data();
     //     if (row != null) {
     //         this.nodeData.showData(row.getValue(), formatType);
     //     }
@@ -318,7 +318,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
         if (!this.treeItem.isSelectRow()) {
             return;
         }
-        RedisKeyRow row = this.treeItem.currentRow();
+        ShellRedisKeyRow row = this.treeItem.currentRow();
         if (!MessageBox.confirm(I18nHelper.deleteElement() + ":" + row.getValue())) {
             return;
         }

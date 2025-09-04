@@ -7,9 +7,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
-import cn.oyzh.easyshell.redis.RedisClient;
-import cn.oyzh.easyshell.redis.RedisKeyUtil;
-import cn.oyzh.easyshell.redis.key.RedisKey;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
+import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -195,7 +195,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      *
      * @return redis客户端
      */
-    public RedisClient client() {
+    public ShellRedisClient client() {
         return getTreeView().getClient();
     }
 
@@ -294,9 +294,9 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
             // 已存在节点
             List<String> existingKeys = this.keyChildren().parallelStream().map(RedisKeyTreeItem::key).toList();
             // 获取节点列表
-            List<RedisKey> list = RedisKeyUtil.getKeys(this.client(), this.dbIndex(), pattern, existingKeys, limit);
+            List<ShellRedisKey> list = ShellRedisKeyUtil.getKeys(this.client(), this.dbIndex(), pattern, existingKeys, limit);
             // 处理节点
-            for (RedisKey node : list) {
+            for (ShellRedisKey node : list) {
                 // 添加到集合
                 addList.add(this.initKeyItem(node));
             }
@@ -366,7 +366,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      * @param redisKey redis键
      * @return redis树键
      */
-    private RedisKeyTreeItem initKeyItem(RedisKey redisKey) {
+    private RedisKeyTreeItem initKeyItem(ShellRedisKey redisKey) {
         if (redisKey.isStringKey()) {
             return new RedisStringKeyTreeItem(redisKey, this);
         }
@@ -399,7 +399,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
 
     public void keyAdded(String key) {
         try {
-            RedisKey redisKey = RedisKeyUtil.getKey(this.dbIndex, key, false, false, this.client());
+            ShellRedisKey redisKey = ShellRedisKeyUtil.getKey(this.dbIndex, key, false, false, this.client());
             if (redisKey == null) {
                 JulLog.warn("redisKey is null");
             } else {

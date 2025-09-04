@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.redis;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.key.RedisKeyRow;
+import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/05/20
  */
-public class RedisKeyRowTableView<R extends RedisKeyRow> extends FXTableView<R> {
+public class RedisKeyRowTableView<R extends ShellRedisKeyRow> extends FXTableView<R> {
 
     private Runnable addAction;
 

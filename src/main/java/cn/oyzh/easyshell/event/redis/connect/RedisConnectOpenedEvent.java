@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.event.redis.connect;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.redis.RedisClient;
+// import cn.oyzh.easyshell.redis.ShellRedisClient;
 // import cn.oyzh.event.Event;
 //
 // /**
@@ -10,7 +10,7 @@
 //  */
 // public class RedisConnectOpenedEvent extends Event<RedisDatabaseTreeItem>  {
 //
-//     public RedisClient client() {
+//     public ShellRedisClient client() {
 //         return this.data().client();
 //     }
 //

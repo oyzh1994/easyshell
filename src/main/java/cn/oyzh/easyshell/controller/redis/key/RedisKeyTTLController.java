@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.common.Const;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -48,7 +48,7 @@ public class RedisKeyTTLController extends StageController {
     /**
      * redis客户端
      */
-    private RedisClient client;
+    private ShellRedisClient client;
 
     /**
      * 到期预览

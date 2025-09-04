@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.redis.geo;
 
-import cn.oyzh.easyshell.redis.RedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
@@ -12,8 +12,8 @@ import redis.clients.jedis.Protocol;
 public class RedisGeoradius_r0TerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
-    protected RedisKeyType getKeyType() {
-        return RedisKeyType.ZSET;
+    protected ShellRedisKeyType getKeyType() {
+        return ShellRedisKeyType.ZSET;
     }
 
     @Override

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.redis.RedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
@@ -71,7 +71,7 @@ public class RedisZSetMemberAddController extends StageController {
             // 获取键值
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
-            RedisClient client = this.treeItem.client();
+            ShellRedisClient client = this.treeItem.client();
             if (client.zrank(dbIndex, key, rowValue) != null) {
                 MessageBox.warn(I18nHelper.alreadyExists());
                 return;
