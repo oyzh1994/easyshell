@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/row/redisHylogElementsAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/shellRedisHylogElementsAdd.fxml"
 )
 public class ShellRedisHylogElementsAddController extends StageController {
 

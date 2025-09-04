@@ -43,7 +43,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "redis/key/redisKeyBatchOperation.fxml"
+        value = FXConst.FXML_PATH + "redis/key/shellRedisKeyBatchOperation.fxml"
 )
 public class ShellRedisKeyBatchOperationController extends StageController {
 

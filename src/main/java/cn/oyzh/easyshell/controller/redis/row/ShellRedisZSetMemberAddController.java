@@ -28,7 +28,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/row/redisZSetMemberAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/shellRedisZSetMemberAdd.fxml"
 )
 public class ShellRedisZSetMemberAddController extends StageController {
 

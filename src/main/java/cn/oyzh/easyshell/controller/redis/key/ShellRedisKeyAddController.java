@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "redis/key/redisKeyAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/key/shellRedisKeyAdd.fxml"
 )
 public class ShellRedisKeyAddController extends StageController {
 

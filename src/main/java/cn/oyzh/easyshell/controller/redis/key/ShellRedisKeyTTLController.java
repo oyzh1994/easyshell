@@ -30,7 +30,7 @@ import java.sql.Date;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/key/redisKeyTTL.fxml"
+        value = FXConst.FXML_PATH + "redis/key/shellRedisKeyTTL.fxml"
 )
 public class ShellRedisKeyTTLController extends StageController {
 

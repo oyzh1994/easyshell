@@ -30,7 +30,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/key/redisKeyCopy.fxml"
+        value = FXConst.FXML_PATH + "redis/key/shellRedisKeyCopy.fxml"
 )
 public class ShellRedisKeyCopyController extends StageController {
 
