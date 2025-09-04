@@ -324,12 +324,7 @@ public class RedisClient implements ShellBaseClient {
 //            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
 //        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect.getUser(),
-                this.shellConnect.getPassword(),
-                connectTimeout,
-                this.shellConnect.executeTimeOutMs(),
-                this.shellConnect.isSSLMode()
-        );
+        DefaultJedisClientConfig clientConfig = RedisClientUtil.newConfig(this.shellConnect);
         // 初始化连接池
         this.initPool(hostIp, port, clientConfig);
         try {

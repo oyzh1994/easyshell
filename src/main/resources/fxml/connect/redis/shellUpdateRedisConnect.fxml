@@ -6,7 +6,6 @@
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
-<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -14,6 +13,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
@@ -99,11 +99,6 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox fx:id="sslMode" text="%base.enableSSL" fontSize="11">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </FXCheckBox>
                 </FXHBox>
             </FXVBox>
         </FXTab>
@@ -166,6 +161,55 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="SSL" fx:id="sslTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableSSL">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="enableSSL">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.clientKey">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField editable="true" disable="true" fx:id="sslClientKey" tipText="%base.chooseTip1"
+                                     require="true"
+                                     realHeight="30"
+                                     flexWidth="100% - 180" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <InfoLabel text="%base.clientCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField editable="true" disable="true" fx:id="sslClientCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <InfoLabel text="%base.caCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField editable="true" disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.proxy" fx:id="proxyTab">

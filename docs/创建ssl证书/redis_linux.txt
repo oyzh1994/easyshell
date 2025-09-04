@@ -1,0 +1,9 @@
+	# 进入上诉新建的证书存放目录
+	cd /opt/redis/ssl
+	# 依次执行以下命令生成证书
+	openssl genrsa -out ca.key 4096
+	openssl req -x509 -new -nodes -sha256 -key ca.key -days 3650 -subj '/O=Redis Test/CN=Certificate Authority' -out ca.crt
+	openssl genrsa -out redis.key 2048
+	openssl req -new -sha256 -key redis.key -subj '/O=Redis Test/CN=Server' | openssl x509 -req -sha256 -CA ca.crt -CAkey ca.key -CAserial ca.txt -CAcreateserial -days 365 -out redis.crt
+	# 这个耗时较久
+	openssl dhparam -out redis.dh 2048

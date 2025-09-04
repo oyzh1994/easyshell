@@ -28,8 +28,8 @@ public class JedisTlsClientCertExample {
 
     public static void main(String[] args) throws Exception {
         // 1. 创建 SSL Socket Factory (同时加载客户端证书和CA信任证书)
-        SSLSocketFactory sslSocketFactory = createInsecureSslSocketFactory();
-        // SSLSocketFactory sslSocketFactory = createSslSocketFactoryWithClientCert();
+        // SSLSocketFactory sslSocketFactory = createInsecureSslSocketFactory();
+        SSLSocketFactory sslSocketFactory = createSslSocketFactoryWithClientCert();
         // SSLSocketFactory sslSocketFactory = createSslSocketFactory();
 
         // 2. 配置连接池
@@ -51,10 +51,13 @@ public class JedisTlsClientCertExample {
         System.out.println(jedisPool.getResource().get("s1"));
     }
 
-    static String caCertPath = "/Users/oyzh/IdeaProjects/oyzh/easyshell/docker/redis/ssl/ca.crt";
-    static  String clientCertPath = "/Users/oyzh/IdeaProjects/oyzh/easyshell/docker/redis/ssl/redis.crt";
-    static   String clientKeyPath = "/Users/oyzh/IdeaProjects/oyzh/easyshell/docker/redis/ssl/redis.key";
+    // static String caCertPath = "/Users/oyzh/IdeaProjects/oyzh/easyshell/docker/redis/ssl/ca.crt";
+    // static  String clientCertPath = "/Users/oyzh/IdeaProjects/oyzh/easyshell/docker/redis/ssl/redis.crt";
+    // static   String clientKeyPath = "/Users/oyzh/IdeaProjects/oyzh/easyshell/docker/redis/ssl/redis.key";
 
+    static String caCertPath = "C:\\Users\\oyzh\\Projects\\easyshell\\docker\\redis\\ssl\\ca.crt";
+    static String clientCertPath = "C:\\Users\\oyzh\\Projects\\easyshell\\docker\\redis\\ssl\\redis.crt";
+    static String clientKeyPath = "C:\\Users\\oyzh\\Projects\\easyshell\\docker\\redis\\ssl\\redis.key";
 
     private static SSLSocketFactory createSslSocketFactoryWithClientCert() throws Exception {
         // 加载 CA 证书（信任库）- 用于验证服务器证书
@@ -80,8 +83,8 @@ public class JedisTlsClientCertExample {
         // 加载客户端私钥（假设是 PEM 格式的 PKCS#8 私钥）
         String privateKeyPEM = new String(Files.readAllBytes(Paths.get(clientKeyPath))); // 替换为你的客户端私钥路径
         privateKeyPEM = privateKeyPEM.replace("-----BEGIN PRIVATE KEY-----", "")
-                                     .replace("-----END PRIVATE KEY-----", "")
-                                     .replaceAll("\\s", ""); // 移除 PEM 标记和空白字符
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", ""); // 移除 PEM 标记和空白字符
         byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
         KeyFactory kf = KeyFactory.getInstance("RSA"); // 根据你的私钥类型选择 "RSA" 或 "EC"
@@ -98,10 +101,10 @@ public class JedisTlsClientCertExample {
         kmf.init(keyStore, "".toCharArray()); // 如果私钥有密码，使用密码的字符数组
 
         // 创建并初始化 SSLContext
-        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(kmf.getKeyManagers(), // 提供密钥管理器（包含客户端证书）
-                       tmf.getTrustManagers(), // 提供信任管理器（包含受信任的 CA）
-                       new java.security.SecureRandom());
+                tmf.getTrustManagers(), // 提供信任管理器（包含受信任的 CA）
+                new java.security.SecureRandom());
 
         return sslContext.getSocketFactory();
     }
@@ -113,9 +116,11 @@ public class JedisTlsClientCertExample {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
                     }
+
                     public void checkClientTrusted(
                             java.security.cert.X509Certificate[] certs, String authType) {
                     }
+
                     public void checkServerTrusted(
                             java.security.cert.X509Certificate[] certs, String authType) {
                     }

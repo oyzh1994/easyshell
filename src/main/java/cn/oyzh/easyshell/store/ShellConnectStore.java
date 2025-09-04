@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
@@ -44,6 +45,11 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      * shell文件收藏
      */
     private final ShellFileCollectStore fileCollectStore = ShellFileCollectStore.INSTANCE;
+
+    /**
+     * shell ssl配置
+     */
+    private final ShellSSLConfigStore shellSSLConfigStore = ShellSSLConfigStore.INSTANCE;
 
 //    /**
 //     * 终端历史存储
@@ -117,6 +123,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         for (ShellConnect connect : connects) {
             connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
             connect.setProxyConfig(this.proxyConfigStore.getByIid(connect.getId()));
+            connect.setSslConfig(this.shellSSLConfigStore.getByIid(connect.getId()));
             connect.setJumpConfigs(this.jumpConfigStore.loadByIid(connect.getId()));
             connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
         }
@@ -132,7 +139,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             this.jumpConfigStore.deleteByIid(model.getId());
             this.proxyConfigStore.deleteByIid(model.getId());
             this.fileCollectStore.deleteByIid(model.getId());
-//            this.termHistoryStore.deleteByIid(model.getId());
+            this.shellSSLConfigStore.deleteByIid(model.getId());
             this.tunnelingConfigStore.deleteByIid(model.getId());
         }
         return result;
@@ -187,6 +194,15 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 this.proxyConfigStore.replace(proxyConfig);
             } else {
                 this.proxyConfigStore.deleteByIid(model.getId());
+            }
+
+            // ssl处理
+            ShellSSLConfig sslConfig = model.getSslConfig();
+            if (sslConfig != null) {
+                sslConfig.setIid(model.getId());
+                this.shellSSLConfigStore.replace(sslConfig);
+            } else {
+                this.shellSSLConfigStore.deleteByIid(model.getId());
             }
         }
         return result;

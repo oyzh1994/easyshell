@@ -222,6 +222,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean sslMode;
 
     /**
+     * ssl配置
+     */
+    private ShellSSLConfig sslConfig;
+
+    /**
      * ftp的被动模式
      */
     @Column
@@ -446,7 +451,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.termType = t1.termType;
         this.connectTimeOut = t1.connectTimeOut;
         // ftp
-        this.sslMode = t1.sslMode;
         this.ftpPassiveMode = t1.ftpPassiveMode;
         // s3
         this.region = t1.region;
@@ -493,6 +497,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // redis
         this.readonly = t1.readonly;
         this.executeTimeOut = t1.executeTimeOut;
+        // ssl
+        this.sslMode = t1.sslMode;
+        this.sslConfig = ShellSSLConfig.clone(t1.sslConfig);
     }
 
     /**
@@ -1037,5 +1044,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     public int executeTimeOutMs() {
         return this.getExecuteTimeOut() * 1000;
+    }
+
+    public ShellSSLConfig getSslConfig() {
+        return sslConfig;
+    }
+
+    public void setSslConfig(ShellSSLConfig sslConfig) {
+        this.sslConfig = sslConfig;
     }
 }

@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
@@ -16,6 +17,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -186,7 +188,31 @@ public class ShellAddRedisConnectController extends StageController {
      * ssl模式
      */
     @FXML
-    private FXCheckBox sslMode;
+    private FXToggleSwitch enableSSL;
+
+    /**
+     * ssl面板
+     */
+    @FXML
+    private FXTab sslTab;
+
+    /**
+     * ssl 客户端密钥
+     */
+    @FXML
+    private ChooseFileTextField sslClientKey;
+
+    /**
+     * ssl 客户端证书
+     */
+    @FXML
+    private ChooseFileTextField sslClientCrt;
+
+    /**
+     * ssl ca证书
+     */
+    @FXML
+    private ChooseFileTextField sslCaCrt;
 
     /**
      * ssh连接储存对象
@@ -236,6 +262,19 @@ public class ShellAddRedisConnectController extends StageController {
     }
 
     /**
+     * 获取ssl配置信息
+     *
+     * @return ssl配置信息
+     */
+    private ShellSSLConfig getSSLConfig() {
+        ShellSSLConfig config = new ShellSSLConfig();
+        config.setCaCrt(this.sslCaCrt.getText());
+        config.setClientCrt(this.sslClientCrt.getText());
+        config.setClientKey(this.sslClientKey.getText());
+        return config;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -255,11 +294,12 @@ public class ShellAddRedisConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
+            // ssl配置
+            shellConnect.setSslConfig(this.getSSLConfig());
+            shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            // ssl模式
-            shellConnect.setSSLMode(this.sslMode.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -308,7 +348,8 @@ public class ShellAddRedisConnectController extends StageController {
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // ssl模式
-            shellConnect.setSSLMode(this.sslMode.isSelected());
+            shellConnect.setSslConfig(this.getSSLConfig());
+            shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 分组及类型
             shellConnect.setType("Redis");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -361,6 +402,14 @@ public class ShellAddRedisConnectController extends StageController {
                 this.proxyAuthInfoBox.enable();
             } else {
                 this.proxyAuthInfoBox.disable();
+            }
+        });
+        // ssl配置
+        this.enableSSL.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.sslTab, "ssl");
+            } else {
+                NodeGroupUtil.disable(this.sslTab, "ssl");
             }
         });
     }
