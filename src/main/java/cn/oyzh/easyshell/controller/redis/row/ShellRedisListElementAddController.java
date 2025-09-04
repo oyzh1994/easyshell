@@ -4,10 +4,11 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.RedisListKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -19,17 +20,17 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * redis添加set成员
+ * redis添加list行
  *
  * @author oyzh
- * @since 2023/06/27
+ * @since 2023/06/25
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/row/redisSetMemberAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/redisListElementAdd.fxml"
 )
-public class RedisSetMemberAddController extends StageController {
+public class ShellRedisListElementAddController extends StageController {
 
     /**
      * 行数据
@@ -38,9 +39,15 @@ public class RedisSetMemberAddController extends StageController {
     private Editor rowValue;
 
     /**
+     * 插入模式
+     */
+    @FXML
+    private FXToggleGroup insertMode;
+
+    /**
      * redis键
      */
-    private RedisSetKeyTreeItem treeItem;
+    private RedisListKeyTreeItem treeItem;
 
     /**
      * 添加行
@@ -60,16 +67,16 @@ public class RedisSetMemberAddController extends StageController {
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
-            if (client.sismember(dbIndex, key, rowValue)) {
-                MessageBox.warn(I18nHelper.alreadyExists());
-                return;
+            // 添加行
+            if (this.insertMode.selectedUserData().equals("0")) {
+                client.lpushx(dbIndex, key, rowValue);
+            } else if (this.insertMode.selectedUserData().equals("1")) {
+                client.rpushx(dbIndex, key, rowValue);
             }
-            // 添加元素
-            client.sadd(dbIndex, key, rowValue);
             // 结果
             this.setProp("result", true);
             // 发送事件
-            ShellEventUtil.redisSetMemberAdded(this.treeItem, key, rowValue);
+            ShellEventUtil.redisListRowAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -124,6 +131,6 @@ public class RedisSetMemberAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("shell.redis.title.setMemberAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.listRowAdd");
     }
 }

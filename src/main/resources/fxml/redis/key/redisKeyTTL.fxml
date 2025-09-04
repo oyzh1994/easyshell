@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.redis.key.RedisKeyTTLController" realWidth="600" realHeight="480">
+        fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyTTLController" realWidth="600" realHeight="480">
     <InfoLabel text="%base.ttl">
         <VBox.margin>
             <Insets left="30" top="10"/>

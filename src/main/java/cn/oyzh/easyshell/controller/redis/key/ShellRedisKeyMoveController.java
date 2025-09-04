@@ -30,7 +30,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/key/redisKeyMove.fxml"
 )
-public class RedisKeyMoveController extends StageController {
+public class ShellRedisKeyMoveController extends StageController {
 
     /**
      * 键

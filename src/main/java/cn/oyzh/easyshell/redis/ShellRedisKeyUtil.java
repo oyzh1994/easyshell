@@ -5,10 +5,10 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.redis.batch.RedisCountResult;
-import cn.oyzh.easyshell.redis.batch.RedisDeleteResult;
-import cn.oyzh.easyshell.redis.batch.RedisScanResult;
-import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
+import cn.oyzh.easyshell.redis.batch.ShellRedisCountResult;
+import cn.oyzh.easyshell.redis.batch.ShellRedisDeleteResult;
+import cn.oyzh.easyshell.redis.batch.ShellRedisScanResult;
+import cn.oyzh.easyshell.redis.batch.ShellRedisScanSimpleResult;
 import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
@@ -401,12 +401,12 @@ public class ShellRedisKeyUtil {
      * @param client  redis客户端
      * @return 扫描结果
      */
-    public static RedisScanResult scanKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
+    public static ShellRedisScanResult scanKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 开始时间
         long start = System.currentTimeMillis();
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
-        RedisScanResult scanResult = new RedisScanResult();
+        ShellRedisScanResult scanResult = new ShellRedisScanResult();
         if (result == null) {
             return scanResult;
         }
@@ -443,10 +443,10 @@ public class ShellRedisKeyUtil {
      * @param client  redis客户端
      * @return 扫描结果
      */
-    public static RedisScanSimpleResult scanKeysSimple(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
+    public static ShellRedisScanSimpleResult scanKeysSimple(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
-        RedisScanSimpleResult scanResult = new RedisScanSimpleResult();
+        ShellRedisScanSimpleResult scanResult = new ShellRedisScanSimpleResult();
         if (result == null) {
             return scanResult;
         }
@@ -471,7 +471,7 @@ public class ShellRedisKeyUtil {
         ScanParams params = new ScanParams();
         params.count(limit);
         params.match(pattern);
-        RedisScanSimpleResult result = scanKeysSimple(dbIndex, null, params, client);
+        ShellRedisScanSimpleResult result = scanKeysSimple(dbIndex, null, params, client);
         return result.getKeys();
     }
 
@@ -484,10 +484,10 @@ public class ShellRedisKeyUtil {
      * @param client  redis客户端
      * @return 本次键数量
      */
-    public static RedisCountResult countKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
+    public static ShellRedisCountResult countKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
-        RedisCountResult countResult = new RedisCountResult();
+        ShellRedisCountResult countResult = new ShellRedisCountResult();
         if (result == null) {
             return countResult;
         }
@@ -506,10 +506,10 @@ public class ShellRedisKeyUtil {
      * @param client  redis客户端
      * @return 本次键数量
      */
-    public static RedisDeleteResult deleteKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
+    public static ShellRedisDeleteResult deleteKeys(Integer dbIndex, String cursor, ScanParams params, ShellRedisClient client) {
         // 扫描
         ScanResult<String> result = client.scan(dbIndex, cursor, params);
-        RedisDeleteResult countResult = new RedisDeleteResult();
+        ShellRedisDeleteResult countResult = new ShellRedisDeleteResult();
         if (result == null) {
             return countResult;
         }
@@ -740,7 +740,7 @@ public class ShellRedisKeyUtil {
                 params.count(1000);
             }
             // 扫描数据
-            RedisScanResult result = ShellRedisKeyUtil.scanKeys(dbIndex, cursor, params, client);
+            ShellRedisScanResult result = ShellRedisKeyUtil.scanKeys(dbIndex, cursor, params, client);
             // 添加到集合
             List<ShellRedisKey> keys = result.getKeys();
             if (CollectionUtil.isNotEmpty(keys)) {

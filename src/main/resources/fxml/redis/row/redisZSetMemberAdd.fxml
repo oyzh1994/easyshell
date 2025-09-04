@@ -15,7 +15,7 @@
 <?import cn.oyzh.fx.editor.tm4javafx.Editor?>
 <?import cn.oyzh.fx.editor.tm4javafx.Editor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.redis.row.RedisZSetMemberAddController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.redis.row.ShellRedisZSetMemberAddController" realWidth="750"
         realHeight="550">
     <InfoLabel text="%base.member">
         <VBox.margin>

@@ -29,7 +29,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/row/redisHashFieldAdd.fxml"
 )
-public class RedisHashFieldAddController extends StageController {
+public class ShellRedisHashFieldAddController extends StageController {
 
     /**
      * 字段

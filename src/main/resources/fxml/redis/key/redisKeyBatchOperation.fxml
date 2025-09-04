@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXTabPane xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="cn.oyzh.easyshell.controller.redis.key.RedisKeyBatchOperationController" realWidth="750"
+           fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyBatchOperationController" realWidth="750"
            realHeight="600" fx:id="root">
     <FXTab text="%base.deleteKey" groupId="exec"  fontSize="11">
         <FXVBox flexWidth="100%" flexHeight="100%">

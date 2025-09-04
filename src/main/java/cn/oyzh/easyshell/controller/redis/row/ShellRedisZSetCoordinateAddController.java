@@ -1,14 +1,13 @@
 package cn.oyzh.easyshell.controller.redis.row;
 
-import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.key.RedisListKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -20,34 +19,40 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * redis添加list行
+ * redis添加set成员
  *
  * @author oyzh
- * @since 2023/06/25
+ * @since 2023/06/27
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/row/redisListElementAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/redisZSetCoordinateAdd.fxml"
 )
-public class RedisListElementAddController extends StageController {
+public class ShellRedisZSetCoordinateAddController extends StageController {
 
     /**
-     * 行数据
+     * 坐标名称
      */
     @FXML
     private Editor rowValue;
 
     /**
-     * 插入模式
+     * 经度
      */
     @FXML
-    private FXToggleGroup insertMode;
+    private DecimalTextField longitude;
+
+    /**
+     * 纬度
+     */
+    @FXML
+    private DecimalTextField latitude;
 
     /**
      * redis键
      */
-    private RedisListKeyTreeItem treeItem;
+    private RedisZSetKeyTreeItem treeItem;
 
     /**
      * 添加行
@@ -61,22 +66,34 @@ public class RedisListElementAddController extends StageController {
                 MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
                 return;
             }
+            Number longitudeValue = this.longitude.getValue();
+            if (longitudeValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitude);
+                return;
+            }
+            Number latitudeValue = this.latitude.getValue();
+            if (latitudeValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitude);
+                return;
+            }
             // redis键
             String key = this.treeItem.key();
             // 获取键值
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
-            // 添加行
-            if (this.insertMode.selectedUserData().equals("0")) {
-                client.lpushx(dbIndex, key, rowValue);
-            } else if (this.insertMode.selectedUserData().equals("1")) {
-                client.rpushx(dbIndex, key, rowValue);
+            if (client.zrank(dbIndex, key, rowValue) != null) {
+                MessageBox.warn(I18nHelper.alreadyExists());
+                return;
             }
+            double longitude = longitudeValue.doubleValue();
+            double latitude = latitudeValue.doubleValue();
+            // 添加元素
+            client.geoadd(dbIndex, key, longitude, latitude, rowValue);
             // 结果
             this.setProp("result", true);
             // 发送事件
-            ShellEventUtil.redisListRowAdded(this.treeItem, key, rowValue);
+            ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -101,26 +118,6 @@ public class RedisListElementAddController extends StageController {
         this.rowValue.requestFocus();
     }
 
-    /**
-     * 解析为json
-     */
-    @FXML
-    private void parseToJson() {
-        String text = this.rowValue.getTextTrim();
-        try {
-            if ("json".equals(this.rowValue.getUserData())) {
-                String jsonStr = JSONUtil.toJson(this.rowValue);
-                this.rowValue.setText(jsonStr);
-                this.rowValue.setUserData("text");
-            } else if (text.contains("{") || text.contains("[") || "text".equals(this.rowValue.getUserData())) {
-                String jsonStr = JSONUtil.toPretty(this.rowValue);
-                this.rowValue.setText(jsonStr);
-                this.rowValue.setUserData("json");
-            }
-        } catch (Exception ignore) {
-        }
-    }
-
     @Override
     public void onWindowShown(WindowEvent event) {
         this.treeItem = this.getProp("treeItem");
@@ -131,6 +128,6 @@ public class RedisListElementAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("shell.redis.title.listRowAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.zSetCoordinateAdd");
     }
 }

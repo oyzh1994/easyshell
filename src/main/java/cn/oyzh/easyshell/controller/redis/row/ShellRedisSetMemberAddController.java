@@ -1,11 +1,11 @@
 package cn.oyzh.easyshell.controller.redis.row;
 
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
-import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -27,32 +27,20 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "redis/row/redisZSetCoordinateAdd.fxml"
+        value = FXConst.FXML_PATH + "redis/row/redisSetMemberAdd.fxml"
 )
-public class RedisZSetCoordinateAddController extends StageController {
+public class ShellRedisSetMemberAddController extends StageController {
 
     /**
-     * 坐标名称
+     * 行数据
      */
     @FXML
     private Editor rowValue;
 
     /**
-     * 经度
-     */
-    @FXML
-    private DecimalTextField longitude;
-
-    /**
-     * 纬度
-     */
-    @FXML
-    private DecimalTextField latitude;
-
-    /**
      * redis键
      */
-    private RedisZSetKeyTreeItem treeItem;
+    private RedisSetKeyTreeItem treeItem;
 
     /**
      * 添加行
@@ -66,34 +54,22 @@ public class RedisZSetCoordinateAddController extends StageController {
                 MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
                 return;
             }
-            Number longitudeValue = this.longitude.getValue();
-            if (longitudeValue == null) {
-                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitude);
-                return;
-            }
-            Number latitudeValue = this.latitude.getValue();
-            if (latitudeValue == null) {
-                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitude);
-                return;
-            }
             // redis键
             String key = this.treeItem.key();
             // 获取键值
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
-            if (client.zrank(dbIndex, key, rowValue) != null) {
+            if (client.sismember(dbIndex, key, rowValue)) {
                 MessageBox.warn(I18nHelper.alreadyExists());
                 return;
             }
-            double longitude = longitudeValue.doubleValue();
-            double latitude = latitudeValue.doubleValue();
             // 添加元素
-            client.geoadd(dbIndex, key, longitude, latitude, rowValue);
+            client.sadd(dbIndex, key, rowValue);
             // 结果
             this.setProp("result", true);
             // 发送事件
-            ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
+            ShellEventUtil.redisSetMemberAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -118,6 +94,26 @@ public class RedisZSetCoordinateAddController extends StageController {
         this.rowValue.requestFocus();
     }
 
+    /**
+     * 解析为json
+     */
+    @FXML
+    private void parseToJson() {
+        String text = this.rowValue.getTextTrim();
+        try {
+            if ("json".equals(this.rowValue.getUserData())) {
+                String jsonStr = JSONUtil.toJson(this.rowValue);
+                this.rowValue.setText(jsonStr);
+                this.rowValue.setUserData("text");
+            } else if (text.contains("{") || text.contains("[") || "text".equals(this.rowValue.getUserData())) {
+                String jsonStr = JSONUtil.toPretty(this.rowValue);
+                this.rowValue.setText(jsonStr);
+                this.rowValue.setUserData("json");
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
     @Override
     public void onWindowShown(WindowEvent event) {
         this.treeItem = this.getProp("treeItem");
@@ -128,6 +124,6 @@ public class RedisZSetCoordinateAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("shell.redis.title.zSetCoordinateAdd");
+        return I18nResourceBundle.i18nString("shell.redis.title.setMemberAdd");
     }
 }

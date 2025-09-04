@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/key/redisKeyAdd.fxml"
 )
-public class RedisKeyAddController extends StageController {
+public class ShellRedisKeyAddController extends StageController {
 
     /**
      * 键

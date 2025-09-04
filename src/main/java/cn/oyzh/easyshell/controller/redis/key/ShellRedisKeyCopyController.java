@@ -32,7 +32,7 @@ import java.util.List;
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/key/redisKeyCopy.fxml"
 )
-public class RedisKeyCopyController extends StageController {
+public class ShellRedisKeyCopyController extends StageController {
 
     /**
      * 键

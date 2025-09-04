@@ -48,7 +48,7 @@ import java.util.Set;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/redisTransportData.fxml"
 )
-public class RedisTransportDataController extends StageController {
+public class ShellRedisTransportDataController extends StageController {
 
     /**
      * 第一步

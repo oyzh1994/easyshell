@@ -60,7 +60,7 @@
 //     //  */
 //     // public static void transportData(ShellConnect connect, Integer dbIndex) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisTransportDataController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("sourceConnect", connect);
 //     //         adapter.setProp("dbIndex", dbIndex);
 //     //         adapter.display();
@@ -117,7 +117,7 @@
 //     //  */
 //     // public static void importData(ShellConnect connect) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisImportDataController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("connect", connect);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {
@@ -134,7 +134,7 @@
 //     //  */
 //     // public static void exportData(ShellConnect connect, Integer dbIndex) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisExportDataController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("connect", connect);
 //     //         adapter.setProp("dbIndex", dbIndex);
 //     //         adapter.display();
@@ -235,7 +235,7 @@
 //     //  */
 //     // public static void addKey(Integer dbIndex, ShellRedisKeyType type) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisKeyAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("dbIndex", dbIndex);
 //     //         adapter.setProp("type", type);
 //     //         adapter.display();
@@ -252,7 +252,7 @@
 //     //  */
 //     // public static void ttlKey(RedisKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisKeyTTLController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {
@@ -268,7 +268,7 @@
 //     //  */
 //     // public static StageAdapter zSetCoordinateAdd(RedisZSetKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -286,7 +286,7 @@
 //     //  */
 //     // public static StageAdapter zSetMemberAdd(RedisZSetKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisZSetMemberAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -304,7 +304,7 @@
 //     //  */
 //     // public static StageAdapter setMemberAdd(RedisSetKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisSetMemberAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -322,7 +322,7 @@
 //     //  */
 //     // public static StageAdapter hashFieldAdd(RedisHashKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisHashFieldAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -340,7 +340,7 @@
 //     //  */
 //     // public static StageAdapter listElementAdd(RedisListKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisListElementAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -358,7 +358,7 @@
 //     //  */
 //     // public static StageAdapter streamMessageAdd(RedisStreamKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisStreamMessageAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -376,7 +376,7 @@
 //     //  */
 //     // public static StageAdapter hylogElementsAdd(RedisStringKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisHylogElementsAddController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.showAndWait();
 //     //         return adapter;
@@ -394,7 +394,7 @@
 //     //  */
 //     // public static void batchOperation(Integer dbIndex) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("dbIndex", dbIndex);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {
@@ -410,7 +410,7 @@
 //     //  */
 //     // public static void moveKey(RedisKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisKeyMoveController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {
@@ -426,7 +426,7 @@
 //     //  */
 //     // public static void copyKey(RedisKeyTreeItem treeItem) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(RedisKeyCopyController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("treeItem", treeItem);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {

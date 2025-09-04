@@ -46,7 +46,7 @@ import java.io.File;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/redisImportData.fxml"
 )
-public class RedisImportDataController extends StageController {
+public class ShellRedisImportDataController extends StageController {
 
     /**
      * 第一步

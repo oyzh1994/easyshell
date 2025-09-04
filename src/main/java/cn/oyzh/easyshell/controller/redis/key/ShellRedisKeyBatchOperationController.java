@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
-import cn.oyzh.easyshell.redis.batch.RedisScanSimpleResult;
+import cn.oyzh.easyshell.redis.batch.ShellRedisScanSimpleResult;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -45,7 +45,7 @@ import java.util.List;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/key/redisKeyBatchOperation.fxml"
 )
-public class RedisKeyBatchOperationController extends StageController {
+public class ShellRedisKeyBatchOperationController extends StageController {
 
     /**
      * 根节点
@@ -403,7 +403,7 @@ public class RedisKeyBatchOperationController extends StageController {
                     ScanParams params = new ScanParams();
                     params.count(1000);
                     params.match(pattern);
-                    RedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
+                    ShellRedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
                     keySize += result.keySize();
                     cursor = result.getCursor();
                     this.keys6.setTextExt(I18nHelper.found() + ":" + keySize);
@@ -459,7 +459,7 @@ public class RedisKeyBatchOperationController extends StageController {
             ScanParams params = new ScanParams();
             params.count(1000);
             params.match(pattern);
-            RedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
+            ShellRedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
             keys.addAll(result.getKeys());
             cursor = result.getCursor();
             area.setTextExt(I18nHelper.found() + ":" + keys.size());

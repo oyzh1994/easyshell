@@ -32,7 +32,7 @@ import java.sql.Date;
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/key/redisKeyTTL.fxml"
 )
-public class RedisKeyTTLController extends StageController {
+public class ShellRedisKeyTTLController extends StageController {
 
     /**
      * 当前窗口显示时间

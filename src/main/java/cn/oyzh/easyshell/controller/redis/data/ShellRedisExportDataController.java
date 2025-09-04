@@ -54,7 +54,7 @@ import java.util.Set;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/redisExportData.fxml"
 )
-public class RedisExportDataController extends StageController {
+public class ShellRedisExportDataController extends StageController {
 
     /**
      * 第一步

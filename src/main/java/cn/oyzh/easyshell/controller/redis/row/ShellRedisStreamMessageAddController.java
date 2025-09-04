@@ -35,7 +35,7 @@ import java.util.Map;
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/row/redisStreamMessageAdd.fxml"
 )
-public class RedisStreamMessageAddController extends StageController {
+public class ShellRedisStreamMessageAddController extends StageController {
 
     /**
      * 消息内容

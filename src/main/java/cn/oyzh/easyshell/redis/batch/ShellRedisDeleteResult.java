@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/6/28
  */
-public class RedisCountResult {
+public class ShellRedisDeleteResult {
 
     public String getCursor() {
         return cursor;
