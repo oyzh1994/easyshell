@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab text="%base.info" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeyInfoController" fx:id="infoRoot">
+       fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyInfoController" fx:id="infoRoot">
     <graphic>
         <SVGGlyph url="/font/status.svg" sizeStr="12" cursorType="DEFAULT"/>
     </graphic>

@@ -18,8 +18,8 @@
 // public class RedisServerTab extends RichTab {
 //
 //     @Override
-//     public RedisServerTabController controller() {
-//         return (RedisServerTabController) super.controller();
+//     public ShellRedisServerTabController controller() {
+//         return (ShellRedisServerTabController) super.controller();
 //     }
 //
 //     @Override

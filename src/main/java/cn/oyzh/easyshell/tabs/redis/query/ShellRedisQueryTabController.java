@@ -28,7 +28,7 @@ import javafx.scene.input.KeyEvent;
  * @author oyzh
  * @since 2025/02/06
  */
-public class RedisQueryTabController extends SubTabController {
+public class ShellRedisQueryTabController extends SubTabController {
 
     /**
      * 查询对象
@@ -131,9 +131,9 @@ public class RedisQueryTabController extends SubTabController {
             this.content.flexHeight("30% - 60");
             this.resultTabPane.setVisible(true);
             this.resultTabPane.clearChild();
-            this.resultTabPane.addTab(new RedisQueryMsgTab(param, result));
+            this.resultTabPane.addTab(new ShellRedisQueryMsgTab(param, result));
             if (result.hasData()) {
-                this.resultTabPane.addTab(new RedisQueryDataTab(result.getResult()));
+                this.resultTabPane.addTab(new ShellRedisQueryDataTab(result.getResult()));
                 this.resultTabPane.select(1);
             }
             this.content.parentAutosize();

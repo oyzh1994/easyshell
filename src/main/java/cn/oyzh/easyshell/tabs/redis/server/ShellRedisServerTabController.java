@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisServerTabController extends ParentTabController {
+public class ShellRedisServerTabController extends ParentTabController {
 
     /**
      * 根节点
@@ -68,31 +68,31 @@ public class RedisServerTabController extends ParentTabController {
      * 订阅组件
      */
     @FXML
-    private RedisPubsubTabController pubsubController;
+    private ShellRedisPubsubTabController pubsubController;
 
     /**
      * 慢查日志组件
      */
     @FXML
-    private RedisSlowlogTabController slowlogController;
+    private ShellRedisSlowlogTabController slowlogController;
 
     /**
      * 服务信息组件
      */
     @FXML
-    private RedisServerInfoTabController serverInfoController;
+    private ShellRedisServerInfoTabController serverInfoController;
 
     /**
      * 客户端信息组件
      */
     @FXML
-    private RedisClientInfoTabController clientInfoController;
+    private ShellRedisClientInfoTabController clientInfoController;
 
     /**
      * 汇总组件
      */
     @FXML
-    private RedisAggregationTabController aggregationController;
+    private ShellRedisAggregationTabController aggregationController;
 
     /**
      * 属性表格

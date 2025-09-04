@@ -32,7 +32,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/31
  */
-public class RedisStringKeyController extends RedisKeyController<RedisStringKeyTreeItem> {
+public class ShellRedisStringKeyController extends ShellRedisKeyController<RedisStringKeyTreeItem> {
 
     /**
      * 数据撤销

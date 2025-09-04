@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.tabs.redis;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
-import cn.oyzh.easyshell.tabs.redis.key.RedisKeysTabController;
-import cn.oyzh.easyshell.tabs.redis.query.RedisQueryTabController;
-import cn.oyzh.easyshell.tabs.redis.server.RedisServerTabController;
-import cn.oyzh.easyshell.tabs.redis.terminal.RedisTerminalTabController;
+import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController;
+import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController;
+import cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController;
+import cn.oyzh.easyshell.tabs.redis.terminal.ShellRedisTerminalTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -44,25 +44,25 @@ public class ShellRedisTabController extends ShellParentTabController {
      * 键
      */
     @FXML
-    private RedisKeysTabController keysController;
+    private ShellRedisKeysTabController keysController;
 
     /**
      * 查询
      */
     @FXML
-    private RedisQueryTabController queryController;
+    private ShellRedisQueryTabController queryController;
 
     /**
      * 服务
      */
     @FXML
-    private RedisServerTabController serverController;
+    private ShellRedisServerTabController serverController;
 
     /**
      * 终端
      */
     @FXML
-    private RedisTerminalTabController terminalController;
+    private ShellRedisTerminalTabController terminalController;
 
     @Override
     public List<? extends RichTabController> getSubControllers() {

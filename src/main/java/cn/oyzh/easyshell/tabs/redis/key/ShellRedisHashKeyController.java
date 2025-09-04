@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/21
  */
-public class RedisHashKeyController extends RedisRowKeyController<RedisHashKeyTreeItem, ShellRedisHashValue.RedisHashRow> {
+public class ShellRedisHashKeyController extends ShellRedisRowKeyController<RedisHashKeyTreeItem, ShellRedisHashValue.RedisHashRow> {
 
     /**
      * 数据撤销

@@ -19,7 +19,7 @@ import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
-import cn.oyzh.easyshell.tabs.redis.pubsub.RedisPubsubTab;
+import cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
@@ -343,10 +343,10 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      * @param item 发布及订阅节点
      * @return 发布及订阅tab
      */
-    private RedisPubsubTab getPubsubTab(RedisPubsubItem item) {
+    private ShellRedisPubsubTab getPubsubTab(RedisPubsubItem item) {
         if (item != null) {
             for (Tab tab : this.getTabs()) {
-                if (tab instanceof RedisPubsubTab cmdTab && cmdTab.getItem() == item) {
+                if (tab instanceof ShellRedisPubsubTab cmdTab && cmdTab.getItem() == item) {
                     return cmdTab;
                 }
             }
@@ -361,9 +361,9 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     public void pubsubOpen(ShellRedisPubsubOpenEvent event) {
-        RedisPubsubTab tab = this.getPubsubTab(event.data());
+        ShellRedisPubsubTab tab = this.getPubsubTab(event.data());
         if (tab == null) {
-            tab = new RedisPubsubTab();
+            tab = new ShellRedisPubsubTab();
             tab.init(event.data());
             super.addTab(tab);
         } else {

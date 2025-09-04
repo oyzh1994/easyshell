@@ -15,7 +15,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/02/07
  */
-public class RedisQueryDataTabController extends RichTabController {
+public class ShellRedisQueryDataTabController extends RichTabController {
 
     @FXML
     private FXTableView<KeyValueProperty<Integer, Object>> dataTable;

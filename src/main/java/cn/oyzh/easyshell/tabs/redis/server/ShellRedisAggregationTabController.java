@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisAggregationTabController extends SubTabController {
+public class ShellRedisAggregationTabController extends SubTabController {
 
     /**
      * 客户端图表

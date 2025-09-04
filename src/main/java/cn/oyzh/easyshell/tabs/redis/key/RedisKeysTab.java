@@ -57,8 +57,8 @@
 //     }
 //
 //     @Override
-//     protected RedisKeysTabController controller() {
-//         return (RedisKeysTabController) super.controller();
+//     protected ShellRedisKeysTabController controller() {
+//         return (ShellRedisKeysTabController) super.controller();
 //     }
 //
 //     /**

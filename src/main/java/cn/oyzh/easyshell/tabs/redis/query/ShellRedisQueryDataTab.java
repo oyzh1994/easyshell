@@ -9,9 +9,9 @@ import java.util.Collection;
  * @author oyzh
  * @since 2025/02/07
  */
-public class RedisQueryDataTab extends RichTab {
+public class ShellRedisQueryDataTab extends RichTab {
 
-    public RedisQueryDataTab(Object object) {
+    public ShellRedisQueryDataTab(Object object) {
         super();
         super.flush();
         if (object instanceof Collection<?> collection) {
@@ -27,8 +27,8 @@ public class RedisQueryDataTab extends RichTab {
     }
 
     @Override
-    protected RedisQueryDataTabController controller() {
-        return (RedisQueryDataTabController) super.controller();
+    protected ShellRedisQueryDataTabController controller() {
+        return (ShellRedisQueryDataTabController) super.controller();
     }
 
     @Override

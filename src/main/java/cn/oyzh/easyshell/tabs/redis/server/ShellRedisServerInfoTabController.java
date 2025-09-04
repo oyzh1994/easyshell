@@ -27,7 +27,7 @@ import java.util.Optional;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisServerInfoTabController extends SubTabController {
+public class ShellRedisServerInfoTabController extends SubTabController {
 
     /**
      * tab面板

@@ -13,7 +13,6 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
-import cn.oyzh.fx.plus.thread.BackgroundService;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -26,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/08/03
  */
-public class RedisKeyDataController extends ParentTabController {
+public class ShellRedisKeyDataController extends ParentTabController {
 
     /**
      * 根节点
@@ -38,49 +37,49 @@ public class RedisKeyDataController extends ParentTabController {
      * set键
      */
     @FXML
-    private RedisSetKeyController setKeyController;
+    private ShellRedisSetKeyController setKeyController;
 
     /**
      * zset键
      */
     @FXML
-    private RedisZSetKeyController zsetKeyController;
+    private ShellRedisZSetKeyController zsetKeyController;
 
     /**
      * list键
      */
     @FXML
-    private RedisListKeyController listKeyController;
+    private ShellRedisListKeyController listKeyController;
 
     /**
      * hylog键
      */
     @FXML
-    private RedisHylogKeyController hylogKeyController;
+    private ShellRedisHylogKeyController hylogKeyController;
 
     /**
      * hash键
      */
     @FXML
-    private RedisHashKeyController hashKeyController;
+    private ShellRedisHashKeyController hashKeyController;
 
     /**
      * string键
      */
     @FXML
-    private RedisStringKeyController stringKeyController;
+    private ShellRedisStringKeyController stringKeyController;
 
     /**
      * stream键
      */
     @FXML
-    private RedisStreamKeyController streamKeyController;
+    private ShellRedisStreamKeyController streamKeyController;
 
     /**
      * 坐标键
      */
     @FXML
-    private RedisCoordinateKeyController coordinateKeyController;
+    private ShellRedisCoordinateKeyController coordinateKeyController;
 
     /**
      * 当前item
@@ -91,7 +90,7 @@ public class RedisKeyDataController extends ParentTabController {
      * 键扩展信息
      */
     @FXML
-    private RedisKeyExtraController keyExtraController;
+    private ShellRedisKeyExtraController keyExtraController;
 
     /**
      * 执行初始化
@@ -160,7 +159,7 @@ public class RedisKeyDataController extends ParentTabController {
      *
      * @return 键Controller
      */
-    private RedisKeyController<?> getKeyController() {
+    private ShellRedisKeyController<?> getKeyController() {
         if (this.treeItem instanceof RedisStringKeyTreeItem item1) {
             if (item1.isHyLog()) {
                 return this.stringKeyController;
@@ -192,7 +191,7 @@ public class RedisKeyDataController extends ParentTabController {
      * 重载键
      */
     public void reloadKey() {
-        RedisKeyController<?> controller = this.getKeyController();
+        ShellRedisKeyController<?> controller = this.getKeyController();
         if (controller != null) {
             controller.reloadKey();
         }
@@ -202,7 +201,7 @@ public class RedisKeyDataController extends ParentTabController {
      * 刷新ttl
      */
     public void flushTTL() {
-//        RedisKeyController<?> controller = this.getKeyController();
+//        ShellRedisKeyController<?> controller = this.getKeyController();
 //        if (controller != null) {
 //            controller.flushTTL();
 //        }

@@ -35,8 +35,8 @@
 //     }
 //
 //     @Override
-//     protected RedisQueryTabController controller() {
-//         return (RedisQueryTabController) super.controller();
+//     protected ShellRedisQueryTabController controller() {
+//         return (ShellRedisQueryTabController) super.controller();
 //     }
 //
 //     @Override

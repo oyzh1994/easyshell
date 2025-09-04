@@ -28,7 +28,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/30
  */
-public abstract class RedisRowKeyController<T extends RedisRowKeyTreeItem<R>, R extends ShellRedisKeyRow> extends RedisKeyController<T> {
+public abstract class ShellRedisRowKeyController<T extends RedisRowKeyTreeItem<R>, R extends ShellRedisKeyRow> extends ShellRedisKeyController<T> {
 
     /**
      * 分页数据

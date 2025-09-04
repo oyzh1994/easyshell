@@ -13,7 +13,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/08/02
  */
-public class RedisPubsubTab extends RichTab {
+public class ShellRedisPubsubTab extends RichTab {
 
     {
         this.setClosable(true);
@@ -35,8 +35,8 @@ public class RedisPubsubTab extends RichTab {
     private RedisPubsubItem item;
 
     @Override
-    public RedisPubsubTabController controller() {
-        return (RedisPubsubTabController) super.controller();
+    public ShellRedisPubsubTabController controller() {
+        return (ShellRedisPubsubTabController) super.controller();
     }
 
     @Override

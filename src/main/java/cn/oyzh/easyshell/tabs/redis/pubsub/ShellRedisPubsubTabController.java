@@ -15,7 +15,7 @@ import redis.clients.jedis.JedisPubSub;
  * @author oyzh
  * @since 2023/08/02
  */
-public class RedisPubsubTabController extends RichTabController {
+public class ShellRedisPubsubTabController extends RichTabController {
 
     /**
      * 订阅组件

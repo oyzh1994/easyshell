@@ -9,9 +9,9 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025/01/20
  */
-public class RedisQueryMsgTab extends RichTab {
+public class ShellRedisQueryMsgTab extends RichTab {
 
-    public RedisQueryMsgTab(ShellRedisQueryParam param, ShellRedisQueryResult result) {
+    public ShellRedisQueryMsgTab(ShellRedisQueryParam param, ShellRedisQueryResult result) {
         super();
         super.flush();
         this.controller().init(param, result);
@@ -23,8 +23,8 @@ public class RedisQueryMsgTab extends RichTab {
     }
 
     @Override
-    protected RedisQueryMsgTabController controller() {
-        return (RedisQueryMsgTabController) super.controller();
+    protected ShellRedisQueryMsgTabController controller() {
+        return (ShellRedisQueryMsgTabController) super.controller();
     }
 
     @Override

@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisHashKeyController">
+        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisHashKeyController">
     <FXHBox groupId="hash_list" realHeight="30" flexWidth="100%">
         <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadKey">
             <HBox.margin>

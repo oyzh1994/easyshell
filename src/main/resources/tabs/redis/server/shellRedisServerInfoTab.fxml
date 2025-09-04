@@ -4,7 +4,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTab xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.server.RedisServerInfoTabController" text="%base.server">
+       fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerInfoTabController" text="%base.server">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" flexWidth="100%" flexHeight="100%"
                      rotateGraphic="true">

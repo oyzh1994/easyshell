@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2023/08/03
  */
-public class RedisKeyInfoController extends RichTabController {
+public class ShellRedisKeyInfoController extends RichTabController {
 
     /**
      * 根节点

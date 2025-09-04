@@ -6,7 +6,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <FXTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.server.RedisServerTabController" text="%base.server">
+       fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController" text="%base.server">
     <graphic>
         <ServerSVGGlyph sizeStr="11"/>
     </graphic>

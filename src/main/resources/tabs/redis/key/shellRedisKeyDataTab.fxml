@@ -4,7 +4,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTextSVGGlyph?>
 <FXTab text="%base.data" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeyDataController" fx:id="dataRoot">
+       fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyDataController" fx:id="dataRoot">
     <graphic>
         <FileTextSVGGlyph sizeStr="12" cursorType="DEFAULT"/>
     </graphic>

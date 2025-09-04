@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2023/08/03
  */
-public class RedisKeyExtraController extends SubTabController {
+public class ShellRedisKeyExtraController extends SubTabController {
 
     /**
      * ttl组件

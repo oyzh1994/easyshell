@@ -13,7 +13,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2023/07/21
  */
-public class RedisTerminalTabController extends SubTabController {
+public class ShellRedisTerminalTabController extends SubTabController {
 
     /**
      * 根节点

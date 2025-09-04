@@ -1,20 +1,16 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
-import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
-import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
-import cn.oyzh.easyshell.trees.redis.key.RedisListKeyTreeItem;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
+import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -25,18 +21,17 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 
-import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * list键tab内容组件
+ * zset键地理坐标tab内容组件
  *
  * @author oyzh
- * @since 2023/06/21
+ * @since 2023/06/30
  */
-public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTreeItem, ShellRedisListValue.RedisListRow> {
+public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyController<RedisZSetKeyTreeItem, ShellRedisZSetValue.RedisZSetRow> {
 
     /**
      * 数据撤销
@@ -51,22 +46,34 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     private SVGGlyph dataRedo;
 
     /**
-     * 数据保存按钮
+     * redis数据保存按钮
      */
     @FXML
     private SVGGlyph saveNodeData;
 
     /**
-     * 格式
+     * 经度值
      */
     @FXML
-    private EditorFormatTypeComboBox format;
+    private DecimalTextField longitudeVal;
+
+    /**
+     * 纬度值
+     */
+    @FXML
+    private DecimalTextField latitudeVal;
 
     /**
      * 数据组件
      */
     @FXML
     private ShellDataEditor nodeData;
+
+    /**
+     * 格式
+     */
+    @FXML
+    private EditorFormatTypeComboBox format;
 
     /**
      * 展开列表面板
@@ -110,7 +117,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     /**
      * 数据监听器
      */
-    private final ChangeListener<String> dataListener = (t1, t2, newValue) -> {
+    private final ChangeListener<String> dataListener = (observable, oldValue, newValue) -> {
         if (!this.ignoreDataChange && !Objects.equals(this.treeItem.rawData(), newValue)) {
             this.saveNodeData.enable();
             if (this.treeItem.unsavedValue() == null) {
@@ -118,6 +125,40 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
             }
             if (this.treeItem.unsavedValue() != null) {
                 this.treeItem.unsavedValue().setValue(newValue);
+            }
+        }
+    };
+
+    /**
+     * 经度值监听器
+     */
+    private final ChangeListener<String> longitudeValListener = (observable, oldValue, newValue) -> {
+        Number value = this.longitudeVal.getValue();
+        ShellRedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
+        if (!this.ignoreDataChange && row != null && !Objects.equals(row.getLongitude(), value.doubleValue())) {
+            this.saveNodeData.enable();
+            if (this.treeItem.unsavedValue() == null) {
+                this.treeItem.data(this.treeItem.currentRow());
+            }
+            if (this.treeItem.unsavedValue() != null) {
+                this.treeItem.unsavedValue().setLongitude(value.doubleValue());
+            }
+        }
+    };
+
+    /**
+     * 纬度值监听器
+     */
+    private final ChangeListener<String> latitudeValListener = (observable, oldValue, newValue) -> {
+        Number value = this.longitudeVal.getValue();
+        ShellRedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
+        if (!this.ignoreDataChange && row != null && !Objects.equals(row.getLatitude(), value.doubleValue())) {
+            this.saveNodeData.enable();
+            if (this.treeItem.unsavedValue() == null) {
+                this.treeItem.data(this.treeItem.currentRow());
+            }
+            if (this.treeItem.unsavedValue() != null) {
+                this.treeItem.unsavedValue().setLatitude(value.doubleValue());
             }
         }
     };
@@ -130,35 +171,13 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
         this.firstPage();
     }
 
-    /**
-     * 刷新行
-     */
-    @FXML
-    private void reloadRow() {
-        // 放弃保存
-        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                // 刷新数据
-                if (this.treeItem.reloadRow()) {
-                    this.initRow(this.treeItem.currentRow());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
     @Override
-    protected List<ShellRedisListValue.RedisListRow> getRows() {
-        List<ShellRedisListValue.RedisListRow> rows = this.treeItem.rows();
+    protected List<ShellRedisZSetValue.RedisZSetRow> getRows() {
+        List<ShellRedisZSetValue.RedisZSetRow> rows = this.treeItem.rows();
         String filterKW = this.filter.getText();
         if (StringUtil.isNotEmpty(filterKW)) {
             rows = rows.parallelStream()
-                    .filter(r -> StringUtil.containsIgnoreCase(r.getValue(), filterKW))
+                    .filter(r -> StringUtil.containsIgnoreCase(r.getValue(), filterKW) || StringUtil.containsIgnoreCase(String.valueOf(r.getLatitude()), filterKW) || StringUtil.containsIgnoreCase(String.valueOf(r.getLongitude()), filterKW))
                     .collect(Collectors.toList());
         }
         return rows;
@@ -167,7 +186,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellViewFactory.redisListElementAdd(this.treeItem);
+        StageAdapter adapter = ShellViewFactory.redisZSetCoordinateAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();
@@ -176,20 +195,30 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
         }
     }
 
-//    @Override
-//    protected void initRow(ShellRedisListValue.RedisListRow row) {
-//        super.initRow(row);
-//        if (row == null) {
+    @Override
+    protected void initRow(ShellRedisZSetValue.RedisZSetRow row) {
+        super.initRow(row);
+        if (row == null) {
 //            this.nodeData.clear();
 //            this.nodeData.disable();
-//        } else {
+            this.latitudeVal.clear();
+            this.longitudeVal.clear();
+        } else {
+            this.latitudeVal.setValue(row.getLatitude());
+            this.longitudeVal.setValue(row.getLongitude());
 //            this.nodeData.enable();
-//        }
-//    }
+            this.saveNodeData.disable();
+            this.treeItem.clearData();
+        }
+    }
 
     @FXML
     @Override
     protected void saveKeyValue() {
+        if (this.treeItem.checkRowExists()) {
+            MessageBox.warn(I18nHelper.dataAlreadyExists());
+            return;
+        }
         if (this.treeItem.isDataTooBig()) {
             MessageBox.warn(I18nHelper.dataTooLarge());
             return;
@@ -214,9 +243,19 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     protected void copyRow() {
         if (this.treeItem.isSelectRow()) {
             String builder = I18nHelper.keyName() + " : " + this.treeItem.key() + System.lineSeparator() +
-                    I18nHelper.element() + " : " + this.treeItem.currentRow().getValue();
+                    I18nHelper.coordinates() + " : " + this.treeItem.currentRow().getValue() + System.lineSeparator() +
+                    I18nHelper.longitude() + " : " + this.treeItem.currentRow().getLongitude() + System.lineSeparator() +
+                    I18nHelper.latitude() + " : " + this.treeItem.currentRow().getLatitude();
             ClipboardUtil.setStringAndTip(builder);
         }
+    }
+
+    /**
+     * 反转视图
+     */
+    @FXML
+    private void reverseView() {
+        this.treeItem.reverseView();
     }
 
     /**
@@ -257,56 +296,33 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
 
     @Override
     protected void firstShowData() {
-        ShellRedisListValue.RedisListRow row = this.treeItem.data();
+        ShellRedisZSetValue.RedisZSetRow row = this.treeItem.data();
         if (row == null) {
             return;
         }
         // 数据太大
         if (this.treeItem.isDataTooBig()) {
             // 状态处理
+            this.nodeData.clear();
             this.nodeData.disable();
             this.ignoreDataChange = true;
-            this.nodeData.clear();
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
-            // 异步处理，避免阻塞主程序
-            TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getPrimaryStage())) {
-                    this.saveBinaryFile();
-                }
-            }, 10);
+            MessageBox.warn(I18nHelper.dataTooLarge());
             return;
         }
         // 状态处理
         this.nodeData.enable();
         this.ignoreDataChange = false;
         NodeGroupUtil.enable(this.getTab(), "dataToBig");
-        // 数据处理
         EditorFormatType formatType = this.nodeData.showDetectData(row.getValue());
         this.format.select(formatType);
         this.nodeData.forgetHistory();
         this.saveNodeData.disable();
     }
 
-    /**
-     * 保存为二进制文件
-     */
-    @FXML
-    private void saveBinaryFile() {
-        try {
-            File file = FileChooserHelper.save(I18nHelper.saveFile(), this.treeItem.key(), FXChooser.allExtensionFilter());
-            if (file != null) {
-                ShellRedisListValue.RedisListRow row = this.treeItem.rawValue();
-                byte[] bytes = row.getValue().getBytes();
-                FileUtil.writeBytes(bytes, file);
-            }
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
-
     // @Override
     // protected void showData(EditorFormatType formatType) {
-    //     ShellRedisListValue.RedisListRow row = this.treeItem.data();
+    //     ShellRedisZSetValue.RedisZSetRow row = this.treeItem.data();
     //     if (row != null) {
     //         this.nodeData.showData(row.getValue(), formatType);
     //     }
@@ -319,7 +335,7 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteElement() + ":" + row.getValue())) {
+        if (!MessageBox.confirm(I18nHelper.deleteCoordinate() + ":" + row.getValue())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {
@@ -344,6 +360,14 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 经度处理
+        this.longitudeVal.addTextChangeListener(this.longitudeValListener);
+        this.longitudeVal.disableProperty().bind(this.nodeData.disabledProperty());
+        this.longitudeVal.editableProperty().bind(this.nodeData.editableProperty());
+        // 纬度处理
+        this.latitudeVal.addTextChangeListener(this.latitudeValListener);
+        this.latitudeVal.editableProperty().bind(this.nodeData.editableProperty());
+        this.latitudeVal.disableProperty().bind(this.nodeData.disabledProperty());
         // 格式监听
         this.format.selectedItemChanged((observableValue, formatType, t1) -> {
             this.nodeData.setFormatType(t1);
@@ -357,13 +381,13 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     }
 
 //    /**
-//     * list行添加事件
+//     * zset坐标添加事件
 //     *
-//     * @param msg 消息
+//     * @param event 事件
 //     */
 //    @EventSubscribe
-//    private void onListRowAdded(ShellRedisListRowAddedEvent msg) {
-//        if (this.treeItem == msg.data()) {
+//    private void zSetCoordinateAdded(ShellRedisZSetCoordinateAddedEvent event) {
+//        if (this.treeItem == event.data()) {
 //            this.firstPage();
 //            // 刷新内存占用
 //            this.treeItem.flushMemoryUsage();
@@ -373,12 +397,12 @@ public class RedisListKeyController extends RedisRowKeyController<RedisListKeyTr
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {
-            NodeGroupUtil.disappear(this.getTab(), "list_list");
-            this.nodeData.setFlexHeight("100% - 54");
+            NodeGroupUtil.disappear(this.getTab(), "coordinate_list");
+            this.nodeData.setFlexHeight("100% - 152");
             this.expandPane.expand();
         } else {
-            NodeGroupUtil.display(this.getTab(), "list_list");
-            this.nodeData.setFlexHeight("100% - 379");
+            NodeGroupUtil.display(this.getTab(), "coordinate_list");
+            this.nodeData.setFlexHeight("100% - 478");
             this.expandPane.collapse();
         }
     }

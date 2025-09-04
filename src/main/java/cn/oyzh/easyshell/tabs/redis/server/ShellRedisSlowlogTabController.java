@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisSlowlogTabController extends SubTabController {
+public class ShellRedisSlowlogTabController extends SubTabController {
 
     /**
      * redis客户端

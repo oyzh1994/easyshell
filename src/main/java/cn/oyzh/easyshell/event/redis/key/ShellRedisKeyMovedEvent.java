@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/12/12
  */
-public class ShellRedisKeyMovedEvent extends Event<RedisKeyTreeItem> implements EventFormatter {
+public class RedisKeyMovedEvent extends Event<RedisKeyTreeItem> implements EventFormatter {
     public int getTargetDB() {
         return targetDB;
     }

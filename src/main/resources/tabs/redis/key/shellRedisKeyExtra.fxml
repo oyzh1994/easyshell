@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXHBox flexWidth="100%" flexHeight="30" xmlns="http://javafx.com/javafx"
-        xmlns:fx="http://javafx.com/fxml" fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisKeyExtraController">
+        xmlns:fx="http://javafx.com/fxml" fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyExtraController">
     <FXLabel fx:id="ttl" tipText="%shell.redis.ttlTip1"
              onMousePrimaryClicked="#ttlUpdate" prefHeight="22" cursorType="HAND"
              style="-fx-text-fill: #4576ba">

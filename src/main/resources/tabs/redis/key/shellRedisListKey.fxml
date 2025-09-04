@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.redis.key.RedisListKeyController">
+        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisListKeyController">
     <FXHBox groupId="list_list" realHeight="30" flexWidth="100%">
         <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadKey">
             <HBox.margin>

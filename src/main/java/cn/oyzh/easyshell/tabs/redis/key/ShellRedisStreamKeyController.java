@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/07/07
  */
-public class RedisStreamKeyController extends RedisRowKeyController<RedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
+public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<RedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
 
     /**
      * 消息id

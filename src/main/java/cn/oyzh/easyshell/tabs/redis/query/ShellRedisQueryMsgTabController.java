@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2025/01/20
  */
-public class RedisQueryMsgTabController extends RichTabController {
+public class ShellRedisQueryMsgTabController extends RichTabController {
 
     @FXML
     private ReadOnlyTextArea msg;

@@ -7,7 +7,7 @@
 <?import javafx.scene.chart.NumberAxis?>
 <FXTab xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.server.RedisAggregationTabController" text="%base.aggregate">
+       fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisAggregationTabController" text="%base.aggregate">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" flexHeight="50%">
             <FXLineChart flexWidth="50%" flexHeight="100%" fx:id="clientChart">

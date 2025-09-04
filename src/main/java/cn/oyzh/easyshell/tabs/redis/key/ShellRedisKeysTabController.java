@@ -26,7 +26,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-03
  */
-public class RedisKeysTabController extends ParentTabController {
+public class ShellRedisKeysTabController extends ParentTabController {
 
     // /**
     //  * 根节点
@@ -44,13 +44,13 @@ public class RedisKeysTabController extends ParentTabController {
      * 键数据
      */
     @FXML
-    private RedisKeyDataController keyDataController;
+    private ShellRedisKeyDataController keyDataController;
 
     /**
      * 键信息
      */
     @FXML
-    private RedisKeyInfoController keyInfoController;
+    private ShellRedisKeyInfoController keyInfoController;
 
     /**
      * 左侧节点
