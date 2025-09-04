@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.query.zk.ZKQueryEditor?>
+<?import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor?>
+<?import cn.oyzh.easyshell.trees.query.ShellQueryTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -9,33 +11,38 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
+<?import cn.oyzh.easyshell.query.zk.ZKQueryEditor?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryTabController"
        text="%base.queries">
     <graphic>
         <QuerySVGGlyph sizeStr="11"/>
     </graphic>
-    <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox realHeight="30" flexWidth="100%">
-            <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </SaveSVGGlyph>
-            <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </RunSVGGlyph>
-        </FXHBox>
-        <ZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                       flexWidth="100% - 30" flexHeight="100% - 60">
-            <VBox.margin>
-                <Insets left="5"/>
-            </VBox.margin>
-        </ZKQueryEditor>
-        <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
-                   visible="false">
-        </FXTabPane>
-    </FXVBox>
+    <FXHBox flexHeight="100%" flexWidth="100%">
+        <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%" prefWidth="240">
+
+        </ShellQueryTreeView>
+        <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
+            <FXHBox realHeight="30" flexWidth="100%">
+                <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
+                    <HBox.margin>
+                        <Insets left="5" top="7"/>
+                    </HBox.margin>
+                </SaveSVGGlyph>
+                <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
+                    <HBox.margin>
+                        <Insets left="5" top="7"/>
+                    </HBox.margin>
+                </RunSVGGlyph>
+            </FXHBox>
+            <ZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
+                                   flexWidth="100% - 30" flexHeight="100% - 60">
+                <VBox.margin>
+                    <Insets left="5"/>
+                </VBox.margin>
+            </ZKQueryEditor>
+            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
+                       visible="false">
+            </FXTabPane>
+        </FXVBox>
+    </FXHBox>
 </FXTab>

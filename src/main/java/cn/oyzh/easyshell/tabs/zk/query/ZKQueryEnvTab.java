@@ -21,7 +21,7 @@ public class ZKQueryEnvTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/query/zkQueryEnvTab.fxml";
+        return "/tabs/zk/query/zkQueryEnvTab.fxml";
     }
 
     @Override

@@ -1877,4 +1877,8 @@ public class ZKClient {
         result.setCost(end - start);
         return result;
     }
+
+    public ShellConnect shellConnect() {
+        return this.zkConnect;
+    }
 }

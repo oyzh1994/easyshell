@@ -564,7 +564,7 @@
 //     //  *
 //     //  * @param query Redis查询
 //     //  */
-//     // public static void queryAdded(ShellRedisQuery query) {
+//     // public static void queryAdded(ShellQuery query) {
 //     //     RedisQueryAddedEvent event = new RedisQueryAddedEvent();
 //     //     event.data(query);
 //     //     EventUtil.post(event);
@@ -576,7 +576,7 @@
 //     //  * @param client Redis客户端
 //     //  * @param query  Redis查询
 //     //  */
-//     // public static void openQuery(ShellRedisClient client, ShellRedisQuery query) {
+//     // public static void openQuery(ShellRedisClient client, ShellQuery query) {
 //     //     RedisOpenQueryEvent event = new RedisOpenQueryEvent();
 //     //     event.data(query);
 //     //     event.setClient(client);
@@ -588,7 +588,7 @@
 //     //  *
 //     //  * @param query Redis查询
 //     //  */
-//     // public static void queryRenamed(ShellRedisQuery query) {
+//     // public static void queryRenamed(ShellQuery query) {
 //     //     RedisQueryRenamedEvent event = new RedisQueryRenamedEvent();
 //     //     event.data(query);
 //     //     EventUtil.post(event);
@@ -599,7 +599,7 @@
 //     //  *
 //     //  * @param query Redis查询
 //     //  */
-//     // public static void queryDeleted(ShellRedisQuery query) {
+//     // public static void queryDeleted(ShellQuery query) {
 //     //     RedisQueryDeletedEvent event = new RedisQueryDeletedEvent();
 //     //     event.data(query);
 //     //     EventUtil.post(event);

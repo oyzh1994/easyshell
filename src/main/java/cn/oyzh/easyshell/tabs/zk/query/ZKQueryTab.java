@@ -31,7 +31,7 @@
 //
 //     @Override
 //     protected String url() {
-//         return "/tabs/query/zkQueryTab.fxml";
+//         return "/tabs/zk/query/zkQueryTab.fxml";
 //     }
 //
 //     @Override

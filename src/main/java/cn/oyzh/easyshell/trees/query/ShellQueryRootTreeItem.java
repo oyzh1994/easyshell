@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.trees.redis.query;
+package cn.oyzh.easyshell.trees.query;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
-import cn.oyzh.easyshell.store.redis.RedisQueryStore;
+import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import javafx.scene.control.MenuItem;
@@ -17,23 +17,23 @@ import java.util.List;
  * @author oyzh
  * @since 2025/06/11
  */
-public class ShellRedisQueryRootTreeItem extends RichTreeItem<ShellRedisQueryRootTreeItemValue> {
+public class ShellQueryRootTreeItem extends RichTreeItem<ShellQueryRootTreeItemValue> {
 
     /**
      * shell查询储存
      */
-    private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
+    private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
-    public ShellRedisQueryRootTreeItem(RichTreeView treeView) {
+    public ShellQueryRootTreeItem(RichTreeView treeView) {
         super(treeView);
-        this.setValue(new ShellRedisQueryRootTreeItemValue());
-        // 加载子节点
-        this.loadChild();
+        this.setValue(new ShellQueryRootTreeItemValue());
+        // // 加载子节点
+        // this.loadChild();
     }
 
     @Override
-    public ShellRedisQueryTreeView getTreeView() {
-        return (ShellRedisQueryTreeView) super.getTreeView();
+    public ShellQueryTreeView getTreeView() {
+        return (ShellQueryTreeView) super.getTreeView();
     }
 
     @Override
@@ -45,12 +45,13 @@ public class ShellRedisQueryRootTreeItem extends RichTreeItem<ShellRedisQueryRoo
 
     @Override
     public void loadChild() {
+        String iid = this.getTreeView().getIid();
         // 初始化查询
-        List<ShellRedisQuery> queries = this.queryStore.selectList();
+        List<ShellQuery> queries = this.queryStore.list(iid);
         if (CollectionUtil.isNotEmpty(queries)) {
             List<TreeItem<?>> list = new ArrayList<>();
-            for (ShellRedisQuery query : queries) {
-                list.add(new ShellRedisQueryTreeItem(query, this.getTreeView()));
+            for (ShellQuery query : queries) {
+                list.add(new ShellQueryTreeItem(query, this.getTreeView()));
             }
             this.addChild(list);
         }

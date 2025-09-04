@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.trees.redis.query;
+package cn.oyzh.easyshell.trees.query;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
-import cn.oyzh.easyshell.store.redis.RedisQueryStore;
+import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -20,31 +20,31 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025/06/11
  */
-public class ShellRedisQueryTreeItem extends RichTreeItem<ShellRedisQueryTreeItemValue> {
+public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
 
     /**
      * shell查询储存
      */
-    private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
+    private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
     /**
      * shell查询
      */
-    private ShellRedisQuery value;
+    private ShellQuery value;
 
-    public ShellRedisQuery value() {
+    public ShellQuery value() {
         return value;
     }
 
-    public ShellRedisQueryTreeItem(ShellRedisQuery value, RichTreeView treeView) {
+    public ShellQueryTreeItem(ShellQuery value, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         this.value(value);
     }
 
     @Override
-    public ShellRedisQueryTreeView getTreeView() {
-        return (ShellRedisQueryTreeView) super.getTreeView();
+    public ShellQueryTreeView getTreeView() {
+        return (ShellQueryTreeView) super.getTreeView();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ShellRedisQueryTreeItem extends RichTreeItem<ShellRedisQueryTreeIte
         this.value.setName(connectName);
         // 修改名称
         if (this.queryStore.update(this.value)) {
-            this.setValue(new ShellRedisQueryTreeItemValue(this));
+            this.setValue(new ShellQueryTreeItemValue(this));
         } else {
             MessageBox.warn(I18nHelper.operationFail());
         }
@@ -104,9 +104,9 @@ public class ShellRedisQueryTreeItem extends RichTreeItem<ShellRedisQueryTreeIte
      *
      * @param value ssh信息
      */
-    public void value(ShellRedisQuery value) {
+    public void value(ShellQuery value) {
         this.value = value;
-        super.setValue(new ShellRedisQueryTreeItemValue(this));
+        super.setValue(new ShellQueryTreeItemValue(this));
     }
 
     @Override

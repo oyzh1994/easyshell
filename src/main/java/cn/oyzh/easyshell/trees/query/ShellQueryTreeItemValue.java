@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis.query;
+package cn.oyzh.easyshell.trees.query;
 
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -10,16 +10,16 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2025/06/22
  */
-public class ShellRedisQueryTreeItemValue extends RichTreeItemValue {
+public class ShellQueryTreeItemValue extends RichTreeItemValue {
 
-    public ShellRedisQueryTreeItemValue(ShellRedisQueryTreeItem item) {
+    public ShellQueryTreeItemValue(ShellQueryTreeItem item) {
         super(item);
         this.setRichMode(true);
     }
 
     @Override
-    protected ShellRedisQueryTreeItem item() {
-        return (ShellRedisQueryTreeItem) super.item();
+    protected ShellQueryTreeItem item() {
+        return (ShellQueryTreeItem) super.item();
     }
 
     @Override

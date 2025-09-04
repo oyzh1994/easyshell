@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis.query;
+package cn.oyzh.easyshell.trees.query;
 
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025/06/11
  */
-public class ShellRedisQueryRootTreeItemValue extends RichTreeItemValue {
+public class ShellQueryRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String name() {

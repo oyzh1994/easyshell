@@ -18,7 +18,7 @@ public class ZKQueryDataTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/query/zkQueryDataTab.fxml";
+        return "/tabs/zk/query/zkQueryDataTab.fxml";
     }
 
     @Override

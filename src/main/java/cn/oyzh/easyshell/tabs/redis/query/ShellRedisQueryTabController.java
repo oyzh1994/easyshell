@@ -1,17 +1,18 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
+import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.store.redis.RedisQueryStore;
-import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
-import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeView;
+import cn.oyzh.easyshell.store.ShellQueryStore;
+import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
+import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -31,9 +32,15 @@ import javafx.scene.input.KeyEvent;
 public class ShellRedisQueryTabController extends SubTabController {
 
     /**
+     * 根节点
+     */
+    @FXML
+    private FXTab root;
+
+    /**
      * 查询对象
      */
-    private ShellRedisQuery query;
+    private ShellQuery query;
 
     /**
      * 未保存标志位
@@ -44,7 +51,7 @@ public class ShellRedisQueryTabController extends SubTabController {
         return unsaved;
     }
 
-    public ShellRedisQuery getQuery() {
+    public ShellQuery getQuery() {
         return query;
     }
 
@@ -75,7 +82,7 @@ public class ShellRedisQueryTabController extends SubTabController {
      * 查询列表
      */
     @FXML
-    private ShellRedisQueryTreeView queryTreeView;
+    private ShellQueryTreeView queryTreeView;
 
     /**
      * 右边组件
@@ -86,7 +93,7 @@ public class ShellRedisQueryTabController extends SubTabController {
     /**
      * 查询存储
      */
-    private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
+    private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
     public ShellConnect shellConnect() {
         return this.client.shellConnect();
@@ -98,7 +105,8 @@ public class ShellRedisQueryTabController extends SubTabController {
         // 初始化数据库
         this.database.setDbCount(client.databases());
         this.database.selectFirst();
-        // this.database.setInitIndex(query.getDbIndex());
+        // 初始化查询数据
+        this.queryTreeView.setIid(client.iid());
     }
 
     /**
@@ -184,7 +192,7 @@ public class ShellRedisQueryTabController extends SubTabController {
         });
         // 查询选择事件
         this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
-            if (t1 instanceof ShellRedisQueryTreeItem item) {
+            if (t1 instanceof ShellQueryTreeItem item) {
                 this.doEdit(item.value());
             } else {
                 this.doEdit(null);
@@ -222,7 +230,7 @@ public class ShellRedisQueryTabController extends SubTabController {
      *
      * @param query 查询
      */
-    private void doEdit(ShellRedisQuery query) {
+    private void doEdit(ShellQuery query) {
         this.query = query;
         if (query == null) {
             this.content.clear();
@@ -236,7 +244,7 @@ public class ShellRedisQueryTabController extends SubTabController {
      *
      * @param query 查询
      */
-    private void doDelete(ShellRedisQuery query) {
+    private void doDelete(ShellQuery query) {
         if (query == this.query) {
             this.query = null;
             this.content.clear();

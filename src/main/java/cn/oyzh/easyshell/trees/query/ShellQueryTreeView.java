@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.trees.redis.query;
+package cn.oyzh.easyshell.trees.query;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
-import cn.oyzh.easyshell.store.redis.RedisQueryStore;
+import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -25,12 +25,17 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025-06-11
  */
-public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAdapter {
+public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter {
+
+    /**
+     * 连接id
+     */
+    private String iid;
 
     /**
      * 查询存储
      */
-    private final RedisQueryStore queryStore = RedisQueryStore.INSTANCE;
+    private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
     @Override
     protected void initTreeView() {
@@ -40,47 +45,47 @@ public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAda
 
     @Override
     protected void initRoot() {
-        super.setRoot(new ShellRedisQueryRootTreeItem(this));
-        this.root().expend();
-        super.initRoot();
+        super.setRoot(new ShellQueryRootTreeItem(this));
+        // this.root().expend();
+        // super.initRoot();
     }
 
     /**
      * 新回调
      */
-    private Consumer<ShellRedisQuery> addCallback;
+    private Consumer<ShellQuery> addCallback;
 
     /**
      * 编辑回调
      */
-    private Consumer<ShellRedisQuery> editCallback;
+    private Consumer<ShellQuery> editCallback;
 
     /**
      * 删除回调
      */
-    private Consumer<ShellRedisQuery> deleteCallback;
+    private Consumer<ShellQuery> deleteCallback;
 
-    public Consumer<ShellRedisQuery> getAddCallback() {
+    public Consumer<ShellQuery> getAddCallback() {
         return addCallback;
     }
 
-    public void setAddCallback(Consumer<ShellRedisQuery> addCallback) {
+    public void setAddCallback(Consumer<ShellQuery> addCallback) {
         this.addCallback = addCallback;
     }
 
-    public Consumer<ShellRedisQuery> getEditCallback() {
+    public Consumer<ShellQuery> getEditCallback() {
         return editCallback;
     }
 
-    public void setEditCallback(Consumer<ShellRedisQuery> editCallback) {
+    public void setEditCallback(Consumer<ShellQuery> editCallback) {
         this.editCallback = editCallback;
     }
 
-    public Consumer<ShellRedisQuery> getDeleteCallback() {
+    public Consumer<ShellQuery> getDeleteCallback() {
         return deleteCallback;
     }
 
-    public void setDeleteCallback(Consumer<ShellRedisQuery> deleteCallback) {
+    public void setDeleteCallback(Consumer<ShellQuery> deleteCallback) {
         this.deleteCallback = deleteCallback;
     }
 
@@ -93,8 +98,9 @@ public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAda
             if (StringUtil.isBlank(name)) {
                 return;
             }
-            ShellRedisQuery query = new ShellRedisQuery();
+            ShellQuery query = new ShellQuery();
             query.setName(name);
+            query.setIid(this.iid);
             this.addQuery(query);
             this.queryStore.insert(query);
             this.addCallback.accept(query);
@@ -106,8 +112,8 @@ public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAda
      *
      * @param query 查询
      */
-    public void addQuery(ShellRedisQuery query) {
-        this.root().addChild(new ShellRedisQueryTreeItem(query, this));
+    public void addQuery(ShellQuery query) {
+        this.root().addChild(new ShellQueryTreeItem(query, this));
     }
 
     /**
@@ -115,7 +121,7 @@ public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAda
      *
      * @param query 查询
      */
-    public void editQuery(ShellRedisQuery query) {
+    public void editQuery(ShellQuery query) {
         if (this.editCallback != null) {
             this.editCallback.accept(query);
         }
@@ -126,7 +132,7 @@ public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAda
      *
      * @param query 查询
      */
-    public void deleteQuery(ShellRedisQuery query) {
+    public void deleteQuery(ShellQuery query) {
         if (this.deleteCallback != null) {
             this.deleteCallback.accept(query);
         }
@@ -138,5 +144,15 @@ public class ShellRedisQueryTreeView extends RichTreeView implements MenuItemAda
         FXMenuItem addQuery = MenuItemHelper.addQuery("12", this::addQuery);
         items.add(addQuery);
         return items;
+    }
+
+    public void setIid(String iid) {
+        this.iid = iid;
+        this.root().loadChild();
+        this.root().expend();
+    }
+
+    public String getIid() {
+        return iid;
     }
 }

@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.tabs.redis.query;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
+// import cn.oyzh.easyshell.domain.ShellQuery;
 // import cn.oyzh.easyshell.redis.ShellRedisClient;
 // import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 // import cn.oyzh.fx.gui.tabs.RichTab;
@@ -13,7 +13,7 @@
 //  */
 // public class RedisQueryTab extends RichTab {
 //
-//     public RedisQueryTab(ShellRedisClient client, ShellRedisQuery query) {
+//     public RedisQueryTab(ShellRedisClient client, ShellQuery query) {
 //         super();
 //         this.init(client, query);
 //         super.flush();
@@ -47,7 +47,7 @@
 //         return this.query().getName();
 //     }
 //
-//     public ShellRedisQuery query() {
+//     public ShellQuery query() {
 //         return this.controller().getQuery();
 //     }
 //
@@ -59,7 +59,7 @@
 //         this.controller().init(client, null);
 //     }
 //
-//     public void init(ShellRedisClient client, ShellRedisQuery query) {
+//     public void init(ShellRedisClient client, ShellQuery query) {
 //         this.controller().init(client, query);
 //     }
 // }

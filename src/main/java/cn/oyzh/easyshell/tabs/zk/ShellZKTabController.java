@@ -8,8 +8,6 @@ import cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController;
 import cn.oyzh.easyshell.tabs.zk.terminal.ZKTerminalTabController;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -27,18 +25,6 @@ public class ShellZKTabController extends ShellParentTabController {
      * 客户端
      */
     private ZKClient client;
-
-    /**
-     * 根节点
-     */
-    @FXML
-    private FXTabPane root;
-
-    /**
-     * 键组件
-     */
-    @FXML
-    private FXTab keys;
 
     /**
      * 键
@@ -88,7 +74,7 @@ public class ShellZKTabController extends ShellParentTabController {
                 }
                 this.hideLeft();
                 this.nodeController.init(this.client);
-                this.queryController.init(this.client,null);
+                this.queryController.init(this.client);
                 this.serverController.init(this.client);
                 this.terminalController.init(this.client);
             } catch (Throwable ex) {

@@ -2,10 +2,9 @@ package cn.oyzh.easyshell.tabs.zk.terminal;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.easyshell.util.zk.ZKConnectUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import javafx.event.Event;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
 /**
@@ -17,10 +16,21 @@ import javafx.fxml.FXML;
 public class ZKTerminalTabController extends RichTabController {
 
     /**
+     * 根节点
+     */
+    @FXML
+    private FXTab root;
+
+    /**
      * 命令行文本域
      */
     @FXML
     private ZKTerminalPane terminal;
+
+    /**
+     * 客户端
+     */
+    private ZKClient client;
 
     /**
      * 设置客户端
@@ -28,7 +38,8 @@ public class ZKTerminalTabController extends RichTabController {
      * @param client 客户端
      */
     public void init(ZKClient client) {
-        this.terminal.init(client);
+        this.client = client;
+        // this.terminal.init(client);
     }
 
     /**
@@ -49,11 +60,27 @@ public class ZKTerminalTabController extends RichTabController {
         return this.terminal.zkConnect();
     }
 
+    // @Override
+    // public void onTabClosed(Event event) {
+    //     if (this.terminal.isTemporary()) {
+    //         ZKConnectUtil.close(this.client(), true, true);
+    //     }
+    //     super.onTabClosed(event);
+    // }
+
+    /**
+     * 初始化标志位
+     */
+    private boolean initFlag = false;
+
     @Override
-    public void onTabClosed(Event event) {
-        if (this.terminal.isTemporary()) {
-            ZKConnectUtil.close(this.client(), true, true);
-        }
-        super.onTabClosed(event);
+    public void onTabInit(FXTab tab) {
+        super.onTabInit(tab);
+        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && !this.initFlag) {
+                this.initFlag = true;
+                this.terminal.init(this.client);
+            }
+        });
     }
 }

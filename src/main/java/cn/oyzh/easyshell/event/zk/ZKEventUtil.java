@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.event.zk;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
-import cn.oyzh.easyshell.domain.zk.ZKQuery;
 import cn.oyzh.easyshell.event.zk.auth.ZKAuthAuthedEvent;
 import cn.oyzh.easyshell.event.zk.client.ZKClientActionEvent;
 import cn.oyzh.easyshell.event.zk.connection.ZKConnectionClosedEvent;
@@ -25,11 +24,6 @@ import cn.oyzh.easyshell.event.zk.node.ZKNodeDeletedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeRemovedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeSelectedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeUpdatedEvent;
-import cn.oyzh.easyshell.event.zk.query.ZKAddQueryEvent;
-import cn.oyzh.easyshell.event.zk.query.ZKOpenQueryEvent;
-import cn.oyzh.easyshell.event.zk.query.ZKQueryAddedEvent;
-import cn.oyzh.easyshell.event.zk.query.ZKQueryDeletedEvent;
-import cn.oyzh.easyshell.event.zk.query.ZKQueryRenamedEvent;
 import cn.oyzh.easyshell.event.zk.terminal.ZKTerminalCloseEvent;
 import cn.oyzh.easyshell.event.zk.terminal.ZKTerminalOpenEvent;
 import cn.oyzh.easyshell.event.zk.tree.ZKTreeItemChangedEvent;
@@ -486,63 +480,63 @@ public class ZKEventUtil {
 //        event.data(zkConnect);
 //        EventUtil.post(event);
 //    }
-
-    /**
-     * 添加查询事件
-     *
-     * @param client zk查询
-     */
-    public static void addQuery(ZKClient client) {
-        ZKAddQueryEvent event = new ZKAddQueryEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询已添加事件
-     *
-     * @param query zk查询
-     */
-    public static void queryAdded(ZKQuery query) {
-        ZKQueryAddedEvent event = new ZKQueryAddedEvent();
-        event.data(query);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询打开事件
-     *
-     * @param client zk客户端
-     * @param query  zk查询
-     */
-    public static void openQuery(ZKClient client, ZKQuery query) {
-        ZKOpenQueryEvent event = new ZKOpenQueryEvent();
-        event.data(query);
-        event.setClient(client);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询更名事件
-     *
-     * @param query zk查询
-     */
-    public static void queryRenamed(ZKQuery query) {
-        ZKQueryRenamedEvent event = new ZKQueryRenamedEvent();
-        event.data(query);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 查询删除事件
-     *
-     * @param query zk查询
-     */
-    public static void queryDeleted(ZKQuery query) {
-        ZKQueryDeletedEvent event = new ZKQueryDeletedEvent();
-        event.data(query);
-        EventUtil.post(event);
-    }
+//
+//     /**
+//      * 添加查询事件
+//      *
+//      * @param client zk查询
+//      */
+//     public static void addQuery(ZKClient client) {
+//         ZKAddQueryEvent event = new ZKAddQueryEvent();
+//         event.data(client);
+//         EventUtil.post(event);
+//     }
+//
+//     /**
+//      * 查询已添加事件
+//      *
+//      * @param query zk查询
+//      */
+//     public static void queryAdded(ZKQuery query) {
+//         ZKQueryAddedEvent event = new ZKQueryAddedEvent();
+//         event.data(query);
+//         EventUtil.post(event);
+//     }
+//
+//     /**
+//      * 查询打开事件
+//      *
+//      * @param client zk客户端
+//      * @param query  zk查询
+//      */
+//     public static void openQuery(ZKClient client, ZKQuery query) {
+//         ZKOpenQueryEvent event = new ZKOpenQueryEvent();
+//         event.data(query);
+//         event.setClient(client);
+//         EventUtil.post(event);
+//     }
+//
+//     /**
+//      * 查询更名事件
+//      *
+//      * @param query zk查询
+//      */
+//     public static void queryRenamed(ZKQuery query) {
+//         ZKQueryRenamedEvent event = new ZKQueryRenamedEvent();
+//         event.data(query);
+//         EventUtil.post(event);
+//     }
+//
+//     /**
+//      * 查询删除事件
+//      *
+//      * @param query zk查询
+//      */
+//     public static void queryDeleted(ZKQuery query) {
+//         ZKQueryDeletedEvent event = new ZKQueryDeletedEvent();
+//         event.data(query);
+//         EventUtil.post(event);
+//     }
 
 //    /**
 //     * 显示导出连接页面

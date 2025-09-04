@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -25,6 +24,12 @@ import java.util.concurrent.Future;
  * @since 2022/08/25
  */
 public class ZKServerTabController extends ParentTabController {
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXTab root;
 
     public ZKClient getClient() {
         return client;
@@ -177,15 +182,22 @@ public class ZKServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        // 初始化刷新任务
-        this.initRefreshTask();
+        // // 初始化刷新任务
+        // this.initRefreshTask();
+        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.initRefreshTask();
+            } else {
+                this.closeRefreshTask();
+            }
+        });
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.closeRefreshTask();
-    }
+    // @Override
+    // public void onTabClosed(Event event) {
+    //     super.onTabClosed(event);
+    //     this.closeRefreshTask();
+    // }
 
     @Override
     public List<? extends RichTabController> getSubControllers() {

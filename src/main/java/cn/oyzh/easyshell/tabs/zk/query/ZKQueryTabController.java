@@ -1,29 +1,27 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.zk.ZKQuery;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.zk.ZKQueryEditor;
 import cn.oyzh.easyshell.query.zk.ZKQueryParam;
 import cn.oyzh.easyshell.query.zk.ZKQueryResult;
-import cn.oyzh.easyshell.store.zk.ZKQueryStore;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryACLTab;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryDataTab;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryMsgTab;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryNodeTab;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryQuotaTab;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryStatTab;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryWhoamiTab;
+import cn.oyzh.easyshell.store.ShellQueryStore;
+import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
+import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -35,11 +33,7 @@ public class ZKQueryTabController extends RichTabController {
     /**
      * 查询对象
      */
-    private ZKQuery query;
-
-    public ZKQuery getQuery() {
-        return query;
-    }
+    private ShellQuery query;
 
     /**
      * 未保存标志位
@@ -48,6 +42,10 @@ public class ZKQueryTabController extends RichTabController {
 
     public boolean isUnsaved() {
         return unsaved;
+    }
+
+    public ShellQuery getQuery() {
+        return query;
     }
 
     /**
@@ -68,47 +66,38 @@ public class ZKQueryTabController extends RichTabController {
     private FXTabPane resultTabPane;
 
     /**
+     * 查询列表
+     */
+    @FXML
+    private ShellQueryTreeView queryTreeView;
+
+    /**
+     * 右边组件
+     */
+    @FXML
+    private FXVBox rightBox;
+
+    /**
      * 查询存储
      */
-    private final ZKQueryStore queryStore = ZKQueryStore.INSTANCE;
+    private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
     public ShellConnect zkConnect() {
         return this.zkClient.zkConnect();
     }
 
-    public void init(ZKClient client, ZKQuery query) {
+    public void init(ZKClient client) {
         this.zkClient = client;
         this.content.setClient(client);
-        if (query == null) {
-            query = new ZKQuery();
-            query.setIid(client.iid());
-            query.setName(I18nHelper.unnamedQuery());
-            this.unsaved = true;
-        } else {
-            this.content.setText(query.getContent());
-            this.content.setPromptText(null);
-        }
-        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.unsaved = true;
-            this.flushTab();
-        });
-        this.query = query;
+        // 初始化查询数据
+        this.queryTreeView.setIid(client.iid());
     }
 
     @FXML
     private void save() {
         try {
             this.query.setContent(this.content.getText());
-            if (this.query.getUid() == null) {
-                String name = MessageBox.prompt(I18nHelper.pleaseInputName());
-                if (StringUtil.isNotBlank(name)) {
-                    this.query.setName(name);
-                    this.queryStore.insert(this.query);
-                    ZKEventUtil.queryAdded(this.query);
-                }
-            } else {
-                this.queryStore.update(this.query);
-            }
+            this.queryStore.update(this.query);
             this.unsaved = false;
             this.flushTab();
         } catch (Exception ex) {
@@ -120,7 +109,6 @@ public class ZKQueryTabController extends RichTabController {
     private void run() {
         StageManager.showMask(() -> {
             try {
-//                this.disableTab();
                 ZKQueryParam param = new ZKQueryParam();
                 param.setContent(this.content.getText());
                 ZKQueryResult result = this.zkClient.query(param);
@@ -220,6 +208,11 @@ public class ZKQueryTabController extends RichTabController {
         });
     }
 
+    /**
+     * 内容键入事件
+     *
+     * @param event 事件
+     */
     @FXML
     private void onContentKeyPressed(KeyEvent event) {
         if (KeyboardUtil.isCtrlS(event)) {
@@ -235,6 +228,75 @@ public class ZKQueryTabController extends RichTabController {
             event.consume();
         } else {
             super.onTabCloseRequest(event);
+        }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 监听内容变化
+        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.unsaved = true;
+            this.flushTab();
+        });
+        // 查询选择事件
+        this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
+            if (t1 instanceof ShellQueryTreeItem item) {
+                this.doEdit(item.value());
+            } else {
+                this.doEdit(null);
+            }
+        });
+        // 查询新增回调
+        this.queryTreeView.setAddCallback(this::doEdit);
+        // 查询编辑回调
+        this.queryTreeView.setEditCallback(this::doEdit);
+        // 查询删除回调
+        this.queryTreeView.setDeleteCallback(this::doDelete);
+        // 拉伸辅助
+        NodeWidthResizer resizer = new NodeWidthResizer(this.queryTreeView, Cursor.DEFAULT, this::resizeLeft);
+        resizer.widthLimit(240f, 750f);
+        resizer.initResizeEvent();
+    }
+
+    /**
+     * 左侧组件重新布局
+     *
+     * @param newWidth 新宽度
+     */
+    private void resizeLeft(Float newWidth) {
+        if (newWidth != null && !Float.isNaN(newWidth)) {
+            // 设置组件宽
+            this.queryTreeView.setRealWidth(newWidth);
+            this.rightBox.setLayoutX(newWidth);
+            this.rightBox.setFlexWidth("100% - " + newWidth);
+            this.queryTreeView.parentAutosize();
+        }
+    }
+
+    /**
+     * 编辑查询
+     *
+     * @param query 查询
+     */
+    private void doEdit(ShellQuery query) {
+        this.query = query;
+        if (query == null) {
+            this.content.clear();
+        } else {
+            this.content.setText(query.getContent());
+        }
+    }
+
+    /**
+     * 删除查询
+     *
+     * @param query 查询
+     */
+    private void doDelete(ShellQuery query) {
+        if (query == this.query) {
+            this.query = null;
+            this.content.clear();
         }
     }
 }
