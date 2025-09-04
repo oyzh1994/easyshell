@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
@@ -6,7 +7,10 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController"
        text="%base.server">
-    <FXVBox realHeight="800" realWidth="950">
+    <graphic>
+        <ServerSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexHeight="100%" flexWidth="100%">
         <FXTableView flexWidth="100%" realHeight="80" fx:id="serverTable">
             <columns>
                 <FXTableColumn sortable="false" valueName="zxid" text="%base.id" flexWidth="8%"/>

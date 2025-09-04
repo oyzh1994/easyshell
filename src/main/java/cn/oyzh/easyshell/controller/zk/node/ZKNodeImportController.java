@@ -48,7 +48,7 @@ import java.util.Map;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "node/zkNodeImport.fxml"
+        value = FXConst.FXML_PATH + "zk/node/zkNodeImport.fxml"
 )
 public class ZKNodeImportController extends StageController {
 
