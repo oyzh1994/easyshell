@@ -109,7 +109,7 @@
         </FXTab>
         <FXTab text="%base.acl" fx:id="aclTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%zk.aclType">
+                <InfoLabel text="%shell.zk.aclType">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -121,7 +121,7 @@
                     </VBox.margin>
                 </ZKACLType2ComboBox>
                 <FXVBox>
-                    <InfoLabel text="%zk.aclScope">
+                    <InfoLabel text="%shell.zk.aclScope">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
                         </VBox.margin>
@@ -146,7 +146,7 @@
                                 <Insets left="10"/>
                             </HBox.margin>
                         </FXCheckBox>
-                        <FXCheckBox text="%zk.acl.c" selected="true">
+                        <FXCheckBox text="%shell.zk.acl.c" selected="true">
                             <HBox.margin>
                                 <Insets left="10"/>
                             </HBox.margin>

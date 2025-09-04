@@ -285,10 +285,10 @@ public class ZKACLUtil {
     public static void checkIP( String ip) {
         String[] segments = ip.split("/");
         if (!RegexUtil.isIPV4(segments[0])) {
-            throw new ZKException(segments[0] + I18nResourceBundle.i18nString("zk.aclTip2"));
+            throw new ZKException(segments[0] + I18nResourceBundle.i18nString("shell.zk.aclTip2"));
         }
         if (segments.length == 2 && !segments[0].endsWith("0")) {
-            throw new ZKException(segments[0] + I18nResourceBundle.i18nString("zk.aclTip3"));
+            throw new ZKException(segments[0] + I18nResourceBundle.i18nString("shell.zk.aclTip3"));
         }
     }
 

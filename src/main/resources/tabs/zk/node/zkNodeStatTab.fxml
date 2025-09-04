@@ -16,8 +16,8 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%" fx:id="statBox">
         <FXHBox realHeight="30" flexWidth="100%">
-            <FXToggleSwitch realHeight="16" fx:id="statViewSwitch" unselectedText="%zk.node.main.toggle.normal"
-                            selectedText="%zk.node.main.toggle.friendly"
+            <FXToggleSwitch realHeight="16" fx:id="statViewSwitch" unselectedText="%shell.zk.node.main.toggle.normal"
+                            selectedText="%shell.zk.node.main.toggle.friendly"
                             selected="true">
                 <HBox.margin>
                     <Insets left="5" top="5"/>

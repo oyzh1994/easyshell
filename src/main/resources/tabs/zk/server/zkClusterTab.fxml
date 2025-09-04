@@ -30,10 +30,10 @@
                 <FXTableColumn flexWidth="16%" valueName="type" text="%base.type"/>
                 <FXTableColumn flexWidth="20%" valueName="clientAddr" text="%base.clientAddr"
                                sortable="false"/>
-                <FXTableColumn flexWidth="22%" valueName="addr" text="%zk.node.service.tableCol.addr"
+                <FXTableColumn flexWidth="22%" valueName="addr" text="%shell.zk.node.service.tableCol.addr"
                                sortable="false"/>
                 <FXTableColumn flexWidth="22% - 10" valueName="electionAddr"
-                               text="%zk.node.service.tableCol.electionAddr" sortable="false"/>
+                               text="%shell.zk.node.service.tableCol.electionAddr" sortable="false"/>
             </columns>
         </FXTableView>
     </FXVBox>

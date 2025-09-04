@@ -29,7 +29,7 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </DisabledTextField>
-    <InfoLabel text="%zk.aclType">
+    <InfoLabel text="%shell.zk.aclType">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -40,7 +40,7 @@
         </VBox.margin>
     </ZKACLTypeComboBox>
     <FXVBox fx:id="permsBox" managedBindVisible="true">
-        <InfoLabel text="%zk.aclScope">
+        <InfoLabel text="%shell.zk.aclScope">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -65,7 +65,7 @@
                     <Insets left="10"/>
                 </HBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%zk.acl.c" selected="true">
+            <FXCheckBox text="%shell.zk.acl.c" selected="true">
                 <HBox.margin>
                     <Insets left="10"/>
                 </HBox.margin>
@@ -159,7 +159,7 @@
             </VBox.margin>
         </InfoLabel>
         <FXTextArea
-                tipText="%zk.acl.add.ipContentTip"
+                tipText="%shell.zk.acl.add.ipContentTip"
                 fx:id="ipContent2" prefHeight="160" flexWidth="100% - 140">
             <VBox.margin>
                 <Insets left="30" top="5"/>

@@ -43,7 +43,7 @@
                 </HBox.margin>
             </SuccessLabel>
             <NumberTextField fx:id="quotaCount" realHeight="30" flexWidth="100% - 270" min="-1" value="-1"
-                             tipText="%zk.node.main.quotaCountTip">
+                             tipText="%shell.zk.node.main.quotaCountTip">
                 <HBox.margin>
                     <Insets top="5" left="5"/>
                 </HBox.margin>
@@ -65,7 +65,7 @@
             </SuccessLabel>
             <NumberTextField fx:id="quotaBytes" realHeight="30" flexWidth="100% - 270" min="-1"
                              value="-1"
-                             tipText="%zk.node.main.quotaBytesTip">
+                             tipText="%shell.zk.node.main.quotaBytesTip">
                 <HBox.margin>
                     <Insets top="5" left="5"/>
                 </HBox.margin>

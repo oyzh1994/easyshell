@@ -30,6 +30,7 @@ import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.easyshell.tabs.vnc.ShellVNCTab;
+import cn.oyzh.easyshell.tabs.zk.ShellZKTab;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
@@ -207,6 +208,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             tab = new ShellRLoginTab(event.data());
         } else if (connect.isRedisType()) {
             tab = new ShellRedisTab(event.data());
+        } else if (connect.isZKType()) {
+            tab = new ShellZKTab(event.data());
         } else {
             throw new RuntimeException("unknown connect type");
         }

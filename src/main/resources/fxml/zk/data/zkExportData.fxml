@@ -26,7 +26,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </ExportSVGGlyph>
-            <FXText realHeight="25" text="%zk.export.tip1" fontSize="15">
+            <FXText realHeight="25" text="%shell.zk.export.tip1" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>
@@ -147,7 +147,7 @@
                         <Insets left="10" top="5"/>
                     </HBox.margin>
                 </FXCheckBox>
-                <FXCheckBox fx:id="includeACL" text="%zk.aclTip4">
+                <FXCheckBox fx:id="includeACL" text="%shell.zk.aclTip4">
                     <HBox.margin>
                         <Insets left="10" top="5"/>
                     </HBox.margin>

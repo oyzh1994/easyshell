@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane?>
-<ZKTerminalPane  flexHeight="100%" fx:id="terminal" editable="false" flexWidth="100%"
-                xmlns="http://javafx.com/javafx"
-                xmlns:fx="http://javafx.com/fxml"
-                fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ZKTerminalTabController">
-</ZKTerminalPane>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ZKTerminalTabController"
+       text="%base.terminal">
+    <ZKTerminalPane flexHeight="100%" fx:id="terminal" editable="false" flexWidth="100%">
+    </ZKTerminalPane>
+</FXTab>

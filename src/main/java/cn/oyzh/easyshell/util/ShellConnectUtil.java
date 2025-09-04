@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
+import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -131,7 +132,7 @@ public class ShellConnectUtil {
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());
-                    // } else {
+                        // } else {
                         // MessageBox.warn(I18nHelper.connectFail());
                     }
                 } else if (shellConnect.isRloginType()) {
@@ -174,7 +175,16 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
-
+                } else if (shellConnect.isZKType()) {
+                    ZKClient client = new ZKClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
                 }
             } catch (Throwable ex) {
                 ex.printStackTrace();

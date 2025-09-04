@@ -22,7 +22,7 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </DisabledTextField>
-    <InfoLabel text="%zk.aclType">
+    <InfoLabel text="%shell.zk.aclType">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -32,7 +32,7 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </DisabledTextField>
-    <InfoLabel text="%zk.aclScope">
+    <InfoLabel text="%shell.zk.aclScope">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -57,7 +57,7 @@
                 <Insets left="10"/>
             </HBox.margin>
         </FXCheckBox>
-        <FXCheckBox text="%zk.acl.c">
+        <FXCheckBox text="%shell.zk.acl.c">
             <HBox.margin>
                 <Insets left="10"/>
             </HBox.margin>

@@ -25,7 +25,7 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </DisabledTextField>
-    <InfoLabel text="%zk.authMethod">
+    <InfoLabel text="%shell.zk.authMethod">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>

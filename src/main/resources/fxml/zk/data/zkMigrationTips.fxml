@@ -9,12 +9,12 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.zk.data.ZKMigrationTipsController" realWidth="520" realHeight="150">
-    <FXText realHeight="25" text="%zk.migration.tip4" fontSize="16">
+    <FXText realHeight="25" text="%shell.zk.migration.tip4" fontSize="16">
         <VBox.margin>
             <Insets left="20" top="20"/>
         </VBox.margin>
     </FXText>
-    <FXCheckBox text="%zk.migration.tip5" fx:id="ignoreMigration">
+    <FXCheckBox text="%shell.zk.migration.tip5" fx:id="ignoreMigration">
         <VBox.margin>
             <Insets left="20" top="20"/>
         </VBox.margin>

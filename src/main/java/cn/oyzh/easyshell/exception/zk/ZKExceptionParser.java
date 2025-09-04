@@ -143,7 +143,7 @@ public class ZKExceptionParser implements Function<Throwable, String> {
         //
         // if (e instanceof KeeperException.NoChildrenForEphemeralsException) {
         //     // return "临时节点不允许创建子节点！";
-        //     return I18nResourceBundle.i18nString("zk.errorTip1");
+        //     return I18nResourceBundle.i18nString("shell.zk.errorTip1");
         // }
         //
         // if (e instanceof ZKConnectSateException) {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.zk.ZKDataEditor?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
@@ -21,6 +20,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeDataTabController">
     <graphic>
@@ -77,13 +77,13 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <CopySVGGlyph tipText="%zk.node.main.copy1" size="16" onMousePrimaryClicked="#copyNode">
+            <CopySVGGlyph tipText="%shell.zk.node.main.copy1" size="16" onMousePrimaryClicked="#copyNode">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </CopySVGGlyph>
             <SVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath"
-                      url="/font/copy-path.svg">
+                      url="/font/zk/copy-path.svg">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
@@ -100,7 +100,7 @@
                 </HBox.margin>
             </ClearableTextField>
         </FXHBox>
-        <ZKDataEditor fontSize="12" fx:id="nodeData" flexHeight="100% - 60"
+        <ShellDataEditor fontSize="12" fx:id="nodeData" flexHeight="100% - 60"
                       flexWidth="100% - 2" onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
         <FXHBox flexWidth="100%" flexHeight="30">
             <CharsetComboBox prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"

@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 public class ZookeeperSVGGlyph extends SVGGlyph {
 
     public ZookeeperSVGGlyph() {
-        super("/font/Zookeeper1.svg");
+        super("/font/zk/zookeeper.svg");
     }
 
     public ZookeeperSVGGlyph(String size) {

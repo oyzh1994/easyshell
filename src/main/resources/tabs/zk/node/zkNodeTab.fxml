@@ -6,352 +6,90 @@
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.pane.CollectSVGPane?>
 <?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
-<FXHBox fx:id="root"  xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
-        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeTabController">
-    <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
-        <FXHBox realHeight="30" flexWidth="100%">
-            <ZKNodeFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </ZKNodeFilterTypeComboBox>
-            <ZKNodeFilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" onAction="#doFilter"
-                                   onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                   flexWidth="100% - 135" maxLen="30">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </ZKNodeFilterTextField>
-        </FXHBox>
-        <ZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
-        </ZKNodeTreeView>
-        <FXHBox flexWidth="100%" flexHeight="30">
-            <!--            <SearchSVGGlyph size="16" onMousePrimaryClicked="#doSearch" appendTipText="(CTRL/COMMAND+F)">-->
-            <!--                <HBox.margin>-->
-            <!--                    <Insets left="5" top="5"/>-->
-            <!--                </HBox.margin>-->
-            <!--            </SearchSVGGlyph>-->
-            <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </AddSVGGlyph>
-            <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteNode">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </DeleteSVGGlyph>
-            <ImportSVGGlyph tipText="%base.importData" size="16"
-                            onMousePrimaryClicked="#importData">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </ImportSVGGlyph>
-            <HistorySVGGlyph tipText="%zk.node.main.dataHisTip1" size="16"
-                             onMousePrimaryClicked="#showHistory">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </HistorySVGGlyph>
-            <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectNode">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </CollectSVGPane>
-            <RefreshSVGGlyph size="15" onMousePrimaryClicked="#refreshNode">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </RefreshSVGGlyph>
-            <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </SortSVGPane>
-            <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </PositioningSVGGlyph>
-        </FXHBox>
-    </FXVBox>
-    <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="RIGHT" flexWidth="100% - 305"
-               flexHeight="100%"
-               rotateGraphic="true" disable="true">
-        <fx:include fx:id="dataTab" source="zkNodeDataTab.fxml"/>
-        <fx:include fx:id="statTab" source="zkNodeStatTab.fxml"/>
-        <fx:include fx:id="aclTab" source="zkNodeACLTab.fxml"/>
-        <fx:include fx:id="quotaTab" source="zkNodeQuotaTab.fxml"/>
-        <!--        <FXTab text="%base.data" fx:id="dataTab">-->
-        <!--            <graphic>-->
-        <!--                <SVGGlyph cursorType="DEFAULT" url="/font/file-text.svg" size="13"/>-->
-        <!--            </graphic>-->
-        <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
-        <!--                <FXHBox realHeight="30" flexWidth="100%">-->
-        <!--                    <RichDataTypeComboBox prefHeight="22" fx:id="format" initIndex="0" groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </RichDataTypeComboBox>-->
-        <!--                    <SaveSVGGlyph fx:id="dataSave" disable="true" size="16" tipText="%base.saveTip1"-->
-        <!--                                  onMousePrimaryClicked="#saveNodeData" groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </SaveSVGGlyph>-->
-        <!--                    <UndoSVGGlyph disable="true" fx:id="dataUndo" size="16" onMousePrimaryClicked="#dataUndo"-->
-        <!--                                  tipText="%base.undoTip1" groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </UndoSVGGlyph>-->
-        <!--                    <RedoSVGGlyph disable="true" fx:id="dataRedo" size="16" onMousePrimaryClicked="#dataRedo"-->
-        <!--                                  tipText="%base.redoTip1" groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </RedoSVGGlyph>-->
-        <!--                    <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1"-->
-        <!--                                   groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </PasteSVGGlyph>-->
-        <!--                    <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearData" groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </ClearSVGGlyph>-->
-        <!--                    <QRCodeSVGGlyph size="16" onMousePrimaryClicked="#node2QRCode" groupId="dataToBig">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </QRCodeSVGGlyph>-->
-        <!--                    <UnLockSVGGlyph tipText="%base.auth" size="15" onMousePrimaryClicked="#authNode">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </UnLockSVGGlyph>-->
-        <!--                    <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </RefreshSVGGlyph>-->
-        <!--                    <CopySVGGlyph tipText="%zk.node.main.copy1" size="16" onMousePrimaryClicked="#copyNode">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </CopySVGGlyph>-->
-        <!--                    <SVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath"-->
-        <!--                              url="/font/copy-path.svg">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </SVGGlyph>-->
-        <!--                    <BinarySVGGlyph tipText="%base.saveBinaryFile" size="16" onMousePrimaryClicked="#saveBinaryFile">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </BinarySVGGlyph>-->
-        <!--                    <ClearableTextField fx:id="dataSearch" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"-->
-        <!--                                        prefWidth="165">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </ClearableTextField>-->
-        <!--                </FXHBox>-->
-        <!--                <ZKDataEditor fontSize="12" fx:id="nodeData" flexHeight="100% - 60"-->
-        <!--                                    flexWidth="100% - 2" onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>-->
-        <!--                <FXHBox flexWidth="100%" flexHeight="30">-->
-        <!--                    <CharsetComboBox prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"-->
-        <!--                                     style="-fx-padding: 0;">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="3"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </CharsetComboBox>-->
-        <!--                    <FXText enableTheme="false" tipText="%base.dataSize" fx:id="dataSize"-->
-        <!--                            style="-fx-fill: #AD0EB5B2;"-->
-        <!--                            realHeight="22">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </FXText>-->
-        <!--                    <FXText enableTheme="false" tipText="%base.loadCost" fx:id="loadTime" style="-fx-fill: #009933;"-->
-        <!--                            realHeight="22">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </FXText>-->
-        <!--                </FXHBox>-->
-        <!--            </FXVBox>-->
-        <!--        </FXTab>-->
-        <!--        <FXTab text="%base.stat" fx:id="statTab">-->
-        <!--            <graphic>-->
-        <!--                <SVGGlyph cursorType="DEFAULT" url="/font/status.svg" size="13"/>-->
-        <!--            </graphic>-->
-        <!--            <FXVBox flexWidth="100%" flexHeight="100%" fx:id="statBox">-->
-        <!--                <FXHBox realHeight="30" flexWidth="100%">-->
-        <!--                    <FXToggleSwitch realHeight="16" fx:id="statViewSwitch" unselectedText="%zk.node.main.toggle.normal"-->
-        <!--                                    selectedText="%zk.node.main.toggle.friendly"-->
-        <!--                                    selected="true">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </FXToggleSwitch>-->
-        <!--                    <CopySVGGlyph size="16" onMousePrimaryClicked="#copyStat">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </CopySVGGlyph>-->
-        <!--                    <RefreshSVGGlyph size="15" onMousePrimaryClicked="#reloadStat">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="7"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </RefreshSVGGlyph>-->
-        <!--                </FXHBox>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--                <fx:include source="zkNodeStatItem.fxml"/>-->
-        <!--            </FXVBox>-->
-        <!--        </FXTab>-->
-        <!--        <FXTab text="%base.acl" fx:id="aclTab">-->
-        <!--            <graphic>-->
-        <!--                <AccessControlSVGGlyph cursorType="DEFAULT" size="13"/>-->
-        <!--            </graphic>-->
-        <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
-        <!--                <FXHBox realHeight="30" flexWidth="100%">-->
-        <!--                    <FXToggleSwitch realHeight="16" fx:id="aclViewSwitch" unselectedText="%zk.node.main.toggle.normal"-->
-        <!--                                    selectedText="%zk.node.main.toggle.friendly"-->
-        <!--                                    selected="true">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </FXToggleSwitch>-->
-        <!--                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addACL">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </AddSVGGlyph>-->
-        <!--                    <CopySVGGlyph size="16" onMousePrimaryClicked="#copyACL">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </CopySVGGlyph>-->
-        <!--                    <EditSVGGlyph size="16" onMousePrimaryClicked="#updateACL">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </EditSVGGlyph>-->
-        <!--                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteACL">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </DeleteSVGGlyph>-->
-        <!--                    <RefreshSVGGlyph size="15" onMousePrimaryClicked="#reloadACL">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </RefreshSVGGlyph>-->
-        <!--                    <PageBox fx:id="aclPage" realHeight="24"-->
-        <!--                             realWidth="300" onPrevClicked="#aclPrevPage" onNextClicked="#aclNextPage">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </PageBox>-->
-        <!--                </FXHBox>-->
-        <!--                <ZKACLTableView copyCellDataOnDoubleClicked="true" fx:id="aclTableView" flexWidth="100%" flexHeight="100% - 30">-->
-        <!--                    <columns>-->
-        <!--                        <FXTableColumn flexWidth="40%" text="%base.identify" sortable="false" valueName="idControl"/>-->
-        <!--                        <FXTableColumn flexWidth="36%" text="%base.perms" sortable="false" valueName="permsControl"/>-->
-        <!--                        <FXTableColumn flexWidth="12%" text="%base.schema" sortable="false"-->
-        <!--                                       valueName="schemaControl"/>-->
-        <!--                        <FXTableColumn flexWidth="12% - 12" text="%base.status"-->
-        <!--                                       sortable="false" valueName="statusControl"/>-->
-        <!--                    </columns>-->
-        <!--                </ZKACLTableView>-->
-        <!--            </FXVBox>-->
-        <!--        </FXTab>-->
-        <!--        <FXTab text="%base.quota" fx:id="quotaTab">-->
-        <!--            <graphic>-->
-        <!--                <SVGGlyph cursorType="DEFAULT" url="/font/quota.svg" size="13"/>-->
-        <!--            </graphic>-->
-        <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
-        <!--                <FXHBox realHeight="30" flexWidth="100%">-->
-        <!--                    <SaveSVGGlyph size="16" onMousePrimaryClicked="#saveQuota">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </SaveSVGGlyph>-->
-        <!--                    <RefreshSVGGlyph size="15" onMousePrimaryClicked="#reloadQuota">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </RefreshSVGGlyph>-->
-        <!--                    <CopySVGGlyph size="16" onMousePrimaryClicked="#copyQuota">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets left="5" top="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </CopySVGGlyph>-->
-        <!--                </FXHBox>-->
-        <!--                <FXHBox flexWidth="100%" realHeight="30">-->
-        <!--                    <SuccessLabel realWidth="135" text="%base.childNumber" maxHeight="30">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets top="10" left="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </SuccessLabel>-->
-        <!--                    <NumberTextField fx:id="quotaCount" realHeight="30" flexWidth="100% - 270" min="-1" value="-1"-->
-        <!--                                     tipText="%zk.node.main.quotaCountTip">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets top="5" left="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </NumberTextField>-->
-        <!--                    <ClearButton onAction="#clearQuotaCount" realHeight="30">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets top="5" left="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </ClearButton>-->
-        <!--                </FXHBox>-->
-        <!--                <FXHBox flexWidth="100%" realHeight="30">-->
-        <!--                    <FXVBox.margin>-->
-        <!--                        <Insets top="5"/>-->
-        <!--                    </FXVBox.margin>-->
-        <!--                    <SuccessLabel realWidth="135" text="%base.size" maxHeight="30">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets top="10" left="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </SuccessLabel>-->
-        <!--                    <NumberTextField fx:id="quotaBytes" realHeight="30" flexWidth="100% - 270" min="-1"-->
-        <!--                                     value="-1"-->
-        <!--                                     tipText="%zk.node.main.quotaBytesTip">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets top="5" left="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </NumberTextField>-->
-        <!--                    <ClearButton onAction="#clearQuotaBytes" realHeight="30">-->
-        <!--                        <HBox.margin>-->
-        <!--                            <Insets top="5" left="5"/>-->
-        <!--                        </HBox.margin>-->
-        <!--                    </ClearButton>-->
-        <!--                </FXHBox>-->
-        <!--            </FXVBox>-->
-        <!--        </FXTab>-->
-    </FXTabPane>
-</FXHBox>
+<FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeTabController"
+       text="%base.node">
+    <FXHBox fx:id="root" flexWidth="100%" flexHeight="100%">
+        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+            <FXHBox realHeight="30" flexWidth="100%">
+                <ZKNodeFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </ZKNodeFilterTypeComboBox>
+                <ZKNodeFilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" onAction="#doFilter"
+                                       onSearch="#doFilter" fx:id="filterKW" realHeight="24"
+                                       flexWidth="100% - 135" maxLen="30">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </ZKNodeFilterTextField>
+            </FXHBox>
+            <ZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+            </ZKNodeTreeView>
+            <FXHBox flexWidth="100%" flexHeight="30">
+                <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </AddSVGGlyph>
+                <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteNode">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </DeleteSVGGlyph>
+                <ImportSVGGlyph tipText="%base.importData" size="16"
+                                onMousePrimaryClicked="#importData">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </ImportSVGGlyph>
+                <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1" size="16"
+                                 onMousePrimaryClicked="#showHistory">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </HistorySVGGlyph>
+                <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectNode">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </CollectSVGPane>
+                <RefreshSVGGlyph size="15" onMousePrimaryClicked="#refreshNode">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </RefreshSVGGlyph>
+                <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </SortSVGPane>
+                <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </PositioningSVGGlyph>
+            </FXHBox>
+        </FXVBox>
+        <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
+                   flexHeight="100%"
+                   rotateGraphic="true" disable="true">
+            <fx:include fx:id="dataTab" source="zkNodeDataTab.fxml"/>
+            <fx:include fx:id="statTab" source="zkNodeStatTab.fxml"/>
+            <fx:include fx:id="aclTab" source="zkNodeACLTab.fxml"/>
+            <fx:include fx:id="quotaTab" source="zkNodeQuotaTab.fxml"/>
+        </FXTabPane>
+    </FXHBox>
+</FXTab>
+

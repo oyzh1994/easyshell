@@ -125,7 +125,7 @@ public class ZKNodeACLTabController extends SubTabController {
             return;
         }
         if (this.activeItem().acl().size() == 1) {
-            MessageBox.warn(this.i18nString("zk.aclTip1"));
+            MessageBox.warn(this.i18nString("shell.zk.aclTip1"));
             return;
         }
         if (!MessageBox.confirm(I18nHelper.deleteACL() + " " + acl.idVal() + " ?")) {

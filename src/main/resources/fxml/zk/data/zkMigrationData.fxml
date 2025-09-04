@@ -23,7 +23,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </MigrationSVGGlyph>
-            <FXText realHeight="25" text="%zk.migration.tip2" fontSize="15">
+            <FXText realHeight="25" text="%shell.zk.migration.tip2" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>
@@ -83,7 +83,7 @@
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexHeight="100% - 60" flexWidth="100%">
-            <InfoLabel text="%zk.migration.tip3">
+            <InfoLabel text="%shell.zk.migration.tip3">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>

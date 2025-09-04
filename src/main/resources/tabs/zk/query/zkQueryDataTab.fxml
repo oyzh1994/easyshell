@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.query.zk.ZKQueryEditor?>
+<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
@@ -8,9 +10,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.zk.ZKDataEditor?>
-<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryDataTabController">
     <FXHBox realHeight="35" flexWidth="100%">
         <ClearableTextField prefHeight="22" tipText="%base.searchKWTip" fx:id="filter">
@@ -39,9 +39,9 @@
             </HBox.margin>
         </RedoSVGGlyph>
     </FXHBox>
-    <ZKDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 30" flexHeight="100% - 35">
+    <ZKQueryEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 30" flexHeight="100% - 35">
         <VBox.margin>
             <Insets left="5"/>
         </VBox.margin>
-    </ZKDataEditor>
+    </ZKQueryEditor>
 </FXVBox>
