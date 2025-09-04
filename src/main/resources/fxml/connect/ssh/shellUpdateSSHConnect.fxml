@@ -489,7 +489,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <!-- <FXHBox groupId="background" disable="true"> -->
-                <ChooseFileTextField groupId="background" editable="true" require="true" realHeight="30"
+                <ChooseFileTextField groupId="background" require="true" realHeight="30"
                                      flexWidth="100% - 180" fx:id="backgroundImage"
                                      tipText="%base.fileTip1" disable="true">
                     <VBox.margin>

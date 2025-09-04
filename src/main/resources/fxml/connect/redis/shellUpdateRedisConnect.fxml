@@ -180,7 +180,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ChooseFileTextField editable="true" disable="true" fx:id="sslClientKey" tipText="%base.chooseTip1"
+                <ChooseFileTextField disable="true" fx:id="sslClientKey" tipText="%base.chooseTip1"
                                      require="true"
                                      realHeight="30"
                                      flexWidth="100% - 180" groupId="ssl">
@@ -193,7 +193,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ChooseFileTextField editable="true" disable="true" fx:id="sslClientCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
+                <ChooseFileTextField disable="true" fx:id="sslClientCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
                                     flexWidth="100% - 180" maxLen="1024" groupId="ssl">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -204,7 +204,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ChooseFileTextField editable="true" disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
+                <ChooseFileTextField disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
                                     flexWidth="100% - 180" maxLen="1024" groupId="ssl">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
