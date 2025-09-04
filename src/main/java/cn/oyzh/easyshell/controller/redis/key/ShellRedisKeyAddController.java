@@ -540,6 +540,6 @@ public class ShellRedisKeyAddController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("redis.title.key.add");
+        return I18nResourceBundle.i18nString("shell.redis.title.key.add");
     }
 }

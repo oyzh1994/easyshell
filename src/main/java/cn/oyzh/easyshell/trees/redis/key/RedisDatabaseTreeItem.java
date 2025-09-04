@@ -398,6 +398,9 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     }
 
     public void keyAdded(String key) {
+        if (StringUtil.isEmpty(key)) {
+            return;
+        }
         try {
             ShellRedisKey redisKey = ShellRedisKeyUtil.getKey(this.dbIndex, key, false, false, this.client());
             if (redisKey == null) {
@@ -418,7 +421,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     /**
      * 键过滤
      */
-    public void filterKey( ) {
+    public void filterKey() {
         String filterPattern = this.getFilterPattern();
         PopupAdapter popup = PopupManager.parsePopup(ShellRedisKeyFilterPopupController.class);
         popup.setProp("pattern", filterPattern);
