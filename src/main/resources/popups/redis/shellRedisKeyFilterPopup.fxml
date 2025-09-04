@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
+
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.text.field.SearchTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.redis.RedisPageSettingPopupController" realWidth="280"
-        realHeight="110">
-    <InfoLabel text="%base.pageLimit">
+        fx:controller="cn.oyzh.easyshell.popups.redis.ShellRedisKeyFilterPopupController" realWidth="280" realHeight="90">
+    <SearchTextField fx:id="keyFilter" onSearch="#apply" realHeight="30.0" flexWidth="100% - 65"
+                     tipText="%shell.redis.filter.tip1" require="true" text="*">
         <FXVBox.margin>
-            <Insets left="15" top="5"/>
+            <Insets left="15" top="10"/>
         </FXVBox.margin>
-    </InfoLabel>
-    <NumberTextField fx:id="limit" minVal="1" step="100" realHeight="25" flexWidth="100% - 65"
-                     styleClass="popover-item">
-        <FXVBox.margin>
-            <Insets left="15" top="5"/>
-        </FXVBox.margin>
-    </NumberTextField>
+    </SearchTextField>
     <FXHBox flexWidth="100%">
         <SubmitSVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply" sizeStr="11">
             <HBox.margin>
-                <Insets left="15" top="15"/>
+                <Insets left="18" top="15"/>
             </HBox.margin>
         </SubmitSVGGlyph>
         <CancelSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">

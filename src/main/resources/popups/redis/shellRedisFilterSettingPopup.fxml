@@ -6,8 +6,8 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.redis.RedisFilterSettingPopupController" realHeight="80">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController" realHeight="80">
     <FXHBox>
 <!--        <FXCheckBox fx:id="searchKey" text="%base.key" selected="true">-->
 <!--            <HBox.margin>-->

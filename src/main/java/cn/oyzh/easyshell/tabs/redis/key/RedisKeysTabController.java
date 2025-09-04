@@ -342,7 +342,7 @@ public class RedisKeysTabController extends ParentTabController {
     // @FXML
     // private void doKeyFilter(MouseEvent event) {
     //     String filterPattern = this.treeView.getFilterPattern();
-    //     PopupAdapter popup = PopupManager.parsePopup(RedisKeyFilterPopupController.class);
+    //     PopupAdapter popup = PopupManager.parsePopup(ShellRedisKeyFilterPopupController.class);
     //     popup.setProp("pattern", filterPattern);
     //     SVGGlyph glyph = (SVGGlyph) event.getSource();
     //     if (glyph == null) {

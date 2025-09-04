@@ -25,9 +25,9 @@ import java.awt.image.BufferedImage;
  * @since 2025/02/51
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "redis/redisKeyQRCodePopup.fxml"
+        value = FXConst.POPUP_PATH + "redis/shellRedisKeyQRCodePopup.fxml"
 )
-public class RedisKeyQRCodePopupController extends PopupController {
+public class ShellRedisKeyQRCodePopupController extends PopupController {
 
     /**
      * 二维码图片

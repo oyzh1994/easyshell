@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.popups.redis.RedisKeyFilterPopupController;
+import cn.oyzh.easyshell.popups.redis.ShellRedisKeyFilterPopupController;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
@@ -420,7 +420,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
      */
     public void filterKey( ) {
         String filterPattern = this.getFilterPattern();
-        PopupAdapter popup = PopupManager.parsePopup(RedisKeyFilterPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellRedisKeyFilterPopupController.class);
         popup.setProp("pattern", filterPattern);
         popup.setSubmitHandler(o -> {
             if (o instanceof String pattern && !StringUtil.equals(pattern, filterPattern)) {

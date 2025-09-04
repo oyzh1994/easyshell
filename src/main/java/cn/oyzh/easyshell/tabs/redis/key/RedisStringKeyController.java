@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.popups.redis.RedisKeyQRCodePopupController;
+import cn.oyzh.easyshell.popups.redis.ShellRedisKeyQRCodePopupController;
 import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
@@ -319,7 +319,7 @@ public class RedisStringKeyController extends RedisKeyController<RedisStringKeyT
     @FXML
     private void key2QRCode(MouseEvent event) {
         try {
-            PopupAdapter adapter = PopupManager.parsePopup(RedisKeyQRCodePopupController.class);
+            PopupAdapter adapter = PopupManager.parsePopup(ShellRedisKeyQRCodePopupController.class);
             adapter.setProp("key", this.treeItem.value());
             adapter.setProp("keyData", this.nodeData.getTextTrim());
             adapter.showPopup((Node) event.getSource());

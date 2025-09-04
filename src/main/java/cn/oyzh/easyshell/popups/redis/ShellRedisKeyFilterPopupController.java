@@ -22,11 +22,11 @@ import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_TOP_LEFT;
  * @since 2025/02/10
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "redis/redisKeyFilterPopup.fxml",
+        value = FXConst.POPUP_PATH + "redis/shellRedisKeyFilterPopup.fxml",
         arrowLocation = BOTTOM_LEFT,
         anchorLocation = WINDOW_TOP_LEFT
 )
-public class RedisKeyFilterPopupController extends PopupController {
+public class ShellRedisKeyFilterPopupController extends PopupController {
 
     /**
      * 过滤模式

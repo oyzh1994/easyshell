@@ -20,11 +20,11 @@ import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_TOP_LEFT;
  * @since 2025/02/08
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "redis/redisPageSettingPopup.fxml",
+        value = FXConst.POPUP_PATH + "redis/shellRedisPageSettingPopup.fxml",
         arrowLocation = BOTTOM_LEFT,
         anchorLocation = WINDOW_TOP_LEFT
 )
-public class RedisPageSettingPopupController extends PopupController {
+public class ShellRedisPageSettingPopupController extends PopupController {
 
     /**
      * 每页限制

@@ -4,7 +4,7 @@ import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.redis.RedisKeyRowTableView;
-import cn.oyzh.easyshell.popups.redis.RedisPageSettingPopupController;
+import cn.oyzh.easyshell.popups.redis.ShellRedisPageSettingPopupController;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.redis.key.RedisRowKeyTreeItem;
@@ -215,7 +215,7 @@ public abstract class RedisRowKeyController<T extends RedisRowKeyTreeItem<R>, R 
      */
     @FXML
     private void pageSetting() {
-        PopupAdapter popup = PopupManager.parsePopup(RedisPageSettingPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellRedisPageSettingPopupController.class);
         popup.showPopup(this.pagePane.getSettingBtn());
         int limit = this.setting.getRowPageLimit();
         popup.setSubmitHandler(o -> {

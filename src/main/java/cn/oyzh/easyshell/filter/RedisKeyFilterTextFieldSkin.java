@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.filter;
 
-import cn.oyzh.easyshell.popups.redis.RedisFilterSettingPopupController;
+import cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController;
 import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -55,7 +55,7 @@ public class RedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         if (this.popup != null) {
             this.closePopup();
         }
-        this.popup = PopupManager.parsePopup(RedisFilterSettingPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellRedisFilterSettingPopupController.class);
         this.popup.setProp("filterParam", this.filterParam());
         this.popup.setSubmitHandler(o -> {
             if (o instanceof RedisKeyFilterParam param) {
