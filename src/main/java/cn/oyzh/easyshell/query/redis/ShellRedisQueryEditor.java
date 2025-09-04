@@ -13,7 +13,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025/01/21
  */
-public class RedisQueryEditor extends Editor {
+public class ShellRedisQueryEditor extends Editor {
 
     /**
      * db索引
@@ -44,7 +44,7 @@ public class RedisQueryEditor extends Editor {
     /**
      * 提示词组件
      */
-    private final RedisQueryPromptPopup promptPopup = new RedisQueryPromptPopup();
+    private final ShellRedisQueryPromptPopup promptPopup = new ShellRedisQueryPromptPopup();
 
     {
         this.setOnMouseReleased(e -> this.promptPopup.hide());
@@ -96,8 +96,8 @@ public class RedisQueryEditor extends Editor {
     public Set<String> getPrompts() {
         if (super.getPrompts() == null) {
             // 设置内容提示符
-            Set<String> set = RedisQueryUtil.getKeywords();
-            set.addAll(RedisQueryUtil.getParams());
+            Set<String> set = ShellRedisQueryUtil.getKeywords();
+            set.addAll(ShellRedisQueryUtil.getParams());
             this.setPrompts(set);
         }
         return super.getPrompts();

@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025/01/20
  */
-public class RedisQueryResult {
+public class ShellRedisQueryResult {
 
     /**
      * 耗时

@@ -7,11 +7,11 @@ import cn.oyzh.common.util.StringUtil;
  * @author oyzh
  * @since 2025/01/21
  */
-public class RedisQueryTokenAnalyzer {
+public class ShellRedisQueryTokenAnalyzer {
 
-    public static final RedisQueryTokenAnalyzer INSTANCE = new RedisQueryTokenAnalyzer();
+    public static final ShellRedisQueryTokenAnalyzer INSTANCE = new ShellRedisQueryTokenAnalyzer();
 
-    public RedisQueryToken currentToken(String input, int currentIndex) {
+    public ShellRedisQueryToken currentToken(String input, int currentIndex) {
         try {
             if (StringUtil.isEmpty(input)) {
                 return null;
@@ -22,7 +22,7 @@ public class RedisQueryTokenAnalyzer {
             if (currentIndex > input.length()) {
                 return null;
             }
-            RedisQueryToken token = new RedisQueryToken();
+            ShellRedisQueryToken token = new ShellRedisQueryToken();
             // 截取字符串
             String content = input.substring(0, currentIndex);
             // 当前位置

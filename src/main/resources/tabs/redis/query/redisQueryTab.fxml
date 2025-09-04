@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox?>
-<?import cn.oyzh.easyshell.query.redis.RedisQueryEditor?>
+<?import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -39,12 +39,12 @@
                     </HBox.margin>
                 </RunSVGGlyph>
             </FXHBox>
-            <RedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                              flexWidth="100% - 30" flexHeight="100% - 60">
+            <ShellRedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
+                                   flexWidth="100% - 30" flexHeight="100% - 60">
                 <VBox.margin>
                     <Insets left="5"/>
                 </VBox.margin>
-            </RedisQueryEditor>
+            </ShellRedisQueryEditor>
             <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
                        visible="false">
             </FXTabPane>

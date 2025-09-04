@@ -9,7 +9,7 @@ import redis.clients.jedis.args.Rawable;
  * @author oyzh
  * @since 2025-01-01
  */
-public class RedisClientActionEvent extends Event<String> implements EventFormatter {
+public class ShellRedisClientActionEvent extends Event<String> implements EventFormatter {
 
     private CommandArguments arguments;
 

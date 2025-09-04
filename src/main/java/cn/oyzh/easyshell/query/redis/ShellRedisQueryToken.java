@@ -9,7 +9,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/21
  */
-public class RedisQueryToken {
+public class ShellRedisQueryToken {
     public int getEndIndex() {
         return endIndex;
     }
@@ -94,7 +94,7 @@ public class RedisQueryToken {
 
     public boolean isPossibilityKey() {
         if (this.token != null && this.token == ' ') {
-            List<Protocol.Command> commands = RedisQueryUtil.keyCommands();
+            List<Protocol.Command> commands = ShellRedisQueryUtil.keyCommands();
             for (Protocol.Command command : commands) {
                 if (StringUtil.startWithIgnoreCase(this.input, command.toString())) {
                     return true;

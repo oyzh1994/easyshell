@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025/01/21
  */
-public class RedisQueryPromptPopup extends FXPopup {
+public class ShellRedisQueryPromptPopup extends FXPopup {
 
     /**
      * 提示字符
@@ -112,9 +112,9 @@ public class RedisQueryPromptPopup extends FXPopup {
     /**
      * 选中事件
      */
-    protected Consumer<RedisQueryPromptItem> onItemSelected;
+    protected Consumer<ShellRedisQueryPromptItem> onItemSelected;
 
-    public RedisQueryPromptPopup() {
+    public ShellRedisQueryPromptPopup() {
         this.setAutoFix(true);
         this.setAutoHide(true);
         this.initContent();
@@ -125,9 +125,9 @@ public class RedisQueryPromptPopup extends FXPopup {
      * 初始化内容组件
      */
     protected void initContent() {
-        RedisQueryPromptListView listView = this.listView();
+        ShellRedisQueryPromptListView listView = this.listView();
         if (listView == null) {
-            listView = new RedisQueryPromptListView();
+            listView = new ShellRedisQueryPromptListView();
             this.getContent().setAll(listView);
             listView.setFontSize(12.0);
             listView.setCursor(Cursor.HAND);
@@ -143,8 +143,8 @@ public class RedisQueryPromptPopup extends FXPopup {
      *
      * @return 列表组件
      */
-    public RedisQueryPromptListView listView() {
-        return (RedisQueryPromptListView) CollectionUtil.getFirst(this.getContent());
+    public ShellRedisQueryPromptListView listView() {
+        return (ShellRedisQueryPromptListView) CollectionUtil.getFirst(this.getContent());
     }
 
     /**
@@ -155,20 +155,20 @@ public class RedisQueryPromptPopup extends FXPopup {
      * @param dbIndex     db索引
      * @return 结果
      */
-    public synchronized boolean initPrompts(RedisQueryToken token, ShellRedisClient redisClient, int dbIndex) {
+    public synchronized boolean initPrompts(ShellRedisQueryToken token, ShellRedisClient redisClient, int dbIndex) {
         // 初始化提示的键列表
         if (token.isPossibilityKey()) {
             try {
                 List<String> keys = ShellRedisKeyUtil.scanKeys(dbIndex, redisClient, "*", 30);
-                RedisQueryUtil.setKeys(keys);
+                ShellRedisQueryUtil.setKeys(keys);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         } else {
-            RedisQueryUtil.setKeys(null);
+            ShellRedisQueryUtil.setKeys(null);
         }
         // 提示词列表
-        List<RedisQueryPromptItem> items = RedisQueryUtil.initPrompts(token, 0.5f);
+        List<ShellRedisQueryPromptItem> items = ShellRedisQueryUtil.initPrompts(token, 0.5f);
         // 初始化数据
         this.listView().init(items);
         // 判断是否为空
@@ -178,26 +178,26 @@ public class RedisQueryPromptPopup extends FXPopup {
     /**
      * token
      */
-    private RedisQueryToken token;
+    private ShellRedisQueryToken token;
 
     /**
      * 提示词标志位
      */
     private final AtomicInteger promptFlag = new AtomicInteger();
 
-    public Consumer<RedisQueryPromptItem> getOnItemSelected() {
+    public Consumer<ShellRedisQueryPromptItem> getOnItemSelected() {
         return onItemSelected;
     }
 
-    public void setOnItemSelected(Consumer<RedisQueryPromptItem> onItemSelected) {
+    public void setOnItemSelected(Consumer<ShellRedisQueryPromptItem> onItemSelected) {
         this.onItemSelected = onItemSelected;
     }
 
-    public RedisQueryToken getToken() {
+    public ShellRedisQueryToken getToken() {
         return token;
     }
 
-    public void setToken(RedisQueryToken token) {
+    public void setToken(ShellRedisQueryToken token) {
         this.token = token;
     }
 
@@ -207,7 +207,7 @@ public class RedisQueryPromptPopup extends FXPopup {
      * @param area  文本域
      * @param event 键盘按键事件
      */
-    public void prompt(RedisQueryEditor area, KeyEvent event) {
+    public void prompt(ShellRedisQueryEditor area, KeyEvent event) {
         // 常规按键不处理
         if (this.isGeneralKeyEvent(event)) {
             this.hide();
@@ -251,7 +251,7 @@ public class RedisQueryPromptPopup extends FXPopup {
         // 文本内容
         String content = area.getText();
         // 获取token
-        this.token = RedisQueryTokenAnalyzer.INSTANCE.currentToken(content, cartPos);
+        this.token = ShellRedisQueryTokenAnalyzer.INSTANCE.currentToken(content, cartPos);
         // 处理token
         if (this.token != null && (this.token.isPossibilityParam() || this.token.isNotEmpty())) {
             // 生成标志位
@@ -278,7 +278,7 @@ public class RedisQueryPromptPopup extends FXPopup {
      *
      * @param area 文本域
      */
-    private void showPrompt(RedisQueryEditor area) {
+    private void showPrompt(ShellRedisQueryEditor area) {
         RenderService.submitFXLater(() -> {
             Optional<Bounds> optional = area.getCaretBounds();
             // 显示提示词
@@ -300,7 +300,7 @@ public class RedisQueryPromptPopup extends FXPopup {
      * @param editor 编辑器
      * @param item   提示内容
      */
-    public void autoComplete(RedisQueryEditor editor, RedisQueryPromptItem item) {
+    public void autoComplete(ShellRedisQueryEditor editor, ShellRedisQueryPromptItem item) {
         try {
             if (this.token != null) {
                 editor.replaceText(this.token.getStartIndex(), this.token.getEndIndex(), item.getContent());
@@ -316,7 +316,7 @@ public class RedisQueryPromptPopup extends FXPopup {
      */
     private void pickItem() {
         if (this.onItemSelected != null && this.isShowing()) {
-            RedisQueryPromptItem pickedItem = this.listView().getPickedItem();
+            ShellRedisQueryPromptItem pickedItem = this.listView().getPickedItem();
             if (pickedItem != null) {
                 this.onItemSelected.accept(pickedItem);
             }

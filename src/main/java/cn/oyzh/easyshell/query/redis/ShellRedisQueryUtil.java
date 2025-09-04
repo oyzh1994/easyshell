@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.query.redis.RedisQueryPromptItem;
 import redis.clients.jedis.Protocol;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import static redis.clients.jedis.Protocol.Command.*;
  * @since 2025/01/21
  */
 
-public class RedisQueryUtil {
+public class ShellRedisQueryUtil {
 
     /**
      * 关键字
@@ -114,14 +113,14 @@ public class RedisQueryUtil {
      * @param minCorr 最低相关度
      * @return 结果
      */
-    public static List<RedisQueryPromptItem> initPrompts(RedisQueryToken token, float minCorr) {
+    public static List<ShellRedisQueryPromptItem> initPrompts(ShellRedisQueryToken token, float minCorr) {
         if (token == null) {
             return Collections.emptyList();
         }
         // 当前提示词
         String text = token.getContent().toUpperCase();
         // 提示词列表
-        final List<RedisQueryPromptItem> items = new CopyOnWriteArrayList<>();
+        final List<ShellRedisQueryPromptItem> items = new CopyOnWriteArrayList<>();
         // 任务列表
         List<Runnable> tasks = new ArrayList<>();
         // 关键字
@@ -130,7 +129,7 @@ public class RedisQueryUtil {
                 // 计算相关度
                 double corr = clacCorr(keyword, text);
                 if (corr > minCorr) {
-                    RedisQueryPromptItem item = new RedisQueryPromptItem();
+                    ShellRedisQueryPromptItem item = new ShellRedisQueryPromptItem();
                     item.setType((byte) 1);
                     item.setContent(keyword);
                     item.setCorrelation(corr);
@@ -144,7 +143,7 @@ public class RedisQueryUtil {
                 // 计算相关度
                 double corr = clacCorr(param, text);
                 if (corr > minCorr) {
-                    RedisQueryPromptItem item = new RedisQueryPromptItem();
+                    ShellRedisQueryPromptItem item = new ShellRedisQueryPromptItem();
                     item.setType((byte) 2);
                     item.setContent(param);
                     item.setCorrelation(corr);
@@ -158,7 +157,7 @@ public class RedisQueryUtil {
                 // 计算相关度
                 double corr = clacCorr(key, text);
                 if (corr > minCorr) {
-                    RedisQueryPromptItem item = new RedisQueryPromptItem();
+                    ShellRedisQueryPromptItem item = new ShellRedisQueryPromptItem();
                     item.setType((byte) 3);
                     item.setContent(key);
                     item.setCorrelation(corr);
@@ -170,7 +169,7 @@ public class RedisQueryUtil {
         ThreadUtil.submitVirtual(tasks);
         // 根据相关度排序
         return items.parallelStream()
-                .sorted(Comparator.comparingDouble(RedisQueryPromptItem::getCorrelation))
+                .sorted(Comparator.comparingDouble(ShellRedisQueryPromptItem::getCorrelation))
                 .collect(Collectors.toList())
                 .reversed();
     }

@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.query.redis;
  * @author oyzh
  * @since 2025/01/21
  */
-public class RedisQueryPromptItem {
+public class ShellRedisQueryPromptItem {
 
     /**
      * 类型

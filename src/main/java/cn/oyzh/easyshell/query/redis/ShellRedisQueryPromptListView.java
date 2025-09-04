@@ -20,7 +20,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/21
  */
-public class RedisQueryPromptListView extends FXListView<FXHBox> {
+public class ShellRedisQueryPromptListView extends FXListView<FXHBox> {
 
     {
         this.setRealWidth(360);
@@ -96,10 +96,10 @@ public class RedisQueryPromptListView extends FXListView<FXHBox> {
      *
      * @return 结果
      */
-    public RedisQueryPromptItem getPickedItem() {
+    public ShellRedisQueryPromptItem getPickedItem() {
         FXHBox hBox = this.getSelectedItem();
         if (hBox != null) {
-            RedisQueryPromptItem item = hBox.getProp("item");
+            ShellRedisQueryPromptItem item = hBox.getProp("item");
             if (item != null) {
                 this.applyBackground(-1);
                 return item;
@@ -142,13 +142,13 @@ public class RedisQueryPromptListView extends FXListView<FXHBox> {
      *
      * @param items 提示
      */
-    public void init(List<RedisQueryPromptItem> items) {
+    public void init(List<ShellRedisQueryPromptItem> items) {
         // 应用背景色
         this.applyBackground(-1);
         // 初始化数据
         List<FXHBox> boxList = new ArrayList<>();
         // 初始化节点内容
-        for (RedisQueryPromptItem item : items) {
+        for (ShellRedisQueryPromptItem item : items) {
             FXHBox box = this.initBox();
             // 提示组件
             SVGLabel promptLabel = this.initPromptLabel(item);
@@ -165,7 +165,7 @@ public class RedisQueryPromptListView extends FXListView<FXHBox> {
      * @param item 提示词
      * @return 组件
      */
-    private SVGLabel initPromptLabel(RedisQueryPromptItem item) {
+    private SVGLabel initPromptLabel(ShellRedisQueryPromptItem item) {
         SVGLabel label = null;
         if (item.isKeywordType()) {
             SVGGlyph svgGlyph = new KeywordsSVGGlyph("12");

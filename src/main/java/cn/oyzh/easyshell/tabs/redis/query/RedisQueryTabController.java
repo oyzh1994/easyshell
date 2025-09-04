@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.tabs.redis.query;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.redis.ShellRedisQuery;
 import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
-import cn.oyzh.easyshell.query.redis.RedisQueryEditor;
-import cn.oyzh.easyshell.query.redis.RedisQueryParam;
-import cn.oyzh.easyshell.query.redis.RedisQueryResult;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.store.redis.RedisQueryStore;
 import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
@@ -57,7 +57,7 @@ public class RedisQueryTabController extends SubTabController {
      * 当前内容
      */
     @FXML
-    private RedisQueryEditor content;
+    private ShellRedisQueryEditor content;
 
     /**
      * 数据库
@@ -124,10 +124,10 @@ public class RedisQueryTabController extends SubTabController {
     private void run() {
         try {
             this.disableTab();
-            RedisQueryParam param = new RedisQueryParam();
+            ShellRedisQueryParam param = new ShellRedisQueryParam();
             param.setContent(this.content.getText());
             param.setDbIndex(this.database.getSelectedIndex());
-            RedisQueryResult result = this.client.query(param);
+            ShellRedisQueryResult result = this.client.query(param);
             this.content.flexHeight("30% - 60");
             this.resultTabPane.setVisible(true);
             this.resultTabPane.clearChild();

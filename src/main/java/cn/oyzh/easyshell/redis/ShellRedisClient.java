@@ -14,8 +14,8 @@ import cn.oyzh.easyshell.exception.redis.SentinelOperationException;
 import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.query.redis.RedisQueryParam;
-import cn.oyzh.easyshell.query.redis.RedisQueryResult;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
 import cn.oyzh.easyshell.util.ShellProxyUtil;
@@ -4917,8 +4917,8 @@ public class ShellRedisClient implements ShellBaseClient {
      * @param param 查询参数
      * @return 查询结果
      */
-    public RedisQueryResult query(RedisQueryParam param) {
-        RedisQueryResult result = new RedisQueryResult();
+    public ShellRedisQueryResult query(ShellRedisQueryParam param) {
+        ShellRedisQueryResult result = new ShellRedisQueryResult();
         long start = System.currentTimeMillis();
         try {
             TerminalCommandHandler<?, ?> handler = TerminalManager.findHandler(param.getContent());

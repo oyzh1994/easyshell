@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
-import cn.oyzh.easyshell.query.redis.RedisQueryParam;
-import cn.oyzh.easyshell.query.redis.RedisQueryResult;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class RedisQueryMsgTab extends RichTab {
 
-    public RedisQueryMsgTab(RedisQueryParam param, RedisQueryResult result) {
+    public RedisQueryMsgTab(ShellRedisQueryParam param, ShellRedisQueryResult result) {
         super();
         super.flush();
         this.controller().init(param, result);

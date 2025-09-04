@@ -542,7 +542,7 @@
 //     //  * 客户端操作
 //     //  */
 //     // public static void clientAction(String connectName, CommandArguments arguments) {
-//     //     RedisClientActionEvent event = new RedisClientActionEvent();
+//     //     ShellRedisClientActionEvent event = new ShellRedisClientActionEvent();
 //     //     event.data(connectName);
 //     //     event.setArguments(arguments);
 //     //     EventUtil.postAsync(event);
