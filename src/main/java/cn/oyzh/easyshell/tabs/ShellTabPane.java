@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.redis.key.ShellRedisPubsubOpenEvent;
+import cn.oyzh.easyshell.event.redis.ShellRedisPubsubOpenEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
