@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.controller.zk.node;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
@@ -179,7 +178,8 @@ public class ShellZKAddNodeController extends StageController {
             if (node == null) {
                 MessageBox.warnToast(I18nHelper.operationFail());
             } else {
-                ShellZKEventUtil.nodeAdded(this.zkClient.getShellConnect(), this.nodePathText);
+                //ShellZKEventUtil.nodeAdded(this.zkClient.getShellConnect(), this.nodePathText);
+                this.setProp("addedNodePath", this.nodePathText);
                 this.closeWindow();
             }
         } catch (Exception ex) {
@@ -302,6 +302,7 @@ public class ShellZKAddNodeController extends StageController {
 
     @Override
     protected void bindListeners() {
+        super.bindListeners();
         // 节点路径变化处理
         this.nodePath.addTextChangeListener((observableValue, s, t1) -> {
             if (StringUtil.isNotBlank(t1)) {

@@ -13,14 +13,14 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30">
-    <TransportSVGGlyph tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12">
-        <VBox.margin>
-            <Insets left="10" top="60"/>
-        </VBox.margin>
-    </TransportSVGGlyph>
+    <!-- <TransportSVGGlyph tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12"> -->
+    <!--     <VBox.margin> -->
+    <!--         <Insets left="10" top="60"/> -->
+    <!--     </VBox.margin> -->
+    <!-- </TransportSVGGlyph> -->
     <KeySVGGlyph tipText="%base.key1Manager" onMousePrimaryClicked="#key" size="13">
         <VBox.margin>
-            <Insets left="10" top="15"/>
+            <Insets left="10" top="60"/>
         </VBox.margin>
     </KeySVGGlyph>
     <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet" size="13">

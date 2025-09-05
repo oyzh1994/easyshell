@@ -4,7 +4,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.event.zk.ShellZKAuthAuthedEvent;
 import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
-import cn.oyzh.easyshell.event.zk.ShellZKNodeAddedEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -13,8 +12,6 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
-import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -25,6 +22,7 @@ import cn.oyzh.fx.plus.keyboard.KeyHandler;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -231,17 +229,17 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     private ShellZKClient client;
 
-    /**
-     * 收藏面板
-     */
-    @FXML
-    private CollectSVGPane collectPane;
+    ///**
+    // * 收藏面板
+    // */
+    //@FXML
+    //private CollectSVGPane collectPane;
 
-    /**
-     * 排序面板
-     */
-    @FXML
-    private SortSVGPane sortPane;
+    ///**
+    // * 排序面板
+    // */
+    //@FXML
+    //private SortSVGPane sortPane;
 
     /**
      * 初始化
@@ -290,8 +288,8 @@ public class ShellZKNodeTabController extends ParentTabController {
                         MessageBox.exception(ex);
                     }
                 });
-                // 设置是否收藏
-                this.collectPane.setCollect(this.activeItem.isCollect());
+                //// 设置是否收藏
+                //this.collectPane.setCollect(this.activeItem.isCollect());
                 // 启用组件
                 this.tabPane.enable();
                 // 检查状态
@@ -1089,7 +1087,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         if (scope == 2 || scope == 1) {
             // this.nodeData.setHighlightText(kw);
             this.dataTabController.setDataHighlight(kw);
-        // } else {
+            // } else {
             // this.nodeData.setHighlightText(this.dataSearch.getTextTrim());
         }
         this.treeView.getItemFilter().setKw(kw);
@@ -1108,17 +1106,17 @@ public class ShellZKNodeTabController extends ParentTabController {
         this.treeView.positionItem();
     }
 
-    /**
-     * 节点添加事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    public void onNodeAdded(ShellZKNodeAddedEvent event) {
-        if (event.getZkConnect() == this.client.getShellConnect()) {
-            this.treeView.onNodeAdded(event.data());
-        }
-    }
+    ///**
+    // * 节点添加事件
+    // *
+    // * @param event 事件
+    // */
+    //@EventSubscribe
+    //public void onNodeAdded(ShellZKNodeAddedEvent event) {
+    //    if (event.getZkConnect() == this.client.getShellConnect()) {
+    //        this.treeView.onNodeAdded(event.data());
+    //    }
+    //}
 
     ///**
     // * 节点已添加事件
@@ -1209,28 +1207,35 @@ public class ShellZKNodeTabController extends ParentTabController {
 //        StageAdapter adapter = StageManager.parseStage(ZKNodeAddController.class);
 //        adapter.setProp("dbItem", this.treeItem);
 //        adapter.display();
-        ShellViewFactory.zkAddNode(null, this.client);
-    }
-
-    @FXML
-    private void deleteNode() {
-        if (this.activeItem != null) {
-            this.activeItem.delete();
+        StageAdapter adapter = ShellViewFactory.zkAddNode(null, this.client);
+        if (adapter == null) {
+            return;
+        }
+        String addedNodePath = adapter.getProp("addedNodePath");
+        if (addedNodePath != null) {
+            this.treeView.onNodeAdded(addedNodePath);
         }
     }
 
-    @FXML
-    private void collectNode() {
-        if (this.activeItem != null) {
-            if (this.collectPane.isCollect()) {
-                this.activeItem.unCollect();
-                this.collectPane.unCollect();
-            } else {
-                this.activeItem.collect();
-                this.collectPane.collect();
-            }
-        }
-    }
+    //@FXML
+    //private void deleteNode() {
+    //    if (this.activeItem != null) {
+    //        this.activeItem.delete();
+    //    }
+    //}
+
+    //@FXML
+    //private void collectNode() {
+    //    if (this.activeItem != null) {
+    //        if (this.collectPane.isCollect()) {
+    //            this.activeItem.unCollect();
+    //            this.collectPane.unCollect();
+    //        } else {
+    //            this.activeItem.collect();
+    //            this.collectPane.collect();
+    //        }
+    //    }
+    //}
 
     @FXML
     private void refreshNode() {
@@ -1245,16 +1250,16 @@ public class ShellZKNodeTabController extends ParentTabController {
         });
     }
 
-    @FXML
-    private void sortTree() {
-        if (this.sortPane.isAsc()) {
-            this.treeView.sortAsc();
-            this.sortPane.desc();
-        } else {
-            this.treeView.sortDesc();
-            this.sortPane.asc();
-        }
-    }
+    //@FXML
+    //private void sortTree() {
+    //    if (this.sortPane.isAsc()) {
+    //        this.treeView.sortAsc();
+    //        this.sortPane.desc();
+    //    } else {
+    //        this.treeView.sortDesc();
+    //        this.sortPane.asc();
+    //    }
+    //}
 
     /**
      * 导入数据

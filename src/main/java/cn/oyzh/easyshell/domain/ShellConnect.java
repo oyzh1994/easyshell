@@ -853,7 +853,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     @JSONField(serialize = false, deserialize = false)
     public boolean isZKType() {
-        return "zk".equalsIgnoreCase(this.type);
+        return StringUtil.equalsAnyIgnoreCase(this.type, "zookeeper", "zk");
     }
 
     public int getSerialBaudRate() {
@@ -1148,7 +1148,8 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //    this.listen = listen;
     //}
     //
-    ///**
+
+    /// **
     // * 是否开启sasl认证
     // *
     // * @return 结果
@@ -1156,7 +1157,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //public boolean isListen() {
     //    return BooleanUtil.isTrue(this.listen);
     //}
-
     public List<ShellZKAuth> getAuths() {
         return auths;
     }

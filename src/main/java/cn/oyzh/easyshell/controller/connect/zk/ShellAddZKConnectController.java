@@ -271,7 +271,7 @@ public class ShellAddZKConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("ZK");
+            shellConnect.setType("Zookeeper");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             // 跳板机配置
@@ -325,7 +325,7 @@ public class ShellAddZKConnectController extends StageController {
             shellConnect.setSaslConfig(this.getSASLConfig());
             shellConnect.setSaslAuth(this.saslAuth.isSelected());
             // 分组及类型
-            shellConnect.setType("ZK");
+            shellConnect.setType("Zookeeper");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {

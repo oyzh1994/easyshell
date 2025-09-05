@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -369,8 +370,9 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             CreateMode createMode = this.isEphemeralNode() ? CreateMode.EPHEMERAL : CreateMode.PERSISTENT;
             // 创建新节点
             if (this.client().create(newNodePath, this.getNodeData(), List.copyOf(this.acl()), null, createMode, true) != null) {
-                // 发送事件
-                ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                //// 发送事件
+                //ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                this.getTreeView().onNodeAdded(newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -403,7 +405,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
 //        adapter.setProp("zkItem", this);
 //        adapter.setProp("zkClient", this.client());
 //        adapter.display();
-        ShellViewFactory.zkAddNode(this, this.client());
+        StageAdapter adapter = ShellViewFactory.zkAddNode(this, this.client());
+        if (adapter == null) {
+            return;
+        }
+        String addedNodePath = adapter.getProp("addedNodePath");
+        if (addedNodePath != null) {
+            this.getTreeView().onNodeAdded(addedNodePath);
+        }
     }
 
     /**
@@ -453,8 +462,9 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             if (this.client().create(newNodePath, this.getNodeData(), List.copyOf(this.acl()), null, createMode, true) != null) {
                 // 删除旧节点
                 this.deleteNode();
-                // 发送事件
-                ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                //// 发送事件
+                //ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                this.getTreeView().onNodeAdded(newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
             }

@@ -1539,17 +1539,20 @@ public class ShellViewFactory {
      *
      * @param nodeItem zk节点
      * @param client   zk客户端
+     * @return StageAdapter
      */
-    public static void zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    public static StageAdapter zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
             adapter.setProp("zkClient", client);
-            adapter.display();
+            adapter.showAndWait();
+            return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+        return null;
     }
 
     /**

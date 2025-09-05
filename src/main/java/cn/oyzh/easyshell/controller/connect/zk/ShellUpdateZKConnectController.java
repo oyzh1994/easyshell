@@ -275,7 +275,7 @@ public class ShellUpdateZKConnectController extends StageController {
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("ZK");
+            shellConnect.setType("Zookeeper");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());

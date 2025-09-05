@@ -47,11 +47,11 @@
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </AddSVGGlyph>
-                <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteNode">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </DeleteSVGGlyph>
+                <!-- <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteNode"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </DeleteSVGGlyph> -->
                 <ImportSVGGlyph tipText="%base.importData" size="16"
                                 onMousePrimaryClicked="#importData">
                     <HBox.margin>
@@ -64,21 +64,21 @@
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </HistorySVGGlyph>
-                <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectNode">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </CollectSVGPane>
+                <!-- <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectNode"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </CollectSVGPane> -->
                 <RefreshSVGGlyph size="15" onMousePrimaryClicked="#refreshNode">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </RefreshSVGGlyph>
-                <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </SortSVGPane>
+                <!-- <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </SortSVGPane> -->
                 <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
                     <HBox.margin>
                         <Insets left="5" top="5"/>

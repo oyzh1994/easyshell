@@ -174,101 +174,101 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
         }
     }
 
-    /**
-     * 节点已添加
-     *
-     * @param nodePath 节点路径
-     */
-    public void onNodeCreated(String nodePath) {
-        if (this.client.isLastCreate(nodePath)) {
-            this.client.clearLastCreate();
-            return;
-        }
-        try {
-            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
-            // 寻找节点
-            ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
-            // 父节点不存在
-            if (parent == null) {
-                JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
-                return;
-            }
-            // 获取节点
-            ShellZKNodeTreeItem item = parent.getNodeItem(nodePath);
-            // 刷新节点
-            if (item != null) {
-                item.refreshNode();
-                JulLog.info("节点已存在, 更新节点.");
-            } else if (parent.isLoaded()) {// 更新父节点状态，并标记状态
-                parent.refreshStat();
-                parent.setBeChildChanged();
-                JulLog.info("节点不存在, 父节点已加载, 标记父节点状态.");
-            } else {// 更新父节点状态
-                parent.refreshStat();
-                JulLog.info("节点不存在, 父节点未加载, 更新父节点状态.");
-            }
-        } catch (Exception ex) {
-            JulLog.warn("节点已新增事件处理失败！", ex);
-        }
-    }
-
-    /**
-     * 节点已删除
-     *
-     * @param nodePath 节点路径
-     */
-    public void onNodeRemoved(String nodePath) {
-        if (this.client.isLastDelete(nodePath)) {
-            this.client.clearLastDelete();
-            return;
-        }
-        try {
-            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
-            // 寻找节点
-            ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
-            // 父节点不存在
-            if (parent == null) {
-                JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
-                return;
-            }
-            // 寻找节点
-            ShellZKNodeTreeItem item = parent.getNodeItem(nodePath);
-            // 更新信息
-            if (item != null) {
-                item.setBeDeleted();
-                JulLog.info("节点存在, 标记节点状态为删除.");
-            } else {// 更新父节点状态
-                parent.refreshStat();
-                JulLog.info("节点不存在, 父节点未加载, 更新父节点状态.");
-            }
-        } catch (Exception ex) {
-            JulLog.warn("节点已删除事件处理失败！", ex);
-        }
-    }
-
-    /**
-     * 节点已变更
-     *
-     * @param nodePath 节点路径
-     */
-    public void onNodeChanged(String nodePath) {
-        if (this.client.isLastUpdate(nodePath)) {
-            this.client.clearLastUpdate();
-            return;
-        }
-        try {
-            // 寻找节点
-            ShellZKNodeTreeItem item = this.findNodeItem(nodePath);
-            // 更新信息
-            if (item != null) {
-                item.setBeChanged();
-            } else {
-                JulLog.warn("{}: 未找到被修改节点，无法处理节点！", nodePath);
-            }
-        } catch (Exception ex) {
-            JulLog.warn("节点已修改事件处理失败！", ex);
-        }
-    }
+    ///**
+    // * 节点已添加
+    // *
+    // * @param nodePath 节点路径
+    // */
+    //public void onNodeCreated(String nodePath) {
+    //    if (this.client.isLastCreate(nodePath)) {
+    //        this.client.clearLastCreate();
+    //        return;
+    //    }
+    //    try {
+    //        String pPath = ShellZKNodeUtil.getParentPath(nodePath);
+    //        // 寻找节点
+    //        ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
+    //        // 父节点不存在
+    //        if (parent == null) {
+    //            JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
+    //            return;
+    //        }
+    //        // 获取节点
+    //        ShellZKNodeTreeItem item = parent.getNodeItem(nodePath);
+    //        // 刷新节点
+    //        if (item != null) {
+    //            item.refreshNode();
+    //            JulLog.info("节点已存在, 更新节点.");
+    //        } else if (parent.isLoaded()) {// 更新父节点状态，并标记状态
+    //            parent.refreshStat();
+    //            parent.setBeChildChanged();
+    //            JulLog.info("节点不存在, 父节点已加载, 标记父节点状态.");
+    //        } else {// 更新父节点状态
+    //            parent.refreshStat();
+    //            JulLog.info("节点不存在, 父节点未加载, 更新父节点状态.");
+    //        }
+    //    } catch (Exception ex) {
+    //        JulLog.warn("节点已新增事件处理失败！", ex);
+    //    }
+    //}
+    //
+    ///**
+    // * 节点已删除
+    // *
+    // * @param nodePath 节点路径
+    // */
+    //public void onNodeRemoved(String nodePath) {
+    //    if (this.client.isLastDelete(nodePath)) {
+    //        this.client.clearLastDelete();
+    //        return;
+    //    }
+    //    try {
+    //        String pPath = ShellZKNodeUtil.getParentPath(nodePath);
+    //        // 寻找节点
+    //        ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
+    //        // 父节点不存在
+    //        if (parent == null) {
+    //            JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
+    //            return;
+    //        }
+    //        // 寻找节点
+    //        ShellZKNodeTreeItem item = parent.getNodeItem(nodePath);
+    //        // 更新信息
+    //        if (item != null) {
+    //            item.setBeDeleted();
+    //            JulLog.info("节点存在, 标记节点状态为删除.");
+    //        } else {// 更新父节点状态
+    //            parent.refreshStat();
+    //            JulLog.info("节点不存在, 父节点未加载, 更新父节点状态.");
+    //        }
+    //    } catch (Exception ex) {
+    //        JulLog.warn("节点已删除事件处理失败！", ex);
+    //    }
+    //}
+    //
+    ///**
+    // * 节点已变更
+    // *
+    // * @param nodePath 节点路径
+    // */
+    //public void onNodeChanged(String nodePath) {
+    //    if (this.client.isLastUpdate(nodePath)) {
+    //        this.client.clearLastUpdate();
+    //        return;
+    //    }
+    //    try {
+    //        // 寻找节点
+    //        ShellZKNodeTreeItem item = this.findNodeItem(nodePath);
+    //        // 更新信息
+    //        if (item != null) {
+    //            item.setBeChanged();
+    //        } else {
+    //            JulLog.warn("{}: 未找到被修改节点，无法处理节点！", nodePath);
+    //        }
+    //    } catch (Exception ex) {
+    //        JulLog.warn("节点已修改事件处理失败！", ex);
+    //    }
+    //}
 
     /**
      * 获取全部zk子节点列表

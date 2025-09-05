@@ -56,14 +56,14 @@
          }
      }
 
-     /**
-      * 传输数据
-      */
-     @FXML
-     private void transport() {
- //        ShellEventUtil.showTransportFile();
-         ShellViewFactory.fileTransport(null);
-     }
+ //    /**
+ //     * 传输数据
+ //     */
+ //    @FXML
+ //    private void transport() {
+ ////        ShellEventUtil.showTransportFile();
+ //        ShellViewFactory.fileTransport(null);
+ //    }
 
      /**
       * 密钥

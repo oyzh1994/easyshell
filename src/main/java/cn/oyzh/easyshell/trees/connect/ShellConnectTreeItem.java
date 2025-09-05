@@ -80,7 +80,20 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             });
             items.add(importData);
             FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
-                ShellViewFactory.redisImportData(this.value);
+                ShellViewFactory.redisExportData(this.value, null);
+            });
+            items.add(exportData);
+        } else if (this.isZKType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
+                ShellViewFactory.zkTransportData(this.value);
+            });
+            items.add(transportData);
+            FXMenuItem importData = MenuItemHelper.importData("12", () -> {
+                ShellViewFactory.zkImportData(this.value);
+            });
+            items.add(importData);
+            FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
+                ShellViewFactory.zkExportData(this.value, null);
             });
             items.add(exportData);
         }
@@ -140,6 +153,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public boolean isRedisType() {
         return value.isRedisType();
+    }
+
+    public boolean isZKType() {
+        return value.isZKType();
     }
 
     public boolean isRloginType() {

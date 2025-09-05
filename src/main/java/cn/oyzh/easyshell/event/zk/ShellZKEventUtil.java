@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.event.zk;
 
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.event.EventUtil;
@@ -59,18 +58,18 @@ public class ShellZKEventUtil {
     //     EventUtil.post(event);
     // }
 
-    /**
-     * 节点添加事件
-     *
-     * @param zkConnect zk连接
-     * @param path      路径
-     */
-    public static void nodeAdded(ShellConnect zkConnect, String path) {
-        ShellZKNodeAddedEvent event = new ShellZKNodeAddedEvent();
-        event.data(path);
-        event.setZkConnect(zkConnect);
-        EventUtil.post(event);
-    }
+    ///**
+    // * 节点添加事件
+    // *
+    // * @param zkConnect zk连接
+    // * @param path      路径
+    // */
+    //public static void nodeAdded(ShellConnect zkConnect, String path) {
+    //    ShellZKNodeAddedEvent event = new ShellZKNodeAddedEvent();
+    //    event.data(path);
+    //    event.setZkConnect(zkConnect);
+    //    EventUtil.post(event);
+    //}
 
     ///**
     // * 节点已添加事件
