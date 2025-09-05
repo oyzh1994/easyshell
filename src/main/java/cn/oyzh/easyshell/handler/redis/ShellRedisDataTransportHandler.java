@@ -13,7 +13,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/10/15
  */
-public class RedisDataTransportHandler extends DataHandler {
+public class ShellRedisDataTransportHandler extends ShellRedisDataHandler {
     public ShellRedisClient getSourceClient() {
         return sourceClient;
     }

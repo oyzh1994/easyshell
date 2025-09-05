@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.redis.key;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.redis.ShellRedisCacheUtil;
+import cn.oyzh.easyshell.util.redis.ShellRedisCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
-package cn.oyzh.easyshell.command;
+package cn.oyzh.easyshell.util.redis;
 
 
 /**
  * @author oyzh
  * @since 2024/5/29
  */
-public class RedisCommand {
+public class ShellRedisCommand {
 
     private String desc;
 

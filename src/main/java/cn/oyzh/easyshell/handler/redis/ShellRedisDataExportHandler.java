@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2024/11/26
  */
-public class RedisDataExportHandler extends DataHandler {
+public class ShellRedisDataExportHandler extends ShellRedisDataHandler {
 
     /**
      * 文件格式

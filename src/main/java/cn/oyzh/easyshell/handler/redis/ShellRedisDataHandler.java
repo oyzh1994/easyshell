@@ -8,7 +8,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2024/08/29
  */
-public class DataHandler {
+public class ShellRedisDataHandler {
 
     /**
      * 中断标志位

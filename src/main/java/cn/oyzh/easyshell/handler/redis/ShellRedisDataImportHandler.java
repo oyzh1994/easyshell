@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/11/26
  */
-public class RedisDataImportHandler extends DataHandler {
+public class ShellRedisDataImportHandler extends ShellRedisDataHandler {
 
     public String getFileType() {
         return fileType;

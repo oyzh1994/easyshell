@@ -1,8 +1,6 @@
-package cn.oyzh.easyshell.redis;
+package cn.oyzh.easyshell.util.redis;
 
 
-import cn.oyzh.easyshell.command.RedisCommand;
-import cn.oyzh.easyshell.command.RedisCommandUtil;
 import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
 
 /**
@@ -21,7 +19,7 @@ public class ShellRedisVersionUtil {
      * @return 支持的版本
      */
     public static String getSupportedVersion(String command) {
-        RedisCommand redisCommand = RedisCommandUtil.getCommand(command);
+        ShellRedisCommand redisCommand = ShellRedisCommandUtil.getCommand(command);
         return redisCommand == null ? "1.0.0" : redisCommand.getAvailable();
     }
 

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.terminal.redis;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.command.RedisCommandUtil;
+import cn.oyzh.easyshell.util.redis.ShellRedisCommandUtil;
 import cn.oyzh.fx.terminal.command.BaseTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
@@ -47,17 +47,17 @@ public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> ext
 
     @Override
     public String commandArg() {
-        return RedisCommandUtil.getCommandArgs(this.commandFullName());
+        return ShellRedisCommandUtil.getCommandArgs(this.commandFullName());
     }
 
     @Override
     public String commandDesc() {
-        return RedisCommandUtil.getCommandDesc(this.commandFullName());
+        return ShellRedisCommandUtil.getCommandDesc(this.commandFullName());
     }
 
     @Override
     public String commandSupportedVersion() {
-        return RedisCommandUtil.getCommandAvailable(this.commandFullName());
+        return ShellRedisCommandUtil.getCommandAvailable(this.commandFullName());
     }
 
     public abstract Protocol.Command getCommandType();

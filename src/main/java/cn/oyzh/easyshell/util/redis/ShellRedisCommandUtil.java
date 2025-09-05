@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.command;
+package cn.oyzh.easyshell.util.redis;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.json.JSONUtil;
@@ -16,26 +16,26 @@ import java.util.List;
  * @since 2024/05/29
  */
 
-public class RedisCommandUtil {
+public class ShellRedisCommandUtil {
 
     /**
      * 版本缓存
      */
-    private final static List<RedisCommand> COMMANDS = new ArrayList<>();
+    private final static List<ShellRedisCommand> COMMANDS = new ArrayList<>();
 
     static {
         try {
-            URL url = RedisCommand.class.getResource("/redis_commands.json");
+            URL url = ShellRedisCommand.class.getResource("/redis_commands.json");
             String json = FileUtil.readString(url, StandardCharsets.UTF_8);
             if (StringUtil.isNotBlank(json)) {
-                COMMANDS.addAll(JSONUtil.toBeanList(json, RedisCommand.class));
+                COMMANDS.addAll(JSONUtil.toBeanList(json, ShellRedisCommand.class));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public static List<RedisCommand> getCommands() {
+    public static List<ShellRedisCommand> getCommands() {
         return COMMANDS;
     }
 
@@ -44,9 +44,9 @@ public class RedisCommandUtil {
      *
      * @param command 指令
      */
-    public static RedisCommand getCommand(String command) {
+    public static ShellRedisCommand getCommand(String command) {
         if (command != null) {
-            for (RedisCommand redisCommand : COMMANDS) {
+            for (ShellRedisCommand redisCommand : COMMANDS) {
                 if (StringUtil.equalsIgnoreCase(redisCommand.getCommand(), command)) {
                     return redisCommand;
                 }
@@ -61,7 +61,7 @@ public class RedisCommandUtil {
      * @param command 指令
      */
     public static String getCommandDesc(String command) {
-        RedisCommand redisCommand = getCommand(command);
+        ShellRedisCommand redisCommand = getCommand(command);
         return redisCommand == null || redisCommand.getDesc() == null ? "" : redisCommand.getDesc();
     }
 
@@ -71,7 +71,7 @@ public class RedisCommandUtil {
      * @param command 指令
      */
     public static String getCommandArgs(String command) {
-        RedisCommand redisCommand = getCommand(command);
+        ShellRedisCommand redisCommand = getCommand(command);
         return redisCommand == null || redisCommand.getArgs() == null ? "" : redisCommand.getArgs();
     }
 
@@ -81,7 +81,7 @@ public class RedisCommandUtil {
      * @param command 指令
      */
     public static String getCommandAvailable(String command) {
-        RedisCommand redisCommand = getCommand(command);
+        ShellRedisCommand redisCommand = getCommand(command);
         return redisCommand == null || redisCommand.getAvailable() == null ? "" : redisCommand.getAvailable();
     }
 

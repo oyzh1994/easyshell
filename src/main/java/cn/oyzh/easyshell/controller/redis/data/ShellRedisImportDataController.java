@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.handler.redis.RedisDataImportHandler;
+import cn.oyzh.easyshell.handler.redis.ShellRedisDataImportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -142,7 +142,7 @@ public class ShellRedisImportDataController extends StageController {
     /**
      * 导入处理器
      */
-    private RedisDataImportHandler importHandler;
+    private ShellRedisDataImportHandler importHandler;
 
     /**
      * 执行导入
@@ -157,7 +157,7 @@ public class ShellRedisImportDataController extends StageController {
         this.stage.appendTitle("===" + I18nHelper.importProcessing() + "===");
         // 生成迁移处理器
         if (this.importHandler == null) {
-            this.importHandler = new RedisDataImportHandler();
+            this.importHandler = new ShellRedisDataImportHandler();
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str));
             this.importHandler.setProcessedHandler(count -> {
                 if (count == 0) {

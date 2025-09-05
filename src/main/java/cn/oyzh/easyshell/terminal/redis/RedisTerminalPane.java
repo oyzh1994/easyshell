@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.redis.RedisConnectInfo;
-import cn.oyzh.easyshell.exception.redis.RedisExceptionParser;
+import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisConnectUtil;
@@ -241,7 +241,7 @@ public class RedisTerminalPane extends TerminalPane {
                 this.initStatListener();
                 this.client.startDatabase(db);
             } catch (Exception ex) {
-                this.onError(RedisExceptionParser.INSTANCE.apply(ex));
+                this.onError(ShellExceptionParser.INSTANCE.apply(ex));
             } finally {
                 this.enable();
             }
