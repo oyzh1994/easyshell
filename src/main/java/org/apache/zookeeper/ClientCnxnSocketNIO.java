@@ -39,15 +39,15 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class ClientCnxnSocketNIO extends ClientCnxnSocket {
 
-    private final Selector selector = Selector.open();
+    protected final Selector selector = Selector.open();
 
-    private SelectionKey sockKey;
+    protected SelectionKey sockKey;
 
     private SocketAddress localSocketAddress;
 
     private SocketAddress remoteSocketAddress;
 
-    ClientCnxnSocketNIO(ZKClientConfig clientConfig) throws IOException {
+    public ClientCnxnSocketNIO(ZKClientConfig clientConfig) throws IOException {
         this.clientConfig = clientConfig;
         initProperties();
     }
@@ -251,7 +251,7 @@ public class ClientCnxnSocketNIO extends ClientCnxnSocket {
      * @return the created socket channel
      * @throws IOException
      */
-    SocketChannel createSock() throws IOException {
+    protected SocketChannel createSock() throws IOException {
         SocketChannel sock;
         sock = SocketChannel.open();
         sock.configureBlocking(false);
@@ -266,7 +266,7 @@ public class ClientCnxnSocketNIO extends ClientCnxnSocket {
      * @param addr the address of remote host
      * @throws IOException
      */
-    void registerAndConnect(SocketChannel sock, InetSocketAddress addr)
+    protected void registerAndConnect(SocketChannel sock, InetSocketAddress addr)
     throws IOException {
         sockKey = sock.register(selector, SelectionKey.OP_CONNECT);
         boolean immediateConnect = sock.connect(addr);

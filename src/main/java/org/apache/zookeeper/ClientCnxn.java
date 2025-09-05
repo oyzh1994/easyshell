@@ -788,7 +788,7 @@ public class ClientCnxn {
      * This class services the outgoing request queue and generates the heart
      * beats. It also spawns the ReadThread.
      */
-    class SendThread extends ZooKeeperThread {
+    public class SendThread extends ZooKeeperThread {
         private long lastPingSentNs;
         private final ClientCnxnSocket clientCnxnSocket;
         private Random r = new Random(System.nanoTime());
@@ -940,7 +940,7 @@ public class ClientCnxn {
         /**
          * Setup session, previous watches, authentication.
          */
-        void primeConnection() throws IOException {
+        public void primeConnection() throws IOException {
             JulLog.info("Socket connection established, initiating session, client: {}, server: {}",
                     clientCnxnSocket.getLocalSocketAddress(),
                     clientCnxnSocket.getRemoteSocketAddress());

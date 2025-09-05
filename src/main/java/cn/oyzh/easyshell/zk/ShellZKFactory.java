@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.zk;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import org.apache.curator.utils.ZookeeperFactory;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -17,39 +19,46 @@ import java.util.function.Consumer;
 public class ShellZKFactory implements ZookeeperFactory {
 
     /**
-     * zk连接id
+     * 连接
      */
-    private final String iid;
+    private final ShellConnect connect;
 
     /**
-     * zookeeper对象消费器
+     * zookeeper对象回调
      */
-    private Consumer<ZooKeeper> consumer;
+    private Consumer<ZooKeeper> callback;
 
-    public ShellZKFactory(String iid, Consumer<ZooKeeper> consumer) {
-        this.iid = iid;
-        this.consumer = consumer;
+    public ShellZKFactory(ShellConnect connect, Consumer<ZooKeeper> callback) {
+        this.connect = connect;
+        this.callback = callback;
     }
 
     @Override
     public ZooKeeper newZooKeeper(String connectString, int sessionTimeout, Watcher watcher, boolean canBeReadOnly) throws Exception {
         ZKClientConfig clientConfig = new ZKClientConfig();
+        String iid = this.connect.getId();
         // 判断是否开始sasl配置
-        if (ShellZKSASLUtil.isNeedSasl(this.iid)) {
-            JulLog.info("连接:{} 执行sasl认证", this.iid);
+        if (ShellZKSASLUtil.isNeedSasl(iid)) {
+            JulLog.info("连接:{} 执行sasl认证", iid);
             clientConfig.setProperty(ZKClientConfig.ENABLE_CLIENT_SASL_KEY, "true");
-            clientConfig.setProperty(ZKClientConfig.LOGIN_CONTEXT_NAME_KEY, this.iid);
+            clientConfig.setProperty(ZKClientConfig.LOGIN_CONTEXT_NAME_KEY, iid);
         } else {// 重置sasl配置
-            JulLog.debug("连接:{} 无需sasl认证", this.iid);
+            JulLog.debug("连接:{} 无需sasl认证", iid);
             clientConfig.setProperty(ZKClientConfig.ENABLE_CLIENT_SASL_KEY, "false");
             clientConfig.setProperty(ZKClientConfig.LOGIN_CONTEXT_NAME_KEY, ZKClientConfig.LOGIN_CONTEXT_NAME_KEY_DEFAULT);
         }
-        // clientConfig.setProperty(ZKClientConfig.ZOOKEEPER_CLIENT_CNXN_SOCKET, ClientCnxnSocketNetty.class.getName());
+        // 设置socket实现
+        clientConfig.setProperty(ZKClientConfig.ZOOKEEPER_CLIENT_CNXN_SOCKET, ShellZKClientCnxnSocket.class.getName());
+        // 设置代理
+        ShellProxyConfig proxyConfig = this.connect.getProxyConfig();
+        if (this.connect.isEnableProxy() && proxyConfig != null) {
+            ShellZKClientUtil.setProxyConfig(clientConfig, proxyConfig);
+        }
         ZooKeeper zooKeeper = new ZooKeeper(connectString, sessionTimeout, watcher, canBeReadOnly, clientConfig);
-        // 消费此zooKeeper对象
-        if (this.consumer != null) {
-            this.consumer.accept(zooKeeper);
-            this.consumer = null;
+        // 此zooKeeper对象回调
+        if (this.callback != null) {
+            this.callback.accept(zooKeeper);
+            this.callback = null;
         }
         return zooKeeper;
     }

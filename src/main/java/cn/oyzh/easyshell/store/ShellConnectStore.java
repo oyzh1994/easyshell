@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
-import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.SelectParam;
@@ -147,9 +146,6 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (connect.isRedisType()) {
                 connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
             }
-            if (connect.isRedisType()) {
-                connect.setSaslAuth(this.sslConfigStore.getByIid(connect.getId()));
-            }
         }
         return connects;
     }
@@ -160,10 +156,10 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         // 删除关联配置
         if (result) {
             this.x11ConfigStore.deleteByIid(model.getId());
+            this.sslConfigStore.deleteByIid(model.getId());
             this.jumpConfigStore.deleteByIid(model.getId());
             this.proxyConfigStore.deleteByIid(model.getId());
             this.fileCollectStore.deleteByIid(model.getId());
-            this.shellSSLConfigStore.deleteByIid(model.getId());
             this.tunnelingConfigStore.deleteByIid(model.getId());
         }
         return result;
@@ -224,9 +220,9 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             ShellSSLConfig sslConfig = model.getSslConfig();
             if (sslConfig != null) {
                 sslConfig.setIid(model.getId());
-                this.shellSSLConfigStore.replace(sslConfig);
+                this.sslConfigStore.replace(sslConfig);
             } else {
-                this.shellSSLConfigStore.deleteByIid(model.getId());
+                this.sslConfigStore.deleteByIid(model.getId());
             }
         }
         return result;

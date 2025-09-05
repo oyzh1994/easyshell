@@ -42,7 +42,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * be provided as an alternative to the NIO socket code.
  *
  */
-abstract class ClientCnxnSocket {
+public abstract class ClientCnxnSocket {
 
     protected boolean initialized;
 

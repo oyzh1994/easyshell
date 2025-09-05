@@ -479,8 +479,12 @@ public class ShellZKClient implements ShellBaseClient {
             this.retryPolicy = new RetryOneTime(3_000);
         }
         // 创建客户端
-        this.framework = ShellZKClientUtil.build(host, this.retryPolicy, this.zkConnect.connectTimeOutMs(), this.zkConnect.sessionTimeOutMs(),
-                authInfos, this.zkConnect.compatibility34(), this.iid(), zoo -> this.zooKeeper = zoo);
+        this.framework = ShellZKClientUtil.build(
+                this.zkConnect,
+                this.retryPolicy,
+                authInfos,
+                zoo -> this.zooKeeper = zoo
+        );
     }
 
     @Override
