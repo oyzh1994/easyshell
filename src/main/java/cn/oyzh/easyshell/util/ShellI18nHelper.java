@@ -206,23 +206,23 @@ public class ShellI18nHelper {
     }
 
     public static String zkNodeTip3() {
-        return I18nResourceBundle.i18nString("shell.zk.node.tip3");
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip3");
     }
 
     public static String zkNodeTip4() {
-        return I18nResourceBundle.i18nString("shell.zk.node.tip4");
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip4");
     }
 
     public static String zkNodeTip5() {
-        return I18nResourceBundle.i18nString("shell.zk.node.tip5");
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip5");
     }
 
     public static String zkNodeTip6() {
-        return I18nResourceBundle.i18nString("shell.zk.node.tip6");
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip6");
     }
 
     public static String zkNodeTip7() {
-        return I18nResourceBundle.i18nString("shell.zk.node.tip7");
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip7");
     }
 
     public static String zkAclC() {

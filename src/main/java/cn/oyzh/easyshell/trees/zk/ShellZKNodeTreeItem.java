@@ -312,9 +312,29 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 FXMenuItem delete = MenuItemHelper.deleteNode("12", this::delete);
                 items.add(delete);
             }
+            if (!items.isEmpty()) {
+                items.add(MenuItemHelper.separator());
+            }
             // 重载
             FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
             items.add(reload);
+            // 持久节点 + 有读取权限
+            if (this.isPersistentNode() && this.hasReadPerm()) {
+                FXMenuItem export = MenuItemHelper.exportData("12", this::exportData);
+                items.add(export);
+            }
+            items.add(MenuItemHelper.separator());
+            // 复制节点路径
+            FXMenuItem copyNodePath = MenuItemHelper.copyNodePath("12", this::copyNodePath);
+            items.add(copyNodePath);
+            // 认证
+            FXMenuItem auth = MenuItemHelper.authNode("12", this::authNode);
+            items.add(auth);
+            FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
+            items.add(sortAsc);
+            FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+            items.add(sortDesc);
+            items.add(MenuItemHelper.separator());
             // 父节点
             if (this.isParentNode()) {
                 FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
@@ -326,17 +346,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 items.add(expandAll);
                 items.add(collapseAll);
             }
-            // 持久节点 + 有读取权限
-            if (this.isPersistentNode() && this.hasReadPerm()) {
-                FXMenuItem export = MenuItemHelper.exportData("12", this::exportData);
-                items.add(export);
-            }
-            // 复制节点路径
-            FXMenuItem copyNodePath = MenuItemHelper.copyNodePath("12", this::copyNodePath);
-            items.add(copyNodePath);
-            // 认证
-            FXMenuItem auth = MenuItemHelper.authNode("12", this::authNode);
-            items.add(auth);
         }
         return items;
     }
@@ -370,8 +379,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             CreateMode createMode = this.isEphemeralNode() ? CreateMode.EPHEMERAL : CreateMode.PERSISTENT;
             // 创建新节点
             if (this.client().create(newNodePath, this.getNodeData(), List.copyOf(this.acl()), null, createMode, true) != null) {
-                //// 发送事件
-                //ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
                 this.getTreeView().onNodeAdded(newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
@@ -401,10 +408,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 添加zk子节点
      */
     public void addNode() {
-//        StageAdapter adapter = StageManager.parseStage(ZKNodeAddController.class, this.window());
-//        adapter.setProp("zkItem", this);
-//        adapter.setProp("zkClient", this.client());
-//        adapter.display();
         StageAdapter adapter = ShellViewFactory.zkAddNode(this, this.client());
         if (adapter == null) {
             return;
@@ -419,10 +422,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 认证zk节点
      */
     public void authNode() {
-//        StageAdapter adapter = StageManager.parseStage(ZKAuthAuthController.class, this.window());
-//        adapter.setProp("zkClient", this.client());
-//        adapter.setProp("zkItem", this);
-//        adapter.display();
         ShellViewFactory.zkAuthNode(this, this.client());
     }
 
@@ -430,10 +429,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 导出zk节点
      */
     private void exportData() {
-//        StageAdapter adapter = StageManager.parseStage(ZKDataExportController.class, this.window());
-//        adapter.setProp("connect", this.zkConnect());
-//        adapter.setProp("nodePath", this.nodePath());
-//        adapter.display();
         ShellViewFactory.zkExportData(this.zkConnect(), this.nodePath());
     }
 
