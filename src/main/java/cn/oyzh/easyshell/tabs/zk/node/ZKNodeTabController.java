@@ -12,8 +12,8 @@ import cn.oyzh.easyshell.filter.zk.ZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeView;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.zk.ZKI18nHelper;
-import cn.oyzh.easyshell.util.zk.ZKViewFactory;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
@@ -1212,7 +1212,7 @@ public class ZKNodeTabController extends ParentTabController {
 //        StageAdapter adapter = StageManager.parseStage(ZKNodeAddController.class);
 //        adapter.setProp("dbItem", this.treeItem);
 //        adapter.display();
-        ZKViewFactory.addNode(null, this.client);
+        ShellViewFactory.zkAddNode(null, this.client);
     }
 
     @FXML
@@ -1264,7 +1264,7 @@ public class ZKNodeTabController extends ParentTabController {
      */
     @FXML
     private void importData() {
-        ZKViewFactory.importData(this.client.zkConnect());
+        ShellViewFactory.zkImportData(this.client.zkConnect());
     }
 
     public ZKClient getClient() {

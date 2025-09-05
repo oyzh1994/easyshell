@@ -76,11 +76,19 @@ import cn.oyzh.easyshell.controller.split.ShellSplitGuidController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
+import cn.oyzh.easyshell.controller.zk.acl.ZKAddACLController;
+import cn.oyzh.easyshell.controller.zk.acl.ZKUpdateACLController;
+import cn.oyzh.easyshell.controller.zk.data.ZKExportDataController;
+import cn.oyzh.easyshell.controller.zk.data.ZKImportDataController;
+import cn.oyzh.easyshell.controller.zk.data.ZKTransportDataController;
+import cn.oyzh.easyshell.controller.zk.node.ZKAddNodeController;
+import cn.oyzh.easyshell.controller.zk.node.ZKAuthNodeController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
+import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
@@ -105,6 +113,8 @@ import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -1502,4 +1512,133 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    /**
+     * 认证节点
+     *
+     * @param nodeItem zk节点
+     * @param client   zk客户端
+     */
+    public static void zkAuthNode(ZKNodeTreeItem nodeItem, ZKClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKAuthNodeController.class, StageManager.getPrimaryStage());
+            adapter.setProp("zkItem", nodeItem);
+            adapter.setProp("zkClient", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 添加zk子节点
+     *
+     * @param nodeItem zk节点
+     * @param client   zk客户端
+     */
+    public static void zkAddNode(ZKNodeTreeItem nodeItem, ZKClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKAddNodeController.class, StageManager.getPrimaryStage());
+            adapter.setProp("zkItem", nodeItem);
+            adapter.setProp("zkClient", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 添加权限
+     *
+     * @param nodeItem zk节点
+     * @param client   zk客户端
+     */
+    public static StageAdapter zkAddACL(ZKNodeTreeItem nodeItem, ZKClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKAddACLController.class, StageManager.getPrimaryStage());
+            adapter.setProp("zkItem", nodeItem);
+            adapter.setProp("zkClient", client);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 修改权限
+     *
+     * @param nodeItem zk节点
+     * @param client   zk客户端
+     * @param acl      权限
+     */
+    public static StageAdapter zkUpdateACL(ZKNodeTreeItem nodeItem, ZKClient client, ZKACL acl) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKUpdateACLController.class, StageManager.getPrimaryStage());
+            adapter.setProp("acl", acl);
+            adapter.setProp("zkItem", nodeItem);
+            adapter.setProp("zkClient", client);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 导入数据
+     *
+     * @param connect zk连接
+     */
+    public static void zkImportData(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKImportDataController.class, StageManager.getPrimaryStage());
+            adapter.setProp("connect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 导出数据
+     *
+     * @param connect  zk连接
+     * @param nodePath 节点路径
+     */
+    public static void zkExportData(ShellConnect connect, String nodePath) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKExportDataController.class, StageManager.getPrimaryStage());
+            adapter.setProp("connect", connect);
+            adapter.setProp("nodePath", nodePath);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 传输数据
+     *
+     * @param connect zk连接
+     */
+    public static void zkTransportData(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ZKTransportDataController.class, StageManager.getPrimaryStage());
+            adapter.setProp("sourceConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
 }

@@ -14,8 +14,8 @@ import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ZKCollectStore;
 import cn.oyzh.easyshell.store.zk.ZKDataHistoryStore;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
-import cn.oyzh.easyshell.util.zk.ZKViewFactory;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKNode;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -403,7 +403,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
 //        adapter.setProp("zkItem", this);
 //        adapter.setProp("zkClient", this.client());
 //        adapter.display();
-        ZKViewFactory.addNode(this, this.client());
+        ShellViewFactory.zkAddNode(this, this.client());
     }
 
     /**
@@ -414,7 +414,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
 //        adapter.setProp("zkClient", this.client());
 //        adapter.setProp("zkItem", this);
 //        adapter.display();
-        ZKViewFactory.authNode(this, this.client());
+        ShellViewFactory.zkAuthNode(this, this.client());
     }
 
     /**
@@ -425,7 +425,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
 //        adapter.setProp("connect", this.zkConnect());
 //        adapter.setProp("nodePath", this.nodePath());
 //        adapter.display();
-        ZKViewFactory.exportData(this.zkConnect(), this.nodePath());
+        ShellViewFactory.zkExportData(this.zkConnect(), this.nodePath());
     }
 
     @Override
