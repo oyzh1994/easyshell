@@ -1,5 +1,5 @@
 1. 首先执行命令
-docker run -itd -p 12191:2181 -e SERVER_JVMFLAGS="-Djava.security.auth.login.config=/conf/jaas.conf" zookeeper
+docker run -itd -p 22181:2181 -e SERVER_JVMFLAGS="-Djava.security.auth.login.config=/conf/jaas.conf" zookeeper
 
 2. 复制jaas.conf、zoo.cfg文件到目录
 复制jaas.conf文件到容器conf目录下
@@ -8,3 +8,6 @@ docker cp ./zoo.cfg 容器id:/conf
 
 3. 重启容器
 重启docker容器
+
+4. 连接
+找到jaas.conf，以Client开头的配置项，配置连接即可

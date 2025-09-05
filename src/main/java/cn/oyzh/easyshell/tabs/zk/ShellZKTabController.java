@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController;
@@ -11,6 +12,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -87,5 +89,11 @@ public class ShellZKTabController extends ShellParentTabController {
 
     public ShellZKClient getClient() {
         return client;
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        IOUtil.close(this.client);
     }
 }

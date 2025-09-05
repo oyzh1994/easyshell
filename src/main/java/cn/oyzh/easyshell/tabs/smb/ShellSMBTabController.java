@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.smb;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.fx.smb.ShellSMBFileTableView;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.smb.ShellSMBFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -95,11 +94,6 @@ public class ShellSMBTabController extends ShellBaseTabController {
     private FXLabel fileInfo;
 
     /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
      * 连接储存
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -161,7 +155,7 @@ public class ShellSMBTabController extends ShellBaseTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.client.close();
+        IOUtil.close(this.client);
         // 保存设置
         this.connectStore.update(this.shellConnect());
         // // 展开左侧

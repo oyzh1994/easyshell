@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: zookeeper
+    container_name: zk-sasl
+    restart: always
+    volumes:
+      - ./zoo.cfg:/conf/zoo.cfg
+      - ./jaas.conf:/conf/jaas.conf
+    # 设置 JVM 参数
+    environment:
+      SERVER_JVMFLAGS: "-Djava.security.auth.login.config=/conf/jaas.conf"
+    ports:
+      - 22181:2181

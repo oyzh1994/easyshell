@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
@@ -13,6 +14,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -108,5 +110,11 @@ public class ShellRedisTabController extends ShellParentTabController {
 
     public ShellRedisClient getClient() {
         return client;
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        IOUtil.close(this.client);
     }
 }

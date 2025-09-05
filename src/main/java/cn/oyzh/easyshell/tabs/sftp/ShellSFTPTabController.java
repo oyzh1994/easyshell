@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.sftp;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
@@ -167,7 +168,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.client.close();
+        IOUtil.close(this.client);
         // 保存设置
         this.connectStore.update(this.shellConnect());
         // // 展开左侧

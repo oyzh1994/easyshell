@@ -38,7 +38,7 @@ public class ShellZKFactory implements ZookeeperFactory {
         ZKClientConfig clientConfig = new ZKClientConfig();
         String iid = this.connect.getId();
         // 判断是否开始sasl配置
-        if (ShellZKSASLUtil.isNeedSasl(iid)) {
+        if (ShellZKSASLUtil.isNeedSasl(iid, this.connect.getSaslConfig())) {
             JulLog.info("连接:{} 执行sasl认证", iid);
             clientConfig.setProperty(ZKClientConfig.ENABLE_CLIENT_SASL_KEY, "true");
             clientConfig.setProperty(ZKClientConfig.LOGIN_CONTEXT_NAME_KEY, iid);

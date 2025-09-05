@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
+import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.SelectParam;
@@ -55,7 +56,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     /**
      * shell sasl配置
      */
-    private final ShellZKSASLConfigStore zkSaslConfig = ShellZKSASLConfigStore.INSTANCE;
+    private final ShellZKSASLConfigStore saslConfigStore = ShellZKSASLConfigStore.INSTANCE;
 
 //    /**
 //     * 终端历史存储
@@ -145,6 +146,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
             if (connect.isRedisType()) {
                 connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
+            } else if (connect.isZKType()) {
+                connect.setSaslConfig(this.saslConfigStore.getByIid(connect.getId()));
             }
         }
         return connects;
@@ -223,6 +226,15 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                 this.sslConfigStore.replace(sslConfig);
             } else {
                 this.sslConfigStore.deleteByIid(model.getId());
+            }
+
+            // sasl处理
+            ShellZKSASLConfig saslConfig = model.getSaslConfig();
+            if (saslConfig != null) {
+                saslConfig.setIid(model.getId());
+                this.saslConfigStore.replace(saslConfig);
+            } else {
+                this.saslConfigStore.deleteByIid(model.getId());
             }
         }
         return result;

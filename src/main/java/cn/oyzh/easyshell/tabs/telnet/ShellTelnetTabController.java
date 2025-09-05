@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.telnet;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -121,7 +122,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.getClient().close();
+        IOUtil.close(this.client);
         this.widget.close();
         // // 展开左侧
         // if (this.setting.isHiddenLeftAfterConnected()) {

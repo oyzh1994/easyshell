@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.vnc;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -118,11 +119,7 @@ public class ShellVNCTabController extends ShellBaseTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.client.close();
-        // // 展开左侧
-        // if (this.setting.isHiddenLeftAfterConnected()) {
-        //     ShellEventUtil.layout2();
-        // }
+        IOUtil.close(this.client);
     }
 
     @Override

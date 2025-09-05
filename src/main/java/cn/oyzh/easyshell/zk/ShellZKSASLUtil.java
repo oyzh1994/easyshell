@@ -3,10 +3,6 @@ package cn.oyzh.easyshell.zk;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
-import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
-import cn.oyzh.store.jdbc.QueryParam;
-import cn.oyzh.store.jdbc.SelectParam;
 
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
@@ -23,15 +19,15 @@ import java.util.Map;
 
 public class ShellZKSASLUtil {
 
-    /**
-     * 连接存储
-     */
-    private static final ShellConnectStore CONNECT_STORE = ShellConnectStore.INSTANCE;
+    // /**
+    //  * 连接存储
+    //  */
+    // private static final ShellConnectStore CONNECT_STORE = ShellConnectStore.INSTANCE;
 
-    /**
-     * sasl配置存储
-     */
-    private static final ShellZKSASLConfigStore CONFIG_STORE = ShellZKSASLConfigStore.INSTANCE;
+    // /**
+    //  * sasl配置存储
+    //  */
+    // private static final ShellZKSASLConfigStore CONFIG_STORE = ShellZKSASLConfigStore.INSTANCE;
 
     /**
      * 注册配置类
@@ -56,28 +52,29 @@ public class ShellZKSASLUtil {
      * 是否开启sasl
      *
      * @param iid zk连接id
+     * @param saslConfig sasl配置
      * @return 结果
      * @see ShellConnect
      */
-    public static boolean isNeedSasl(String iid) {
+    public static boolean isNeedSasl(String iid,ShellZKSASLConfig saslConfig) {
         if (StringUtil.isNotBlank(iid) && Configuration.getConfiguration() instanceof ShellZKSASLConfiguration configuration) {
             // 缓存里存在直接返回
             if (configuration.containsAppConfigurationEntry(iid)) {
                 return true;
             }
-            SelectParam selectParam = new SelectParam();
-            selectParam.addQueryParam(QueryParam.of("id", iid));
-            selectParam.addQueryColumn("saslAuth");
-            ShellConnect connect = CONNECT_STORE.selectOne(selectParam);
-            if (connect != null && connect.isSASLAuth()) {
-                ShellZKSASLConfig config = CONFIG_STORE.getByIid(iid);
-                if (config == null || config.checkInvalid()) {
+            // SelectParam selectParam = new SelectParam();
+            // selectParam.addQueryParam(QueryParam.of("id", iid));
+            // selectParam.addQueryColumn("saslAuth");
+            // ShellConnect connect = CONNECT_STORE.selectOne(selectParam);
+            // if (connect != null && connect.isSASLAuth()) {
+            //     ShellZKSASLConfig config = CONFIG_STORE.getByIid(iid);
+                if (saslConfig == null || saslConfig.checkInvalid()) {
                     return false;
                 }
                 // 添加到缓存
-                addSaslEntry(config);
+                addSaslEntry(saslConfig);
                 return true;
-            }
+            // }
         }
         return false;
     }
