@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryEnvTabController;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -21,7 +20,7 @@ public class ZKQueryEnvTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/zk/query/zkQueryEnvTab.fxml";
+        return "/tabs/zk/query/shellZKQueryEnvTab.fxml";
     }
 
     @Override

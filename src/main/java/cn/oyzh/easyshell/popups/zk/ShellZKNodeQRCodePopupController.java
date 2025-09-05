@@ -24,7 +24,7 @@ import java.awt.image.BufferedImage;
  * @since 2024/02/21
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "zk/zkNodeQRCodePopup.fxml"
+        value = FXConst.POPUP_PATH + "zk/shellZKNodeQRCodePopup.fxml"
 )
 public class ShellZKNodeQRCodePopupController extends PopupController {
 

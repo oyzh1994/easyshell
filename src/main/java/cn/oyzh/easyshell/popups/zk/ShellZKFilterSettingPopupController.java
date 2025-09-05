@@ -16,7 +16,7 @@ import javafx.stage.WindowEvent;
  * @since 2025/01/22
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "zk/zkFilterSettingPopup.fxml"
+        value = FXConst.POPUP_PATH + "zk/shellZKFilterSettingPopup.fxml"
 )
 public class ShellZKFilterSettingPopupController extends PopupController {
 

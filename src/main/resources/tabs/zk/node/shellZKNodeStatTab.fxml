@@ -34,16 +34,16 @@
                 </HBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
-        <fx:include source="zkNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
+        <fx:include source="shellZKNodeStatItem.fxml"/>
     </FXVBox>
 </FXTab>

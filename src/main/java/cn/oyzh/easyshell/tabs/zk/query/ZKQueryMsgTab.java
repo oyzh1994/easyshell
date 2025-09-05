@@ -19,7 +19,7 @@ public class ZKQueryMsgTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/zk/query/zkQueryMsgTab.fxml";
+        return "/tabs/zk/query/shellZKQueryMsgTab.fxml";
     }
 
     @Override

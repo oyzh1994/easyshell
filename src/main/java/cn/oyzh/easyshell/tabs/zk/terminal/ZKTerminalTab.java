@@ -115,7 +115,7 @@
 //
 //     @Override
 //     protected String url() {
-//         return "/tabs/terminal/zkTerminalTab.fxml";
+//         return "/tabs/terminal/shellZKTerminalTab.fxml";
 //     }
 //
 // }

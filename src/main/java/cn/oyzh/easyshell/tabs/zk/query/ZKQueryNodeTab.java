@@ -19,7 +19,7 @@ public class ZKQueryNodeTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/zk/query/zkQueryNodeTab.fxml";
+        return "/tabs/zk/query/shellZKQueryNodeTab.fxml";
     }
 
     @Override

@@ -89,10 +89,10 @@
         <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
-            <fx:include fx:id="dataTab" source="zkNodeDataTab.fxml"/>
-            <fx:include fx:id="statTab" source="zkNodeStatTab.fxml"/>
-            <fx:include fx:id="aclTab" source="zkNodeACLTab.fxml"/>
-            <fx:include fx:id="quotaTab" source="zkNodeQuotaTab.fxml"/>
+            <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>
+            <fx:include fx:id="statTab" source="shellZKNodeStatTab.fxml"/>
+            <fx:include fx:id="aclTab" source="shellZKNodeACLTab.fxml"/>
+            <fx:include fx:id="quotaTab" source="shellZKNodeQuotaTab.fxml"/>
         </FXTabPane>
     </FXHBox>
 </FXTab>

@@ -20,7 +20,7 @@ public class ZKQueryWhoamiTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/zk/query/zkQueryWhoamiTab.fxml";
+        return "/tabs/zk/query/shellZKQueryWhoamiTab.fxml";
     }
 
     @Override

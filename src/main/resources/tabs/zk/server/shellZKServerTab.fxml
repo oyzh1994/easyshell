@@ -25,13 +25,13 @@
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100%" flexHeight="100% - 120">
-            <fx:include fx:id="aggregation" source="zkAggregationTab.fxml"/>
-            <fx:include fx:id="local" source="zkLocalTab.fxml"/>
-            <fx:include fx:id="srvr" source="zkSrvrTab.fxml"/>
-            <fx:include fx:id="conf" source="zkConfTab.fxml"/>
-            <fx:include fx:id="envi" source="zkEnviTab.fxml"/>
-            <fx:include fx:id="stat" source="zkStatTab.fxml"/>
-            <fx:include fx:id="cluster" source="zkClusterTab.fxml"/>
+            <fx:include fx:id="aggregation" source="shellZKAggregationTab.fxml"/>
+            <fx:include fx:id="local" source="shellZKLocalTab.fxml"/>
+            <fx:include fx:id="srvr" source="shellZKSrvrTab.fxml"/>
+            <fx:include fx:id="conf" source="shellZKConfTab.fxml"/>
+            <fx:include fx:id="envi" source="shellZKEnviTab.fxml"/>
+            <fx:include fx:id="stat" source="shellZKStatTab.fxml"/>
+            <fx:include fx:id="cluster" source="shellZKClusterTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>

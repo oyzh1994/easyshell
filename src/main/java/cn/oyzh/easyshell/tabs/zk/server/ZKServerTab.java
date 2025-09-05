@@ -25,7 +25,7 @@
 //
 //     @Override
 //     protected String url() {
-//         return "/tabs/server/zkServerTab.fxml";
+//         return "/tabs/server/shellZKServerTab.fxml";
 //     }
 //
 //     @Override

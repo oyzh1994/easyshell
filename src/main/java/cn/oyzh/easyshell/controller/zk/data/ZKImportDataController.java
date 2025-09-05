@@ -45,7 +45,7 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "zk/data/zkImportData.fxml"
+        value = FXConst.FXML_PATH + "zk/data/shellZKImportData.fxml"
 )
 public class ZKImportDataController extends StageController {
 

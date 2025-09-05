@@ -20,7 +20,7 @@ public class ZKQueryACLTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/zk/query/zkQueryACLTab.fxml";
+        return "/tabs/zk/query/shellZKQueryACLTab.fxml";
     }
 
     @Override
