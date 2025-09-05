@@ -6,15 +6,12 @@ import cn.oyzh.easyshell.dto.ShellPortScanResult;
 import cn.oyzh.easyshell.fx.tool.ShellPortScanResultTableView;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
-import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,10 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author oyzh
  * @since 2025/05/27
  */
-@StageAttribute(
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "tool/shellToolPortScanTab.fxml"
-)
 public class ShellToolPortScanTabController extends SubStageController {
 
     /**

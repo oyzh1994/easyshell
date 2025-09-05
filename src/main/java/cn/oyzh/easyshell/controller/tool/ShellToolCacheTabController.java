@@ -2,14 +2,11 @@ package cn.oyzh.easyshell.controller.tool;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
-import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,10 +19,6 @@ import java.util.concurrent.atomic.LongAdder;
  * @author oyzh
  * @since 2025/03/09
  */
-@StageAttribute(
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "tool/shellToolCacheTab.fxml"
-)
 public class ShellToolCacheTabController extends SubStageController {
 
     /**

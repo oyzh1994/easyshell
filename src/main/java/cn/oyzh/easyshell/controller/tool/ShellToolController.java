@@ -48,6 +48,18 @@ public class ShellToolController extends ParentStageController {
     @FXML
     private ShellToolNetworkScanTabController networkScanTabController;
 
+    /**
+     * zookeeper
+     */
+    @FXML
+    private ShellToolZookeeperTabController zookeeperTabController;
+
+    /**
+     * x11
+     */
+    @FXML
+    private ShellToolX11TabController x11TabController;
+
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
@@ -62,7 +74,13 @@ public class ShellToolController extends ParentStageController {
 
     @Override
     public List<? extends StageController> getSubControllers() {
-        return List.of(this.cacheTabController, this.telnetTabController,
-                this.portScanTabController, this.networkScanTabController);
+        return List.of(
+                this.cacheTabController,
+                this.telnetTabController,
+                this.portScanTabController,
+                this.networkScanTabController,
+                this.zookeeperTabController,
+                this.x11TabController
+        );
     }
 }

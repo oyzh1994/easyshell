@@ -5,14 +5,11 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dto.ShellNetworkScanResult;
 import cn.oyzh.easyshell.fx.tool.ShellNetworkScanResultTableView;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
-import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +21,6 @@ import java.util.List;
  * @author oyzh
  * @since 2025/05/29
  */
-@StageAttribute(
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "tool/shellToolNetworkScanTab.fxml"
-)
 public class ShellToolNetworkScanTabController extends SubStageController {
 
     /**

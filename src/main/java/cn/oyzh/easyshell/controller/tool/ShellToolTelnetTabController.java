@@ -5,15 +5,12 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
-import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.InputStreamReader;
@@ -27,10 +24,6 @@ import java.util.concurrent.TimeUnit;
  * @author oyzh
  * @since 2025/05/29
  */
-@StageAttribute(
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "tool/shellToolTelnetTab.fxml"
-)
 public class ShellToolTelnetTabController extends SubStageController {
 
     /**
