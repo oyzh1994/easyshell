@@ -4,9 +4,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
-import cn.oyzh.easyshell.store.zk.ZKSettingStore;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKNode;
 import org.apache.curator.framework.AuthInfo;
@@ -114,7 +113,7 @@ public class ZKAuthUtil {
      */
     public static List<ZKAuth> loadAuths(String iid) {
         if (StringUtil.isNotBlank(iid)) {
-            if (ZKSettingStore.SETTING.isAutoAuth()) {
+            if (ShellSettingStore.SETTING.isAutoAuth()) {
                 return ZKAuthStore.INSTANCE.loadEnable(iid);
             }
         }

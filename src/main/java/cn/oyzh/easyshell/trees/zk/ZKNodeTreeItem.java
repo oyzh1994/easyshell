@@ -7,13 +7,13 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
-import cn.oyzh.easyshell.domain.zk.ZKSetting;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ZKCollectStore;
 import cn.oyzh.easyshell.store.zk.ZKDataHistoryStore;
-import cn.oyzh.easyshell.store.zk.ZKSettingStore;
 import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
 import cn.oyzh.easyshell.util.zk.ZKViewFactory;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -757,7 +757,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
      * @param loop 递归加载
      */
     public void loadChild(boolean loop) {
-        int limit = ZKSettingStore.SETTING.nodeLoadLimit();
+        int limit = ShellSettingStore.SETTING.nodeLoadLimit();
         this.loadChild(loop, limit);
     }
 
@@ -1239,7 +1239,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
      */
     public void loadRoot() {
         if (this.isRootNode()) {
-            ZKSetting setting = ZKSettingStore.SETTING;
+            ShellSetting setting = ShellSettingStore.SETTING;
             if (setting.isLoadFirst()) {
                 this.loadChild();
             } else if (setting.isLoadAll()) {

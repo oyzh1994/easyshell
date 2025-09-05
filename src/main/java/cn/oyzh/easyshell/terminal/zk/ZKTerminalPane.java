@@ -4,10 +4,10 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.zk.ZKSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
 import cn.oyzh.easyshell.exception.zk.ZKExceptionParser;
-import cn.oyzh.easyshell.store.zk.ZKSettingStore;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.zk.ZKConnectUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKConnState;
@@ -56,7 +56,7 @@ public class ZKTerminalPane extends TerminalPane {
     @Override
     protected Font getEditorFont() {
         if (super.getEditorFont() == null) {
-            ZKSetting setting = ZKSettingStore.SETTING;
+            ShellSetting setting = ShellSettingStore.SETTING;
             Font font = FontManager.toFont(setting.terminalFontConfig());
             super.setEditorFont(font);
         }
@@ -327,8 +327,8 @@ public class ZKTerminalPane extends TerminalPane {
      * 保存字体大小
      */
     private void saveFontSize() {
-        ZKSetting setting = ZKSettingStore.SETTING;
+        ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
-        ZKSettingStore.INSTANCE.replace(setting);
+        ShellSettingStore.INSTANCE.replace(setting);
     }
 }

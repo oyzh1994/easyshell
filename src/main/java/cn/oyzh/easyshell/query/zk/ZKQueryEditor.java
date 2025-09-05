@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
-import cn.oyzh.easyshell.domain.zk.ZKSetting;
-import cn.oyzh.easyshell.store.zk.ZKSettingStore;
+import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -67,7 +67,7 @@ public class ZKQueryEditor extends Editor {
     @Override
     protected Font getEditorFont() {
         if (super.getEditorFont() == null) {
-            ZKSetting setting = ZKSettingStore.SETTING;
+            ShellSetting setting = ShellSettingStore.SETTING;
             Font font = FontManager.toFont(setting.queryFontConfig());
             super.setEditorFont(font);
         }

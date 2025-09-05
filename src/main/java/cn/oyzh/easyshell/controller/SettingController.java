@@ -298,10 +298,64 @@ public class SettingController extends StageController {
     private FXToggleSwitch termPasteByMiddle;
 
     /**
-     * 键加载限制
+     * 键加载限制，redis
      */
     @FXML
     private NumberTextField keyLoadLimit;
+
+    /**
+     * 节点加载，zookeeper
+     */
+    @FXML
+    private FXToggleGroup loadMode;
+
+    /**
+     * 节点加载方式0，zookeeper
+     */
+    @FXML
+    private RadioButton loadMode0;
+
+    /**
+     * 节点加载方式1，zookeeper
+     */
+    @FXML
+    private RadioButton loadMode1;
+
+    /**
+     * ZK连接后加载方式2，zookeeper
+     */
+    @FXML
+    private RadioButton loadMode2;
+
+    /**
+     * 节点视图，zookeeper
+     */
+    @FXML
+    private FXToggleGroup viewport;
+
+    /**
+     * 节点视图0，zookeeper
+     */
+    @FXML
+    private RadioButton viewport0;
+
+    /**
+     * 节点视图1，zookeeper
+     */
+    @FXML
+    private RadioButton viewport1;
+
+    /**
+     * 节点自动认证，zookeeper
+     */
+    @FXML
+    private FXCheckBox authMode;
+
+    /**
+     * 节点加载限制，zookeeper
+     */
+    @FXML
+    private NumberTextField nodeLoadLimit;
 
     /**
      * 配置对象
@@ -378,6 +432,26 @@ public class SettingController extends StageController {
         this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
         // redis
         this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
+        // zookeeper
+        // 节点加载处理
+        if (this.setting.getLoadMode() != null) {
+            switch (this.setting.getLoadMode()) {
+                case 0 -> this.loadMode0.setSelected(true);
+                case 1 -> this.loadMode1.setSelected(true);
+                case 2 -> this.loadMode2.setSelected(true);
+            }
+        }
+        // 节点显示处理
+        if (this.setting.getViewport() != null) {
+            switch (this.setting.getViewport()) {
+                case 0 -> this.viewport0.setSelected(true);
+                case 1 -> this.viewport1.setSelected(true);
+            }
+        }
+        // 节点认证处理
+        if (this.setting.getAuthMode() != null) {
+            this.authMode.setSelected(this.setting.isAutoAuth());
+        }
     }
 
     /**
@@ -390,13 +464,18 @@ public class SettingController extends StageController {
             Byte fontSize = this.fontSize.byteValue();
             String fontFamily = this.fontFamily.getText();
             short fontWeight = this.fontWeight.getWeight();
-            int keyLoadLimit = this.keyLoadLimit.getIntValue();
             Byte editorFontSize = this.editorFontSize.byteValue();
             short editorFontWeight = this.editorFontWeight.getWeight();
             String editorFontFamily = this.editorFontFamily.getText();
             Byte terminalFontSize = this.terminalFontSize.byteValue();
             short terminalFontWeight = this.terminalFontWeight.getWeight();
             String terminalFontFamily = this.terminalFontFamily.getText();
+            // redis
+            int keyLoadLimit = this.keyLoadLimit.getIntValue();
+            // zookeeper
+            byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
+            byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
+            byte viewport = Byte.parseByte(this.viewport.selectedUserData());
 
             // 提示文字
             String tips = this.checkConfigForRestart(locale);
@@ -443,6 +522,12 @@ public class SettingController extends StageController {
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
             this.setting.setKeyLoadLimit(keyLoadLimit);
+            // 加载模式
+            this.setting.setLoadMode(loadMode);
+            // 视图模式
+            this.setting.setViewport(viewport);
+            // 认证模式
+            this.setting.setAuthMode(authMode);
             // 更新设置
             if (this.settingStore.update(this.setting)) {
                 // 关闭窗口
@@ -502,7 +587,11 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.shortcutKey(), "shortcut_box"));
+
+        // redis
         treeView.addItem(SettingLeftItem.of(I18nHelper.redis(), "redis_box"));
+        // zookeeper
+        treeView.addItem(SettingLeftItem.of(I18nHelper.zk(), "zk_box"));
 
         SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font_box"));
         fontItem.addItem(SettingLeftItem.of(I18nHelper.general(), "font_general_box"));

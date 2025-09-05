@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKSetting;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.TempSVGGlyph;
-import cn.oyzh.easyshell.store.zk.ZKSettingStore;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.svg.glyph.LockSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -21,7 +21,7 @@ public class ZKNodeTreeItemValue extends RichTreeItemValue {
     /**
      * 当前设置
      */
-    private final ZKSetting setting = ZKSettingStore.SETTING;
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     public ZKNodeTreeItemValue( ZKNodeTreeItem item) {
         super(item);
