@@ -6,8 +6,7 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.exception.zk.ZKException;
-import cn.oyzh.easyshell.util.zk.ZKI18nHelper;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
@@ -205,7 +204,7 @@ public class ZKACLUtil {
     public static int toPermInt( String perms) {
         perms = perms.trim().toLowerCase();
         if (perms.isEmpty() || perms.length() > 5) {
-            throw new ZKException(I18nHelper.invalidPerms());
+            throw new ShellException(I18nHelper.invalidPerms());
         }
         int permsInt = 0;
         for (char c : perms.toCharArray()) {
@@ -220,7 +219,7 @@ public class ZKACLUtil {
             } else if (c == 'd') {
                 permsInt += ZooDefs.Perms.DELETE;
             } else {
-                throw new ZKException("[" + c + "]" + I18nHelper.invalid());
+                throw new ShellException("[" + c + "]" + I18nHelper.invalid());
             }
         }
         return permsInt;
@@ -247,7 +246,7 @@ public class ZKACLUtil {
         StringBuilder permStr = new StringBuilder(NumberUtil.getBinaryStr(permInt));
         int i = 5 - permStr.length();
         if (i > 5 || i < 0) {
-            throw new ZKException(I18nHelper.invalidPerms());
+            throw new ShellException(I18nHelper.invalidPerms());
         }
         while (i-- > 0) {
             permStr.insert(0, "0");
@@ -285,10 +284,10 @@ public class ZKACLUtil {
     public static void checkIP( String ip) {
         String[] segments = ip.split("/");
         if (!RegexUtil.isIPV4(segments[0])) {
-            throw new ZKException(segments[0] + I18nResourceBundle.i18nString("shell.zk.aclTip2"));
+            throw new ShellException(segments[0] + I18nResourceBundle.i18nString("shell.zk.aclTip2"));
         }
         if (segments.length == 2 && !segments[0].endsWith("0")) {
-            throw new ZKException(segments[0] + I18nResourceBundle.i18nString("shell.zk.aclTip3"));
+            throw new ShellException(segments[0] + I18nResourceBundle.i18nString("shell.zk.aclTip3"));
         }
     }
 

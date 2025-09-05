@@ -8,7 +8,7 @@ import org.apache.zookeeper.KeeperException;
  * @author oyzh
  * @since 2023/5/31
  */
-public class ZKNoAuthException extends KeeperException.NoAuthException {
+public class ShellZKNoAuthException extends KeeperException.NoAuthException {
 
     protected String path;
 
@@ -17,7 +17,7 @@ public class ZKNoAuthException extends KeeperException.NoAuthException {
         return path;
     }
 
-    public ZKNoAuthException(String path) {
+    public ShellZKNoAuthException(String path) {
         this.path = path;
     }
 

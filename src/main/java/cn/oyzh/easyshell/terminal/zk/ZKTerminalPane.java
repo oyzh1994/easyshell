@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
-import cn.oyzh.easyshell.exception.zk.ZKExceptionParser;
+import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.zk.ZKConnectUtil;
@@ -234,7 +234,7 @@ public class ZKTerminalPane extends TerminalPane {
                 this.initStatListener();
                 this.client.start();
             } catch (Throwable ex) {
-                this.onError(ZKExceptionParser.INSTANCE.apply(ex));
+                this.onError(ShellExceptionParser.INSTANCE.apply(ex));
             } finally {
                 this.enable();
             }

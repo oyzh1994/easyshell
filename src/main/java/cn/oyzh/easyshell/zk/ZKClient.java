@@ -12,14 +12,14 @@ import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
-import cn.oyzh.easyshell.exception.ReadonlyOperationException;
-import cn.oyzh.easyshell.exception.zk.ZKException;
-import cn.oyzh.easyshell.exception.zk.ZKNoAdminPermException;
-import cn.oyzh.easyshell.exception.zk.ZKNoChildPermException;
-import cn.oyzh.easyshell.exception.zk.ZKNoCreatePermException;
-import cn.oyzh.easyshell.exception.zk.ZKNoDeletePermException;
-import cn.oyzh.easyshell.exception.zk.ZKNoReadPermException;
-import cn.oyzh.easyshell.exception.zk.ZKNoWritePermException;
+import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoAdminPermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoDeletePermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoReadPermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoWritePermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoChildPermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoCreatePermException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.zk.ZKQueryParam;
@@ -240,7 +240,7 @@ public class ZKClient implements ShellBaseClient {
      */
     public void throwReadonlyException() {
         if (this.isReadonly()) {
-            throw new ReadonlyOperationException();
+            throw new ShellReadonlyOperationException();
         }
     }
 
@@ -356,7 +356,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("zkClient start error", ex);
-            throw new ZKException(ex);
+            throw new ShellException(ex);
         }
     }
 
@@ -636,7 +636,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoAdminPermException(path);
+                throw new ShellZKNoAdminPermException(path);
             }
             throw ex;
         }
@@ -662,7 +662,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoAdminPermException(path);
+                throw new ShellZKNoAdminPermException(path);
             }
             throw ex;
         }
@@ -813,7 +813,7 @@ public class ZKClient implements ShellBaseClient {
             this.lastCreate = old;
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoCreatePermException(path);
+                throw new ShellZKNoCreatePermException(path);
             }
             throw ex;
         }
@@ -877,7 +877,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoChildPermException(path);
+                throw new ShellZKNoChildPermException(path);
             }
             throw ex;
         }
@@ -897,7 +897,7 @@ public class ZKClient implements ShellBaseClient {
 //        } catch (Exception ex) {
 //            if (ex instanceof KeeperException.NoAuthException) {
 //                JulLog.error("path:{} NoAuth!", path);
-//                throw new ZKNoChildPermException(path);
+//                throw new ShellZKNoChildPermException(path);
 //            }
 //            throw ex;
 //        }
@@ -919,7 +919,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoReadPermException(path);
+                throw new ShellZKNoReadPermException(path);
             }
             throw ex;
         }
@@ -939,7 +939,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoReadPermException(path);
+                throw new ShellZKNoReadPermException(path);
             }
             throw ex;
         }
@@ -972,7 +972,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoAdminPermException(path);
+                throw new ShellZKNoAdminPermException(path);
             }
             throw ex;
         }
@@ -992,7 +992,7 @@ public class ZKClient implements ShellBaseClient {
         } catch (Exception ex) {
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoAdminPermException(path);
+                throw new ShellZKNoAdminPermException(path);
             }
             throw ex;
         }
@@ -1057,7 +1057,7 @@ public class ZKClient implements ShellBaseClient {
             this.lastUpdate = old;
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoWritePermException(path);
+                throw new ShellZKNoWritePermException(path);
             }
             throw ex;
         }
@@ -1107,7 +1107,7 @@ public class ZKClient implements ShellBaseClient {
             this.lastDelete = old;
             if (ex instanceof KeeperException.NoAuthException) {
                 JulLog.error("path:{} NoAuth!", path);
-                throw new ZKNoDeletePermException(path);
+                throw new ShellZKNoDeletePermException(path);
             }
             throw ex;
         }

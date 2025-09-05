@@ -5,7 +5,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKFilter;
-import cn.oyzh.easyshell.exception.zk.ZKException;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKNode;
 import cn.oyzh.i18n.I18nHelper;
@@ -69,7 +69,7 @@ public class ZKNodeUtil {
      */
     public static ZKNode getNode( ZKClient client,  String path,  String properties) throws Exception {
         if (!path.contains("/")) {
-            throw new ZKException("path:[" + path + "]" + I18nHelper.invalid());
+            throw new ShellException("path:[" + path + "]" + I18nHelper.invalid());
         }
         long start = System.currentTimeMillis();
         // zk节点

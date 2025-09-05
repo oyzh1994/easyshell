@@ -7,9 +7,9 @@ package cn.oyzh.easyshell.exception.zk;
  * @author oyzh
  * @since 2022/726
  */
-public class ZKNoAdminPermException extends ZKNoAuthException {
+public class ShellZKNoAdminPermException extends ShellZKNoAuthException {
 
-    public ZKNoAdminPermException(String path) {
+    public ShellZKNoAdminPermException(String path) {
         super(path);
     }
 }

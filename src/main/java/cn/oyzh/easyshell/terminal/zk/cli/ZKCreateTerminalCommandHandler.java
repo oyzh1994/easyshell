@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.exception.ReadonlyOperationException;
+import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
@@ -47,7 +47,7 @@ public class ZKCreateTerminalCommandHandler extends ZKCliTerminalCommandHandler<
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
         if (terminal.getClient().isReadonly()) {
-            return TerminalExecuteResult.fail(new ReadonlyOperationException());
+            return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
         }
         return super.execute(command, terminal);
     }

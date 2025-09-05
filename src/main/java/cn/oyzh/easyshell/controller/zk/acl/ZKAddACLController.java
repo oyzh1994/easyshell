@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.exception.zk.ZKException;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ZKACLUtil;
@@ -383,10 +383,10 @@ public class ZKAddACLController extends StageController {
         for (String s : ipList) {
             String[] strArr = s.split(":");
             if (strArr.length < 1) {
-                throw new ZKException(s + I18nHelper.invalidData());
+                throw new ShellException(s + I18nHelper.invalidData());
             }
             if (strArr.length < 2) {
-                throw new ZKException(s + I18nHelper.invalidPerms());
+                throw new ShellException(s + I18nHelper.invalidPerms());
             }
             String ip = strArr[0];
             String perms = strArr[1];

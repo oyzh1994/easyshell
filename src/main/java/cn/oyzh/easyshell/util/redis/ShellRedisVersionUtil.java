@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.util.redis;
 
 
-import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
+import cn.oyzh.easyshell.exception.redis.ShellRedisUnsupportedCommandException;
 
 /**
  * redis版本工具类
@@ -32,7 +32,7 @@ public class ShellRedisVersionUtil {
     public static void checkSupported(String serverVersion, String command) {
         String version = getSupportedVersion(command);
         if (!isSupported(serverVersion, version)) {
-            throw new UnsupportedCommandException(serverVersion, version, command);
+            throw new ShellRedisUnsupportedCommandException(serverVersion, version, command);
         }
     }
 

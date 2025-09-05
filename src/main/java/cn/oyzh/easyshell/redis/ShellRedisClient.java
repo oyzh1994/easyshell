@@ -8,10 +8,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
-import cn.oyzh.easyshell.exception.redis.ClusterOperationException;
-import cn.oyzh.easyshell.exception.ReadonlyOperationException;
-import cn.oyzh.easyshell.exception.redis.SentinelOperationException;
-import cn.oyzh.easyshell.exception.redis.UnsupportedCommandException;
+import cn.oyzh.easyshell.exception.redis.ShellRedisClusterOperationException;
+import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+import cn.oyzh.easyshell.exception.redis.ShellRedisSentinelOperationException;
+import cn.oyzh.easyshell.exception.redis.ShellRedisUnsupportedCommandException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
@@ -331,7 +331,7 @@ public class ShellRedisClient implements ShellBaseClient {
         try {
             // 获取当前角色
             this.role = (String) CollectionUtil.getFirst(this.role());
-        } catch (UnsupportedCommandException | JedisDataException ignored) {
+        } catch (ShellRedisUnsupportedCommandException | JedisDataException ignored) {
         }
         // cluster集群模式
         if (this.isClusterMode()) {
@@ -434,7 +434,7 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     public void throwClusterException() {
         if (this.isClusterMode()) {
-            throw new ClusterOperationException();
+            throw new ShellRedisClusterOperationException();
         }
     }
 
@@ -461,7 +461,7 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     public void throwSentinelException() {
         if (this.isSentinelMode()) {
-            throw new SentinelOperationException();
+            throw new ShellRedisSentinelOperationException();
         }
     }
 
@@ -470,7 +470,7 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     public void throwReadonlyException() {
         if (this.isReadonly()) {
-            throw new ReadonlyOperationException();
+            throw new ShellReadonlyOperationException();
         }
     }
 
@@ -3575,7 +3575,7 @@ public class ShellRedisClient implements ShellBaseClient {
         this.throwReadonlyException();
         ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "move");
         if (this.isClusterMode()) {
-            throw new ClusterOperationException();
+            throw new ShellRedisClusterOperationException();
         }
         Jedis jedis = this.getResource(dbIndex);
         try {
@@ -4374,7 +4374,7 @@ public class ShellRedisClient implements ShellBaseClient {
     public String select(Integer dbIndex) {
         this.throwSentinelException();
         if (this.isClusterMode()) {
-            throw new ClusterOperationException();
+            throw new ShellRedisClusterOperationException();
         }
         ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "select");
         Jedis jedis = this.getResource(dbIndex);
