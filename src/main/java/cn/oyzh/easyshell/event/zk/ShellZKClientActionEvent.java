@@ -15,7 +15,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-20
  */
-public class ZKClientActionEvent extends Event<String> implements EventFormatter {
+public class ShellZKClientActionEvent extends Event<String> implements EventFormatter {
 
     private String action;
 

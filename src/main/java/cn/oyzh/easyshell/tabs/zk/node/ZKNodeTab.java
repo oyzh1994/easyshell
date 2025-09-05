@@ -29,7 +29,7 @@
 // //        super.initNode();
 // //        this.selectedProperty().addListener((observable, oldValue, newValue) -> {
 // //            if (!newValue) {
-// //                ZKEventUtil.searchClose(this.zkConnect());
+// //                ShellZKEventUtil.searchClose(this.zkConnect());
 // //            }
 // //        });
 // //    }

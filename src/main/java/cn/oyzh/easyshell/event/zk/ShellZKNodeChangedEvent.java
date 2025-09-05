@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKNodeChangedEvent extends Event<String> implements EventFormatter {
+public class ShellZKNodeChangedEvent extends Event<String> implements EventFormatter {
 
     private ShellZKClient client;
 

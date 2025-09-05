@@ -9,9 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/4/24
  */
-public class ZKNodeACLUpdatedEvent extends Event<ShellConnect> implements EventFormatter {
-
-    private String nodePath;
+public class ShellZKNodeACLAddedEvent extends Event<ShellConnect> implements EventFormatter {
 
     public String getNodePath() {
         return nodePath;
@@ -21,8 +19,11 @@ public class ZKNodeACLUpdatedEvent extends Event<ShellConnect> implements EventF
         this.nodePath = nodePath;
     }
 
+    private String nodePath;
+
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s acl updated, path:%s] ", I18nHelper.connect(), this.data().getName(), this.nodePath);
+        return String.format("[%s:%s acl added, path:%s] ", I18nHelper.connect(), this.data().getName(), this.nodePath);
     }
+
 }

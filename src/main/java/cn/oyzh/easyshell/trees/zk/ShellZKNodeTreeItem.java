@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
 import cn.oyzh.easyshell.store.zk.ShellZKDataHistoryStore;
@@ -370,7 +370,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             // 创建新节点
             if (this.client().create(newNodePath, this.getNodeData(), List.copyOf(this.acl()), null, createMode, true) != null) {
                 // 发送事件
-                ZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -454,7 +454,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 // 删除旧节点
                 this.deleteNode();
                 // 发送事件
-                ZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -1212,7 +1212,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         history.setData(this.getUnsavedData());
         history.setIid(this.zkConnect().getId());
         ShellZKDataHistoryStore.INSTANCE.replace(history, this.client());
-        ZKEventUtil.dataHistoryAdded(history, this);
+        ShellZKEventUtil.dataHistoryAdded(history, this);
     }
 
     /**

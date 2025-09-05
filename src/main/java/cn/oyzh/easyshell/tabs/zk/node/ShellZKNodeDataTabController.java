@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -280,7 +280,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
     @FXML
     private void showHistory() {
         if (this.activeItem() != null) {
-            ZKEventUtil.historyShow(this.activeItem());
+            ShellZKEventUtil.historyShow(this.activeItem());
         }
     }
 

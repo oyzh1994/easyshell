@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKNodeUpdatedEvent extends Event<String> implements EventFormatter {
+public class ShellZKNodeUpdatedEvent extends Event<String> implements EventFormatter {
 
     public String getConnectName() {
         return connectName;

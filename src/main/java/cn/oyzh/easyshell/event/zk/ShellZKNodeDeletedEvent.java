@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKNodeDeletedEvent extends Event<String> implements EventFormatter {
+public class ShellZKNodeDeletedEvent extends Event<String> implements EventFormatter {
 
     public String getConnectName() {
         return connectName;

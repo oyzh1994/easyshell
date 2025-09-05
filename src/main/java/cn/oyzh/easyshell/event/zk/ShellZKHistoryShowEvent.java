@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/4/23
  */
-public class ZKHistoryShowEvent extends Event<ShellZKNodeTreeItem> {
+public class ShellZKHistoryShowEvent extends Event<ShellZKNodeTreeItem> {
 
 
 }

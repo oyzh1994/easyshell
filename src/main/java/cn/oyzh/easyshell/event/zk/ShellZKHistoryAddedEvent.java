@@ -8,7 +8,7 @@ import javafx.scene.control.TreeItem;
  * @author oyzh
  * @since 2024/4/23
  */
-public class ZKHistoryAddedEvent extends Event<ShellZKDataHistory> {
+public class ShellZKHistoryAddedEvent extends Event<ShellZKDataHistory> {
 
     private TreeItem<?> item;
 

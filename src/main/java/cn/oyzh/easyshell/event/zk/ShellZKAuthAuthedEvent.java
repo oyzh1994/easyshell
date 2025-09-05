@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKAuthAuthedEvent extends Event<ShellZKNodeTreeItem> implements EventFormatter {
+public class ShellZKAuthAuthedEvent extends Event<ShellZKNodeTreeItem> implements EventFormatter {
 
     private String user;
 

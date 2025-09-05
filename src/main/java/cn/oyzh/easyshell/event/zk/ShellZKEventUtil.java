@@ -15,7 +15,7 @@ import javafx.scene.control.TreeItem;
  * @since 2023/9/18
  */
 
-public class ZKEventUtil {
+public class ShellZKEventUtil {
 
     // /**
     //  * 连接丢失事件
@@ -68,7 +68,7 @@ public class ZKEventUtil {
      * @param path      路径
      */
     public static void nodeAdded(ShellConnect zkConnect, String path) {
-        ZKNodeAddedEvent event = new ZKNodeAddedEvent();
+        ShellZKNodeAddedEvent event = new ShellZKNodeAddedEvent();
         event.data(path);
         event.setZkConnect(zkConnect);
         EventUtil.post(event);
@@ -81,7 +81,7 @@ public class ZKEventUtil {
      * @param nodePath 路径
      */
     public static void nodeCreated(ShellZKClient client, String nodePath) {
-        ZKNodeCreatedEvent event = new ZKNodeCreatedEvent();
+        ShellZKNodeCreatedEvent event = new ShellZKNodeCreatedEvent();
         event.data(ShellZKNodeUtil.decodePath(nodePath));
         event.setClient(client);
         EventUtil.post(event);
@@ -94,7 +94,7 @@ public class ZKEventUtil {
      * @param path   路径
      */
     public static void nodeUpdated(ShellZKClient client, String path) {
-        ZKNodeUpdatedEvent event = new ZKNodeUpdatedEvent();
+        ShellZKNodeUpdatedEvent event = new ShellZKNodeUpdatedEvent();
         event.data(path);
         event.setConnectName(client.connectName());
         EventUtil.post(event);
@@ -107,7 +107,7 @@ public class ZKEventUtil {
      * @param nodePath 路径
      */
     public static void nodeChanged(ShellZKClient client, String nodePath) {
-        ZKNodeChangedEvent event = new ZKNodeChangedEvent();
+        ShellZKNodeChangedEvent event = new ShellZKNodeChangedEvent();
         event.data(ShellZKNodeUtil.decodePath(nodePath));
         event.setClient(client);
         EventUtil.post(event);
@@ -121,7 +121,7 @@ public class ZKEventUtil {
      * @param delChildren 是否删除子节点
      */
     public static void nodeDeleted(ShellZKClient client, String path, boolean delChildren) {
-        ZKNodeDeletedEvent event = new ZKNodeDeletedEvent();
+        ShellZKNodeDeletedEvent event = new ShellZKNodeDeletedEvent();
         event.data(path);
         event.setDelChildren(delChildren);
         event.setConnectName(client.connectName());
@@ -135,7 +135,7 @@ public class ZKEventUtil {
      * @param nodePath 路径
      */
     public static void nodeRemoved(ShellZKClient client, String nodePath) {
-        ZKNodeRemovedEvent event = new ZKNodeRemovedEvent();
+        ShellZKNodeRemovedEvent event = new ShellZKNodeRemovedEvent();
         event.data(ShellZKNodeUtil.decodePath(nodePath));
         event.setClient(client);
         EventUtil.post(event);
@@ -207,7 +207,7 @@ public class ZKEventUtil {
      * 触发认证添加事件
      */
     public static void authAuthed(ShellZKNodeTreeItem item, boolean success, String user, String password) {
-        ZKAuthAuthedEvent event = new ZKAuthAuthedEvent();
+        ShellZKAuthAuthedEvent event = new ShellZKAuthAuthedEvent();
         event.data(item);
         event.setUser(user);
         event.setSuccess(success);
@@ -242,7 +242,7 @@ public class ZKEventUtil {
      * @param item zk树节点
      */
     public static void historyShow(ShellZKNodeTreeItem item) {
-        ZKHistoryShowEvent event = new ZKHistoryShowEvent();
+        ShellZKHistoryShowEvent event = new ShellZKHistoryShowEvent();
         event.data(item);
         EventUtil.post(event);
     }
@@ -254,7 +254,7 @@ public class ZKEventUtil {
      * @param item zk树节点
      */
     public static void historyRestore(byte[] data, ShellZKNodeTreeItem item) {
-        ZKHistoryRestoreEvent event = new ZKHistoryRestoreEvent();
+        ShellZKHistoryRestoreEvent event = new ShellZKHistoryRestoreEvent();
         event.data(data);
         event.setItem(item);
         EventUtil.post(event);
@@ -267,7 +267,7 @@ public class ZKEventUtil {
      * @param item    zk树节点
      */
     public static void dataHistoryAdded(ShellZKDataHistory history, TreeItem<?> item) {
-        ZKHistoryAddedEvent event = new ZKHistoryAddedEvent();
+        ShellZKHistoryAddedEvent event = new ShellZKHistoryAddedEvent();
         event.data(history);
         event.setItem(item);
         EventUtil.post(event);
@@ -279,7 +279,7 @@ public class ZKEventUtil {
      * @param item 节点
      */
     public static void nodeSelected(ShellZKNodeTreeItem item) {
-        ZKNodeSelectedEvent event = new ZKNodeSelectedEvent();
+        ShellZKNodeSelectedEvent event = new ShellZKNodeSelectedEvent();
         event.data(item);
         EventUtil.post(event);
     }
@@ -290,7 +290,7 @@ public class ZKEventUtil {
     //  * @param zkConnect zk连接
     //  */
     // public static void nodeACLAdded(ShellConnect zkConnect, String nodePath) {
-    //     ZKNodeACLAddedEvent event = new ZKNodeACLAddedEvent();
+    //     ShellZKNodeACLAddedEvent event = new ShellZKNodeACLAddedEvent();
     //     event.data(zkConnect);
     //     event.setNodePath(nodePath);
     //     EventUtil.post(event);
@@ -302,7 +302,7 @@ public class ZKEventUtil {
     //  * @param zkConnect zk连接
     //  */
     // public static void nodeACLUpdated(ShellConnect zkConnect, String nodePath) {
-    //     ZKNodeACLUpdatedEvent event = new ZKNodeACLUpdatedEvent();
+    //     ShellZKNodeACLUpdatedEvent event = new ShellZKNodeACLUpdatedEvent();
     //     event.data(zkConnect);
     //     event.setNodePath(nodePath);
     //     EventUtil.post(event);
@@ -365,7 +365,7 @@ public class ZKEventUtil {
     //  * 客户端操作
     //  */
     // public static void clientAction(String connectName, String action) {
-    //     ZKClientActionEvent event = new ZKClientActionEvent();
+    //     ShellZKClientActionEvent event = new ShellZKClientActionEvent();
     //     event.data(connectName);
     //     event.setAction(action);
     //     EventUtil.postAsync(event);
@@ -375,7 +375,7 @@ public class ZKEventUtil {
 //     * 客户端操作
 //     */
 //    public static void clientAction(String connectName, String action, ShellZKClientActionArgument... arguments) {
-//        ZKClientActionEvent event = new ZKClientActionEvent();
+//        ShellZKClientActionEvent event = new ShellZKClientActionEvent();
 //        event.data(connectName);
 //        event.action(action);
 //        event.arguments(arguments);
@@ -386,7 +386,7 @@ public class ZKEventUtil {
     //  * 客户端操作
     //  */
     // public static void clientAction(String connectName, String action, List<ShellZKClientActionArgument> arguments) {
-    //     ZKClientActionEvent event = new ZKClientActionEvent();
+    //     ShellZKClientActionEvent event = new ShellZKClientActionEvent();
     //     event.data(connectName);
     //     event.setAction(action);
     //     event.arguments(arguments);

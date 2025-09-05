@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.zk;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -72,14 +72,14 @@ public class ShellZKTreeListener implements TreeCacheListener {
                 }
             }
             // switch (type) {
-            //     case NODE_ADDED -> ZKEventUtil.nodeAdded(this.zkClient, stat, nodeData, nodePath);
-            //     case NODE_UPDATED -> ZKEventUtil.nodeUpdated(this.zkClient, stat, nodeData, nodePath);
-            //     case NODE_REMOVED -> ZKEventUtil.nodeDeleted(this.zkClient, stat, nodePath);
+            //     case NODE_ADDED -> ShellZKEventUtil.nodeAdded(this.zkClient, stat, nodeData, nodePath);
+            //     case NODE_UPDATED -> ShellZKEventUtil.nodeUpdated(this.zkClient, stat, nodeData, nodePath);
+            //     case NODE_REMOVED -> ShellZKEventUtil.nodeDeleted(this.zkClient, stat, nodePath);
             // }
             switch (type) {
-                case NODE_ADDED -> ZKEventUtil.nodeCreated(this.zkClient, nodePath);
-                case NODE_UPDATED -> ZKEventUtil.nodeChanged(this.zkClient, nodePath);
-                case NODE_REMOVED -> ZKEventUtil.nodeRemoved(this.zkClient, nodePath);
+                case NODE_ADDED -> ShellZKEventUtil.nodeCreated(this.zkClient, nodePath);
+                case NODE_UPDATED -> ShellZKEventUtil.nodeChanged(this.zkClient, nodePath);
+                case NODE_REMOVED -> ShellZKEventUtil.nodeRemoved(this.zkClient, nodePath);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.zk.node;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
@@ -163,14 +163,14 @@ public class ShellZKAuthNodeController extends StageController {
                     this.authStore.replace(auth);
                     this.zkItem.zkConnect().addAuth(auth);
                 }
-                ZKEventUtil.authAuthed(this.zkItem, true, user, password);
+                ShellZKEventUtil.authAuthed(this.zkItem, true, user, password);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else if (this.zkNode.aclEmpty() || this.zkNode.hasDigestACL()) {
-                ZKEventUtil.authAuthed(this.zkItem, false, user, password);
+                ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
                 MessageBox.warn(I18nHelper.operationFail());
             } else {
-                ZKEventUtil.authAuthed(this.zkItem, false, user, password);
+                ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
                 MessageBox.warn(I18nHelper.authFailTip1());
             }
         } catch (Exception ex) {

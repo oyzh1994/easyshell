@@ -421,7 +421,7 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
 //            this.currentNode = null;
 //        }
 //        // 搜索完成事件
-//        ZKEventUtil.searchComplete(this.connect());
+//        ShellZKEventUtil.searchComplete(this.connect());
 //        return foundNode != null;
 //    }
 

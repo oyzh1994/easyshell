@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKNodeRemovedEvent extends Event<String>   {
+public class ShellZKNodeRemovedEvent extends Event<String>   {
 
     public ShellZKClient getClient() {
         return client;

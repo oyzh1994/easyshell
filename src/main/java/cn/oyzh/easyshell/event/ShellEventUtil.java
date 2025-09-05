@@ -45,9 +45,9 @@ import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
-import cn.oyzh.easyshell.event.zk.ZKClientActionEvent;
-import cn.oyzh.easyshell.event.zk.ZKNodeACLAddedEvent;
-import cn.oyzh.easyshell.event.zk.ZKNodeACLUpdatedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKClientActionEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKNodeACLAddedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKNodeACLUpdatedEvent;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
@@ -736,7 +736,7 @@ public class ShellEventUtil {
      * @param zkConnect zk连接
      */
     public static void zkNodeACLAdded(ShellConnect zkConnect, String nodePath) {
-        ZKNodeACLAddedEvent event = new ZKNodeACLAddedEvent();
+        ShellZKNodeACLAddedEvent event = new ShellZKNodeACLAddedEvent();
         event.data(zkConnect);
         event.setNodePath(nodePath);
         EventUtil.post(event);
@@ -748,7 +748,7 @@ public class ShellEventUtil {
      * @param zkConnect zk连接
      */
     public static void zkNodeACLUpdated(ShellConnect zkConnect, String nodePath) {
-        ZKNodeACLUpdatedEvent event = new ZKNodeACLUpdatedEvent();
+        ShellZKNodeACLUpdatedEvent event = new ShellZKNodeACLUpdatedEvent();
         event.data(zkConnect);
         event.setNodePath(nodePath);
         EventUtil.post(event);
@@ -758,7 +758,7 @@ public class ShellEventUtil {
      * 客户端操作
      */
     public static void zkClientAction(String connectName, String action) {
-        ZKClientActionEvent event = new ZKClientActionEvent();
+        ShellZKClientActionEvent event = new ShellZKClientActionEvent();
         event.data(connectName);
         event.setAction(action);
         EventUtil.postAsync(event);
@@ -768,7 +768,7 @@ public class ShellEventUtil {
      * 客户端操作
      */
     public static void zkClientAction(String connectName, String action, List<ShellZKClientActionArgument> arguments) {
-        ZKClientActionEvent event = new ZKClientActionEvent();
+        ShellZKClientActionEvent event = new ShellZKClientActionEvent();
         event.data(connectName);
         event.setAction(action);
         event.arguments(arguments);

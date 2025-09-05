@@ -71,7 +71,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
      */
     @FXML
     private void addACL() {
-//        ZKEventUtil.showAddACL(this.activeItem(), this.client());
+//        ShellZKEventUtil.showAddACL(this.activeItem(), this.client());
         StageAdapter adapter = ShellViewFactory.zkAddACL(this.activeItem(), this.client());
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
@@ -240,7 +240,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    public void onNodeACLAdded(ZKNodeACLAddedEvent event) {
+//    public void onNodeACLAdded(ShellZKNodeACLAddedEvent event) {
 //        if (event.data() == this.client().zkConnect()) {
 //            this.reloadACL();
 ////            if (this.aclPaging != null) {
@@ -255,7 +255,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    public void onNodeACLUpdated(ZKNodeACLUpdatedEvent event) {
+//    public void onNodeACLUpdated(ShellZKNodeACLUpdatedEvent event) {
 //        if (event.data() == this.client().zkConnect()) {
 //            this.reloadACL();
 

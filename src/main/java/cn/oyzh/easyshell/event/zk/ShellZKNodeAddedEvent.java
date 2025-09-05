@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKNodeAddedEvent extends Event<String> implements EventFormatter {
+public class ShellZKNodeAddedEvent extends Event<String> implements EventFormatter {
 
     private ShellConnect zkConnect;
 

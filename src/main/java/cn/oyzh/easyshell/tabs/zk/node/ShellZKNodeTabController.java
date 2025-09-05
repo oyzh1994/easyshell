@@ -2,12 +2,12 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
-import cn.oyzh.easyshell.event.zk.ZKAuthAuthedEvent;
-import cn.oyzh.easyshell.event.zk.ZKNodeAddedEvent;
-import cn.oyzh.easyshell.event.zk.ZKNodeChangedEvent;
-import cn.oyzh.easyshell.event.zk.ZKNodeCreatedEvent;
-import cn.oyzh.easyshell.event.zk.ZKNodeRemovedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKAuthAuthedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKNodeAddedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKNodeChangedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKNodeCreatedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKNodeRemovedEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -308,7 +308,7 @@ public class ShellZKNodeTabController extends ParentTabController {
             // 刷新tab
             this.flushTab();
             // 触发事件
-            ZKEventUtil.nodeSelected(this.activeItem);
+            ShellZKEventUtil.nodeSelected(this.activeItem);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -419,7 +419,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 ////        adapter.setProp("zkItem", this.activeItem);
 ////        adapter.setProp("zkClient", this.activeItem.client());
 ////        adapter.display();
-//        ZKEventUtil.showAddACL(this.activeItem, this.activeItem.client());
+//        ShellZKEventUtil.showAddACL(this.activeItem, this.activeItem.client());
 //    }
 
 //    /**
@@ -499,7 +499,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 ////            ex.printStackTrace();
 ////            MessageBox.exception(ex, I18nHelper.operationException());
 ////        }
-//        ZKEventUtil.showUpdateACL(this.activeItem, this.treeItem.getClient(), acl);
+//        ShellZKEventUtil.showUpdateACL(this.activeItem, this.treeItem.getClient(), acl);
 //    }
 //
 //    /**
@@ -750,7 +750,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //            ex.printStackTrace();
 //            MessageBox.exception(ex);
 //        }
-////        ZKEventUtil.showQRCodeNode(this.activeItem.value(), this.nodeData.getTextTrim());
+////        ShellZKEventUtil.showQRCodeNode(this.activeItem.value(), this.nodeData.getTextTrim());
 //    }
 
 //    /**
@@ -781,7 +781,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     @FXML
     private void showHistory() {
         if (this.activeItem != null) {
-            ZKEventUtil.historyShow(this.activeItem);
+            ShellZKEventUtil.historyShow(this.activeItem);
         }
     }
 //
@@ -1117,7 +1117,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * @param event 事件
      */
     @EventSubscribe
-    public void onNodeAdded(ZKNodeAddedEvent event) {
+    public void onNodeAdded(ShellZKNodeAddedEvent event) {
         if (event.getZkConnect() == this.client.zkConnect()) {
             this.treeView.onNodeAdded(event.data());
         }
@@ -1129,7 +1129,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * @param event 事件
      */
     @EventSubscribe
-    public void onNodeCreated(ZKNodeCreatedEvent event) {
+    public void onNodeCreated(ShellZKNodeCreatedEvent event) {
         if (event.connect() == this.client.zkConnect()) {
             this.treeView.onNodeCreated(event.data());
         }
@@ -1141,7 +1141,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * @param event 事件
      */
     @EventSubscribe
-    public void onNodeRemoved(ZKNodeRemovedEvent event) {
+    public void onNodeRemoved(ShellZKNodeRemovedEvent event) {
         if (event.connect() == this.client.zkConnect()) {
             this.treeView.onNodeRemoved(event.data());
         }
@@ -1153,7 +1153,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * @param event 事件
      */
     @EventSubscribe
-    public void onNodeChanged(ZKNodeChangedEvent event) {
+    public void onNodeChanged(ShellZKNodeChangedEvent event) {
         if (event.connect() == this.client.zkConnect()) {
             this.treeView.onNodeChanged(event.data());
         }
@@ -1165,7 +1165,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    public void onNodeACLAdded(ZKNodeACLAddedEvent event) {
+//    public void onNodeACLAdded(ShellZKNodeACLAddedEvent event) {
 //        if (event.data() == this.client.zkConnect()) {
 //            this.reloadACL();
 //            if (this.aclPaging != null) {
@@ -1180,7 +1180,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     * @param event 事件
 //     */
 //    @EventSubscribe
-//    public void onNodeACLUpdated(ZKNodeACLUpdatedEvent event) {
+//    public void onNodeACLUpdated(ShellZKNodeACLUpdatedEvent event) {
 //        if (event.data() == this.client.zkConnect()) {
 //            Long curPage = this.aclPaging == null ? null : this.aclPaging.currentPage();
 //            this.reloadACL();
@@ -1196,7 +1196,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * @param event 事件
      */
     @EventSubscribe
-    private void authAuthed(ZKAuthAuthedEvent event) {
+    private void authAuthed(ShellZKAuthAuthedEvent event) {
         try {
             if (event.isSuccess() && event.client() == this.client) {
                 this.treeView.authChanged(event.auth());

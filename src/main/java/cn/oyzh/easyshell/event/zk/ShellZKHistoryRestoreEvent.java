@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/4/23
  */
-public class ZKHistoryRestoreEvent extends Event<byte[]> implements EventFormatter {
+public class ShellZKHistoryRestoreEvent extends Event<byte[]> implements EventFormatter {
 
     private ShellZKNodeTreeItem item;
 

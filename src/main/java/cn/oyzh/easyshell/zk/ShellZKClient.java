@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoAdminPermException;
@@ -219,14 +219,14 @@ public class ShellZKClient implements ShellBaseClient {
             }
             // if (newValue != null) {
             //     switch (newValue) {
-            //         case LOST -> ZKEventUtil.connectionLost(this);
+            //         case LOST -> ShellZKEventUtil.connectionLost(this);
             //         case CLOSED -> {
             //             if (!this.closeQuietly) {
-            //                 ZKEventUtil.connectionClosed(this);
+            //                 ShellZKEventUtil.connectionClosed(this);
             //             }
             //             this.closeQuietly = false;
             //         }
-            //         case CONNECTED -> ZKEventUtil.connectionConnected(this);
+            //         case CONNECTED -> ShellZKEventUtil.connectionConnected(this);
             //     }
             // }
         });
@@ -1060,7 +1060,7 @@ public class ShellZKClient implements ShellBaseClient {
             ShellZKClientActionUtil.forSetAction(this.connectName(), path, data, version, false);
             Stat stat = this.framework.setData().withVersion(version == null ? -1 : version).forPath(path, data);
             if (stat != null) {
-                ZKEventUtil.nodeUpdated(this, path);
+                ShellZKEventUtil.nodeUpdated(this, path);
             }
             return stat;
         } catch (Exception ex) {
@@ -1112,7 +1112,7 @@ public class ShellZKClient implements ShellBaseClient {
             }
             builder.forPath(path);
             ShellZKClientActionUtil.forDeleteAction(this.connectName(), path, version);
-            ZKEventUtil.nodeDeleted(this, path, delChildren);
+            ShellZKEventUtil.nodeDeleted(this, path, delChildren);
         } catch (Exception ex) {
             this.lastDelete = old;
             if (ex instanceof KeeperException.NoAuthException) {
