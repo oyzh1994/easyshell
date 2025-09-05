@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.util.zk.ZKI18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -299,7 +299,7 @@ public class ZKNodeDataTabController extends SubTabController {
             NodeGroupUtil.disable(this.dataTab, "dataToBig");
             // 异步处理，避免阻塞主程序
             TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), ZKI18nHelper.nodeTip7(), null, StageManager.getPrimaryStage())) {
+                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.zkNodeTip7(), null, StageManager.getPrimaryStage())) {
                     this.saveBinaryFile();
                 }
             }, 10);

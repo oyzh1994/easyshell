@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
-import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -259,7 +259,7 @@ public class ZKAddACLController extends StageController {
             MessageBox.tipMsg(I18nHelper.passwordCanNotEmpty(), this.digestInfo1Password);
             return;
         }
-        String digest = ZKAuthUtil.digest(user, password);
+        String digest = ShellZKAuthUtil.digest(user, password);
         if (digest == null) {
             MessageBox.warn(I18nHelper.operationFail());
             return;
@@ -271,7 +271,7 @@ public class ZKAddACLController extends StageController {
         ACL acl = new ACL();
         Id id = new Id("digest", digest);
         acl.setId(id);
-        acl.setPerms(ZKACLUtil.toPermInt(this.getPerms()));
+        acl.setPerms(ShellZKACLUtil.toPermInt(this.getPerms()));
         // 新增权限
         if (this.addACL(acl) && this.digestSaveInfo.isSelected()) {
             // 保存认证信息
@@ -313,7 +313,7 @@ public class ZKAddACLController extends StageController {
         ACL acl = new ACL();
         Id id = new Id("digest", digest);
         acl.setId(id);
-        acl.setPerms(ZKACLUtil.toPermInt(this.getPerms()));
+        acl.setPerms(ShellZKACLUtil.toPermInt(this.getPerms()));
         // 新增权限
         this.addACL(acl);
     }
@@ -336,7 +336,7 @@ public class ZKAddACLController extends StageController {
         ACL acl = new ACL();
         Id id = new Id("digest", digest);
         acl.setId(id);
-        acl.setPerms(ZKACLUtil.toPermInt(this.getPerms()));
+        acl.setPerms(ShellZKACLUtil.toPermInt(this.getPerms()));
         // 新增权限
         this.addACL(acl);
     }
@@ -352,7 +352,7 @@ public class ZKAddACLController extends StageController {
         ACL acl = new ACL();
         Id id = new Id("world", "anyone");
         acl.setId(id);
-        acl.setPerms(ZKACLUtil.toPermInt(this.getPerms()));
+        acl.setPerms(ShellZKACLUtil.toPermInt(this.getPerms()));
         // 新增权限
         this.addACL(acl);
     }
@@ -363,7 +363,7 @@ public class ZKAddACLController extends StageController {
     private void addIPACL1() {
         String perms = this.getPerms();
         String ip = this.ipContent1.getTextTrim();
-        ZKACLUtil.checkIP(ip);
+        ShellZKACLUtil.checkIP(ip);
         ZKACL acl = new ZKACL();
         acl.setId(new Id("ip", ip));
         acl.setPerms(perms);
@@ -390,7 +390,7 @@ public class ZKAddACLController extends StageController {
             }
             String ip = strArr[0];
             String perms = strArr[1];
-            ZKACLUtil.checkIP(ip);
+            ShellZKACLUtil.checkIP(ip);
             ZKACL acl = new ZKACL();
             acl.setId(new Id("ip", ip));
             acl.setPerms(perms);
@@ -470,7 +470,7 @@ public class ZKAddACLController extends StageController {
             String user = this.digestInfo1User.getText().trim();
             String password = this.digestInfo1Password.getTextTrim();
             if (StringUtil.isNotBlank(user) && StringUtil.isNotBlank(password)) {
-                String digest = ZKAuthUtil.digest(user, password);
+                String digest = ShellZKAuthUtil.digest(user, password);
                 this.digestText.setText(digest);
                 this.copyDigestText.display();
             } else {

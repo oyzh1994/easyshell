@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -107,7 +107,7 @@ public class ZKUpdateACLController extends StageController {
             List<ACL> aclList = this.zkClient.getACL(this.zkItem.nodePath());
             for (ACL acl : aclList) {
                 if (acl.equals(this.acl)) {
-                    acl.setPerms(ZKACLUtil.toPermInt(perms));
+                    acl.setPerms(ShellZKACLUtil.toPermInt(perms));
                     Stat stat = this.zkClient.setACL(this.zkItem.nodePath(), aclList);
                     if (stat != null) {
                         this.setProp("result", true);

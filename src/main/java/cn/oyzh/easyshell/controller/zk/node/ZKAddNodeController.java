@@ -4,9 +4,9 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
-import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -261,7 +261,7 @@ public class ZKAddNodeController extends StageController {
         }
 
         // 获取权限
-        int perms = ZKACLUtil.toPermInt(builder.toString());
+        int perms = ShellZKACLUtil.toPermInt(builder.toString());
 
         // 开放权限
         if (this.aclType.getSelectedIndex() == 0) {
@@ -281,7 +281,7 @@ public class ZKAddNodeController extends StageController {
                 MessageBox.tipMsg(I18nHelper.passwordCanNotEmpty(), this.digestPassword);
                 return null;
             }
-            String digest = ZKAuthUtil.digest(user, password);
+            String digest = ShellZKAuthUtil.digest(user, password);
             return new ACL(perms, new Id("digest", digest));
         }
 
@@ -290,7 +290,7 @@ public class ZKAddNodeController extends StageController {
             // 获取内容
             String ip = this.ipContent.getTextTrim();
             try {
-                ZKACLUtil.checkIP(ip);
+                ShellZKACLUtil.checkIP(ip);
             } catch (Exception ex) {
                 MessageBox.tipMsg(ex.getMessage(), this.digestPassword);
                 return null;
@@ -305,7 +305,7 @@ public class ZKAddNodeController extends StageController {
         // 节点路径变化处理
         this.nodePath.addTextChangeListener((observableValue, s, t1) -> {
             if (StringUtil.isNotBlank(t1)) {
-                this.nodePathText = ZKNodeUtil.concatPath(this.parentNode.getText(), t1).trim();
+                this.nodePathText = ShellZKNodeUtil.concatPath(this.parentNode.getText(), t1).trim();
             } else {
                 this.nodePathText = "";
             }
@@ -331,7 +331,7 @@ public class ZKAddNodeController extends StageController {
             String user = this.digestUser.getText().trim();
             String password = this.digestPassword.getTextTrim();
             if (StringUtil.isNotBlank(user) && StringUtil.isNotBlank(password)) {
-                String digest = ZKAuthUtil.digest(user, password);
+                String digest = ShellZKAuthUtil.digest(user, password);
                 this.digestText.setText(digest);
             } else {
                 this.digestText.setText("");

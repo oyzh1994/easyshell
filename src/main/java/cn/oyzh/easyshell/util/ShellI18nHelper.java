@@ -196,4 +196,37 @@ public class ShellI18nHelper {
     public static String redisPubsubTip1() {
         return I18nResourceBundle.i18nString("shell.redis.pubsub.tip1");
     }
+
+    public static String zkNodeTip1() {
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip1");
+    }
+
+    public static String zkNodeTip2() {
+        return I18nResourceBundle.i18nString("shell.zk.nodeTip2");
+    }
+
+    public static String zkNodeTip3() {
+        return I18nResourceBundle.i18nString("shell.zk.node.tip3");
+    }
+
+    public static String zkNodeTip4() {
+        return I18nResourceBundle.i18nString("shell.zk.node.tip4");
+    }
+
+    public static String zkNodeTip5() {
+        return I18nResourceBundle.i18nString("shell.zk.node.tip5");
+    }
+
+    public static String zkNodeTip6() {
+        return I18nResourceBundle.i18nString("shell.zk.node.tip6");
+    }
+
+    public static String zkNodeTip7() {
+        return I18nResourceBundle.i18nString("shell.zk.node.tip7");
+    }
+
+    public static String zkAclC() {
+        return I18nResourceBundle.i18nString("shell.zk.acl.c");
+    }
+
 }

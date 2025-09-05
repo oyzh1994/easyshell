@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.trees.zk;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKNode;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
@@ -136,7 +136,7 @@ public class ZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
      */
     public void onNodeAdded(String nodePath) {
         try {
-            String pPath = ZKNodeUtil.getParentPath(nodePath);
+            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             // 寻找节点
             ZKNodeTreeItem parent = this.findNodeItem(pPath);
             // 父节点不存在
@@ -185,7 +185,7 @@ public class ZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
             return;
         }
         try {
-            String pPath = ZKNodeUtil.getParentPath(nodePath);
+            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             // 寻找节点
             ZKNodeTreeItem parent = this.findNodeItem(pPath);
             // 父节点不存在
@@ -223,7 +223,7 @@ public class ZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
             return;
         }
         try {
-            String pPath = ZKNodeUtil.getParentPath(nodePath);
+            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             // 寻找节点
             ZKNodeTreeItem parent = this.findNodeItem(pPath);
             // 父节点不存在
@@ -306,7 +306,7 @@ public class ZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
     public void authChanged(ZKAuth auth) throws Exception {
         this.client.addAuth(auth.getUser(), auth.getPassword());
         for (ZKNodeTreeItem item : this.getAllNodeItem()) {
-            if (item.isNeedAuth() || ZKACLUtil.existDigest(item.acl(), auth.getUser())) {
+            if (item.isNeedAuth() || ShellZKACLUtil.existDigest(item.acl(), auth.getUser())) {
                 item.authChanged();
             }
         }
@@ -320,7 +320,7 @@ public class ZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
         // 初始化根节点
         if (this.getRoot() == null) {
             // 获取根节点
-            ZKNode rootNode = ZKNodeUtil.getNode(this.client, "/");
+            ZKNode rootNode = ShellZKNodeUtil.getNode(this.client, "/");
             // 生成根节点
             rootItem = new ZKNodeTreeItem(rootNode, this);
             // 设置根节点

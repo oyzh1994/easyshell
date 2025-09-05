@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
  * @since 2022/8/26
  */
 
-public class ZKConnectUtil {
+public class ShellZKConnectUtil {
 
     // /**
     //  * 测试连接

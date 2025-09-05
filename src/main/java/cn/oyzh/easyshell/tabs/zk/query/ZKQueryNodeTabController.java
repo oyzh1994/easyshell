@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.property.KeyValueProperty;
@@ -22,7 +22,7 @@ public class ZKQueryNodeTabController extends RichTabController {
         List<KeyValueProperty<String, String>> data = new ArrayList<>();
         int index = 1;
         for (String node : nodes) {
-            data.add(KeyValueProperty.of(index + "", ZKNodeUtil.concatPath(path, node)));
+            data.add(KeyValueProperty.of(index + "", ShellZKNodeUtil.concatPath(path, node)));
             index++;
         }
         this.nodeTable.setItem(data);

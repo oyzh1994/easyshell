@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.zk;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.store.zk.ZKFilterStore;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
@@ -84,7 +84,7 @@ public class ZKNodeTreeItemFilter implements RichTreeItemFilter {
             }
             String nodePath = treeItem.decodeNodePath();
             // 过滤节点
-            if (ZKNodeUtil.isFiltered(nodePath, this.filters)) {
+            if (ShellZKNodeUtil.isFiltered(nodePath, this.filters)) {
                 return false;
             }
             // 关键字

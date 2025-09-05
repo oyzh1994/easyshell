@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.zk.ZKConnectUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKConnectUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -193,10 +193,10 @@ public class ZKTerminalPane extends TerminalPane {
      * @param input 输入内容
      */
     public void connect(String input) {
-        this.connectInfo = ZKConnectUtil.parse(input);
+        this.connectInfo = ShellZKConnectUtil.parse(input);
         if (this.connectInfo != null) {
             this.disable();
-            ZKConnectUtil.copyConnect(this.connectInfo, this.zkConnect());
+            ShellZKConnectUtil.copyConnect(this.connectInfo, this.zkConnect());
             this.start();
         }
     }

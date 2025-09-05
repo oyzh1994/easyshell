@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 
 /**
  * @author oyzh
@@ -52,7 +52,7 @@ public class ShellZKQueryToken {
 
     public String getPath() {
         if (this.content.startsWith("/")) {
-            return ZKNodeUtil.getParentPath(this.content);
+            return ShellZKNodeUtil.getParentPath(this.content);
         }
         return null;
     }

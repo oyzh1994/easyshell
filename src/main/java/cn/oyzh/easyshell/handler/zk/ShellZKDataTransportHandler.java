@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.handler.zk;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.domain.zk.ZKFilter;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
@@ -67,7 +67,7 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
      * @throws InterruptedException 异常
      */
     private void doTransport(String path) throws InterruptedException {
-        String decodePath = ZKNodeUtil.decodePath(path);
+        String decodePath = ShellZKNodeUtil.decodePath(path);
         try {
             // 检查中断
             this.checkInterrupt();
@@ -90,7 +90,7 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
             }
 
             // 过滤处理
-            if (ZKNodeUtil.isFiltered(decodePath, this.filters)) {
+            if (ShellZKNodeUtil.isFiltered(decodePath, this.filters)) {
                 this.message("node[" + decodePath + "] is filtered, skip it");
                 this.processedSkip();
                 return;
@@ -119,7 +119,7 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
             // 递归传输节点
             for (String sub : subs) {
                 this.checkInterrupt();
-                this.doTransport(ZKNodeUtil.concatPath(path, sub));
+                this.doTransport(ShellZKNodeUtil.concatPath(path, sub));
             }
         } catch (InterruptedException ex) {
             throw ex;

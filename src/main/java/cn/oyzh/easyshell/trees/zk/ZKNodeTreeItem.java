@@ -15,7 +15,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ZKCollectStore;
 import cn.oyzh.easyshell.store.zk.ZKDataHistoryStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKNode;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -358,8 +358,8 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
         }
         String nodeName = this.nodeName() + "-" + I18nHelper.clone1();
         // 检查是否存在
-        String parentPath = ZKNodeUtil.getParentPath(this.nodePath());
-        String newNodePath = ZKNodeUtil.concatPath(parentPath, nodeName);
+        String parentPath = ShellZKNodeUtil.getParentPath(this.nodePath());
+        String newNodePath = ShellZKNodeUtil.concatPath(parentPath, nodeName);
         try {
             if (this.client().exists(newNodePath)) {
                 MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists());
@@ -440,8 +440,8 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
             return;
         }
         // 检查是否存在
-        String parentPath = ZKNodeUtil.getParentPath(this.nodePath());
-        String newNodePath = ZKNodeUtil.concatPath(parentPath, nodeName);
+        String parentPath = ShellZKNodeUtil.getParentPath(this.nodePath());
+        String newNodePath = ShellZKNodeUtil.concatPath(parentPath, nodeName);
         try {
             if (this.client().exists(newNodePath)) {
                 MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists());
@@ -618,7 +618,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
      */
     public void addChild(String path) throws Exception {
         if (StringUtil.isNotBlank(path)) {
-            ZKNode node = ZKNodeUtil.getNode(this.client(), path);
+            ZKNode node = ShellZKNodeUtil.getNode(this.client(), path);
             this.addChild(node);
         }
     }
@@ -652,7 +652,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
      */
     public void refreshNode() throws Exception {
         try {
-            ZKNodeUtil.refreshNode(this.client(), this.value);
+            ShellZKNodeUtil.refreshNode(this.client(), this.value);
             this.clear();
         } catch (KeeperException.NoAuthException ex) {
             this.setNeedAuth(true);
@@ -665,7 +665,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
     public void refreshData() throws Exception {
         try {
             JulLog.debug("refreshData.");
-            ZKNodeUtil.refreshData(this.client(), this.value);
+            ShellZKNodeUtil.refreshData(this.client(), this.value);
             this.clear();
         } catch (KeeperException.NoAuthException ex) {
             this.setNeedAuth(true);
@@ -678,7 +678,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
     public void refreshACL() throws Exception {
         try {
             JulLog.debug("refreshACL.");
-            ZKNodeUtil.refreshAcl(this.client(), this.value);
+            ShellZKNodeUtil.refreshAcl(this.client(), this.value);
         } catch (KeeperException.NoAuthException ex) {
             this.setNeedAuth(true);
         }
@@ -690,7 +690,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
     public void refreshQuota() throws Exception {
         try {
             JulLog.debug("refreshQuota.");
-            ZKNodeUtil.refreshQuota(this.client(), this.value);
+            ShellZKNodeUtil.refreshQuota(this.client(), this.value);
         } catch (KeeperException.NoNodeException ignored) {
             this.value.quota(null);
         } catch (KeeperException.NoAuthException ex) {
@@ -704,7 +704,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
     public void refreshStat() throws Exception {
         try {
             JulLog.debug("refreshStat.");
-            ZKNodeUtil.refreshStat(this.client(), this.value);
+            ShellZKNodeUtil.refreshStat(this.client(), this.value);
             this.refresh();
         } catch (KeeperException.NoAuthException ex) {
             this.setNeedAuth(true);
@@ -790,7 +790,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
 //                // 已存在节点
 //                List<String> paths = this.itemChildren().parallelStream().map(ZKNodeTreeItem::nodePath).toList();
 //                // 获取节点列表
-//                List<ZKNode> list = ZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
+//                List<ZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
 //                // 遍历列表寻找待更新或者待添加节点
 //                for (ZKNode node : list) {
 //                    // 添加到集合
@@ -863,7 +863,7 @@ public class ZKNodeTreeItem extends RichTreeItem<ZKNodeTreeItemValue> {
             // 已存在节点
             List<String> paths = this.itemChildren().parallelStream().map(ZKNodeTreeItem::nodePath).toList();
             // 获取节点列表
-            List<ZKNode> list = ZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
+            List<ZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
             // 遍历列表寻找待更新或者待添加节点
             for (ZKNode node : list) {
                 // 添加到集合

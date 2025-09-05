@@ -4,9 +4,9 @@ import cn.oyzh.common.dto.FriendlyInfo;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
-import cn.oyzh.easyshell.util.zk.ZKCacheUtil;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKCacheUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
@@ -46,8 +46,8 @@ public class ZKNode implements Comparable<ZKNode> {
         } else {
             this.acl = new ArrayList<>(aclList.size());
             for (ACL acl : aclList) {
-                if (ZKACLUtil.isOpenACL(acl)) {
-                    this.acl.add(new ZKACL(ZKACLUtil.OPEN_ACL));
+                if (ShellZKACLUtil.isOpenACL(acl)) {
+                    this.acl.add(new ZKACL(ShellZKACLUtil.OPEN_ACL));
                 } else {
                     this.acl.add(new ZKACL(acl));
                 }
@@ -76,7 +76,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @param nodeData 节点数据
      */
     public void setNodeData(byte[] nodeData) {
-        ZKCacheUtil.cacheData(this.hashCode(), nodeData, "data");
+        ShellZKCacheUtil.cacheData(this.hashCode(), nodeData, "data");
     }
 
     /**
@@ -85,7 +85,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 节点数据
      */
     public byte[] getNodeData() {
-        return ZKCacheUtil.loadData(this.hashCode(), "data");
+        return ShellZKCacheUtil.loadData(this.hashCode(), "data");
     }
 
     /**
@@ -94,7 +94,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 结果
      */
     public boolean hasNodeData() {
-        return ZKCacheUtil.hasData(this.hashCode(), "data");
+        return ShellZKCacheUtil.hasData(this.hashCode(), "data");
     }
 
     /**
@@ -103,14 +103,14 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 节点数据大小
      */
     public long getNodeDataSize() {
-        return ZKCacheUtil.dataSize(this.hashCode(), "data");
+        return ShellZKCacheUtil.dataSize(this.hashCode(), "data");
     }
 
     /**
      * 清除节点数据
      */
     public void clearNodeData() {
-        ZKCacheUtil.deleteData(this.hashCode(), "data");
+        ShellZKCacheUtil.deleteData(this.hashCode(), "data");
     }
 
     /**
@@ -119,7 +119,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @param unsavedData 未保存的数据
      */
     public void setUnsavedData(byte[] unsavedData) {
-        ZKCacheUtil.cacheData(this.hashCode(), unsavedData, "unsaved");
+        ShellZKCacheUtil.cacheData(this.hashCode(), unsavedData, "unsaved");
     }
 
     /**
@@ -128,7 +128,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 未保存的数据
      */
     public byte[] getUnsavedData() {
-        return ZKCacheUtil.loadData(this.hashCode(), "unsaved");
+        return ShellZKCacheUtil.loadData(this.hashCode(), "unsaved");
     }
 
     /**
@@ -137,7 +137,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 结果
      */
     public boolean hasUnsavedData() {
-        return ZKCacheUtil.hasData(this.hashCode(), "unsaved");
+        return ShellZKCacheUtil.hasData(this.hashCode(), "unsaved");
     }
 
     /**
@@ -146,14 +146,14 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 未保存的数据大小
      */
     public long getUnsavedDataSize() {
-        return ZKCacheUtil.dataSize(this.hashCode(), "unsaved");
+        return ShellZKCacheUtil.dataSize(this.hashCode(), "unsaved");
     }
 
     /**
      * 清除未保存的数据
      */
     public void clearUnsavedData() {
-        ZKCacheUtil.deleteData(this.hashCode(), "unsaved");
+        ShellZKCacheUtil.deleteData(this.hashCode(), "unsaved");
     }
 
     /**
@@ -177,7 +177,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 解码的节点路径
      */
     public String decodeNodePath() {
-        return ZKNodeUtil.decodePath(this.nodePath);
+        return ShellZKNodeUtil.decodePath(this.nodePath);
     }
 
     /**
@@ -186,7 +186,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 解码的节点名称
      */
     public String decodeNodeName() {
-        return ZKNodeUtil.decodePath(this.nodeName());
+        return ShellZKNodeUtil.decodePath(this.nodeName());
     }
 
     /**
@@ -195,7 +195,7 @@ public class ZKNode implements Comparable<ZKNode> {
      * @return 节点名称
      */
     public String nodeName() {
-        return ZKNodeUtil.getName(this.nodePath);
+        return ShellZKNodeUtil.getName(this.nodePath);
     }
 
     /**

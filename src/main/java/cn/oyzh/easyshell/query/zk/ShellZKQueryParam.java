@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.ACL;
 
@@ -351,7 +351,7 @@ public class ShellZKQueryParam {
     }
 
     public List<ACL> getACL() {
-        List<ACL> aclList = List.of(ZKACLUtil.OPEN_ACL);
+        List<ACL> aclList = List.of(ShellZKACLUtil.OPEN_ACL);
         if (this.isCreate()) {
             int index = 0;
             for (String param : this.params) {
@@ -363,7 +363,7 @@ public class ShellZKQueryParam {
                     index++;
                     continue;
                 }
-                aclList = ZKACLUtil.parseAcl(param);
+                aclList = ShellZKACLUtil.parseAcl(param);
             }
         } else if (this.isSetACL()) {
             int index = 0;
@@ -375,7 +375,7 @@ public class ShellZKQueryParam {
                     index++;
                     continue;
                 }
-                aclList = ZKACLUtil.parseAcl(param);
+                aclList = ShellZKACLUtil.parseAcl(param);
             }
         }
         return aclList;

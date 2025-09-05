@@ -7,6 +7,7 @@ import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
@@ -26,7 +27,7 @@ import java.util.Objects;
  * @since 2022/6/2
  */
 
-public class ZKACLUtil {
+public class ShellZKACLUtil {
 
     /**
      * 开放的acl权限
@@ -139,7 +140,7 @@ public class ZKACLUtil {
         }
         if (permsString.contains("c")) {
             valueBuilder.append("c");
-            friendlyValueBuilder.append(",").append(ZKI18nHelper.aclC());
+            friendlyValueBuilder.append(",").append(ShellI18nHelper.zkAclC());
         }
         FriendlyInfo<ACL> perms = new FriendlyInfo<>();
         perms.name("perms");

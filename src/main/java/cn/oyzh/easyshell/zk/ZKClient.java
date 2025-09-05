@@ -24,7 +24,7 @@ import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
 import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
-import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import javafx.beans.property.ObjectProperty;
@@ -344,7 +344,7 @@ public class ZKClient implements ShellBaseClient {
                 // 更新连接状态
                 this.state.set(ShellConnState.CONNECTED);
                 // // 设置认证信息为已认证
-                // ZKAuthUtil.setAuthed(this, ZKAuthUtil.loadAuths(this.iid()));
+                // ShellZKAuthUtil.setAuthed(this, ShellZKAuthUtil.loadAuths(this.iid()));
             } else {// 连接未成功则关闭
                 this.closeInner();
                 if (this.state.get() == ShellConnState.FAILED) {
@@ -464,9 +464,9 @@ public class ZKClient implements ShellBaseClient {
         // 连接信息
         String host = this.initHost();
         // 加载认证
-        this.auths = ZKAuthUtil.loadAuths(this.iid());
+        this.auths = ShellZKAuthUtil.loadAuths(this.iid());
         // 认证信息列表
-        List<AuthInfo> authInfos = ZKAuthUtil.toAuthInfo(auths);
+        List<AuthInfo> authInfos = ShellZKAuthUtil.toAuthInfo(auths);
         JulLog.info("auto authorization, auths: {}.", authInfos);
         // 重试策略
         if (this.retryPolicy == null) {
@@ -724,7 +724,7 @@ public class ZKClient implements ShellBaseClient {
             ThreadLocalUtil.setVal("connectName", this.connectName());
             ZKClientActionUtil.forAddAuthAction(this.connectName(), "digest", data);
             zooKeeper.addAuthInfo("digest", data.getBytes());
-            // ZKAuthUtil.setAuthed(this, user, password);
+            // ShellZKAuthUtil.setAuthed(this, user, password);
             this.setAuthed(user, password);
         } else {
             JulLog.warn("zooKeeper is null!");

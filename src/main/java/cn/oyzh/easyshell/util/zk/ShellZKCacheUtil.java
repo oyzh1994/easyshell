@@ -12,7 +12,7 @@ import java.io.File;
  * @since 2024-11-25
  */
 
-public class ZKCacheUtil {
+public class ShellZKCacheUtil {
 
     /**
      * 获取基础路径

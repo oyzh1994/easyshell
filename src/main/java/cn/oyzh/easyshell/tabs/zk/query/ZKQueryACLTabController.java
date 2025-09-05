@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.property.Param3Property;
@@ -24,7 +24,7 @@ public class ZKQueryACLTabController extends RichTabController {
     public void init(List<ACL> aclList) {
         List<Param3Property<String, String, String>> data = new ArrayList<>();
         for (ACL acl : aclList) {
-            data.add(Param3Property.of(acl.getId().getId(), acl.getId().getScheme(), ZKACLUtil.toPermStr(acl.getPerms(), ",")));
+            data.add(Param3Property.of(acl.getId().getId(), acl.getId().getScheme(), ShellZKACLUtil.toPermStr(acl.getPerms(), ",")));
         }
         this.aclTable.setItem(data);
     }

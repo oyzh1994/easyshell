@@ -4,7 +4,7 @@ import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.toggle.EnabledToggleSwitch;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
@@ -80,7 +80,7 @@ public class ZKAuth implements ObjectComparator<ZKAuth>, ObjectCopier<ZKAuth>, S
         if (StringUtil.isBlank(this.getUser()) || StringUtil.isBlank(this.getPassword())) {
             return "";
         }
-        return ZKAuthUtil.digest(this.getUser(), this.getPassword());
+        return ShellZKAuthUtil.digest(this.getUser(), this.getPassword());
     }
 
     @Override

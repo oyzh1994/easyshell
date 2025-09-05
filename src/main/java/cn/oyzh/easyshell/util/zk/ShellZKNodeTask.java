@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author oyzh
  * @since 2025-01-23
  */
-public class ZKNodeTask {
+public class ShellZKNodeTask {
 
     /**
      * 执行任务
@@ -77,6 +77,6 @@ public class ZKNodeTask {
      * @return 异常
      */
     public static Exception of(ZKNode node, ZKClient client, String path, String properties) {
-        return new ZKNodeTask().doWorker(node, client, path, properties);
+        return new ShellZKNodeTask().doWorker(node, client, path, properties);
     }
 }

@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.event.zk.node.ZKNodeRemovedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeSelectedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeUpdatedEvent;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.event.EventUtil;
 import javafx.scene.control.TreeItem;
@@ -93,7 +93,7 @@ public class ZKEventUtil {
      */
     public static void nodeCreated(ZKClient client, String nodePath) {
         ZKNodeCreatedEvent event = new ZKNodeCreatedEvent();
-        event.data(ZKNodeUtil.decodePath(nodePath));
+        event.data(ShellZKNodeUtil.decodePath(nodePath));
         event.setClient(client);
         EventUtil.post(event);
     }
@@ -119,7 +119,7 @@ public class ZKEventUtil {
      */
     public static void nodeChanged(ZKClient client, String nodePath) {
         ZKNodeChangedEvent event = new ZKNodeChangedEvent();
-        event.data(ZKNodeUtil.decodePath(nodePath));
+        event.data(ShellZKNodeUtil.decodePath(nodePath));
         event.setClient(client);
         EventUtil.post(event);
     }
@@ -147,7 +147,7 @@ public class ZKEventUtil {
      */
     public static void nodeRemoved(ZKClient client, String nodePath) {
         ZKNodeRemovedEvent event = new ZKNodeRemovedEvent();
-        event.data(ZKNodeUtil.decodePath(nodePath));
+        event.data(ShellZKNodeUtil.decodePath(nodePath));
         event.setClient(client);
         EventUtil.post(event);
     }

@@ -12,8 +12,8 @@ import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeView;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.util.zk.ZKI18nHelper;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
@@ -366,7 +366,7 @@ public class ZKNodeTabController extends ParentTabController {
         String nodePath = this.activeItem.nodePath();
         if (this.activeItem.isBeDeleted()) {
             if (!this.activeItem.isIgnoreDeleted()) {
-                if (MessageBox.confirm("[" + nodePath + "] " + ZKI18nHelper.nodeTip2())) {
+                if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip2())) {
                     this.activeItem.remove();
                 } else {
                     this.activeItem.doIgnoreDeleted();
@@ -374,7 +374,7 @@ public class ZKNodeTabController extends ParentTabController {
             }
         } else if (this.activeItem.isBeChanged()) { // 节点被更新
             if (!this.activeItem.isIgnoreChanged()) {
-                if (MessageBox.confirm("[" + nodePath + "] " + ZKI18nHelper.nodeTip1())) {
+                if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip1())) {
                     this.refreshItem();
                 } else {
                     this.activeItem.doIgnoreChanged();
@@ -382,7 +382,7 @@ public class ZKNodeTabController extends ParentTabController {
             }
         } else if (this.activeItem.isBeChildChanged()) { // 子节点被更新
             if (!this.activeItem.isIgnoreChildChanged()) {
-                if (MessageBox.confirm("[" + nodePath + "] " + ZKI18nHelper.nodeTip5())) {
+                if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip5())) {
                     this.activeItem.reloadChild();
                     this.activeItem.clearBeChildChanged();
                 } else {
@@ -390,7 +390,7 @@ public class ZKNodeTabController extends ParentTabController {
                 }
             }
         } else if (this.activeItem.isNeedAuth()) { // 需要认证
-            if (MessageBox.confirm("[" + nodePath + "] " + ZKI18nHelper.nodeTip6())) {
+            if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip6())) {
                 this.activeItem.authNode();
             }
         }

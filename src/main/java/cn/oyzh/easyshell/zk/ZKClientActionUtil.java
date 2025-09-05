@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.zk;
 
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.ACL;
 
@@ -57,7 +57,7 @@ public class ZKClientActionUtil {
         }
         arguments.add(ZKClientActionArgument.ofArgument(path));
         arguments.add(ZKClientActionArgument.ofArgument(new String(data)));
-        arguments.add(ZKClientActionArgument.ofArgument(ZKACLUtil.toAclStr(aclList)));
+        arguments.add(ZKClientActionArgument.ofArgument(ShellZKACLUtil.toAclStr(aclList)));
         ShellEventUtil.zkClientAction(connectName, "create", arguments);
     }
 
@@ -114,7 +114,7 @@ public class ZKClientActionUtil {
             arguments.add(ZKClientActionArgument.ofArgument("-R"));
         }
         arguments.add(ZKClientActionArgument.ofArgument(path));
-        arguments.add(ZKClientActionArgument.ofArgument(ZKACLUtil.toAclStr(aclList)));
+        arguments.add(ZKClientActionArgument.ofArgument(ShellZKACLUtil.toAclStr(aclList)));
         ShellEventUtil.zkClientAction(connectName, "setAcl", arguments);
     }
 

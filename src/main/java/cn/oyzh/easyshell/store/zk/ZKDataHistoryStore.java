@@ -4,7 +4,7 @@ import cn.oyzh.common.exception.InvalidDataException;
 import cn.oyzh.common.util.MD5Util;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
@@ -163,7 +163,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
             client.setData(dataPath, model.getData());
         } else {
             // 权限读删
-            int params = ZKACLUtil.toPermInt("rd");
+            int params = ShellZKACLUtil.toPermInt("rd");
             // 类型公开
             ACL acl = new ACL(params, ZooDefs.Ids.ANYONE_ID_UNSAFE);
             client.create(dataPath, model.getData(), List.of(acl), null, CreateMode.PERSISTENT, true);

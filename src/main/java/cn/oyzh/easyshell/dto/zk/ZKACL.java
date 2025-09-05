@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.dto.zk;
 
 import cn.oyzh.common.dto.FriendlyInfo;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import org.apache.zookeeper.data.ACL;
 
 /**
@@ -22,7 +22,7 @@ public class ZKACL extends ACL {
     }
 
     public void setPerms( String perms) {
-        super.setPerms(ZKACLUtil.toPermInt(perms));
+        super.setPerms(ShellZKACLUtil.toPermInt(perms));
     }
 
     /**
@@ -31,7 +31,7 @@ public class ZKACL extends ACL {
      * @return id友好对象
      */
     public FriendlyInfo<ACL> idFriend() {
-        return ZKACLUtil.parseId(this.getId());
+        return ShellZKACLUtil.parseId(this.getId());
     }
 
     /**
@@ -40,7 +40,7 @@ public class ZKACL extends ACL {
      * @return 权限友好对象
      */
     public FriendlyInfo<ACL> permsFriend() {
-        return ZKACLUtil.parsePerms(this.getPerms());
+        return ShellZKACLUtil.parsePerms(this.getPerms());
     }
 
     /**
@@ -49,7 +49,7 @@ public class ZKACL extends ACL {
      * @return 协议友好对象
      */
     public FriendlyInfo<ACL> schemeFriend() {
-        return ZKACLUtil.parseScheme(this.schemeVal());
+        return ShellZKACLUtil.parseScheme(this.schemeVal());
     }
 
     /**
@@ -77,7 +77,7 @@ public class ZKACL extends ACL {
      * @return 结果
      */
     public boolean hasPerm( String perm) {
-        String permStr = ZKACLUtil.toPermStr(this.getPerms());
+        String permStr = ShellZKACLUtil.toPermStr(this.getPerms());
         return permStr.contains(perm);
     }
 

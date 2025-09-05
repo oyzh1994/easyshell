@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.controls.popup.FXPopup;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -181,7 +181,7 @@ public class ShellZKQueryPromptPopup extends FXPopup {
                     if (CollectionUtil.isNotEmpty(children)) {
                         List<String> list = new ArrayList<>();
                         for (String s : children) {
-                            list.add(ZKNodeUtil.concatPath(path, s));
+                            list.add(ShellZKNodeUtil.concatPath(path, s));
                         }
                         ShellZKQueryUtil.setNodes(list);
                     }

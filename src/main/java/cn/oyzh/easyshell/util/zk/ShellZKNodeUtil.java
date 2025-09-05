@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * @since 2020/11/10
  */
 
-public class ZKNodeUtil {
+public class ShellZKNodeUtil {
 
     /**
      * 权限属性
@@ -110,7 +110,7 @@ public class ZKNodeUtil {
 //            throw exceptionReference.get();
 //        }
         // 执行任务
-        Exception exception = ZKNodeTask.of(node, client, path, properties);
+        Exception exception = ShellZKNodeTask.of(node, client, path, properties);
         // 抛出异常
         if (exception != null) {
             throw exception;
@@ -174,7 +174,7 @@ public class ZKNodeUtil {
      * @param node   zk节点
      */
     public static void refreshNode( ZKClient client,  ZKNode node) throws Exception {
-        ZKNode n = ZKNodeUtil.getNode(client, node.nodePath());
+        ZKNode n = ShellZKNodeUtil.getNode(client, node.nodePath());
         node.copy(n);
     }
 
@@ -291,7 +291,7 @@ public class ZKNodeUtil {
 //            // 获取节点数据
 //            for (String sub : children) {
 //                // 对节点路径做处理
-//                String path = ZKNodeUtil.concatPath(parentPath, sub);
+//                String path = ShellZKNodeUtil.concatPath(parentPath, sub);
 //                // 获取节点
 //                if (filter == null || filter.test(path)) {
 //                    list.add(getNode(client, path, properties));
@@ -304,7 +304,7 @@ public class ZKNodeUtil {
 //            // 获取节点数据
 //            for (String sub : children) {
 //                // 对节点路径做处理
-//                String path = ZKNodeUtil.concatPath(parentPath, sub);
+//                String path = ShellZKNodeUtil.concatPath(parentPath, sub);
 //                // 获取节点
 //                if (filter == null || filter.test(path)) {
 //                    // 添加到任务列表
@@ -357,7 +357,7 @@ public class ZKNodeUtil {
 //            // 获取节点数据
 //            for (String sub : children) {
 //                // 对节点路径做处理
-//                String path = ZKNodeUtil.concatPath(parentPath, sub);
+//                String path = ShellZKNodeUtil.concatPath(parentPath, sub);
 //                // 判断是否存在
 //                if (existingNodes.contains(path)) {
 //                    continue;
@@ -379,7 +379,7 @@ public class ZKNodeUtil {
 //        // 获取节点数据
 //        for (String sub : children) {
 //            // 对节点路径做处理
-//            String path = ZKNodeUtil.concatPath(parentPath, sub);
+//            String path = ShellZKNodeUtil.concatPath(parentPath, sub);
 //            // 判断是否存在
 //            if (existingNodes.contains(path)) {
 //                continue;
@@ -417,7 +417,7 @@ public class ZKNodeUtil {
         // 获取节点数据
         for (String sub : children) {
             // 对节点路径做处理
-            String path = ZKNodeUtil.concatPath(parentPath, sub);
+            String path = ShellZKNodeUtil.concatPath(parentPath, sub);
             // 判断是否存在
             if (existingNodes.contains(path)) {
                 continue;
@@ -477,7 +477,7 @@ public class ZKNodeUtil {
         try {
             List<String> children = client.getChildren(path);
             for (String child : children) {
-                String nPath = ZKNodeUtil.concatPath(path, child);
+                String nPath = ShellZKNodeUtil.concatPath(path, child);
                 loopNode(client, nPath, filter, success, error, includeACL);
             }
         } catch (Exception ex) {

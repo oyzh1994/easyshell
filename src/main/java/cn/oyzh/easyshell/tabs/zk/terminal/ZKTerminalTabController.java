@@ -63,7 +63,7 @@ public class ZKTerminalTabController extends RichTabController {
     // @Override
     // public void onTabClosed(Event event) {
     //     if (this.terminal.isTemporary()) {
-    //         ZKConnectUtil.close(this.client(), true, true);
+    //         ShellZKConnectUtil.close(this.client(), true, true);
     //     }
     //     super.onTabClosed(event);
     // }

@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.util.zk.ZKACLUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.store.file.FileColumns;
 import cn.oyzh.store.file.FileHelper;
@@ -153,7 +153,7 @@ public class ShellZKDataImportHandler extends ShellZKDataHandler {
                                 if (this.includeACL) {
                                     String acl = (String) record.get(2);
                                     if (StringUtil.isNotBlank(acl)) {
-                                        aclList = ZKACLUtil.parseAcl(acl);
+                                        aclList = ShellZKACLUtil.parseAcl(acl);
                                     }
                                 }
                                 this.client.create(path, dataStr, aclList, CreateMode.PERSISTENT, true);

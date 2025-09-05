@@ -24,7 +24,7 @@ import java.util.Objects;
  * @since 2023/3/6
  */
 
-public class ZKAuthUtil {
+public class ShellZKAuthUtil {
 
     // /**
     //  * 已认证信息列表
@@ -61,7 +61,7 @@ public class ZKAuthUtil {
         int result = 0;
         try {
             client.addAuth(user, password);
-            ZKNode node = ZKNodeUtil.getNode(client, zkNode.nodePath());
+            ZKNode node = ShellZKNodeUtil.getNode(client, zkNode.nodePath());
             if (zkNode.aclEmpty() && !node.aclEmpty()) {
                 result = 1;
             } else if (!zkNode.hasDeletePerm() && node.hasDeletePerm()) {
@@ -225,7 +225,7 @@ public class ZKAuthUtil {
     //  * @return 已认证的摘要信息列表
     //  */
     // public static boolean isDigestAuthed(ZKClient client, String digestVal) {
-    //     Set<String> digests = ZKAuthUtil.getAuthedDigest(client);
+    //     Set<String> digests = ShellZKAuthUtil.getAuthedDigest(client);
     //     return CollectionUtil.isNotEmpty(digests) && digests.contains(digestVal);
     // }
 
