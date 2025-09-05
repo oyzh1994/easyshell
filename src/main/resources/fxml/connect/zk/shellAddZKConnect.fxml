@@ -48,29 +48,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.userName">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
-                <InfoLabel text="%base.password">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
-                                   realHeight="30"
-                                   flexWidth="100% - 180">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </PasswordTextField>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

@@ -148,8 +148,10 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
 
     public void setIid(String iid) {
         this.iid = iid;
-        this.root().loadChild();
-        this.root().expend();
+        if (this.root() != null) {
+            this.root().loadChild();
+            this.root().expend();
+        }
     }
 
     public String getIid() {

@@ -51,18 +51,6 @@ import javafx.stage.WindowEvent;
 public class ShellAddZKConnectController extends StageController {
 
     /**
-     * 用户名
-     */
-    @FXML
-    private ClearableTextField userName;
-
-    /**
-     * 密码
-     */
-    @FXML
-    private PasswordTextField password;
-
-    /**
      * tab组件
      */
     @FXML
@@ -286,9 +274,6 @@ public class ShellAddZKConnectController extends StageController {
             shellConnect.setType("ZK");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
-            // 认证信息
-            shellConnect.setUser(this.userName.getTextTrim());
-            shellConnect.setPassword(this.password.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // sasl配置
@@ -310,11 +295,6 @@ public class ShellAddZKConnectController extends StageController {
         if (host == null) {
             return;
         }
-        String userName = this.userName.getTextTrim();
-//        if (!this.userName.validate()) {
-//            return;
-//        }
-        String password = this.password.getPassword();
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -336,9 +316,6 @@ public class ShellAddZKConnectController extends StageController {
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 只读模式
             shellConnect.setReadonly(this.readonlyMode.isSelected());
-            // 认证信息
-            shellConnect.setUser(userName.trim());
-            shellConnect.setPassword(password.trim());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理配置

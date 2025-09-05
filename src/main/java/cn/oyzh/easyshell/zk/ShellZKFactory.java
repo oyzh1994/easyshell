@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.zk;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import org.apache.curator.utils.ZookeeperFactory;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -37,8 +38,13 @@ public class ShellZKFactory implements ZookeeperFactory {
     public ZooKeeper newZooKeeper(String connectString, int sessionTimeout, Watcher watcher, boolean canBeReadOnly) throws Exception {
         ZKClientConfig clientConfig = new ZKClientConfig();
         String iid = this.connect.getId();
+        // sasl配置
+        ShellZKSASLConfig saslConfig = null;
+        if (this.connect.isSASLAuth()) {
+            saslConfig = this.connect.getSaslConfig();
+        }
         // 判断是否开始sasl配置
-        if (ShellZKSASLUtil.isNeedSasl(iid, this.connect.getSaslConfig())) {
+        if (ShellZKSASLUtil.isNeedSasl(iid, saslConfig)) {
             JulLog.info("连接:{} 执行sasl认证", iid);
             clientConfig.setProperty(ZKClientConfig.ENABLE_CLIENT_SASL_KEY, "true");
             clientConfig.setProperty(ZKClientConfig.LOGIN_CONTEXT_NAME_KEY, iid);

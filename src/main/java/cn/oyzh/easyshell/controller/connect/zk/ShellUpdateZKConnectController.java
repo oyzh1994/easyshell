@@ -51,18 +51,6 @@ import javafx.stage.WindowEvent;
 public class ShellUpdateZKConnectController extends StageController {
 
     /**
-     * 用户名
-     */
-    @FXML
-    private ClearableTextField userName;
-
-    /**
-     * 密码
-     */
-    @FXML
-    private PasswordTextField password;
-
-    /**
      * tab组件
      */
     @FXML
@@ -291,9 +279,6 @@ public class ShellUpdateZKConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
-            // 认证信息
-            shellConnect.setUser(this.userName.getTextTrim());
-            shellConnect.setPassword(this.password.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // sasl配置
@@ -317,11 +302,6 @@ public class ShellUpdateZKConnectController extends StageController {
         if (host == null) {
             return;
         }
-        String userName = this.userName.getTextTrim();
-//        if (!this.userName.validate()) {
-//            return;
-//        }
-        String password = this.password.getPassword();
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -342,9 +322,6 @@ public class ShellUpdateZKConnectController extends StageController {
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 只读模式
             this.shellConnect.setReadonly(this.readonlyMode.isSelected());
-            // 认证信息
-            this.shellConnect.setUser(userName.trim());
-            this.shellConnect.setPassword(password.trim());
             // 跳板机配置
             this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理配置
@@ -427,9 +404,6 @@ public class ShellUpdateZKConnectController extends StageController {
         this.readonlyMode.setSelected(this.shellConnect.isReadonly());
         this.executeTimOut.setValue(this.shellConnect.getExecuteTimeOut());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
-        // 认证处理
-        this.userName.setText(this.shellConnect.getUser());
-        this.password.setText(this.shellConnect.getPassword());
         // 代理配置
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
         ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
