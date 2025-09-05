@@ -4,8 +4,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
-import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
@@ -47,7 +45,6 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -702,8 +699,10 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class);
-        adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.addJump();
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.addItem(jumpConfig);
@@ -720,9 +719,10 @@ public class ShellAddSSHConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class);
-        adapter.setProp("config", config);
-        adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.refresh();

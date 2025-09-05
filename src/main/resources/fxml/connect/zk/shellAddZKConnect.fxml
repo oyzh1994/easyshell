@@ -3,6 +3,7 @@
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ZKSASLTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -163,53 +164,52 @@
                 </FXTextArea>
             </FXVBox>
         </FXTab>
-        <FXTab text="SSL" fx:id="sslTab">
+        <FXTab text="SASL" fx:id="saslTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.enableSSL">
+                <InfoLabel text="%base.enableSASLAuth">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <SwitchToggleSwitch fx:id="enableSSL">
+                <SwitchToggleSwitch fx:id="saslAuth">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </SwitchToggleSwitch>
-                <InfoLabel text="%base.clientKey">
+                <InfoLabel text="%base.type">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ChooseFileTextField disable="true" fx:id="sslClientKey" tipText="%base.chooseTip1"
-                                     require="true"
-                                     realHeight="30"
-                                     flexWidth="100% - 180" groupId="ssl">
+                <ZKSASLTypeComboBox initIndex="0" realHeight="30" groupId="sasl" fx:id="saslType" disable="true">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ChooseFileTextField>
-                <InfoLabel text="%base.clientCrt">
+                </ZKSASLTypeComboBox>
+                <InfoLabel text="%base.userName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ChooseFileTextField disable="true"  fx:id="sslClientCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024" groupId="ssl">
+                <ClearableTextField promptText="%base.userNameTip" disable="true" fx:id="saslUser" require="true"
+                                    realHeight="30"
+                                    flexWidth="100% - 180" groupId="sasl">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ChooseFileTextField>
-                <InfoLabel text="%base.caCrt">
+                </ClearableTextField>
+                <InfoLabel text="%base.password">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ChooseFileTextField disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024" groupId="ssl">
+                <ClearableTextField promptText="%base.passwordTip" disable="true" fx:id="saslPassword" require="true"
+                                    realHeight="30"
+                                    flexWidth="100% - 180" groupId="sasl">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ChooseFileTextField>
+                </ClearableTextField>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.proxy" fx:id="proxyTab">

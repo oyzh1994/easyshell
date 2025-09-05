@@ -8,6 +8,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
+import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -230,11 +231,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Boolean sslMode;
 
     /**
-     * ssl配置
-     */
-    private ShellSSLConfig sslConfig;
-
-    /**
      * ftp的被动模式
      */
     @Column
@@ -319,6 +315,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Integer executeTimeOut;
 
     /**
+     * ssl配置 redis
+     */
+    private ShellSSLConfig sslConfig;
+
+    /**
      * 监听节点 zk协议
      * false: 否
      * null|true: 是
@@ -350,6 +351,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * 认证列表 zk协议
      */
     private List<ShellZKAuth> auths;
+
+    /**
+     * sasl配置
+     */
+    private ShellZKSASLConfig saslConfig;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
@@ -545,9 +551,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // zk
         this.listen = t1.listen;
         this.saslAuth = t1.saslAuth;
-        this.auths = ShellZKAuth.clone(t1.auths);
         this.compatibility = t1.compatibility;
         this.sessionTimeOut = t1.sessionTimeOut;
+        this.auths = ShellZKAuth.clone(t1.auths);
+        this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
     }
 
     /**
@@ -1190,5 +1197,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     public int sessionTimeOutMs() {
         return this.getSessionTimeOut() * 60 * 1000;
+    }
+
+    public ShellZKSASLConfig getSaslConfig() {
+        return saslConfig;
+    }
+
+    public void setSaslConfig(ShellZKSASLConfig saslConfig) {
+        this.saslConfig = saslConfig;
     }
 }

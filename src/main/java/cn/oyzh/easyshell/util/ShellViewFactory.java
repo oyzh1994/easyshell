@@ -49,6 +49,8 @@ import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
 import cn.oyzh.easyshell.controller.file.ShellFileViewController;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
+import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
+import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
@@ -85,6 +87,7 @@ import cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController;
 import cn.oyzh.easyshell.controller.zk.node.ShellZKAuthNodeController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
@@ -1641,4 +1644,38 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 添加跳板机
+     *
+     * @return 页面
+     */
+    public static StageAdapter addJump() {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class, StageManager.getFrontWindow());
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 修改跳板机
+     * @param config 配置
+     * @return 页面
+     */
+    public static StageAdapter updateJump(ShellJumpConfig config) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class, StageManager.getFrontWindow());
+            adapter.setProp("config", config);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
 }

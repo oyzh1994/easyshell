@@ -1,23 +1,21 @@
 package cn.oyzh.easyshell.controller.connect.zk;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.jump.ShellAddJumpController;
-import cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellSSLConfig;
+import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.zk.ZKSASLTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKSASLUtil;
-import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -35,7 +33,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -185,34 +182,34 @@ public class ShellUpdateZKConnectController extends StageController {
     private FXCheckBox readonlyMode;
 
     /**
-     * ssl模式
+     * sasl面板
      */
     @FXML
-    private FXToggleSwitch enableSSL;
+    private FXTab saslTab;
 
     /**
-     * ssl面板
+     * 开启sasl
      */
     @FXML
-    private FXTab sslTab;
+    private FXToggleSwitch saslAuth;
 
     /**
-     * ssl 客户端密钥
+     * sasl类型
      */
     @FXML
-    private ChooseFileTextField sslClientKey;
+    private ZKSASLTypeComboBox saslType;
 
     /**
-     * ssl 客户端证书
+     * sasl用户
      */
     @FXML
-    private ChooseFileTextField sslClientCrt;
+    private ClearableTextField saslUser;
 
     /**
-     * ssl ca证书
+     * sasl密码
      */
     @FXML
-    private ChooseFileTextField sslCaCrt;
+    private ClearableTextField saslPassword;
 
     /**
      * ssh连接储存对象
@@ -266,20 +263,16 @@ public class ShellUpdateZKConnectController extends StageController {
     }
 
     /**
-     * 获取ssl配置信息
+     * 获取ssh信息
      *
-     * @return ssl配置信息
+     * @return ssh连接信息
      */
-    private ShellSSLConfig getSSLConfig() {
-        ShellSSLConfig config = this.shellConnect.getSslConfig();
-        if (config == null) {
-            config = new ShellSSLConfig();
-            config.setIid(this.shellConnect.getId());
-        }
-        config.setCaCrt(this.sslCaCrt.getText());
-        config.setClientCrt(this.sslClientCrt.getText());
-        config.setClientKey(this.sslClientKey.getText());
-        return config;
+    private ShellZKSASLConfig getSASLConfig() {
+        ShellZKSASLConfig saslConfig = new ShellZKSASLConfig();
+        saslConfig.setUserName(this.saslUser.getText());
+        saslConfig.setType(this.saslType.getSelectedItem());
+        saslConfig.setPassword(this.saslPassword.getText());
+        return saslConfig;
     }
 
     /**
@@ -303,9 +296,9 @@ public class ShellUpdateZKConnectController extends StageController {
             shellConnect.setPassword(this.password.getPassword());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
-            // ssl配置
-            shellConnect.setSslConfig(this.getSSLConfig());
-            shellConnect.setSSLMode(this.enableSSL.isSelected());
+            // sasl配置
+            shellConnect.setSaslAuth(this.saslAuth.isSelected());
+            shellConnect.setSaslConfig(this.getSASLConfig());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -357,9 +350,9 @@ public class ShellUpdateZKConnectController extends StageController {
             // 代理配置
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            // ssl模式
-            this.shellConnect.setSslConfig(this.getSSLConfig());
-            this.shellConnect.setSSLMode(this.enableSSL.isSelected());
+            // sasl配置
+            this.shellConnect.setSaslConfig(this.getSASLConfig());
+            this.shellConnect.setSaslAuth(this.saslAuth.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
                 // 移除sasl配置
@@ -412,12 +405,12 @@ public class ShellUpdateZKConnectController extends StageController {
                 this.proxyAuthInfoBox.disable();
             }
         });
-        // ssl配置
-        this.enableSSL.selectedChanged((observable, oldValue, newValue) -> {
+        // sasl配置
+        this.saslAuth.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
-                NodeGroupUtil.enable(this.sslTab, "ssl");
+                NodeGroupUtil.enable(this.saslTab, "sasl");
             } else {
-                NodeGroupUtil.disable(this.sslTab, "ssl");
+                NodeGroupUtil.disable(this.saslTab, "sasl");
             }
         });
     }
@@ -452,13 +445,13 @@ public class ShellUpdateZKConnectController extends StageController {
         }
         // 跳板机配置
         this.jumpTableView.setItem(this.shellConnect.getJumpConfigs());
-        // ssl配置
-        this.enableSSL.setSelected(this.shellConnect.isSSLMode());
-        ShellSSLConfig sslConfig = this.shellConnect.getSslConfig();
-        if (sslConfig != null) {
-            this.sslCaCrt.setValue(sslConfig.getCaCrt());
-            this.sslClientCrt.setValue(sslConfig.getClientCrt());
-            this.sslClientKey.setValue(sslConfig.getClientKey());
+        // sasl配置
+        this.saslAuth.setSelected(this.shellConnect.isSASLAuth());
+        ShellZKSASLConfig saslConfig = this.shellConnect.getSaslConfig();
+        if (saslConfig != null) {
+            this.saslType.select(saslConfig.getType());
+            this.saslUser.setText(saslConfig.getUserName());
+            this.saslPassword.setText(saslConfig.getPassword());
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
@@ -490,8 +483,10 @@ public class ShellUpdateZKConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = StageManager.parseStage(ShellAddJumpController.class);
-        adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.addJump();
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.addItem(jumpConfig);
@@ -508,9 +503,10 @@ public class ShellUpdateZKConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class);
-        adapter.setProp("config", config);
-        adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.refresh();
