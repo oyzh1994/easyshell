@@ -1,16 +1,7 @@
 package cn.oyzh.easyshell.util.zk;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import org.apache.sshd.client.session.ClientSession;
 
 /**
  * zk连接工具类
@@ -21,83 +12,83 @@ import org.apache.sshd.client.session.ClientSession;
 
 public class ZKConnectUtil {
 
-    /**
-     * 测试连接
-     *
-     * @param adapter    页面
-     * @param sshConnect 连接信息
-     */
-    public static void testSSHConnect(StageAdapter adapter, SSHConnect sshConnect) {
-        StageManager.showMask(adapter, () -> {
-            try {
-                SSHJumpForwarder2 forwarder = new SSHJumpForwarder2();
-                ClientSession session = forwarder.initSession(sshConnect);
-                // 判断是否成功
-                if (session != null && session.isOpen()) {
-                    session.close();
-                    MessageBox.okToast(I18nHelper.connectSuccess());
-                } else {
-                    MessageBox.warn(I18nHelper.connectFail());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+    // /**
+    //  * 测试连接
+    //  *
+    //  * @param adapter    页面
+    //  * @param sshConnect 连接信息
+    //  */
+    // public static void testSSHConnect(StageAdapter adapter, SSHConnect sshConnect) {
+    //     StageManager.showMask(adapter, () -> {
+    //         try {
+    //             SSHJumpForwarder2 forwarder = new SSHJumpForwarder2();
+    //             ClientSession session = forwarder.initSession(sshConnect);
+    //             // 判断是否成功
+    //             if (session != null && session.isOpen()) {
+    //                 session.close();
+    //                 MessageBox.okToast(I18nHelper.connectSuccess());
+    //             } else {
+    //                 MessageBox.warn(I18nHelper.connectFail());
+    //             }
+    //         } catch (Exception ex) {
+    //             ex.printStackTrace();
+    //             MessageBox.exception(ex);
+    //         }
+    //     });
+    // }
+    //
+    // /**
+    //  * 测试连接
+    //  *
+    //  * @param adapter   页面
+    //  * @param zkConnect zk信息
+    //  */
+    // public static void testConnect(StageAdapter adapter, ShellConnect zkConnect) {
+    //     StageManager.showMask(adapter, () -> {
+    //         try {
+    //             if (zkConnect.getName() == null) {
+    //                 zkConnect.setName(I18nHelper.testConnection());
+    //             }
+    //             ZKClient client = new ZKClient(zkConnect);
+    //             // 开始连接
+    //             client.start(3_000);
+    //             if (client.isConnected()) {
+    //                 client.close();
+    //                 MessageBox.okToast(I18nHelper.connectSuccess());
+    //             } else {
+    //                 MessageBox.warn(I18nHelper.connectFail());
+    //             }
+    //         } catch (Exception ex) {
+    //             ex.printStackTrace();
+    //             MessageBox.exception(ex);
+    //         }
+    //     });
+    // }
 
-    /**
-     * 测试连接
-     *
-     * @param adapter   页面
-     * @param zkConnect zk信息
-     */
-    public static void testConnect(StageAdapter adapter, ShellConnect zkConnect) {
-        StageManager.showMask(adapter, () -> {
-            try {
-                if (zkConnect.getName() == null) {
-                    zkConnect.setName(I18nHelper.testConnection());
-                }
-                ZKClient client = new ZKClient(zkConnect);
-                // 开始连接
-                client.start(3_000);
-                if (client.isConnected()) {
-                    client.close();
-                    MessageBox.okToast(I18nHelper.connectSuccess());
-                } else {
-                    MessageBox.warn(I18nHelper.connectFail());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
-     * 关闭客户端
-     *
-     * @param client zk客户端
-     * @param async  是否异步
-     * @param quiet  是否静默
-     */
-    public static void close(ZKClient client, boolean async, boolean quiet) {
-        try {
-            if (client != null && client.isConnected()) {
-                if (async && quiet) {
-                    ThreadUtil.startVirtual(client::closeQuiet);
-                } else if (async) {
-                    ThreadUtil.startVirtual(client::close);
-                } else if (quiet) {
-                    client.closeQuiet();
-                } else {
-                    client.close();
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    // /**
+    //  * 关闭客户端
+    //  *
+    //  * @param client zk客户端
+    //  * @param async  是否异步
+    //  * @param quiet  是否静默
+    //  */
+    // public static void close(ZKClient client, boolean async, boolean quiet) {
+    //     try {
+    //         if (client != null && client.isConnected()) {
+    //             if (async && quiet) {
+    //                 ThreadUtil.startVirtual(client::closeQuiet);
+    //             } else if (async) {
+    //                 ThreadUtil.startVirtual(client::close);
+    //             } else if (quiet) {
+    //                 client.closeQuiet();
+    //             } else {
+    //                 client.close();
+    //             }
+    //         }
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //     }
+    // }
 
     /**
      * 解析连接

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
@@ -36,7 +35,7 @@ public class ZKCloseTerminalCommandHandler extends ZKCliTerminalCommandHandler<T
         try {
             return super.execute(command, terminal);
         } finally {
-            ZKEventUtil.terminalClose(terminal.getClient());
+            // ZKEventUtil.terminalClose(terminal.getClient());
         }
     }
 }

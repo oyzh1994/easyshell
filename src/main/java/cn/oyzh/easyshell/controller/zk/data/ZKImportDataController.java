@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.controller.zk.data;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.zk.node.ZKNodeImportController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.zk.ZKDataImportHandler;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -28,9 +27,7 @@ import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -400,16 +397,16 @@ public class ZKImportDataController extends StageController {
         // this.connectionName.setText(this.connect.getName());
     }
 
-    /**
-     * 打开旧版
-     */
-    @FXML
-    private void openOld() {
-        if (this.doConnect()) {
-            this.closeWindow();
-            StageAdapter adapter = StageManager.parseStage(ZKNodeImportController.class);
-            adapter.setProp("zkClient", this.client);
-            adapter.display();
-        }
-    }
+    // /**
+    //  * 打开旧版
+    //  */
+    // @FXML
+    // private void openOld() {
+    //     if (this.doConnect()) {
+    //         this.closeWindow();
+    //         StageAdapter adapter = StageManager.parseStage(ZKNodeImportController.class);
+    //         adapter.setProp("zkClient", this.client);
+    //         adapter.display();
+    //     }
+    // }
 }

@@ -4,7 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.zk.ZKException;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
@@ -424,7 +424,7 @@ public class ZKAddACLController extends StageController {
             Stat stat = this.zkClient.addACL(this.zkItem.nodePath(), list);
             if (stat != null) {
                 this.setProp("result", true);
-                ZKEventUtil.nodeACLAdded(this.zkItem.zkConnect(), this.zkItem.nodePath());
+                ShellEventUtil.zkNodeACLAdded(this.zkItem.zkConnect(), this.zkItem.nodePath());
                 this.closeWindow();
                 return true;
             }

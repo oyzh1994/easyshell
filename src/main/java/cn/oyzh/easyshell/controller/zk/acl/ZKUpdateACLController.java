@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.zk.acl;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.event.zk.ZKEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ZKACLUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
@@ -111,7 +111,7 @@ public class ZKUpdateACLController extends StageController {
                     Stat stat = this.zkClient.setACL(this.zkItem.nodePath(), aclList);
                     if (stat != null) {
                         this.setProp("result", true);
-                        ZKEventUtil.nodeACLUpdated(this.zkItem.zkConnect(), this.zkItem.nodePath());
+                        ShellEventUtil.zkNodeACLUpdated(this.zkItem.zkConnect(), this.zkItem.nodePath());
                         this.closeWindow();
                     } else {
                         MessageBox.warn(I18nHelper.operationFail());

@@ -3,20 +3,9 @@ package cn.oyzh.easyshell.event.zk;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
 import cn.oyzh.easyshell.event.zk.auth.ZKAuthAuthedEvent;
-import cn.oyzh.easyshell.event.zk.client.ZKClientActionEvent;
-import cn.oyzh.easyshell.event.zk.connection.ZKConnectionClosedEvent;
-import cn.oyzh.easyshell.event.zk.connection.ZKConnectionConnectedEvent;
-import cn.oyzh.easyshell.event.zk.connection.ZKConnectionLostEvent;
-import cn.oyzh.easyshell.event.zk.connection.ZKServerEvent;
-import cn.oyzh.easyshell.event.zk.group.ZKAddGroupEvent;
-import cn.oyzh.easyshell.event.zk.group.ZKGroupAddedEvent;
-import cn.oyzh.easyshell.event.zk.group.ZKGroupDeletedEvent;
-import cn.oyzh.easyshell.event.zk.group.ZKGroupRenamedEvent;
 import cn.oyzh.easyshell.event.zk.history.ZKHistoryAddedEvent;
 import cn.oyzh.easyshell.event.zk.history.ZKHistoryRestoreEvent;
 import cn.oyzh.easyshell.event.zk.history.ZKHistoryShowEvent;
-import cn.oyzh.easyshell.event.zk.node.ZKNodeACLAddedEvent;
-import cn.oyzh.easyshell.event.zk.node.ZKNodeACLUpdatedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeAddedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeChangedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeCreatedEvent;
@@ -24,20 +13,11 @@ import cn.oyzh.easyshell.event.zk.node.ZKNodeDeletedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeRemovedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeSelectedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeUpdatedEvent;
-import cn.oyzh.easyshell.event.zk.terminal.ZKTerminalCloseEvent;
-import cn.oyzh.easyshell.event.zk.terminal.ZKTerminalOpenEvent;
-import cn.oyzh.easyshell.event.zk.tree.ZKTreeItemChangedEvent;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKClientActionArgument;
 import cn.oyzh.event.EventUtil;
-import cn.oyzh.fx.gui.event.Layout1Event;
-import cn.oyzh.fx.gui.event.Layout2Event;
-import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import javafx.scene.control.TreeItem;
-
-import java.util.List;
 
 /**
  * zk事件工具
@@ -59,38 +39,38 @@ public class ZKEventUtil {
     //     EventUtil.postSync(event);
     // }
 
-    /**
-     * 连接丢失事件
-     *
-     * @param client zk客户端
-     */
-    public static void connectionLost(ZKClient client) {
-        ZKConnectionLostEvent event = new ZKConnectionLostEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 连接丢失事件
+    //  *
+    //  * @param client zk客户端
+    //  */
+    // public static void connectionLost(ZKClient client) {
+    //     ZKConnectionLostEvent event = new ZKConnectionLostEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 连接关闭事件
-     *
-     * @param client zk客户端
-     */
-    public static void connectionClosed(ZKClient client) {
-        ZKConnectionClosedEvent event = new ZKConnectionClosedEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 连接关闭事件
+    //  *
+    //  * @param client zk客户端
+    //  */
+    // public static void connectionClosed(ZKClient client) {
+    //     ZKConnectionClosedEvent event = new ZKConnectionClosedEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 连接成功事件
-     *
-     * @param client zk客户端
-     */
-    public static void connectionConnected(ZKClient client) {
-        ZKConnectionConnectedEvent event = new ZKConnectionConnectedEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 连接成功事件
+    //  *
+    //  * @param client zk客户端
+    //  */
+    // public static void connectionConnected(ZKClient client) {
+    //     ZKConnectionConnectedEvent event = new ZKConnectionConnectedEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * 节点添加事件
@@ -205,34 +185,34 @@ public class ZKEventUtil {
     //     EventUtil.post(event);
     // }
 
-    /**
-     * 终端打开事件
-     */
-    public static void terminalOpen() {
-        terminalOpen(null);
-    }
+    // /**
+    //  * 终端打开事件
+    //  */
+    // public static void terminalOpen() {
+    //     terminalOpen(null);
+    // }
+    //
+    // /**
+    //  * 终端打开事件
+    //  *
+    //  * @param client zk客户端
+    //  */
+    // public static void terminalOpen(ZKClient client) {
+    //     ZKTerminalOpenEvent event = new ZKTerminalOpenEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 终端打开事件
-     *
-     * @param client zk客户端
-     */
-    public static void terminalOpen(ZKClient client) {
-        ZKTerminalOpenEvent event = new ZKTerminalOpenEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 终端关闭事件
-     *
-     * @param client zk客户端
-     */
-    public static void terminalClose(ZKClient client) {
-        ZKTerminalCloseEvent event = new ZKTerminalCloseEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 终端关闭事件
+    //  *
+    //  * @param client zk客户端
+    //  */
+    // public static void terminalClose(ZKClient client) {
+    //     ZKTerminalCloseEvent event = new ZKTerminalCloseEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * 触发认证添加事件
@@ -246,12 +226,12 @@ public class ZKEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 添加分组
-     */
-    public static void addGroup() {
-        EventUtil.post(new ZKAddGroupEvent());
-    }
+    // /**
+    //  * 添加分组
+    //  */
+    // public static void addGroup() {
+    //     EventUtil.post(new ZKAddGroupEvent());
+    // }
 
 //    /**
 //     * 添加连接
@@ -260,12 +240,12 @@ public class ZKEventUtil {
 //        EventUtil.post(new ZKAddConnectEvent());
 //    }
 
-    /**
-     * 更新日志事件
-     */
-    public static void changelog() {
-        EventUtil.post(new ChangelogEvent());
-    }
+    // /**
+    //  * 更新日志事件
+    //  */
+    // public static void changelog() {
+    //     EventUtil.post(new ChangelogEvent());
+    // }
 
     /**
      * 显示历史
@@ -315,92 +295,92 @@ public class ZKEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 节点acl添加事件
-     *
-     * @param zkConnect zk连接
-     */
-    public static void nodeACLAdded(ShellConnect zkConnect, String nodePath) {
-        ZKNodeACLAddedEvent event = new ZKNodeACLAddedEvent();
-        event.data(zkConnect);
-        event.setNodePath(nodePath);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 节点acl添加事件
+    //  *
+    //  * @param zkConnect zk连接
+    //  */
+    // public static void nodeACLAdded(ShellConnect zkConnect, String nodePath) {
+    //     ZKNodeACLAddedEvent event = new ZKNodeACLAddedEvent();
+    //     event.data(zkConnect);
+    //     event.setNodePath(nodePath);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 节点acl修改事件
+    //  *
+    //  * @param zkConnect zk连接
+    //  */
+    // public static void nodeACLUpdated(ShellConnect zkConnect, String nodePath) {
+    //     ZKNodeACLUpdatedEvent event = new ZKNodeACLUpdatedEvent();
+    //     event.data(zkConnect);
+    //     event.setNodePath(nodePath);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 节点acl修改事件
-     *
-     * @param zkConnect zk连接
-     */
-    public static void nodeACLUpdated(ShellConnect zkConnect, String nodePath) {
-        ZKNodeACLUpdatedEvent event = new ZKNodeACLUpdatedEvent();
-        event.data(zkConnect);
-        event.setNodePath(nodePath);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 节点选中事件
+    //  *
+    //  * @param item 节点
+    //  */
+    // public static void treeItemChanged(TreeItem<?> item) {
+    //     ZKTreeItemChangedEvent event = new ZKTreeItemChangedEvent();
+    //     event.data(item);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 节点选中事件
-     *
-     * @param item 节点
-     */
-    public static void treeItemChanged(TreeItem<?> item) {
-        ZKTreeItemChangedEvent event = new ZKTreeItemChangedEvent();
-        event.data(item);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 布局1
+    //  */
+    // public static void layout1() {
+    //     EventUtil.post(new Layout1Event());
+    // }
+    //
+    // /**
+    //  * 布局2
+    //  */
+    // public static void layout2() {
+    //     EventUtil.post(new Layout2Event());
+    // }
 
-    /**
-     * 布局1
-     */
-    public static void layout1() {
-        EventUtil.post(new Layout1Event());
-    }
+    // /**
+    //  * 分组已添加
+    //  */
+    // public static void groupAdded(String group) {
+    //     ZKGroupAddedEvent event = new ZKGroupAddedEvent();
+    //     event.data(group);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 分组已删除
+    //  */
+    // public static void groupDeleted(String group) {
+    //     ZKGroupDeletedEvent event = new ZKGroupDeletedEvent();
+    //     event.data(group);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 分组已更名
+    //  */
+    // public static void groupRenamed(String group, String oldName) {
+    //     ZKGroupRenamedEvent event = new ZKGroupRenamedEvent();
+    //     event.data(group);
+    //     event.setOldName(oldName);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * 布局2
-     */
-    public static void layout2() {
-        EventUtil.post(new Layout2Event());
-    }
-
-    /**
-     * 分组已添加
-     */
-    public static void groupAdded(String group) {
-        ZKGroupAddedEvent event = new ZKGroupAddedEvent();
-        event.data(group);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 分组已删除
-     */
-    public static void groupDeleted(String group) {
-        ZKGroupDeletedEvent event = new ZKGroupDeletedEvent();
-        event.data(group);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 分组已更名
-     */
-    public static void groupRenamed(String group, String oldName) {
-        ZKGroupRenamedEvent event = new ZKGroupRenamedEvent();
-        event.data(group);
-        event.setOldName(oldName);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 客户端操作
-     */
-    public static void clientAction(String connectName, String action) {
-        ZKClientActionEvent event = new ZKClientActionEvent();
-        event.data(connectName);
-        event.setAction(action);
-        EventUtil.postAsync(event);
-    }
+    // /**
+    //  * 客户端操作
+    //  */
+    // public static void clientAction(String connectName, String action) {
+    //     ZKClientActionEvent event = new ZKClientActionEvent();
+    //     event.data(connectName);
+    //     event.setAction(action);
+    //     EventUtil.postAsync(event);
+    // }
 
 //    /**
 //     * 客户端操作
@@ -413,27 +393,27 @@ public class ZKEventUtil {
 //        EventUtil.postAsync(event);
 //    }
 
-    /**
-     * 客户端操作
-     */
-    public static void clientAction(String connectName, String action, List<ZKClientActionArgument> arguments) {
-        ZKClientActionEvent event = new ZKClientActionEvent();
-        event.data(connectName);
-        event.setAction(action);
-        event.arguments(arguments);
-        EventUtil.postAsync(event);
-    }
+    // /**
+    //  * 客户端操作
+    //  */
+    // public static void clientAction(String connectName, String action, List<ZKClientActionArgument> arguments) {
+    //     ZKClientActionEvent event = new ZKClientActionEvent();
+    //     event.data(connectName);
+    //     event.setAction(action);
+    //     event.arguments(arguments);
+    //     EventUtil.postAsync(event);
+    // }
 
-    /**
-     * 服务信息事件
-     *
-     * @param client zk客户端
-     */
-    public static void server(ZKClient client) {
-        ZKServerEvent event = new ZKServerEvent();
-        event.data(client);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 服务信息事件
+    //  *
+    //  * @param client zk客户端
+    //  */
+    // public static void server(ZKClient client) {
+    //     ZKServerEvent event = new ZKServerEvent();
+    //     event.data(client);
+    //     EventUtil.post(event);
+    // }
 
 //    /**
 //     * 搜索触发事件

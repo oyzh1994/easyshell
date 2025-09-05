@@ -72,12 +72,12 @@
                     <Insets left="30" top="10"/>
                 </HBox.margin>
             </NextStepButton>
-            <OldButton text="%base.oldEntrance" tipText="%shell.zk.old.tip2" onAction="#openOld" realHeight="30"
-                       iconSizePercent="0.75">
-                <HBox.margin>
-                    <Insets left="15" top="10"/>
-                </HBox.margin>
-            </OldButton>
+            <!-- <OldButton text="%base.oldEntrance" tipText="%shell.zk.old.tip2" onAction="#openOld" realHeight="30" -->
+            <!--            iconSizePercent="0.75"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="15" top="10"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </OldButton> -->
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">

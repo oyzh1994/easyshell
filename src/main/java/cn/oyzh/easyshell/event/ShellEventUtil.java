@@ -45,6 +45,9 @@ import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
+import cn.oyzh.easyshell.event.zk.client.ZKClientActionEvent;
+import cn.oyzh.easyshell.event.zk.node.ZKNodeACLAddedEvent;
+import cn.oyzh.easyshell.event.zk.node.ZKNodeACLUpdatedEvent;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
@@ -54,6 +57,7 @@ import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.zk.ZKClientActionArgument;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -725,4 +729,50 @@ public class ShellEventUtil {
         event.data(item);
         EventUtil.post(event);
     }
+
+    /**
+     * 节点acl添加事件
+     *
+     * @param zkConnect zk连接
+     */
+    public static void zkNodeACLAdded(ShellConnect zkConnect, String nodePath) {
+        ZKNodeACLAddedEvent event = new ZKNodeACLAddedEvent();
+        event.data(zkConnect);
+        event.setNodePath(nodePath);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 节点acl修改事件
+     *
+     * @param zkConnect zk连接
+     */
+    public static void zkNodeACLUpdated(ShellConnect zkConnect, String nodePath) {
+        ZKNodeACLUpdatedEvent event = new ZKNodeACLUpdatedEvent();
+        event.data(zkConnect);
+        event.setNodePath(nodePath);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 客户端操作
+     */
+    public static void zkClientAction(String connectName, String action) {
+        ZKClientActionEvent event = new ZKClientActionEvent();
+        event.data(connectName);
+        event.setAction(action);
+        EventUtil.postAsync(event);
+    }
+
+    /**
+     * 客户端操作
+     */
+    public static void zkClientAction(String connectName, String action, List<ZKClientActionArgument> arguments) {
+        ZKClientActionEvent event = new ZKClientActionEvent();
+        event.data(connectName);
+        event.setAction(action);
+        event.arguments(arguments);
+        EventUtil.postAsync(event);
+    }
+
 }
