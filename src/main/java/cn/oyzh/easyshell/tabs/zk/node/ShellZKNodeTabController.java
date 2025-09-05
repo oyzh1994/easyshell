@@ -2,12 +2,9 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.event.zk.ShellZKAuthAuthedEvent;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.event.zk.ShellZKNodeAddedEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKNodeChangedEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKNodeCreatedEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKNodeRemovedEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -307,8 +304,8 @@ public class ShellZKNodeTabController extends ParentTabController {
             this.treeView.refresh();
             // 刷新tab
             this.flushTab();
-            // 触发事件
-            ShellZKEventUtil.nodeSelected(this.activeItem);
+            //// 触发事件
+            //ShellZKEventUtil.nodeSelected(this.activeItem);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -1123,41 +1120,41 @@ public class ShellZKNodeTabController extends ParentTabController {
         }
     }
 
-    /**
-     * 节点已添加事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    public void onNodeCreated(ShellZKNodeCreatedEvent event) {
-        if (event.connect() == this.client.zkConnect()) {
-            this.treeView.onNodeCreated(event.data());
-        }
-    }
+    ///**
+    // * 节点已添加事件
+    // *
+    // * @param event 事件
+    // */
+    //@EventSubscribe
+    //public void onNodeCreated(ShellZKNodeCreatedEvent event) {
+    //    if (event.connect() == this.client.zkConnect()) {
+    //        this.treeView.onNodeCreated(event.data());
+    //    }
+    //}
 
-    /**
-     * 节点已删除事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    public void onNodeRemoved(ShellZKNodeRemovedEvent event) {
-        if (event.connect() == this.client.zkConnect()) {
-            this.treeView.onNodeRemoved(event.data());
-        }
-    }
+    ///**
+    // * 节点已删除事件
+    // *
+    // * @param event 事件
+    // */
+    //@EventSubscribe
+    //public void onNodeRemoved(ShellZKNodeRemovedEvent event) {
+    //    if (event.connect() == this.client.zkConnect()) {
+    //        this.treeView.onNodeRemoved(event.data());
+    //    }
+    //}
 
-    /**
-     * 节点已变更事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    public void onNodeChanged(ShellZKNodeChangedEvent event) {
-        if (event.connect() == this.client.zkConnect()) {
-            this.treeView.onNodeChanged(event.data());
-        }
-    }
+    ///**
+    // * 节点已变更事件
+    // *
+    // * @param event 事件
+    // */
+    //@EventSubscribe
+    //public void onNodeChanged(ShellZKNodeChangedEvent event) {
+    //    if (event.connect() == this.client.zkConnect()) {
+    //        this.treeView.onNodeChanged(event.data());
+    //    }
+    //}
 
 //    /**
 //     * 节点访问控制已新增事件

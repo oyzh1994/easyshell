@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.zk;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
@@ -11,15 +10,14 @@ import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
-import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoAdminPermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoChildPermException;
+import cn.oyzh.easyshell.exception.zk.ShellZKNoCreatePermException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoDeletePermException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoReadPermException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoWritePermException;
-import cn.oyzh.easyshell.exception.zk.ShellZKNoChildPermException;
-import cn.oyzh.easyshell.exception.zk.ShellZKNoCreatePermException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
@@ -134,25 +132,25 @@ public class ShellZKClient implements ShellBaseClient {
      */
     private CuratorFramework framework;
 
-    /**
-     * zk消息监听器
-     */
-    private volatile ShellZKTreeListener cacheListener;
+    ///**
+    // * zk消息监听器
+    // */
+    //private volatile ShellZKTreeListener cacheListener;
 
     /**
      * 认证列表
      */
     private List<ShellZKAuth> auths;
 
-    /**
-     * 静默关闭标志位
-     */
-    private boolean closeQuietly;
+    ///**
+    // * 静默关闭标志位
+    // */
+    //private boolean closeQuietly;
 
-    /**
-     * 缓存选择器
-     */
-    private final ShellZKTreeCacheSelector cacheSelector = new ShellZKTreeCacheSelector();
+    ///**
+    // * 缓存选择器
+    // */
+    //private final ShellZKTreeCacheSelector cacheSelector = new ShellZKTreeCacheSelector();
 
     // /**
     //  * 连接状态
@@ -210,26 +208,26 @@ public class ShellZKClient implements ShellBaseClient {
     public ShellZKClient(ShellConnect zkConnect) {
         this.zkConnect = zkConnect;
         this.addStateListener(this.stateListener);
-        // 监听连接状态
-        this.stateProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || !newValue.isConnected()) {
-                this.closeTreeCache();
-            } else {
-                ThreadUtil.startVirtual(this::startTreeCache);
-            }
-            // if (newValue != null) {
-            //     switch (newValue) {
-            //         case LOST -> ShellZKEventUtil.connectionLost(this);
-            //         case CLOSED -> {
-            //             if (!this.closeQuietly) {
-            //                 ShellZKEventUtil.connectionClosed(this);
-            //             }
-            //             this.closeQuietly = false;
-            //         }
-            //         case CONNECTED -> ShellZKEventUtil.connectionConnected(this);
-            //     }
-            // }
-        });
+        //// 监听连接状态
+        //this.stateProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (newValue == null || !newValue.isConnected()) {
+        //        this.closeTreeCache();
+        //    } else {
+        //        ThreadUtil.startVirtual(this::startTreeCache);
+        //    }
+        //    // if (newValue != null) {
+        //    //     switch (newValue) {
+        //    //         case LOST -> ShellZKEventUtil.connectionLost(this);
+        //    //         case CLOSED -> {
+        //    //             if (!this.closeQuietly) {
+        //    //                 ShellZKEventUtil.connectionClosed(this);
+        //    //             }
+        //    //             this.closeQuietly = false;
+        //    //         }
+        //    //         case CONNECTED -> ShellZKEventUtil.connectionConnected(this);
+        //    //     }
+        //    // }
+        //});
     }
 
     /**
@@ -250,67 +248,67 @@ public class ShellZKClient implements ShellBaseClient {
         }
     }
 
-    /**
-     * 开启zk树监听
-     */
-    private void startTreeCache() {
-        try {
-            // 关闭旧的zk树监听
-            this.closeTreeCache();
-            // 创建zk树监听
-            if (this.cacheListener != null) {
-                this.treeCache = ShellZKTreeCacheUtil.build(this.framework, this.cacheListener.getPath(), this.cacheSelector);
-                this.treeCache.getListenable().addListener(this.cacheListener);
-                // this.treeCache.getListenable().addListener(this.initializedListener);
-                this.treeCache.start();
-                // } else if (!this.isEnableListen()) {// 未开启监听则只创建连接状态初始化监听器
-                //     this.treeCache = ShellZKTreeCacheUtil.build(this.framework, this.cacheSelector);
-                //     this.treeCache.getListenable().addListener(this.initializedListener);
-                //     this.treeCache.start();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    ///**
+    // * 开启zk树监听
+    // */
+    //private void startTreeCache() {
+    //    try {
+    //        // 关闭旧的zk树监听
+    //        this.closeTreeCache();
+    //        // 创建zk树监听
+    //        if (this.cacheListener != null) {
+    //            this.treeCache = ShellZKTreeCacheUtil.build(this.framework, this.cacheListener.getPath(), this.cacheSelector);
+    //            this.treeCache.getListenable().addListener(this.cacheListener);
+    //            // this.treeCache.getListenable().addListener(this.initializedListener);
+    //            this.treeCache.start();
+    //            // } else if (!this.isEnableListen()) {// 未开启监听则只创建连接状态初始化监听器
+    //            //     this.treeCache = ShellZKTreeCacheUtil.build(this.framework, this.cacheSelector);
+    //            //     this.treeCache.getListenable().addListener(this.initializedListener);
+    //            //     this.treeCache.start();
+    //        }
+    //    } catch (Exception ex) {
+    //        ex.printStackTrace();
+    //    }
+    //}
 
-    /**
-     * 关闭zk树监听
-     */
-    private void closeTreeCache() {
-        try {
-            if (this.treeCache != null) {
-                if (this.cacheListener != null) {
-                    this.cacheListener.destroy();
-                    this.treeCache.getListenable().removeListener(this.cacheListener);
-                }
-                this.treeCache.close();
-                this.treeCache = null;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    ///**
+    // * 关闭zk树监听
+    // */
+    //private void closeTreeCache() {
+    //    try {
+    //        if (this.treeCache != null) {
+    //            if (this.cacheListener != null) {
+    //                this.cacheListener.destroy();
+    //                this.treeCache.getListenable().removeListener(this.cacheListener);
+    //            }
+    //            this.treeCache.close();
+    //            this.treeCache = null;
+    //        }
+    //    } catch (Exception ex) {
+    //        ex.printStackTrace();
+    //    }
+    //}
 
-    /**
-     * 是否开启了节点监听
-     *
-     * @return 结果
-     */
-    public boolean isEnableListen() {
-        return this.zkConnect.isListen();
-    }
+    ///**
+    // * 是否开启了节点监听
+    // *
+    // * @return 结果
+    // */
+    //public boolean isEnableListen() {
+    //    return this.zkConnect.isListen();
+    //}
 
-    /**
-     * 连接zk以监听模式
-     */
-    public void startWithListener() throws Throwable {
-        if (this.isEnableListen()) {
-            this.cacheListener = new ShellZKTreeListener(this);
-        } else {
-            this.cacheListener = null;
-        }
-        this.start();
-    }
+    ///**
+    // * 连接zk以监听模式
+    // */
+    //public void startWithListener() throws Throwable {
+    //    if (this.isEnableListen()) {
+    //        this.cacheListener = new ShellZKTreeListener(this);
+    //    } else {
+    //        this.cacheListener = null;
+    //    }
+    //    this.start();
+    //}
 
     // /**
     //  * 连接zk
@@ -494,21 +492,21 @@ public class ShellZKClient implements ShellBaseClient {
         this.removeStateListener(this.stateListener);
     }
 
-    /**
-     * 关闭zk，静默模式
-     */
-    public void closeQuiet() {
-        this.closeQuietly = true;
-        this.close();
-    }
+    ///**
+    // * 关闭zk，静默模式
+    // */
+    //public void closeQuiet() {
+    //    this.closeQuietly = true;
+    //    this.close();
+    //}
 
     /**
      * 关闭zk实际业务
      */
     private void closeInner() {
         try {
-            // 关闭树监听
-            this.closeTreeCache();
+            //// 关闭树监听
+            //this.closeTreeCache();
             // 清理变量
             this.auths = null;
             // 销毁端口转发
@@ -1059,9 +1057,9 @@ public class ShellZKClient implements ShellBaseClient {
             this.lastUpdate = path;
             ShellZKClientActionUtil.forSetAction(this.connectName(), path, data, version, false);
             Stat stat = this.framework.setData().withVersion(version == null ? -1 : version).forPath(path, data);
-            if (stat != null) {
-                ShellZKEventUtil.nodeUpdated(this, path);
-            }
+            //if (stat != null) {
+            //    ShellZKEventUtil.nodeUpdated(this, path);
+            //}
             return stat;
         } catch (Exception ex) {
             this.lastUpdate = old;
@@ -1112,7 +1110,7 @@ public class ShellZKClient implements ShellBaseClient {
             }
             builder.forPath(path);
             ShellZKClientActionUtil.forDeleteAction(this.connectName(), path, version);
-            ShellZKEventUtil.nodeDeleted(this, path, delChildren);
+            //ShellZKEventUtil.nodeDeleted(this, path, delChildren);
         } catch (Exception ex) {
             this.lastDelete = old;
             if (ex instanceof KeeperException.NoAuthException) {

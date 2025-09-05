@@ -319,13 +319,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     private ShellSSLConfig sslConfig;
 
-    /**
-     * 监听节点 zk协议
-     * false: 否
-     * null|true: 是
-     */
-    @Column
-    private Boolean listen;
+    ///**
+    // * 监听节点 zk协议
+    // * false: 否
+    // * null|true: 是
+    // */
+    //@Column
+    //private Boolean listen;
 
     /**
      * 是否开启sasl认证 zk协议
@@ -549,7 +549,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.executeTimeOut = t1.executeTimeOut;
         this.sslConfig = ShellSSLConfig.clone(t1.sslConfig);
         // zk
-        this.listen = t1.listen;
+        //this.listen = t1.listen;
         this.saslAuth = t1.saslAuth;
         this.compatibility = t1.compatibility;
         this.sessionTimeOut = t1.sessionTimeOut;
@@ -1144,18 +1144,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return Objects.equals(1, this.compatibility);
     }
 
-    public void setListen(boolean listen) {
-        this.listen = listen;
-    }
-
-    /**
-     * 是否开启sasl认证
-     *
-     * @return 结果
-     */
-    public boolean isListen() {
-        return BooleanUtil.isTrue(this.listen);
-    }
+    //public void setListen(boolean listen) {
+    //    this.listen = listen;
+    //}
+    //
+    ///**
+    // * 是否开启sasl认证
+    // *
+    // * @return 结果
+    // */
+    //public boolean isListen() {
+    //    return BooleanUtil.isTrue(this.listen);
+    //}
 
     public List<ShellZKAuth> getAuths() {
         return auths;

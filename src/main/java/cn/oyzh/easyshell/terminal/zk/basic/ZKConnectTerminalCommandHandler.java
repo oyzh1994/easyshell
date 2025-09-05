@@ -41,7 +41,7 @@ public class ZKConnectTerminalCommandHandler extends ZKTerminalCommandHandler<Te
     public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
         if (terminal.isTemporary()) {
             if (terminal.isConnected()) {
-                terminal.getClient().closeQuiet();
+                terminal.getClient().close();
             }
             terminal.connect(command.getCommand());
         } else {

@@ -3,8 +3,6 @@ package cn.oyzh.easyshell.event.zk;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
-import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
-import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.EventUtil;
 import javafx.scene.control.TreeItem;
 
@@ -74,72 +72,72 @@ public class ShellZKEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 节点已添加事件
-     *
-     * @param client   zk客户端
-     * @param nodePath 路径
-     */
-    public static void nodeCreated(ShellZKClient client, String nodePath) {
-        ShellZKNodeCreatedEvent event = new ShellZKNodeCreatedEvent();
-        event.data(ShellZKNodeUtil.decodePath(nodePath));
-        event.setClient(client);
-        EventUtil.post(event);
-    }
+    ///**
+    // * 节点已添加事件
+    // *
+    // * @param client   zk客户端
+    // * @param nodePath 路径
+    // */
+    //public static void nodeCreated(ShellZKClient client, String nodePath) {
+    //    ShellZKNodeCreatedEvent event = new ShellZKNodeCreatedEvent();
+    //    event.data(ShellZKNodeUtil.decodePath(nodePath));
+    //    event.setClient(client);
+    //    EventUtil.post(event);
+    //}
 
-    /**
-     * 节点修改事件
-     *
-     * @param client zk客户端
-     * @param path   路径
-     */
-    public static void nodeUpdated(ShellZKClient client, String path) {
-        ShellZKNodeUpdatedEvent event = new ShellZKNodeUpdatedEvent();
-        event.data(path);
-        event.setConnectName(client.connectName());
-        EventUtil.post(event);
-    }
+    ///**
+    // * 节点修改事件
+    // *
+    // * @param client zk客户端
+    // * @param path   路径
+    // */
+    //public static void nodeUpdated(ShellZKClient client, String path) {
+    //    ShellZKNodeUpdatedEvent event = new ShellZKNodeUpdatedEvent();
+    //    event.data(path);
+    //    event.setConnectName(client.connectName());
+    //    EventUtil.post(event);
+    //}
 
-    /**
-     * 节点已修改事件
-     *
-     * @param client   zk客户端
-     * @param nodePath 路径
-     */
-    public static void nodeChanged(ShellZKClient client, String nodePath) {
-        ShellZKNodeChangedEvent event = new ShellZKNodeChangedEvent();
-        event.data(ShellZKNodeUtil.decodePath(nodePath));
-        event.setClient(client);
-        EventUtil.post(event);
-    }
+    ///**
+    // * 节点已修改事件
+    // *
+    // * @param client   zk客户端
+    // * @param nodePath 路径
+    // */
+    //public static void nodeChanged(ShellZKClient client, String nodePath) {
+    //    ShellZKNodeChangedEvent event = new ShellZKNodeChangedEvent();
+    //    event.data(ShellZKNodeUtil.decodePath(nodePath));
+    //    event.setClient(client);
+    //    EventUtil.post(event);
+    //}
 
-    /**
-     * 节点删除事件
-     *
-     * @param client      zk客户端
-     * @param path        路径
-     * @param delChildren 是否删除子节点
-     */
-    public static void nodeDeleted(ShellZKClient client, String path, boolean delChildren) {
-        ShellZKNodeDeletedEvent event = new ShellZKNodeDeletedEvent();
-        event.data(path);
-        event.setDelChildren(delChildren);
-        event.setConnectName(client.connectName());
-        EventUtil.post(event);
-    }
+    ///**
+    // * 节点删除事件
+    // *
+    // * @param client      zk客户端
+    // * @param path        路径
+    // * @param delChildren 是否删除子节点
+    // */
+    //public static void nodeDeleted(ShellZKClient client, String path, boolean delChildren) {
+    //    ShellZKNodeDeletedEvent event = new ShellZKNodeDeletedEvent();
+    //    event.data(path);
+    //    event.setDelChildren(delChildren);
+    //    event.setConnectName(client.connectName());
+    //    EventUtil.post(event);
+    //}
 
-    /**
-     * 节点已删除事件
-     *
-     * @param client   zk客户端
-     * @param nodePath 路径
-     */
-    public static void nodeRemoved(ShellZKClient client, String nodePath) {
-        ShellZKNodeRemovedEvent event = new ShellZKNodeRemovedEvent();
-        event.data(ShellZKNodeUtil.decodePath(nodePath));
-        event.setClient(client);
-        EventUtil.post(event);
-    }
+    ///**
+    // * 节点已删除事件
+    // *
+    // * @param client   zk客户端
+    // * @param nodePath 路径
+    // */
+    //public static void nodeRemoved(ShellZKClient client, String nodePath) {
+    //    ShellZKNodeRemovedEvent event = new ShellZKNodeRemovedEvent();
+    //    event.data(ShellZKNodeUtil.decodePath(nodePath));
+    //    event.setClient(client);
+    //    EventUtil.post(event);
+    //}
 
     // /**
     //  * 连接已新增事件
@@ -273,16 +271,16 @@ public class ShellZKEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * zk节点选中事件
-     *
-     * @param item 节点
-     */
-    public static void nodeSelected(ShellZKNodeTreeItem item) {
-        ShellZKNodeSelectedEvent event = new ShellZKNodeSelectedEvent();
-        event.data(item);
-        EventUtil.post(event);
-    }
+    ///**
+    // * zk节点选中事件
+    // *
+    // * @param item 节点
+    // */
+    //public static void nodeSelected(ShellZKNodeTreeItem item) {
+    //    ShellZKNodeSelectedEvent event = new ShellZKNodeSelectedEvent();
+    //    event.data(item);
+    //    EventUtil.post(event);
+    //}
 
     // /**
     //  * 节点acl添加事件
