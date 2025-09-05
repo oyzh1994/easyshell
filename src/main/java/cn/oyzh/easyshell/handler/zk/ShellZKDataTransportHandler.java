@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/10/15
  */
-public class ZKDataTransportHandler extends DataHandler {
+public class ShellZKDataTransportHandler extends ShellZKDataHandler {
 
     /**
      * 来源客户端

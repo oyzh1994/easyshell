@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/20
  */
-public class ZKQueryParam {
+public class ShellZKQueryParam {
 
     /**
      * 内容

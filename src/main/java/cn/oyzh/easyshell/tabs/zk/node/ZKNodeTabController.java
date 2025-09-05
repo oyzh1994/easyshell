@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.event.zk.node.ZKNodeAddedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeChangedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeCreatedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeRemovedEvent;
-import cn.oyzh.easyshell.filter.zk.ZKNodeFilterTextField;
-import cn.oyzh.easyshell.filter.zk.ZKNodeFilterTypeComboBox;
+import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
+import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeView;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -78,13 +78,13 @@ public class ZKNodeTabController extends ParentTabController {
      * 过滤类型
      */
     @FXML
-    private ZKNodeFilterTypeComboBox filterType;
+    private ShellZKNodeFilterTypeComboBox filterType;
 
     /**
      * 过滤内容
      */
     @FXML
-    private ZKNodeFilterTextField filterKW;
+    private ShellZKNodeFilterTextField filterKW;
 
 //    /**
 //     * 右侧zk属性组件
@@ -742,7 +742,7 @@ public class ZKNodeTabController extends ParentTabController {
 ////            adapter.setProp("zkNode", this.activeItem.value());
 ////            adapter.setProp("nodeData", this.nodeData.getTextTrim());
 ////            adapter.display();
-//            PopupAdapter adapter = PopupManager.parsePopup(ZKNodeQRCodePopupController.class);
+//            PopupAdapter adapter = PopupManager.parsePopup(ShellZKNodeQRCodePopupController.class);
 //            adapter.setProp("zkNode", this.activeItem.value());
 //            adapter.setProp("nodeData", this.nodeData.getTextTrim());
 //            adapter.showPopup((Node) event.getSource());

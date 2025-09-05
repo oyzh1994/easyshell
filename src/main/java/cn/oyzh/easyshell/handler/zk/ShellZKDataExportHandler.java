@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * @author oyzh
  * @since 2024/11/26
  */
-public class ZKDataExportHandler extends DataHandler {
+public class ShellZKDataExportHandler extends ShellZKDataHandler {
 
     /**
      * 文件格式

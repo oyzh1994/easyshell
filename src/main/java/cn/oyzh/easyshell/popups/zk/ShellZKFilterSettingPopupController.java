@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.popups.zk;
 
-import cn.oyzh.easyshell.filter.zk.ZKNodeFilterParam;
+import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterParam;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "zk/zkFilterSettingPopup.fxml"
 )
-public class ZKFilterSettingPopupController extends PopupController {
+public class ShellZKFilterSettingPopupController extends PopupController {
 
     /**
      * 搜索路径
@@ -50,7 +50,7 @@ public class ZKFilterSettingPopupController extends PopupController {
     @FXML
     private void apply() {
         try {
-            ZKNodeFilterParam filterParam = new ZKNodeFilterParam();
+            ShellZKNodeFilterParam filterParam = new ShellZKNodeFilterParam();
             filterParam.setMatchCase(this.matchCase.isSelected());
             filterParam.setMatchFull(this.matchFull.isSelected());
             filterParam.setSearchPath(this.searchPath.isSelected());
@@ -74,7 +74,7 @@ public class ZKFilterSettingPopupController extends PopupController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         // 初始化
-        ZKNodeFilterParam filterParam = this.getProp("filterParam");
+        ShellZKNodeFilterParam filterParam = this.getProp("filterParam");
         if (filterParam != null) {
             this.matchCase.setSelected(filterParam.isMatchCase());
             this.matchFull.setSelected(filterParam.isMatchFull());

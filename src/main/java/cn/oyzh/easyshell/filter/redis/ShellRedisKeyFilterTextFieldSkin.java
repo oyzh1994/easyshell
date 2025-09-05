@@ -1,6 +1,6 @@
-package cn.oyzh.easyshell.filter.zk;
+package cn.oyzh.easyshell.filter.redis;
 
-import cn.oyzh.easyshell.popups.zk.ZKFilterSettingPopupController;
+import cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController;
 import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -15,12 +15,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- * zk节点过滤文本域皮肤
+ * 过滤文本输入框皮肤
  *
  * @author oyzh
  * @since 2025/01/23
  */
-public class ZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
+public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
 
     /**
      * 过滤设置按钮
@@ -39,11 +39,11 @@ public class ZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
     /**
      * 过滤参数
      */
-    private ZKNodeFilterParam filterParam;
+    private ShellRedisKeyFilterParam filterParam;
 
-    public ZKNodeFilterParam filterParam() {
+    public ShellRedisKeyFilterParam filterParam() {
         if (this.filterParam == null) {
-            this.filterParam = new ZKNodeFilterParam();
+            this.filterParam = new ShellRedisKeyFilterParam();
         }
         return this.filterParam;
     }
@@ -55,10 +55,10 @@ public class ZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
         if (this.popup != null) {
             this.closePopup();
         }
-        this.popup = PopupManager.parsePopup(ZKFilterSettingPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellRedisFilterSettingPopupController.class);
         this.popup.setProp("filterParam", this.filterParam());
         this.popup.setSubmitHandler(o -> {
-            if (o instanceof ZKNodeFilterParam param) {
+            if (o instanceof ShellRedisKeyFilterParam param) {
                 this.filterParam = param;
                 this.onSearch(this.getText());
             }
@@ -75,7 +75,7 @@ public class ZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
         }
     }
 
-    public ZKNodeFilterTextFieldSkin(TextField textField) {
+    public ShellRedisKeyFilterTextFieldSkin(TextField textField) {
         super(textField);
         // 初始化按钮
         this.button = new SettingSVGGlyph();

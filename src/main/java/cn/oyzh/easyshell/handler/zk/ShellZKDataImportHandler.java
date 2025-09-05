@@ -24,7 +24,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/11/26
  */
-public class ZKDataImportHandler extends DataHandler {
+public class ShellZKDataImportHandler extends ShellZKDataHandler {
 
     /**
      * 文件格式

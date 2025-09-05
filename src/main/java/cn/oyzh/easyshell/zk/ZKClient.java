@@ -22,8 +22,8 @@ import cn.oyzh.easyshell.exception.zk.ShellZKNoChildPermException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoCreatePermException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.query.zk.ZKQueryParam;
-import cn.oyzh.easyshell.query.zk.ZKQueryResult;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
@@ -1807,8 +1807,8 @@ public class ZKClient implements ShellBaseClient {
      * @param param 查询参数
      * @return 查询结果
      */
-    public ZKQueryResult query(ZKQueryParam param) {
-        ZKQueryResult result = new ZKQueryResult();
+    public ShellZKQueryResult query(ShellZKQueryParam param) {
+        ShellZKQueryResult result = new ShellZKQueryResult();
         long start = System.currentTimeMillis();
         try {
             String nodePath = param.getPath();

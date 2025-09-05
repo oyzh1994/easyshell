@@ -15,7 +15,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/20
  */
-public class ZKQueryResult {
+public class ShellZKQueryResult {
 
     /**
      * 耗时

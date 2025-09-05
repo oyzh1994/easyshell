@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.tabs.zk.query;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.query.zk.ZKQueryEditor;
-import cn.oyzh.easyshell.query.zk.ZKQueryParam;
-import cn.oyzh.easyshell.query.zk.ZKQueryResult;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
@@ -57,7 +57,7 @@ public class ZKQueryTabController extends RichTabController {
      * 当前内容
      */
     @FXML
-    private ZKQueryEditor content;
+    private ShellZKQueryEditor content;
 
     /**
      * 结果面板
@@ -109,9 +109,9 @@ public class ZKQueryTabController extends RichTabController {
     private void run() {
         StageManager.showMask(() -> {
             try {
-                ZKQueryParam param = new ZKQueryParam();
+                ShellZKQueryParam param = new ShellZKQueryParam();
                 param.setContent(this.content.getText());
-                ZKQueryResult result = this.zkClient.query(param);
+                ShellZKQueryResult result = this.zkClient.query(param);
                 this.content.flexHeight("30% - 60");
                 this.resultTabPane.setVisible(true);
                 this.resultTabPane.clearChild();

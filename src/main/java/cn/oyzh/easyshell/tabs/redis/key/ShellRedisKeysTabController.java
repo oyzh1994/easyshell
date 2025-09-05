@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.filter.redis.RedisKeyFilterTextField;
-import cn.oyzh.easyshell.filter.redis.RedisKeyFilterTypeComboBox;
+import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField;
+import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView;
@@ -94,13 +94,13 @@ public class ShellRedisKeysTabController extends ParentTabController {
      * 过滤内容
      */
     @FXML
-    private RedisKeyFilterTextField filterKW;
+    private ShellRedisKeyFilterTextField filterKW;
 
     /**
      * 过滤类型
      */
     @FXML
-    private RedisKeyFilterTypeComboBox filterType;
+    private ShellRedisKeyFilterTypeComboBox filterType;
 
     // /**
     //  * 收藏面板

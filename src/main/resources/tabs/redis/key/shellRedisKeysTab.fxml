@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.filter.redis.RedisKeyFilterTextField?>
-<?import cn.oyzh.easyshell.filter.redis.RedisKeyFilterTypeComboBox?>
+<?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
+<?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
 <?import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
@@ -21,17 +21,17 @@
     <FXHBox flexWidth="100%" flexHeight="100%">
         <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
-                <RedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
+                <ShellRedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
                     <HBox.margin>
                         <Insets left="5" top="3"/>
                     </HBox.margin>
-                </RedisKeyFilterTypeComboBox>
-                <RedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                         flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30">
+                </ShellRedisKeyFilterTypeComboBox>
+                <ShellRedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
+                                              flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30">
                     <HBox.margin>
                         <Insets left="5" top="3"/>
                     </HBox.margin>
-                </RedisKeyFilterTextField>
+                </ShellRedisKeyFilterTextField>
             </FXHBox>
             <RedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
 

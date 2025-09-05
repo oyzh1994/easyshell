@@ -11,7 +11,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.query.zk.ZKQueryEditor?>
+<?import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryTabController"
        text="%base.queries">
     <graphic>
@@ -34,12 +34,12 @@
                     </HBox.margin>
                 </RunSVGGlyph>
             </FXHBox>
-            <ZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                                   flexWidth="100% - 30" flexHeight="100% - 60">
+            <ShellZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
+                                flexWidth="100% - 30" flexHeight="100% - 60">
                 <VBox.margin>
                     <Insets left="5"/>
                 </VBox.margin>
-            </ZKQueryEditor>
+            </ShellZKQueryEditor>
             <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
                        visible="false">
             </FXTabPane>

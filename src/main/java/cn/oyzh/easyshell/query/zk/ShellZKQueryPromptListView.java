@@ -19,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ZKQueryPromptListView extends FXListView<FXHBox> {
+public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
 
     {
         this.setRealWidth(360);
@@ -95,10 +95,10 @@ public class ZKQueryPromptListView extends FXListView<FXHBox> {
      *
      * @return 结果
      */
-    public ZKQueryPromptItem getPickedItem() {
+    public ShellZKQueryPromptItem getPickedItem() {
         FXHBox hBox = this.getSelectedItem();
         if (hBox != null) {
-            ZKQueryPromptItem item = hBox.getProp("item");
+            ShellZKQueryPromptItem item = hBox.getProp("item");
             if (item != null) {
                 this.applyBackground(-1);
                 return item;
@@ -141,13 +141,13 @@ public class ZKQueryPromptListView extends FXListView<FXHBox> {
      *
      * @param items 提示
      */
-    public void init(List<ZKQueryPromptItem> items) {
+    public void init(List<ShellZKQueryPromptItem> items) {
         // 应用背景色
         this.applyBackground(-1);
         // 初始化数据
         List<FXHBox> boxList = new ArrayList<>();
         // 初始化节点内容
-        for (ZKQueryPromptItem item : items) {
+        for (ShellZKQueryPromptItem item : items) {
             FXHBox box = this.initBox();
             // 提示组件
             SVGLabel promptLabel = this.initPromptLabel(item);
@@ -171,7 +171,7 @@ public class ZKQueryPromptListView extends FXListView<FXHBox> {
      * @param item 提示词
      * @return 组件
      */
-    private SVGLabel initPromptLabel(ZKQueryPromptItem item) {
+    private SVGLabel initPromptLabel(ShellZKQueryPromptItem item) {
         SVGLabel label = null;
         if (item.isKeywordType()) {
             SVGGlyph svgGlyph = new KeywordsSVGGlyph("12");
@@ -199,7 +199,7 @@ public class ZKQueryPromptListView extends FXListView<FXHBox> {
 //     * @param item 提示词
 //     * @return 组件
 //     */
-//    private FXLabel initExtLabel(ZKQueryPromptItem item) {
+//    private FXLabel initExtLabel(ShellZKQueryPromptItem item) {
 //        FXLabel label = null;
 //        if (item.isTableType() || item.isViewType() || item.isColumnType()) {
 //            label = new FXLabel(item.getExtContent());

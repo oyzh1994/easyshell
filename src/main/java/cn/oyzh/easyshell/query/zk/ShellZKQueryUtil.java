@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.query.zk.ZKQueryPromptItem;
-import cn.oyzh.easyshell.query.zk.ZKQueryToken;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
  * @since 2025/01/21
  */
 
-public class ZKQueryUtil {
+public class ShellZKQueryUtil {
 
     /**
      * 节点列表
@@ -131,14 +129,14 @@ public class ZKQueryUtil {
      * @param minCorr 最低相关度
      * @return 结果
      */
-    public static List<ZKQueryPromptItem> initPrompts(ZKQueryToken token, float minCorr) {
+    public static List<ShellZKQueryPromptItem> initPrompts(ShellZKQueryToken token, float minCorr) {
         if (token == null) {
             return Collections.emptyList();
         }
         // 当前提示词
         String text = token.getContent().toUpperCase();
         // 提示词列表
-        final List<ZKQueryPromptItem> items = new CopyOnWriteArrayList<>();
+        final List<ShellZKQueryPromptItem> items = new CopyOnWriteArrayList<>();
         // 任务列表
         List<Runnable> tasks = new ArrayList<>();
         // 关键字
@@ -147,7 +145,7 @@ public class ZKQueryUtil {
                 // 计算相关度
                 double corr = clacCorr(keyword, text);
                 if (corr > minCorr) {
-                    ZKQueryPromptItem item = new ZKQueryPromptItem();
+                    ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                     item.setType((byte) 1);
                     item.setContent(keyword);
                     item.setCorrelation(corr);
@@ -158,7 +156,7 @@ public class ZKQueryUtil {
         // 参数
         if (token.isPossibilityParam()) {
             tasks.add(() -> getParams().parallelStream().forEach(param -> {
-                ZKQueryPromptItem item = new ZKQueryPromptItem();
+                ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                 item.setType((byte) 2);
                 item.setContent(param);
                 item.setCorrelation(1);
@@ -171,7 +169,7 @@ public class ZKQueryUtil {
                 // 计算相关度
                 double corr = clacCorr(node, text);
                 if (corr > minCorr) {
-                    ZKQueryPromptItem item = new ZKQueryPromptItem();
+                    ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                     item.setType((byte) 3);
                     item.setContent(node);
                     item.setCorrelation(corr);
@@ -183,7 +181,7 @@ public class ZKQueryUtil {
         ThreadUtil.submitVirtual(tasks);
         // 根据相关度排序
         return items.parallelStream()
-                .sorted(Comparator.comparingDouble(ZKQueryPromptItem::getCorrelation))
+                .sorted(Comparator.comparingDouble(ShellZKQueryPromptItem::getCorrelation))
                 .collect(Collectors.toList())
                 .reversed();
     }

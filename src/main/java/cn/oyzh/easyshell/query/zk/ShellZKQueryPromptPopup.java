@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.query.zk.ZKQueryToken;
 import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.fx.plus.controls.popup.FXPopup;
@@ -27,7 +26,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ZKQueryPromptPopup extends FXPopup {
+public class ShellZKQueryPromptPopup extends FXPopup {
 
     /**
      * 提示字符
@@ -113,25 +112,25 @@ public class ZKQueryPromptPopup extends FXPopup {
     /**
      * 选中事件
      */
-    protected Consumer<ZKQueryPromptItem> onItemSelected;
+    protected Consumer<ShellZKQueryPromptItem> onItemSelected;
 
-    public Consumer<ZKQueryPromptItem> getOnItemSelected() {
+    public Consumer<ShellZKQueryPromptItem> getOnItemSelected() {
         return onItemSelected;
     }
 
-    public void setOnItemSelected(Consumer<ZKQueryPromptItem> onItemSelected) {
+    public void setOnItemSelected(Consumer<ShellZKQueryPromptItem> onItemSelected) {
         this.onItemSelected = onItemSelected;
     }
 
-    public ZKQueryToken getToken() {
+    public ShellZKQueryToken getToken() {
         return token;
     }
 
-    public void setToken(ZKQueryToken token) {
+    public void setToken(ShellZKQueryToken token) {
         this.token = token;
     }
 
-    public ZKQueryPromptPopup() {
+    public ShellZKQueryPromptPopup() {
         this.setAutoFix(true);
         this.setAutoHide(true);
         this.initContent();
@@ -142,9 +141,9 @@ public class ZKQueryPromptPopup extends FXPopup {
      * 初始化内容组件
      */
     protected void initContent() {
-        ZKQueryPromptListView listView = this.listView();
+        ShellZKQueryPromptListView listView = this.listView();
         if (listView == null) {
-            listView = new ZKQueryPromptListView();
+            listView = new ShellZKQueryPromptListView();
             this.getContent().setAll(listView);
             listView.setFontSize(12.0);
             listView.setCursor(Cursor.HAND);
@@ -160,8 +159,8 @@ public class ZKQueryPromptPopup extends FXPopup {
      *
      * @return 列表组件
      */
-    public ZKQueryPromptListView listView() {
-        return (ZKQueryPromptListView) CollectionUtil.getFirst(this.getContent());
+    public ShellZKQueryPromptListView listView() {
+        return (ShellZKQueryPromptListView) CollectionUtil.getFirst(this.getContent());
     }
 
     /**
@@ -170,13 +169,13 @@ public class ZKQueryPromptPopup extends FXPopup {
      * @param token 提示词
      * @return 结果
      */
-    public synchronized boolean initPrompts(ZKQueryToken token, ZKClient zkClient) {
+    public synchronized boolean initPrompts(ShellZKQueryToken token, ZKClient zkClient) {
         // 初始化提示的子节点列表
         if (token.isPossibilityNode()) {
             try {
                 String path = token.getPath();
                 if (path == null) {
-                    ZKQueryUtil.setNodes(null);
+                    ShellZKQueryUtil.setNodes(null);
                 } else {
                     List<String> children = zkClient.getChildren(path);
                     if (CollectionUtil.isNotEmpty(children)) {
@@ -184,17 +183,17 @@ public class ZKQueryPromptPopup extends FXPopup {
                         for (String s : children) {
                             list.add(ZKNodeUtil.concatPath(path, s));
                         }
-                        ZKQueryUtil.setNodes(list);
+                        ShellZKQueryUtil.setNodes(list);
                     }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         } else {
-            ZKQueryUtil.setNodes(null);
+            ShellZKQueryUtil.setNodes(null);
         }
         // 提示词列表
-        List<ZKQueryPromptItem> items = ZKQueryUtil.initPrompts(token, 0.5f);
+        List<ShellZKQueryPromptItem> items = ShellZKQueryUtil.initPrompts(token, 0.5f);
         // 初始化数据
         this.listView().init(items);
         // 判断是否为空
@@ -204,7 +203,7 @@ public class ZKQueryPromptPopup extends FXPopup {
     /**
      * token
      */
-    private ZKQueryToken token;
+    private ShellZKQueryToken token;
 
     /**
      * 提示词标志位
@@ -217,7 +216,7 @@ public class ZKQueryPromptPopup extends FXPopup {
      * @param area  文本域
      * @param event 键盘按键事件
      */
-    public void prompt(ZKQueryEditor area, KeyEvent event) {
+    public void prompt(ShellZKQueryEditor area, KeyEvent event) {
         // 常规按键不处理
         if (this.isGeneralKeyEvent(event)) {
             this.hide();
@@ -261,7 +260,7 @@ public class ZKQueryPromptPopup extends FXPopup {
         // 文本内容
         String content = area.getText();
         // 获取token
-        this.token = ZKQueryTokenAnalyzer.INSTANCE.currentToken(content, cartPos);
+        this.token = ShellZKQueryTokenAnalyzer.INSTANCE.currentToken(content, cartPos);
         // 处理token
         if (this.token != null && (this.token.isPossibilityParam() || this.token.isNotEmpty())) {
             // 生成标志位
@@ -288,7 +287,7 @@ public class ZKQueryPromptPopup extends FXPopup {
      *
      * @param area 文本域
      */
-    private void showPrompt(ZKQueryEditor area) {
+    private void showPrompt(ShellZKQueryEditor area) {
         RenderService.submitFXLater(() -> {
             Optional<Bounds> optional = area.getCaretBounds();
             // 显示提示词
@@ -310,7 +309,7 @@ public class ZKQueryPromptPopup extends FXPopup {
      * @param editor 编辑器
      * @param item   提示内容
      */
-    public void autoComplete(ZKQueryEditor editor, ZKQueryPromptItem item) {
+    public void autoComplete(ShellZKQueryEditor editor, ShellZKQueryPromptItem item) {
         try {
             if (this.token != null) {
                 editor.replaceText(this.token.getStartIndex(), this.token.getEndIndex(), item.getContent());
@@ -326,7 +325,7 @@ public class ZKQueryPromptPopup extends FXPopup {
      */
     private void pickItem() {
         if (this.onItemSelected != null && this.isShowing()) {
-            ZKQueryPromptItem pickedItem = this.listView().getPickedItem();
+            ShellZKQueryPromptItem pickedItem = this.listView().getPickedItem();
             if (pickedItem != null) {
                 this.onItemSelected.accept(pickedItem);
             }

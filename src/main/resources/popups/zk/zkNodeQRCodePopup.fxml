@@ -2,6 +2,6 @@
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import javafx.scene.image.ImageView?>
 <FXPane  xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.zk.ZKNodeQRCodePopupController">
+        fx:controller="cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController">
     <ImageView fitWidth="450" fitHeight="450" fx:id="qrcode"/>
 </FXPane>

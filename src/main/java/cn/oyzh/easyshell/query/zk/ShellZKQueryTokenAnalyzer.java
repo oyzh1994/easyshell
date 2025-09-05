@@ -2,17 +2,16 @@ package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.query.zk.ZKQueryToken;
 
 /**
  * @author oyzh
  * @since 2025/01/21
  */
-public class ZKQueryTokenAnalyzer {
+public class ShellZKQueryTokenAnalyzer {
 
-    public static final ZKQueryTokenAnalyzer INSTANCE = new ZKQueryTokenAnalyzer();
+    public static final ShellZKQueryTokenAnalyzer INSTANCE = new ShellZKQueryTokenAnalyzer();
 
-    public ZKQueryToken currentToken(String content, int currentIndex) {
+    public ShellZKQueryToken currentToken(String content, int currentIndex) {
         try {
             if (StringUtil.isEmpty(content)) {
                 return null;
@@ -23,7 +22,7 @@ public class ZKQueryTokenAnalyzer {
             if (currentIndex > content.length()) {
                 return null;
             }
-            ZKQueryToken token = new ZKQueryToken();
+            ShellZKQueryToken token = new ShellZKQueryToken();
             // 截取字符串
             content = content.substring(0, currentIndex);
             // 当前位置

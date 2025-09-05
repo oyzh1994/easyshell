@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.filter.zk;
+package cn.oyzh.easyshell.filter.redis;
 
 import cn.oyzh.fx.gui.text.field.LimitTextField;
 import cn.oyzh.fx.plus.event.AnonymousEvent;
@@ -6,12 +6,12 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Skin;
 
 /**
- * zk节点过滤文本域
+ * 过滤文本域
  *
  * @author oyzh
  * @since 2025/01/23
  */
-public class ZKNodeFilterTextField extends LimitTextField {
+public class ShellRedisKeyFilterTextField extends LimitTextField {
 
     public EventHandler<AnonymousEvent<Object>> getOnSearch() {
         return onSearch;
@@ -31,13 +31,13 @@ public class ZKNodeFilterTextField extends LimitTextField {
      *
      * @return 皮肤
      */
-    public ZKNodeFilterTextFieldSkin skin() {
-        return (ZKNodeFilterTextFieldSkin) this.getSkin();
+    public ShellRedisKeyFilterTextFieldSkin skin() {
+        return (ShellRedisKeyFilterTextFieldSkin) this.getSkin();
     }
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new ZKNodeFilterTextFieldSkin(this) {
+        return new ShellRedisKeyFilterTextFieldSkin(this) {
             @Override
             public void onSearch(String text) {
                 super.onSearch(text);
@@ -53,7 +53,7 @@ public class ZKNodeFilterTextField extends LimitTextField {
      *
      * @return 过滤参数
      */
-    public ZKNodeFilterParam filterParam() {
+    public ShellRedisKeyFilterParam filterParam() {
         return this.skin().filterParam();
     }
 
@@ -63,7 +63,7 @@ public class ZKNodeFilterTextField extends LimitTextField {
      * @return 过滤模式
      */
     public byte filterMode() {
-        ZKNodeFilterParam filterParam = this.filterParam();
+        ShellRedisKeyFilterParam filterParam = this.filterParam();
         if (filterParam.isMatchCase() && filterParam.isMatchFull()) {
             return 3;
         }
@@ -76,22 +76,22 @@ public class ZKNodeFilterTextField extends LimitTextField {
         return 0;
     }
 
-   /**
-    * 获取过滤范围
-    *
-    * @return 过滤范围
-    */
-   public byte filterScope() {
-       ZKNodeFilterParam filterParam = this.filterParam();
-       if (filterParam.isSearchData() && filterParam.isSearchPath()) {
-           return 2;
-       }
-       if (filterParam.isSearchData()) {
-           return 1;
-       }
-       if (filterParam.isSearchPath()) {
-           return 0;
-       }
-       return -1;
-   }
+    /**
+     * 获取过滤范围
+     *
+     * @return 过滤范围
+     */
+    public byte filterScope() {
+        ShellRedisKeyFilterParam filterParam = this.filterParam();
+        if (filterParam.isSearchData() && filterParam.isSearchKey()) {
+            return 2;
+        }
+        if (filterParam.isSearchData()) {
+            return 1;
+        }
+        if (filterParam.isSearchKey()) {
+            return 0;
+        }
+        return -1;
+    }
 }

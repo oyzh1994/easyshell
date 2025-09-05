@@ -13,7 +13,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ZKQueryEditor extends Editor {
+public class ShellZKQueryEditor extends Editor {
 
     /**
      * zk客户端
@@ -31,7 +31,7 @@ public class ZKQueryEditor extends Editor {
     /**
      * 提示词组件
      */
-    private final ZKQueryPromptPopup promptPopup = new ZKQueryPromptPopup();
+    private final ShellZKQueryPromptPopup promptPopup = new ShellZKQueryPromptPopup();
 
     {
 //        this.showLineNum();
@@ -86,8 +86,8 @@ public class ZKQueryEditor extends Editor {
     public Set<String> getPrompts() {
         if (super.getPrompts() == null) {
             // 设置内容提示符
-            Set<String> set = ZKQueryUtil.getKeywords();
-            set.addAll(ZKQueryUtil.getParams());
+            Set<String> set = ShellZKQueryUtil.getKeywords();
+            set.addAll(ShellZKQueryUtil.getParams());
             this.setPrompts(set);
         }
         return super.getPrompts();

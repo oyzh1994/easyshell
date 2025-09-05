@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.query.zk;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ZKQueryPromptItem {
+public class ShellZKQueryPromptItem {
 
     /**
      * 类型

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.popups.redis;
 
-import cn.oyzh.easyshell.filter.redis.RedisKeyFilterParam;
+import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterParam;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -50,7 +50,7 @@ public class ShellRedisFilterSettingPopupController extends PopupController {
     @FXML
     private void apply() {
         try {
-            RedisKeyFilterParam filterParam = new RedisKeyFilterParam();
+            ShellRedisKeyFilterParam filterParam = new ShellRedisKeyFilterParam();
             filterParam.setMatchCase(this.matchCase.isSelected());
             filterParam.setMatchFull(this.matchFull.isSelected());
 //            filterParam.setSearchKey(this.searchKey.isSelected());
@@ -74,7 +74,7 @@ public class ShellRedisFilterSettingPopupController extends PopupController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         // 初始化
-        RedisKeyFilterParam filterParam = this.getProp("filterParam");
+        ShellRedisKeyFilterParam filterParam = this.getProp("filterParam");
         if (filterParam != null) {
             this.matchCase.setSelected(filterParam.isMatchCase());
             this.matchFull.setSelected(filterParam.isMatchFull());

@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.handler.zk.ZKDataExportHandler;
+import cn.oyzh.easyshell.handler.zk.ShellZKDataExportHandler;
 import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKClientUtil;
@@ -192,7 +192,7 @@ public class ZKExportDataController extends StageController {
     /**
      * 导出处理器
      */
-    private ZKDataExportHandler exportHandler;
+    private ShellZKDataExportHandler exportHandler;
 
     /**
      * 执行导出
@@ -207,7 +207,7 @@ public class ZKExportDataController extends StageController {
         this.stage.appendTitle("===" + I18nHelper.exportProcessing() + "===");
         // 生成导出处理器
         if (this.exportHandler == null) {
-            this.exportHandler = new ZKDataExportHandler();
+            this.exportHandler = new ShellZKDataExportHandler();
             this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str));
             this.exportHandler.setProcessedHandler(count -> {
                 if (count == 0) {

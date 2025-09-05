@@ -1,6 +1,6 @@
-package cn.oyzh.easyshell.filter.redis;
+package cn.oyzh.easyshell.filter.zk;
 
-import cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController;
+import cn.oyzh.easyshell.popups.zk.ShellZKFilterSettingPopupController;
 import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -15,12 +15,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- * 过滤文本输入框皮肤
+ * zk节点过滤文本域皮肤
  *
  * @author oyzh
  * @since 2025/01/23
  */
-public class RedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
+public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
 
     /**
      * 过滤设置按钮
@@ -39,11 +39,11 @@ public class RedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
     /**
      * 过滤参数
      */
-    private RedisKeyFilterParam filterParam;
+    private ShellZKNodeFilterParam filterParam;
 
-    public RedisKeyFilterParam filterParam() {
+    public ShellZKNodeFilterParam filterParam() {
         if (this.filterParam == null) {
-            this.filterParam = new RedisKeyFilterParam();
+            this.filterParam = new ShellZKNodeFilterParam();
         }
         return this.filterParam;
     }
@@ -55,10 +55,10 @@ public class RedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         if (this.popup != null) {
             this.closePopup();
         }
-        this.popup = PopupManager.parsePopup(ShellRedisFilterSettingPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellZKFilterSettingPopupController.class);
         this.popup.setProp("filterParam", this.filterParam());
         this.popup.setSubmitHandler(o -> {
-            if (o instanceof RedisKeyFilterParam param) {
+            if (o instanceof ShellZKNodeFilterParam param) {
                 this.filterParam = param;
                 this.onSearch(this.getText());
             }
@@ -75,7 +75,7 @@ public class RedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         }
     }
 
-    public RedisKeyFilterTextFieldSkin(TextField textField) {
+    public ShellZKNodeFilterTextFieldSkin(TextField textField) {
         super(textField);
         // 初始化按钮
         this.button = new SettingSVGGlyph();

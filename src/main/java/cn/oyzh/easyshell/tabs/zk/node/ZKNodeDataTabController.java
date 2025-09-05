@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.popups.zk.ZKNodeQRCodePopupController;
+import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
 import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ZKI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
@@ -242,7 +242,7 @@ public class ZKNodeDataTabController extends SubTabController {
     @FXML
     private void node2QRCode(MouseEvent event) {
         try {
-            PopupAdapter adapter = PopupManager.parsePopup(ZKNodeQRCodePopupController.class);
+            PopupAdapter adapter = PopupManager.parsePopup(ShellZKNodeQRCodePopupController.class);
             adapter.setProp("zkNode", this.activeItem().value());
             adapter.setProp("nodeData", this.nodeData.getTextTrim());
             adapter.showPopup((Node) event.getSource());

@@ -1,19 +1,12 @@
-package cn.oyzh.easyshell.filter.zk;
+package cn.oyzh.easyshell.filter.redis;
+
 
 
 /**
- * zk节点过滤参数
- *
  * @author oyzh
- * @since 2025/01/22
+ * @since 2025/01/24
  */
-public class ZKNodeFilterParam {
-
-    /**
-     * 匹配大小写
-     */
-    private boolean matchCase;
-
+public class ShellRedisKeyFilterParam {
     public boolean isMatchCase() {
         return matchCase;
     }
@@ -30,12 +23,12 @@ public class ZKNodeFilterParam {
         this.matchFull = matchFull;
     }
 
-    public boolean isSearchPath() {
-        return searchPath;
+    public boolean isSearchKey() {
+        return searchKey;
     }
 
-    public void setSearchPath(boolean searchPath) {
-        this.searchPath = searchPath;
+    public void setSearchKey(boolean searchKey) {
+        this.searchKey = searchKey;
     }
 
     public boolean isSearchData() {
@@ -47,14 +40,19 @@ public class ZKNodeFilterParam {
     }
 
     /**
+     * 匹配大小写
+     */
+    private boolean matchCase;
+
+    /**
      * 匹配全文
      */
     private boolean matchFull;
 
     /**
-     * 搜索路径
+     * 搜索键
      */
-    private boolean searchPath = true;
+    private boolean searchKey = true;
 
     /**
      * 搜索数据
@@ -66,7 +64,7 @@ public class ZKNodeFilterParam {
         if (param == this) {
             return true;
         }
-        if (param instanceof ZKNodeFilterParam searchParam) {
+        if (param instanceof ShellRedisKeyFilterParam searchParam) {
             if (searchParam.matchCase && !this.matchCase) {
                 return false;
             }
@@ -76,7 +74,7 @@ public class ZKNodeFilterParam {
             if (searchParam.searchData && !this.searchData) {
                 return false;
             }
-            return !searchParam.searchPath || this.searchPath;
+            return !searchParam.searchKey || this.searchKey;
         }
         return false;
     }

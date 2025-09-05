@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.handler.zk.ZKDataTransportHandler;
+import cn.oyzh.easyshell.handler.zk.ShellZKDataTransportHandler;
 import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKClientUtil;
@@ -176,7 +176,7 @@ public class ZKTransportDataController extends StageController {
     /**
      * 传输处理器
      */
-    private ZKDataTransportHandler transportHandler;
+    private ShellZKDataTransportHandler transportHandler;
 
     /**
      * 过滤配置储存
@@ -195,7 +195,7 @@ public class ZKTransportDataController extends StageController {
         this.transportStatus.clear();
         // 生成传输处理器
         if (this.transportHandler == null) {
-            this.transportHandler = new ZKDataTransportHandler();
+            this.transportHandler = new ShellZKDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str));
             this.transportHandler.setProcessedHandler(count -> {
                 if (count == 0) {

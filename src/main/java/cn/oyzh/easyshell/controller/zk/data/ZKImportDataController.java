@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.handler.zk.ZKDataImportHandler;
+import cn.oyzh.easyshell.handler.zk.ShellZKDataImportHandler;
 import cn.oyzh.easyshell.zk.ZKClient;
 import cn.oyzh.easyshell.zk.ZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -167,7 +167,7 @@ public class ZKImportDataController extends StageController {
     /**
      * 导入处理器
      */
-    private ZKDataImportHandler importHandler;
+    private ShellZKDataImportHandler importHandler;
 
     /**
      * 执行导入
@@ -182,7 +182,7 @@ public class ZKImportDataController extends StageController {
         this.stage.appendTitle("===" + I18nHelper.importProcessing() + "===");
         // 生成迁移处理器
         if (this.importHandler == null) {
-            this.importHandler = new ZKDataImportHandler();
+            this.importHandler = new ShellZKDataImportHandler();
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str));
             this.importHandler.setProcessedHandler(count -> {
                 if (count == 0) {

@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.query.zk.ZKQueryParam;
-import cn.oyzh.easyshell.query.zk.ZKQueryResult;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryMsgTabController;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -12,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ZKQueryMsgTab extends RichTab {
 
-    public ZKQueryMsgTab(ZKQueryParam param, ZKQueryResult result) {
+    public ZKQueryMsgTab(ShellZKQueryParam param, ShellZKQueryResult result) {
         super();
         super.flush();
         this.controller().init(param, result);

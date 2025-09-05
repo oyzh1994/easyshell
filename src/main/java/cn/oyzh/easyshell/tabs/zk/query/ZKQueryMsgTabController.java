@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.query.zk.ZKQueryParam;
-import cn.oyzh.easyshell.query.zk.ZKQueryResult;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.i18n.I18nHelper;
@@ -16,7 +16,7 @@ public class ZKQueryMsgTabController extends RichTabController {
     @FXML
     private ReadOnlyTextArea msg;
 
-    public void init(ZKQueryParam param, ZKQueryResult result) {
+    public void init(ShellZKQueryParam param, ShellZKQueryResult result) {
         this.msg.appendLine(param.getContent());
         this.msg.appendLine("> " + result.getMessage());
         this.msg.appendLine("> " + I18nHelper.cost() + " " + result.costSeconds());

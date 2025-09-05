@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.util.zk.ZKNodeUtil;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ZKQueryToken {
+public class ShellZKQueryToken {
 
     /**
      * 结束位置
