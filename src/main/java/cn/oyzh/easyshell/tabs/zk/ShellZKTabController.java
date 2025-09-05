@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.tabs.zk;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
-import cn.oyzh.easyshell.tabs.zk.node.ZKNodeTabController;
-import cn.oyzh.easyshell.tabs.zk.query.ZKQueryTabController;
-import cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController;
-import cn.oyzh.easyshell.tabs.zk.terminal.ZKTerminalTabController;
+import cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController;
+import cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController;
+import cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController;
+import cn.oyzh.easyshell.tabs.zk.terminal.ShellZKTerminalTabController;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -30,25 +30,25 @@ public class ShellZKTabController extends ShellParentTabController {
      * 键
      */
     @FXML
-    private ZKNodeTabController nodeController;
+    private ShellZKNodeTabController nodeController;
 
     /**
      * 查询
      */
     @FXML
-    private ZKQueryTabController queryController;
+    private ShellZKQueryTabController queryController;
 
     /**
      * 服务
      */
     @FXML
-    private ZKServerTabController serverController;
+    private ShellZKServerTabController serverController;
 
     /**
      * 终端
      */
     @FXML
-    private ZKTerminalTabController terminalController;
+    private ShellZKTerminalTabController terminalController;
 
     @Override
     public List<? extends RichTabController> getSubControllers() {

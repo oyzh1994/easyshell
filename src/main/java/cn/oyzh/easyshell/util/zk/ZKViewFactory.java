@@ -59,7 +59,7 @@
 //     //  */
 //     // public static void transportData(ShellConnect connect) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKTransportDataController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("sourceConnect", connect);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {
@@ -115,7 +115,7 @@
 //     //  */
 //     // public static void importData(ShellConnect connect) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKImportDataController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKImportDataController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("connect", connect);
 //     //         adapter.display();
 //     //     } catch (Exception ex) {
@@ -132,7 +132,7 @@
 //     //  */
 //     // public static void exportData(ShellConnect connect, String nodePath) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKExportDataController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("connect", connect);
 //     //         adapter.setProp("nodePath", nodePath);
 //     //         adapter.display();
@@ -162,7 +162,7 @@
 //     //  */
 //     // public static StageAdapter addACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKAddACLController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("zkItem", nodeItem);
 //     //         adapter.setProp("zkClient", client);
 //     //         adapter.showAndWait();
@@ -183,7 +183,7 @@
 //     //  */
 //     // public static StageAdapter updateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ZKACL acl) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKUpdateACLController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("acl", acl);
 //     //         adapter.setProp("zkItem", nodeItem);
 //     //         adapter.setProp("zkClient", client);
@@ -243,7 +243,7 @@
 //     //  */
 //     // public static void authNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKAuthNodeController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("zkItem", nodeItem);
 //     //         adapter.setProp("zkClient", client);
 //     //         adapter.display();
@@ -261,7 +261,7 @@
 //     //  */
 //     // public static void addNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
 //     //     try {
-//     //         StageAdapter adapter = StageManager.parseStage(ZKAddNodeController.class, StageManager.getPrimaryStage());
+//     //         StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("zkItem", nodeItem);
 //     //         adapter.setProp("zkClient", client);
 //     //         adapter.display();

@@ -21,8 +21,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.editor.tm4javafx.Editor?>
 <?import cn.oyzh.fx.editor.tm4javafx.Editor?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.zk.node.ZKAddNodeController" realWidth="750" realHeight="650">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController" realWidth="750" realHeight="650">
     <FXTabPane flexWidth="100%" flexHeight="100% - 80">
         <FXTab text="%base.data" fx:id="dataTab">
             <FXVBox flexWidth="100%" flexHeight="100%">

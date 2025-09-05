@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryACLTabController" flexWidth="100% - 30" flexHeight="100%">
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryACLTabController" flexWidth="100% - 30" flexHeight="100%">
     <FXTableView fx:id="aclTable" flexWidth="100%" flexHeight="100%">
         <columns>
             <FXTableColumn valueName="param1" flexWidth="30%" text="%base.id"/>

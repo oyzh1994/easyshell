@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXTab xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.zk.server.ZKEnviTabController" text="Envi">
+       fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKEnviTabController" text="Envi">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox realHeight="30" flexWidth="100% - 28">
             <RefreshSVGGlyph onMousePrimaryClicked="#refreshEnvi">

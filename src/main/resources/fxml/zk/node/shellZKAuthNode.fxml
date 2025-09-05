@@ -13,8 +13,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.zk.node.ZKAuthNodeController" realWidth="600" realHeight="320">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.node.ShellZKAuthNodeController" realWidth="600" realHeight="320">
     <InfoLabel text="%base.path">
         <VBox.margin>
             <Insets left="30" top="10"/>

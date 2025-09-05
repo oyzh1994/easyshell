@@ -7,7 +7,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKAuth;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -349,7 +349,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     /**
      * 认证列表 zk协议
      */
-    private List<ZKAuth> auths;
+    private List<ShellZKAuth> auths;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
@@ -545,7 +545,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // zk
         this.listen = t1.listen;
         this.saslAuth = t1.saslAuth;
-        this.auths = ZKAuth.clone(t1.auths);
+        this.auths = ShellZKAuth.clone(t1.auths);
         this.compatibility = t1.compatibility;
         this.sessionTimeOut = t1.sessionTimeOut;
     }
@@ -1150,22 +1150,22 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return BooleanUtil.isTrue(this.listen);
     }
 
-    public List<ZKAuth> getAuths() {
+    public List<ShellZKAuth> getAuths() {
         return auths;
     }
 
-    public void setAuths(List<ZKAuth> auths) {
+    public void setAuths(List<ShellZKAuth> auths) {
         this.auths = auths;
     }
 
-    public void addAuth(ZKAuth auth) {
+    public void addAuth(ShellZKAuth auth) {
         if (auth == null) {
             return;
         }
         if (this.auths == null) {
             this.auths = new ArrayList<>();
         } else {
-            for (ZKAuth zkAuth : auths) {
+            for (ShellZKAuth zkAuth : auths) {
                 if (zkAuth.compare(auth)) {
                     return;
                 }

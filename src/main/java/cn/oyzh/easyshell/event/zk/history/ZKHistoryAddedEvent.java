@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.history;
 
-import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
+import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
 import cn.oyzh.event.Event;
 import javafx.scene.control.TreeItem;
 
@@ -8,7 +8,7 @@ import javafx.scene.control.TreeItem;
  * @author oyzh
  * @since 2024/4/23
  */
-public class ZKHistoryAddedEvent extends Event<ZKDataHistory> {
+public class ZKHistoryAddedEvent extends Event<ShellZKDataHistory> {
 
     private TreeItem<?> item;
 

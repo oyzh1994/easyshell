@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.zk;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.zk.ZKSASLConfig;
+import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.zk.ZKSASLConfigStore;
+import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 import cn.oyzh.store.jdbc.QueryParam;
 import cn.oyzh.store.jdbc.SelectParam;
 
@@ -31,7 +31,7 @@ public class ShellZKSASLUtil {
     /**
      * sasl配置存储
      */
-    private static final ZKSASLConfigStore CONFIG_STORE = ZKSASLConfigStore.INSTANCE;
+    private static final ShellZKSASLConfigStore CONFIG_STORE = ShellZKSASLConfigStore.INSTANCE;
 
     /**
      * 注册配置类
@@ -70,7 +70,7 @@ public class ShellZKSASLUtil {
             selectParam.addQueryColumn("saslAuth");
             ShellConnect connect = CONNECT_STORE.selectOne(selectParam);
             if (connect != null && connect.isSASLAuth()) {
-                ZKSASLConfig config = CONFIG_STORE.getByIid(iid);
+                ShellZKSASLConfig config = CONFIG_STORE.getByIid(iid);
                 if (config == null || config.checkInvalid()) {
                     return false;
                 }
@@ -87,7 +87,7 @@ public class ShellZKSASLUtil {
      *
      * @param config sasl配置
      */
-    private static void addSaslEntry(ZKSASLConfig config) {
+    private static void addSaslEntry(ShellZKSASLConfig config) {
         if (Configuration.getConfiguration() instanceof ShellZKSASLConfiguration configuration) {
             if ("Digest".equalsIgnoreCase(config.getType())) {
                 Map<String, String> options = new HashMap<>();

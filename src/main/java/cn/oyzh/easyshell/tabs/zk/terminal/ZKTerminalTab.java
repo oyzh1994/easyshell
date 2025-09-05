@@ -109,8 +109,8 @@
 //     }
 //
 //     @Override
-//     public ZKTerminalTabController controller() {
-//         return (ZKTerminalTabController) super.controller();
+//     public ShellZKTerminalTabController controller() {
+//         return (ShellZKTerminalTabController) super.controller();
 //     }
 //
 //     @Override

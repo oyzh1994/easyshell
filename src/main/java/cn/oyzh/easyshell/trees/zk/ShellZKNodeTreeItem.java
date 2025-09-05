@@ -8,12 +8,12 @@ import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
+import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.store.zk.ZKCollectStore;
-import cn.oyzh.easyshell.store.zk.ZKDataHistoryStore;
+import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
+import cn.oyzh.easyshell.store.zk.ShellZKDataHistoryStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -974,21 +974,21 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 节点是否被收藏
      */
     public boolean isCollect() {
-        return ZKCollectStore.INSTANCE.exist(this.iid(), this.decodeNodePath());
+        return ShellZKCollectStore.INSTANCE.exist(this.iid(), this.decodeNodePath());
     }
 
     /**
      * 收藏节点
      */
     public void collect() {
-        ZKCollectStore.INSTANCE.replace(this.iid(), this.decodeNodePath());
+        ShellZKCollectStore.INSTANCE.replace(this.iid(), this.decodeNodePath());
     }
 
     /**
      * 取消收藏节点
      */
     public void unCollect() {
-        ZKCollectStore.INSTANCE.delete(this.iid(), this.decodeNodePath());
+        ShellZKCollectStore.INSTANCE.delete(this.iid(), this.decodeNodePath());
     }
 
     private String iid() {
@@ -1207,11 +1207,11 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 保存数据历史
      */
     private void saveHistory() {
-        ZKDataHistory history = new ZKDataHistory();
+        ShellZKDataHistory history = new ShellZKDataHistory();
         history.setPath(this.nodePath());
         history.setData(this.getUnsavedData());
         history.setIid(this.zkConnect().getId());
-        ZKDataHistoryStore.INSTANCE.replace(history, this.client());
+        ShellZKDataHistoryStore.INSTANCE.replace(history, this.client());
         ZKEventUtil.dataHistoryAdded(history, this);
     }
 

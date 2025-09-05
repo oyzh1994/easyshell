@@ -1,16 +1,16 @@
 // package cn.oyzh.easyshell.store.zk;
 //
 // import cn.oyzh.common.util.CollectionUtil;
-// import cn.oyzh.easyshell.domain.zk.ZKAuth;
-// import cn.oyzh.easyshell.domain.zk.ZKCollect;
+// import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
+// import cn.oyzh.easyshell.domain.zk.ShellZKCollect;
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.zk.ZKFilter;
 // import cn.oyzh.easyshell.domain.zk.ZKJumpConfig;
-// import cn.oyzh.easyshell.domain.zk.ZKSASLConfig;
-// import cn.oyzh.easyshell.store.zk.ZKCollectStore;
+// import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
+// import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
 // import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 // import cn.oyzh.easyshell.store.zk.ZKJumpConfigStore;
-// import cn.oyzh.easyshell.store.zk.ZKSASLConfigStore;
+// import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 // import cn.oyzh.store.jdbc.DeleteParam;
 // import cn.oyzh.store.jdbc.JdbcStandardStore;
 // import cn.oyzh.store.jdbc.QueryParam;
@@ -33,7 +33,7 @@
 //     /**
 //      * 认证存储
 //      */
-//     private final ZKAuthStore authStore = ZKAuthStore.INSTANCE;
+//     private final ShellZKAuthStore authStore = ShellZKAuthStore.INSTANCE;
 //
 //     /**
 //      * 过滤存储
@@ -43,7 +43,7 @@
 //     /**
 //      * 收藏存储
 //      */
-//     private final ZKCollectStore collectStore = ZKCollectStore.INSTANCE;
+//     private final ShellZKCollectStore collectStore = ShellZKCollectStore.INSTANCE;
 //
 //     /**
 //      * 跳板配置存储
@@ -53,7 +53,7 @@
 //     /**
 //      * sasl配置存储
 //      */
-//     private final ZKSASLConfigStore saslConfigStore = ZKSASLConfigStore.INSTANCE;
+//     private final ShellZKSASLConfigStore saslConfigStore = ShellZKSASLConfigStore.INSTANCE;
 //
 //     /**
 //      * 加载列表
@@ -106,7 +106,7 @@
 //             }
 //
 //             // sasl处理
-//             ZKSASLConfig saslConfig = model.getSaslConfig();
+//             ShellZKSASLConfig saslConfig = model.getSaslConfig();
 //             if (saslConfig != null) {
 //                 saslConfig.setIid(model.getId());
 //                 this.saslConfigStore.replace(saslConfig);
@@ -117,18 +117,18 @@
 //             }
 //
 //             // 收藏处理
-//             List<ZKCollect> collects = model.getCollects();
+//             List<ShellZKCollect> collects = model.getCollects();
 //             if (CollectionUtil.isNotEmpty(collects)) {
-//                 for (ZKCollect collect : collects) {
+//                 for (ShellZKCollect collect : collects) {
 //                     collect.setIid(model.getId());
 //                     this.collectStore.replace(collect);
 //                 }
 //             }
 //
 //             // 认证处理
-//             List<ZKAuth> auths = model.getAuths();
+//             List<ShellZKAuth> auths = model.getAuths();
 //             if (CollectionUtil.isNotEmpty(auths)) {
-//                 for (ZKAuth auth : auths) {
+//                 for (ShellZKAuth auth : auths) {
 //                     auth.setIid(model.getId());
 //                     this.authStore.replace(auth);
 //                 }

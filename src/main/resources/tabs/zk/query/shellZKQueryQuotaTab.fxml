@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100% - 30" flexHeight="100%"
-        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryQuotaTabController">
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryQuotaTabController">
     <FXTableView fx:id="quotaTable" flexWidth="100%" flexHeight="100%">
         <columns>
             <FXTableColumn valueName="key" flexWidth="15%" text="%base.name"/>

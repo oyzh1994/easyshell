@@ -10,7 +10,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXTab text="%base.stat" fx:id="statTab" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeStatTabController">
+       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeStatTabController">
     <graphic>
         <SVGGlyph cursorType="DEFAULT" url="/font/status.svg" size="13"/>
     </graphic>

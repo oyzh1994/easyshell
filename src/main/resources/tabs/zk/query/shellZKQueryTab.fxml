@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor?>
-<FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryTabController"
+<FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController"
        text="%base.queries">
     <graphic>
         <QuerySVGGlyph sizeStr="11"/>

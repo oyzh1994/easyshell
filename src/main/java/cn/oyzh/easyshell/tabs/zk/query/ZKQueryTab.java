@@ -35,8 +35,8 @@
 //     }
 //
 //     @Override
-//     protected ZKQueryTabController controller() {
-//         return (ZKQueryTabController) super.controller();
+//     protected ShellZKQueryTabController controller() {
+//         return (ShellZKQueryTabController) super.controller();
 //     }
 //
 //     @Override

@@ -17,8 +17,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.zk.acl.ZKAddACLController" realWidth="600" realHeight="420">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.acl.ShellZKAddACLController" realWidth="600" realHeight="420">
     <InfoLabel text="%base.path">
         <VBox.margin>
             <Insets left="30" top="10"/>

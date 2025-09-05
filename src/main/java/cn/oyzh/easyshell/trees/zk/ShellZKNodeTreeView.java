@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.domain.zk.ZKAuth;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
@@ -303,7 +303,7 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
      *
      * @param auth 认证信息
      */
-    public void authChanged(ZKAuth auth) throws Exception {
+    public void authChanged(ShellZKAuth auth) throws Exception {
         this.client.addAuth(auth.getUser(), auth.getPassword());
         for (ShellZKNodeTreeItem item : this.getAllNodeItem()) {
             if (item.isNeedAuth() || ShellZKACLUtil.existDigest(item.acl(), auth.getUser())) {

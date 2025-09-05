@@ -81,12 +81,12 @@
 //     /**
 //      * 认证列表
 //      */
-//     private List<ZKAuth> auths;
+//     private List<ShellZKAuth> auths;
 //
 //     /**
 //      * 收藏的节点
 //      */
-//     private List<ZKCollect> collects;
+//     private List<ShellZKCollect> collects;
 //
 //     /**
 //      * 过滤列表
@@ -141,7 +141,7 @@
 //     /**
 //      * ssh信息
 //      */
-//     private ZKSASLConfig saslConfig;
+//     private ShellZKSASLConfig saslConfig;
 //
 //     @Override
 //     public void copy(ShellConnect zkConnect) {
@@ -155,14 +155,14 @@
 //         this.sessionTimeOut = zkConnect.sessionTimeOut;
 //         this.connectTimeOut = zkConnect.connectTimeOut;
 //         // 认证
-//         this.auths = ZKAuth.clone(zkConnect.auths);
+//         this.auths = ShellZKAuth.clone(zkConnect.auths);
 //         // 过滤
 //         this.filters = ZKFilter.clone(zkConnect.filters);
 //         // 收藏
-//         this.collects = ZKCollect.clone(zkConnect.collects);
+//         this.collects = ShellZKCollect.clone(zkConnect.collects);
 //         // sasl
 //         this.saslAuth = zkConnect.saslAuth;
-//         this.saslConfig = ZKSASLConfig.clone(zkConnect.saslConfig);
+//         this.saslConfig = ShellZKSASLConfig.clone(zkConnect.saslConfig);
 //         // 跳板机
 //         this.jumpConfigs = ZKJumpConfig.clone(zkConnect.jumpConfigs);
 //     }
@@ -343,22 +343,22 @@
 //         this.listen = listen;
 //     }
 //
-//     public List<ZKAuth> getAuths() {
+//     public List<ShellZKAuth> getAuths() {
 //         return auths;
 //     }
 //
-//     public void setAuths(List<ZKAuth> auths) {
+//     public void setAuths(List<ShellZKAuth> auths) {
 //         this.auths = auths;
 //     }
 //
-//     public void addAuth(ZKAuth auth) {
+//     public void addAuth(ShellZKAuth auth) {
 //         if (auth == null) {
 //             return;
 //         }
 //         if (this.auths == null) {
 //             this.auths = new ArrayList<>();
 //         } else {
-//             for (ZKAuth zkAuth : auths) {
+//             for (ShellZKAuth zkAuth : auths) {
 //                 if (zkAuth.compare(auth)) {
 //                     return;
 //                 }
@@ -368,11 +368,11 @@
 //
 //     }
 //
-//     public List<ZKCollect> getCollects() {
+//     public List<ShellZKCollect> getCollects() {
 //         return collects;
 //     }
 //
-//     public void setCollects(List<ZKCollect> collects) {
+//     public void setCollects(List<ShellZKCollect> collects) {
 //         this.collects = collects;
 //     }
 //
@@ -400,11 +400,11 @@
 //         this.saslAuth = saslAuth;
 //     }
 //
-//     public ZKSASLConfig getSaslConfig() {
+//     public ShellZKSASLConfig getSaslConfig() {
 //         return saslConfig;
 //     }
 //
-//     public void setSaslConfig(ZKSASLConfig saslConfig) {
+//     public void setSaslConfig(ShellZKSASLConfig saslConfig) {
 //         this.saslConfig = saslConfig;
 //     }
 //

@@ -111,8 +111,8 @@
 //     }
 //
 //     @Override
-//     public ZKNodeTabController controller() {
-//         return (ZKNodeTabController) super.controller();
+//     public ShellZKNodeTabController controller() {
+//         return (ShellZKNodeTabController) super.controller();
 //     }
 //
 //     @Override

@@ -4,7 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryMsgTabController" flexWidth="100% - 30" flexHeight="100%">
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryMsgTabController" flexWidth="100% - 30" flexHeight="100%">
     <ReadOnlyTextArea fx:id="msg" flexHeight="100% - 5" flexWidth="100%">
         <VBox.margin>
             <Insets left="5" top="5"/>

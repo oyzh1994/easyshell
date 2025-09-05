@@ -4,7 +4,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ZKTerminalTabController"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ShellZKTerminalTabController"
        text="%base.terminal">
     <graphic>
         <TerminalSVGGlyph sizeStr="11"/>

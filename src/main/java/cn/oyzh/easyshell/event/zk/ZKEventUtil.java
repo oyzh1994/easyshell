@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.zk;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
+import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
 import cn.oyzh.easyshell.event.zk.auth.ZKAuthAuthedEvent;
 import cn.oyzh.easyshell.event.zk.history.ZKHistoryAddedEvent;
 import cn.oyzh.easyshell.event.zk.history.ZKHistoryRestoreEvent;
@@ -277,7 +277,7 @@ public class ZKEventUtil {
      * @param history 数据历史
      * @param item    zk树节点
      */
-    public static void dataHistoryAdded(ZKDataHistory history, TreeItem<?> item) {
+    public static void dataHistoryAdded(ShellZKDataHistory history, TreeItem<?> item) {
         ZKHistoryAddedEvent event = new ZKHistoryAddedEvent();
         event.data(history);
         event.setItem(item);

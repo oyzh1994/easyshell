@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXTab text="%base.quota" fx:id="quotaTab" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ZKNodeQuotaTabController">
+       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeQuotaTabController">
     <graphic>
         <SVGGlyph cursorType="DEFAULT" url="/font/zk/quota.svg" size="13"/>
     </graphic>

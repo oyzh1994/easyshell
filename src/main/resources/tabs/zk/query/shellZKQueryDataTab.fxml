@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
-        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ZKQueryDataTabController">
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryDataTabController">
     <FXHBox realHeight="35" flexWidth="100%">
         <ClearableTextField prefHeight="22" tipText="%base.searchKWTip" fx:id="filter">
             <HBox.margin>

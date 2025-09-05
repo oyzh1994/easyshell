@@ -7,7 +7,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.zk.ZKAuth;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
@@ -137,7 +137,7 @@ public class ShellZKClient implements ShellBaseClient {
     /**
      * 认证列表
      */
-    private List<ZKAuth> auths;
+    private List<ShellZKAuth> auths;
 
     /**
      * 静默关闭标志位
@@ -1717,9 +1717,9 @@ public class ShellZKClient implements ShellBaseClient {
      * @param auth 认证信息
      * @return 结果
      */
-    public boolean isAuthed(ZKAuth auth) {
+    public boolean isAuthed(ShellZKAuth auth) {
         if (auth != null) {
-            for (ZKAuth auth1 : this.auths) {
+            for (ShellZKAuth auth1 : this.auths) {
                 if (auth1.compare(auth)) {
                     return true;
                 }
@@ -1736,7 +1736,7 @@ public class ShellZKClient implements ShellBaseClient {
      */
     public void setAuthed(String user, String password) {
         if (user != null && password != null) {
-            this.auths.add(new ZKAuth(this.iid(), user, password));
+            this.auths.add(new ShellZKAuth(this.iid(), user, password));
         }
     }
 
@@ -1749,7 +1749,7 @@ public class ShellZKClient implements ShellBaseClient {
     public boolean isAnyAuthed(List<ZKACL> aclList) {
         if (CollectionUtil.isNotEmpty(aclList) && CollectionUtil.isNotEmpty(this.auths)) {
             for (ZKACL zkacl : aclList) {
-                for (ZKAuth auth : this.auths) {
+                for (ShellZKAuth auth : this.auths) {
                     if (auth.digest().equals(zkacl.idVal())) {
                         return true;
                     }
@@ -1785,7 +1785,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isDigestAuthed(String digestVal) {
-        for (ZKAuth auth : this.auths) {
+        for (ShellZKAuth auth : this.auths) {
             if (auth.digest().equals(digestVal)) {
                 return true;
             }

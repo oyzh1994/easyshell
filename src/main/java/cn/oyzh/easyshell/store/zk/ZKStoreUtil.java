@@ -5,8 +5,8 @@
 // import cn.oyzh.common.json.JSONUtil;
 // import cn.oyzh.common.util.CollectionUtil;
 // import cn.oyzh.common.util.StringUtil;
-// import cn.oyzh.easyshell.domain.zk.ZKAuth;
-// import cn.oyzh.easyshell.domain.zk.ZKCollect;
+// import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
+// import cn.oyzh.easyshell.domain.zk.ShellZKCollect;
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.zk.ZKFilter;
 // import cn.oyzh.easyshell.domain.zk.ZKGroup;
@@ -117,9 +117,9 @@
 //                     if (obj.containsKey("collects")) {
 //                         List<String> collects = obj.getList("collects", String.class);
 //                         if (CollectionUtil.isNotEmpty(collects)) {
-//                             List<ZKCollect> collectList = new ArrayList<>();
+//                             List<ShellZKCollect> collectList = new ArrayList<>();
 //                             for (String collect : collects) {
-//                                 collectList.add(new ZKCollect(connect.getId(), collect));
+//                                 collectList.add(new ShellZKCollect(connect.getId(), collect));
 //                             }
 //                             connect.setCollects(collectList);
 //                         }
@@ -214,8 +214,8 @@
 //      *
 //      * @return 旧版本认证数据
 //      */
-//     public static List<ZKAuth> loadAuths() {
-//         List<ZKAuth> auths = new ArrayList<>(24);
+//     public static List<ShellZKAuth> loadAuths() {
+//         List<ShellZKAuth> auths = new ArrayList<>(24);
 //         try {
 //             String storePath = SysConst.storeDir();
 //             String file = storePath + File.separator + "zk_auth.json";
@@ -224,7 +224,7 @@
 //                 JSONArray array = JSONUtil.parseArray(json);
 //                 for (int i = 0; i < array.size(); i++) {
 //                     JSONObject obj = array.getJSONObject(i);
-//                     ZKAuth auth = new ZKAuth();
+//                     ShellZKAuth auth = new ShellZKAuth();
 //                     if (obj.containsKey("uid")) {
 //                         auth.setUid(obj.getString("uid"));
 //                     }

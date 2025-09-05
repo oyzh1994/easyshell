@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.tabs.zk.server;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController;
+// import cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController;
 // import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph;
 // import cn.oyzh.fx.gui.tabs.RichTab;
@@ -19,8 +19,8 @@
 // public class ZKServerTab extends RichTab {
 //
 //     @Override
-//     public ZKServerTabController controller() {
-//         return (ZKServerTabController) super.controller();
+//     public ShellZKServerTabController controller() {
+//         return (ShellZKServerTabController) super.controller();
 //     }
 //
 //     @Override

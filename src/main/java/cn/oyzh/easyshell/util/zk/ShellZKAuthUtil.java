@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.util.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKAuth;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.store.zk.ZKAuthStore;
+import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import org.apache.curator.framework.AuthInfo;
@@ -37,10 +37,10 @@ public class ShellZKAuthUtil {
      * @param auths 认证信息
      * @return 认证信息列表
      */
-    public static List<AuthInfo> toAuthInfo(List<? extends ZKAuth> auths) {
+    public static List<AuthInfo> toAuthInfo(List<? extends ShellZKAuth> auths) {
         if (CollectionUtil.isNotEmpty(auths)) {
             List<AuthInfo> authInfos = new ArrayList<>(auths.size());
-            for (ZKAuth auth : auths) {
+            for (ShellZKAuth auth : auths) {
                 authInfos.add(new AuthInfo("digest", (auth.getUser() + ":" + auth.getPassword()).getBytes()));
             }
             return authInfos;
@@ -98,9 +98,9 @@ public class ShellZKAuthUtil {
     //  *
     //  * @return 已启用的认证信息列表
     //  */
-    // public static List<ZKAuth> loadEnableAuths() {
-    //     List<ZKAuth> auths = ZKAuthJdbcStore.INSTANCE.load();
-    //     auths = auths.stream().filter(ZKAuth::getEnable).toList();
+    // public static List<ShellZKAuth> loadEnableAuths() {
+    //     List<ShellZKAuth> auths = ZKAuthJdbcStore.INSTANCE.load();
+    //     auths = auths.stream().filter(ShellZKAuth::getEnable).toList();
     //     return auths;
     // }
 
@@ -111,10 +111,10 @@ public class ShellZKAuthUtil {
      * @return 认证信息列表
      * @see cn.oyzh.easyshell.domain.ShellConnect
      */
-    public static List<ZKAuth> loadAuths(String iid) {
+    public static List<ShellZKAuth> loadAuths(String iid) {
         if (StringUtil.isNotBlank(iid)) {
             if (ShellSettingStore.SETTING.isAutoAuth()) {
-                return ZKAuthStore.INSTANCE.loadEnable(iid);
+                return ShellZKAuthStore.INSTANCE.loadEnable(iid);
             }
         }
         return Collections.emptyList();
@@ -126,7 +126,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @param auth   认证信息
     //  */
-    // public static void setAuthed( ShellZKClient client,  ZKAuth auth) {
+    // public static void setAuthed( ShellZKClient client,  ShellZKAuth auth) {
     //     setAuthed(client, auth.getUser(), auth.getPassword());
     // }
 
@@ -136,7 +136,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @param auths  认证信息列表
     //  */
-    // public static void setAuthed( ShellZKClient client, List<? extends ZKAuth> auths) {
+    // public static void setAuthed( ShellZKClient client, List<? extends ShellZKAuth> auths) {
     //     if (CollectionUtil.isNotEmpty(auths)) {
     //         auths.parallelStream().forEach(a -> setAuthed(client, a));
     //     }
@@ -189,7 +189,7 @@ public class ShellZKAuthUtil {
     //  * @param auth   认证信息
     //  * @return 结果
     //  */
-    // public static boolean isAuthed( ShellZKClient client, ZKAuth auth) {
+    // public static boolean isAuthed( ShellZKClient client, ShellZKAuth auth) {
     //     if (auth != null) {
     //         Set<String> set = getAuthed(client);
     //         if (set != null) {

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.zk.auth;
 
-import cn.oyzh.easyshell.domain.zk.ZKAuth;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.Event;
@@ -19,8 +19,8 @@ public class ZKAuthAuthedEvent extends Event<ShellZKNodeTreeItem> implements Eve
 
     private boolean success;
 
-    public ZKAuth auth() {
-        return new ZKAuth(this.data().client().iid(), this.user, this.password);
+    public ShellZKAuth auth() {
+        return new ShellZKAuth(this.data().client().iid(), this.user, this.password);
     }
 
     public ShellZKClient client() {
