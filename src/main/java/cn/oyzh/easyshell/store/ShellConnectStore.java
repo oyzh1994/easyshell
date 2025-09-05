@@ -7,6 +7,8 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
+import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
+import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.SelectParam;
 
@@ -49,7 +51,12 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     /**
      * shell ssl配置
      */
-    private final ShellSSLConfigStore shellSSLConfigStore = ShellSSLConfigStore.INSTANCE;
+    private final ShellSSLConfigStore sslConfigStore = ShellSSLConfigStore.INSTANCE;
+
+    /**
+     * shell sasl配置
+     */
+    private final ShellZKSASLConfigStore zkSaslConfig = ShellZKSASLConfigStore.INSTANCE;
 
 //    /**
 //     * 终端历史存储
@@ -135,9 +142,14 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         for (ShellConnect connect : connects) {
             connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
             connect.setProxyConfig(this.proxyConfigStore.getByIid(connect.getId()));
-            connect.setSslConfig(this.shellSSLConfigStore.getByIid(connect.getId()));
             connect.setJumpConfigs(this.jumpConfigStore.loadByIid(connect.getId()));
             connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
+            if (connect.isRedisType()) {
+                connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
+            }
+            if (connect.isRedisType()) {
+                connect.setSaslAuth(this.sslConfigStore.getByIid(connect.getId()));
+            }
         }
         return connects;
     }

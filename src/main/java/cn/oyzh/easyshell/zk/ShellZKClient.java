@@ -75,6 +75,11 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ShellZKClient implements ShellBaseClient {
 
+    static {
+        // 注册sasl处理器
+        ShellZKSASLUtil.registerConfiguration();
+    }
+
     /**
      * 最后的创建节点
      */

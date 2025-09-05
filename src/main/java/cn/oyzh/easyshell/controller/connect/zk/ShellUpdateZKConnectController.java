@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.zk.ShellZKSASLUtil;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -308,6 +309,8 @@ public class ShellUpdateZKConnectController extends StageController {
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // 移除sasl配置
+            ShellZKSASLUtil.removeSasl(this.shellConnect.getId());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -359,6 +362,8 @@ public class ShellUpdateZKConnectController extends StageController {
             this.shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
+                // 移除sasl配置
+                ShellZKSASLUtil.removeSasl(this.shellConnect.getId());
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
