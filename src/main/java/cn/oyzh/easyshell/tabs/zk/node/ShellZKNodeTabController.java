@@ -1115,7 +1115,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     @EventSubscribe
     public void onNodeAdded(ShellZKNodeAddedEvent event) {
-        if (event.getZkConnect() == this.client.zkConnect()) {
+        if (event.getZkConnect() == this.client.getShellConnect()) {
             this.treeView.onNodeAdded(event.data());
         }
     }
@@ -1261,7 +1261,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     @FXML
     private void importData() {
-        ShellViewFactory.zkImportData(this.client.zkConnect());
+        ShellViewFactory.zkImportData(this.client.getShellConnect());
     }
 
     public ShellZKClient getClient() {

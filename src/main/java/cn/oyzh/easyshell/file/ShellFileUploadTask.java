@@ -147,7 +147,7 @@ public class ShellFileUploadTask extends ShellFileTask {
      * @param finishCallback 结束回调
      * @param errorCallback  错误回调
      */
-    public void doUpload(Runnable finishCallback, Consumer<Exception> errorCallback) {
+    public void doUpload(Runnable finishCallback, Consumer<Throwable> errorCallback) {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             // 尝试锁定
@@ -164,7 +164,7 @@ public class ShellFileUploadTask extends ShellFileTask {
                 // 执行上传
                 this.doUpload();
                 this.finishUpload();
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 // 忽略中断、取消异常
                 if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
                     this.error = ex;

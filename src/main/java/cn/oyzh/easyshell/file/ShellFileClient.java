@@ -591,26 +591,26 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      */
     E fileInfo(String filePath) throws Exception;
 
-    /**
-     * 部分场景下，例如上传、下载、删除、传输会占用客户端，可能需要fork一个子客户端去操作
-     * 如果不需要fork，则直接返回自己即可
-     * 如果fork失败，则建议返回自己
-     *
-     * @return fork出来的子客户端
-     * @see #isForked() 配合这个方法这是个子客户端
-     */
-    default ShellFileClient<E> forkClient() {
-        return this;
-    }
-
-    /**
-     * 是否子客户端
-     *
-     * @return 结果
-     */
-    default boolean isForked() {
-        return false;
-    }
+    ///**
+    // * 部分场景下，例如上传、下载、删除、传输会占用客户端，可能需要fork一个子客户端去操作
+    // * 如果不需要fork，则直接返回自己即可
+    // * 如果fork失败，则建议返回自己
+    // *
+    // * @return fork出来的子客户端
+    // * @see #isForked() 配合这个方法这是个子客户端
+    // */
+    //default ShellFileClient<E> forkClient() {
+    //    return this;
+    //}
+    //
+    ///**
+    // * 是否子客户端
+    // *
+    // * @return 结果
+    // */
+    //default boolean isForked() {
+    //    return false;
+    //}
 
     /**
      * 判断是否支持cd操作

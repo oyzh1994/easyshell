@@ -54,7 +54,7 @@ public class ShellFileDeleteTask extends ShellFileTask {
      * @param finishCallback 结束回调
      * @param errorCallback  错误回调
      */
-    public void doDelete(Runnable finishCallback, Consumer<Exception> errorCallback) {
+    public void doDelete(Runnable finishCallback, Consumer<Throwable> errorCallback) {
         this.worker = ThreadUtil.start(() -> {
             // 尝试锁定
             if (!this.competitor.tryLock(this)) {
@@ -64,7 +64,7 @@ public class ShellFileDeleteTask extends ShellFileTask {
             try {
                 this.client = this.client.forkClient();
                 this.doDelete();
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 this.error = ex;
                 errorCallback.accept(ex);
             } finally {

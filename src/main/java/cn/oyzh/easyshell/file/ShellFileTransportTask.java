@@ -163,7 +163,7 @@ public class ShellFileTransportTask extends ShellFileTask {
      * @param finishCallback 结束回调
      * @param errorCallback  错误回调
      */
-    public void doTransport(Runnable finishCallback, Consumer<Exception> errorCallback) {
+    public void doTransport(Runnable finishCallback, Consumer<Throwable> errorCallback) {
         this.finishCallback = finishCallback;
         this.worker = ThreadUtil.start(() -> {
             // 尝试锁定
@@ -181,7 +181,7 @@ public class ShellFileTransportTask extends ShellFileTask {
                 // 执行传输
                 this.doTransport();
                 this.finishTransport();
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 // 忽略中断、取消异常
                 if (!this.isCanceled() && !ExceptionUtil.isInterrupt(ex)) {
                     this.error = ex;

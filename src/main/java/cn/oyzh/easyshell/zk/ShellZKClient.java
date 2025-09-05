@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
@@ -25,7 +26,7 @@ import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKClientActionUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder;
+import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -37,7 +38,6 @@ import org.apache.curator.framework.api.BackgroundCallback;
 import org.apache.curator.framework.api.CreateBuilder;
 import org.apache.curator.framework.api.DeleteBuilder;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
-import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
@@ -96,21 +96,17 @@ public class ShellZKClient implements ShellBaseClient {
     /**
      * zk信息
      */
-    private final ShellConnect zkConnect;
+    private final ShellConnect shellConnect;
 
-    public ShellConnect zkConnect() {
-        return zkConnect;
-    }
-
-    /**
-     * 树监听对象
-     */
-    private TreeCache treeCache;
+    ///**
+    // * 树监听对象
+    // */
+    //private TreeCache treeCache;
 
     /**
      * ssh端口转发器
      */
-    private SSHJumpForwarder jumpForwarder;
+    private SSHJumpForwarder2 jumpForwarder;
 
     // /**
     //  * 是否已初始化
@@ -205,8 +201,8 @@ public class ShellZKClient implements ShellBaseClient {
         return this.state;
     }
 
-    public ShellZKClient(ShellConnect zkConnect) {
-        this.zkConnect = zkConnect;
+    public ShellZKClient(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
         //// 监听连接状态
         //this.stateProperty().addListener((observable, oldValue, newValue) -> {
@@ -236,7 +232,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isReadonly() {
-        return this.zkConnect.isReadonly();
+        return this.shellConnect.isReadonly();
     }
 
     /**
@@ -295,10 +291,10 @@ public class ShellZKClient implements ShellBaseClient {
     // * @return 结果
     // */
     //public boolean isEnableListen() {
-    //    return this.zkConnect.isListen();
+    //    return this.shellConnect.isListen();
     //}
 
-    ///**
+    /// **
     // * 连接zk以监听模式
     // */
     //public void startWithListener() throws Throwable {
@@ -314,9 +310,8 @@ public class ShellZKClient implements ShellBaseClient {
     //  * 连接zk
     //  */
     // public void start() {
-    //     this.start(this.zkConnect.connectTimeOutMs());
+    //     this.start(this.shellConnect.connectTimeOutMs());
     // }
-
     @Override
     public void start(int timeout) {
         if (this.isConnected() || this.isConnecting()) {
@@ -366,7 +361,7 @@ public class ShellZKClient implements ShellBaseClient {
 
     @Override
     public ShellConnect getShellConnect() {
-        return this.zkConnect;
+        return this.shellConnect;
     }
 
     /**
@@ -378,35 +373,35 @@ public class ShellZKClient implements ShellBaseClient {
         // 连接地址
         String host;
 //        // 初始化跳板配置
-//        List<ZKJumpConfig> jumpConfigs = this.zkConnect.getJumpConfigs();
+//        List<ZKJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
 //        // 从数据库获取
 //        if (jumpConfigs == null) {
-//            jumpConfigs = this.jumpConfigStore.loadByIid(this.zkConnect.getId());
+//            jumpConfigs = this.jumpConfigStore.loadByIid(this.shellConnect.getId());
 //        }
 //        // 过滤配置
 //        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(ZKJumpConfig::isEnabled).collect(Collectors.toList());
         // 初始化跳板转发
-        if (this.zkConnect.isEnableJump()) {
+        if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder();
+                this.jumpForwarder = new SSHJumpForwarder2();
             }
             // 初始化跳板配置
-            List<ShellJumpConfig> jumpConfigs = this.zkConnect.getJumpConfigs();
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
             // 转换为目标连接
             SSHConnect target = new SSHConnect();
-            target.setHost(this.zkConnect.hostIp());
-            target.setPort(this.zkConnect.hostPort());
+            target.setHost(this.shellConnect.hostIp());
+            target.setPort(this.shellConnect.hostPort());
             // 执行连接
             int localPort = this.jumpForwarder.forward(jumpConfigs, target);
             // 连接信息
             host = "127.0.0.1:" + localPort;
         } else {// 直连
             if (this.jumpForwarder != null) {
-                this.jumpForwarder.destroy();
+                IOUtil.close(this.jumpForwarder);
                 this.jumpForwarder = null;
             }
             // 连接信息
-            host = this.zkConnect.hostIp() + ":" + this.zkConnect.hostPort();
+            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
         }
         return host;
     }
@@ -416,12 +411,12 @@ public class ShellZKClient implements ShellBaseClient {
 //     */
 //    private void initProxy() {
 //        // 开启了代理
-//        if (this.zkConnect.isEnableProxy()) {
+//        if (this.shellConnect.isEnableProxy()) {
 //            // 初始化ssh转发器
-//            ZKProxyConfig proxyConfig = this.zkConnect.getProxyConfig();
+//            ZKProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
 //            // 从数据库获取
 //            if (proxyConfig == null) {
-//                proxyConfig = this.proxyConfigStore.getByIid(this.zkConnect.getId());
+//                proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
 //            }
 //            if (proxyConfig == null) {
 //                JulLog.warn("proxy is enable but proxy config is null");
@@ -441,12 +436,12 @@ public class ShellZKClient implements ShellBaseClient {
 //        // 连接地址
 //        String host;
 //        // 初始化ssh端口转发
-//        if (this.zkConnect.isSSHForward()) {
+//        if (this.shellConnect.isSSHForward()) {
 //            // 初始化ssh转发器
-//            ZKSSHConfig sshConfig = this.zkConnect.getSshConfig();
+//            ZKSSHConfig sshConfig = this.shellConnect.getSshConfig();
 //            // 从数据库获取
 //            if (sshConfig == null) {
-//                sshConfig = this.sshConfigStore.getByIid(this.zkConnect.getId());
+//                sshConfig = this.sshConfigStore.getByIid(this.shellConnect.getId());
 //            }
 //            if (sshConfig != null) {
 //                if (this.sshJumper == null) {
@@ -463,7 +458,7 @@ public class ShellZKClient implements ShellBaseClient {
 //            }
 //        } else {// 直连
 //            // 连接信息
-//            host = this.zkConnect.hostIp() + ":" + this.zkConnect.hostPort();
+//            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
 //        }
         // 连接信息
         String host = this.initHost();
@@ -478,7 +473,7 @@ public class ShellZKClient implements ShellBaseClient {
         }
         // 创建客户端
         this.framework = ShellZKClientUtil.build(
-                this.zkConnect,
+                this.shellConnect,
                 this.retryPolicy,
                 authInfos,
                 zoo -> this.zooKeeper = zoo
@@ -511,7 +506,7 @@ public class ShellZKClient implements ShellBaseClient {
             this.auths = null;
             // 销毁端口转发
             if (this.jumpForwarder != null) {
-                this.jumpForwarder.destroy();
+                IOUtil.close(this.jumpForwarder);
             }
             // 关闭连接
             if (this.framework != null) {
@@ -1238,7 +1233,7 @@ public class ShellZKClient implements ShellBaseClient {
         try {
             QuorumVerifier verifier = this.getCurrentConfig();
             // 老版本实现
-            if (this.zkConnect.compatibility34() || verifier == null) {
+            if (this.shellConnect.compatibility34() || verifier == null) {
                 if (this.exists("/zookeeper/config")) {
                     String data = this.getDataString("/zookeeper/config");
                     if (data != null) {
@@ -1278,7 +1273,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 连接名称
      */
     public String connectName() {
-        return this.zkConnect.getName();
+        return this.shellConnect.getName();
     }
 
     /**
@@ -1335,8 +1330,8 @@ public class ShellZKClient implements ShellBaseClient {
      */
     public List<ZKEnvNode> localNodes() {
         List<ZKEnvNode> list = new ArrayList<>(8);
-        ZKEnvNode host = new ZKEnvNode("host", this.zkConnect.getHost());
-        ZKEnvNode connection = new ZKEnvNode("connection", this.zkConnect.getName());
+        ZKEnvNode host = new ZKEnvNode("host", this.shellConnect.getHost());
+        ZKEnvNode connection = new ZKEnvNode("connection", this.shellConnect.getName());
         ZKEnvNode version = new ZKEnvNode("sdkVersion", Version.getFullVersion());
         ZKEnvNode jdkVersion = new ZKEnvNode("jdkVersion", System.getProperty("java.vm.version"));
         list.add(host);
@@ -1354,7 +1349,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String envi() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "envi");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "envi");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "envi");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1392,7 +1387,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String srvr() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "srvr");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "srvr");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "srvr");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1430,7 +1425,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String mntr() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "mntr");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "mntr");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "mntr");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1468,7 +1463,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String stat() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "stat");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "stat");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "stat");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1506,7 +1501,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String conf() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "conf");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "conf");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "conf");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1544,7 +1539,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String cons() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "cons");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "cons");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "cons");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1582,7 +1577,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String ruok() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "ruok");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "ruok");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "ruok");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1597,7 +1592,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String crst() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "crst");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "crst");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "crst");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1612,7 +1607,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String srst() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "srst");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "srst");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "srst");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1627,7 +1622,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String wchc() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "wchc");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "wchc");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "wchc");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1642,7 +1637,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String wchs() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "wchs");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "wchs");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "wchs");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1657,7 +1652,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String wchp() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "wchp");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "wchp");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "wchp");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1672,7 +1667,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String dump() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "dump");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "dump");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "dump");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1687,7 +1682,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String reqs() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "reqs");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "reqs");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "reqs");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1702,7 +1697,7 @@ public class ShellZKClient implements ShellBaseClient {
     public String dirs() {
         try {
             ShellZKClientActionUtil.forAction(this.connectName(), "dirs");
-            return FourLetterWordMain.send4LetterWord(this.zkConnect.hostIp(), this.zkConnect.hostPort(), "dirs");
+            return FourLetterWordMain.send4LetterWord(this.shellConnect.hostIp(), this.shellConnect.hostPort(), "dirs");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1715,7 +1710,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 结果
      */
     public String iid() {
-        return this.zkConnect.getId();
+        return this.shellConnect.getId();
     }
 
     /**
@@ -1901,6 +1896,18 @@ public class ShellZKClient implements ShellBaseClient {
     }
 
     // public ShellConnect shellConnect() {
-    //     return this.zkConnect;
+    //     return this.shellConnect;
     // }
+
+    @Override
+    public ShellZKClient forkClient() throws Throwable {
+        ShellZKClient zkClient = new ShellZKClient(this.shellConnect) {
+            @Override
+            public boolean isForked() {
+                return true;
+            }
+        };
+        zkClient.start();
+        return zkClient;
+    }
 }

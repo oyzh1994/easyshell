@@ -83,7 +83,7 @@ public class ShellZKTabController extends ShellParentTabController {
                 this.nodeController.init(this.client);
                 this.queryController.init(this.client);
                 this.serverController.init(this.client);
-                this.terminalController.init(this.client);
+                this.terminalController.init(this.client.forkClient());
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

@@ -179,7 +179,7 @@ public class ShellZKAddNodeController extends StageController {
             if (node == null) {
                 MessageBox.warnToast(I18nHelper.operationFail());
             } else {
-                ShellZKEventUtil.nodeAdded(this.zkClient.zkConnect(), this.nodePathText);
+                ShellZKEventUtil.nodeAdded(this.zkClient.getShellConnect(), this.nodePathText);
                 this.closeWindow();
             }
         } catch (Exception ex) {

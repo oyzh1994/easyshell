@@ -109,8 +109,8 @@ public class ZKTerminalPane extends TerminalPane {
         } else {
             str = this.client.connectName();
         }
-        if (this.zkConnect().getHost() != null) {
-            str += "@" + this.zkConnect().getHost();
+        if (this.shellConnect().getHost() != null) {
+            str += "@" + this.shellConnect().getHost();
         }
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + ")> ";
@@ -196,7 +196,7 @@ public class ZKTerminalPane extends TerminalPane {
         this.connectInfo = ShellZKConnectUtil.parse(input);
         if (this.connectInfo != null) {
             this.disable();
-            ShellZKConnectUtil.copyConnect(this.connectInfo, this.zkConnect());
+            ShellZKConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
             this.start();
         }
     }
@@ -259,7 +259,7 @@ public class ZKTerminalPane extends TerminalPane {
             this.stateChangeListener = (observableValue, state, t1) -> {
                 this.flushPrompt();
                 // 获取连接
-                String host = this.zkConnect().getHost();
+                String host = this.shellConnect().getHost();
                 if (t1 == ShellConnState.CONNECTED) {
                     this.outputLine(host + I18nHelper.connectSuccess() + " .");
                     this.outputLine(I18nHelper.terminalTip2());
@@ -307,8 +307,8 @@ public class ZKTerminalPane extends TerminalPane {
         }
     }
 
-    public ShellConnect zkConnect() {
-        return this.getClient().zkConnect();
+    public ShellConnect shellConnect() {
+        return this.getClient().getShellConnect();
     }
 
     @Override

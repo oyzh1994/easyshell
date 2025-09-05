@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<FXTabPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%"
+<FXTabPane xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%"
            fx:controller="cn.oyzh.easyshell.tabs.zk.ShellZKTabController" flexHeight="100%"
            rotateGraphic="true" disable="true" side="RIGHT">
     <fx:include fx:id="node" source="node/shellZKNodeTab.fxml"/>

@@ -96,15 +96,12 @@ public class ShellRedisTabController extends ShellParentTabController {
                 this.hideLeft();
                 if (this.client.isSentinelMode()) {
                     this.root.removeTab(this.keys);
-                    this.queryController.init(this.client);
-                    this.serverController.init(this.client);
-                    this.terminalController.init(this.client);
                 } else {
                     this.keysController.init(this.client);
-                    this.queryController.init(this.client);
-                    this.serverController.init(this.client);
-                    this.terminalController.init(this.client);
                 }
+                this.queryController.init(this.client);
+                this.serverController.init(this.client);
+                this.terminalController.init(this.client.forkClient());
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

@@ -38,7 +38,7 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
     }
 
     public ShellConnect connect() {
-        return this.client.zkConnect();
+        return this.client.getShellConnect();
     }
 
     @Override

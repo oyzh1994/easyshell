@@ -56,8 +56,8 @@ public class ShellZKTerminalTabController extends RichTabController {
      *
      * @return zk信息
      */
-    public ShellConnect zkConnect() {
-        return this.terminal.zkConnect();
+    public ShellConnect shellConnect() {
+        return this.terminal.shellConnect();
     }
 
     // @Override

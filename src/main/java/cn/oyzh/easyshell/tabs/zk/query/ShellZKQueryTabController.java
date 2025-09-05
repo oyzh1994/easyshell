@@ -82,8 +82,8 @@ public class ShellZKQueryTabController extends RichTabController {
      */
     private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
-    public ShellConnect zkConnect() {
-        return this.zkClient.zkConnect();
+    public ShellConnect shellConnect() {
+        return this.zkClient.getShellConnect();
     }
 
     public void init(ShellZKClient client) {

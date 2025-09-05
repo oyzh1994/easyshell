@@ -1,22 +1,8 @@
 package cn.oyzh.easyshell.file;
 
-import cn.oyzh.common.exception.ExceptionUtil;
-import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.Competitor;
-import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 文件任务
@@ -34,7 +20,7 @@ public class ShellFileTask {
     /**
      * 错误
      */
-    protected Exception error;
+    protected Throwable error;
 
     /**
      * 竞争器

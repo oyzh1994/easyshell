@@ -8,8 +8,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
-import cn.oyzh.easyshell.exception.redis.ShellRedisClusterOperationException;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+import cn.oyzh.easyshell.exception.redis.ShellRedisClusterOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisSentinelOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisUnsupportedCommandException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -4971,4 +4971,16 @@ public class ShellRedisClient implements ShellBaseClient {
 //    public boolean deleteScript(String sha1) {
 //        return false;
 //    }
+
+    @Override
+    public ShellRedisClient forkClient() throws Throwable {
+        ShellRedisClient zkClient = new ShellRedisClient(this.shellConnect) {
+            @Override
+            public boolean isForked() {
+                return true;
+            }
+        };
+        zkClient.start();
+        return zkClient;
+    }
 }
