@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.internal;
 
+import org.apache.curator.framework.state.ConnectionState;
+
 /**
  * shell连接状态
  *
@@ -55,6 +57,14 @@ public enum ShellConnState {
         public boolean isConnected() {
             return false;
         }
+    },
+    /**
+     * 重连
+     */
+    RECONNECTED {
+        public boolean isConnected() {
+            return true;
+        }
     };
 
     /**
@@ -63,4 +73,19 @@ public enum ShellConnState {
      * @return 结果
      */
     public abstract boolean isConnected();
+
+    /**
+     * 从zk状态获取
+     *
+     * @param state zk状态
+     * @return ShellConnState
+     */
+    public static ShellConnState valueOfZK(ConnectionState state) {
+        return switch (state) {
+            case ConnectionState.CONNECTED, ConnectionState.READ_ONLY -> CONNECTED;
+            case ConnectionState.RECONNECTED -> RECONNECTED;
+            case ConnectionState.LOST -> CLOSED;
+            case ConnectionState.SUSPENDED -> INTERRUPT;
+        };
+    }
 }

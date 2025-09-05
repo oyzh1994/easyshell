@@ -25,7 +25,7 @@ public class ZKSASLConfig implements Serializable, ObjectCopier<ZKSASLConfig> {
     /**
      * zk连接id
      *
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

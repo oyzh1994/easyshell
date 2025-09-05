@@ -7,10 +7,10 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
 import cn.oyzh.easyshell.exception.zk.ZKExceptionParser;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.zk.ZKConnectUtil;
 import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKConnState;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.TerminalPane;
@@ -89,7 +89,7 @@ public class ZKTerminalPane extends TerminalPane {
     /**
      * 客户端连接状态监听器
      */
-    private ChangeListener<ZKConnState> stateChangeListener;
+    private ChangeListener<ShellConnState> stateChangeListener;
 
     /**
      * 获取zookeeper对象
@@ -233,7 +233,7 @@ public class ZKTerminalPane extends TerminalPane {
             try {
                 this.initStatListener();
                 this.client.start();
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 this.onError(ZKExceptionParser.INSTANCE.apply(ex));
             } finally {
                 this.enable();
@@ -260,30 +260,30 @@ public class ZKTerminalPane extends TerminalPane {
                 this.flushPrompt();
                 // 获取连接
                 String host = this.zkConnect().getHost();
-                if (t1 == ZKConnState.CONNECTED) {
+                if (t1 == ShellConnState.CONNECTED) {
                     this.outputLine(host + I18nHelper.connectSuccess() + " .");
                     this.outputLine(I18nHelper.terminalTip2());
                     this.outputLine(I18nHelper.terminalTip1());
                     this.outputPrompt();
                     this.flushCaret();
                     super.enableInput();
-                } else if (t1 == ZKConnState.CLOSED) {
+                } else if (t1 == ShellConnState.CLOSED) {
                     this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
                     this.enableInput();
-                } else if (t1 == ZKConnState.CONNECTING) {
+                } else if (t1 == ShellConnState.CONNECTING) {
                     this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .", false);
-                } else if (t1 == ZKConnState.SUSPENDED) {
+                } else if (t1 == ShellConnState.INTERRUPT) {
                     this.outputLine(host + " " + I18nHelper.connectSuspended() + " .");
                     this.enableInput();
-                } else if (t1 == ZKConnState.RECONNECTED) {
+                } else if (t1 == ShellConnState.RECONNECTED) {
                     this.outputLine(host + " " + I18nHelper.connectReconnected() + " .");
                     this.outputPrompt();
                     this.flushCaret();
                     super.enableInput();
-                } else if (t1 == ZKConnState.LOST) {
-                    this.outputLine(host + " " + I18nHelper.connectionLoss() + " .");
-                    this.enableInput();
-                } else if (t1 == ZKConnState.FAILED) {
+                // } else if (t1 == ShellConnState.CLOSED) {
+                //     this.outputLine(host + " " + I18nHelper.connectionLoss() + " .");
+                //     this.enableInput();
+                } else if (t1 == ShellConnState.FAILED) {
                     this.outputLine(host + I18nHelper.connectFail() + " .");
                     if (this.connectInfo != null) {
                         this.appendByPrompt(this.connectInfo.getInput());

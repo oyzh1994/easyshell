@@ -38,7 +38,7 @@ public class ZKFilter implements ObjectComparator<ZKFilter>, ObjectCopier<ZKFilt
     /**
      * iid
      *
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

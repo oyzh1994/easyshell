@@ -39,7 +39,7 @@ public class ZKAuth implements ObjectComparator<ZKAuth>, ObjectCopier<ZKAuth>, S
     /**
      * iid
      *
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

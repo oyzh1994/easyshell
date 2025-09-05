@@ -22,7 +22,7 @@ public class ZKCollect implements Serializable, ObjectCopier<ZKCollect> {
     /**
      * 连接id
      *
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

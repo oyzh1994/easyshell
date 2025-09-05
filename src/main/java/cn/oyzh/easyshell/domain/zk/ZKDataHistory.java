@@ -45,7 +45,7 @@ public class ZKDataHistory implements ObjectComparator<ZKDataHistory>, ObjectCop
     /**
      * 连接信息id
      *
-     * @see ShellConnect
+     * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column
     private String iid;

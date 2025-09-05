@@ -20,13 +20,15 @@ import cn.oyzh.easyshell.exception.zk.ZKNoCreatePermException;
 import cn.oyzh.easyshell.exception.zk.ZKNoDeletePermException;
 import cn.oyzh.easyshell.exception.zk.ZKNoReadPermException;
 import cn.oyzh.easyshell.exception.zk.ZKNoWritePermException;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.zk.ZKQueryParam;
 import cn.oyzh.easyshell.query.zk.ZKQueryResult;
 import cn.oyzh.easyshell.util.zk.ZKAuthUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.RetryPolicy;
@@ -70,7 +72,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2020/6/8
  */
-public class ZKClient {
+public class ZKClient implements ShellBaseClient {
 
     /**
      * 最后的创建节点
@@ -146,10 +148,10 @@ public class ZKClient {
      */
     private final ZKTreeCacheSelector cacheSelector = new ZKTreeCacheSelector();
 
-    /**
-     * 连接状态
-     */
-    private final ReadOnlyObjectWrapper<ZKConnState> state = new ReadOnlyObjectWrapper<>();
+    // /**
+    //  * 连接状态
+    //  */
+    // private final ReadOnlyObjectWrapper<ZKConnState> state = new ReadOnlyObjectWrapper<>();
 
 //    /**
 //     * ssh配置储存
@@ -166,26 +168,42 @@ public class ZKClient {
 //     */
 //    private final ZKProxyConfigStore proxyConfigStore = ZKProxyConfigStore.INSTANCE;
 
-    /**
-     * 获取连接状态
-     *
-     * @return 连接状态
-     */
-    public ZKConnState state() {
-        return this.stateProperty().get();
-    }
+    // /**
+    //  * 获取连接状态
+    //  *
+    //  * @return 连接状态
+    //  */
+    // public ZKConnState state() {
+    //     return this.stateProperty().get();
+    // }
+    //
+    // /**
+    //  * 连接状态属性
+    //  *
+    //  * @return 连接状态属性
+    //  */
+    // public ReadOnlyObjectProperty<ZKConnState> stateProperty() {
+    //     return this.state.getReadOnlyProperty();
+    // }
 
     /**
-     * 连接状态属性
-     *
-     * @return 连接状态属性
+     * 连接状态
      */
-    public ReadOnlyObjectProperty<ZKConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
+
+    @Override
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
     public ZKClient(ShellConnect zkConnect) {
         this.zkConnect = zkConnect;
+        this.addStateListener(this.stateListener);
         // 监听连接状态
         this.stateProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null || !newValue.isConnected()) {
@@ -193,18 +211,18 @@ public class ZKClient {
             } else {
                 ThreadUtil.startVirtual(this::startTreeCache);
             }
-            if (newValue != null) {
-                switch (newValue) {
-                    case LOST -> ZKEventUtil.connectionLost(this);
-                    case CLOSED -> {
-                        if (!this.closeQuietly) {
-                            ZKEventUtil.connectionClosed(this);
-                        }
-                        this.closeQuietly = false;
-                    }
-                    case CONNECTED -> ZKEventUtil.connectionConnected(this);
-                }
-            }
+            // if (newValue != null) {
+            //     switch (newValue) {
+            //         case LOST -> ZKEventUtil.connectionLost(this);
+            //         case CLOSED -> {
+            //             if (!this.closeQuietly) {
+            //                 ZKEventUtil.connectionClosed(this);
+            //             }
+            //             this.closeQuietly = false;
+            //         }
+            //         case CONNECTED -> ZKEventUtil.connectionConnected(this);
+            //     }
+            // }
         });
     }
 
@@ -279,7 +297,7 @@ public class ZKClient {
     /**
      * 连接zk以监听模式
      */
-    public void startWithListener() {
+    public void startWithListener() throws Throwable {
         if (this.isEnableListen()) {
             this.cacheListener = new ZKTreeListener(this);
         } else {
@@ -288,18 +306,14 @@ public class ZKClient {
         this.start();
     }
 
-    /**
-     * 连接zk
-     */
-    public void start() {
-        this.start(this.zkConnect.connectTimeOutMs());
-    }
+    // /**
+    //  * 连接zk
+    //  */
+    // public void start() {
+    //     this.start(this.zkConnect.connectTimeOutMs());
+    // }
 
-    /**
-     * 连接zk
-     *
-     * @param timeout 超时时间
-     */
+    @Override
     public void start(int timeout) {
         if (this.isConnected() || this.isConnecting()) {
             return;
@@ -311,7 +325,7 @@ public class ZKClient {
             final AtomicLong starTime = new AtomicLong();
             // 设置连接监听事件
             this.framework.getConnectionStateListenable().addListener((c, s) -> {
-                this.state.set(ZKConnState.valueOf(s));
+                this.state.set(ShellConnState.valueOfZK(s));
                 // 连接成功
                 if (s == ConnectionState.CONNECTED) {
                     long endTime = System.currentTimeMillis();
@@ -322,28 +336,33 @@ public class ZKClient {
             // 开始连接时间
             starTime.set(System.currentTimeMillis());
             // 更新连接状态
-            this.state.set(ZKConnState.CONNECTING);
+            this.state.set(ShellConnState.CONNECTING);
             // 开始连接
             this.framework.start();
             // 连接成功前阻塞线程
             if (this.framework.blockUntilConnected(timeout, TimeUnit.MILLISECONDS)) {
                 // 更新连接状态
-                this.state.set(ZKConnState.CONNECTED);
+                this.state.set(ShellConnState.CONNECTED);
                 // // 设置认证信息为已认证
                 // ZKAuthUtil.setAuthed(this, ZKAuthUtil.loadAuths(this.iid()));
             } else {// 连接未成功则关闭
                 this.closeInner();
-                if (this.state.get() == ZKConnState.FAILED) {
+                if (this.state.get() == ShellConnState.FAILED) {
                     this.state.set(null);
                 } else {
-                    this.state.set(ZKConnState.FAILED);
+                    this.state.set(ShellConnState.FAILED);
                 }
             }
         } catch (Exception ex) {
-            this.state.set(ZKConnState.FAILED);
+            this.state.set(ShellConnState.FAILED);
             JulLog.warn("zkClient start error", ex);
             throw new ZKException(ex);
         }
+    }
+
+    @Override
+    public ShellConnect getShellConnect() {
+        return this.zkConnect;
     }
 
     /**
@@ -458,12 +477,11 @@ public class ZKClient {
                 authInfos, this.zkConnect.compatibility34(), this.iid(), zoo -> this.zooKeeper = zoo);
     }
 
-    /**
-     * 关闭zk
-     */
+    @Override
     public void close() {
         this.closeInner();
-        this.state.set(ZKConnState.CLOSED);
+        this.state.set(ShellConnState.CLOSED);
+        this.removeStateListener(this.stateListener);
     }
 
     /**
@@ -559,22 +577,18 @@ public class ZKClient {
         this.lastDelete = null;
     }
 
-    /**
-     * zk是否已连接
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        return this.state() == ZKConnState.CLOSED;
-    }
+    // /**
+    //  * zk是否已连接
+    //  *
+    //  * @return 结果
+    //  */
+    // public boolean isClosed() {
+    //     return this.state() == ZKConnState.CLOSED;
+    // }
 
-    /**
-     * zk是否已连接
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isConnected() {
-        ZKConnState state = this.state.get();
+        ShellConnState state = this.state.get();
         return state != null && state.isConnected();
     }
 
@@ -590,7 +604,7 @@ public class ZKClient {
         if (this.framework.getState() == CuratorFrameworkState.LATENT) {
             return true;
         }
-        return this.state() == ZKConnState.CONNECTING;
+        return this.getState() == ShellConnState.CONNECTING;
     }
 
     /**
@@ -1279,17 +1293,17 @@ public class ZKClient {
         return zookeeperClient.getZooKeeper();
     }
 
-    /**
-     * 添加状态监听器
-     *
-     * @param stateListener 状态监听器
-     */
-    public void addStateListener(ChangeListener<ZKConnState> stateListener) {
-        if (stateListener != null) {
-            this.state.addListener(stateListener);
-//            this.state.addListener(new WeakChangeListener<>(stateListener));
-        }
-    }
+//     /**
+//      * 添加状态监听器
+//      *
+//      * @param stateListener 状态监听器
+//      */
+//     public void addStateListener(ChangeListener<ZKConnState> stateListener) {
+//         if (stateListener != null) {
+//             this.state.addListener(stateListener);
+// //            this.state.addListener(new WeakChangeListener<>(stateListener));
+//         }
+//     }
 
     /**
      * 用户信息
@@ -1878,7 +1892,7 @@ public class ZKClient {
         return result;
     }
 
-    public ShellConnect shellConnect() {
-        return this.zkConnect;
-    }
+    // public ShellConnect shellConnect() {
+    //     return this.zkConnect;
+    // }
 }
