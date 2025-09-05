@@ -53,7 +53,7 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
             // 初始化过滤器
             if (this.itemFilter == null) {
                 ShellZKNodeTreeItemFilter filter = new ShellZKNodeTreeItemFilter();
-                filter.initFilters(this.client.iid());
+                // filter.initFilters(this.client.iid());
                 this.itemFilter = filter;
             }
         } catch (Exception ex) {

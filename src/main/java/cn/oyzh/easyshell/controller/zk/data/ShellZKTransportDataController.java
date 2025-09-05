@@ -6,7 +6,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.handler.zk.ShellZKDataTransportHandler;
-import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -15,7 +14,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -157,11 +155,11 @@ public class ShellZKTransportDataController extends StageController {
     @FXML
     private FXToggleGroup existsPolicy;
 
-    /**
-     * 适用过滤配置
-     */
-    @FXML
-    private FXCheckBox applyFilter;
+    // /**
+    //  * 适用过滤配置
+    //  */
+    // @FXML
+    // private FXCheckBox applyFilter;
 
     /**
      * 传输操作任务
@@ -178,10 +176,10 @@ public class ShellZKTransportDataController extends StageController {
      */
     private ShellZKDataTransportHandler transportHandler;
 
-    /**
-     * 过滤配置储存
-     */
-    private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
+    // /**
+    //  * 过滤配置储存
+    //  */
+    // private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
 
     /**
      * 执行传输
@@ -221,11 +219,11 @@ public class ShellZKTransportDataController extends StageController {
         // 节点存在时处理策略
         this.transportHandler.setExistsPolicy(this.existsPolicy.selectedUserData());
         // 适用过滤
-        if (this.applyFilter.isSelected()) {
-            this.transportHandler.setFilters(this.filterStore.loadEnable(this.sourceClient.iid()));
-        } else {
-            this.transportHandler.setFilters(null);
-        }
+        // if (this.applyFilter.isSelected()) {
+        //     this.transportHandler.setFilters(this.filterStore.loadEnable(this.sourceClient.iid()));
+        // } else {
+        //     this.transportHandler.setFilters(null);
+        // }
         // 开始处理
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.transportInProgress() + "===");

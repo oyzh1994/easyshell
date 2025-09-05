@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.handler.zk;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import org.apache.zookeeper.CreateMode;
@@ -36,10 +35,10 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
      */
     private String existsPolicy;
 
-    /**
-     * 过滤内容列表
-     */
-    private List<ZKFilter> filters;
+    // /**
+    //  * 过滤内容列表
+    //  */
+    // private List<ZKFilter> filters;
 
     /**
      * 来源字符集
@@ -89,12 +88,12 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
                 return;
             }
 
-            // 过滤处理
-            if (ShellZKNodeUtil.isFiltered(decodePath, this.filters)) {
-                this.message("node[" + decodePath + "] is filtered, skip it");
-                this.processedSkip();
-                return;
-            }
+            // // 过滤处理
+            // if (ShellZKNodeUtil.isFiltered(decodePath, this.filters)) {
+            //     this.message("node[" + decodePath + "] is filtered, skip it");
+            //     this.processedSkip();
+            //     return;
+            // }
 
             // 节点存在
             if (this.targetClient.exists(path)) {
@@ -153,13 +152,13 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
         this.existsPolicy = existsPolicy;
     }
 
-    public List<ZKFilter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<ZKFilter> filters) {
-        this.filters = filters;
-    }
+    // public List<ZKFilter> getFilters() {
+    //     return filters;
+    // }
+    //
+    // public void setFilters(List<ZKFilter> filters) {
+    //     this.filters = filters;
+    // }
 
     public Charset getSourceCharset() {
         return sourceCharset;

@@ -4,7 +4,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
@@ -178,34 +177,34 @@ public class ShellZKNodeUtil {
         node.copy(n);
     }
 
-    /**
-     * 是否被过滤
-     *
-     * @param nodePath 节点路径
-     * @param filters  zk过滤配置列表
-     * @return 结果
-     */
-    public static boolean isFiltered(String nodePath, List<ZKFilter> filters) {
-        if (CollectionUtil.isEmpty(filters) || nodePath == null) {
-            return false;
-        }
-        // 匹配结果
-        for (ZKFilter filter : filters) {
-            // 未启用，不处理
-            if (!filter.isEnable()) {
-                continue;
-            }
-            // 模糊匹配
-            if (filter.isPartMatch() && nodePath.contains(filter.getKw())) {
-                return true;
-            }
-            // 完全匹配
-            if (nodePath.equalsIgnoreCase(filter.getKw())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // /**
+    //  * 是否被过滤
+    //  *
+    //  * @param nodePath 节点路径
+    //  * @param filters  zk过滤配置列表
+    //  * @return 结果
+    //  */
+    // public static boolean isFiltered(String nodePath, List<ZKFilter> filters) {
+    //     if (CollectionUtil.isEmpty(filters) || nodePath == null) {
+    //         return false;
+    //     }
+    //     // 匹配结果
+    //     for (ZKFilter filter : filters) {
+    //         // 未启用，不处理
+    //         if (!filter.isEnable()) {
+    //             continue;
+    //         }
+    //         // 模糊匹配
+    //         if (filter.isPartMatch() && nodePath.contains(filter.getKw())) {
+    //             return true;
+    //         }
+    //         // 完全匹配
+    //         if (nodePath.equalsIgnoreCase(filter.getKw())) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     /**
      * 获取父路径

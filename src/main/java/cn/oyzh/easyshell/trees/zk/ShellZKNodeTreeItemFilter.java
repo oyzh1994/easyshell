@@ -1,13 +1,8 @@
 package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKFilter;
-import cn.oyzh.easyshell.store.zk.ZKFilterStore;
-import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
-
-import java.util.List;
 
 /**
  * 树节点过滤器
@@ -45,22 +40,22 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
      */
     private byte matchMode;
 
-    /**
-     * 过滤内容列表
-     */
-    private List<ZKFilter> filters;
+    // /**
+    //  * 过滤内容列表
+    //  */
+    // private List<ZKFilter> filters;
+    //
+    // /**
+    //  * 过滤配置储存
+    //  */
+    // private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
 
-    /**
-     * 过滤配置储存
-     */
-    private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
-
-    /**
-     * 初始化过滤配置
-     */
-    public void initFilters(String iid) {
-        this.filters = this.filterStore.loadEnable(iid);
-    }
+    // /**
+    //  * 初始化过滤配置
+    //  */
+    // public void initFilters(String iid) {
+    //     this.filters = this.filterStore.loadEnable(iid);
+    // }
 
     @Override
     public boolean test(RichTreeItem<?> item) {
@@ -83,10 +78,10 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
                 return false;
             }
             String nodePath = treeItem.decodeNodePath();
-            // 过滤节点
-            if (ShellZKNodeUtil.isFiltered(nodePath, this.filters)) {
-                return false;
-            }
+            // // 过滤节点
+            // if (ShellZKNodeUtil.isFiltered(nodePath, this.filters)) {
+            //     return false;
+            // }
             // 关键字
             if (StringUtil.isNotBlank(this.kw)) {
 //                // 路径
@@ -171,11 +166,11 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
         this.matchMode = matchMode;
     }
 
-    public List<ZKFilter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<ZKFilter> filters) {
-        this.filters = filters;
-    }
+    // public List<ZKFilter> getFilters() {
+    //     return filters;
+    // }
+    //
+    // public void setFilters(List<ZKFilter> filters) {
+    //     this.filters = filters;
+    // }
 }

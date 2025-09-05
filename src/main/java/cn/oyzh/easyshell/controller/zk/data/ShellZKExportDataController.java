@@ -7,7 +7,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.zk.ShellZKDataExportHandler;
-import cn.oyzh.easyshell.store.zk.ZKFilterStore;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -117,11 +116,11 @@ public class ShellZKExportDataController extends StageController {
     @FXML
     private FXButton selectFile;
 
-    /**
-     * 适用过滤配置
-     */
-    @FXML
-    private FXCheckBox applyFilter;
+    // /**
+    //  * 适用过滤配置
+    //  */
+    // @FXML
+    // private FXCheckBox applyFilter;
 
     /**
      * 包含标题
@@ -184,10 +183,10 @@ public class ShellZKExportDataController extends StageController {
      */
     private final Counter counter = new Counter();
 
-    /**
-     * 过滤配置储存
-     */
-    private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
+    // /**
+    //  * 过滤配置储存
+    //  */
+    // private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
 
     /**
      * 导出处理器
@@ -233,12 +232,12 @@ public class ShellZKExportDataController extends StageController {
         this.exportHandler.filePath(this.exportFile.getPath());
         // 字符集
         this.exportHandler.charset(this.charset.getCharsetName());
-        // 适用过滤
-        if (this.applyFilter.isSelected()) {
-            this.exportHandler.setFilters(this.filterStore.loadEnable(this.client.iid()));
-        } else {
-            this.exportHandler.setFilters(null);
-        }
+        // // 适用过滤
+        // if (this.applyFilter.isSelected()) {
+        //     this.exportHandler.setFilters(this.filterStore.loadEnable(this.client.iid()));
+        // } else {
+        //     this.exportHandler.setFilters(null);
+        // }
         // 包含acl
         this.exportHandler.setIncludeACL(this.includeACL.isSelected());
         // 包含标题

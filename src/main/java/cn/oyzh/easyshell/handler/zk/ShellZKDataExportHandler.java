@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.handler.zk;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * zk数据导出业务
@@ -44,10 +42,10 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
      */
     private String nodePath;
 
-    /**
-     * 过滤内容列表
-     */
-    private List<ZKFilter> filters;
+    // /**
+    //  * 过滤内容列表
+    //  */
+    // private List<ZKFilter> filters;
 
     /**
      * 批量处理大小
@@ -99,15 +97,15 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
             try {
                 // 写入头
                 writer.writeHeader();
-                // 节点过滤
-                Predicate<String> filter = path -> {
-                    if (ShellZKNodeUtil.isFiltered(path, this.filters)) {
-                        this.message("node[" + path + "] is filtered, skip it");
-                        this.processedSkip();
-                        return false;
-                    }
-                    return true;
-                };
+                // // 节点过滤
+                // Predicate<String> filter = path -> {
+                //     if (ShellZKNodeUtil.isFiltered(path, this.filters)) {
+                //         this.message("node[" + path + "] is filtered, skip it");
+                //         this.processedSkip();
+                //         return false;
+                //     }
+                //     return true;
+                // };
 
                 // 获取节点成功
                 Consumer<ShellZKNode> success = (node) -> {
@@ -146,7 +144,7 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
                     this.processedDecr();
                 };
                 // 递归获取节点
-                ShellZKNodeUtil.loopNode(this.client, this.nodePath, filter, success, error, this.includeACL);
+                ShellZKNodeUtil.loopNode(this.client, this.nodePath, null, success, error, this.includeACL);
             } finally {
                 // 写入尾
                 writeBatch.run();
@@ -217,13 +215,13 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
         this.nodePath = nodePath;
     }
 
-    public List<ZKFilter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<ZKFilter> filters) {
-        this.filters = filters;
-    }
+    // public List<ZKFilter> getFilters() {
+    //     return filters;
+    // }
+    //
+    // public void setFilters(List<ZKFilter> filters) {
+    //     this.filters = filters;
+    // }
 
     public int getBatchSize() {
         return batchSize;
