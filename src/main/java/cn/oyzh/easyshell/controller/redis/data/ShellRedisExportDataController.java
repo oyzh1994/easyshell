@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
+import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.handler.redis.ShellRedisDataExportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
@@ -137,7 +137,7 @@ public class ShellRedisExportDataController extends StageController {
      * 数据库
      */
     @FXML
-    private RedisDatabaseComboBox db;
+    private ShellRedisDatabaseComboBox db;
 
     /**
      * 键模式

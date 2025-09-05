@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.zk.ZKAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKAuthTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.UnLockButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -30,11 +30,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ZKAuthTypeComboBox initIndex="0" fx:id="authType" realHeight="30" flexWidth="100% - 200">
+    <ShellZKAuthTypeComboBox initIndex="0" fx:id="authType" realHeight="30" flexWidth="100% - 200">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ZKAuthTypeComboBox>
+    </ShellZKAuthTypeComboBox>
     <FXVBox fx:id="authType1">
         <InfoLabel text="%base.authInfo">
             <VBox.margin>

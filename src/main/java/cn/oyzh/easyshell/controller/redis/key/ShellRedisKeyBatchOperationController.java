@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
+import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.batch.ShellRedisScanSimpleResult;
@@ -144,13 +144,13 @@ public class ShellRedisKeyBatchOperationController extends StageController {
      * 移动目标库
      */
     @FXML
-    private RedisDatabaseComboBox moveTargetDB;
+    private ShellRedisDatabaseComboBox moveTargetDB;
 
     /**
      * 复制目标库
      */
     @FXML
-    private RedisDatabaseComboBox copyTargetDB;
+    private ShellRedisDatabaseComboBox copyTargetDB;
 
     /**
      * 复制时替换

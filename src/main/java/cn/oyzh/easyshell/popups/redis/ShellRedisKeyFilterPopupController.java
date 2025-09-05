@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.popups.redis;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.redis.ShellRedisKeyFilterHistory;
-import cn.oyzh.easyshell.fx.redis.RedisKeyFilterHistoryPopup;
+import cn.oyzh.easyshell.fx.redis.ShellRedisKeyFilterHistoryPopup;
 import cn.oyzh.easyshell.store.redis.RedisKeyFilterHistoryStore;
 import cn.oyzh.fx.gui.text.field.SearchTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -47,7 +47,7 @@ public class ShellRedisKeyFilterPopupController extends PopupController {
             this.keyFilter.setText(pattern);
         }
         this.keyFilter.requestFocus();
-        this.keyFilter.setHistoryPopup(new RedisKeyFilterHistoryPopup());
+        this.keyFilter.setHistoryPopup(new ShellRedisKeyFilterHistoryPopup());
     }
 
     /**

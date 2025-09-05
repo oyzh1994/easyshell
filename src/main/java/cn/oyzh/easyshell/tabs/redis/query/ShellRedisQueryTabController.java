@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.redis.query;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
+import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
@@ -70,7 +70,7 @@ public class ShellRedisQueryTabController extends SubTabController {
      * 数据库
      */
     @FXML
-    private RedisDatabaseComboBox database;
+    private ShellRedisDatabaseComboBox database;
 
     /**
      * 结果面板

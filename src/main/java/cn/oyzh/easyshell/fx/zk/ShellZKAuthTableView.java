@@ -12,7 +12,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-19
  */
-public class ZKAuthTableView extends FXTableView<ShellZKAuth> {
+public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
 
     /**
      * 当前过滤列表

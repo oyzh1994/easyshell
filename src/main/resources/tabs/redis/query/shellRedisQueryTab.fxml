@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox?>
 <?import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
@@ -23,11 +23,11 @@
         </ShellQueryTreeView>
         <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
             <FXHBox realHeight="30" flexWidth="100%">
-                <RedisDatabaseComboBox fx:id="database" prefHeight="22">
+                <ShellRedisDatabaseComboBox fx:id="database" prefHeight="22">
                     <HBox.margin>
                         <Insets left="5" top="4"/>
                     </HBox.margin>
-                </RedisDatabaseComboBox>
+                </ShellRedisDatabaseComboBox>
                 <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
                     <HBox.margin>
                         <Insets left="5" top="7"/>

@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab xmlns="http://javafx.com/javafx"
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKSrvrTabController" text="Srvr">
     <FXVBox flexWidth="100%" flexHeight="100%">

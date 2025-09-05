@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/07/07
  */
-public class RedisDatabaseComboBox extends FXComboBox<String> {
+public class ShellRedisDatabaseComboBox extends FXComboBox<String> {
 
     public Integer getDbCount() {
         return dbCount;

@@ -68,7 +68,12 @@ public class ShellRedisTabController extends ShellParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(keysController, queryController, serverController, terminalController);
+        return List.of(
+                this.keysController,
+                this.queryController,
+                this.serverController,
+                this.terminalController
+        );
     }
 
     /**

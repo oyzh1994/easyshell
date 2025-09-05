@@ -11,7 +11,7 @@ import java.util.Locale;
  * @author oyzh
  * @since 2024/4/11
  */
-public class ZKCreateModeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
+public class ShellZKCreateModeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 
     {
         NodeManager.init(this);

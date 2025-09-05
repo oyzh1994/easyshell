@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
+import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.handler.redis.ShellRedisDataTransportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
@@ -96,7 +96,7 @@ public class ShellRedisTransportDataController extends StageController {
      * 来源数据库
      */
     @FXML
-    private RedisDatabaseComboBox sourceDatabase;
+    private ShellRedisDatabaseComboBox sourceDatabase;
 
     /**
      * 来源数据库名称
@@ -114,7 +114,7 @@ public class ShellRedisTransportDataController extends StageController {
      * 目标数据库
      */
     @FXML
-    private RedisDatabaseComboBox targetDatabase;
+    private ShellRedisDatabaseComboBox targetDatabase;
 
     /**
      * 目标数据库名称

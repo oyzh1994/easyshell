@@ -4,7 +4,7 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.redis.RedisKeyTypeComboBox;
+import cn.oyzh.easyshell.fx.redis.ShellRedisKeyTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -164,7 +164,7 @@ public class ShellRedisKeyAddController extends StageController {
      * 键类型
      */
     @FXML
-    private RedisKeyTypeComboBox type;
+    private ShellRedisKeyTypeComboBox type;
 
     /**
      * redis客户端

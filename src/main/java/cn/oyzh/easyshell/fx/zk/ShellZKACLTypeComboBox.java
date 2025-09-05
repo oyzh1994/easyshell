@@ -10,7 +10,7 @@ import java.util.Locale;
  * @author oyzh
  * @since 2024/4/19
  */
-public class ZKACLTypeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
+public class ShellZKACLTypeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 
     @Override
     public List<String> values(Locale locale) {

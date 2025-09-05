@@ -12,7 +12,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/07/19
  */
-public class RedisKeyFilterHistoryPopup extends SearchHistoryPopup {
+public class ShellRedisKeyFilterHistoryPopup extends SearchHistoryPopup {
 
     /**
      * 过滤历史储存

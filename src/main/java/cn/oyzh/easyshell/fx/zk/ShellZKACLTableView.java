@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.fx.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.fx.zk.ZKACLControl;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -14,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024-05-21
  */
-public class ZKACLTableView extends FXTableView<ZKACLControl> {
+public class ShellZKACLTableView extends FXTableView<ShellZKACLControl> {
 
     private Runnable addAction;
 
@@ -73,7 +72,7 @@ public class ZKACLTableView extends FXTableView<ZKACLControl> {
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<FXMenuItem> menuItems = new ArrayList<>();
-        List<ZKACLControl> rows = this.getSelectedItems();
+        List<ShellZKACLControl> rows = this.getSelectedItems();
         FXMenuItem add = MenuItemHelper.add("12", this.addAction);
         menuItems.add(add);
 

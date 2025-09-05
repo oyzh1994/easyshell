@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.redis.RedisKeyRowTableView;
+import cn.oyzh.easyshell.fx.redis.ShellRedisKeyRowTableView;
 import cn.oyzh.easyshell.popups.redis.ShellRedisPageSettingPopupController;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -51,7 +51,7 @@ public abstract class ShellRedisRowKeyController<T extends RedisRowKeyTreeItem<R
      * 数据列表
      */
     @FXML
-    protected RedisKeyRowTableView<R> listTable;
+    protected ShellRedisKeyRowTableView<R> listTable;
 
     /**
      * 数据操作面板

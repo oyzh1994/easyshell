@@ -149,7 +149,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     * acl表视图
 //     */
 //    @FXML
-//    private ZKACLTableView aclTableView;
+//    private ShellZKACLTableView aclTableView;
 
 //    /**
 //     * 数据大小
@@ -566,9 +566,9 @@ public class ShellZKNodeTabController extends ParentTabController {
 //        List<ZKACL> aclList = this.aclPaging.page(pageNo);
 //        // 设置分页信息
 //        this.aclPage.setPaging(this.aclPaging);
-//        List<ZKACLControl> list = new ArrayList<>();
+//        List<ShellZKACLControl> list = new ArrayList<>();
 //        for (ZKACL zkacl : aclList) {
-//            ZKACLControl control = new ZKACLControl();
+//            ShellZKACLControl control = new ShellZKACLControl();
 //            control.setId(zkacl.getId());
 //            control.setPerms(zkacl.getPerms());
 //            control.setFriendly(this.aclViewSwitch.isSelected());

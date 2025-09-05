@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.redis.RedisLatitudeField?>
-<?import cn.oyzh.easyshell.fx.redis.RedisLongitudeField?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisLatitudeField?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisLongitudeField?>
 <?import cn.oyzh.fx.editor.tm4javafx.Editor?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
@@ -45,21 +45,21 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <RedisLongitudeField realHeight="30" flexWidth="100% - 180" fx:id="longitude" value="0" step="5">
+    <ShellRedisLongitudeField realHeight="30" flexWidth="100% - 180" fx:id="longitude" value="0" step="5">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </RedisLongitudeField>
+    </ShellRedisLongitudeField>
     <InfoLabel text="%base.latitude">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <RedisLatitudeField realHeight="30" flexWidth="100% - 180" fx:id="latitude" value="0" step="5">
+    <ShellRedisLatitudeField realHeight="30" flexWidth="100% - 180" fx:id="latitude" value="0" step="5">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </RedisLatitudeField>
+    </ShellRedisLatitudeField>
     <FXHBox flexWidth="100%" realHeight="50">
         <SubmitButton onAction="#addRow">
             <HBox.margin>

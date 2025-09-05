@@ -54,7 +54,12 @@ public class ShellZKTabController extends ShellParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(nodeController, queryController, serverController, terminalController);
+        return List.of(
+                this.nodeController,
+                this.queryController,
+                this.serverController,
+                this.terminalController
+        );
     }
 
     /**

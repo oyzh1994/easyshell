@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -29,11 +29,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <RedisDatabaseComboBox fx:id="targetDB" realHeight="30.0" flexWidth="100% - 180">
+    <ShellRedisDatabaseComboBox fx:id="targetDB" realHeight="30.0" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </RedisDatabaseComboBox>
+    </ShellRedisDatabaseComboBox>
     <InfoLabel text="%base.options" >
         <VBox.margin>
             <Insets left="30" top="10"/>

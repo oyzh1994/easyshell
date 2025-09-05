@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.zk.ZKACLTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKACLTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.SuccessButton?>
@@ -34,11 +34,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ZKACLTypeComboBox fx:id="aclType" realHeight="30" flexWidth="100% - 140" initIndex="0" require="true">
+    <ShellZKACLTypeComboBox fx:id="aclType" realHeight="30" flexWidth="100% - 140" initIndex="0" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ZKACLTypeComboBox>
+    </ShellZKACLTypeComboBox>
     <FXVBox fx:id="permsBox" managedBindVisible="true">
         <InfoLabel text="%shell.zk.aclScope">
             <VBox.margin>

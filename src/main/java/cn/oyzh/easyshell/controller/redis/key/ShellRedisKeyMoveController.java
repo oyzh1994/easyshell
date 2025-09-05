@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox;
+import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -48,7 +48,7 @@ public class ShellRedisKeyMoveController extends StageController {
      * 目标数据库
      */
     @FXML
-    private RedisDatabaseComboBox targetDB;
+    private ShellRedisDatabaseComboBox targetDB;
 
     /**
      * redis客户端

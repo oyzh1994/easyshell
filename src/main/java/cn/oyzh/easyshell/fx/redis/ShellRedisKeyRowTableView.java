@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/05/20
  */
-public class RedisKeyRowTableView<R extends ShellRedisKeyRow> extends FXTableView<R> {
+public class ShellRedisKeyRowTableView<R extends ShellRedisKeyRow> extends FXTableView<R> {
 
     private Runnable addAction;
 

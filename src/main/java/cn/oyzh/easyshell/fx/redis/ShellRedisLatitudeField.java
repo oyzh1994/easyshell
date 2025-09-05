@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/7/5
  */
-public class RedisLatitudeField extends DecimalTextField {
+public class ShellRedisLatitudeField extends DecimalTextField {
 
     {
         this.setRequire(true);

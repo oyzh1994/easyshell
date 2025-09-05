@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.fx.zk.ZKACLControl;
-import cn.oyzh.easyshell.fx.zk.ZKACLTableView;
+import cn.oyzh.easyshell.fx.zk.ShellZKACLControl;
+import cn.oyzh.easyshell.fx.zk.ShellZKACLTableView;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -50,7 +50,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
      * acl表视图
      */
     @FXML
-    private ZKACLTableView aclTableView;
+    private ShellZKACLTableView aclTableView;
 
     /**
      * 重新载入权限
@@ -175,9 +175,9 @@ public class ShellZKNodeACLTabController extends SubTabController {
 //        List<ZKACL> aclList = this.aclPaging.page(pageNo);
 //        // 设置分页信息
 //        this.aclPage.setPaging(this.aclPaging);
-//        List<ZKACLControl> list = new ArrayList<>();
+//        List<ShellZKACLControl> list = new ArrayList<>();
 //        for (ZKACL zkacl : aclList) {
-//            ZKACLControl control = new ZKACLControl();
+//            ShellZKACLControl control = new ShellZKACLControl();
 //            control.setId(zkacl.getId());
 //            control.setPerms(zkacl.getPerms());
 //            control.setFriendly(this.aclViewSwitch.isSelected());
@@ -193,9 +193,9 @@ public class ShellZKNodeACLTabController extends SubTabController {
      * @param aclList acl列表
      */
     private void renderACLView(List<ZKACL> aclList) {
-        List<ZKACLControl> list = new ArrayList<>();
+        List<ShellZKACLControl> list = new ArrayList<>();
         for (ZKACL zkacl : aclList) {
-            ZKACLControl control = new ZKACLControl();
+            ShellZKACLControl control = new ShellZKACLControl();
             control.setId(zkacl.getId());
             control.setPerms(zkacl.getPerms());
             control.setFriendly(this.aclViewSwitch.isSelected());

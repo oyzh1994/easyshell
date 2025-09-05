@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/7/5
  */
-public class RedisLongitudeField extends DecimalTextField {
+public class ShellRedisLongitudeField extends DecimalTextField {
 
     {
         this.setMax(180D);

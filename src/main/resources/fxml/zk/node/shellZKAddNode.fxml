@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.zk.ZKACLType2ComboBox?>
-<?import cn.oyzh.easyshell.fx.zk.ZKCreateModeComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKACLType2ComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKCreateModeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -43,11 +43,11 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ZKCreateModeComboBox initIndex="0" fx:id="createMode" realHeight="30.0" flexWidth="100% - 140">
+                <ShellZKCreateModeComboBox initIndex="0" fx:id="createMode" realHeight="30.0" flexWidth="100% - 140">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ZKCreateModeComboBox>
+                </ShellZKCreateModeComboBox>
                 <InfoLabel text="%base.path">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -114,12 +114,12 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ZKACLType2ComboBox fx:id="aclType" realHeight="30" flexWidth="100% - 140" initIndex="0"
-                                    require="true">
+                <ShellZKACLType2ComboBox fx:id="aclType" realHeight="30" flexWidth="100% - 140" initIndex="0"
+                                         require="true">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ZKACLType2ComboBox>
+                </ShellZKACLType2ComboBox>
                 <FXVBox>
                     <InfoLabel text="%shell.zk.aclScope">
                         <VBox.margin>

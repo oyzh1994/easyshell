@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
  * @since 2022/6/7
  */
 
-public class ZKACLControl extends ZKACL {
+public class ShellZKACLControl extends ZKACL {
 
     /**
      * 是否已认证

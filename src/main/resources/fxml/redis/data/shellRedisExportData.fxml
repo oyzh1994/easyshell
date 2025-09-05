@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.redis.RedisDatabaseComboBox?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.ExportButton?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
@@ -91,11 +91,11 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <RedisDatabaseComboBox fx:id="db" realHeight="30" flexWidth="100% - 80">
+            <ShellRedisDatabaseComboBox fx:id="db" realHeight="30" flexWidth="100% - 80">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </RedisDatabaseComboBox>
+            </ShellRedisDatabaseComboBox>
             <InfoLabel text="%base.filter">
                 <VBox.margin>
                     <Insets left="30" top="10"/>

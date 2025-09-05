@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.zk.server;
 
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.fxml.FXML;
 
@@ -14,6 +15,12 @@ import java.util.List;
  * @since 2024/12/24
  */
 public class ShellZKConfTabController extends SubTabController {
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXTab root;
 
     /**
      * 配置信息
@@ -36,7 +43,7 @@ public class ShellZKConfTabController extends SubTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.getTab().selectedProperty().addListener((observable, oldValue, newValue) -> {
+        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 this.refreshConf();
             }

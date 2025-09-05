@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.redis.RedisKeyTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.redis.RedisLatitudeField?>
-<?import cn.oyzh.easyshell.fx.redis.RedisLongitudeField?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisKeyTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisLatitudeField?>
+<?import cn.oyzh.easyshell.fx.redis.ShellRedisLongitudeField?>
 <?import cn.oyzh.fx.editor.tm4javafx.Editor?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
@@ -27,11 +27,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <RedisKeyTypeComboBox initIndex="0" fx:id="type" realHeight="30.0" flexWidth="100% - 140">
+    <ShellRedisKeyTypeComboBox initIndex="0" fx:id="type" realHeight="30.0" flexWidth="100% - 140">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </RedisKeyTypeComboBox>
+    </ShellRedisKeyTypeComboBox>
     <InfoLabel text="%base.keyName">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -129,23 +129,23 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <RedisLongitudeField realHeight="30" flexWidth="100% - 140" fx:id="longitudeValue" tipText="%base.contentTip1"
-                             value="0" step="5">
+        <ShellRedisLongitudeField realHeight="30" flexWidth="100% - 140" fx:id="longitudeValue" tipText="%base.contentTip1"
+                                  value="0" step="5">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
-        </RedisLongitudeField>
+        </ShellRedisLongitudeField>
         <InfoLabel text="%base.latitude">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <RedisLatitudeField realHeight="30" flexWidth="100% - 140" fx:id="latitudeValue" tipText="%base.contentTip1"
-                            value="0" step="5">
+        <ShellRedisLatitudeField realHeight="30" flexWidth="100% - 140" fx:id="latitudeValue" tipText="%base.contentTip1"
+                                 value="0" step="5">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
-        </RedisLatitudeField>
+        </ShellRedisLatitudeField>
         <FXVBox flexWidth="100%" flexHeight="100% - 140">
             <InfoLabel text="%base.coordinates">
                 <VBox.margin>
