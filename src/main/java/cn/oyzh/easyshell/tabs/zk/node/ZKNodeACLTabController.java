@@ -4,9 +4,9 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.fx.zk.ZKACLControl;
 import cn.oyzh.easyshell.fx.zk.ZKACLTableView;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -269,11 +269,11 @@ public class ZKNodeACLTabController extends SubTabController {
 //         return this.parent().getTreeItem();
 //     }
 
-    private ZKNodeTreeItem activeItem() {
+    private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }
 
-    private ZKClient client() {
+    private ShellZKClient client() {
         return this.parent().getClient();
     }
 

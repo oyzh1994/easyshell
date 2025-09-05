@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.zk.ShellZKConnectUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.TerminalPane;
@@ -75,9 +75,9 @@ public class ZKTerminalPane extends TerminalPane {
     /**
      * zk客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 
@@ -131,7 +131,7 @@ public class ZKTerminalPane extends TerminalPane {
      *
      * @param client 客户端
      */
-    public void init(ZKClient client) {
+    public void init(ShellZKClient client) {
         this.client = client;
         this.disableInput();
         this.outputLine(I18nResourceBundle.i18nString("shell.zk.home.welcome"));

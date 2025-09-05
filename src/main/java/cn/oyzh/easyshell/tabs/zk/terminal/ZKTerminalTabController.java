@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.zk.terminal;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
@@ -30,14 +30,14 @@ public class ZKTerminalTabController extends RichTabController {
     /**
      * 客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 设置客户端
      *
      * @param client 客户端
      */
-    public void init(ZKClient client) {
+    public void init(ShellZKClient client) {
         this.client = client;
         // this.terminal.init(client);
     }
@@ -47,7 +47,7 @@ public class ZKTerminalTabController extends RichTabController {
      *
      * @return zk客户端
      */
-    public ZKClient client() {
+    public ShellZKClient client() {
         return this.terminal.getClient();
     }
 

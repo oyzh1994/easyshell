@@ -160,7 +160,7 @@
 //     //  * @param nodeItem zk节点
 //     //  * @param client   zk客户端
 //     //  */
-//     // public static StageAdapter addACL(ZKNodeTreeItem nodeItem, ZKClient client) {
+//     // public static StageAdapter addACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
 //     //     try {
 //     //         StageAdapter adapter = StageManager.parseStage(ZKAddACLController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("zkItem", nodeItem);
@@ -181,7 +181,7 @@
 //     //  * @param client   zk客户端
 //     //  * @param acl      权限
 //     //  */
-//     // public static StageAdapter updateACL(ZKNodeTreeItem nodeItem, ZKClient client, ZKACL acl) {
+//     // public static StageAdapter updateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ZKACL acl) {
 //     //     try {
 //     //         StageAdapter adapter = StageManager.parseStage(ZKUpdateACLController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("acl", acl);
@@ -241,7 +241,7 @@
 //     //  * @param nodeItem zk节点
 //     //  * @param client   zk客户端
 //     //  */
-//     // public static void authNode(ZKNodeTreeItem nodeItem, ZKClient client) {
+//     // public static void authNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
 //     //     try {
 //     //         StageAdapter adapter = StageManager.parseStage(ZKAuthNodeController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("zkItem", nodeItem);
@@ -259,7 +259,7 @@
 //     //  * @param nodeItem zk节点
 //     //  * @param client   zk客户端
 //     //  */
-//     // public static void addNode(ZKNodeTreeItem nodeItem, ZKClient client) {
+//     // public static void addNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
 //     //     try {
 //     //         StageAdapter adapter = StageManager.parseStage(ZKAddNodeController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("zkItem", nodeItem);

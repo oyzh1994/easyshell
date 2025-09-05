@@ -2,7 +2,7 @@
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.domain.zk.ZKQuery;
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import javafx.scene.Cursor;
@@ -13,7 +13,7 @@
 //  */
 // public class ZKQueryTab extends RichTab {
 //
-//     public ZKQueryTab(ZKClient client, ZKQuery query) {
+//     public ZKQueryTab(ShellZKClient client, ZKQuery query) {
 //         super();
 //         this.init(client, query);
 //         super.flush();
@@ -55,11 +55,11 @@
 //         return this.controller().zkConnect();
 //     }
 //
-//     public void init(ZKClient client) {
+//     public void init(ShellZKClient client) {
 //         this.controller().init(client, null);
 //     }
 //
-//     public void init(ZKClient client, ZKQuery query) {
+//     public void init(ShellZKClient client, ZKQuery query) {
 //         this.controller().init(client, query);
 //     }
 // }

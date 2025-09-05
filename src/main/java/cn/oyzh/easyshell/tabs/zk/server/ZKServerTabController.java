@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
 import cn.oyzh.easyshell.dto.zk.ZKServerInfo;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -31,18 +31,18 @@ public class ZKServerTabController extends ParentTabController {
     @FXML
     private FXTab root;
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 
-    public void setClient(ZKClient client) {
+    public void setClient(ShellZKClient client) {
         this.client = client;
     }
 
     /**
      * zk客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 服务信息
@@ -114,7 +114,7 @@ public class ZKServerTabController extends ParentTabController {
      *
      * @param client zk客户端
      */
-    public void init(ZKClient client) {
+    public void init(ShellZKClient client) {
         this.client = client;
         // 设置信息
         String command = this.command.getText() + "(" + I18nHelper.received() + "/" + I18nHelper.sent() + "/" + I18nHelper.outstanding() + ")";

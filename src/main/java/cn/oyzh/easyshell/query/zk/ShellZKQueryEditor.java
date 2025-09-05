@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.font.FontManager;
 import javafx.scene.text.Font;
@@ -18,13 +18,13 @@ public class ShellZKQueryEditor extends Editor {
     /**
      * zk客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 
-    public void setClient(ZKClient client) {
+    public void setClient(ShellZKClient client) {
         this.client = client;
     }
 

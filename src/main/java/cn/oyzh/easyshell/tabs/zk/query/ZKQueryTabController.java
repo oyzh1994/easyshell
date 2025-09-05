@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -51,7 +51,7 @@ public class ZKQueryTabController extends RichTabController {
     /**
      * zk客户端
      */
-    private ZKClient zkClient;
+    private ShellZKClient zkClient;
 
     /**
      * 当前内容
@@ -86,7 +86,7 @@ public class ZKQueryTabController extends RichTabController {
         return this.zkClient.zkConnect();
     }
 
-    public void init(ZKClient client) {
+    public void init(ShellZKClient client) {
         this.zkClient = client;
         this.content.setClient(client);
         // 初始化查询数据

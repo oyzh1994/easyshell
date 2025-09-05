@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.tabs.zk.terminal;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.i18n.I18nHelper;
@@ -15,7 +15,7 @@
 //  */
 // public class ZKTerminalTab extends RichTab {
 //
-//     public ZKTerminalTab(ZKClient client) {
+//     public ZKTerminalTab(ShellZKClient client) {
 //         this.init(client);
 //     }
 // //
@@ -49,7 +49,7 @@
 // //            // 设置标题
 // //            super.setTitle(zkConnect.getName());
 // //            // 初始化zk连接
-// //            this.controller().client(new ZKClient(zkConnect));
+// //            this.controller().client(new ShellZKClient(zkConnect));
 // //        } catch (Exception ex) {
 // //            ex.printStackTrace();
 // //        }
@@ -65,7 +65,7 @@
 //      *
 //      * @param client zk客户端
 //      */
-//     private void init(ZKClient client) {
+//     private void init(ShellZKClient client) {
 //         try {
 //             if (client == null) {
 //                 ShellConnect connect = new ShellConnect();
@@ -75,7 +75,7 @@
 // //                // 设置标题
 // //                super.setTitle(connect.getName());
 //                 // 初始化zk连接
-//                 this.controller().client(new ZKClient(connect));
+//                 this.controller().client(new ShellZKClient(connect));
 //             } else {
 //                 // 刷新图标
 //                 this.flushGraphic();
@@ -95,7 +95,7 @@
 //      *
 //      * @return zk客户端
 //      */
-//     public ZKClient client() {
+//     public ShellZKClient client() {
 //         return this.controller().client();
 //     }
 //

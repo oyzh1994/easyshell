@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.query.zk;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.controls.popup.FXPopup;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;
@@ -169,7 +169,7 @@ public class ShellZKQueryPromptPopup extends FXPopup {
      * @param token 提示词
      * @return 结果
      */
-    public synchronized boolean initPrompts(ShellZKQueryToken token, ZKClient zkClient) {
+    public synchronized boolean initPrompts(ShellZKQueryToken token, ShellZKClient zkClient) {
         // 初始化提示的子节点列表
         if (token.isPossibilityNode()) {
             try {

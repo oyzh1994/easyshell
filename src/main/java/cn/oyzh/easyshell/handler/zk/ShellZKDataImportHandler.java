@@ -5,7 +5,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.store.file.FileColumns;
 import cn.oyzh.store.file.FileHelper;
 import cn.oyzh.store.file.FileReadConfig;
@@ -34,7 +34,7 @@ public class ShellZKDataImportHandler extends ShellZKDataHandler {
     /**
      * 客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 批量处理大小
@@ -64,11 +64,11 @@ public class ShellZKDataImportHandler extends ShellZKDataHandler {
         this.fileType = fileType;
     }
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 
-    public void setClient(ZKClient client) {
+    public void setClient(ShellZKClient client) {
         this.client = client;
     }
 

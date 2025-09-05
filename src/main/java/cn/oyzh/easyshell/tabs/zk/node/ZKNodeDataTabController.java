@@ -8,7 +8,7 @@ import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -288,7 +288,7 @@ public class ZKNodeDataTabController extends SubTabController {
      * 显示数据
      */
     protected void showData() {
-        ZKNodeTreeItem item = this.activeItem();
+        ShellZKNodeTreeItem item = this.activeItem();
         if (item == null) {
             return;
         }
@@ -432,7 +432,7 @@ public class ZKNodeDataTabController extends SubTabController {
         this.nodeData.setHighlightText(highlight);
     }
 
-    private ZKNodeTreeItem activeItem() {
+    private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }
 

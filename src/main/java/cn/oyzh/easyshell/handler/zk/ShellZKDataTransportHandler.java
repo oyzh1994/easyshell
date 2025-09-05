@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
@@ -22,12 +22,12 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
     /**
      * 来源客户端
      */
-    protected ZKClient sourceClient;
+    protected ShellZKClient sourceClient;
 
     /**
      * 目标客户端
      */
-    protected ZKClient targetClient;
+    protected ShellZKClient targetClient;
 
     /**
      * 节点存在时处理策略
@@ -129,19 +129,19 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
         }
     }
 
-    public ZKClient getSourceClient() {
+    public ShellZKClient getSourceClient() {
         return sourceClient;
     }
 
-    public void setSourceClient(ZKClient sourceClient) {
+    public void setSourceClient(ShellZKClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
-    public ZKClient getTargetClient() {
+    public ShellZKClient getTargetClient() {
         return targetClient;
     }
 
-    public void setTargetClient(ZKClient targetClient) {
+    public void setTargetClient(ShellZKClient targetClient) {
         this.targetClient = targetClient;
     }
 

@@ -3,11 +3,11 @@ package cn.oyzh.easyshell.controller.zk.node;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -99,7 +99,7 @@ public class ZKAddNodeController extends StageController {
     /**
      * zk客户端
      */
-    private ZKClient zkClient;
+    private ShellZKClient zkClient;
 
     /**
      * 节点路径数据
@@ -346,7 +346,7 @@ public class ZKAddNodeController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         this.parentNodeBox.managedProperty().bind(this.parentNode.visibleProperty());
-        ZKNodeTreeItem zkItem = this.getProp("zkItem");
+        ShellZKNodeTreeItem zkItem = this.getProp("zkItem");
         this.zkClient = this.getProp("zkClient");
         if (zkItem != null) {
             this.parentNode.setVisible(true);

@@ -5,8 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKNode;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.store.file.FileColumns;
 import cn.oyzh.store.file.FileHelper;
@@ -37,7 +37,7 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
     /**
      * 客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 节点路径
@@ -110,7 +110,7 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
                 };
 
                 // 获取节点成功
-                Consumer<ZKNode> success = (node) -> {
+                Consumer<ShellZKNode> success = (node) -> {
                     try {
                         this.checkInterrupt();
                     } catch (InterruptedException e) {
@@ -201,11 +201,11 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
         this.fileType = fileType;
     }
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 
-    public void setClient(ZKClient client) {
+    public void setClient(ShellZKClient client) {
         this.client = client;
     }
 

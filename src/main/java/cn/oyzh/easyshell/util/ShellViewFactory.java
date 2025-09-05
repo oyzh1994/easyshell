@@ -106,15 +106,15 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerPort;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
-import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -1519,7 +1519,7 @@ public class ShellViewFactory {
      * @param nodeItem zk节点
      * @param client   zk客户端
      */
-    public static void zkAuthNode(ZKNodeTreeItem nodeItem, ZKClient client) {
+    public static void zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKAuthNodeController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
@@ -1537,7 +1537,7 @@ public class ShellViewFactory {
      * @param nodeItem zk节点
      * @param client   zk客户端
      */
-    public static void zkAddNode(ZKNodeTreeItem nodeItem, ZKClient client) {
+    public static void zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKAddNodeController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
@@ -1555,7 +1555,7 @@ public class ShellViewFactory {
      * @param nodeItem zk节点
      * @param client   zk客户端
      */
-    public static StageAdapter zkAddACL(ZKNodeTreeItem nodeItem, ZKClient client) {
+    public static StageAdapter zkAddACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKAddACLController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
@@ -1576,7 +1576,7 @@ public class ShellViewFactory {
      * @param client   zk客户端
      * @param acl      权限
      */
-    public static StageAdapter zkUpdateACL(ZKNodeTreeItem nodeItem, ZKClient client, ZKACL acl) {
+    public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ZKACL acl) {
         try {
             StageAdapter adapter = StageManager.parseStage(ZKUpdateACLController.class, StageManager.getPrimaryStage());
             adapter.setProp("acl", acl);

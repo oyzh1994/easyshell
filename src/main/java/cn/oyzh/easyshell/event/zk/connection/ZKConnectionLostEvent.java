@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.event.zk.connection;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.event.Event;
 // import cn.oyzh.event.EventFormatter;
 // import cn.oyzh.i18n.I18nHelper;
@@ -10,7 +10,7 @@
 //  * @author oyzh
 //  * @since 2023/9/19
 //  */
-// public class ZKConnectionLostEvent extends Event<ZKClient> implements EventFormatter {
+// public class ZKConnectionLostEvent extends Event<ShellZKClient> implements EventFormatter {
 //
 //     @Override
 //     public String eventFormat() {

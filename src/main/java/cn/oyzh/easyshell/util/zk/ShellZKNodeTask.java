@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.util.zk;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKNode;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKNode;
 import org.apache.zookeeper.KeeperException;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class ShellZKNodeTask {
      * @param properties 属性
      * @return 异常
      */
-    public Exception doWorker(ZKNode node, ZKClient client, String path, String properties) {
+    public Exception doWorker(ShellZKNode node, ShellZKClient client, String path, String properties) {
         List<Runnable> tasks = new ArrayList<>();
         // 异常
         AtomicReference<Exception> exceptionReference = new AtomicReference<>();
@@ -76,7 +76,7 @@ public class ShellZKNodeTask {
      * @param properties 属性
      * @return 异常
      */
-    public static Exception of(ZKNode node, ZKClient client, String path, String properties) {
+    public static Exception of(ShellZKNode node, ShellZKClient client, String path, String properties) {
         return new ShellZKNodeTask().doWorker(node, client, path, properties);
     }
 }

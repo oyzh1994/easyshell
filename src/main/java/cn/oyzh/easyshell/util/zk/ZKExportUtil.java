@@ -75,7 +75,7 @@
 //     //  * @param prefix  前缀
 //     //  * @return 数据文本字符串
 //     //  */
-//     // public static String nodesToTxt( List<ZKNode> zkNodes, String charset, String prefix) {
+//     // public static String nodesToTxt( List<ShellZKNode> zkNodes, String charset, String prefix) {
 //     //     Project project = Project.load();
 //     //     String version = project.getVersion();
 //     //     String platform = OSUtil.getOSType();
@@ -88,7 +88,7 @@
 //     //             .append("platform=").append(platform)
 //     //             .append("**");
 //     //     // 拼接数据
-//     //     for (ZKNode n : zkNodes) {
+//     //     for (ShellZKNode n : zkNodes) {
 //     //         builder.append(System.lineSeparator()).append(TEXT_LINE_SEPARATOR).append(System.lineSeparator());
 //     //         // 拼接前缀
 //     //         if (!StringUtil.isBlank(prefix)) {
@@ -113,7 +113,7 @@
 //     //  * @param prettyFormat 美化
 //     //  * @return 数据json字符串
 //     //  */
-//     // public static String nodesToJSON( List<ZKNode> zkNodes, String charset, boolean prettyFormat) {
+//     // public static String nodesToJSON( List<ShellZKNode> zkNodes, String charset, boolean prettyFormat) {
 //     //     Project project = Project.load();
 //     //     String version = project.getVersion();
 //     //     String platform = OSUtil.getOSType();
@@ -124,7 +124,7 @@
 //     //     export.setCharset(charset);
 //     //     export.setPlatform(platform);
 //     //     // 拼接数据
-//     //     for (ZKNode n : zkNodes) {
+//     //     for (ShellZKNode n : zkNodes) {
 //     //         Map<String, String> node = new HashMap<>();
 //     //         node.put("path", n.nodePath());
 //     //         // String data = n.nodeData();

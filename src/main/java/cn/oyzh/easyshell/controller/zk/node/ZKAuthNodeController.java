@@ -5,10 +5,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.easyshell.event.zk.ZKEventUtil;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKNode;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -69,12 +69,12 @@ public class ZKAuthNodeController extends StageController {
     /**
      * zk节点
      */
-    private ZKNode zkNode;
+    private ShellZKNode zkNode;
 
     /**
      * zk树节点
      */
-    private ZKNodeTreeItem zkItem;
+    private ShellZKNodeTreeItem zkItem;
 
     /**
      * 认证方式
@@ -155,7 +155,7 @@ public class ZKAuthNodeController extends StageController {
      */
     private void auth(String user, String password) {
         try {
-            ZKClient zkClient = this.zkItem.client();
+            ShellZKClient zkClient = this.zkItem.client();
             int result = ShellZKAuthUtil.authNode(user, password, zkClient, this.zkNode);
             if (result == 1) {
                 if (this.saveInfo1.isSelected()) {
@@ -207,7 +207,7 @@ public class ZKAuthNodeController extends StageController {
         this.mutexes.manageBindVisible();
 
         this.authList.getItems().clear();
-        ZKClient client = this.zkItem.client();
+        ShellZKClient client = this.zkItem.client();
         List<ZKAuth> authList = this.authStore.load(client.iid());
         if (CollectionUtil.isNotEmpty(authList)) {
             this.authList.addItems(authList);

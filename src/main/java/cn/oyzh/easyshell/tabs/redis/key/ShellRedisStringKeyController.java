@@ -4,7 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.redis.ShellRedisKeyQRCodePopupController;
-import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;

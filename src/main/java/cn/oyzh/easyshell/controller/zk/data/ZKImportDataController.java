@@ -5,8 +5,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.zk.ShellZKDataImportHandler;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKClientUtil;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -152,7 +152,7 @@ public class ZKImportDataController extends StageController {
     /**
      * 当前zk客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 导入操作任务
@@ -354,7 +354,7 @@ public class ZKImportDataController extends StageController {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
                     try {
-                        this.client = ZKClientUtil.newClient(this.connect);
+                        this.client = ShellZKClientUtil.newClient(this.connect);
                         this.client.start(2500);
                     } finally {
                         latch.countDown();

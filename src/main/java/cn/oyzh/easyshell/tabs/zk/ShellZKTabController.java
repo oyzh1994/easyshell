@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.tabs.zk.node.ZKNodeTabController;
 import cn.oyzh.easyshell.tabs.zk.query.ZKQueryTabController;
 import cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController;
 import cn.oyzh.easyshell.tabs.zk.terminal.ZKTerminalTabController;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -24,7 +24,7 @@ public class ShellZKTabController extends ShellParentTabController {
     /**
      * 客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 键
@@ -61,7 +61,7 @@ public class ShellZKTabController extends ShellParentTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.client = new ZKClient(connect);
+        this.client = new ShellZKClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {
             try {
@@ -85,7 +85,7 @@ public class ShellZKTabController extends ShellParentTabController {
         });
     }
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 }

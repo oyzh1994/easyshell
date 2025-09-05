@@ -6,8 +6,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKFilter;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKNode;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.net.URLDecoder;
@@ -56,7 +56,7 @@ public class ShellZKNodeUtil {
      * @param client zk操作器
      * @return zk节点
      */
-    public static ZKNode getNode( ZKClient client,  String path) throws Exception {
+    public static ShellZKNode getNode(ShellZKClient client, String path) throws Exception {
         return getNode(client, path, FULL_PROPERTIES);
     }
 
@@ -67,13 +67,13 @@ public class ShellZKNodeUtil {
      * @param client zk操作器
      * @return zk节点
      */
-    public static ZKNode getNode( ZKClient client,  String path,  String properties) throws Exception {
+    public static ShellZKNode getNode(ShellZKClient client, String path, String properties) throws Exception {
         if (!path.contains("/")) {
             throw new ShellException("path:[" + path + "]" + I18nHelper.invalid());
         }
         long start = System.currentTimeMillis();
         // zk节点
-        ZKNode node = new ZKNode();
+        ShellZKNode node = new ShellZKNode();
         // 设置节点路径
         node.nodePath(path);
 //        // 异常
@@ -129,7 +129,7 @@ public class ShellZKNodeUtil {
      * @param client zk客户端
      * @param node   zk节点
      */
-    public static void refreshData( ZKClient client,  ZKNode node) throws Exception {
+    public static void refreshData(ShellZKClient client, ShellZKNode node) throws Exception {
         long start = System.currentTimeMillis();
         node.setNodeData(client.getData(node.nodePath()));
         long end = System.currentTimeMillis();
@@ -143,7 +143,7 @@ public class ShellZKNodeUtil {
      * @param client zk客户端
      * @param node   zk节点
      */
-    public static void refreshAcl( ZKClient client,  ZKNode node) throws Exception {
+    public static void refreshAcl(ShellZKClient client, ShellZKNode node) throws Exception {
         node.acl(client.getACL(node.nodePath()));
     }
 
@@ -153,7 +153,7 @@ public class ShellZKNodeUtil {
      * @param client zk客户端
      * @param node   zk节点
      */
-    public static void refreshQuota( ZKClient client,  ZKNode node) throws Exception {
+    public static void refreshQuota(ShellZKClient client, ShellZKNode node) throws Exception {
         node.quota(client.listQuota(node.nodePath()));
     }
 
@@ -163,7 +163,7 @@ public class ShellZKNodeUtil {
      * @param client zk客户端
      * @param node   zk节点
      */
-    public static void refreshStat( ZKClient client,  ZKNode node) throws Exception {
+    public static void refreshStat(ShellZKClient client, ShellZKNode node) throws Exception {
         node.stat(client.checkExists(node.nodePath()));
     }
 
@@ -173,8 +173,8 @@ public class ShellZKNodeUtil {
      * @param client zk客户端
      * @param node   zk节点
      */
-    public static void refreshNode( ZKClient client,  ZKNode node) throws Exception {
-        ZKNode n = ShellZKNodeUtil.getNode(client, node.nodePath());
+    public static void refreshNode(ShellZKClient client, ShellZKNode node) throws Exception {
+        ShellZKNode n = ShellZKNodeUtil.getNode(client, node.nodePath());
         node.copy(n);
     }
 
@@ -263,7 +263,7 @@ public class ShellZKNodeUtil {
 //     * @param parentPath 父节点路径
 //     * @return 子节点列表
 //     */
-//    public static List<ZKNode> getChildNode( ZKClient client,  String parentPath) throws Exception {
+//    public static List<ShellZKNode> getChildNode( ShellZKClient client,  String parentPath) throws Exception {
 //        return getChildNode(client, parentPath, FULL_PROPERTIES, null);
 //    }
 
@@ -276,8 +276,8 @@ public class ShellZKNodeUtil {
 //     * @param filter     过滤器
 //     * @return 子节点列表
 //     */
-//    public static List<ZKNode> getChildNode( ZKClient client,  String parentPath,  String properties, Predicate<String> filter) throws Exception {
-//        List<ZKNode> list = new ArrayList<>();
+//    public static List<ShellZKNode> getChildNode( ShellZKClient client,  String parentPath,  String properties, Predicate<String> filter) throws Exception {
+//        List<ShellZKNode> list = new ArrayList<>();
 //        // 获取子节点
 //        List<String> children = client.getChildren(parentPath);
 //        // 为空，直接返回
@@ -300,7 +300,7 @@ public class ShellZKNodeUtil {
 ////            children.clear();
 //        } else {// 性能较好机器上异步执行
 //            // 任务列表
-//            List<Callable<ZKNode>> tasks = new ArrayList<>(children.size());
+//            List<Callable<ShellZKNode>> tasks = new ArrayList<>(children.size());
 //            // 获取节点数据
 //            for (String sub : children) {
 //                // 对节点路径做处理
@@ -335,7 +335,7 @@ public class ShellZKNodeUtil {
      * @param limit         过滤器
      * @return 子节点列表
      */
-    public static List<ZKNode> getChildNode( ZKClient client,  String parentPath, List<String> existingNodes, int limit) throws Exception {
+    public static List<ShellZKNode> getChildNode(ShellZKClient client, String parentPath, List<String> existingNodes, int limit) throws Exception {
         // 获取子节点
         List<String> children = null;
         try {
@@ -349,7 +349,7 @@ public class ShellZKNodeUtil {
             return Collections.emptyList();
         }
         // 数据列表
-        List<ZKNode> list = new CopyOnWriteArrayList<>();
+        List<ShellZKNode> list = new CopyOnWriteArrayList<>();
         // 处理器核心数量
 //        int pCount = RuntimeUtil.processorCount();
 //        // 性能较差机器上同步执行
@@ -373,8 +373,8 @@ public class ShellZKNodeUtil {
 //            }
 //        } else {// 性能较好机器上异步执行
         // 任务列表
-//        List<Callable<ZKNode>> tasks = new ArrayList<>(children.size());
-//        List<Callable<ZKNode>> tasks = new ArrayList<>(children.size());
+//        List<Callable<ShellZKNode>> tasks = new ArrayList<>(children.size());
+//        List<Callable<ShellZKNode>> tasks = new ArrayList<>(children.size());
 //        DownLatch latch = new DownLatch(tasks.size());
 //        // 获取节点数据
 //        for (String sub : children) {
@@ -456,11 +456,11 @@ public class ShellZKNodeUtil {
      * @param error      错误处理
      * @param includeACL 是否包含acl
      */
-    public static void loopNode( ZKClient client,  String path, Predicate<String> filter,  Consumer<ZKNode> success, BiConsumer<String, Exception> error, boolean includeACL) throws Exception {
+    public static void loopNode(ShellZKClient client, String path, Predicate<String> filter, Consumer<ShellZKNode> success, BiConsumer<String, Exception> error, boolean includeACL) throws Exception {
         // 获取节点
         try {
             if (filter == null || filter.test(path)) {
-                ZKNode node = new ZKNode();
+                ShellZKNode node = new ShellZKNode();
                 node.nodePath(path);
                 node.setNodeData(client.getData(path));
                 if (includeACL) {

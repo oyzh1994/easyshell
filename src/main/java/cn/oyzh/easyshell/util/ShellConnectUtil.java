@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -176,7 +176,7 @@ public class ShellConnectUtil {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
                 } else if (shellConnect.isZKType()) {
-                    ZKClient client = new ZKClient(shellConnect);
+                    ShellZKClient client = new ShellZKClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
                     if (client.isConnected()) {

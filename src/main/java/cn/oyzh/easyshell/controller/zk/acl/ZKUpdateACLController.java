@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.controller.zk.acl;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -44,12 +44,12 @@ public class ZKUpdateACLController extends StageController {
     /**
      * zk树节点
      */
-    private ZKNodeTreeItem zkItem;
+    private ShellZKNodeTreeItem zkItem;
 
     /**
      * zk客户端
      */
-    private ZKClient zkClient;
+    private ShellZKClient zkClient;
 
     /**
      * 权限

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.event.zk.window;//package cn.oyzh.easyshell.event.zk.window;
 //
-//import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-//import cn.oyzh.easyshell.zk.ZKClient;
-//import cn.oyzh.easyshell.zk.ZKNode;
+//import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+//import cn.oyzh.easyshell.zk.ShellZKClient;
+//import cn.oyzh.easyshell.zk.ShellZKNode;
 //import cn.oyzh.event.Event;
 //import lombok.Data;
 //import lombok.EqualsAndHashCode;
@@ -15,7 +15,7 @@ package cn.oyzh.easyshell.event.zk.window;//package cn.oyzh.easyshell.event.zk.w
 //@Data
 //@Accessors(fluent = true)
 //@EqualsAndHashCode(callSuper = true)
-//public class ZKShowQRCodeNodeEvent extends Event<ZKNode> {
+//public class ZKShowQRCodeNodeEvent extends Event<ShellZKNode> {
 //
 //    private String text;
 //}

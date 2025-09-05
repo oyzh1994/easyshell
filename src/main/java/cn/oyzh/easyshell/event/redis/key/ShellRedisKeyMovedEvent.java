@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.redis.key;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;

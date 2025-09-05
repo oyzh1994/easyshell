@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.event.zk.auth;
 
 import cn.oyzh.easyshell.domain.zk.ZKAuth;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/9/18
  */
-public class ZKAuthAuthedEvent extends Event<ZKNodeTreeItem> implements EventFormatter {
+public class ZKAuthAuthedEvent extends Event<ShellZKNodeTreeItem> implements EventFormatter {
 
     private String user;
 
@@ -23,7 +23,7 @@ public class ZKAuthAuthedEvent extends Event<ZKNodeTreeItem> implements EventFor
         return new ZKAuth(this.data().client().iid(), this.user, this.password);
     }
 
-    public ZKClient client() {
+    public ShellZKClient client() {
         return this.data().client();
     }
 

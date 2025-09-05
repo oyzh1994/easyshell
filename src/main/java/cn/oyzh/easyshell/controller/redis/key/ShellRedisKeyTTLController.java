@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 import cn.oyzh.common.Const;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;

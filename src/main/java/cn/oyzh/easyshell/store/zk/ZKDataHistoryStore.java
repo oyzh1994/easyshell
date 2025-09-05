@@ -5,7 +5,7 @@ import cn.oyzh.common.util.MD5Util;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ZKDataHistory;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.OrderByParam;
@@ -71,7 +71,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param client zk客户端
      * @return 服务历史
      */
-    public List<ZKDataHistory> listServer(String iid, String path, ZKClient client) {
+    public List<ZKDataHistory> listServer(String iid, String path, ShellZKClient client) {
         try {
             String dataPath = SERVER_PATH + iid + "/" + MD5Util.md5Hex(path);
             if (client.exists(dataPath)) {
@@ -103,7 +103,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param client zk客户端
      * @return 结果
      */
-    public boolean replace(ZKDataHistory model, ZKClient client) {
+    public boolean replace(ZKDataHistory model, ShellZKClient client) {
         String iid = model.getIid();
         String path = model.getPath();
         if (StringUtil.isBlank(path) || StringUtil.isBlank(iid)) {
@@ -152,7 +152,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param client zk客户端
      * @throws Exception 异常
      */
-    private void doServerReplace(ZKDataHistory model, ZKClient client) throws Exception {
+    private void doServerReplace(ZKDataHistory model, ShellZKClient client) throws Exception {
         String iid = model.getIid();
         String path = model.getPath();
         // 添加节点
@@ -237,7 +237,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @return 结果
      * @see cn.oyzh.easyshell.domain.ShellConnect
      */
-    public boolean deleteServer(String iid, String path, long saveTime, ZKClient client) {
+    public boolean deleteServer(String iid, String path, long saveTime, ShellZKClient client) {
         try {
             String dataPath = SERVER_PATH + iid + "/" + MD5Util.md5Hex(path) + "/" + saveTime;
             if (client.exists(dataPath)) {
@@ -282,7 +282,7 @@ public class ZKDataHistoryStore extends JdbcStandardStore<ZKDataHistory> {
      * @param client   zk客户端
      * @return 服务数据
      */
-    public byte[] getServerData(String iid, String path, long saveTime, ZKClient client) {
+    public byte[] getServerData(String iid, String path, long saveTime, ShellZKClient client) {
         try {
             String dataPath = SERVER_PATH + iid + "/" + MD5Util.md5Hex(path) + "/" + saveTime;
             if (client.exists(dataPath)) {

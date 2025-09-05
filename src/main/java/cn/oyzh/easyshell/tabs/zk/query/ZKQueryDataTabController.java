@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
 import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -28,7 +28,7 @@ public class ZKQueryDataTabController extends RichTabController {
     /**
      * zk客户端
      */
-    private ZKClient zkClient;
+    private ShellZKClient zkClient;
 
     /**
      * 保存
@@ -66,7 +66,7 @@ public class ZKQueryDataTabController extends RichTabController {
     @FXML
     private EditorFormatTypeComboBox format;
 
-    public void init(String path, byte[] bytes, ZKClient zkClient) {
+    public void init(String path, byte[] bytes, ShellZKClient zkClient) {
         this.path = path;
         this.zkClient = zkClient;
         // 处理数据

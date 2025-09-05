@@ -9,7 +9,7 @@
 // import cn.oyzh.easyshell.exception.zk.ZKExceptionParser;
 // import cn.oyzh.easyshell.util.zk.ZKExportUtil;
 // import cn.oyzh.easyshell.util.zk.ZKI18nHelper;
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 // import cn.oyzh.fx.gui.text.area.MsgTextArea;
 // import cn.oyzh.fx.plus.FXConst;
@@ -55,7 +55,7 @@
 //     /**
 //      * zk客户端
 //      */
-//     private ZKClient zkClient;
+//     private ShellZKClient zkClient;
 //
 //     /**
 //      * 脚本信息

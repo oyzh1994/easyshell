@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.zk.node;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -12,13 +12,13 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ZKNodeChangedEvent extends Event<String> implements EventFormatter {
 
-    private ZKClient client;
+    private ShellZKClient client;
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 
-    public void setClient(ZKClient client) {
+    public void setClient(ShellZKClient client) {
         this.client = client;
     }
 

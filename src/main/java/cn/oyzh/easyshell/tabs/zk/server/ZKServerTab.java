@@ -2,7 +2,7 @@
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.tabs.zk.server.ZKServerTabController;
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -43,7 +43,7 @@
 //      *
 //      * @param client zk客户端
 //      */
-//     public void init(ZKClient client) {
+//     public void init(ShellZKClient client) {
 //         try {
 //             // 设置文本
 //             this.setText(I18nHelper.serverInfo() + "-" + client.connectName());
@@ -77,7 +77,7 @@
 //      *
 //      * @return zk客户端
 //      */
-//     public ZKClient client() {
+//     public ShellZKClient client() {
 //         return this.controller().getClient();
 //     }
 //

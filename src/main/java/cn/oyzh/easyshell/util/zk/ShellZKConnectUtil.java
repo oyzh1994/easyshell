@@ -49,7 +49,7 @@ public class ShellZKConnectUtil {
     //             if (zkConnect.getName() == null) {
     //                 zkConnect.setName(I18nHelper.testConnection());
     //             }
-    //             ZKClient client = new ZKClient(zkConnect);
+    //             ShellZKClient client = new ShellZKClient(zkConnect);
     //             // 开始连接
     //             client.start(3_000);
     //             if (client.isConnected()) {
@@ -72,7 +72,7 @@ public class ShellZKConnectUtil {
     //  * @param async  是否异步
     //  * @param quiet  是否静默
     //  */
-    // public static void close(ZKClient client, boolean async, boolean quiet) {
+    // public static void close(ShellZKClient client, boolean async, boolean quiet) {
     //     try {
     //         if (client != null && client.isConnected()) {
     //             if (async && quiet) {

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.event.zk.client;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.zk.ZKClientActionArgument;
+import cn.oyzh.easyshell.util.zk.ShellZKClientActionArgument;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -19,11 +19,11 @@ public class ZKClientActionEvent extends Event<String> implements EventFormatter
 
     private String action;
 
-    public List<ZKClientActionArgument> getArguments() {
+    public List<ShellZKClientActionArgument> getArguments() {
         return arguments;
     }
 
-    public void setArguments(List<ZKClientActionArgument> arguments) {
+    public void setArguments(List<ShellZKClientActionArgument> arguments) {
         this.arguments = arguments;
     }
 
@@ -35,26 +35,26 @@ public class ZKClientActionEvent extends Event<String> implements EventFormatter
         this.action = action;
     }
 
-    private List<ZKClientActionArgument> arguments = new ArrayList<>(12);
+    private List<ShellZKClientActionArgument> arguments = new ArrayList<>(12);
 
-    public void arguments(List<ZKClientActionArgument>  arguments) {
+    public void arguments(List<ShellZKClientActionArgument>  arguments) {
         this.arguments.addAll(arguments);
     }
 
-    public void arguments(ZKClientActionArgument... arguments) {
+    public void arguments(ShellZKClientActionArgument... arguments) {
         this.arguments.addAll(Arrays.asList(arguments));
     }
 
-    public void argument(ZKClientActionArgument argument) {
+    public void argument(ShellZKClientActionArgument argument) {
         this.arguments.add(argument);
     }
 
     public void argument(String argument, Object value) {
-        this.arguments.add(new ZKClientActionArgument(argument, value));
+        this.arguments.add(new ShellZKClientActionArgument(argument, value));
     }
 
     public void argument(Object value) {
-        this.arguments.add(new ZKClientActionArgument(value));
+        this.arguments.add(new ShellZKClientActionArgument(value));
     }
 
     // public void params(Object...params) {
@@ -83,7 +83,7 @@ public class ZKClientActionEvent extends Event<String> implements EventFormatter
         sb.append(this.data());
         sb.append(" > ");
         sb.append(this.action);
-        for (ZKClientActionArgument argument : this.arguments) {
+        for (ShellZKClientActionArgument argument : this.arguments) {
             sb.append(" ");
             if(StringUtil.isNotBlank(argument.getArgument())){
                 sb.append(argument.getArgument()).append(" ");

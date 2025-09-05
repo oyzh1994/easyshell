@@ -10,11 +10,11 @@ import cn.oyzh.easyshell.event.zk.node.ZKNodeCreatedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeRemovedEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeView;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.CollectSVGPane;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
@@ -68,9 +68,9 @@ public class ZKNodeTabController extends ParentTabController {
      * 节点树
      */
     @FXML
-    private ZKNodeTreeView treeView;
+    private ShellZKNodeTreeView treeView;
 
-    public ZKNodeTreeView getTreeView() {
+    public ShellZKNodeTreeView getTreeView() {
         return treeView;
     }
 
@@ -117,13 +117,13 @@ public class ZKNodeTabController extends ParentTabController {
     /**
      * 当前激活的节点
      */
-    private transient ZKNodeTreeItem activeItem;
+    private transient ShellZKNodeTreeItem activeItem;
 
     // public ZKConnectTreeItem getTreeItem() {
     //     return treeItem;
     // }
 
-    public ZKNodeTreeItem getActiveItem() {
+    public ShellZKNodeTreeItem getActiveItem() {
         return activeItem;
     }
 
@@ -232,7 +232,7 @@ public class ZKNodeTabController extends ParentTabController {
     /**
      * zk客户端
      */
-    private ZKClient client;
+    private ShellZKClient client;
 
     /**
      * 收藏面板
@@ -251,7 +251,7 @@ public class ZKNodeTabController extends ParentTabController {
      *
      * @param client 树节点
      */
-    public void init(ZKClient client) {
+    public void init(ShellZKClient client) {
         this.client = client;
         // this.client = item.getClient();
         this.treeView.client(this.client);
@@ -278,8 +278,8 @@ public class ZKNodeTabController extends ParentTabController {
      * @param treeItem 当前节点
      */
     private void initItem(TreeItem<?> treeItem) {
-        if (treeItem instanceof ZKNodeTreeItem) {
-            this.activeItem = (ZKNodeTreeItem) treeItem;
+        if (treeItem instanceof ShellZKNodeTreeItem) {
+            this.activeItem = (ShellZKNodeTreeItem) treeItem;
         } else {
             this.activeItem = null;
         }
@@ -1267,7 +1267,7 @@ public class ZKNodeTabController extends ParentTabController {
         ShellViewFactory.zkImportData(this.client.zkConnect());
     }
 
-    public ZKClient getClient() {
+    public ShellZKClient getClient() {
         return client;
     }
 

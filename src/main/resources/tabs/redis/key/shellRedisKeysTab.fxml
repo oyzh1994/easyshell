@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeView?>
+<?import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>

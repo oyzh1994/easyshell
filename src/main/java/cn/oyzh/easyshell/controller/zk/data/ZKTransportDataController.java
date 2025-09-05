@@ -7,8 +7,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.handler.zk.ShellZKDataTransportHandler;
 import cn.oyzh.easyshell.store.zk.ZKFilterStore;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKClientUtil;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
@@ -126,12 +126,12 @@ public class ZKTransportDataController extends StageController {
     /**
      * 来源客户端
      */
-    private ZKClient sourceClient;
+    private ShellZKClient sourceClient;
 
     /**
      * 目标客户端
      */
-    private ZKClient targetClient;
+    private ShellZKClient targetClient;
 
     /**
      * 结束传输按钮
@@ -397,7 +397,7 @@ public class ZKTransportDataController extends StageController {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
                     try {
-                        this.sourceClient = ZKClientUtil.newClient(sourceInfo);
+                        this.sourceClient = ShellZKClientUtil.newClient(sourceInfo);
                         this.sourceClient.start(2500);
                     } finally {
                         latch.countDown();
@@ -416,7 +416,7 @@ public class ZKTransportDataController extends StageController {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
                     try {
-                        this.targetClient = ZKClientUtil.newClient(targetInfo);
+                        this.targetClient = ShellZKClientUtil.newClient(targetInfo);
                         this.targetClient.start(2500);
                     } finally {
                         latch.countDown();

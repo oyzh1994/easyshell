@@ -1,8 +1,8 @@
 // package cn.oyzh.easyshell.tabs.zk.node;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.fx.plus.information.MessageBox;
 // import cn.oyzh.i18n.I18nHelper;
@@ -17,7 +17,7 @@
 // public class ZKNodeTab extends RichTab {
 //
 //     public ZKNodeTab(ShellConnect connect) {
-//         ZKClient client = new ZKClient(connect);
+//         ShellZKClient client = new ShellZKClient(connect);
 //         // 初始化
 //         this.controller().init(client);
 //         // 刷新tab
@@ -44,7 +44,7 @@
 //     /**
 //      * zk树节点
 //      */
-//     public ZKNodeTreeItem activeItem() {
+//     public ShellZKNodeTreeItem activeItem() {
 //         return this.controller().getActiveItem();
 //     }
 //
@@ -94,7 +94,7 @@
 //      *
 //      * @return zk客户端
 //      */
-//     public ZKClient client() {
+//     public ShellZKClient client() {
 //         // return this.treeItem() == null ? null : this.treeItem().getClient();
 //         return null;
 //     }

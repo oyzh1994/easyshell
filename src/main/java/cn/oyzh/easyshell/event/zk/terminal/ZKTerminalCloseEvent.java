@@ -1,13 +1,13 @@
 // package cn.oyzh.easyshell.event.zk.terminal;
 //
-// import cn.oyzh.easyshell.zk.ZKClient;
+// import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.event.Event;
 //
 // /**
 //  * @author oyzh
 //  * @since 2023/9/21
 //  */
-// public class ZKTerminalCloseEvent extends Event<ZKClient> {
+// public class ZKTerminalCloseEvent extends Event<ShellZKClient> {
 //
 //
 // }

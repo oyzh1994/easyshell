@@ -7,10 +7,10 @@ import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -58,12 +58,12 @@ public class ZKAddACLController extends StageController {
     /**
      * zk树节点
      */
-    private ZKNodeTreeItem zkItem;
+    private ShellZKNodeTreeItem zkItem;
 
     /**
      * zk客户端
      */
-    private ZKClient zkClient;
+    private ShellZKClient zkClient;
 
     /**
      * 权限

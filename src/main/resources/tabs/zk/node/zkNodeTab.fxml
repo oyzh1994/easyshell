@@ -2,7 +2,7 @@
 
 <?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField?>
 <?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox?>
-<?import cn.oyzh.easyshell.trees.zk.ZKNodeTreeView?>
+<?import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
@@ -39,8 +39,8 @@
                     </HBox.margin>
                 </ShellZKNodeFilterTextField>
             </FXHBox>
-            <ZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
-            </ZKNodeTreeView>
+            <ShellZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+            </ShellZKNodeTreeView>
             <FXHBox flexWidth="100%" flexHeight="30">
                 <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode">
                     <HBox.margin>

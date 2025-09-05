@@ -50,14 +50,14 @@ import cn.oyzh.easyshell.event.zk.node.ZKNodeACLAddedEvent;
 import cn.oyzh.easyshell.event.zk.node.ZKNodeACLUpdatedEvent;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
-import cn.oyzh.easyshell.trees.redis.key.RedisHashKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisStringKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.RedisZSetKeyTreeItem;
-import cn.oyzh.easyshell.zk.ZKClientActionArgument;
+import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.util.zk.ShellZKClientActionArgument;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
@@ -767,7 +767,7 @@ public class ShellEventUtil {
     /**
      * 客户端操作
      */
-    public static void zkClientAction(String connectName, String action, List<ZKClientActionArgument> arguments) {
+    public static void zkClientAction(String connectName, String action, List<ShellZKClientActionArgument> arguments) {
         ZKClientActionEvent event = new ZKClientActionEvent();
         event.data(connectName);
         event.setAction(action);

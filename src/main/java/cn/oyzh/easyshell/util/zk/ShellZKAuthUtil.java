@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.domain.zk.ZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ZKAuthStore;
-import cn.oyzh.easyshell.zk.ZKClient;
-import cn.oyzh.easyshell.zk.ZKNode;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKNode;
 import org.apache.curator.framework.AuthInfo;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
@@ -29,7 +29,7 @@ public class ShellZKAuthUtil {
     // /**
     //  * 已认证信息列表
     //  */
-    // private static final Map<ZKClient, Set<String>> AUTHED_INFOS = new ConcurrentHashMap<>();
+    // private static final Map<ShellZKClient, Set<String>> AUTHED_INFOS = new ConcurrentHashMap<>();
 
     /**
      * 获取认证信息列表
@@ -57,11 +57,11 @@ public class ShellZKAuthUtil {
      * @param zkNode   zk节点
      * @return 结果 0 失败 1 成功 2 异常
      */
-    public static int authNode(String user, String password, ZKClient client, ZKNode zkNode) {
+    public static int authNode(String user, String password, ShellZKClient client, ShellZKNode zkNode) {
         int result = 0;
         try {
             client.addAuth(user, password);
-            ZKNode node = ShellZKNodeUtil.getNode(client, zkNode.nodePath());
+            ShellZKNode node = ShellZKNodeUtil.getNode(client, zkNode.nodePath());
             if (zkNode.aclEmpty() && !node.aclEmpty()) {
                 result = 1;
             } else if (!zkNode.hasDeletePerm() && node.hasDeletePerm()) {
@@ -126,7 +126,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @param auth   认证信息
     //  */
-    // public static void setAuthed( ZKClient client,  ZKAuth auth) {
+    // public static void setAuthed( ShellZKClient client,  ZKAuth auth) {
     //     setAuthed(client, auth.getUser(), auth.getPassword());
     // }
 
@@ -136,7 +136,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @param auths  认证信息列表
     //  */
-    // public static void setAuthed( ZKClient client, List<? extends ZKAuth> auths) {
+    // public static void setAuthed( ShellZKClient client, List<? extends ZKAuth> auths) {
     //     if (CollectionUtil.isNotEmpty(auths)) {
     //         auths.parallelStream().forEach(a -> setAuthed(client, a));
     //     }
@@ -149,7 +149,7 @@ public class ShellZKAuthUtil {
     //  * @param user     用户名
     //  * @param password 密码
     //  */
-    // public static void setAuthed( ZKClient client, String user, String password) {
+    // public static void setAuthed( ShellZKClient client, String user, String password) {
     //     if (user != null && password != null) {
     //         Set<String> set = AUTHED_INFOS.computeIfAbsent(client, k -> new CopyOnWriteArraySet<>());
     //         set.add(user + ":" + password);
@@ -168,7 +168,7 @@ public class ShellZKAuthUtil {
     //  *
     //  * @param client zk客户端
     //  */
-    // public static void removeAuthed( ZKClient client) {
+    // public static void removeAuthed( ShellZKClient client) {
     //     AUTHED_INFOS.remove(client);
     // }
 
@@ -178,7 +178,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @return 已认证的信息列表
     //  */
-    // public static Set<String> getAuthed(ZKClient client) {
+    // public static Set<String> getAuthed(ShellZKClient client) {
     //     return client == null ? Collections.emptySet() : AUTHED_INFOS.get(client);
     // }
 
@@ -189,7 +189,7 @@ public class ShellZKAuthUtil {
     //  * @param auth   认证信息
     //  * @return 结果
     //  */
-    // public static boolean isAuthed( ZKClient client, ZKAuth auth) {
+    // public static boolean isAuthed( ShellZKClient client, ZKAuth auth) {
     //     if (auth != null) {
     //         Set<String> set = getAuthed(client);
     //         if (set != null) {
@@ -205,7 +205,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @return 已认证的摘要信息列表
     //  */
-    // public static Set<String> getAuthedDigest(ZKClient client) {
+    // public static Set<String> getAuthedDigest(ShellZKClient client) {
     //     Set<String> set = getAuthed(client);
     //     if (set == null) {
     //         return Collections.emptySet();
@@ -224,7 +224,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @return 已认证的摘要信息列表
     //  */
-    // public static boolean isDigestAuthed(ZKClient client, String digestVal) {
+    // public static boolean isDigestAuthed(ShellZKClient client, String digestVal) {
     //     Set<String> digests = ShellZKAuthUtil.getAuthedDigest(client);
     //     return CollectionUtil.isNotEmpty(digests) && digests.contains(digestVal);
     // }
@@ -235,7 +235,7 @@ public class ShellZKAuthUtil {
     //  * @param aclList 权限列表
     //  * @return 结果
     //  */
-    // public static boolean isAnyAuthed( ZKClient client, List<ZKACL> aclList) {
+    // public static boolean isAnyAuthed( ShellZKClient client, List<ZKACL> aclList) {
     //     if (CollectionUtil.isNotEmpty(aclList)) {
     //         Set<String> digestList = getAuthedDigest(client);
     //         for (ZKACL zkacl : aclList) {
@@ -270,7 +270,7 @@ public class ShellZKAuthUtil {
     //  * @param client zk客户端
     //  * @return 结果
     //  */
-    // public boolean isNeedAuth( ZKNode node,  ZKClient client) {
+    // public boolean isNeedAuth( ShellZKNode node,  ShellZKClient client) {
     //     if (node.aclEmpty() && node.lackPerm()) {
     //         return true;
     //     }

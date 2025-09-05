@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.zk.ZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ZKQueryDataTab extends RichTab {
 
-    public ZKQueryDataTab(String path, byte[] data, ZKClient zkClient) {
+    public ZKQueryDataTab(String path, byte[] data, ShellZKClient zkClient) {
         super();
         super.flush();
         this.controller().init(path, data, zkClient);

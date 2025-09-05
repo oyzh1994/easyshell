@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.node;
 
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -129,7 +129,7 @@ public class ZKNodeQuotaTabController extends SubTabController {
     //     return this.parent().getTreeItem();
     // }
 
-    private ZKNodeTreeItem activeItem() {
+    private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }
 

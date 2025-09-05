@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.zk.history;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.trees.zk.ZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -12,13 +12,13 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ZKHistoryRestoreEvent extends Event<byte[]> implements EventFormatter {
 
-    private ZKNodeTreeItem item;
+    private ShellZKNodeTreeItem item;
 
-    public void setItem(ZKNodeTreeItem item) {
+    public void setItem(ShellZKNodeTreeItem item) {
         this.item = item;
     }
 
-    public ZKNodeTreeItem getItem() {
+    public ShellZKNodeTreeItem getItem() {
         return item;
     }
 
