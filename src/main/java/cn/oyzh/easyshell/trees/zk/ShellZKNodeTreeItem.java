@@ -1026,18 +1026,18 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         return this.zkConnect().getId();
     }
 
-    /**
-     * 数据是否太大
-     * 目前限制大小为1000kb
-     *
-     * @return 结果
-     */
-    public boolean isDataTooBig() {
-        if (this.isDataUnsaved()) {
-            return this.value.getUnsavedDataSize() > 1000 * 1024;
-        }
-        return this.value.getNodeDataSize() > 1000 * 1024;
-    }
+    ///**
+    // * 数据是否太大
+    // * 目前限制大小为1024kb
+    // *
+    // * @return 结果
+    // */
+    //public boolean isDataTooBig() {
+    //    if (this.isDataUnsaved()) {
+    //        return this.value.getUnsavedDataSize() > 1024 * 1024;
+    //    }
+    //    return this.value.getNodeDataSize() > 1024 * 1024;
+    //}
 
     /**
      * 解码的节点路径

@@ -2,13 +2,12 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.DownLatch;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -177,10 +176,10 @@ public class ShellZKNodeDataTabController extends SubTabController {
      */
     @FXML
     private void saveNodeData() {
-        if (this.activeItem().isDataTooBig()) {
-            MessageBox.warn(I18nHelper.dataTooLarge());
-            return;
-        }
+        //if (this.activeItem().isDataTooBig()) {
+        //    MessageBox.warn(I18nHelper.dataTooLarge());
+        //    return;
+        //}
         // 保存数据
         if (!this.activeItem().isDataUnsaved()) {
             return;
@@ -291,19 +290,19 @@ public class ShellZKNodeDataTabController extends SubTabController {
         if (item == null) {
             return;
         }
-        // 检测数据是否太大
-        if (item.isDataTooBig()) {
-            this.nodeData.disable();
-            this.nodeData.clear();
-            NodeGroupUtil.disable(this.dataTab, "dataToBig");
-            // 异步处理，避免阻塞主程序
-            TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.zkNodeTip7(), null, StageManager.getPrimaryStage())) {
-                    this.saveBinaryFile();
-                }
-            }, 10);
-            return;
-        }
+        //// 检测数据是否太大
+        //if (item.isDataTooBig()) {
+        //    this.nodeData.disable();
+        //    this.nodeData.clear();
+        //    NodeGroupUtil.disable(this.dataTab, "dataToBig");
+        //    // 异步处理，避免阻塞主程序
+        //    TaskManager.startDelay(() -> {
+        //        if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.zkNodeTip7(), null, StageManager.getPrimaryStage())) {
+        //            this.saveBinaryFile();
+        //        }
+        //    }, 10);
+        //    return;
+        //}
         NodeGroupUtil.enable(this.dataTab, "dataToBig");
         byte[] bytes = item.getData();
         // 转换编码
@@ -312,7 +311,9 @@ public class ShellZKNodeDataTabController extends SubTabController {
         // RichDataType dataType = this.nodeData.showDetectData(new String(bytes, this.charset.getCharset()));
         // // 选中格式
         // this.format.selectObj(dataType);
-        this.nodeData.showDetectData(new String(bytes, this.charset.getCharset()));
+         // 选中格式
+        EditorFormatType formatType = this.nodeData.showDetectData(new String(bytes, this.charset.getCharset()));
+        this.format.selectObj(formatType);
     }
 
     // /**
@@ -372,6 +373,10 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.dataSearch.addTextChangeListener((observable, oldValue, newValue) -> {
             // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
             this.nodeData.setHighlightText(newValue);
+        });
+         // 格式监听
+        this.format.selectedItemChanged((t3, t2, t1) -> {
+            this.nodeData.setFormatType(t1);
         });
         // // 格式监听
         // this.format.selectedItemChanged((t1, t2, t3) -> {
