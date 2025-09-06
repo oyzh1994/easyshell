@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.dto.redis;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -12,7 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisServerItem {
+public class ShellRedisServerItem {
 
     /**
      * 服务角色
@@ -66,7 +65,7 @@ public class RedisServerItem {
      */
     private SimpleStringProperty totalCommandsProcessedProperty;
 
-    public void init(RedisInfoProp prop) {
+    public void init(ShellRedisInfoProp prop) {
         this.update(prop.getUptimeInDays(), prop.getUsedMemoryHuman(), prop.getTotalCommandsProcessed(), prop.getKeyspaceHits(), prop.getKeyspaceMisses(), prop.keyCount(), prop.getConnectedClients());
     }
 

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisInfoProp {
+public class ShellRedisInfoProp {
 
     /**
      * 属性列表

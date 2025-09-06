@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.zk.acl;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
@@ -364,7 +364,7 @@ public class ShellZKAddACLController extends StageController {
         String perms = this.getPerms();
         String ip = this.ipContent1.getTextTrim();
         ShellZKACLUtil.checkIP(ip);
-        ZKACL acl = new ZKACL();
+        ShellZKACL acl = new ShellZKACL();
         acl.setId(new Id("ip", ip));
         acl.setPerms(perms);
         if (this.zkItem.existIPACL(acl.idVal())) {
@@ -391,7 +391,7 @@ public class ShellZKAddACLController extends StageController {
             String ip = strArr[0];
             String perms = strArr[1];
             ShellZKACLUtil.checkIP(ip);
-            ZKACL acl = new ZKACL();
+            ShellZKACL acl = new ShellZKACL();
             acl.setId(new Id("ip", ip));
             acl.setPerms(perms);
             if (this.zkItem.existIPACL(acl.idVal())) {

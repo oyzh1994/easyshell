@@ -11,7 +11,7 @@ import redis.clients.jedis.resps.Slowlog;
  * @author oyzh
  * @since 2023/8/1
  */
-public class RedisSlowlogItem {
+public class ShellRedisSlowlogItem {
 
     public long getLogId() {
         return logId;
@@ -101,8 +101,8 @@ public class RedisSlowlogItem {
      * @param slowlog 慢查日志
      * @return 慢查日志键
      */
-    public static RedisSlowlogItem from(Slowlog slowlog) {
-        RedisSlowlogItem item = new RedisSlowlogItem();
+    public static ShellRedisSlowlogItem from(Slowlog slowlog) {
+        ShellRedisSlowlogItem item = new ShellRedisSlowlogItem();
         item.setLogId(slowlog.getId());
         item.setClientName(slowlog.getClientName());
         item.setExecutionTime(slowlog.getExecutionTime());

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.server;
 
-import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKClusterNode;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -26,7 +26,7 @@ public class ShellZKClusterTabController extends SubTabController {
      * 集群列表
      */
     @FXML
-    private FXTableView<ZKClusterNode> clusterTable;
+    private FXTableView<ShellZKClusterNode> clusterTable;
 
     @Override
     public ShellZKServerTabController parent() {
@@ -36,7 +36,7 @@ public class ShellZKClusterTabController extends SubTabController {
     @FXML
     private void refreshCluster() {
         // 集群信息
-        List<ZKClusterNode> clusterNodes = this.parent().getClient().clusterNodes();
+        List<ShellZKClusterNode> clusterNodes = this.parent().getClient().clusterNodes();
         this.clusterTable.setItem(clusterNodes);
     }
 

@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.dto.redis;
  * @author oyzh
  * @since 2023/8/1
  */
-public class RedisClientItem {
+public class ShellRedisClientItem {
     public int getIndex() {
         return index;
     }
@@ -86,9 +86,9 @@ public class RedisClientItem {
      */
     private String idle;
 
-    public static RedisClientItem from(String l) {
+    public static ShellRedisClientItem from(String l) {
         String[] arr = l.split(" ");
-        RedisClientItem item = new RedisClientItem();
+        ShellRedisClientItem item = new ShellRedisClientItem();
         for (String s : arr) {
             if (s.toLowerCase().startsWith("age")) {
                 item.age = s.split("=")[1];

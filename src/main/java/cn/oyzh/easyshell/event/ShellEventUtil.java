@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.event;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.event.client.ShellClientActionEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
@@ -703,7 +703,7 @@ public class ShellEventUtil {
      *
      * @param item redis节点
      */
-    public static void redisPubsubOpen(RedisPubsubItem item) {
+    public static void redisPubsubOpen(ShellRedisPubsubItem item) {
         ShellRedisPubsubOpenEvent event = new ShellRedisPubsubOpenEvent();
         event.data(item);
         EventUtil.post(event);

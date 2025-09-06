@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.redis;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.redis.RedisConnectInfo;
+import cn.oyzh.easyshell.dto.redis.ShellRedisConnectInfo;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -101,13 +101,13 @@ public class ShellRedisConnectUtil {
      * @param input 输入内容
      * @return 连接
      */
-    public static RedisConnectInfo parse(String input) {
+    public static ShellRedisConnectInfo parse(String input) {
         if (input == null) {
             return null;
         }
         try {
             String[] words = input.split(" ");
-            RedisConnectInfo connect = new RedisConnectInfo();
+            ShellRedisConnectInfo connect = new ShellRedisConnectInfo();
             connect.setInput(input);
             int type = -1;
             for (int i = 0; i < words.length; i++) {
@@ -158,7 +158,7 @@ public class ShellRedisConnectUtil {
      * @param connectInfo  连接信息
      * @param redisConnect redis对象
      */
-    public static void copyConnect(RedisConnectInfo connectInfo, ShellConnect redisConnect) {
+    public static void copyConnect(ShellRedisConnectInfo connectInfo, ShellConnect redisConnect) {
         if (connectInfo != null && redisConnect != null) {
             redisConnect.setUser(connectInfo.getUser());
             redisConnect.setReadonly(connectInfo.isReadonly());

@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.redis.ShellRedisClient;
  * @author oyzh
  * @since 2023/8/02
  */
-public class RedisPubsubItem {
+public class ShellRedisPubsubItem {
 
     public int getIndex() {
         return index;

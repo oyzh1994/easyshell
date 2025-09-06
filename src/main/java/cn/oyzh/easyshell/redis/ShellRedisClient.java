@@ -7,7 +7,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
+import cn.oyzh.easyshell.dto.redis.ShellRedisInfoProp;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisClusterOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisSentinelOperationException;
@@ -141,7 +141,7 @@ public class ShellRedisClient implements ShellBaseClient {
     /**
      * 服务属性
      */
-    private RedisInfoProp infoProp;
+    private ShellRedisInfoProp infoProp;
 
     /**
      * ssh端口转发器
@@ -4535,9 +4535,9 @@ public class ShellRedisClient implements ShellBaseClient {
      *
      * @return info属性
      */
-    public RedisInfoProp infoProp() {
+    public ShellRedisInfoProp infoProp() {
         if (this.infoProp == null) {
-            this.infoProp = new RedisInfoProp();
+            this.infoProp = new ShellRedisInfoProp();
         }
         if (this.infoProp.isEmpty()) {
             this.infoProp.parse(this.info(null));

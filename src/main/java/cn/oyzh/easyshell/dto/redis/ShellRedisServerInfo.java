@@ -8,7 +8,7 @@ import java.util.stream.Stream;
  * @author oyzh
  * @since 2023/7/05
  */
-public class RedisServerInfo {
+public class ShellRedisServerInfo {
 
     private String version;
 
@@ -20,8 +20,8 @@ public class RedisServerInfo {
         this.version = version;
     }
 
-    public static RedisServerInfo parse(String str) {
-        RedisServerInfo serverInfo = new RedisServerInfo();
+    public static ShellRedisServerInfo parse(String str) {
+        ShellRedisServerInfo serverInfo = new ShellRedisServerInfo();
         if (StringUtil.isNotBlank(str)) {
             Stream<String> lines = str.lines();
             lines.forEach(l -> {

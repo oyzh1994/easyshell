@@ -8,9 +8,9 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.dto.zk.ZKClusterNode;
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKClusterNode;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoAdminPermException;
@@ -1232,8 +1232,8 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 集群服务列表
      */
-    public List<ZKClusterNode> clusterNodes() {
-        List<ZKClusterNode> servers = new ArrayList<>(8);
+    public List<ShellZKClusterNode> clusterNodes() {
+        List<ShellZKClusterNode> servers = new ArrayList<>(8);
         try {
             QuorumVerifier verifier = this.getCurrentConfig();
             // 老版本实现
@@ -1243,7 +1243,7 @@ public class ShellZKClient implements ShellBaseClient {
                     if (data != null) {
                         for (String str : data.lines().toList()) {
                             if (str.startsWith("server.")) {
-                                servers.add(new ZKClusterNode(str));
+                                servers.add(new ShellZKClusterNode(str));
                             }
                         }
                     }
@@ -1251,7 +1251,7 @@ public class ShellZKClient implements ShellBaseClient {
             } else {// 新版本实现
                 Collection<QuorumPeer.QuorumServer> quorumServers = verifier.getVotingMembers().values();
                 for (QuorumPeer.QuorumServer quorumServer : quorumServers) {
-                    ZKClusterNode serverNode = new ZKClusterNode(quorumServer);
+                    ShellZKClusterNode serverNode = new ShellZKClusterNode(quorumServer);
                     serverNode.setWeight(verifier.getWeight(quorumServer.id));
                     servers.add(serverNode);
                 }
@@ -1332,12 +1332,12 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    public List<ZKEnvNode> localNodes() {
-        List<ZKEnvNode> list = new ArrayList<>(8);
-        ZKEnvNode host = new ZKEnvNode("host", this.shellConnect.getHost());
-        ZKEnvNode connection = new ZKEnvNode("connection", this.shellConnect.getName());
-        ZKEnvNode version = new ZKEnvNode("sdkVersion", Version.getFullVersion());
-        ZKEnvNode jdkVersion = new ZKEnvNode("jdkVersion", System.getProperty("java.vm.version"));
+    public List<ShellZKEnvNode> localNodes() {
+        List<ShellZKEnvNode> list = new ArrayList<>(8);
+        ShellZKEnvNode host = new ShellZKEnvNode("host", this.shellConnect.getHost());
+        ShellZKEnvNode connection = new ShellZKEnvNode("connection", this.shellConnect.getName());
+        ShellZKEnvNode version = new ShellZKEnvNode("sdkVersion", Version.getFullVersion());
+        ShellZKEnvNode jdkVersion = new ShellZKEnvNode("jdkVersion", System.getProperty("java.vm.version"));
         list.add(host);
         list.add(version);
         list.add(connection);
@@ -1365,16 +1365,16 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    public List<ZKEnvNode> enviNodes() {
+    public List<ShellZKEnvNode> enviNodes() {
         String envi = this.envi();
         if (envi != null) {
-            List<ZKEnvNode> list = new ArrayList<>();
+            List<ShellZKEnvNode> list = new ArrayList<>();
             envi.lines().skip(1).forEach(l -> {
                 int index = l.indexOf("=");
                 if (index != -1) {
                     String name = l.substring(0, index);
                     String value = l.substring(index + 1);
-                    ZKEnvNode envNode = new ZKEnvNode(name, value);
+                    ShellZKEnvNode envNode = new ShellZKEnvNode(name, value);
                     list.add(envNode);
                 }
             });
@@ -1403,16 +1403,16 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    public List<ZKEnvNode> srvrNodes() {
+    public List<ShellZKEnvNode> srvrNodes() {
         String srvr = this.srvr();
         if (srvr != null) {
-            List<ZKEnvNode> list = new ArrayList<>();
+            List<ShellZKEnvNode> list = new ArrayList<>();
             srvr.lines().forEach(l -> {
                 int index = l.indexOf(":");
                 if (index != -1) {
                     String name = l.substring(0, index);
                     String value = l.substring(index + 1).trim();
-                    ZKEnvNode envNode = new ZKEnvNode(name, value);
+                    ShellZKEnvNode envNode = new ShellZKEnvNode(name, value);
                     list.add(envNode);
                 }
             });
@@ -1441,16 +1441,16 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    public List<ZKEnvNode> mntrNodes() {
+    public List<ShellZKEnvNode> mntrNodes() {
         String mntr = this.mntr();
         if (mntr != null) {
-            List<ZKEnvNode> list = new ArrayList<>();
+            List<ShellZKEnvNode> list = new ArrayList<>();
             mntr.lines().forEach(l -> {
                 int index = l.indexOf("\t");
                 if (index != -1) {
                     String name = l.substring(0, index).trim();
                     String value = l.substring(index + 1).trim();
-                    ZKEnvNode envNode = new ZKEnvNode(name, value);
+                    ShellZKEnvNode envNode = new ShellZKEnvNode(name, value);
                     list.add(envNode);
                 }
             });
@@ -1479,16 +1479,16 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    public List<ZKEnvNode> statNodes() {
+    public List<ShellZKEnvNode> statNodes() {
         String stat = this.stat();
         if (stat != null) {
-            List<ZKEnvNode> list = new ArrayList<>();
+            List<ShellZKEnvNode> list = new ArrayList<>();
             stat.lines().forEach(l -> {
                 int index = l.indexOf("(");
                 if (index != -1) {
                     String name = l.substring(0, index).trim();
                     String value = l.substring(index + 1, l.length() - 1).trim();
-                    ZKEnvNode envNode = new ZKEnvNode(name, value);
+                    ShellZKEnvNode envNode = new ShellZKEnvNode(name, value);
                     list.add(envNode);
                 }
             });
@@ -1517,16 +1517,16 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    public List<ZKEnvNode> confNodes() {
+    public List<ShellZKEnvNode> confNodes() {
         String conf = this.conf();
         if (conf != null) {
-            List<ZKEnvNode> list = new ArrayList<>();
+            List<ShellZKEnvNode> list = new ArrayList<>();
             conf.lines().forEach(l -> {
                 int index = l.indexOf("=");
                 if (index != -1) {
                     String name = l.substring(0, index);
                     String value = l.substring(index + 1);
-                    ZKEnvNode envNode = new ZKEnvNode(name, value);
+                    ShellZKEnvNode envNode = new ShellZKEnvNode(name, value);
                     list.add(envNode);
                 }
             });
@@ -1555,16 +1555,16 @@ public class ShellZKClient implements ShellBaseClient {
 //     *
 //     * @return 结果
 //     */
-//    public List<ZKEnvNode> consNodes() {
+//    public List<ShellZKEnvNode> consNodes() {
 //        String cons = this.cons();
 //        if (cons != null) {
-//            List<ZKEnvNode> list = new ArrayList<>();
+//            List<ShellZKEnvNode> list = new ArrayList<>();
 //            cons.lines().forEach(l -> {
 //                int index = l.indexOf("(");
 //                if (index != -1) {
 //                    String name = l.substring(0, index).trim();
 //                    String value = l.substring(index + 1, l.length() - 1).trim();
-//                    ZKEnvNode envNode = new ZKEnvNode(name, value);
+//                    ShellZKEnvNode envNode = new ShellZKEnvNode(name, value);
 //                    list.add(envNode);
 //                }
 //            });
@@ -1752,9 +1752,9 @@ public class ShellZKClient implements ShellBaseClient {
      * @param aclList 权限列表
      * @return 结果
      */
-    public boolean isAnyAuthed(List<ZKACL> aclList) {
+    public boolean isAnyAuthed(List<ShellZKACL> aclList) {
         if (CollectionUtil.isNotEmpty(aclList) && CollectionUtil.isNotEmpty(this.getAuths())) {
-            for (ZKACL zkacl : aclList) {
+            for (ShellZKACL zkacl : aclList) {
                 for (ShellZKAuth auth : this.getAuths()) {
                     if (auth.digest().equals(zkacl.idVal())) {
                         return true;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.server;
 
-import cn.oyzh.easyshell.dto.redis.RedisClientItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisClientItem;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -31,7 +31,7 @@ public class ShellRedisClientInfoTabController extends SubTabController {
      * 表格组件
      */
     @FXML
-    private FXTableView<RedisClientItem> listTable;
+    private FXTableView<ShellRedisClientItem> listTable;
 
 
     /**
@@ -58,9 +58,9 @@ public class ShellRedisClientInfoTabController extends SubTabController {
     private void initClientList() {
         String list = this.client.clientList();
         AtomicInteger index = new AtomicInteger(1);
-        List<RedisClientItem> items = new ArrayList<>(24);
+        List<ShellRedisClientItem> items = new ArrayList<>(24);
         list.lines().forEach(l -> {
-            RedisClientItem item = RedisClientItem.from(l);
+            ShellRedisClientItem item = ShellRedisClientItem.from(l);
             item.setIndex(index.getAndIncrement());
             items.add(item);
         });

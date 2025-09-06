@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ShellZKQueryEnvTab extends RichTab {
 
-    public ShellZKQueryEnvTab(List<ZKEnvNode> envNodes) {
+    public ShellZKQueryEnvTab(List<ShellZKEnvNode> envNodes) {
         super();
         super.flush();
         this.controller().init(envNodes);

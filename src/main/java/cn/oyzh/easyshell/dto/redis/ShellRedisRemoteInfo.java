@@ -12,29 +12,29 @@ import java.util.stream.Stream;
  * @author oyzh
  * @since 2023/6/30
  */
-public class RedisRemoteInfo {
+public class ShellRedisRemoteInfo {
 
-    private RedisServerInfo server;
+    private ShellRedisServerInfo server;
 
-    public RedisServerInfo getServer() {
+    public ShellRedisServerInfo getServer() {
         return server;
     }
 
-    public void setServer(RedisServerInfo server) {
+    public void setServer(ShellRedisServerInfo server) {
         this.server = server;
     }
 
-    public List<RedisDBInfo> getKeyspace() {
+    public List<ShellRedisDBInfo> getKeyspace() {
         return keyspace;
     }
 
-    public void setKeyspace(List<RedisDBInfo> keyspace) {
+    public void setKeyspace(List<ShellRedisDBInfo> keyspace) {
         this.keyspace = keyspace;
     }
 
-    private List<RedisDBInfo> keyspace;
+    private List<ShellRedisDBInfo> keyspace;
 
-    public void addDBInfo(RedisDBInfo dbInfo) {
+    public void addDBInfo(ShellRedisDBInfo dbInfo) {
         if (dbInfo != null) {
             if (this.keyspace == null) {
                 this.keyspace = new ArrayList<>(16);
@@ -45,7 +45,7 @@ public class RedisRemoteInfo {
 
     public int getDBCount() {
         if (CollectionUtil.isNotEmpty(this.keyspace)) {
-            Optional<Integer> count = this.keyspace.parallelStream().map(RedisDBInfo::getIndex).max(Integer::compareTo);
+            Optional<Integer> count = this.keyspace.parallelStream().map(ShellRedisDBInfo::getIndex).max(Integer::compareTo);
             return count.map(i -> i + 1).orElse(-1);
         }
         return -1;
@@ -74,8 +74,8 @@ public class RedisRemoteInfo {
         return false;
     }
 
-    public static RedisRemoteInfo parse(String info) {
-        RedisRemoteInfo remoteInfo = new RedisRemoteInfo();
+    public static ShellRedisRemoteInfo parse(String info) {
+        ShellRedisRemoteInfo remoteInfo = new ShellRedisRemoteInfo();
         if (info == null || info.isBlank()) {
             return remoteInfo;
         }
@@ -91,9 +91,9 @@ public class RedisRemoteInfo {
                     flag.set(null);
                 }
             } else if ("Keyspace".equals(flag.get())) {
-                remoteInfo.addDBInfo(RedisDBInfo.parse(s));
+                remoteInfo.addDBInfo(ShellRedisDBInfo.parse(s));
             } else if ("Keyspace".equals(flag.get())) {
-                remoteInfo.server = RedisServerInfo.parse(s);
+                remoteInfo.server = ShellRedisServerInfo.parse(s);
             }
         });
         return remoteInfo;

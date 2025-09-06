@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.pubsub;
 
-import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.fx.svg.glyph.SubscribeSVGGlyph;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.RichTab;
@@ -21,18 +21,18 @@ public class ShellRedisPubsubTab extends RichTab {
         this.loadContent();
     }
 
-    public RedisPubsubItem getItem() {
+    public ShellRedisPubsubItem getItem() {
         return item;
     }
 
-    public void setItem(RedisPubsubItem item) {
+    public void setItem(ShellRedisPubsubItem item) {
         this.item = item;
     }
 
     /**
      * redis发布及订阅节点
      */
-    private RedisPubsubItem item;
+    private ShellRedisPubsubItem item;
 
     @Override
     public ShellRedisPubsubTabController controller() {
@@ -59,7 +59,7 @@ public class ShellRedisPubsubTab extends RichTab {
      *
      * @param item redis发布及订阅节点
      */
-    public void init(RedisPubsubItem item) {
+    public void init(ShellRedisPubsubItem item) {
         try {
             this.item = item;
             // 设置文本

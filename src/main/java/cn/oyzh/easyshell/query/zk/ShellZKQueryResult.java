@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.zk;
 
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
 import cn.oyzh.i18n.I18nHelper;
 import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.ACL;
@@ -58,8 +58,8 @@ public class ShellZKQueryResult {
         return (List<ClientInfo>) this.result;
     }
 
-    public List<ZKEnvNode> asEnvInfo() {
-        return (List<ZKEnvNode>) this.result;
+    public List<ShellZKEnvNode> asEnvInfo() {
+        return (List<ShellZKEnvNode>) this.result;
     }
 
     public StatsTrack asQuota() {

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.server;
 
-import cn.oyzh.easyshell.dto.redis.RedisSlowlogItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisSlowlogItem;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -32,7 +32,7 @@ public class ShellRedisSlowlogTabController extends SubTabController {
      * 表格组件
      */
     @FXML
-    private FXTableView<RedisSlowlogItem> listTable;
+    private FXTableView<ShellRedisSlowlogItem> listTable;
 
     /**
      * 执行初始化
@@ -57,9 +57,9 @@ public class ShellRedisSlowlogTabController extends SubTabController {
      */
     private void initSlowlog() {
         List<Slowlog> list = this.client.slowlogGet(1024);
-        List<RedisSlowlogItem> items = new ArrayList<>(list.size());
+        List<ShellRedisSlowlogItem> items = new ArrayList<>(list.size());
         for (Slowlog slowlog : list) {
-            RedisSlowlogItem item = RedisSlowlogItem.from(slowlog);
+            ShellRedisSlowlogItem item = ShellRedisSlowlogItem.from(slowlog);
             items.add(item);
         }
         Collections.reverse(items);

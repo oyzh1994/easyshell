@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.redis.server;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
-import cn.oyzh.easyshell.dto.redis.RedisServerItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisInfoProp;
+import cn.oyzh.easyshell.dto.redis.ShellRedisServerItem;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -98,7 +98,7 @@ public class ShellRedisServerTabController extends ParentTabController {
      * 属性表格
      */
     @FXML
-    private FXTableView<RedisServerItem> propTable;
+    private FXTableView<ShellRedisServerItem> propTable;
 
     /**
      * 刷新任务
@@ -158,11 +158,11 @@ public class ShellRedisServerTabController extends ParentTabController {
         try {
             JulLog.info("renderPane started.");
             if (this.client != null) {
-                RedisInfoProp infoProp = new RedisInfoProp();
+                ShellRedisInfoProp infoProp = new ShellRedisInfoProp();
                 infoProp.parse(this.client.info(null));
-                RedisServerItem serverItem;
+                ShellRedisServerItem serverItem;
                 if (this.propTable.isItemEmpty()) {
-                    serverItem = new RedisServerItem();
+                    serverItem = new ShellRedisServerItem();
                     serverItem.setServerVersion(infoProp.getRedisVersion());
                     try {
                         serverItem.setRole((String) CollectionUtil.getFirst(this.client.role()));
@@ -170,7 +170,7 @@ public class ShellRedisServerTabController extends ParentTabController {
                     }
                     this.propTable.addItem(serverItem);
                 } else {
-                    serverItem = (RedisServerItem) this.propTable.getItem(0);
+                    serverItem = (ShellRedisServerItem) this.propTable.getItem(0);
                 }
                 serverItem.init(infoProp);
                 this.serverInfoController.init(infoProp);

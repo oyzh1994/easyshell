@@ -650,7 +650,7 @@
 ////    /**
 ////     * 显示修改acl页面
 ////     */
-////    public static void showUpdateACL(ShellZKNodeTreeItem item, ShellZKClient client, ZKACL acl) {
+////    public static void showUpdateACL(ShellZKNodeTreeItem item, ShellZKClient client, ShellZKACL acl) {
 ////        ZKShowUpdateACLEvent event = new ZKShowUpdateACLEvent();
 ////        event.setAcl(acl);
 ////        event.data(item);

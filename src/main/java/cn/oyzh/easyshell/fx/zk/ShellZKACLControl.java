@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.zk;
 
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
  * @since 2022/6/7
  */
 
-public class ShellZKACLControl extends ZKACL {
+public class ShellZKACLControl extends ShellZKACL {
 
     /**
      * 是否已认证

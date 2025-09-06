@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.server;
 
-import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
+import cn.oyzh.easyshell.dto.redis.ShellRedisInfoProp;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.chart.ChartHelper;
 import cn.oyzh.fx.plus.controls.chart.FXLineChart;
@@ -52,7 +52,7 @@ public class ShellRedisAggregationTabController extends SubTabController {
      *
      * @param prop 属性对象
      */
-    public void init(RedisInfoProp prop) {
+    public void init(ShellRedisInfoProp prop) {
         this.initClientChart(prop);
         this.initMemoryChart(prop);
         this.initCommandChart(prop);
@@ -64,7 +64,7 @@ public class ShellRedisAggregationTabController extends SubTabController {
      *
      * @param prop 属性
      */
-    private void initMemoryChart(RedisInfoProp prop) {
+    private void initMemoryChart(ShellRedisInfoProp prop) {
         XYChart.Series<String, Number> data = this.memoryChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -81,7 +81,7 @@ public class ShellRedisAggregationTabController extends SubTabController {
      *
      * @param prop 属性
      */
-    private void initClientChart(RedisInfoProp prop) {
+    private void initClientChart(ShellRedisInfoProp prop) {
         XYChart.Series<String, Number> data = this.clientChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -98,7 +98,7 @@ public class ShellRedisAggregationTabController extends SubTabController {
      *
      * @param prop 属性
      */
-    private void initNetworkChart(RedisInfoProp prop) {
+    private void initNetworkChart(ShellRedisInfoProp prop) {
         XYChart.Series<String, Number> inData = this.networkChart.getChartData(0);
         XYChart.Series<String, Number> outData = this.networkChart.getChartData(1);
         if (inData == null) {
@@ -123,7 +123,7 @@ public class ShellRedisAggregationTabController extends SubTabController {
      *
      * @param prop 属性
      */
-    private void initCommandChart(RedisInfoProp prop) {
+    private void initCommandChart(ShellRedisInfoProp prop) {
         XYChart.Series<String, Number> data = this.commandChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();

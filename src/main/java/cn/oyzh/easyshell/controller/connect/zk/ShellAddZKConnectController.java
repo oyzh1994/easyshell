@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
-import cn.oyzh.easyshell.fx.zk.ZKSASLTypeComboBox;
+import cn.oyzh.easyshell.fx.zk.ShellZKSASLTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -185,7 +185,7 @@ public class ShellAddZKConnectController extends StageController {
      * sasl类型
      */
     @FXML
-    private ZKSASLTypeComboBox saslType;
+    private ShellZKSASLTypeComboBox saslType;
 
     /**
      * sasl用户

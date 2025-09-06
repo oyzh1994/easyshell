@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.util.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import org.apache.curator.framework.AuthInfo;
@@ -71,7 +71,7 @@ public class ShellZKAuthUtil {
                 result = 1;
             } else {
                 String digest = digest(user, password);
-                for (ZKACL acl : node.getDigestACLs()) {
+                for (ShellZKACL acl : node.getDigestACLs()) {
                     if (Objects.equals(acl.idVal(), digest)) {
                         result = 1;
                         break;
@@ -232,10 +232,10 @@ public class ShellZKAuthUtil {
     //  * @param aclList 权限列表
     //  * @return 结果
     //  */
-    // public static boolean isAnyAuthed( ShellZKClient client, List<ZKACL> aclList) {
+    // public static boolean isAnyAuthed( ShellZKClient client, List<ShellZKACL> aclList) {
     //     if (CollectionUtil.isNotEmpty(aclList)) {
     //         Set<String> digestList = getAuthedDigest(client);
-    //         for (ZKACL zkacl : aclList) {
+    //         for (ShellZKACL zkacl : aclList) {
     //             if (digestList.contains(zkacl.idVal())) {
     //                 return true;
     //             }

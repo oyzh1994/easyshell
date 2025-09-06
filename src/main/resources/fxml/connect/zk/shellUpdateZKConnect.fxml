@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.zk.ZKSASLTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKSASLTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -158,11 +158,11 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ZKSASLTypeComboBox initIndex="0" realHeight="30" groupId="sasl" fx:id="saslType" disable="true">
+                <ShellZKSASLTypeComboBox initIndex="0" realHeight="30" groupId="sasl" fx:id="saslType" disable="true">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </ZKSASLTypeComboBox>
+                </ShellZKSASLTypeComboBox>
                 <InfoLabel text="%base.userName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

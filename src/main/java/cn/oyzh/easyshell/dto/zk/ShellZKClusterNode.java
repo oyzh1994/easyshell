@@ -11,7 +11,7 @@ import java.util.Locale;
  * @author oyzh
  * @since 2023/1/6
  */
-public class ZKClusterNode {
+public class ShellZKClusterNode {
 
     /**
      * id
@@ -43,7 +43,7 @@ public class ZKClusterNode {
      */
     private String electionAddr;
 
-    public ZKClusterNode( QuorumPeer.QuorumServer server) {
+    public ShellZKClusterNode(QuorumPeer.QuorumServer server) {
         this.id = server.id;
         if (I18nManager.currentLocale() == Locale.SIMPLIFIED_CHINESE) {
             this.type = server.type == QuorumPeer.LearnerType.PARTICIPANT ? "选举节点" : "观察节点";
@@ -57,7 +57,7 @@ public class ZKClusterNode {
         this.electionAddr = server.electionAddr.toString();
     }
 
-    public ZKClusterNode( String serverTxt) {
+    public ShellZKClusterNode(String serverTxt) {
         String serverName = serverTxt.split(":")[0];
         serverName = serverName.substring(serverName.indexOf("=") + 1);
         this.weight = 1L;

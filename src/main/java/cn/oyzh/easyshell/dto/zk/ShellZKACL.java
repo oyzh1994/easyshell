@@ -11,12 +11,12 @@ import org.apache.zookeeper.data.ACL;
  * @since 2022/6/7
  */
 
-public class ZKACL extends ACL {
+public class ShellZKACL extends ACL {
 
-    public ZKACL() {
+    public ShellZKACL() {
     }
 
-    public ZKACL( ACL acl) {
+    public ShellZKACL(ACL acl) {
         this.setId(acl.getId());
         this.setPerms(acl.getPerms());
     }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
@@ -346,7 +346,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      * @param item 发布及订阅节点
      * @return 发布及订阅tab
      */
-    private ShellRedisPubsubTab getPubsubTab(RedisPubsubItem item) {
+    private ShellRedisPubsubTab getPubsubTab(ShellRedisPubsubItem item) {
         if (item != null) {
             for (Tab tab : this.getTabs()) {
                 if (tab instanceof ShellRedisPubsubTab cmdTab && cmdTab.getItem() == item) {

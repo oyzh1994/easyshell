@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.zk.acl;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
@@ -39,7 +39,7 @@ public class ShellZKUpdateACLController extends StageController {
     /**
      * zk权限信息
      */
-    private ZKACL acl;
+    private ShellZKACL acl;
 
     /**
      * zk树节点

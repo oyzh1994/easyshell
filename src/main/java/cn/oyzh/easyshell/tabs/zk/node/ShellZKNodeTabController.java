@@ -99,7 +99,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //    /**
 //     * 分页信息
 //     */
-//    private Paging<ZKACL> aclPaging;
+//    private Paging<ShellZKACL> aclPaging;
 
     // /**
     //  * zk连接节点
@@ -123,7 +123,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     * 右侧acl分页组件
 //     */
 //    @FXML
-//    private PageBox<ZKACL> aclPage;
+//    private PageBox<ShellZKACL> aclPage;
 
 //    /**
 //     * 右侧zk权限视图切换按钮
@@ -457,7 +457,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     */
 //    @FXML
 //    private void copyACL() {
-//        ZKACL acl = this.aclTableView.getSelectedItem();
+//        ShellZKACL acl = this.aclTableView.getSelectedItem();
 //        if (acl == null) {
 //            MessageBox.warn(I18nHelper.acl() + " " + I18nHelper.isEmpty());
 //            return;
@@ -477,7 +477,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     */
 //    @FXML
 //    private void updateACL() {
-//        ZKACL acl = this.aclTableView.getSelectedItem();
+//        ShellZKACL acl = this.aclTableView.getSelectedItem();
 //        if (acl == null) {
 //            return;
 //        }
@@ -499,7 +499,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     */
 //    @FXML
 //    private void deleteACL() {
-//        ZKACL acl = this.aclTableView.getSelectedItem();
+//        ShellZKACL acl = this.aclTableView.getSelectedItem();
 //        if (acl == null) {
 //            return;
 //        }
@@ -555,11 +555,11 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     */
 //    private void renderACLView(long pageNo) {
 //        // 获取zk权限分页数据
-//        List<ZKACL> aclList = this.aclPaging.page(pageNo);
+//        List<ShellZKACL> aclList = this.aclPaging.page(pageNo);
 //        // 设置分页信息
 //        this.aclPage.setPaging(this.aclPaging);
 //        List<ShellZKACLControl> list = new ArrayList<>();
-//        for (ZKACL zkacl : aclList) {
+//        for (ShellZKACL zkacl : aclList) {
 //            ShellZKACLControl control = new ShellZKACLControl();
 //            control.setId(zkacl.getId());
 //            control.setPerms(zkacl.getPerms());
@@ -882,7 +882,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //            this.aclTableView.clearItems();
 //        } else {
 //            this.aclViewSwitch.enable();
-//            List<ZKACL> aclList = this.activeItem.acl();
+//            List<ShellZKACL> aclList = this.activeItem.acl();
 //            // 获取分页控件
 //            this.aclPaging = new Paging<>(aclList, 10);
 //            // 渲染首页数据

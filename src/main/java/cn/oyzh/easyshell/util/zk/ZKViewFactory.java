@@ -181,7 +181,7 @@
 //     //  * @param client   zk客户端
 //     //  * @param acl      权限
 //     //  */
-//     // public static StageAdapter updateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ZKACL acl) {
+//     // public static StageAdapter updateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
 //     //     try {
 //     //         StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
 //     //         adapter.setProp("acl", acl);

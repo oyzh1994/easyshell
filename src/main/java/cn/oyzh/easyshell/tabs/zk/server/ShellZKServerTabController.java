@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.zk.server;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
-import cn.oyzh.easyshell.dto.zk.ZKServerInfo;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKServerInfo;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -48,19 +48,19 @@ public class ShellZKServerTabController extends ParentTabController {
      * 服务信息
      */
     @FXML
-    private FXTableView<ZKServerInfo> serverTable;
+    private FXTableView<ShellZKServerInfo> serverTable;
 
     /**
      * 延迟信息
      */
     @FXML
-    private FXTableColumn<ZKServerInfo, String> latency;
+    private FXTableColumn<ShellZKServerInfo, String> latency;
 
     /**
      * 命令信息
      */
     @FXML
-    private FXTableColumn<ZKServerInfo, String> command;
+    private FXTableColumn<ShellZKServerInfo, String> command;
 
     /**
      * 汇总信息
@@ -157,16 +157,16 @@ public class ShellZKServerTabController extends ParentTabController {
             JulLog.info("renderPane started.");
             if (this.client != null) {
                 // 服务信息
-                ZKServerInfo serverInfo;
+                ShellZKServerInfo serverInfo;
                 // 初始化
                 if (this.serverTable.isItemEmpty()) {
-                    serverInfo = new ZKServerInfo();
+                    serverInfo = new ShellZKServerInfo();
                     this.serverTable.setItem(serverInfo);
                 } else {// 获取
-                    serverInfo = (ZKServerInfo) this.serverTable.getItem(0);
+                    serverInfo = (ShellZKServerInfo) this.serverTable.getItem(0);
                 }
                 // 获取信息
-                List<ZKEnvNode> envNodes = this.client.srvrNodes();
+                List<ShellZKEnvNode> envNodes = this.client.srvrNodes();
                 // 更新信息
                 serverInfo.update(envNodes);
                 // 初始化图表

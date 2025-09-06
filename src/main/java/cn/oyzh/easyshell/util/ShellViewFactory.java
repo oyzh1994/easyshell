@@ -94,7 +94,7 @@ import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
@@ -1588,7 +1588,7 @@ public class ShellViewFactory {
      * @param client   zk客户端
      * @param acl      权限
      */
-    public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ZKACL acl) {
+    public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
             adapter.setProp("acl", acl);

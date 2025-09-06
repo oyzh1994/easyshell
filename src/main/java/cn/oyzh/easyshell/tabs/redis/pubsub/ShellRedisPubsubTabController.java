@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.pubsub;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -33,7 +33,7 @@ public class ShellRedisPubsubTabController extends RichTabController {
      *
      * @param item redis发布订阅键
      */
-    public void init(RedisPubsubItem item) {
+    public void init(ShellRedisPubsubItem item) {
         this.textArea.appendText(ShellI18nHelper.redisPubsubTip1() + item.getChannel());
         this.pubSub = new JedisPubSub() {
             @Override

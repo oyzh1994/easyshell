@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author oyzh
  * @since 2023/08/01
  */
-public class RedisInfoPropItem {
+public class ShellRedisInfoPropItem {
 
     /**
      * 名称
@@ -20,7 +20,7 @@ public class RedisInfoPropItem {
      */
     private SimpleStringProperty valueProperty;
 
-    public RedisInfoPropItem(String name, String value) {
+    public ShellRedisInfoPropItem(String name, String value) {
         this.setName(name);
         this.setValue(value);
     }

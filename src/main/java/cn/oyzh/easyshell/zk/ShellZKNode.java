@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.zk;
 import cn.oyzh.common.dto.FriendlyInfo;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKCacheUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
@@ -33,7 +33,7 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
     /**
      * acl权限属性
      */
-    private List<ZKACL> acl;
+    private List<ShellZKACL> acl;
 
     /**
      * 设置acl权限
@@ -47,9 +47,9 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
             this.acl = new ArrayList<>(aclList.size());
             for (ACL acl : aclList) {
                 if (ShellZKACLUtil.isOpenACL(acl)) {
-                    this.acl.add(new ZKACL(ShellZKACLUtil.OPEN_ACL));
+                    this.acl.add(new ShellZKACL(ShellZKACLUtil.OPEN_ACL));
                 } else {
-                    this.acl.add(new ZKACL(acl));
+                    this.acl.add(new ShellZKACL(acl));
                 }
             }
         }
@@ -277,7 +277,7 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
      */
     public boolean hasPerm(String perm) {
         if (!this.aclEmpty()) {
-            for (ZKACL zkacl : this.acl()) {
+            for (ShellZKACL zkacl : this.acl()) {
                 if (zkacl.isDigestACL() && zkacl.isReadOnly()) {
                     return false;
                 }
@@ -366,11 +366,11 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
      * @param type 类型
      * @return 权限列表
      */
-    public List<ZKACL> getACLByType(String type) {
+    public List<ShellZKACL> getACLByType(String type) {
         if (!this.aclEmpty()) {
             type = type.toLowerCase();
-            List<ZKACL> aclList = new ArrayList<>(12);
-            for (ZKACL acl : this.acl()) {
+            List<ShellZKACL> aclList = new ArrayList<>(12);
+            for (ShellZKACL acl : this.acl()) {
                 if (acl.schemeVal().equals(type)) {
                     aclList.add(acl);
                 }
@@ -406,8 +406,8 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
      */
     public boolean existIPACL(String ip) {
         if (this.hasIPACL()) {
-            List<ZKACL> acLs = this.getACLByType("ip");
-            for (ZKACL acL : acLs) {
+            List<ShellZKACL> acLs = this.getACLByType("ip");
+            for (ShellZKACL acL : acLs) {
                 if (acL.idVal().equals(ip)) {
                     return true;
                 }
@@ -433,7 +433,7 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
      */
     public boolean existDigestACL(String digest) {
         if (this.hasDigestACL()) {
-            for (ZKACL acl : this.getDigestACLs()) {
+            for (ShellZKACL acl : this.getDigestACLs()) {
                 if (Objects.equals(acl.idVal(), digest)) {
                     return true;
                 }
@@ -447,7 +447,7 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
      *
      * @return 摘要权限列表
      */
-    public List<ZKACL> getDigestACLs() {
+    public List<ShellZKACL> getDigestACLs() {
         return this.getACLByType("digest");
     }
 
@@ -496,7 +496,7 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
         this.stat = stat;
     }
 
-    public List<ZKACL> acl() {
+    public List<ShellZKACL> acl() {
         return this.acl;
     }
 

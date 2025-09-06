@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.server;
 
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -26,7 +26,7 @@ public class ShellZKStatTabController extends SubTabController {
      * 状态信息
      */
     @FXML
-    private FXTableView<ZKEnvNode> statTable;
+    private FXTableView<ShellZKEnvNode> statTable;
 
     @Override
     public ShellZKServerTabController parent() {
@@ -36,7 +36,7 @@ public class ShellZKStatTabController extends SubTabController {
     @FXML
     private void refreshStat() {
         // 状态信息
-        List<ZKEnvNode> statNodes = this.parent().getClient().statNodes();
+        List<ShellZKEnvNode> statNodes = this.parent().getClient().statNodes();
         this.statTable.setItem(statNodes);
     }
 

@@ -9,7 +9,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -1052,7 +1052,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * @return 当前状态
      * @throws Exception 异常
      */
-    public Stat deleteACL(ZKACL acl) throws Exception {
+    public Stat deleteACL(ShellZKACL acl) throws Exception {
         return this.client().deleteACL(this.nodePath(), acl);
     }
 
@@ -1061,7 +1061,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      *
      * @return 权限
      */
-    public List<ZKACL> acl() {
+    public List<ShellZKACL> acl() {
         return this.value.acl();
     }
 

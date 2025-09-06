@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.dto.redis;
  * @author oyzh
  * @since 2023/8/10
  */
-public class RedisConnectInfo {
+public class ShellRedisConnectInfo {
 
     /**
      * 原始输入内容

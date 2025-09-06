@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.property.KeyValueProperty;
@@ -19,10 +19,10 @@ public class ShellZKQueryEnvTabController extends RichTabController {
     @FXML
     private FXTableView<KeyValueProperty<String, Object>> envTable;
 
-    public void init(List<ZKEnvNode> envNodes) {
+    public void init(List<ShellZKEnvNode> envNodes) {
         List<KeyValueProperty<String, Object>> data = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(envNodes)) {
-            for (ZKEnvNode envNode : envNodes) {
+            for (ShellZKEnvNode envNode : envNodes) {
                 data.add(KeyValueProperty.of(envNode.getName(), envNode.getValue()));
             }
         }

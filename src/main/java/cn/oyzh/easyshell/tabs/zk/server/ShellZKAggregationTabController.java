@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.server;
 
-import cn.oyzh.easyshell.dto.zk.ZKServerInfo;
+import cn.oyzh.easyshell.dto.zk.ShellZKServerInfo;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.chart.ChartHelper;
 import cn.oyzh.fx.plus.controls.chart.FXLineChart;
@@ -53,7 +53,7 @@ public class ShellZKAggregationTabController extends SubTabController {
      *
      * @param serverInfo 服务信息
      */
-    public void init(ZKServerInfo serverInfo) {
+    public void init(ShellZKServerInfo serverInfo) {
         this.initConnectionsChart(serverInfo);
         this.initNodeCountChart(serverInfo);
         this.initLatencyChart(serverInfo);
@@ -65,7 +65,7 @@ public class ShellZKAggregationTabController extends SubTabController {
      *
      * @param serverInfo 服务信息
      */
-    private void initConnectionsChart(ZKServerInfo serverInfo) {
+    private void initConnectionsChart(ShellZKServerInfo serverInfo) {
         XYChart.Series<String, Integer> data = this.connectionsChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -82,7 +82,7 @@ public class ShellZKAggregationTabController extends SubTabController {
      *
      * @param serverInfo 服务信息
      */
-    private void initNodeCountChart(ZKServerInfo serverInfo) {
+    private void initNodeCountChart(ShellZKServerInfo serverInfo) {
         XYChart.Series<String, Integer> data = this.nodeCountChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -99,7 +99,7 @@ public class ShellZKAggregationTabController extends SubTabController {
      *
      * @param serverInfo 服务信息
      */
-    private void initLatencyChart(ZKServerInfo serverInfo) {
+    private void initLatencyChart(ShellZKServerInfo serverInfo) {
         XYChart.Series<String, Number> minData = this.latencyChart.getChartData(0);
         XYChart.Series<String, Number> avgData = this.latencyChart.getChartData(1);
         XYChart.Series<String, Number> maxData = this.latencyChart.getChartData(2);
@@ -126,7 +126,7 @@ public class ShellZKAggregationTabController extends SubTabController {
      *
      * @param serverInfo 属性
      */
-    private void initCommandChart(ZKServerInfo serverInfo) {
+    private void initCommandChart(ShellZKServerInfo serverInfo) {
         XYChart.Series<String, Integer> receivedData = this.commandChart.getChartData(0);
         XYChart.Series<String, Integer> sentData = this.commandChart.getChartData(1);
         XYChart.Series<String, Integer> outstandingData = this.commandChart.getChartData(2);

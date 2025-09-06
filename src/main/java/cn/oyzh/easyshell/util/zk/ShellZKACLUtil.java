@@ -5,7 +5,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dto.zk.ZKACL;
+import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -298,9 +298,9 @@ public class ShellZKACLUtil {
      * @param aclList 权限列表
      * @param user    摘要权限用户名
      */
-    public static boolean existDigest(List<ZKACL> aclList, String user) {
+    public static boolean existDigest(List<ShellZKACL> aclList, String user) {
         if (CollectionUtil.isNotEmpty(aclList) && StringUtil.isNotBlank(user)) {
-            for (ZKACL acl : aclList) {
+            for (ShellZKACL acl : aclList) {
                 if (acl.isDigestACL() && StringUtil.equalsIgnoreCase(user, acl.digestUser())) {
                     return true;
                 }

@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.dto.zk;
  * @author oyzh
  * @since 2024/1286
  */
-public class ZKEnvNode {
+public class ShellZKEnvNode {
 
     /**
      * id
@@ -35,7 +35,7 @@ public class ZKEnvNode {
         this.value = value;
     }
 
-    public ZKEnvNode(String name, String value) {
+    public ShellZKEnvNode(String name, String value) {
         this.name = name;
         this.value = value;
     }

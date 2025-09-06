@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.redis.server;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dto.redis.RedisInfoProp;
-import cn.oyzh.easyshell.dto.redis.RedisInfoPropItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisInfoProp;
+import cn.oyzh.easyshell.dto.redis.ShellRedisInfoPropItem;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -40,14 +40,14 @@ public class ShellRedisServerInfoTabController extends SubTabController {
      *
      * @param prop 属性对象
      */
-    public void init(RedisInfoProp prop) {
+    public void init(ShellRedisInfoProp prop) {
         this.initPropPane(prop);
     }
 
     /**
      * 初始化属性面板
      */
-    private void initPropPane(RedisInfoProp prop) {
+    private void initPropPane(ShellRedisInfoProp prop) {
         List<String> groups = prop.groups().stream().sorted().toList();
         for (String group : groups) {
             this.initPropTab(prop, group);
@@ -59,13 +59,13 @@ public class ShellRedisServerInfoTabController extends SubTabController {
      *
      * @param group 属性组
      */
-    private void initPropTab(RedisInfoProp prop, String group) {
+    private void initPropTab(ShellRedisInfoProp prop, String group) {
         JSONObject object = prop.getProps(group);
         if (object == null || object.isEmpty()) {
             return;
         }
         Optional<Tab> tabOptional = this.tabPane.getTabs().stream().filter(t -> StringUtil.equals(t.getId(), "prop-" + group)).findFirst();
-        FXTableView<RedisInfoPropItem> tableView;
+        FXTableView<ShellRedisInfoPropItem> tableView;
         if (tabOptional.isEmpty()) {
             FXTab fxTab = new FXTab();
             fxTab.setText(group);
@@ -74,12 +74,12 @@ public class ShellRedisServerInfoTabController extends SubTabController {
             tableView.setFlexWidth("100%");
             tableView.setFlexHeight("100%");
 
-            FXTableColumn<RedisInfoPropItem, String> name = new FXTableColumn<>();
+            FXTableColumn<ShellRedisInfoPropItem, String> name = new FXTableColumn<>();
             name.setText(I18nHelper.name());
             name.setFlexWidth("30%");
             name.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-            FXTableColumn<RedisInfoPropItem, String> value = new FXTableColumn<>();
+            FXTableColumn<ShellRedisInfoPropItem, String> value = new FXTableColumn<>();
             value.setText(I18nHelper.value());
             value.setFlexWidth("70% - 20");
             value.setCellValueFactory(new PropertyValueFactory<>("value"));
@@ -95,7 +95,7 @@ public class ShellRedisServerInfoTabController extends SubTabController {
             fxTab.setContent(tableView);
             this.tabPane.addTab(fxTab);
         } else {
-            tableView = (FXTableView<RedisInfoPropItem>) tabOptional.get().getContent();
+            tableView = (FXTableView<ShellRedisInfoPropItem>) tabOptional.get().getContent();
         }
         for (String key : object.keySet()) {
             this.initPropItem(tableView, key, object.getString(key));
@@ -109,11 +109,11 @@ public class ShellRedisServerInfoTabController extends SubTabController {
      * @param name      名称
      * @param value     值
      */
-    private void initPropItem(TableView<RedisInfoPropItem> tableView, String name, String value) {
-        ObservableList<RedisInfoPropItem> items = tableView.getItems();
-        Optional<RedisInfoPropItem> optional = items.parallelStream().filter(i -> StringUtil.equals(i.getName(), name)).findFirst();
+    private void initPropItem(TableView<ShellRedisInfoPropItem> tableView, String name, String value) {
+        ObservableList<ShellRedisInfoPropItem> items = tableView.getItems();
+        Optional<ShellRedisInfoPropItem> optional = items.parallelStream().filter(i -> StringUtil.equals(i.getName(), name)).findFirst();
         if (optional.isEmpty()) {
-            tableView.getItems().add(new RedisInfoPropItem(name, value));
+            tableView.getItems().add(new ShellRedisInfoPropItem(name, value));
         } else if (!StringUtil.equals(optional.get().getValue(), value)) {
             optional.get().setValue(value);
         }

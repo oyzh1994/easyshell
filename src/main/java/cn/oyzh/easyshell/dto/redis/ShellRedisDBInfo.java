@@ -6,7 +6,7 @@ import cn.oyzh.common.util.StringUtil;
  * @author oyzh
  * @since 2023/6/30
  */
-public class RedisDBInfo {
+public class ShellRedisDBInfo {
 
     private int keys;
 
@@ -48,8 +48,8 @@ public class RedisDBInfo {
 
     private double avgTTL;
 
-    public static RedisDBInfo parse(String str) {
-        RedisDBInfo dbInfo = new RedisDBInfo();
+    public static ShellRedisDBInfo parse(String str) {
+        ShellRedisDBInfo dbInfo = new ShellRedisDBInfo();
         if (StringUtil.isNotBlank(str)) {
             str = str.substring(2);
             String indexStr = str.substring(0, str.indexOf(":"));

@@ -11,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/08/01
  */
-public class ZKServerInfo {
+public class ShellZKServerInfo {
 
     /**
      * 服务id
@@ -50,11 +50,11 @@ public class ZKServerInfo {
      */
     private SimpleStringProperty commandInfoProperty;
 
-    public void update(List<ZKEnvNode> envNodes) {
+    public void update(List<ShellZKEnvNode> envNodes) {
         String sent = null;
         String received = null;
         String outstanding = null;
-        for (ZKEnvNode envNode : envNodes) {
+        for (ShellZKEnvNode envNode : envNodes) {
             if (StringUtil.equalsIgnoreCase(envNode.getName(), "Zxid")) {
                 this.setZxid(envNode.getValue());
             } else if (StringUtil.equalsIgnoreCase(envNode.getName(), "Mode")) {

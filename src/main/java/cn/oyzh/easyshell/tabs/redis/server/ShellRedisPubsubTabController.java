@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.server;
 
-import cn.oyzh.easyshell.dto.redis.RedisPubsubItem;
+import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -31,7 +31,7 @@ public class ShellRedisPubsubTabController extends SubTabController {
      * 表格组件
      */
     @FXML
-    private FXTableView<RedisPubsubItem> listTable;
+    private FXTableView<ShellRedisPubsubItem> listTable;
 
     /**
      * 执行初始化
@@ -48,7 +48,7 @@ public class ShellRedisPubsubTabController extends SubTabController {
      */
     @FXML
     private void subscribe() {
-        RedisPubsubItem pubsubItem = this.listTable.getSelectedItem();
+        ShellRedisPubsubItem pubsubItem = this.listTable.getSelectedItem();
         if (pubsubItem != null) {
             pubsubItem.setClient(this.client);
             ShellEventUtil.redisPubsubOpen(pubsubItem);
@@ -68,10 +68,10 @@ public class ShellRedisPubsubTabController extends SubTabController {
      */
     private void initPubsub() {
         List<String> list = this.client.pubsubChannels("*");
-        List<RedisPubsubItem> items = new ArrayList<>(list.size());
+        List<ShellRedisPubsubItem> items = new ArrayList<>(list.size());
         int index = 1;
         for (String l : list) {
-            RedisPubsubItem item = new RedisPubsubItem();
+            ShellRedisPubsubItem item = new ShellRedisPubsubItem();
             item.setIndex(index++);
             item.setChannel(l);
             items.add(item);

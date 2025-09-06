@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.server;
 
-import cn.oyzh.easyshell.dto.zk.ZKEnvNode;
+import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -26,7 +26,7 @@ public class ShellZKConfTabController extends SubTabController {
      * 配置信息
      */
     @FXML
-    private FXTableView<ZKEnvNode> confTable;
+    private FXTableView<ShellZKEnvNode> confTable;
 
     @Override
     public ShellZKServerTabController parent() {
@@ -36,7 +36,7 @@ public class ShellZKConfTabController extends SubTabController {
     @FXML
     private void refreshConf() {
         // 配置信息
-        List<ZKEnvNode> confNodes = this.parent().getClient().confNodes();
+        List<ShellZKEnvNode> confNodes = this.parent().getClient().confNodes();
         this.confTable.setItem(confNodes);
     }
 
