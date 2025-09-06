@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
@@ -12,14 +13,11 @@ import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
@@ -32,25 +30,18 @@ import javafx.scene.input.KeyEvent;
 public class ShellRedisQueryTabController extends SubTabController {
 
     /**
-     * 根节点
-     */
-    @FXML
-    private FXTab root;
-
-    /**
      * 查询对象
      */
     private ShellQuery query;
 
-    /**
-     * 未保存标志位
-     */
-    private boolean unsaved;
-
-    public boolean isUnsaved() {
-        return unsaved;
-    }
-
+    /// **
+    // * 未保存标志位
+    // */
+    //private boolean unsaved;
+    //
+    //public boolean isUnsaved() {
+    //    return unsaved;
+    //}
     public ShellQuery getQuery() {
         return query;
     }
@@ -118,12 +109,27 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.query.setContent(this.content.getText());
             this.query.setDbIndex(this.database.getSelectedIndex());
             this.queryStore.update(this.query);
-            this.unsaved = false;
-            this.flushTab();
+            this.setUnsaved(false);
+            //this.unsaved = false;
+            //this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+    /**
+     * 设置未保存状态
+     *
+     * @param unsaved 未保存状态
+     */
+    private void setUnsaved(boolean unsaved) {
+        TreeItem<?> item = this.queryTreeView.getSelectedItem();
+        if (item instanceof ShellQueryTreeItem queryTreeItem) {
+            queryTreeItem.setUnsaved(unsaved);
+            queryTreeItem.refresh();
+        }
+    }
+
 
     /**
      * 运行
@@ -167,28 +173,32 @@ public class ShellRedisQueryTabController extends SubTabController {
         }
     }
 
-    @Override
-    public void onTabCloseRequest(Event event) {
-        if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
-            event.consume();
-        } else {
-            super.onTabCloseRequest(event);
-        }
-    }
+    //@Override
+    //public void onTabCloseRequest(Event event) {
+    //    if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+    //        event.consume();
+    //    } else {
+    //        super.onTabCloseRequest(event);
+    //    }
+    //}
 
     @Override
     protected void bindListeners() {
         super.bindListeners();
         // 监听数据库变化
         this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
-            this.unsaved = true;
-            this.flushTab();
+            //this.unsaved = true;
+            //this.flushTab();
+            this.setUnsaved(true);
             this.content.setDbIndex(newValue.intValue());
         });
         // 监听内容变化
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.unsaved = true;
-            this.flushTab();
+            if (this.query != null && !StringUtil.equals(newValue, this.query.getContent())) {
+                this.setUnsaved(true);
+            }
+            //this.unsaved = true;
+            //this.flushTab();
         });
         // 查询选择事件
         this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {

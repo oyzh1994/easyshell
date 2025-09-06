@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author oyzh
  * @since 2025-01-20
  */
-@Table("t_redis_query")
+@Table("t_query")
 public class ShellQuery implements Serializable {
 
     public String getIid() {

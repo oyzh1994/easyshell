@@ -9,6 +9,8 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.MenuItem;
 
 import java.util.List;
@@ -125,5 +127,22 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
 
     public String getId() {
         return this.value.getUid();
+    }
+
+    /**
+     * 未保存属性
+     */
+    private final BooleanProperty unsaved = new SimpleBooleanProperty(false);
+
+    public BooleanProperty unsavedProperty() {
+        return unsaved;
+    }
+
+    public void setUnsaved(boolean unsaved) {
+        this.unsaved.set(unsaved);
+    }
+
+    public  boolean isUnsaved() {
+        return this.unsaved.get();
     }
 }

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
 <?import cn.oyzh.easyshell.trees.query.ShellQueryTreeView?>
-<FXTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController"
+<FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController"
        text="%base.queries">
     <graphic>
         <QuerySVGGlyph sizeStr="11"/>

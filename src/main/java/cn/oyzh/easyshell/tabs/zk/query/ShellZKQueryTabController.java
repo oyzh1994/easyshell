@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor;
@@ -16,9 +17,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
@@ -35,15 +34,14 @@ public class ShellZKQueryTabController extends RichTabController {
      */
     private ShellQuery query;
 
-    /**
-     * 未保存标志位
-     */
-    private boolean unsaved;
+    /// **
+    // * 未保存标志位
+    // */
+    //private boolean unsaved;
 
-    public boolean isUnsaved() {
-        return unsaved;
-    }
-
+    //public boolean isUnsaved() {
+    //    return unsaved;
+    //}
     public ShellQuery getQuery() {
         return query;
     }
@@ -86,6 +84,11 @@ public class ShellZKQueryTabController extends RichTabController {
         return this.zkClient.getShellConnect();
     }
 
+    /**
+     * 初始化
+     *
+     * @param client 客户端
+     */
     public void init(ShellZKClient client) {
         this.zkClient = client;
         this.content.setClient(client);
@@ -98,10 +101,24 @@ public class ShellZKQueryTabController extends RichTabController {
         try {
             this.query.setContent(this.content.getText());
             this.queryStore.update(this.query);
-            this.unsaved = false;
-            this.flushTab();
+            //this.unsaved = false;
+            this.setUnsaved(false);
+            //this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置未保存状态
+     *
+     * @param unsaved 未保存状态
+     */
+    private void setUnsaved(boolean unsaved) {
+        TreeItem<?> item = this.queryTreeView.getSelectedItem();
+        if (item instanceof ShellQueryTreeItem queryTreeItem) {
+            queryTreeItem.setUnsaved(unsaved);
+            queryTreeItem.refresh();
         }
     }
 
@@ -222,22 +239,25 @@ public class ShellZKQueryTabController extends RichTabController {
         }
     }
 
-    @Override
-    public void onTabCloseRequest(Event event) {
-        if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
-            event.consume();
-        } else {
-            super.onTabCloseRequest(event);
-        }
-    }
+    //@Override
+    //public void onTabCloseRequest(Event event) {
+    //    if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+    //        event.consume();
+    //    } else {
+    //        super.onTabCloseRequest(event);
+    //    }
+    //}
 
     @Override
     protected void bindListeners() {
         super.bindListeners();
         // 监听内容变化
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.unsaved = true;
-            this.flushTab();
+            //this.unsaved = true;
+            //this.flushTab();
+            if (this.query != null && !StringUtil.equals(newValue, this.query.getContent())) {
+                this.setUnsaved(true);
+            }
         });
         // 查询选择事件
         this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {

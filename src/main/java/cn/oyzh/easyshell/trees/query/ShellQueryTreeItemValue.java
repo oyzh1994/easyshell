@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.trees.query;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.scene.paint.Color;
 
 /**
  * shell代码查询节点值
@@ -33,5 +34,21 @@ public class ShellQueryTreeItemValue extends RichTreeItemValue {
             this.graphic = new QuerySVGGlyph("12");
         }
         return super.graphic();
+    }
+
+    @Override
+    public String extra() {
+        if (this.item().isUnsaved()) {
+            return " *";
+        }
+        return super.extra();
+    }
+
+    @Override
+    public Color extraColor() {
+        if (this.item().isUnsaved()) {
+            return Color.RED;
+        }
+        return super.extraColor();
     }
 }
