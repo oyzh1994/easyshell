@@ -200,6 +200,7 @@ public class ShellZKAuthNodeController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
         this.zkItem = this.getProp("zkItem");
         this.zkNode = this.zkItem.value();
         this.nodePath.setText(this.zkNode.decodeNodePath());
@@ -208,7 +209,7 @@ public class ShellZKAuthNodeController extends StageController {
 
         this.authList.getItems().clear();
         ShellZKClient client = this.zkItem.client();
-        List<ShellZKAuth> authList = this.authStore.load(client.iid());
+        List<ShellZKAuth> authList = client.getAuths();
         if (CollectionUtil.isNotEmpty(authList)) {
             this.authList.addItems(authList);
             this.authList.setConverter(new SimpleStringConverter<>() {
@@ -232,7 +233,6 @@ public class ShellZKAuthNodeController extends StageController {
         } else if (this.zkNode.aclEmpty() && !authList.isEmpty()) {// 选中摘要列表认证
             this.authType.select(1);
         }
-        super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

@@ -345,11 +345,11 @@ public class SettingController extends StageController {
     @FXML
     private RadioButton viewport1;
 
-    /**
-     * 节点自动认证，zookeeper
-     */
-    @FXML
-    private FXCheckBox authMode;
+    ///**
+    // * 节点自动认证，zookeeper
+    // */
+    //@FXML
+    //private FXCheckBox authMode;
 
     /**
      * 节点加载限制，zookeeper
@@ -448,10 +448,12 @@ public class SettingController extends StageController {
                 case 1 -> this.viewport1.setSelected(true);
             }
         }
-        // 节点认证处理
-        if (this.setting.getAuthMode() != null) {
-            this.authMode.setSelected(this.setting.isAutoAuth());
-        }
+        //// 节点认证处理
+        //if (this.setting.getAuthMode() != null) {
+        //    this.authMode.setSelected(this.setting.isAutoAuth());
+        //}
+        // 节点加载限制
+        this.nodeLoadLimit.setValue(this.setting.nodeLoadLimit());
     }
 
     /**
@@ -473,7 +475,8 @@ public class SettingController extends StageController {
             // redis
             int keyLoadLimit = this.keyLoadLimit.getIntValue();
             // zookeeper
-            byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
+            //byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
+            int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
             byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
             byte viewport = Byte.parseByte(this.viewport.selectedUserData());
 
@@ -522,12 +525,11 @@ public class SettingController extends StageController {
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
             this.setting.setKeyLoadLimit(keyLoadLimit);
-            // 加载模式
+            // zookeeper
             this.setting.setLoadMode(loadMode);
-            // 视图模式
             this.setting.setViewport(viewport);
-            // 认证模式
-            this.setting.setAuthMode(authMode);
+            //this.setting.setAuthMode(authMode);
+            this.setting.setNodeLoadLimit(nodeLoadLimit);
             // 更新设置
             if (this.settingStore.update(this.setting)) {
                 // 关闭窗口

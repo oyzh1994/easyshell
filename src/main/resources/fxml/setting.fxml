@@ -339,16 +339,16 @@
                         </HBox.margin>
                     </FXRadioButton>
                 </FXHBox>
-                <InfoLabel text="%base.auth">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXCheckBox tipText="%shell.zk.info.autoAuthTip" text="%base.autoAuth" selected="true" fx:id="authMode">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXCheckBox>
+                <!-- <InfoLabel text="%base.auth"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="10"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
+                <!-- <FXCheckBox tipText="%shell.zk.info.autoAuthTip" text="%base.autoAuth" selected="true" fx:id="authMode"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="5"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </FXCheckBox> -->
                 <InfoLabel text="%shell.zk.setting.tip1">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

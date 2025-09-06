@@ -26,18 +26,19 @@ public class ShellZKClientUtil {
     /**
      * 构建zk客户端
      *
+     * @param host              地址
      * @param connect           连接
      * @param retryPolicy       重试策略
      * @param authInfos         认证信息
-     * @param zooKeeperConsumer ZooKeeper接收器
+     * @param zooKeeperCallback ZooKeeper回调
      * @return zk客户端
      */
-    public static CuratorFramework build(ShellConnect connect,
+    public static CuratorFramework build(String host,
+                                         ShellConnect connect,
                                          RetryPolicy retryPolicy,
                                          List<AuthInfo> authInfos,
-                                         Consumer<ZooKeeper> zooKeeperConsumer) {
+                                         Consumer<ZooKeeper> zooKeeperCallback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        String host = connect.getHost();
         int connectionTimeoutMs = connect.connectTimeOutMs();
         int sessionTimeoutMs = connect.sessionTimeOutMs();
         // 构建builder
@@ -51,7 +52,7 @@ public class ShellZKClientUtil {
                 .threadFactory(ShellZKThread::new)
                 .waitForShutdownTimeoutMs(500)
                 // .zk34CompatibilityMode(compatibility)
-                .zookeeperFactory(new ShellZKFactory(connect, zooKeeperConsumer))
+                .zookeeperFactory(new ShellZKFactory(connect, zooKeeperCallback))
                 .sessionTimeoutMs(sessionTimeoutMs)
                 .connectionTimeoutMs(connectionTimeoutMs);
         return builder.build();

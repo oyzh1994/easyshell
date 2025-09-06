@@ -275,9 +275,9 @@ public class ShellZKAddACLController extends StageController {
         // 新增权限
         if (this.addACL(acl) && this.digestSaveInfo.isSelected()) {
             // 保存认证信息
-            ShellZKAuth auth = new ShellZKAuth(zkClient.iid(), user, password);
+            ShellZKAuth auth = new ShellZKAuth(this.zkClient.iid(), user, password);
             this.authStore.replace(auth);
-            this.zkItem.zkConnect().addAuth(auth);
+            this.zkClient.addAuth(auth);
         }
     }
 
@@ -522,7 +522,7 @@ public class ShellZKAddACLController extends StageController {
      */
     private void initDigestData() {
         this.digestInfo3.getItems().clear();
-        List<ShellZKAuth> authList = this.authStore.load(this.zkClient.iid());
+        List<ShellZKAuth> authList = this.zkClient.getAuths();
         if (CollectionUtil.isNotEmpty(authList)) {
             this.digestInfo3.addItems(authList);
             this.digestInfo3.setConverter(new SimpleStringConverter<>() {

@@ -754,7 +754,10 @@ public class ShellRedisClient implements ShellBaseClient {
     @Override
     public boolean isConnected() {
         Pool<?> pool = this.getPool();
-        return pool != null && !pool.isClosed();
+        if (pool == null || pool.isClosed()) {
+            return false;
+        }
+        return this.getState().isConnected();
     }
 
     // /**

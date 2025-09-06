@@ -7,7 +7,9 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
+import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.SelectParam;
@@ -58,10 +60,10 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      */
     private final ShellZKSASLConfigStore saslConfigStore = ShellZKSASLConfigStore.INSTANCE;
 
-//    /**
-//     * 终端历史存储
-//     */
-//    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
+    /**
+     * shell auth配置
+     */
+    private final ShellZKAuthStore authStore = ShellZKAuthStore.INSTANCE;
 
     /**
      * 隧道配置存储
@@ -147,6 +149,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (connect.isRedisType()) {
                 connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
             } else if (connect.isZKType()) {
+                connect.setAuths(this.authStore.loadByIid(connect.getId()));
                 connect.setSaslConfig(this.saslConfigStore.getByIid(connect.getId()));
             }
         }
@@ -227,6 +230,15 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             } else {
                 this.sslConfigStore.deleteByIid(model.getId());
             }
+
+            //// 认证处理
+            //List<ShellZKAuth> auths = model.getAuths();
+            //if (CollectionUtil.isNotEmpty(auths)) {
+            //    for (ShellZKAuth auth : auths) {
+            //        auth.setIid(model.getId());
+            //        this.authStore.replace(auth);
+            //    }
+            //}
 
             // sasl处理
             ShellZKSASLConfig saslConfig = model.getSaslConfig();

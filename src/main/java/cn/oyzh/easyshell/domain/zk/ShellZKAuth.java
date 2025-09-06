@@ -4,11 +4,10 @@ import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.toggle.EnabledToggleSwitch;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
-import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -105,10 +104,6 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
         this.password = auth.password;
     }
 
-    public boolean getEnable() {
-        return this.isEnable();
-    }
-
     public boolean isEnable() {
         return this.enable == null || this.enable;
     }
@@ -149,31 +144,31 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
         this.enable = enable;
     }
 
-    /**
-     * 用户名控件
-     */
-    @JSONField(serialize = false, deserialize = false)
-    public ClearableTextField getUserControl() {
-        ClearableTextField textField = new ClearableTextField();
-        textField.setFlexWidth("100% - 12");
-        textField.setValue(this.getUser());
-        textField.addTextChangeListener((obs, o, n) -> this.setUser(n));
-        TableViewUtil.selectRowOnMouseClicked(textField);
-        return textField;
-    }
-
-    /**
-     * 密码控件
-     */
-    @JSONField(serialize = false, deserialize = false)
-    public ClearableTextField getPasswordControl() {
-        ClearableTextField textField = new ClearableTextField();
-        textField.setFlexWidth("100% - 12");
-        textField.setValue(this.getPassword());
-        textField.addTextChangeListener((obs, o, n) -> this.setPassword(n));
-        TableViewUtil.selectRowOnMouseClicked(textField);
-        return textField;
-    }
+    ///**
+    // * 用户名控件
+    // */
+    //@JSONField(serialize = false, deserialize = false)
+    //public ClearableTextField getUserControl() {
+    //    ClearableTextField textField = new ClearableTextField();
+    //    textField.setFlexWidth("100% - 12");
+    //    textField.setValue(this.getUser());
+    //    textField.addTextChangeListener((obs, o, n) -> this.setUser(n));
+    //    TableViewUtil.selectRowOnMouseClicked(textField);
+    //    return textField;
+    //}
+    //
+    ///**
+    // * 密码控件
+    // */
+    //@JSONField(serialize = false, deserialize = false)
+    //public ClearableTextField getPasswordControl() {
+    //    ClearableTextField textField = new ClearableTextField();
+    //    textField.setFlexWidth("100% - 12");
+    //    textField.setValue(this.getPassword());
+    //    textField.addTextChangeListener((obs, o, n) -> this.setPassword(n));
+    //    TableViewUtil.selectRowOnMouseClicked(textField);
+    //    return textField;
+    //}
 
     /**
      * 状态控件
@@ -182,9 +177,10 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
     public FXToggleSwitch getStatusControl() {
         EnabledToggleSwitch toggleSwitch = new EnabledToggleSwitch();
         toggleSwitch.setFontSize(11);
-        toggleSwitch.setSelected(this.getEnable());
+        toggleSwitch.setSelected(this.isEnable());
         toggleSwitch.selectedChanged((abs, o, n) -> {
             this.setEnable(n);
+            ShellZKAuthStore.INSTANCE.replace(this);
         });
         return toggleSwitch;
     }

@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * zk客户端封装
@@ -133,10 +134,10 @@ public class ShellZKClient implements ShellBaseClient {
     // */
     //private volatile ShellZKTreeListener cacheListener;
 
-    /**
-     * 认证列表
-     */
-    private List<ShellZKAuth> auths;
+    ///**
+    // * 认证列表
+    // */
+    //private List<ShellZKAuth> auths;
 
     ///**
     // * 静默关闭标志位
@@ -462,10 +463,10 @@ public class ShellZKClient implements ShellBaseClient {
 //        }
         // 连接信息
         String host = this.initHost();
-        // 加载认证
-        this.auths = ShellZKAuthUtil.loadAuths(this.iid());
+        //// 加载认证
+        //this.auths = ShellZKAuthUtil.loadAuths(this.iid());
         // 认证信息列表
-        List<AuthInfo> authInfos = ShellZKAuthUtil.toAuthInfo(auths);
+        List<AuthInfo> authInfos = ShellZKAuthUtil.toAuthInfo(this.getEnabledAuths());
         JulLog.info("auto authorization, auths: {}.", authInfos);
         // 重试策略
         if (this.retryPolicy == null) {
@@ -473,6 +474,7 @@ public class ShellZKClient implements ShellBaseClient {
         }
         // 创建客户端
         this.framework = ShellZKClientUtil.build(
+                host,
                 this.shellConnect,
                 this.retryPolicy,
                 authInfos,
@@ -502,8 +504,8 @@ public class ShellZKClient implements ShellBaseClient {
         try {
             //// 关闭树监听
             //this.closeTreeCache();
-            // 清理变量
-            this.auths = null;
+            //// 清理变量
+            //this.auths = null;
             // 销毁端口转发
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
@@ -591,8 +593,10 @@ public class ShellZKClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = this.state.get();
-        return state != null && state.isConnected();
+        if (this.framework == null || this.framework.getState() != CuratorFrameworkState.STARTED) {
+            return false;
+        }
+        return this.getState().isConnected();
     }
 
     /**
@@ -1721,7 +1725,7 @@ public class ShellZKClient implements ShellBaseClient {
      */
     public boolean isAuthed(ShellZKAuth auth) {
         if (auth != null) {
-            for (ShellZKAuth auth1 : this.auths) {
+            for (ShellZKAuth auth1 : this.getAuths()) {
                 if (auth1.compare(auth)) {
                     return true;
                 }
@@ -1738,7 +1742,7 @@ public class ShellZKClient implements ShellBaseClient {
      */
     public void setAuthed(String user, String password) {
         if (user != null && password != null) {
-            this.auths.add(new ShellZKAuth(this.iid(), user, password));
+            this.addAuth(new ShellZKAuth(this.iid(), user, password));
         }
     }
 
@@ -1749,9 +1753,9 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isAnyAuthed(List<ZKACL> aclList) {
-        if (CollectionUtil.isNotEmpty(aclList) && CollectionUtil.isNotEmpty(this.auths)) {
+        if (CollectionUtil.isNotEmpty(aclList) && CollectionUtil.isNotEmpty(this.getAuths())) {
             for (ZKACL zkacl : aclList) {
-                for (ShellZKAuth auth : this.auths) {
+                for (ShellZKAuth auth : this.getAuths()) {
                     if (auth.digest().equals(zkacl.idVal())) {
                         return true;
                     }
@@ -1787,7 +1791,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isDigestAuthed(String digestVal) {
-        for (ShellZKAuth auth : this.auths) {
+        for (ShellZKAuth auth : this.getAuths()) {
             if (auth.digest().equals(digestVal)) {
                 return true;
             }
@@ -1909,5 +1913,41 @@ public class ShellZKClient implements ShellBaseClient {
         };
         zkClient.start();
         return zkClient;
+    }
+
+    /**
+     * 获取认证
+     *
+     * @return 认证列表
+     */
+    public List<ShellZKAuth> getAuths() {
+        return this.getShellConnect().getAuths();
+    }
+
+    /**
+     * 添加认证
+     *
+     * @param auth 认证
+     */
+    public void addAuth(ShellZKAuth auth) {
+        this.getShellConnect().addAuth(auth);
+    }
+
+    /**
+     * 移除认证
+     *
+     * @param auth 认证
+     */
+    public void removeAuth(ShellZKAuth auth) {
+        this.getAuths().remove(auth);
+    }
+
+    /**
+     * 获取启用的认证
+     *
+     * @return 启用的认证
+     */
+    public List<ShellZKAuth> getEnabledAuths() {
+        return this.getAuths().stream().filter(ShellZKAuth::isEnable).collect(Collectors.toList());
     }
 }

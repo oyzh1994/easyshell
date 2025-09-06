@@ -1,11 +1,8 @@
 package cn.oyzh.easyshell.util.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import org.apache.curator.framework.AuthInfo;
@@ -104,21 +101,21 @@ public class ShellZKAuthUtil {
     //     return auths;
     // }
 
-    /**
-     * 加载认证信息
-     *
-     * @param iid 连接id
-     * @return 认证信息列表
-     * @see cn.oyzh.easyshell.domain.ShellConnect
-     */
-    public static List<ShellZKAuth> loadAuths(String iid) {
-        if (StringUtil.isNotBlank(iid)) {
-            if (ShellSettingStore.SETTING.isAutoAuth()) {
-                return ShellZKAuthStore.INSTANCE.loadEnable(iid);
-            }
-        }
-        return Collections.emptyList();
-    }
+    ///**
+    // * 加载认证信息
+    // *
+    // * @param iid 连接id
+    // * @return 认证信息列表
+    // * @see cn.oyzh.easyshell.domain.ShellConnect
+    // */
+    //public static List<ShellZKAuth> loadAuths(String iid) {
+    //    if (StringUtil.isNotBlank(iid)) {
+    //        if (ShellSettingStore.SETTING.isAutoAuth()) {
+    //            return ShellZKAuthStore.INSTANCE.loadEnable(iid);
+    //        }
+    //    }
+    //    return Collections.emptyList();
+    //}
 
     // /**
     //  * 设置认证信息为已认证

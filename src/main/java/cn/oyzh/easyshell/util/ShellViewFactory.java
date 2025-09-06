@@ -80,6 +80,7 @@ import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.controller.zk.acl.ShellZKAddACLController;
 import cn.oyzh.easyshell.controller.zk.acl.ShellZKUpdateACLController;
+import cn.oyzh.easyshell.controller.zk.auth.ShellZKAddAuthController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKExportDataController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKImportDataController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKTransportDataController;
@@ -1666,6 +1667,7 @@ public class ShellViewFactory {
 
     /**
      * 修改跳板机
+     *
      * @param config 配置
      * @return 页面
      */
@@ -1673,6 +1675,25 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class, StageManager.getFrontWindow());
             adapter.setProp("config", config);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 新增zk认证
+     *
+     * @param connect 连接
+     * @return 页面
+     */
+    public static StageAdapter zkAuthAdd(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
+            adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {

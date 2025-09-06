@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.zk;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
+import cn.oyzh.easyshell.tabs.zk.auth.ShellZKAuthTabController;
 import cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController;
 import cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController;
 import cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController;
@@ -41,6 +42,12 @@ public class ShellZKTabController extends ShellParentTabController {
     private ShellZKQueryTabController queryController;
 
     /**
+     * 认证
+     */
+    @FXML
+    private ShellZKAuthTabController authController;
+
+    /**
      * 服务
      */
     @FXML
@@ -57,6 +64,7 @@ public class ShellZKTabController extends ShellParentTabController {
         return List.of(
                 this.nodeController,
                 this.queryController,
+                this.authController,
                 this.serverController,
                 this.terminalController
         );
@@ -81,6 +89,7 @@ public class ShellZKTabController extends ShellParentTabController {
                 }
                 this.hideLeft();
                 this.nodeController.init(this.client);
+                this.authController.init(this.client);
                 this.queryController.init(this.client);
                 this.serverController.init(this.client);
                 this.terminalController.init(this.client.forkClient());

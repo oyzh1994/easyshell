@@ -7,5 +7,6 @@
     <fx:include fx:id="node" source="node/shellZKNodeTab.fxml"/>
     <fx:include fx:id="server" source="server/shellZKServerTab.fxml"/>
     <fx:include fx:id="query" source="query/shellZKQueryTab.fxml"/>
+    <fx:include fx:id="auth" source="auth/shellZKAuthTab.fxml"/>
     <fx:include fx:id="terminal" source="terminal/shellZKTerminalTab.fxml"/>
 </FXTabPane>

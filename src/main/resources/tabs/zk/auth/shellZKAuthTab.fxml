@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKAuthTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.zk.AuditSVGGlyph?>
+<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.zk.auth.ShellZKAuthTabController"
+       text="%base.auth">
+    <graphic>
+        <AuditSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox realHeight="50" flexWidth="100%">
+            <ClearableTextField realHeight="26" fx:id="authSearchKW" realWidth="280"
+                                tipText="%base.searchKWTip">
+                <HBox.margin>
+                    <Insets left="30" top="14"/>
+                </HBox.margin>
+            </ClearableTextField>
+            <AddSVGGlyph tipText="%base.add" size="16" onMousePrimaryClicked="#addAuth">
+                <HBox.margin>
+                    <Insets left="5" top="18"/>
+                </HBox.margin>
+            </AddSVGGlyph>
+            <DeleteSVGGlyph tipText="%base.delete" size="16" onMousePrimaryClicked="#deleteAuth">
+                <HBox.margin>
+                    <Insets left="5" top="18"/>
+                </HBox.margin>
+            </DeleteSVGGlyph>
+            <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyAuth">
+                <HBox.margin>
+                    <Insets left="5" top="18"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+        </FXHBox>
+        <ShellZKAuthTableView flexHeight="100% - 50" flexWidth="100% - 50" fx:id="authTable"
+                              copyCellDataOnDoubleClicked="true">
+            <columns>
+                <FXTableColumn flexWidth="35%" text="%base.userName" valueName="user"/>
+                <FXTableColumn flexWidth="45%" text="%base.password" valueName="password"
+                               sortable="false"/>
+                <FXTableColumn flexWidth="20% - 12" text="%base.status" valueName="statusControl"
+                               sortable="false"/>
+            </columns>
+            <VBox.margin>
+                <Insets left="30"/>
+            </VBox.margin>
+        </ShellZKAuthTableView>
+    </FXVBox>
+</FXTab>

@@ -5,9 +5,7 @@ import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.store.jdbc.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.QueryParam;
-import cn.oyzh.store.jdbc.SelectParam;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,30 +30,26 @@ public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
      * @return 数据列表
      * @see cn.oyzh.easyshell.domain.ShellConnect
      */
-    public List<ShellZKAuth> load(String iid) {
-        return super.selectList(QueryParam.of("iid", iid));
-    }
-
     public List<ShellZKAuth> loadByIid(String iid) {
         return super.selectList(QueryParam.of("iid", iid));
     }
 
-    /**
-     * 加载已启用的数据列表
-     *
-     * @param iid zk连接id
-     * @return 已启用的数据列表
-     * @see cn.oyzh.easyshell.domain.ShellConnect
-     */
-    public List<ShellZKAuth> loadEnable(String iid) {
-        if (StringUtil.isEmpty(iid)) {
-            return Collections.emptyList();
-        }
-        SelectParam selectParam = new SelectParam();
-        selectParam.addQueryParam(QueryParam.of("enable", 1));
-        selectParam.addQueryParam(QueryParam.of("iid", iid));
-        return super.selectList(selectParam);
-    }
+    ///**
+    // * 加载已启用的数据列表
+    // *
+    // * @param iid zk连接id
+    // * @return 已启用的数据列表
+    // * @see cn.oyzh.easyshell.domain.ShellConnect
+    // */
+    //public List<ShellZKAuth> loadEnable(String iid) {
+    //    if (StringUtil.isEmpty(iid)) {
+    //        return Collections.emptyList();
+    //    }
+    //    SelectParam selectParam = new SelectParam();
+    //    selectParam.addQueryParam(QueryParam.of("enable", 1));
+    //    selectParam.addQueryParam(QueryParam.of("iid", iid));
+    //    return super.selectList(selectParam);
+    //}
 
     /**
      * 替换

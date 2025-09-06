@@ -39,7 +39,6 @@ public class ShellZKTerminalTabController extends RichTabController {
      */
     public void init(ShellZKClient client) {
         this.client = client;
-        // this.terminal.init(client);
     }
 
     /**
@@ -48,7 +47,7 @@ public class ShellZKTerminalTabController extends RichTabController {
      * @return zk客户端
      */
     public ShellZKClient client() {
-        return this.terminal.getClient();
+        return this.client;
     }
 
     /**
@@ -57,7 +56,7 @@ public class ShellZKTerminalTabController extends RichTabController {
      * @return zk信息
      */
     public ShellConnect shellConnect() {
-        return this.terminal.shellConnect();
+        return this.client.getShellConnect();
     }
 
     // @Override
