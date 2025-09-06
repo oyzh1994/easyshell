@@ -356,32 +356,33 @@ public class ShellZKNodeTabController extends ParentTabController {
         }
         // 节点被移除
         String nodePath = this.activeItem.nodePath();
-        if (this.activeItem.isBeDeleted()) {
-            if (!this.activeItem.isIgnoreDeleted()) {
-                if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip2())) {
-                    this.activeItem.remove();
-                } else {
-                    this.activeItem.doIgnoreDeleted();
-                }
-            }
-        } else if (this.activeItem.isBeChanged()) { // 节点被更新
-            if (!this.activeItem.isIgnoreChanged()) {
-                if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip1())) {
-                    this.refreshItem();
-                } else {
-                    this.activeItem.doIgnoreChanged();
-                }
-            }
-        } else if (this.activeItem.isBeChildChanged()) { // 子节点被更新
-            if (!this.activeItem.isIgnoreChildChanged()) {
-                if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip5())) {
-                    this.activeItem.reloadChild();
-                    this.activeItem.clearBeChildChanged();
-                } else {
-                    this.activeItem.doIgnoreChildChanged();
-                }
-            }
-        } else if (this.activeItem.isNeedAuth()) { // 需要认证
+        //if (this.activeItem.isBeDeleted()) {
+        //    if (!this.activeItem.isIgnoreDeleted()) {
+        //        if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip2())) {
+        //            this.activeItem.remove();
+        //        } else {
+        //            this.activeItem.doIgnoreDeleted();
+        //        }
+        //    }
+        //} else if (this.activeItem.isBeChanged()) { // 节点被更新
+        //    if (!this.activeItem.isIgnoreChanged()) {
+        //        if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip1())) {
+        //            this.refreshItem();
+        //        } else {
+        //            this.activeItem.doIgnoreChanged();
+        //        }
+        //    }
+        //} else if (this.activeItem.isBeChildChanged()) { // 子节点被更新
+        //    if (!this.activeItem.isIgnoreChildChanged()) {
+        //        if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip5())) {
+        //            this.activeItem.reloadChild();
+        //            this.activeItem.clearBeChildChanged();
+        //        } else {
+        //            this.activeItem.doIgnoreChildChanged();
+        //        }
+        //    }
+        //}
+        if (this.activeItem.isNeedAuth()) { // 需要认证
             if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip6())) {
                 this.activeItem.authNode();
             }

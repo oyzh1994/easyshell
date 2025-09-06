@@ -56,113 +56,113 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         this.value = value;
     }
 
-    /**
-     * 设置节点变更
-     */
-    public void setBeChanged() {
-        this.bitValue().set(8, true);
-        this.refresh();
-    }
+    ///**
+    // * 设置节点变更
+    // */
+    //public void setBeChanged() {
+    //    this.bitValue().set(8, true);
+    //    this.refresh();
+    //}
 
-    /**
-     * 是否变更
-     *
-     * @return 结果
-     */
-    public boolean isBeChanged() {
-        return this.bitValue != null && this.bitValue().get(8);
-    }
+    ///**
+    // * 是否变更
+    // *
+    // * @return 结果
+    // */
+    //public boolean isBeChanged() {
+    //    return this.bitValue != null && this.bitValue().get(8);
+    //}
+    //
+    ///**
+    // * 设置节点删除
+    // */
+    //public void setBeDeleted() {
+    //    this.bitValue().set(9, true);
+    //    this.refresh();
+    //}
 
-    /**
-     * 设置节点删除
-     */
-    public void setBeDeleted() {
-        this.bitValue().set(9, true);
-        this.refresh();
-    }
+    ///**
+    // * 是否删除
+    // *
+    // * @return 结果
+    // */
+    //public boolean isBeDeleted() {
+    //    return this.bitValue != null && this.bitValue().get(9);
+    //}
+    //
+    ///**
+    // * 设置节点变化
+    // */
+    //public void setBeChildChanged() {
+    //    this.bitValue().set(10, true);
+    //    this.refresh();
+    //}
+    //
+    ///**
+    // * 是否子节点变化
+    // *
+    // * @return 结果
+    // */
+    //public boolean isBeChildChanged() {
+    //    return this.bitValue != null && this.bitValue().get(10);
+    //}
 
-    /**
-     * 是否删除
-     *
-     * @return 结果
-     */
-    public boolean isBeDeleted() {
-        return this.bitValue != null && this.bitValue().get(9);
-    }
-
-    /**
-     * 设置节点变化
-     */
-    public void setBeChildChanged() {
-        this.bitValue().set(10, true);
-        this.refresh();
-    }
-
-    /**
-     * 是否子节点变化
-     *
-     * @return 结果
-     */
-    public boolean isBeChildChanged() {
-        return this.bitValue != null && this.bitValue().get(10);
-    }
-
-    /**
-     * 清除子节点变化
-     */
-    public void clearBeChildChanged() {
-        if (this.bitValue != null) {
-            this.bitValue.set(10, false);
-        }
-    }
-
-    /**
-     * 设置忽略变化
-     */
-    public void doIgnoreChanged() {
-        this.bitValue().set(11, true);
-    }
-
-    /**
-     * 是否忽略变化
-     *
-     * @return 结果
-     */
-    public boolean isIgnoreChanged() {
-        return this.bitValue != null && this.bitValue().get(11);
-    }
-
-    /**
-     * 设置忽略删除
-     */
-    public void doIgnoreDeleted() {
-        this.bitValue().set(12, true);
-    }
-
-    /**
-     * 是否忽略删除
-     *
-     * @return 结果
-     */
-    public boolean isIgnoreDeleted() {
-        return this.bitValue != null && this.bitValue().get(12);
-    }
-
-    /**
-     * 设置忽略子节点变化
-     */
-    public void doIgnoreChildChanged() {
-        this.bitValue().set(13, true);
-    }
-
-    /**
-     * 是否忽略子节点变化
-     *
-     * @return 结果
-     */
-    public boolean isIgnoreChildChanged() {
-        return this.bitValue != null && this.bitValue().get(13);
-    }
+    ///**
+    // * 清除子节点变化
+    // */
+    //public void clearBeChildChanged() {
+    //    if (this.bitValue != null) {
+    //        this.bitValue.set(10, false);
+    //    }
+    //}
+    //
+    ///**
+    // * 设置忽略变化
+    // */
+    //public void doIgnoreChanged() {
+    //    this.bitValue().set(11, true);
+    //}
+    //
+    ///**
+    // * 是否忽略变化
+    // *
+    // * @return 结果
+    // */
+    //public boolean isIgnoreChanged() {
+    //    return this.bitValue != null && this.bitValue().get(11);
+    //}
+    //
+    ///**
+    // * 设置忽略删除
+    // */
+    //public void doIgnoreDeleted() {
+    //    this.bitValue().set(12, true);
+    //}
+    //
+    ///**
+    // * 是否忽略删除
+    // *
+    // * @return 结果
+    // */
+    //public boolean isIgnoreDeleted() {
+    //    return this.bitValue != null && this.bitValue().get(12);
+    //}
+    //
+    ///**
+    // * 设置忽略子节点变化
+    // */
+    //public void doIgnoreChildChanged() {
+    //    this.bitValue().set(13, true);
+    //}
+    //
+    ///**
+    // * 是否忽略子节点变化
+    // *
+    // * @return 结果
+    // */
+    //public boolean isIgnoreChildChanged() {
+    //    return this.bitValue != null && this.bitValue().get(13);
+    //}
 
     /**
      * 设置是否需要认证

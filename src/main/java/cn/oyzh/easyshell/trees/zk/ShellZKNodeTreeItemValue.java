@@ -89,15 +89,16 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
     @Override
     public Color graphicColor() {
         Color color;
-        // 节点已删除
-        if (this.item().isBeDeleted()) {
-            color = Color.RED;
-        } else if (this.item().isDataUnsaved()) { // 节点数据未保存
+        //// 节点已删除
+        //if (this.item().isBeDeleted()) {
+        //    color = Color.RED;
+        //} 
+        if (this.item().isDataUnsaved()) { // 节点数据未保存
             color = Color.ORANGE;
-        } else if (this.item().isBeChanged()) { // 节点已更新
-            color = Color.PURPLE;
-        } else if (this.item().isBeChildChanged()) {// 子节点已更新
-            color = Color.BROWN;
+        //} else if (this.item().isBeChanged()) { // 节点已更新
+        //    color = Color.PURPLE;
+        //} else if (this.item().isBeChildChanged()) {// 子节点已更新
+        //    color = Color.BROWN;
         } else {
             color = super.graphicColor();
         }
