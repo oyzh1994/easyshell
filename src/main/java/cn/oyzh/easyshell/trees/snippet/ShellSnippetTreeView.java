@@ -1,11 +1,15 @@
 package cn.oyzh.easyshell.trees.snippet;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
@@ -23,6 +27,11 @@ import java.util.function.Consumer;
  */
 public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapter {
 
+    /**
+     * 片段存储
+     */
+    private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
+
     @Override
     protected void initTreeView() {
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new RichTreeCell<>());
@@ -37,9 +46,9 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
     }
 
     /**
-     * 新回调
+     * 新增回调
      */
-    private Runnable addCallback;
+    private Consumer<ShellSnippet> addCallback;
 
     /**
      * 编辑回调
@@ -51,11 +60,11 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
      */
     private Consumer<ShellSnippet> deleteCallback;
 
-    public Runnable getAddCallback() {
+    public Consumer<ShellSnippet> getAddCallback() {
         return addCallback;
     }
 
-    public void setAddCallback(Runnable addCallback) {
+    public void setAddCallback(Consumer<ShellSnippet> addCallback) {
         this.addCallback = addCallback;
     }
 
@@ -81,7 +90,15 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
      */
     public void addSnippet( ) {
         if (this.addCallback != null) {
-            this.addCallback.run();
+            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            if (StringUtil.isBlank(name)) {
+                return;
+            }
+            ShellSnippet snippet = new ShellSnippet();
+            snippet.setName(name);
+            this.addSnippet(snippet);
+            this.snippetStore.insert(snippet);
+            this.addCallback.accept(snippet);
         }
     }
 

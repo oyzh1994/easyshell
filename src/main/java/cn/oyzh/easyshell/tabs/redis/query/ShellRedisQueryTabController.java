@@ -90,6 +90,11 @@ public class ShellRedisQueryTabController extends SubTabController {
         return this.client.shellConnect();
     }
 
+    /**
+     * 初始化
+     *
+     * @param client 客户端
+     */
     public void init(ShellRedisClient client) {
         this.client = client;
         this.content.setClient(client);
@@ -114,6 +119,7 @@ public class ShellRedisQueryTabController extends SubTabController {
             //this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 
@@ -132,7 +138,7 @@ public class ShellRedisQueryTabController extends SubTabController {
 
 
     /**
-     * 运行
+     * 运行查询
      */
     @FXML
     private void run() {
@@ -160,7 +166,7 @@ public class ShellRedisQueryTabController extends SubTabController {
     }
 
     /**
-     * 内容键入事件
+     * 内容按键事件
      *
      * @param event 事件
      */
@@ -229,9 +235,9 @@ public class ShellRedisQueryTabController extends SubTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.queryTreeView.setRealWidth(newWidth);
-            this.rightBox.setLayoutX(newWidth);
+            //this.rightBox.setLayoutX(newWidth);
             this.rightBox.setFlexWidth("100% - " + newWidth);
-            this.queryTreeView.parentAutosize();
+            //this.queryTreeView.parentAutosize();
         }
     }
 

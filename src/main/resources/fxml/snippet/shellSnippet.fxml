@@ -9,14 +9,16 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXHBox  xmlns:fx="http://javafx.com/fxml/1"
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<FXHBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.snippet.ShellSnippetController" realWidth="600"
         realHeight="260">
     <ShellSnippetTreeView fx:id="snippetTreeView" realWidth="140" flexHeight="100%">
 
     </ShellSnippetTreeView>
-    <FXVBox flexWidth="100% - 240" flexHeight="100%">
-        <ShellSnippetEditor onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%" flexHeight="100% - 40">
+    <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
+        <ShellSnippetEditor onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%"
+                            flexHeight="100% - 40">
 
         </ShellSnippetEditor>
         <FXHBox realHeight="40">
@@ -47,7 +49,7 @@
             </FXCheckBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox realWidth="100" flexHeight="1005">
+    <FXVBox realWidth="100" flexHeight="100%">
         <TipsLabel text="\\r = CR">
             <FXVBox.margin>
                 <Insets left="5" top="10"/>

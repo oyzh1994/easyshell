@@ -100,7 +100,7 @@ public class ShellMainController extends ParentStageController {
             this.tabPaneLeft.setRealWidth(newWidth);
             this.tabPane.setLayoutX(newWidth);
             this.tabPane.setFlexWidth("100% - " + newWidth);
-            this.tabPaneLeft.parentAutosize();
+            //this.tabPaneLeft.parentAutosize();
         }
     }
 

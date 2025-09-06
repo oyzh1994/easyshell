@@ -112,11 +112,6 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
     }
 
     @Override
-    public boolean allowDrag() {
-        return true;
-    }
-
-    @Override
     public void onPrimaryDoubleClick() {
         this.getTreeView().editQuery(this.value);
     }

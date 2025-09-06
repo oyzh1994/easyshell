@@ -205,13 +205,27 @@
 		"version": "v1.1.2",
 		"date": "2025-09-04",
 		"features": [
-			"1. 新增redis协议的支持"
+			"1. 新增redis协议的支持",
+			"2. redis协议新增代理支持"
 		],
 		"bugfix": [
 			"1. 修复终端点击滚动条会导致选区选中的问题"
 		],
 		"optimize": [
 			"1. 跳板机连接默认ssh过滤"
+		]
+	},
+	{
+		"version": "v1.1.3",
+		"date": "2025-09-06",
+		"features": [
+			"1. 新增zookeeper协议的支持",
+			"2. zookeeper协议新增代理支持"
+		],
+		"bugfix": [
+		],
+		"optimize": [
+			"1. 片段编辑体验优化"
 		]
 	}
 ]

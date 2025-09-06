@@ -88,8 +88,10 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      * @param data 数据
      */
     public void deleteData(ShellZKHistoryData data) {
-        ShellZKDataUtil.deleteHistory(this.nodePath, data.getSaveTime(), this.client);
-        this.removeItem(data);
+        if (MessageBox.confirm(I18nHelper.deleteHistory())) {
+            ShellZKDataUtil.deleteHistory(this.nodePath, data.getSaveTime(), this.client);
+            this.removeItem(data);
+        }
     }
 
     /**

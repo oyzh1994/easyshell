@@ -9,14 +9,16 @@ import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeItem;
 import cn.oyzh.easyshell.trees.snippet.ShellSnippetTreeView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -65,6 +67,12 @@ public class ShellSnippetController extends StageController {
     private ShellSnippetTreeView snippetTreeView;
 
     /**
+     * 右侧组件
+     */
+    @FXML
+    private FXVBox rightBox;
+
+    /**
      * 片段存储
      */
     private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
@@ -73,11 +81,6 @@ public class ShellSnippetController extends StageController {
      * 当前片段
      */
     private ShellSnippet snippet;
-
-    @Override
-    protected void bindListeners() {
-        super.bindListeners();
-    }
 
     @Override
     public void onWindowShown(WindowEvent event) {
@@ -89,6 +92,49 @@ public class ShellSnippetController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.snippet();
+    }
+
+    /**
+     * 保存片段
+     */
+    @FXML
+    private void save() {
+        try {
+            //if (this.snippet == null) {
+            //    this.snippet = new ShellSnippet();
+            //}
+            //String name = this.snippet.getName();
+            //if (StringUtil.isBlank(name)) {
+            //    name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            //    if (StringUtil.isBlank(name)) {
+            //        return;
+            //    }
+            //}
+            //this.snippet.setName(name);
+            //boolean isNew = this.snippet.getId() == null;
+            //if (this.snippetStore.replace(this.snippet) && isNew) {
+            //    this.snippetTreeView.addSnippet(this.snippet);
+            //}
+            this.snippet.setContent(this.content.getText());
+            this.snippetStore.update(this.snippet);
+            this.setUnsaved(false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 设置未保存状态
+     *
+     * @param unsaved 未保存状态
+     */
+    private void setUnsaved(boolean unsaved) {
+        TreeItem<?> item = this.snippetTreeView.getSelectedItem();
+        if (item instanceof ShellSnippetTreeItem queryTreeItem) {
+            queryTreeItem.setUnsaved(unsaved);
+            queryTreeItem.refresh();
+        }
     }
 
     /**
@@ -120,45 +166,61 @@ public class ShellSnippetController extends StageController {
     }
 
     /**
-     * 保存片段
+     * 内容按键事件
+     *
+     * @param e 事件
      */
     @FXML
-    private void save() {
-        if (this.snippet == null) {
-            this.snippet = new ShellSnippet();
-        }
-        String name = this.snippet.getName();
-        if (StringUtil.isBlank(name)) {
-            name = MessageBox.prompt(I18nHelper.pleaseInputName());
-            if (StringUtil.isBlank(name)) {
-                return;
-            }
-        }
-        this.snippet.setName(name);
-        this.snippet.setContent(this.content.getText());
-        boolean isNew = this.snippet.getId() == null;
-        if (this.snippetStore.replace(this.snippet) && isNew) {
-            this.snippetTreeView.addSnippet(this.snippet);
+    private void contentKeyPressed(KeyEvent e) {
+        if (KeyboardUtil.isCtrlS(e)) {
+            this.save();
+        } else if (KeyboardUtil.isCtrlR(e)) {
+            this.run();
         }
     }
 
     @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
+    protected void bindListeners() {
+        super.bindListeners();
+        // 监听内容变化
+        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
+            if (this.snippet != null && !StringUtil.equals(newValue, this.snippet.getContent())) {
+                this.setUnsaved(true);
+            }
+        });
         // 片段选择事件
         this.snippetTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
             if (t1 instanceof ShellSnippetTreeItem item) {
                 this.doEdit(item.value());
+                this.stage.appendTitle("-" + item.snippetName());
             } else {
                 this.doEdit(null);
+                this.stage.restoreTitle();
             }
         });
+        // 片段新增回调
+        this.snippetTreeView.setAddCallback(this::doEdit);
         // 片段编辑回调
         this.snippetTreeView.setEditCallback(this::doEdit);
         // 片段删除回调
         this.snippetTreeView.setDeleteCallback(this::doDelete);
-        // 片段新增回调
-        this.snippetTreeView.setAddCallback(() -> this.doEdit(null));
+        // 拉伸辅助
+        NodeWidthResizer resizer = new NodeWidthResizer(this.snippetTreeView, Cursor.DEFAULT, this::resizeLeft);
+        resizer.widthLimit(140f, 350f);
+        resizer.initResizeEvent();
+    }
+
+    /**
+     * 左侧组件重新布局
+     *
+     * @param newWidth 新宽度
+     */
+    private void resizeLeft(Float newWidth) {
+        if (newWidth != null && !Float.isNaN(newWidth)) {
+            // 设置组件宽
+            this.snippetTreeView.setRealWidth(newWidth);
+            this.rightBox.setFlexWidth("100% - " + (newWidth+100));
+        }
     }
 
     /**
@@ -170,10 +232,10 @@ public class ShellSnippetController extends StageController {
         this.snippet = snippet;
         if (snippet == null) {
             this.content.clear();
-            this.stage.restoreTitle();
+            //this.stage.restoreTitle();
         } else {
             this.content.setText(snippet.getContent());
-            this.stage.appendTitle("-" + snippet.getName());
+            //this.stage.appendTitle("-" + snippet.getName());
         }
     }
 
@@ -186,21 +248,7 @@ public class ShellSnippetController extends StageController {
         if (snippet == this.snippet) {
             this.snippet = null;
             this.content.clear();
-            this.stage.restoreTitle();
-        }
-    }
-
-    /**
-     * 内容按键事件
-     *
-     * @param e 事件
-     */
-    @FXML
-    private void contentKeyPressed(KeyEvent e) {
-        if (KeyboardUtil.isCtrlS(e)) {
-            this.save();
-        } else if (KeyboardUtil.isCtrlR(e)) {
-            this.run();
+            //this.stage.restoreTitle();
         }
     }
 }

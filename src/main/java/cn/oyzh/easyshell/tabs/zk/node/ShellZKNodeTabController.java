@@ -1005,9 +1005,9 @@ public class ShellZKNodeTabController extends ParentTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.leftBox.setRealWidth(newWidth);
-            this.tabPane.setLayoutX(newWidth);
+            //this.tabPane.setLayoutX(newWidth);
             this.tabPane.setFlexWidth("100% - " + newWidth);
-            this.leftBox.parentAutosize();
+            //this.leftBox.parentAutosize();
         }
     }
 

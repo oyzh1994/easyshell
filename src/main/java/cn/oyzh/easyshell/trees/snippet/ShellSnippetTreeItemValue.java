@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.trees.snippet;
 import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.scene.paint.Color;
 
 /**
  * shell代码片段节点值
@@ -33,5 +34,21 @@ public class ShellSnippetTreeItemValue extends RichTreeItemValue {
             this.graphic = new SnippetSVGGlyph("12");
         }
         return super.graphic();
+    }
+
+    @Override
+    public String extra() {
+        if (this.item().isUnsaved()) {
+            return " *";
+        }
+        return super.extra();
+    }
+
+    @Override
+    public Color extraColor() {
+        if (this.item().isUnsaved()) {
+            return Color.RED;
+        }
+        return super.extraColor();
     }
 }

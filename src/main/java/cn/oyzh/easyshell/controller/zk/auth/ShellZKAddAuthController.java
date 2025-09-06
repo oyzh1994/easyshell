@@ -76,11 +76,18 @@ public class ShellZKAddAuthController extends StageController {
                 MessageBox.warn(I18nHelper.contentAlreadyExists());
                 return;
             }
-            ShellZKAuth auth = new ShellZKAuth(this.connect.getId(), user, password);
+            String iid = this.connect.getId();
+            // 检查是否存在
+            if (this.authStore.exist(user, password, iid)) {
+                MessageBox.warn(I18nHelper.authAlreadyExists());
+                return;
+            }
+            ShellZKAuth auth = new ShellZKAuth(iid, user, password);
             auth.setEnable(this.status.isSelected());
             if (this.authStore.replace(auth)) {
                 this.setProp("auth", auth);
-                this.connect.addAuth(auth);
+                //System.out.println(this.connect.getAuths().contains(auth));
+                //this.connect.addAuth(auth);
                 //MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {

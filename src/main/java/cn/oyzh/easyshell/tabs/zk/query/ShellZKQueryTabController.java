@@ -106,6 +106,7 @@ public class ShellZKQueryTabController extends RichTabController {
             //this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 
@@ -122,6 +123,9 @@ public class ShellZKQueryTabController extends RichTabController {
         }
     }
 
+    /**
+     * 运行查询
+     */
     @FXML
     private void run() {
         StageManager.showMask(() -> {
@@ -226,7 +230,7 @@ public class ShellZKQueryTabController extends RichTabController {
     }
 
     /**
-     * 内容键入事件
+     * 内容按键事件
      *
      * @param event 事件
      */
@@ -288,9 +292,9 @@ public class ShellZKQueryTabController extends RichTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.queryTreeView.setRealWidth(newWidth);
-            this.rightBox.setLayoutX(newWidth);
+            //this.rightBox.setLayoutX(newWidth);
             this.rightBox.setFlexWidth("100% - " + newWidth);
-            this.queryTreeView.parentAutosize();
+            //this.queryTreeView.parentAutosize();
         }
     }
 
