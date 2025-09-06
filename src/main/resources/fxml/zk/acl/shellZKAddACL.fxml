@@ -17,6 +17,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.zk.ShellZKAuthComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.zk.acl.ShellZKAddACLController" realWidth="600" realHeight="420">
     <InfoLabel text="%base.path">
@@ -127,11 +128,11 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <FXComboBox fx:id="digestInfo3" realHeight="30" flexWidth="100% - 140">
+        <ShellZKAuthComboBox fx:id="digestInfo3" realHeight="30" flexWidth="100% - 140">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
-        </FXComboBox>
+        </ShellZKAuthComboBox>
     </FXVBox>
     <FXVBox flexWidth="100%" managedBindVisible="true" visible="false" fx:id="ip1ACL">
         <InfoLabel text="%base.ipAddr">

@@ -437,8 +437,11 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             if (adapter == null) {
                 return;
             }
-            boolean success = adapter.getProp("success");
             ShellZKAuth auth = adapter.getProp("auth");
+            if (auth == null) {
+                return;
+            }
+            boolean success = adapter.getProp("success");
             if (success) {
                 this.getTreeView().authChanged(auth);
             }

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.zk.node;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
+import cn.oyzh.easyshell.fx.zk.ShellZKAuthComboBox;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
@@ -14,7 +15,6 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
-import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeMutexes;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -97,7 +97,7 @@ public class ShellZKAuthNodeController extends StageController {
      * 认证信息列表
      */
     @FXML
-    private FXComboBox<ShellZKAuth> authList;
+    private ShellZKAuthComboBox authList;
 
     /**
      * 认证储存
@@ -214,19 +214,19 @@ public class ShellZKAuthNodeController extends StageController {
         List<ShellZKAuth> authList = client.getAuths();
         if (CollectionUtil.isNotEmpty(authList)) {
             this.authList.addItems(authList);
-            this.authList.setConverter(new SimpleStringConverter<>() {
-                @Override
-                public String toString(ShellZKAuth auth) {
-                    String text = "";
-                    if (auth != null) {
-                        text = auth.getUser() + ":" + auth.getPassword();
-                        if (client.isAuthed(auth)) {
-                            text += " (" + I18nHelper.authed() + ")";
-                        }
-                    }
-                    return text;
-                }
-            });
+            //this.authList.setConverter(new SimpleStringConverter<>() {
+            //    @Override
+            //    public String toString(ShellZKAuth auth) {
+            //        String text = "";
+            //        if (auth != null) {
+            //            text = auth.getUser() + ":" + auth.getPassword();
+            //            if (client.isAuthed(auth)) {
+            //                text += " (" + I18nHelper.authed() + ")";
+            //            }
+            //        }
+            //        return text;
+            //    }
+            //});
             this.authList.selectFirst();
         }
         // 设置一个摘要用户名

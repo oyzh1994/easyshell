@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.fx.zk.ShellZKAuthComboBox;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
@@ -20,7 +21,6 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
-import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeMutexes;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -141,7 +141,7 @@ public class ShellZKAddACLController extends StageController {
      * 摘要信息3，已有账密
      */
     @FXML
-    private FXComboBox<ShellZKAuth> digestInfo3;
+    private ShellZKAuthComboBox digestInfo3;
 
     /**
      * 摘要信息
@@ -525,15 +525,15 @@ public class ShellZKAddACLController extends StageController {
         List<ShellZKAuth> authList = this.zkClient.getAuths();
         if (CollectionUtil.isNotEmpty(authList)) {
             this.digestInfo3.addItems(authList);
-            this.digestInfo3.setConverter(new SimpleStringConverter<>() {
-                @Override
-                public String toString(ShellZKAuth auth) {
-                    if (auth == null) {
-                        return "";
-                    }
-                    return auth.getUser() + " :" + auth.getPassword();
-                }
-            });
+            //this.digestInfo3.setConverter(new SimpleStringConverter<>() {
+            //    @Override
+            //    public String toString(ShellZKAuth auth) {
+            //        if (auth == null) {
+            //            return "";
+            //        }
+            //        return auth.getUser() + " :" + auth.getPassword();
+            //    }
+            //});
             this.digestInfo3.selectFirst();
         }
     }
