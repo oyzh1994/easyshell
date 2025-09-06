@@ -430,7 +430,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
      * @param highlight 高亮内容
      */
     public void setDataHighlight(String highlight) {
-        if (StringUtil.isNotBlank(highlight)) {
+        if (StringUtil.isBlank(highlight)) {
             highlight = this.dataSearch.getTextTrim();
         }
         this.nodeData.setHighlightText(highlight);
