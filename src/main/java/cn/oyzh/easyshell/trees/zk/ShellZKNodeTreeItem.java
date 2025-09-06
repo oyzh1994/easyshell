@@ -8,13 +8,12 @@ import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.domain.zk.ShellZKDataHistory;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ZKACL;
-import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
-import cn.oyzh.easyshell.store.zk.ShellZKDataHistoryStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
@@ -324,6 +323,9 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 items.add(export);
             }
             items.add(MenuItemHelper.separator());
+            // 数据历史
+            FXMenuItem dataHistory = MenuItemHelper.dataHistory("12", this::dataHistory);
+            items.add(dataHistory);
             // 复制节点路径
             FXMenuItem copyNodePath = MenuItemHelper.copyNodePath("12", this::copyNodePath);
             items.add(copyNodePath);
@@ -348,6 +350,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             }
         }
         return items;
+    }
+
+    /**
+     * 数据历史
+     */
+    private void dataHistory() {
+        String nodePath = this.value.nodePath();
+        ShellViewFactory.zkHistoryData(this.client(), nodePath);
     }
 
     /**
@@ -379,7 +389,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             CreateMode createMode = this.isEphemeralNode() ? CreateMode.EPHEMERAL : CreateMode.PERSISTENT;
             // 创建新节点
             if (this.client().create(newNodePath, this.getNodeData(), List.copyOf(this.acl()), null, createMode, true) != null) {
-                this.getTreeView().onNodeAdded(newNodePath);
+                this.getTreeView().nodeAdded(newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -414,7 +424,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         }
         String addedNodePath = adapter.getProp("addedNodePath");
         if (addedNodePath != null) {
-            this.getTreeView().onNodeAdded(addedNodePath);
+            this.getTreeView().nodeAdded(addedNodePath);
         }
     }
 
@@ -422,7 +432,20 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 认证zk节点
      */
     public void authNode() {
-        ShellViewFactory.zkAuthNode(this, this.client());
+        try {
+            StageAdapter adapter = ShellViewFactory.zkAuthNode(this, this.client());
+            if (adapter == null) {
+                return;
+            }
+            boolean success = adapter.getProp("success");
+            ShellZKAuth auth = adapter.getProp("auth");
+            if (success) {
+                this.getTreeView().authChanged(auth);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     /**
@@ -459,7 +482,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 this.deleteNode();
                 //// 发送事件
                 //ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
-                this.getTreeView().onNodeAdded(newNodePath);
+                this.getTreeView().nodeAdded(newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -1211,13 +1234,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     /**
      * 保存数据历史
      */
-    private void saveHistory() {
-        ShellZKDataHistory history = new ShellZKDataHistory();
-        history.setPath(this.nodePath());
-        history.setData(this.getUnsavedData());
-        history.setIid(this.zkConnect().getId());
-        ShellZKDataHistoryStore.INSTANCE.replace(history, this.client());
-        ShellZKEventUtil.dataHistoryAdded(history, this);
+    private void saveHistory() throws Exception {
+        //ShellZKHistoryData history = new ShellZKHistoryData();
+        //history.setPath(this.nodePath());
+        //history.setData(this.getUnsavedData());
+        //history.setIid(this.zkConnect().getId());
+        //ShellZKDataHistoryStore.INSTANCE.replace(history, this.client());
+        //ShellZKEventUtil.dataHistoryAdded(history, this);
+        ShellZKDataUtil.addHistory(this.nodePath(), this.getUnsavedData(), this.client());
     }
 
     /**

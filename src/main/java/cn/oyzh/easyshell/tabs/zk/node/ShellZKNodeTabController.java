@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.easyshell.event.zk.ShellZKAuthAuthedEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -11,7 +9,6 @@ import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
-import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -770,15 +767,15 @@ public class ShellZKNodeTabController extends ParentTabController {
 //        }
 //    }
 
-    /**
-     * 显示历史
-     */
-    @FXML
-    private void showHistory() {
-        if (this.activeItem != null) {
-            ShellZKEventUtil.historyShow(this.activeItem);
-        }
-    }
+    ///**
+    // * 显示历史
+    // */
+    //@FXML
+    //private void showHistory() {
+    //    if (this.activeItem != null) {
+    //        ShellZKEventUtil.historyShow(this.activeItem);
+    //    }
+    //}
 //
 //    /**
 //     * 显示数据
@@ -1185,22 +1182,22 @@ public class ShellZKNodeTabController extends ParentTabController {
 //        }
 //    }
 
-    /**
-     * 认证已执行事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void authAuthed(ShellZKAuthAuthedEvent event) {
-        try {
-            if (event.isSuccess() && event.client() == this.client) {
-                this.treeView.authChanged(event.auth());
-                this.flushTab();
-            }
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
+    ///**
+    // * 认证已执行事件
+    // *
+    // * @param event 事件
+    // */
+    //@EventSubscribe
+    //private void authAuthed(ShellZKAuthAuthedEvent event) {
+    //    try {
+    //        if (event.isSuccess() && event.client() == this.client) {
+    //            this.treeView.authChanged(event.auth());
+    //            this.flushTab();
+    //        }
+    //    } catch (Exception ex) {
+    //        MessageBox.exception(ex);
+    //    }
+    //}
 
     @FXML
     private void addNode() {
@@ -1213,7 +1210,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         }
         String addedNodePath = adapter.getProp("addedNodePath");
         if (addedNodePath != null) {
-            this.treeView.onNodeAdded(addedNodePath);
+            this.treeView.nodeAdded(addedNodePath);
         }
     }
 

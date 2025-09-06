@@ -82,8 +82,10 @@ import cn.oyzh.easyshell.controller.zk.acl.ShellZKAddACLController;
 import cn.oyzh.easyshell.controller.zk.acl.ShellZKUpdateACLController;
 import cn.oyzh.easyshell.controller.zk.auth.ShellZKAddAuthController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKExportDataController;
+import cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryDataController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKImportDataController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKTransportDataController;
+import cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryViewController;
 import cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController;
 import cn.oyzh.easyshell.controller.zk.node.ShellZKAuthNodeController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -802,7 +804,7 @@ public class ShellViewFactory {
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1046,7 +1048,7 @@ public class ShellViewFactory {
     public static void splitGuid() {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellSplitGuidController.class, StageManager.getFrontWindow());
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1097,7 +1099,7 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.getStage(ShellSnippetController.class);
             if (adapter == null) {
                 adapter = StageManager.parseStage(ShellSnippetController.class);
-                adapter.show();
+                adapter.display();
             } else {
                 adapter.toFront();
             }
@@ -1153,7 +1155,7 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileErrorController.class, StageManager.getFrontWindow());
             adapter.setProp("task", task);
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1190,7 +1192,7 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellDockerRunController.class);
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1208,7 +1210,7 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class);
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1226,7 +1228,7 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class);
             adapter.setProp("exec", exec);
             adapter.setProp("container", container);
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1244,7 +1246,7 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellS3ShareFileController.class);
             adapter.setProp("s3File", file);
             adapter.setProp("client", client);
-            adapter.show();
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -1522,17 +1524,20 @@ public class ShellViewFactory {
      *
      * @param nodeItem zk节点
      * @param client   zk客户端
+     * @return 页面
      */
-    public static void zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    public static StageAdapter zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
             adapter.setProp("zkClient", client);
-            adapter.display();
+            adapter.showAndWait();
+            return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+        return null;
     }
 
     /**
@@ -1649,6 +1654,59 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增zk认证
+     *
+     * @param connect 连接
+     * @return 页面
+     */
+    public static StageAdapter zkAuthAdd(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
+            adapter.setProp("connect", connect);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * zk数据历史
+     *
+     * @param client   客户端
+     * @param nodePath 路径
+     */
+    public static void zkHistoryData(ShellZKClient client, String nodePath) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class, StageManager.getFrontWindow());
+            adapter.setProp("client", client);
+            adapter.setProp("nodePath", nodePath);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * zk查看历史
+     *
+     * @param data 数据
+     */
+    public static void zkHistoryView(byte[] data) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, StageManager.getFrontWindow());
+            adapter.setProp("data", data);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
      * 添加跳板机
      *
      * @return 页面
@@ -1675,25 +1733,6 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateJumpController.class, StageManager.getFrontWindow());
             adapter.setProp("config", config);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 新增zk认证
-     *
-     * @param connect 连接
-     * @return 页面
-     */
-    public static StageAdapter zkAuthAdd(ShellConnect connect) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
-            adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {

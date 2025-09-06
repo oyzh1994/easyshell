@@ -134,7 +134,7 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
      *
      * @param nodePath 节点路径
      */
-    public void onNodeAdded(String nodePath) {
+    public void nodeAdded(String nodePath) {
         try {
             String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             // 寻找节点

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryViewController"
+        prefHeight="480" prefWidth="600">
+    <ShellDataEditor flexWidth="100%" flexHeight="100%" fx:id="editor" editable="false">
+
+    </ShellDataEditor>
+</FXVBox>
+

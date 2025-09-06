@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.controller.zk.node;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
@@ -158,19 +157,22 @@ public class ShellZKAuthNodeController extends StageController {
             ShellZKClient zkClient = this.zkItem.client();
             int result = ShellZKAuthUtil.authNode(user, password, zkClient, this.zkNode);
             if (result == 1) {
+                ShellZKAuth auth = new ShellZKAuth(zkClient.iid(), user, password);
                 if (this.saveInfo1.isSelected()) {
-                    ShellZKAuth auth = new ShellZKAuth(zkClient.iid(), user, password);
+                    //ShellZKAuth auth = new ShellZKAuth(zkClient.iid(), user, password);
                     this.authStore.replace(auth);
                     this.zkItem.zkConnect().addAuth(auth);
                 }
-                ShellZKEventUtil.authAuthed(this.zkItem, true, user, password);
+                //ShellZKEventUtil.authAuthed(this.zkItem, true, user, password);
+                this.setProp("auth", auth);
+                this.setProp("success", true);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else if (this.zkNode.aclEmpty() || this.zkNode.hasDigestACL()) {
-                ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
+                //ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
                 MessageBox.warn(I18nHelper.operationFail());
             } else {
-                ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
+                //ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
                 MessageBox.warn(I18nHelper.authFailTip1());
             }
         } catch (Exception ex) {

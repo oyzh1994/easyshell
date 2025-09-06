@@ -69,12 +69,12 @@
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </DeleteSVGGlyph> -->
-                <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1" size="16"
-                                 onMousePrimaryClicked="#showHistory">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </HistorySVGGlyph>
+                <!-- <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1" size="16" -->
+                <!--                  onMousePrimaryClicked="#showHistory"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </HistorySVGGlyph> -->
                 <!-- <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectNode"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->

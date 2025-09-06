@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.fx.zk;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
-import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +37,15 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         this.initDataList();
     }
 
-    public List<ShellZKAuth> getAuths() {
-        List<ShellZKAuth> list = new ArrayList<>(this.list.size());
-        for (ShellZKAuth authVO : this.list) {
-            if (authVO != null && StringUtil.isNotBlank(authVO.getUser()) && StringUtil.isNotBlank(authVO.getPassword())) {
-                list.add(authVO);
-            }
-        }
-        return list;
-    }
+    //public List<ShellZKAuth> getAuths() {
+    //    List<ShellZKAuth> list = new ArrayList<>(this.list.size());
+    //    for (ShellZKAuth authVO : this.list) {
+    //        if (authVO != null && StringUtil.isNotBlank(authVO.getUser()) && StringUtil.isNotBlank(authVO.getPassword())) {
+    //            list.add(authVO);
+    //        }
+    //    }
+    //    return list;
+    //}
 
     private void initDataList() {
         List<ShellZKAuth> list = new ArrayList<>(12);
@@ -87,9 +86,9 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         this.initDataList();
     }
 
-    @Override
-    public void initNode() {
-        super.initNode();
-        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    }
+    //@Override
+    //public void initNode() {
+    //    super.initNode();
+    //    this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    //}
 }
