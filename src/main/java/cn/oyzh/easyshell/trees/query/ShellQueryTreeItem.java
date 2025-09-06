@@ -52,11 +52,11 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = this.getTreeView().getMenuItems();
-        FXMenuItem edit = MenuItemHelper.editSnippet("12", this::edit);
+        FXMenuItem edit = MenuItemHelper.editQuery("12", this::edit);
         items.add(edit);
-        FXMenuItem rename = MenuItemHelper.renameSnippet("12", this::rename);
+        FXMenuItem rename = MenuItemHelper.renameQuery("12", this::rename);
         items.add(rename);
-        FXMenuItem delete = MenuItemHelper.deleteSnippet("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteQuery("12", this::delete);
         items.add(delete);
         return items;
     }
@@ -82,17 +82,17 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
 
     @Override
     public void rename() {
-        String connectName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName());
+        String newName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName());
         // 名称为null或者跟当前名称相同，则忽略
-        if (connectName == null || Objects.equals(connectName, this.value.getName())) {
+        if (newName == null || Objects.equals(newName, this.value.getName())) {
             return;
         }
         // 检查名称
-        if (StringUtil.isBlank(connectName)) {
+        if (StringUtil.isBlank(newName)) {
             MessageBox.warn(I18nHelper.contentCanNotEmpty());
             return;
         }
-        this.value.setName(connectName);
+        this.value.setName(newName);
         // 修改名称
         if (this.queryStore.update(this.value)) {
             this.setValue(new ShellQueryTreeItemValue(this));

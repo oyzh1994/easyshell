@@ -252,13 +252,13 @@ public class ShellZKNodeDataTabController extends SubTabController {
         }
     }
 
-    /**
-     * 认证节点
-     */
-    @FXML
-    private void authNode() {
-        this.activeItem().authNode();
-    }
+    ///**
+    // * 认证节点
+    // */
+    //@FXML
+    //private void authNode() {
+    //    this.activeItem().authNode();
+    //}
 
     /**
      * zk数据控件按键事件

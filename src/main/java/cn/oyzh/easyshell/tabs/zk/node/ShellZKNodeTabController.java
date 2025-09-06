@@ -1269,6 +1269,22 @@ public class ShellZKNodeTabController extends ParentTabController {
         ShellViewFactory.zkImportData(this.client.getShellConnect());
     }
 
+    /**
+     * 导出数据
+     */
+    @FXML
+    private void exportData() {
+        ShellViewFactory.zkExportData(this.client.getShellConnect(), null);
+    }
+
+    /**
+     * 传输数据
+     */
+    @FXML
+    private void transportData() {
+        ShellViewFactory.zkTransportData(this.client.getShellConnect());
+    }
+
     public ShellZKClient getClient() {
         return client;
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -10,7 +11,6 @@
 <?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
@@ -199,11 +199,11 @@
                     </HBox.margin>
                 </FXRadioButton>
             </FXHBox>
-            <InfoLabel text="%base.options">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
+            <!-- <InfoLabel text="%base.options"> -->
+            <!--     <VBox.margin> -->
+            <!--         <Insets left="30" top="10"/> -->
+            <!--     </VBox.margin> -->
+            <!-- </InfoLabel> -->
             <!-- <FXCheckBox fx:id="applyFilter" text="%base.applyFilter"> -->
             <!--     <VBox.margin> -->
             <!--         <Insets left="30" top="5"/> -->

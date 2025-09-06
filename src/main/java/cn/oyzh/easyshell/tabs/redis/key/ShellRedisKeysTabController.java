@@ -328,6 +328,14 @@ public class ShellRedisKeysTabController extends ParentTabController {
     }
 
     /**
+     * 传输数据
+     */
+    @FXML
+    private void transportData() {
+        ShellViewFactory.redisTransportData(this.shellConnect(), null);
+    }
+
+    /**
      * 获取连接
      *
      * @return 连接

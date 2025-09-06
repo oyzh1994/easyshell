@@ -1939,7 +1939,9 @@ public class ShellZKClient implements ShellBaseClient {
      * @param auth 认证
      */
     public void removeAuth(ShellZKAuth auth) {
-        this.getAuths().remove(auth);
+        if (CollectionUtil.isNotEmpty(this.getAuths())) {
+            this.getAuths().remove(auth);
+        }
     }
 
     /**
@@ -1948,6 +1950,9 @@ public class ShellZKClient implements ShellBaseClient {
      * @return 启用的认证
      */
     public List<ShellZKAuth> getEnabledAuths() {
-        return this.getAuths().stream().filter(ShellZKAuth::isEnable).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(this.getAuths())) {
+            return this.getAuths().stream().filter(ShellZKAuth::isEnable).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }

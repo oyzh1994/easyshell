@@ -67,11 +67,11 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </QRCodeSVGGlyph>
-            <UnLockSVGGlyph tipText="%base.auth" size="15" onMousePrimaryClicked="#authNode">
-                <HBox.margin>
-                    <Insets left="5" top="7"/>
-                </HBox.margin>
-            </UnLockSVGGlyph>
+            <!-- <UnLockSVGGlyph tipText="%base.auth" size="15" onMousePrimaryClicked="#authNode"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="5" top="7"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </UnLockSVGGlyph> -->
             <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
                 <HBox.margin>
                     <Insets left="5" top="7"/>

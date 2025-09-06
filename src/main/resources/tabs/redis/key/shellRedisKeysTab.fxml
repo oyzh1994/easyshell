@@ -7,6 +7,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
@@ -52,16 +53,23 @@
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </SortSVGPane> -->
-                <ImportSVGGlyph onMousePrimaryClicked="#importData">
+                <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ImportSVGGlyph>
-                <ExportSVGGlyph onMousePrimaryClicked="#exportData">
+                <ExportSVGGlyph tipText="%base.exportData" size="16"
+                                onMousePrimaryClicked="#exportData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ExportSVGGlyph>
+                <TransportSVGGlyph tipText="%base.transportData" size="16"
+                                   onMousePrimaryClicked="#transportData">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </TransportSVGGlyph>
                 <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
                     <HBox.margin>
                         <Insets left="5" top="5"/>

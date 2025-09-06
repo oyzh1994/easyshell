@@ -2,22 +2,21 @@
 
 <?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField?>
 <?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph?>
 <?import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.pane.CollectSVGPane?>
-<?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
        text="%base.node">
     <graphic>
@@ -42,6 +41,24 @@
             <ShellZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
             </ShellZKNodeTreeView>
             <FXHBox flexWidth="100%" flexHeight="30">
+                <ImportSVGGlyph tipText="%base.importData" size="16"
+                                onMousePrimaryClicked="#importData">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </ImportSVGGlyph>
+                <ExportSVGGlyph tipText="%base.exportData" size="16"
+                                onMousePrimaryClicked="#exportData">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </ExportSVGGlyph>
+                <TransportSVGGlyph tipText="%base.transportData" size="16"
+                                onMousePrimaryClicked="#transportData">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </TransportSVGGlyph>
                 <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
@@ -52,12 +69,6 @@
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </DeleteSVGGlyph> -->
-                <ImportSVGGlyph tipText="%base.importData" size="16"
-                                onMousePrimaryClicked="#importData">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </ImportSVGGlyph>
                 <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1" size="16"
                                  onMousePrimaryClicked="#showHistory">
                     <HBox.margin>
