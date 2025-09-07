@@ -22,8 +22,8 @@
         <s3.version>2.31.78</s3.version>
         <jna.version>5.17.0</jna.version>
         <smbj.version>0.14.0</smbj.version>
-        <jedis.version>5.2.0</jedis.version>
-        <pty4j.version>0.13.10-1</pty4j.version>
+        <jedis.version>6.2.0</jedis.version>
+        <pty4j.version>0.13.11</pty4j.version>
         <curator-version>4.3.0</curator-version>
         <jediterm.version>3.54</jediterm.version>
         <jSerialComm.version>2.11.2</jSerialComm.version>
@@ -327,6 +327,22 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.sshd</groupId>
+                    <artifactId>sshd-scp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.sshd</groupId>
+                    <artifactId>sshd-git</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.sshd</groupId>
+                    <artifactId>sshd-ldap</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.sshd</groupId>
+                    <artifactId>sshd-spring-sftp</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

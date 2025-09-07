@@ -19,7 +19,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.UNIFIED,
-        modality = Modality.WINDOW_MODAL,
+        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "zk/history/shellZKHistoryView.fxml"
 )
 public class ShellZKHistoryViewController extends StageController {

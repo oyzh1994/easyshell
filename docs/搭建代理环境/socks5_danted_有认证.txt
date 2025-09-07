@@ -1,18 +1,19 @@
 以ubuntu为例
 # 1. 安装依赖
 apt update
-apt install danted -y
-或者
 apt install dante-server -y
+或者
+apt install danted -y
 # 2. 创建认证用户，注意是系统用户，后面认证要用到
 useradd -r test
 passwd test
 然后根据提示输入密码
 123456
 # 3. 配置文件
-vim /etc/danted.conf
 #查看网卡
 ip addr或者ifconfig
+# 配置文件
+vim /etc/danted.conf
 # 内部网络接口和监听端口(填写实际网卡名称)
 internal: eth0 port = 1080
 # 外部网络接口(填写实际网卡名称)
@@ -24,6 +25,7 @@ clientmethod: none
 # 用户配置
 user.privileged: root
 user.unprivileged: nobody
+#user.libwrap: nobody
 # 客户端通过规则（这里只是示例，实际可根据需求限制）
 client pass {
     from: 0.0.0.0/0 to: 0.0.0.0/0
@@ -34,6 +36,8 @@ socks pass {
     from: 0.0.0.0/0 to: 0.0.0.0/0
     log: connect disconnect error
     method: username
+    # 较新版本可能是这样
+    #socksmethod: username
 }
 # 4. 重启服务
 systemctl restart danted

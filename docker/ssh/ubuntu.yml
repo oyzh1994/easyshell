@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  ubuntu-server:
+    image: ubuntu
+    container_name: ubuntu
+    environment:
+      - ROOT_PASSWORD=123456
+    command: >
+      /bin/bash -c "
+      echo 'root:${ROOT_PASSWORD}' | chpasswd;
+      exec /usr/bin/sleep infinity
+      "
+    tty: true
+    stdin_open: true
+    ports:
+      - 2022:22
+      - 11081:1081
+      - 11082:1082
+      - 11083:1083
+      - 11084:1084
+      - 11085:1085
+        # 添加DNS配置
+    dns:
+      - 114.114.114.114  # 国内常用DNS
+      - 8.8.8.8          # Google DNS（备用）

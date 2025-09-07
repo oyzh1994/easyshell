@@ -487,6 +487,17 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             // 设置代理参数
             this.sshClient.setProxyHost(this.shellConnect.getProxyConfig().getHost());
             this.sshClient.setProxyPort(this.shellConnect.getProxyConfig().getPort());
+            //ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+            //Proxy proxy = ShellProxyUtil.initProxy1(proxyConfig);
+            //String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
+            //char[] proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
+            //ProxyData proxyData = new ProxyData(proxy, proxyUser, proxyPassword);
+            //this.sshClient.setProxyDataFactory(new DefaultProxyDataFactory() {
+            //    @Override
+            //    public ProxyData get(InetSocketAddress remoteAddress) {
+            //        return proxyData;
+            //    }
+            //});
         }
         // 优先的认证方式
         String methods = UserAuthPasswordFactory.PASSWORD;

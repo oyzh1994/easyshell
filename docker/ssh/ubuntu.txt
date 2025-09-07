@@ -1,0 +1,19 @@
+1. 拉起容器
+2. 修改密码
+passwd root
+3. 安装依赖
+su root
+apt update
+apt install -y openssh-server
+apt install -y vim
+apt install -y iproute2
+apt install -y dmidecode
+apt install -y lshw
+4. 修改配置
+vim /etc/ssh/sshd_config
+PermitRootLogin yes
+PasswordAuthentication yes
+5. 启动、重启、查看服务
+service ssh start
+service ssh restart
+service ssh status

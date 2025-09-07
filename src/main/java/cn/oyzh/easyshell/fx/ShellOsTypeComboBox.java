@@ -97,33 +97,33 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         if (StringUtil.isBlank(name)) {
             return new LinuxSVGGlyph();
         }
-        return switch (name) {
-            case "Macos" -> new AppleSVGGlyph();
-            case "Ubuntu" -> new UbuntuSVGGlyph();
-            case "Centos" -> new CentosSVGGlyph();
-            case "Windows" -> new WindowsSVGGlyph();
-            case "Arch" -> new ArchSVGGlyph();
-            case "Mint" -> new MintSVGGlyph();
-            case "Raspberrypi" -> new RaspberrypiSVGGlyph();
-            case "Redhat" -> new RedhatSVGGlyph();
-            case "Debian" -> new DebianSVGGlyph();
-            case "Deepin" -> new DeepinSVGGlyph();
-            case "Freebsd" -> new FreebsdSVGGlyph();
-            case "Fedora" -> new FedoraSVGGlyph();
-            case "SFTP" -> new SFTPSVGGlyph();
-            case "FTP" -> new FTPSVGGlyph();
-            case "SMB" -> new SMBSVGGlyph();
-            case "VNC" -> new VNCSVGGlyph();
-            case "S3" -> new S3SVGGlyph();
-            case "Telnet" -> new TelnetSVGGlyph();
-            case "Serial" -> new SerialPortSVGGlyph();
-            case "RLogin" -> new RLoginSVGGlyph();
-            case "Minio" -> new MinioSVGGlyph();
-            case "Alibaba Cloud" -> new AlibabaCloudSVGGlyph();
-            case "Tencent Cloud" -> new TencentCloudSVGGlyph();
-            case "Huawei Cloud" -> new HuaweiCloudSVGGlyph();
-            case "Redis" -> new RedisSVGGlyph();
-            case "Zookeeper" -> new ZookeeperSVGGlyph();
+        return switch (name.toLowerCase()) {
+            case "macos" -> new AppleSVGGlyph();
+            case "ubuntu" -> new UbuntuSVGGlyph();
+            case "centos" -> new CentosSVGGlyph();
+            case "windows" -> new WindowsSVGGlyph();
+            case "arch" -> new ArchSVGGlyph();
+            case "mint" -> new MintSVGGlyph();
+            case "raspberrypi" -> new RaspberrypiSVGGlyph();
+            case "redhat" -> new RedhatSVGGlyph();
+            case "debian" -> new DebianSVGGlyph();
+            case "deepin" -> new DeepinSVGGlyph();
+            case "freebsd" -> new FreebsdSVGGlyph();
+            case "fedora" -> new FedoraSVGGlyph();
+            case "sftp" -> new SFTPSVGGlyph();
+            case "ftp" -> new FTPSVGGlyph();
+            case "smb" -> new SMBSVGGlyph();
+            case "vnc" -> new VNCSVGGlyph();
+            case "s3" -> new S3SVGGlyph();
+            case "telnet" -> new TelnetSVGGlyph();
+            case "serial" -> new SerialPortSVGGlyph();
+            case "rlogin" -> new RLoginSVGGlyph();
+            case "minio" -> new MinioSVGGlyph();
+            case "alibaba cloud" -> new AlibabaCloudSVGGlyph();
+            case "tencent cloud" -> new TencentCloudSVGGlyph();
+            case "huawei cloud" -> new HuaweiCloudSVGGlyph();
+            case "redis" -> new RedisSVGGlyph();
+            case "zk", "zookeeper" -> new ZookeeperSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

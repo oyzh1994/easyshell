@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.ssh2;
 
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import org.apache.sshd.common.io.IoConnector;
 import org.eclipse.jgit.internal.transport.sshd.JGitSshClient;
 
