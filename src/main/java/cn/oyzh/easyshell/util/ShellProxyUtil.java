@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.common.network.ProxyUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import io.netty.handler.proxy.HttpProxyHandler;
@@ -7,8 +8,10 @@ import io.netty.handler.proxy.ProxyHandler;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import software.amazon.awssdk.http.urlconnection.ProxyConfiguration;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.Socket;
 import java.net.URI;
 
 /**
@@ -100,5 +103,49 @@ public class ShellProxyUtil {
             }
         }
         return proxyHandler;
+    }
+
+    /**
+     * 创建socket
+     *
+     * @param proxyConfig   代理配置
+     * @param targetHost    目标地址
+     * @param targetPort    目标端口
+     * @param socketTimeout 连接超时
+     * @throws IOException 异常
+     */
+    public static Socket createSocket(ShellProxyConfig proxyConfig, String targetHost, int targetPort, int socketTimeout) throws IOException {
+        // 执行代理
+        if (isNeedProxy(proxyConfig)) {
+            Socket socket = new Socket();
+            socket.setSoTimeout(socketTimeout);
+            Proxy proxy = initProxy1(proxyConfig);
+            socket.connect(proxy.address(), socketTimeout);
+            // 执行握手
+            if (proxyConfig.isSocksProxy()) {
+                ProxyUtil.socks5Handshake(
+                        socket,
+                        targetHost,
+                        targetPort,
+                        proxyConfig.getUser(),
+                        proxyConfig.getPassword()
+                );
+            }
+            return socket;
+        }
+        return null;
+    }
+
+    /**
+     * 是否需要代理
+     *
+     * @param proxyConfig 代理配置
+     * @return 结果
+     */
+    public static boolean isNeedProxy(ShellProxyConfig proxyConfig) {
+        if (proxyConfig == null) {
+            return false;
+        }
+        return !proxyConfig.isNoneProxy();
     }
 }

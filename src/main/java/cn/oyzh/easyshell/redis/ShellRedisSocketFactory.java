@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.redis;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.network.ProxyUtil;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.util.ShellProxyUtil;
 import redis.clients.jedis.JedisSocketFactory;
@@ -49,26 +48,22 @@ public class ShellRedisSocketFactory implements JedisSocketFactory {
     public Socket createSocket() throws JedisConnectionException {
         Socket socket;
         try {
-            socket = new Socket();
-            socket.setSoTimeout(this.socketTimeout);
-            // 连接地址
             InetSocketAddress address;
-            // 执行代理
-            if (ProxyUtil.isNeedProxy(this.proxy)) {
-                socket.connect(this.proxy.address(), this.socketTimeout);
-                address = (InetSocketAddress) this.proxy.address();
-                ProxyUtil.socks5Handshake(
-                        socket,
+            // 需要直连
+            if (ShellProxyUtil.isNeedProxy(this.proxyConfig)) {
+                // 创建代理连接
+                socket = ShellProxyUtil.createSocket(
+                        this.proxyConfig,
                         this.host,
                         this.port,
-                        this.proxyConfig.getUser(),
-                        this.proxyConfig.getPassword()
+                        this.socketTimeout
                 );
+                address = (InetSocketAddress) socket.getRemoteSocketAddress();
                 JulLog.info("create socket with proxy");
-            } else {// 直连
-                address = new InetSocketAddress(this.host, this.port);
+            } else {
+                socket = new Socket();
                 socket.setSoTimeout(this.socketTimeout);
-                socket.connect(address, this.socketTimeout);
+                address = new InetSocketAddress(this.host, this.port);
                 JulLog.info("create socket without proxy");
             }
             // 创建SSL socket
