@@ -40,8 +40,8 @@ public class ShellRedisClientUtil {
         String user = connect.getUser();
         boolean ssl = connect.isSSLMode();
         String password = connect.getPassword();
-        int socketTimeout = connect.getExecuteTimeOut();
-        int connectTimeout = connect.getConnectTimeOut();
+        int socketTimeout = connect.executeTimeOutMs();
+        int connectTimeout = connect.connectTimeOutMs();
         // master配置处理
         DefaultJedisClientConfig.Builder builder = DefaultJedisClientConfig.builder();
         // socket超时
