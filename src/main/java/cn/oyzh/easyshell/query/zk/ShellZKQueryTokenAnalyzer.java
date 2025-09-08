@@ -11,20 +11,20 @@ public class ShellZKQueryTokenAnalyzer {
 
     public static final ShellZKQueryTokenAnalyzer INSTANCE = new ShellZKQueryTokenAnalyzer();
 
-    public ShellZKQueryToken currentToken(String content, int currentIndex) {
+    public ShellZKQueryToken currentToken(String input, int currentIndex) {
         try {
-            if (StringUtil.isEmpty(content)) {
+            if (StringUtil.isEmpty(input)) {
                 return null;
             }
             if (currentIndex <= 0) {
                 return null;
             }
-            if (currentIndex > content.length()) {
+            if (currentIndex > input.length()) {
                 return null;
             }
             ShellZKQueryToken token = new ShellZKQueryToken();
             // 截取字符串
-            content = content.substring(0, currentIndex);
+            String content = input.substring(0, currentIndex);
             // 当前位置
             int tokenIndex = 0;
             Character tokenType = null;

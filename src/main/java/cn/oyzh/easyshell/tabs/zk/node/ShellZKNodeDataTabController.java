@@ -154,6 +154,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
         StageManager.showMask(() -> {
             try {
                 this.activeItem().refreshData();
+                this.activeItem().refresh();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

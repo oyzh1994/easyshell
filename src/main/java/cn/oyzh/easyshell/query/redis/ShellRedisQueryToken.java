@@ -10,6 +10,40 @@ import java.util.List;
  * @since 2025/01/21
  */
 public class ShellRedisQueryToken {
+    /**
+     * 结束位置
+     */
+    private int endIndex;
+
+    /**
+     * 开始位置
+     */
+    private int startIndex;
+
+    /**
+     * 输入
+     */
+    private String input;
+
+    /**
+     * 内容
+     */
+    private String content;
+
+    /**
+     * 1 null
+     * 2 空格
+     */
+    private Character token;
+
+    public boolean isEmpty() {
+        return StringUtil.isEmpty(this.content);
+    }
+
+    public boolean isNotEmpty() {
+        return StringUtil.isNotEmpty(this.content);
+    }
+
     public int getEndIndex() {
         return endIndex;
     }
@@ -48,40 +82,6 @@ public class ShellRedisQueryToken {
 
     public void setToken(Character token) {
         this.token = token;
-    }
-
-    /**
-     * 结束位置
-     */
-    private int endIndex;
-
-    /**
-     * 开始位置
-     */
-    private int startIndex;
-
-    /**
-     * 输入
-     */
-    private String input;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 1 null
-     * 2 空格
-     */
-    private Character token;
-
-    public boolean isEmpty() {
-        return StringUtil.isEmpty(this.content);
-    }
-
-    public boolean isNotEmpty() {
-        return StringUtil.isNotEmpty(this.content);
     }
 
     public boolean isPossibilityKeyword() {

@@ -9,6 +9,7 @@ apt install -y vim
 apt install -y iproute2
 apt install -y dmidecode
 apt install -y lshw
+apt install -y lrzsz
 4. 修改配置
 vim /etc/ssh/sshd_config
 PermitRootLogin yes

@@ -2047,7 +2047,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     @Nullable
     private String getSelectionText() {
-        if (mySelection.get() != null) {
+        TerminalSelection selection = this.mySelection.get();
+        if (selection != null && selection.getStart() != null && selection.getEnd() != null) {
             try {
                 Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
                 if (points.getFirst() != null || points.getSecond() != null) {
@@ -2059,7 +2060,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 ex.printStackTrace();
             }
         }
-
         return null;
     }
 
@@ -2538,8 +2538,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private void updateSelectedText() {
-        if (this.updateSelectedText || mySelection.get() == null) {
-            selectedText.set(getSelectionText());
+        if (this.updateSelectedText || this.mySelection.get() == null) {
+            this.selectedText.set(this.getSelectionText());
         }
         this.updateSelectedText = true;
     }
@@ -2630,7 +2630,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     /**
-    * 获取终端高
+     * 获取终端高
      *
      * @return 结果
      */

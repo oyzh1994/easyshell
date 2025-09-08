@@ -22,6 +22,16 @@ public class ShellZKQueryPromptItem {
      */
     private String content;
 
+    /**
+     * 相关度
+     */
+    private double correlation;
+
+    /**
+     * 额外内容
+     */
+    private String extContent;
+
     public byte getType() {
         return type;
     }
@@ -53,16 +63,6 @@ public class ShellZKQueryPromptItem {
     public void setExtContent(String extContent) {
         this.extContent = extContent;
     }
-
-    /**
-     * 相关度
-     */
-    private double correlation;
-
-    /**
-     * 额外内容
-     */
-    private String extContent;
 
     /**
      * 是否关键字类型

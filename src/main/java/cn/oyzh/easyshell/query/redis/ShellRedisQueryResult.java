@@ -15,6 +15,21 @@ public class ShellRedisQueryResult {
      */
     private long cost;
 
+    /**
+     * 结果
+     */
+    private Object result;
+
+    /**
+     * 消息
+     */
+    private String message;
+
+    /**
+     * 是否成功
+     */
+    private boolean success;
+
     public long getCost() {
         return cost;
     }
@@ -46,21 +61,6 @@ public class ShellRedisQueryResult {
     public void setSuccess(boolean success) {
         this.success = success;
     }
-
-    /**
-     * 结果
-     */
-    private Object result;
-
-    /**
-     * 消息
-     */
-    private String message;
-
-    /**
-     * 是否成功
-     */
-    private boolean success;
 
     public String costSeconds() {
         return String.format("%.2f" + I18nHelper.seconds(), this.cost / 1000.0);

@@ -32,6 +32,11 @@ public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
      */
     private volatile int currentPickIndex = -1;
 
+    /**
+     * 节点选中事件
+     */
+    private Runnable onItemPicked;
+
     public int getCurrentPickIndex() {
         return currentPickIndex;
     }
@@ -47,11 +52,6 @@ public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
     public void setOnItemPicked(Runnable onItemPicked) {
         this.onItemPicked = onItemPicked;
     }
-
-    /**
-     * 节点选中事件
-     */
-    private Runnable onItemPicked;
 
     @Override
     public void select(int index) {
@@ -152,16 +152,9 @@ public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
             // 提示组件
             SVGLabel promptLabel = this.initPromptLabel(item);
             box.addChild(promptLabel);
-//            // 额外组件
-//            FXLabel extLabel = this.initExtLabel(item);
-//            if (extLabel != null) {
-//                box.addChild(extLabel);
-//            }
             box.setProp("item", item);
             boxList.add(box);
-//            System.out.println(item + "=" + item.getContent());
         }
-//        System.out.println("----------->");
         this.setItem(boxList);
     }
 
@@ -175,16 +168,13 @@ public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
         SVGLabel label = null;
         if (item.isKeywordType()) {
             SVGGlyph svgGlyph = new KeywordsSVGGlyph("12");
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isNodeType()) {
             SVGGlyph svgGlyph = new SVGGlyph("/font/zk/file-text.svg", "12");
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);
         } else if (item.isParamType()) {
             SVGGlyph svgGlyph = new ParamSVGGlyph("12");
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
         }
         if (label != null) {
@@ -192,24 +182,6 @@ public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
         }
         return label;
     }
-
-//    /**
-//     * 初始化额外信息组件
-//     *
-//     * @param item 提示词
-//     * @return 组件
-//     */
-//    private FXLabel initExtLabel(ShellZKQueryPromptItem item) {
-//        FXLabel label = null;
-//        if (item.isTableType() || item.isViewType() || item.isColumnType()) {
-//            label = new FXLabel(item.getExtContent());
-//            label.setTextFill(Color.valueOf("#D3D3D3"));
-//        }
-//        if (label != null) {
-//            label.setTipText(item.getContent());
-//        }
-//        return label;
-//    }
 
     /**
      * 初始化提示词组件
