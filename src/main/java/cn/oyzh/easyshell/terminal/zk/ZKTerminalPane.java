@@ -126,6 +126,13 @@ public class ZKTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    public static final String TERMINAL_NAME="zookeeper";
+
+    @Override
+    public String terminalName() {
+        return TERMINAL_NAME;
+    }
+
     /**
      * 初始化
      *

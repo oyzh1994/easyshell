@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
 import cn.oyzh.easyshell.util.redis.ShellRedisVersionUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
@@ -4930,7 +4931,7 @@ public class ShellRedisClient implements ShellBaseClient {
         ShellRedisQueryResult result = new ShellRedisQueryResult();
         long start = System.currentTimeMillis();
         try {
-            TerminalCommandHandler<?, ?> handler = TerminalManager.findHandler(param.getContent());
+            TerminalCommandHandler<?, ?> handler = TerminalManager.findHandler(RedisTerminalPane.TERMINAL_NAME, param.getContent());
             if (handler instanceof RedisTerminalCommandHandler<?> commandHandler) {
                 TerminalCommand command = commandHandler.parseCommand(param.getContent());
                 CommandObject<Object> object = RedisTerminalUtil.getCommand(commandHandler.getCommandType(), command.getArgs());

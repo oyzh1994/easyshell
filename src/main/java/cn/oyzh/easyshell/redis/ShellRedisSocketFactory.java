@@ -64,6 +64,7 @@ public class ShellRedisSocketFactory implements JedisSocketFactory {
                 socket = new Socket();
                 socket.setSoTimeout(this.socketTimeout);
                 address = new InetSocketAddress(this.host, this.port);
+                socket.connect(address, this.socketTimeout);
                 JulLog.info("create socket without proxy");
             }
             // 创建SSL socket

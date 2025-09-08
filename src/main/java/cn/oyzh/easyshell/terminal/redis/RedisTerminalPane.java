@@ -63,7 +63,7 @@ public class RedisTerminalPane extends TerminalPane {
     }
 
     //@Override
-    //public void changeFont(Font font) {
+    // public void changeFont(Font font) {
     //    //RedisSetting setting = RedisSettingStore.SETTING;
     //    //Font font1 = FontManager.toFont(setting.terminalFontConfig());
     //    super.changeFont(font);
@@ -121,6 +121,13 @@ public class RedisTerminalPane extends TerminalPane {
             str += this.getDbName() + "> ";
         }
         this.prompt(str);
+    }
+
+    public static final String TERMINAL_NAME = "redis";
+
+    @Override
+    public String terminalName() {
+        return TERMINAL_NAME;
     }
 
     private String getDbName() {
@@ -319,7 +326,7 @@ public class RedisTerminalPane extends TerminalPane {
 
     @Override
     public void fontSizeDecr() {
-        //double fSize= super.getFontSize();
+        // double fSize= super.getFontSize();
         // this.editorFont = this.getEditorFont();
         // this.getEditorFont();
         super.fontSizeDecr();
@@ -330,13 +337,13 @@ public class RedisTerminalPane extends TerminalPane {
      * 保存字体大小
      */
     private void saveFontSize() {
-        //System.out.println(this.getFontSize());
+        // System.out.println(this.getFontSize());
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
         ShellSettingStore.INSTANCE.replace(setting);
         ////刷新字体
-        //this.editorFont = null;
-        //this.getEditorFont();
-        //System.out.println(this.getEditorFont());
+        // this.editorFont = null;
+        // this.getEditorFont();
+        // System.out.println(this.getEditorFont());
     }
 }

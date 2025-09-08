@@ -116,24 +116,21 @@ public class ShellProxyUtil {
      */
     public static Socket createSocket(ShellProxyConfig proxyConfig, String targetHost, int targetPort, int socketTimeout) throws IOException {
         // 执行代理
-        if (isNeedProxy(proxyConfig)) {
-            Socket socket = new Socket();
-            socket.setSoTimeout(socketTimeout);
-            Proxy proxy = initProxy1(proxyConfig);
-            socket.connect(proxy.address(), socketTimeout);
-            // 执行握手
-            if (proxyConfig.isSocksProxy()) {
-                ProxyUtil.socks5Handshake(
-                        socket,
-                        targetHost,
-                        targetPort,
-                        proxyConfig.getUser(),
-                        proxyConfig.getPassword()
-                );
-            }
-            return socket;
+        Socket socket = new Socket();
+        socket.setSoTimeout(socketTimeout);
+        Proxy proxy = initProxy1(proxyConfig);
+        socket.connect(proxy.address(), socketTimeout);
+        // 执行握手
+        if (proxyConfig.isSocksProxy()) {
+            ProxyUtil.socks5Handshake(
+                    socket,
+                    targetHost,
+                    targetPort,
+                    proxyConfig.getUser(),
+                    proxyConfig.getPassword()
+            );
         }
-        return null;
+        return socket;
     }
 
     /**

@@ -19,7 +19,7 @@
     </description>
 
     <properties>
-        <s3.version>2.31.78</s3.version>
+        <s3.version>2.33.4</s3.version>
         <jna.version>5.17.0</jna.version>
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>6.2.0</jedis.version>
@@ -532,6 +532,13 @@
             <groupId>com.github.mwiede</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.17.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

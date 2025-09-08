@@ -12,7 +12,9 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalManager;
+import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
+import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
@@ -156,10 +158,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 开启定期gc
             SystemUtil.gcInterval(60_000);
             // 注册命令
-            TerminalManager.setLoadHandlerAction(()->{
-                ZKTerminalManager.registerHandlers();
-                RedisTerminalManager.registerHandlers();
-            });
+            TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
+            TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("start error", ex);
