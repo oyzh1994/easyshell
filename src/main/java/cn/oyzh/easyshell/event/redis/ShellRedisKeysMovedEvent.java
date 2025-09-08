@@ -19,13 +19,17 @@ public class ShellRedisKeysMovedEvent extends Event<Integer>   {
         this.targetDB = targetDB;
     }
 
-    public int sourceDB() {
+    public int getSourceDB() {
         return this.data();
     }
 
     private ShellConnect connect;
 
-    public ShellConnect redisConnect() {
+    public ShellConnect getConnect() {
         return connect;
+    }
+
+    public void setConnect(ShellConnect connect) {
+        this.connect = connect;
     }
 }

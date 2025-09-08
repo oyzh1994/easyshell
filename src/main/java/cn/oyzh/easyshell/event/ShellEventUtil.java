@@ -25,12 +25,11 @@ import cn.oyzh.easyshell.event.redis.ShellRedisClientActionEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisHashFieldAddedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisHyLogElementsAddedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyDeletedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyFlushedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyMovedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyRenamedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
+import cn.oyzh.easyshell.event.redis.ShellRedisKeysCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisListRowAddedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisPubsubOpenEvent;
@@ -656,30 +655,47 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 键复制事件
-     *
-     * @param connect  redis树节点
-     * @param targetDB 目标库
-     */
-    public static void redisKeyCopied(ShellConnect connect, List<String> key, int dbIndex, int targetDB) {
-        ShellRedisKeyCopiedEvent event = new ShellRedisKeyCopiedEvent();
-        event.data(key);
-        event.setDbIndex(dbIndex);
-        event.setConnect(connect);
-        event.setTargetDB(targetDB);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 键复制事件
+    //  *
+    //  * @param connect  redis树节点
+    //  * @param targetDB 目标库
+    //  */
+    // public static void redisKeyCopied(ShellConnect connect, List<String> key, int dbIndex, int targetDB) {
+    //     ShellRedisKeyCopiedEvent event = new ShellRedisKeyCopiedEvent();
+    //     event.data(key);
+    //     event.setDbIndex(dbIndex);
+    //     event.setConnect(connect);
+    //     event.setTargetDB(targetDB);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 键移动事件
+    //  *
+    //  * @param item     redis树节点
+    //  * @param targetDB 目标库
+    //  */
+    // public static void redisKeyMoved(RedisKeyTreeItem item, int targetDB) {
+    //     ShellRedisKeyMovedEvent event = new ShellRedisKeyMovedEvent();
+    //     event.data(item);
+    //     event.setTargetDB(targetDB);
+    //     EventUtil.post(event);
+    // }
 
     /**
-     * 键移动事件
+     * 多个键复制事件
      *
-     * @param item     redis树节点
+     * @param connect  redis树节点
+     * @param keys     键列表
+     * @param dbIndex  库
      * @param targetDB 目标库
      */
-    public static void redisKeyMoved(RedisKeyTreeItem item, int targetDB) {
-        ShellRedisKeyMovedEvent event = new ShellRedisKeyMovedEvent();
-        event.data(item);
+    public static void redisKeysCopied(ShellConnect connect, List<String> keys, int dbIndex, int targetDB) {
+        ShellRedisKeysCopiedEvent event = new ShellRedisKeysCopiedEvent();
+        event.data(keys);
+        event.setSourceDB(dbIndex);
+        event.setConnect(connect);
         event.setTargetDB(targetDB);
         EventUtil.post(event);
     }
@@ -688,12 +704,13 @@ public class ShellEventUtil {
      * 多个键移动事件
      *
      * @param connect  连接
-     * @param item     redis树节点
+     * @param dbIndex  数据库
      * @param targetDB 目标库
      */
-    public static void redisKeysMoved(ShellConnect connect, Integer item, int targetDB) {
+    public static void redisKeysMoved(ShellConnect connect, Integer dbIndex, int targetDB) {
         ShellRedisKeysMovedEvent event = new ShellRedisKeysMovedEvent();
-        event.data(item);
+        event.data(dbIndex);
+        event.setConnect(connect);
         event.setTargetDB(targetDB);
         EventUtil.post(event);
     }

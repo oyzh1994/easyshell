@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.controller.redis.key;
 
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
@@ -17,8 +16,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.util.List;
 
 
 /**
@@ -88,7 +85,7 @@ public class ShellRedisKeyCopyController extends StageController {
             boolean result = this.client.copy(fromDBIndex, key, key, targetDBIndex, this.replace.isSelected());
             if (result) {
                 this.setProp("dbIndex", targetDBIndex);
-                ShellEventUtil.redisKeyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
+                // ShellEventUtil.redisKeyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
                 // MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {

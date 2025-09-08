@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.controller.redis.key;
 
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
@@ -100,7 +99,7 @@ public class ShellRedisKeyMoveController extends StageController {
                     this.client.expire(targetDBIndex, key, ttl, null);
                 }
                 this.setProp("dbIndex", targetDBIndex);
-                ShellEventUtil.redisKeyMoved(this.treeItem, targetDBIndex);
+                // ShellEventUtil.redisKeyMoved(this.treeItem, targetDBIndex);
                 // MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             }
