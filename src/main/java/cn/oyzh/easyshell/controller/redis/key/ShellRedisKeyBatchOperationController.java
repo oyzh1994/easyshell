@@ -195,7 +195,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                             this.keys1.appendLine(I18nHelper.deleteKey() + ": [" + key + "] " + I18nHelper.fail());
                         }
                     }
-                    ShellEventUtil.redisKeyFlushed(this.dbIndex);
+                    ShellEventUtil.redisKeyFlushed(this.client.getShellConnect(), this.dbIndex);
                     // 提示信息
                     String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
                     MessageBox.info(msg);
@@ -241,7 +241,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                             this.keys2.appendLine(I18nHelper.handleKey() + ": [" + key + "] " + I18nHelper.fail());
                         }
                     }
-                    ShellEventUtil.redisKeyFlushed(this.dbIndex);
+                    ShellEventUtil.redisKeyFlushed(this.client.shellConnect(), this.dbIndex);
                     // 提示信息
                     String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
                     MessageBox.info(msg);
@@ -268,7 +268,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                         NodeGroupUtil.disable(this.root, "exec");
                         this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
                         this.client.flushDB(this.dbIndex);
-                        ShellEventUtil.redisKeyFlushed(this.dbIndex);
+                        ShellEventUtil.redisKeyFlushed(this.client.getShellConnect(), this.dbIndex);
                         MessageBox.okToast(I18nHelper.operationSuccess());
                     } finally {
                         this.stopExec();

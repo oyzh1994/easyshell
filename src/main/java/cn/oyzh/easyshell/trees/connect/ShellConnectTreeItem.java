@@ -98,10 +98,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             items.add(exportData);
         }
         // 处理分组移动
-        List<ShellGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
+        List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
         Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
         if (CollectionUtil.isNotEmpty(groupItems)) {
-            for (ShellGroupTreeItem item : groupItems) {
+            for (ShellConnectGroupTreeItem item : groupItems) {
                 MenuItem menuItem = MenuItemHelper.menuItem(item.getGroupName(), () -> this.moveTo(item));
                 if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
                     menuItem.setDisable(true);
@@ -122,7 +122,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      *
      * @param groupItem 分组节点
      */
-    private void moveTo(ShellGroupTreeItem groupItem) {
+    private void moveTo(ShellConnectGroupTreeItem groupItem) {
         this.remove();
         groupItem.addConnectItem(this);
     }

@@ -28,7 +28,7 @@ import java.util.Optional;
  * @author oyzh
  * @since 2025/03/29
  */
-public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> implements ShellConnectManager {
+public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeItemValue> implements ShellConnectManager {
 
     /**
      * shell分组储存
@@ -50,9 +50,9 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
     //  */
     // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
-    public ShellRootTreeItem(ShellConnectTreeView treeView) {
+    public ShellConnectRootTreeItem(ShellConnectTreeView treeView) {
         super(treeView);
-        this.setValue(new ShellRootTreeItemValue());
+        this.setValue(new ShellConnectRootTreeItemValue());
         // 加载子节点
         this.loadChild();
     }
@@ -158,7 +158,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         ShellGroup group = new ShellGroup();
         group.setName(groupName);
         if (this.groupStore.replace(group)) {
-            this.addChild(new ShellGroupTreeItem(group, this.getTreeView()));
+            this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
             ShellEventUtil.groupAdded(groupName);
         } else {
             MessageBox.warn(I18nHelper.operationFail());
@@ -170,10 +170,10 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      *
      * @param groupId 分组id
      */
-    private ShellGroupTreeItem getGroupItem(String groupId) {
+    private ShellConnectGroupTreeItem getGroupItem(String groupId) {
         if (StringUtil.isNotBlank(groupId)) {
-            List<ShellGroupTreeItem> items = this.getGroupItems();
-            Optional<ShellGroupTreeItem> groupTreeItem = items.parallelStream().filter(g -> Objects.equals(g.value().getGid(), groupId)).findAny();
+            List<ShellConnectGroupTreeItem> items = this.getGroupItems();
+            Optional<ShellConnectGroupTreeItem> groupTreeItem = items.parallelStream().filter(g -> Objects.equals(g.value().getGid(), groupId)).findAny();
             return groupTreeItem.orElse(null);
         }
         return null;
@@ -184,10 +184,10 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
      *
      * @return 分组树节点组件
      */
-    public List<ShellGroupTreeItem> getGroupItems() {
-        List<ShellGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
+    public List<ShellConnectGroupTreeItem> getGroupItems() {
+        List<ShellConnectGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof ShellGroupTreeItem groupTreeItem) {
+            if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
                 items.add(groupTreeItem);
             }
         }
@@ -216,7 +216,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
                     connectTreeItem.value(shellConnect);
                     break;
                 }
-            } else if (item instanceof ShellGroupTreeItem groupTreeItem) {
+            } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
                 for (ShellConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
                     if (connectTreeItem.value() == shellConnect) {
                         connectTreeItem.value(shellConnect);
@@ -229,7 +229,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
 
     @Override
     public void addConnect(ShellConnect info) {
-        ShellGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
+        ShellConnectGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
         if (groupItem == null) {
             super.addChild(new ShellConnectTreeItem(info, this.getTreeView()));
             this.expend();
@@ -274,7 +274,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         for (TreeItem<?> child : this.unfilteredChildren()) {
             if (child instanceof ShellConnectTreeItem connectTreeItem) {
                 items.add(connectTreeItem);
-            } else if (child instanceof ShellGroupTreeItem groupTreeItem) {
+            } else if (child instanceof ShellConnectGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectItems());
             }
         }
@@ -289,7 +289,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
 //                if (connectTreeItem.isConnected()) {
                 items.add(connectTreeItem);
 //                }
-            } else if (item instanceof ShellGroupTreeItem groupTreeItem) {
+            } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectedItems());
             }
         }
@@ -333,7 +333,7 @@ public class ShellRootTreeItem extends RichTreeItem<ShellRootTreeItemValue> impl
         if (CollectionUtil.isNotEmpty(groups)) {
             List<TreeItem<?>> list = new ArrayList<>();
             for (ShellGroup group : groups) {
-                list.add(new ShellGroupTreeItem(group, this.getTreeView()));
+                list.add(new ShellConnectGroupTreeItem(group, this.getTreeView()));
             }
             this.addChild(list);
         }

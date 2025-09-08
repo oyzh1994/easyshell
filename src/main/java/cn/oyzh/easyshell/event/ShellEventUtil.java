@@ -618,14 +618,15 @@ public class ShellEventUtil {
     /**
      * 键刷新事件
      *
-     * @param item redis树节点
+     * @param connect 连接
+     * @param dbIndex 数据库
      */
-    public static void redisKeyFlushed(Integer item) {
+    public static void redisKeyFlushed(ShellConnect connect, Integer dbIndex) {
         ShellRedisKeyFlushedEvent event = new ShellRedisKeyFlushedEvent();
-        event.data(item);
+        event.data(dbIndex);
+        event.setConnect(connect);
         EventUtil.post(event);
     }
-
 
     /**
      * 键ttl更新事件

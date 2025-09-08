@@ -29,7 +29,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025/05/12
  */
-public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> implements ShellConnectManager {
+public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTreeItemValue> implements ShellConnectManager {
 
     /**
      * 分组对象
@@ -50,10 +50,10 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
-    public ShellGroupTreeItem(ShellGroup group, RichTreeView treeView) {
+    public ShellConnectGroupTreeItem(ShellGroup group, RichTreeView treeView) {
         super(treeView);
         this.value = group;
-        this.setValue(new ShellGroupTreeItemValue(this));
+        this.setValue(new ShellConnectGroupTreeItemValue(this));
         // 判断是否展开
         this.setExpanded(this.value.isExpand());
         // 监听收缩变化
@@ -151,9 +151,9 @@ public class ShellGroupTreeItem extends RichTreeItem<ShellGroupTreeItemValue> im
     }
 
     @Override
-    public ShellRootTreeItem parent() {
+    public ShellConnectRootTreeItem parent() {
         TreeItem<?> treeItem = this.getParent();
-        return (ShellRootTreeItem) treeItem;
+        return (ShellConnectRootTreeItem) treeItem;
     }
 
     @Override

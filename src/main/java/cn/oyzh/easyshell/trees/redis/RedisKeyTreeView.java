@@ -18,6 +18,7 @@ import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * redis树
@@ -111,11 +112,16 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void keyFlushed(ShellRedisKeyFlushedEvent event) {
-        for (RedisDatabaseTreeItem item : this.dbItems()) {
-            item.reloadChild();
+    private void onKeyFlushed(ShellRedisKeyFlushedEvent event) {
+        if (event.getConnect() != this.shellConnect()) {
+            return;
         }
-
+        for (RedisDatabaseTreeItem item : this.dbItems()) {
+            if (Objects.equals(item.dbIndex(), event.data())) {
+                item.reloadChild();
+                break;
+            }
+        }
     }
 
     // /**
@@ -174,7 +180,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         for (RedisDatabaseTreeItem item : this.dbItems()) {
             if (event.getTargetDB() == item.dbIndex()) {
                 item.reloadChild();
-                continue;
+                break;
             }
         }
     }

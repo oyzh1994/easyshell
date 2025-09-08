@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025/4/7
  */
-public class ShellRootTreeItemValue extends RichTreeItemValue {
+public class ShellConnectRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String name() {

@@ -430,6 +430,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
 
     @Override
     public void reloadChild() {
+        this.clearChild();
         this.loadChild();
     }
 

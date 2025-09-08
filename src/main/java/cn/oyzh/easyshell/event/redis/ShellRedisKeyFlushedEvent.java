@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.event.redis;
 
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 
 /**
@@ -8,6 +9,13 @@ import cn.oyzh.event.Event;
  */
 public class ShellRedisKeyFlushedEvent extends Event<Integer> {
 
+    private ShellConnect connect;
 
+    public ShellConnect getConnect() {
+        return connect;
+    }
 
+    public void setConnect(ShellConnect connect) {
+        this.connect = connect;
+    }
 }

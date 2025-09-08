@@ -11,16 +11,16 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2025/4/7
  */
-public class ShellGroupTreeItemValue extends RichTreeItemValue {
+public class ShellConnectGroupTreeItemValue extends RichTreeItemValue {
 
-    public ShellGroupTreeItemValue(ShellGroupTreeItem item) {
+    public ShellConnectGroupTreeItemValue(ShellConnectGroupTreeItem item) {
         super(item);
         this.setRichMode(true);
     }
 
     @Override
-    protected ShellGroupTreeItem item() {
-        return (ShellGroupTreeItem) super.item();
+    protected ShellConnectGroupTreeItem item() {
+        return (ShellConnectGroupTreeItem) super.item();
     }
 
     @Override

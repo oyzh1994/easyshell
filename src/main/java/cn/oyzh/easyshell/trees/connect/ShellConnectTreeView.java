@@ -58,7 +58,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
     @Override
     protected void initRoot() {
-        super.setRoot(new ShellRootTreeItem(this));
+        super.setRoot(new ShellConnectRootTreeItem(this));
         this.root().expend();
         super.initRoot();
     }
@@ -76,8 +76,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     }
 
     @Override
-    public ShellRootTreeItem root() {
-        return (ShellRootTreeItem) super.root();
+    public ShellConnectRootTreeItem root() {
+        return (ShellConnectRootTreeItem) super.root();
     }
 
     // /**
@@ -201,7 +201,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         // if (item instanceof ShellConnectTreeItem) {
         //     add.setDisable(true);
         //     connection.setDisable(true);
-        // } else if (item instanceof ShellGroupTreeItem) {
+        // } else if (item instanceof ShellConnectGroupTreeItem) {
         //     addGroup.setDisable(true);
         //     connection.setDisable(true);
         // }
@@ -225,7 +225,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     //  */
     // private void addConnect() {
     //     TreeItem<?> item = this.getSelectedItem();
-    //     if (item instanceof ShellGroupTreeItem groupTreeItem) {
+    //     if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
     //         ShellViewFactory.addGuid(groupTreeItem.value());
     //     } else {
     //         ShellViewFactory.addGuid(null);
@@ -254,7 +254,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     //     ShellGroup group = new ShellGroup();
     //     group.setName(groupName);
     //     if (this.groupStore.replace(group)) {
-    //         this.root().addChild(new ShellGroupTreeItem(group, this));
+    //         this.root().addChild(new ShellConnectGroupTreeItem(group, this));
     //         ShellEventUtil.groupAdded(groupName);
     //     } else {
     //         MessageBox.warn(I18nHelper.operationFail());
@@ -293,7 +293,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         ShellViewFactory.exportConnect();
     }
 
-    public List<ShellGroupTreeItem> getGroupItems() {
+    public List<ShellConnectGroupTreeItem> getGroupItems() {
         return this.root().getGroupItems();
     }
 }
